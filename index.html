@@ -427,33 +427,92 @@
     </section>
 
     <section id="algorithm" class="tab-panel" hidden>
-      <div class="content-page">
-        <div class="page-heading">
-          <p class="eyebrow">Transparent reasoning model</p>
-          <h2>Deterministic pediatric anemia algorithm</h2>
-          <p>Every branch uses explicit facts and outputs a diagnostic pattern plus confirmatory steps. No generative model participates in inference.</p>
-        </div>
-        <div class="algorithm-flow" aria-label="Algorithm flow">
-          <article class="flow-card"><span>1</span><h3>Establish scope and urgency</h3><p>Age, local ranges, instability, bleeding, severe anemia, other cytopenias, blasts, lead level, and microangiopathy flags.</p></article>
-          <article class="flow-card"><span>2</span><h3>Confirm anemia</h3><p>Hemoglobin is compared with the local lower limit; if absent, the age/sex-specific AAP fallback is used only from 6 months to &lt;18 years.</p></article>
-          <article class="flow-card"><span>3</span><h3>Classify morphology</h3><p>MCV is categorized as microcytic, normocytic, or macrocytic using local limits first. RDW and transfusion context modify interpretation.</p></article>
-          <article class="flow-card"><span>4</span><h3>Classify marrow response</h3><p>Reticulocyte response separates loss/destruction from impaired production; the user supplies the laboratory-context interpretation rather than a universal cutoff.</p></article>
-          <article class="flow-card"><span>5</span><h3>Apply morphology-specific rules</h3><p>Iron/inflammation/globin/lead; bleeding/hemolysis; renal/inflammatory/marrow; or megaloblastic/non-megaloblastic branches.</p></article>
-          <article class="flow-card"><span>6</span><h3>Rank and expose provenance</h3><p>Rules merge into a ranked pattern differential. The interface shows all matched rule IDs, findings, cautions, next tests, and citations.</p></article>
-        </div>
-
-        <div class="branch-grid">
-          <article class="card branch-card micro"><h3>Microcytic branch</h3><ol><li>Ferritin relative to AAP threshold</li><li>CRP and inflammatory iron restriction</li><li>sTfR/ferritin index if available</li><li>Newborn screen, HbA2/globin testing</li><li>Lead and exposure history</li><li>Rare iron-loading/sideroblastic pathway</li></ol></article>
-          <article class="card branch-card normo"><h3>Normocytic branch</h3><ol><li>High retic: blood loss vs hemolysis</li><li>Hemolysis labs, DAT, smear</li><li>Low retic: renal/inflammation/viral</li><li>Other cytopenias and marrow red flags</li><li>Chronic hemolytic disease + abrupt reticulocytopenia</li></ol></article>
-          <article class="card branch-card macro"><h3>Macrocytic branch</h3><ol><li>Reticulocytosis vs production failure</li><li>B12, folate, smear</li><li>TSH, liver, medications</li><li>Copper and nutrition/malabsorption</li><li>Congenital phenotype or progressive cytopenias</li></ol></article>
+      <div id="algorithm-explorer" class="content-page algorithm-explorer">
+        <div class="page-heading algorithm-heading">
+          <div>
+            <p class="eyebrow">Transparent reasoning model</p>
+            <h2>Deterministic pediatric anemia algorithm</h2>
+            <p>Inspect the evidence, exact data fields, equations, branch conditions, worked examples, and outputs behind every stage. The live walkthrough executes the same rules engine used by the Assessment tab.</p>
+          </div>
+          <div class="algorithm-heading-badges" aria-label="Algorithm explorer characteristics">
+            <span>Evidence → data → logic → output</span>
+            <span>91 inspectable rules</span>
+            <span>No generative inference</span>
+          </div>
         </div>
 
-        <div class="card implementation-card">
-          <h3>Rule execution contract</h3>
-          <pre><code>input → deriveFacts() → evaluate 91 JSON rules → merge candidates
-      → sort by evidence level + deterministic priority → render provenance</code></pre>
-          <p><strong>Evidence levels:</strong> meets defined pattern, strongly supported, supported, possible, and not excluded. These are ordinal rule labels—not probabilities.</p>
+        <section class="algorithm-overview" aria-labelledby="algorithm-overview-title">
+          <div class="algorithm-overview-copy">
+            <p class="eyebrow">How to read the model</p>
+            <h3 id="algorithm-overview-title">Every decision is independently reviewable</h3>
+            <p>Select any numbered step to open its full specification. Executed expressions are explicitly separated from educational formulas, guideline thresholds, and transparent implementation heuristics.</p>
+          </div>
+          <div id="algorithm-principles" class="algorithm-principles" aria-label="Algorithm design principles"></div>
+        </section>
+
+        <div class="algorithm-visual-key" aria-label="Algorithm explainer key">
+          <span><i class="key-evidence" aria-hidden="true">E</i><strong>Evidence</strong><small>Study or guideline premise</small></span>
+          <span><i class="key-data" aria-hidden="true">D</i><strong>Data</strong><small>Exact patient or laboratory input</small></span>
+          <span><i class="key-logic" aria-hidden="true">ƒ</i><strong>Logic</strong><small>Condition, threshold, or equation</small></span>
+          <span><i class="key-output" aria-hidden="true">→</i><strong>Output</strong><small>Alert, fact, question, or pattern</small></span>
         </div>
+
+        <section class="algorithm-map-section" aria-labelledby="algorithm-map-title">
+          <div class="algorithm-section-title">
+            <div><p class="eyebrow">Six-stage pipeline</p><h3 id="algorithm-map-title">Select a step to inspect its evidence and mechanics</h3></div>
+            <p>Each card previews the central expression and shows how much supporting detail is available.</p>
+          </div>
+          <div id="algorithm-step-map" class="algorithm-step-map" aria-label="Interactive algorithm steps"></div>
+        </section>
+
+        <div id="algorithm-step-detail" class="algorithm-step-detail" aria-live="polite"></div>
+
+        <section class="algorithm-branches-section" aria-labelledby="algorithm-branches-title">
+          <div class="algorithm-section-title">
+            <div><p class="eyebrow">Morphology deep dives</p><h3 id="algorithm-branches-title">What each branch is trying to distinguish</h3></div>
+            <p>Open a branch to compare its sequence, discriminating findings, counterpoints, and primary evidence.</p>
+          </div>
+          <div id="algorithm-branch-grid" class="algorithm-branch-grid"></div>
+        </section>
+
+        <section class="algorithm-case-lab" aria-labelledby="algorithm-case-title">
+          <div class="algorithm-case-toolbar">
+            <div>
+              <p class="eyebrow">Live case illustration</p>
+              <h3 id="algorithm-case-title">Walk an example through all six stages</h3>
+              <p id="algorithm-example-description">The selected example is evaluated with the current rules and candidate catalog.</p>
+            </div>
+            <div class="algorithm-case-controls">
+              <label for="algorithm-example-select"><span>Example case</span><select id="algorithm-example-select"></select></label>
+              <button id="algorithm-use-case" type="button" class="button secondary" disabled>Open in Assessment</button>
+            </div>
+          </div>
+          <div id="algorithm-walkthrough" aria-live="polite"></div>
+        </section>
+
+        <section class="card algorithm-contract-card" aria-labelledby="algorithm-contract-title">
+          <div>
+            <p class="eyebrow">Execution contract</p>
+            <h3 id="algorithm-contract-title">From normalized input to reviewable output</h3>
+            <p>The internal score only orders matched work-list patterns. It never becomes a probability, likelihood ratio, diagnostic confidence, or treatment instruction.</p>
+          </div>
+          <pre><code>input
+  → deriveFacts()
+  → evaluate 91 JSON rules
+  → merge by candidate
+  → strongest ordinal level + Σ rule points
+  → sort(level ↓, points ↓, label A–Z)
+  → render alerts, questions, provenance, and citations</code></pre>
+          <div class="algorithm-level-key" aria-label="Candidate evidence levels">
+            <span><strong>5</strong> Meets defined pattern</span>
+            <span><strong>4</strong> Strongly supported</span>
+            <span><strong>3</strong> Supported</span>
+            <span><strong>2</strong> Possible</span>
+            <span><strong>1</strong> Not excluded</span>
+          </div>
+        </section>
+
+        <noscript><p class="algorithm-error"><strong>JavaScript is required for the interactive algorithm explorer.</strong><span>The underlying static clinical algorithm remains available in the project documentation.</span></p></noscript>
       </div>
     </section>
 

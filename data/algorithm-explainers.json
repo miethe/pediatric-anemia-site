@@ -1,0 +1,494 @@
+{
+  "version": "1.0.0",
+  "reviewedThrough": "2026-07-15",
+  "title": "Pediatric anemia algorithm evidence explorer",
+  "principles": [
+    {
+      "label": "Local before fallback",
+      "detail": "A supplied local laboratory interval always overrides the built-in age/sex fallback."
+    },
+    {
+      "label": "Rules, not probabilities",
+      "detail": "The engine evaluates explicit Boolean conditions. Candidate levels and priority points are ordinal workflow labels, not calibrated probabilities."
+    },
+    {
+      "label": "Missingness stays visible",
+      "detail": "Absent data do not become normal findings; they generate limitations or adaptive questions when a rule requires them."
+    },
+    {
+      "label": "Escalation precedes etiology",
+      "detail": "Emergency and urgent findings are surfaced before the differential is interpreted."
+    }
+  ],
+  "steps": [
+    {
+      "id": "scope-urgency",
+      "number": 1,
+      "title": "Establish scope and urgency",
+      "clinicalQuestion": "Can this general-pediatric pathway be applied safely, and does the case require immediate escalation before etiologic classification?",
+      "summary": "Validate age and reference-range provenance, then screen instability, bleeding, cytopenias, blasts, microangiopathy, and lead thresholds before interpreting the anemia pattern.",
+      "preview": "Age scope + red flags",
+      "inputs": [
+        { "field": "patient.ageMonths", "display": "Age", "unit": "months", "purpose": "Determines whether built-in pediatric ranges are available and selects the fallback age band." },
+        { "field": "patient.sexAtBirth", "display": "Sex assigned at birth", "unit": "category", "purpose": "Selects the sex-specific fallback interval within the relevant age band." },
+        { "field": "cbc.localRanges.*", "display": "Local CBC limits", "unit": "reported lab units", "purpose": "Override every built-in hemoglobin, MCV, and RDW fallback." },
+        { "field": "symptoms.*", "display": "Instability and bleeding flags", "unit": "Boolean", "purpose": "Surfaces hemodynamic, respiratory, neurologic, cardiac, and active-bleeding escalation conditions." },
+        { "field": "cbc.wbc / anc / platelets", "display": "Other cell lines", "unit": "local units", "purpose": "Detects additional cytopenias using supplied local limits or local abnormal flags." },
+        { "field": "smear[]", "display": "Peripheral smear", "unit": "findings", "purpose": "Flags blasts and schistocytes before routine differential ranking." },
+        { "field": "labs.bloodLeadLevel / leadSpecimen", "display": "Blood lead level and specimen", "unit": "µg/dL + specimen type", "purpose": "Applies CDC escalation and venous-confirmation pathways." },
+        { "field": "patient.recentTransfusion / highAltitude", "display": "Interpretive modifiers", "unit": "Boolean", "purpose": "Adds limitations because transfusion and altitude can alter interpretation." }
+      ],
+      "equations": [
+        {
+          "label": "Built-in scope gate",
+          "expression": "supportedAge = (6 ≤ ageMonths < 216)",
+          "kind": "engine",
+          "interpretation": "Below 6 months or at/above 18 years, the engine will not rely on its general-pediatric fallback ranges."
+        },
+        {
+          "label": "Additional cytopenia count",
+          "expression": "count = I(leukopenia) + I(neutropenia) + I(thrombocytopenia)",
+          "kind": "engine",
+          "interpretation": "One or more affected non-red-cell lineages increases concern for marrow failure, infiltration, malignancy, infection, or systemic disease."
+        },
+        {
+          "label": "CDC lead routing",
+          "expression": "BLL ≥ 3.5 → lead pathway; capillary BLL ≥ 3.5 → venous confirmation; BLL 20–44 and BLL ≥ 45 → higher urgency tiers",
+          "kind": "guideline",
+          "interpretation": "Specimen type changes the next action; a capillary screen is not treated as a confirmed venous result."
+        }
+      ],
+      "outputs": [
+        "Scope status and effective range provenance",
+        "Emergency, urgent, important, or informational alerts",
+        "Interpretive limitations for age, transfusion, altitude, or missing ranges",
+        "Permission to continue into anemia classification without suppressing alerts"
+      ],
+      "examples": [
+        {
+          "title": "Marrow red flags override routine pattern review",
+          "data": "Age 84 months; fever; ANC 0.5; platelets 42; smear reports blasts.",
+          "evaluation": "Supported age, but fever with neutropenia, anemia with additional cytopenias, and blasts each match escalation rules.",
+          "result": "Emergency/urgent alerts are displayed before the marrow-failure or malignancy pattern is reviewed."
+        },
+        {
+          "title": "Capillary lead result changes the next step",
+          "data": "Age 36 months; capillary BLL 8.2 µg/dL.",
+          "evaluation": "8.2 ≥ 3.5 and specimen = capillary.",
+          "result": "Lead pathway is matched and venous confirmation is explicitly requested."
+        }
+      ],
+      "evidence": [
+        { "id": "BLOOD2022_PED_ANEMIA", "use": "Supports early review of symptoms, smear, reticulocytes, and multi-lineage abnormalities in pediatric anemia." },
+        { "id": "CDC2025_LEAD", "use": "Supplies current blood-lead reference and specimen-specific action tiers." },
+        { "id": "AAP2026_IDA", "use": "Supplies the built-in CBC fallback table and the severe-IDA hemoglobin category used only as an alerting context." },
+        { "id": "WHO2024_HB", "use": "Supports contextual, population-aware hemoglobin interpretation rather than one universal cutoff." }
+      ],
+      "caveat": "Hemoglobin below 7 g/dL is shown as the AAP severe iron-deficiency-anemia category only when IDA is the relevant diagnosis; it is not encoded as a universal transfusion threshold."
+    },
+    {
+      "id": "confirm-anemia",
+      "number": 2,
+      "title": "Confirm anemia",
+      "clinicalQuestion": "Is the measured hemoglobin below the most appropriate lower reference limit for this patient?",
+      "summary": "Compare hemoglobin with a supplied local lower limit first; otherwise use the age/sex AAP fallback only within the supported age scope.",
+      "preview": "Hb versus effective lower limit",
+      "inputs": [
+        { "field": "cbc.hemoglobin", "display": "Hemoglobin", "unit": "g/dL", "purpose": "Primary value being classified." },
+        { "field": "cbc.localRanges.hbLower", "display": "Local hemoglobin lower limit", "unit": "g/dL", "purpose": "Preferred decision threshold when supplied." },
+        { "field": "patient.ageMonths", "display": "Age", "unit": "months", "purpose": "Selects fallback age band when no local limit is provided." },
+        { "field": "patient.sexAtBirth", "display": "Sex assigned at birth", "unit": "category", "purpose": "Selects the appropriate fallback within an age band." },
+        { "field": "patient.highAltitude", "display": "High-altitude context", "unit": "Boolean", "purpose": "Adds a limitation; this prototype does not calculate altitude adjustment." }
+      ],
+      "equations": [
+        {
+          "label": "Effective hemoglobin threshold",
+          "expression": "HbLower = localHbLower ?? AAPFallback(ageMonths, sexAtBirth)",
+          "kind": "engine",
+          "interpretation": "The null-coalescing choice means a local value wins; fallback is used only when the local value is absent."
+        },
+        {
+          "label": "Anemia classification",
+          "expression": "anemia = (hemoglobin < HbLower)",
+          "kind": "engine",
+          "interpretation": "Equality to the lower limit is not classified as below range by the current implementation."
+        },
+        {
+          "label": "Distance below threshold",
+          "expression": "Hb deficit = HbLower − measured Hb",
+          "kind": "explanatory",
+          "interpretation": "Displayed examples may use this arithmetic to show magnitude, but the deficit itself is not a scoring variable."
+        }
+      ],
+      "outputs": [
+        "Anemia present, absent, or indeterminate",
+        "Measured hemoglobin and effective lower limit",
+        "Threshold source: local laboratory or AAP fallback",
+        "Age-band label and scope limitation when applicable"
+      ],
+      "examples": [
+        {
+          "title": "20-month-old female",
+          "data": "Hemoglobin 8.4 g/dL; no local lower limit; AAP fallback 11.0 g/dL.",
+          "evaluation": "8.4 < 11.0; deficit = 2.6 g/dL.",
+          "result": "Anemia present. The algorithm continues to morphology and marrow response."
+        },
+        {
+          "title": "Iron deficiency can exist without anemia",
+          "data": "Hemoglobin 11.6 g/dL; effective lower limit 11.3 g/dL; ferritin 10 ng/mL.",
+          "evaluation": "11.6 is not below 11.3, while ferritin is below the applicable AAP threshold.",
+          "result": "No anemia by the supplied threshold, but an iron-deficiency-without-anemia pattern may still be returned."
+        }
+      ],
+      "evidence": [
+        { "id": "AAP2026_IDA", "use": "Provides the age/sex fallback CBC intervals used by the implementation from 6 months to under 18 years." },
+        { "id": "WHO2024_HB", "use": "Supports explicit cutoff provenance and contextual interpretation of hemoglobin." }
+      ],
+      "caveat": "A normal classification is only relative to the effective threshold. It does not rule out iron deficiency, evolving disease, mixed disorders, or an inappropriate reference interval."
+    },
+    {
+      "id": "classify-morphology",
+      "number": 3,
+      "title": "Classify red-cell morphology",
+      "clinicalQuestion": "Is the average red-cell volume below, within, or above the applicable interval, and is cell-size variability increased?",
+      "summary": "Classify MCV as microcytic, normocytic, or macrocytic, then use RDW and transfusion context to refine—but not prove—the differential.",
+      "preview": "MCV band + RDW context",
+      "inputs": [
+        { "field": "cbc.mcv", "display": "MCV", "unit": "fL", "purpose": "Routes the case to microcytic, normocytic, or macrocytic pathways." },
+        { "field": "cbc.localRanges.mcvLower / mcvUpper", "display": "Local MCV interval", "unit": "fL", "purpose": "Preferred morphology thresholds." },
+        { "field": "cbc.rdw", "display": "RDW", "unit": "%", "purpose": "Assesses red-cell size dispersion when an upper limit is available." },
+        { "field": "cbc.localRanges.rdwUpper", "display": "Local RDW upper limit", "unit": "%", "purpose": "Preferred RDW threshold." },
+        { "field": "patient.recentTransfusion", "display": "Recent transfusion", "unit": "Boolean", "purpose": "Adds a mixed-population caution because indices and smear may be altered." }
+      ],
+      "equations": [
+        {
+          "label": "Morphology classifier",
+          "expression": "MCV < lower → microcytic; MCV > upper → macrocytic; otherwise → normocytic",
+          "kind": "engine",
+          "interpretation": "The comparison uses local limits first and the AAP fallback second."
+        },
+        {
+          "label": "RDW flag",
+          "expression": "rdwHigh = (RDW > RDWUpper)",
+          "kind": "engine",
+          "interpretation": "RDW modifies pattern support; it does not independently establish an etiology."
+        },
+        {
+          "label": "Mixed-population warning",
+          "expression": "recentTransfusion = true → add interpretation limitation",
+          "kind": "engine",
+          "interpretation": "Transfused and native red-cell populations can mask or broaden MCV/RDW patterns."
+        }
+      ],
+      "outputs": [
+        "Microcytic, normocytic, macrocytic, or indeterminate morphology",
+        "RDW high, not high, or unavailable",
+        "A morphology-specific branch selector",
+        "Transfusion-related or mixed-pattern cautions"
+      ],
+      "examples": [
+        {
+          "title": "Microcytic with increased RDW",
+          "data": "20-month-old female; MCV 64 fL; lower limit 73.3 fL; RDW 19.1%; upper limit 15.4%.",
+          "evaluation": "64 < 73.3 and 19.1 > 15.4.",
+          "result": "Microcytic branch with increased size variability; iron studies become a high-value discriminator."
+        },
+        {
+          "title": "Normocytic does not mean a narrow differential",
+          "data": "14-year-old female; MCV 82 fL; interval 80.5–91.8 fL.",
+          "evaluation": "82 lies within the interval.",
+          "result": "Normocytic branch; reticulocyte response separates loss/destruction from impaired production."
+        },
+        {
+          "title": "Macrocytic routing",
+          "data": "8-year-old female; MCV 96 fL; upper limit 87.7 fL.",
+          "evaluation": "96 > 87.7.",
+          "result": "Macrocytic branch; reticulocytosis, B12/folate, thyroid, liver, medications, copper, and marrow signals are reviewed."
+        }
+      ],
+      "evidence": [
+        { "id": "AAP2026_IDA", "use": "Provides fallback MCV and RDW intervals and supports CBC morphology in iron-deficiency evaluation." },
+        { "id": "BLOOD2022_PED_ANEMIA", "use": "Supports morphology-first organization of the broad pediatric differential and smear interpretation." }
+      ],
+      "caveat": "MCV is an average. Mixed deficiencies, reticulocytosis, recent transfusion, or two opposing disorders can produce a deceptively normal value."
+    },
+    {
+      "id": "marrow-response",
+      "number": 4,
+      "title": "Classify marrow response",
+      "clinicalQuestion": "Is erythropoiesis appropriately increased for the degree and timing of anemia?",
+      "summary": "Use the laboratory- and age-context interpretation of reticulocyte response to separate loss/destruction from inadequate production.",
+      "preview": "Reticulocyte response",
+      "inputs": [
+        { "field": "reticulocytes.response", "display": "Reticulocyte response", "unit": "low / inappropriately normal / appropriate / high / unknown", "purpose": "The actual branch input used by the engine." },
+        { "field": "reticulocytes.absolute", "display": "Absolute reticulocyte count", "unit": "local reporting units", "purpose": "Captured for context but not subjected to a universal hard-coded cutoff." },
+        { "field": "cbc.hemoglobin / hematocrit context", "display": "Anemia severity context", "unit": "local units", "purpose": "Needed clinically to judge whether a raw reticulocyte percentage is appropriate." },
+        { "field": "patient.recentTransfusion", "display": "Recent transfusion", "unit": "Boolean", "purpose": "Can distort reticulocyte interpretation and specialized red-cell testing." },
+        { "field": "history.recentViralIllness", "display": "Recent viral illness", "unit": "Boolean", "purpose": "Raises transient or aplastic suppression pathways when response is low." }
+      ],
+      "equations": [
+        {
+          "label": "Engine branch mapping",
+          "expression": "high → loss/destruction; low or inappropriately-normal → impaired production; appropriate → context-dependent; unknown → ask for interpretation",
+          "kind": "engine",
+          "interpretation": "The engine deliberately consumes a clinician/laboratory interpretation rather than imposing one pediatric numeric cutoff."
+        },
+        {
+          "label": "Reference calculation—not executed",
+          "expression": "corrected retic % = retic % × (patient Hct ÷ age-appropriate reference Hct)",
+          "kind": "reference-only",
+          "interpretation": "Useful conceptually when a raw percentage is misleading in anemia; this prototype does not calculate it because hematocrit norms and assay context vary."
+        },
+        {
+          "label": "Reference calculation—not executed",
+          "expression": "RPI = corrected retic % ÷ maturation correction",
+          "kind": "reference-only",
+          "interpretation": "Shown for transparency only. No universal RPI threshold is encoded in the rules engine."
+        }
+      ],
+      "outputs": [
+        "High-response loss/destruction branch",
+        "Low/inappropriately-normal production-limited branch",
+        "Context-dependent appropriate-response interpretation",
+        "Adaptive request when reticulocyte interpretation is missing"
+      ],
+      "examples": [
+        {
+          "title": "High response plus hemolysis evidence",
+          "data": "Hemoglobin 8.7 g/dL; response high; indirect bilirubin high; LDH high; haptoglobin low; jaundice.",
+          "evaluation": "High response routes toward loss/destruction; multiple biochemical and clinical markers support red-cell destruction.",
+          "result": "Hemolytic-anemia pattern is ranked; DAT, smear, membrane/enzyme/hemoglobin studies refine cause."
+        },
+        {
+          "title": "Low response plus multiple cytopenias",
+          "data": "Anemia; low response; leukopenia, neutropenia, thrombocytopenia; blasts.",
+          "evaluation": "Low production signal plus abnormal additional cell lines and blasts.",
+          "result": "Urgent marrow-failure/infiltration/malignancy pathway rather than isolated nutritional anemia."
+        }
+      ],
+      "evidence": [
+        { "id": "BLOOD2022_PED_ANEMIA", "use": "Supports reticulocyte response as the principal production-versus-loss/destruction discriminator in pediatric anemia." }
+      ],
+      "caveat": "The response can lag after acute hemorrhage or hemolysis and can be altered by transfusion, severe nutrient deficiency, infection, renal disease, or marrow suppression."
+    },
+    {
+      "id": "branch-rules",
+      "number": 5,
+      "title": "Apply morphology-specific rules",
+      "clinicalQuestion": "Which evidence-linked pattern best explains the combination of morphology, marrow response, iron/inflammation studies, smear, exposures, and history?",
+      "summary": "Dispatch to the morphology branch, then evaluate explicit compound conditions for iron deficiency, inflammation, globin disorders, lead, bleeding, hemolysis, renal/endocrine disease, nutrients, infection, and marrow disorders.",
+      "preview": "Pattern-specific compound rules",
+      "inputs": [
+        { "field": "labs.ferritin / crpStatus", "display": "Ferritin and inflammation", "unit": "ng/mL + category", "purpose": "Distinguishes absolute iron deficiency from ferritin confounding and inflammatory restriction." },
+        { "field": "labs.tsatStatus / tibcStatus / ironStatus", "display": "Iron profile", "unit": "local interpretation", "purpose": "Adds directionality when ferritin alone is insufficient." },
+        { "field": "labs.stfrFerritinIndex", "display": "sTfR/log10(ferritin) index", "unit": "assay-dependent", "purpose": "Supports iron deficiency or inflammation in the AAP framework when available." },
+        { "field": "cbc.rbc / rbcInterpretation", "display": "RBC count pattern", "unit": "local units + interpretation", "purpose": "Relatively high RBC count can support a globin-production pattern in persistent microcytosis." },
+        { "field": "labs.bilirubin / LDH / haptoglobin / DAT", "display": "Hemolysis panel", "unit": "local interpretation", "purpose": "Builds red-cell destruction and immune/nonimmune pathways." },
+        { "field": "smear[]", "display": "Smear findings", "unit": "findings", "purpose": "Adds target cells, spherocytes, schistocytes, hypersegmentation, stippling, and blasts." },
+        { "field": "history.* / exam.*", "display": "History and examination", "unit": "Boolean findings", "purpose": "Adds bleeding, diet, inflammation, renal disease, medications, travel, inheritance, congenital phenotype, and organomegaly." },
+        { "field": "labs.b12 / folate / copper / TSH / liver / creatinine", "display": "Production-limited discriminators", "unit": "local interpretation", "purpose": "Routes nutritional, endocrine, hepatic, renal, and marrow-production patterns." }
+      ],
+      "equations": [
+        {
+          "label": "AAP ferritin threshold",
+          "expression": "ferritinThreshold = 30 if menstruating or age ≥ 144 months; otherwise 20 for age 6–143 months",
+          "kind": "guideline",
+          "interpretation": "Iron deficiency is supported when ferritin is at or below the applicable threshold; inflammation still requires contextual interpretation."
+        },
+        {
+          "label": "sTfR/ferritin index",
+          "expression": "index = sTfR ÷ log10(ferritin)",
+          "kind": "guideline",
+          "interpretation": "The engine accepts the precomputed value: >2 supports iron deficiency; <1 with elevated CRP supports inflammation in the encoded AAP pathway. Assay compatibility matters."
+        },
+        {
+          "label": "Inflammatory iron-restriction pattern",
+          "expression": "anemia ∧ CRP elevated ∧ ferritin not low ∧ TSAT low ∧ TIBC low-or-normal",
+          "kind": "engine",
+          "interpretation": "A compound pattern—not any single datum—raises anemia of inflammation/inflammatory iron restriction."
+        },
+        {
+          "label": "Biochemical hemolysis heuristic",
+          "expression": "hemolysisPattern = count(indirect bilirubin high, LDH high, haptoglobin low) ≥ 2",
+          "kind": "implementation-heuristic",
+          "interpretation": "This transparent implementation heuristic triggers a pattern review; it is not presented as a validated diagnostic score."
+        }
+      ],
+      "outputs": [
+        "One or more matched diagnostic patterns",
+        "Supporting findings and conflicting cautions",
+        "Pattern-specific confirmatory tests",
+        "Adaptive questions for missing high-value discriminators",
+        "Rule IDs and evidence IDs for every matched output"
+      ],
+      "examples": [
+        {
+          "title": "Iron deficiency anemia pattern",
+          "data": "Microcytosis; RDW high; ferritin 6 ng/mL; threshold 20; CRP normal; low TSAT; dietary risk.",
+          "evaluation": "Anemia is present and ferritin is below the applicable threshold; morphology and history add support.",
+          "result": "Iron deficiency anemia reaches the highest defined pattern level; lead remains a possible parallel pathway when pica is present."
+        },
+        {
+          "title": "Inflammatory iron restriction",
+          "data": "Normocytic anemia; CRP elevated; ferritin 85; TSAT low; TIBC low; sTfR/ferritin index 0.8.",
+          "evaluation": "Compound inflammatory pattern is present; index <1 adds support.",
+          "result": "Anemia of inflammation / inflammatory iron restriction becomes the dominant pattern while coexisting absolute iron deficiency is still considered clinically."
+        },
+        {
+          "title": "Beta-thalassemia pattern",
+          "data": "Marked microcytosis; RDW not high; RBC relatively high; ferritin not low; target cells; HbA2 elevated.",
+          "evaluation": "Several globin-production clues and direct hemoglobin-analysis evidence match.",
+          "result": "Beta-thalassemia pattern is strongly supported; molecular or specialist confirmation depends on context."
+        }
+      ],
+      "evidence": [
+        { "id": "AAP2026_IDA", "use": "Supplies the ferritin thresholds, inflammation caveats, iron-profile logic, sTfR/ferritin interpretation, and microcytic differentiation framework." },
+        { "id": "BLOOD2022_PED_ANEMIA", "use": "Supplies the broad morphology/reticulocyte differential across hemolytic, marrow, renal, infectious, nutritional, endocrine, and inherited causes." },
+        { "id": "CDC2025_LEAD", "use": "Supplies the lead threshold and specimen-specific clinical pathway." },
+        { "id": "BSH2020_G6PD", "use": "Supports quantitative G6PD testing and the caution that testing during acute hemolysis or soon after transfusion may be falsely normal." }
+      ],
+      "caveat": "Pattern matches are intentionally nonexclusive. More than one disorder can coexist, especially iron deficiency plus inflammation, bleeding, lead exposure, hemoglobinopathy, or recent transfusion."
+    },
+    {
+      "id": "rank-provenance",
+      "number": 6,
+      "title": "Rank and expose provenance",
+      "clinicalQuestion": "How are matched rules merged into an inspectable work-list without presenting an unsupported probability?",
+      "summary": "Merge all matching rules by candidate, retain the strongest ordinal evidence label, sum deterministic priority points, and expose every input-derived finding, rule, caveat, next step, and citation.",
+      "preview": "Merge, sort, explain",
+      "inputs": [
+        { "field": "matched rule outputs", "display": "Matched candidate rules", "unit": "rule objects", "purpose": "Contribute candidate level, points, findings, cautions, next steps, and evidence IDs." },
+        { "field": "candidate catalog", "display": "Candidate definitions", "unit": "JSON metadata", "purpose": "Provides stable labels, summaries, default next steps, and base evidence." },
+        { "field": "alert outputs", "display": "Matched alerts", "unit": "severity categories", "purpose": "Sorted independently so urgent safety findings are not buried by differential ranking." },
+        { "field": "question outputs", "display": "Adaptive questions", "unit": "priority integers", "purpose": "Sorted by explicit information-gathering priority." },
+        { "field": "rule audit", "display": "Complete audit", "unit": "matched true/false per rule", "purpose": "Makes the inference reproducible and reviewable." }
+      ],
+      "equations": [
+        {
+          "label": "Candidate level merge",
+          "expression": "candidate.level = max(levelRank of all matched rules)",
+          "kind": "engine",
+          "interpretation": "Level order: meets-defined-pattern > strongly-supported > supported > possible > not-excluded."
+        },
+        {
+          "label": "Priority score",
+          "expression": "candidate.score = Σ points from matched candidate rules",
+          "kind": "engine",
+          "interpretation": "Points only break ties within the ordinal workflow; they are not probabilities or validated risk weights."
+        },
+        {
+          "label": "Deterministic ordering",
+          "expression": "sort by levelRank ↓, then score ↓, then label A→Z",
+          "kind": "engine",
+          "interpretation": "The same normalized input and knowledge-base version produce the same ordering."
+        },
+        {
+          "label": "Alert ordering",
+          "expression": "emergency > urgent > important > informational",
+          "kind": "engine",
+          "interpretation": "Safety outputs remain separate from etiologic candidate ranking."
+        }
+      ],
+      "outputs": [
+        "Ranked diagnostic-pattern work-list",
+        "Separate safety alerts and interpretive notes",
+        "Matched rules, supporting findings, cautions, and next steps",
+        "Evidence links and knowledge-base version",
+        "Full downloadable audit JSON"
+      ],
+      "examples": [
+        {
+          "title": "Why beta-thalassemia ranks first",
+          "data": "Rules for persistent microcytosis, globin-production clues, and elevated HbA2 all match.",
+          "evaluation": "The beta-thalassemia candidate receives the strongest matched level and its rule points are summed.",
+          "result": "It ranks above broader thalassemia-trait patterns, while both remain visible with their distinct evidence and next steps."
+        },
+        {
+          "title": "Why a marrow alert is not just another candidate",
+          "data": "Blasts, fever with neutropenia, and multiple cytopenias.",
+          "evaluation": "Emergency/urgent alert rules and marrow candidate rules match in parallel.",
+          "result": "Alerts appear first; the marrow pattern remains in the differential with its matched rule provenance."
+        }
+      ],
+      "evidence": [
+        { "id": "FDA2026_CDS", "use": "Supports making the basis of clinician-facing recommendations independently reviewable, including inputs, logic, and source rationale." },
+        { "id": "BLOOD2022_PED_ANEMIA", "use": "Provides the clinical framework represented by the candidate organization; it does not validate the app's internal point values." }
+      ],
+      "caveat": "Neither candidate level nor point score is a likelihood ratio, posterior probability, diagnostic confidence, sensitivity, specificity, or treatment recommendation."
+    }
+  ],
+  "branches": [
+    {
+      "id": "microcytic",
+      "title": "Microcytic branch",
+      "subtitle": "Iron availability, inflammation, globin production, lead, blood loss, and rare iron-handling disorders",
+      "accent": "micro",
+      "sequence": [
+        "Confirm ferritin relative to the age/menstrual threshold.",
+        "Interpret non-low ferritin with CRP and the full iron profile.",
+        "Use sTfR/log10(ferritin) when available and assay-compatible.",
+        "Review RBC count pattern, RDW, smear, newborn screen, HbA2, and globin testing.",
+        "Evaluate lead level, specimen type, pica, and exposure history.",
+        "Escalate persistent iron-loading or treatment-refractory patterns for specialist review."
+      ],
+      "discriminators": [
+        { "pattern": "Iron deficiency", "supports": "Ferritin ≤ threshold; often high RDW; low TSAT; compatible diet, bleeding, or malabsorption", "counterpoints": "Inflammation can raise ferritin; a response-to-treatment history must be interpreted carefully" },
+        { "pattern": "Inflammatory restriction", "supports": "CRP elevated, ferritin non-low, TSAT low, TIBC low/normal; sTfR/ferritin index <1 can add support", "counterpoints": "Absolute iron deficiency can coexist; low ferritin remains important" },
+        { "pattern": "Thalassemia/globin production", "supports": "Persistent marked microcytosis, non-low ferritin, relatively high RBC count, target cells, family/newborn-screen clues, HbA2 or molecular findings", "counterpoints": "CBC indices alone are screening clues, not definitive diagnosis" },
+        { "pattern": "Lead pathway", "supports": "BLL ≥3.5 µg/dL, exposure risk, pica, stippling", "counterpoints": "Capillary elevation needs venous confirmation; stippling is not specific" },
+        { "pattern": "Sideroblastic/rare iron handling", "supports": "Microcytosis with high iron/ferritin by the reporting lab, stippling, or persistent refractory iron-restricted pattern", "counterpoints": "Requires exclusion of common causes and specialist confirmation" }
+      ],
+      "evidence": ["AAP2026_IDA", "BLOOD2022_PED_ANEMIA", "CDC2025_LEAD"]
+    },
+    {
+      "id": "normocytic",
+      "title": "Normocytic branch",
+      "subtitle": "Reticulocyte response separates loss/destruction from impaired production",
+      "accent": "normo",
+      "sequence": [
+        "High response: evaluate bleeding and red-cell destruction.",
+        "Review bilirubin, LDH, haptoglobin, DAT, urine, and smear.",
+        "Low/inappropriate response: evaluate renal, inflammatory, viral, endocrine, and marrow causes.",
+        "Treat additional cytopenias, blasts, organomegaly, lymphadenopathy, petechiae, or bruising as red flags.",
+        "In chronic hemolytic disease, abrupt reticulocytopenia raises aplastic-crisis pathways."
+      ],
+      "discriminators": [
+        { "pattern": "Blood loss", "supports": "Bleeding source/history with a high or appropriate response; iron deficiency may emerge with chronic loss", "counterpoints": "Very acute loss can precede the reticulocyte rise" },
+        { "pattern": "Hemolysis", "supports": "High response plus bilirubin/LDH/haptoglobin pattern, jaundice/dark urine, DAT, and smear clues", "counterpoints": "Severe marrow suppression or nutrient deficiency can blunt the expected response" },
+        { "pattern": "Renal/inflammatory production limitation", "supports": "Low/inappropriate response plus renal dysfunction or chronic inflammation", "counterpoints": "Iron deficiency and blood loss may coexist" },
+        { "pattern": "Transient/aplastic suppression", "supports": "Low response, recent viral illness, isolated anemia or chronic hemolytic disease with abrupt decline", "counterpoints": "Requires exclusion of leukemia, congenital failure, renal disease, and other marrow pathology" },
+        { "pattern": "Marrow failure/infiltration", "supports": "Low response plus additional cytopenias, blasts, organomegaly, lymphadenopathy, bruising, or congenital phenotype", "counterpoints": "Urgency is driven by the red flags, not by candidate score" }
+      ],
+      "evidence": ["BLOOD2022_PED_ANEMIA"]
+    },
+    {
+      "id": "macrocytic",
+      "title": "Macrocytic branch",
+      "subtitle": "Reticulocytosis, megaloblastic deficiency, endocrine/hepatic effects, medications, copper, and marrow disease",
+      "accent": "macro",
+      "sequence": [
+        "Determine whether high reticulocytes explain the elevated MCV.",
+        "With low/inappropriate response, review B12, folate, smear, and neurologic/nutritional history.",
+        "Review TSH, liver studies, and macrocytosis-associated medications.",
+        "Assess copper deficiency when nutrition, malabsorption, or cytopenia pattern supports it.",
+        "Escalate congenital phenotype, progressive cytopenias, or blasts to marrow-failure evaluation."
+      ],
+      "discriminators": [
+        { "pattern": "Reticulocytosis-related macrocytosis", "supports": "Macrocytosis with high reticulocyte response and loss/hemolysis evidence", "counterpoints": "Does not exclude a concurrent nutrient disorder" },
+        { "pattern": "B12/folate deficiency", "supports": "Low/inappropriate response, low nutrient result, hypersegmented neutrophils, compatible diet/malabsorption", "counterpoints": "Neurologic features and confirmatory biochemical testing matter; mixed iron deficiency can normalize MCV" },
+        { "pattern": "Thyroid/liver/medication", "supports": "Compatible local lab abnormality or medication exposure", "counterpoints": "Association is not sufficient without clinical confirmation" },
+        { "pattern": "Copper deficiency", "supports": "Low copper with nutrition/malabsorption context and compatible cytopenias", "counterpoints": "Requires laboratory and etiologic confirmation" },
+        { "pattern": "Inherited/acquired marrow disorder", "supports": "Congenital phenotype, early onset, progressive cytopenias, low response, or blasts", "counterpoints": "Urgent specialist evaluation precedes routine ranking" }
+      ],
+      "evidence": ["BLOOD2022_PED_ANEMIA"]
+    }
+  ],
+  "exampleCases": [
+    { "id": "ida-toddler", "label": "Iron deficiency anemia", "description": "20-month-old with microcytosis, high RDW, ferritin 6, dietary risk, and pica." },
+    { "id": "beta-thalassemia-trait", "label": "Beta-thalassemia pattern", "description": "10-year-old with marked microcytosis, high RBC count, target cells, and elevated HbA2." },
+    { "id": "anemia-inflammation", "label": "Anemia of inflammation", "description": "14-year-old with inflammatory bowel disease, elevated CRP, restricted iron profile, and low index." },
+    { "id": "hemolysis-hs", "label": "Hemolysis / hereditary spherocytosis", "description": "8-year-old with high reticulocyte response, jaundice, biochemical hemolysis, DAT negative, and spherocytes." },
+    { "id": "lead-capillary", "label": "Elevated capillary lead", "description": "3-year-old with microcytosis, pica, stippling, and capillary BLL 8.2 µg/dL." },
+    { "id": "marrow-red-flags", "label": "Marrow red flags", "description": "7-year-old with anemia, pancytopenia, fever, low reticulocyte response, and blasts." }
+  ]
+}

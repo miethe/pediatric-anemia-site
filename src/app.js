@@ -1,5 +1,6 @@
 import { assessPediatricAnemia } from './engine.js';
 import { EVIDENCE, KNOWLEDGE_BASE_VERSION } from './evidence.js';
+import { initializeAlgorithmExplorer } from './algorithmExplorer.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -529,6 +530,27 @@ async function initialize() {
   renderEvidence();
   renderRules();
   refreshAuditView();
+
+  try {
+    await initializeAlgorithmExplorer({
+      rules,
+      candidates,
+      onUseCase: (input) => {
+        populateFromInput(input);
+        const result = assessPediatricAnemia(input, rules, candidates);
+        currentAudit = { input, result };
+        renderResult(result);
+        refreshAuditView();
+        switchTab('assessment');
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    const explorerError = $('#algorithm-step-map');
+    if (explorerError) {
+      explorerError.innerHTML = `<div class="algorithm-error"><strong>Algorithm explorer could not be loaded.</strong><span>${escapeHtml(error.message)}</span></div>`;
+    }
+  }
 
   $$('.tab-button').forEach((button) => button.addEventListener('click', () => switchTab(button.dataset.tab)));
   $$('.workflow-step').forEach((button) => button.addEventListener('click', () => {

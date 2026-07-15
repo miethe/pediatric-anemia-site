@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 — 2026-07-15
+
+- Replaced the static Algorithm tab with an interactive algorithm explorer: per-step evidence, data fields, executed expressions, worked examples, and outputs.
+- Added `data/algorithm-explainers.json` (6 steps, 3 branches, 4 principles, 6 example cases) and `src/algorithmExplorer.js`.
+- Added a live case walkthrough that runs the real rules engine over the shipped examples and can hand a case to the Assessment tab.
+- Separated executed expressions from educational formulas, guideline thresholds, and implementation heuristics in the explainer copy.
+- Preserved all 91 rules, 26 diagnostic patterns, six evidence records, and deterministic inference unchanged.
+
 ## 0.2.0 — 2026-07-15
 
 - Rebuilt the browser interface as a responsive clinician workspace.
