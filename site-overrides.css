@@ -416,6 +416,8 @@ footer {
 }
 footer > div { display: grid; gap: .15rem; }
 footer strong { color: #334e68; }
+.footer-meta { justify-items: end; text-align: right; }
+.footer-credit { color: #627d98; }
 
 @media (max-width: 1320px) {
   .assessment-layout { grid-template-columns: minmax(560px,1.15fr) minmax(350px,.85fr) !important; }
@@ -437,8 +439,10 @@ footer strong { color: #334e68; }
 
 @media (max-width: 820px) {
   .header-inner { align-items: flex-start !important; padding: .75rem 1rem; }
-  .header-actions { flex-direction: column; align-items: flex-end; }
-  .privacy-chip { display: none; }
+  /* .header-inner stacks to a column here, so .header-actions must span the
+     full width for its contents to sit against the right edge. */
+  .header-actions { width: 100%; flex-direction: column; align-items: flex-end; gap: .45rem; }
+  .privacy-chip { padding: .38rem .58rem; font-size: .67rem; }
   .version-card { min-width: 0 !important; }
   .app-shell { display: block; }
   .tab-nav {
@@ -456,6 +460,13 @@ footer strong { color: #334e68; }
   }
   .tab-button { width: auto; min-width: 48px; min-height: 43px; flex: 0 0 auto; }
   .nav-index { width: 31px; height: 31px; }
+  /* The active tab trades its number for its title and grows to fit; the rest
+     stay compact numbered targets so the strip still fits a phone. */
+  .tab-button.active { grid-template-columns: auto !important; justify-items: start; padding-inline: .8rem !important; }
+  .tab-button.active .nav-index { display: none; }
+  .tab-button.active .nav-copy { display: grid; }
+  .tab-button.active .nav-copy small { display: none; }
+  .tab-button.active .nav-copy strong { white-space: nowrap; font-size: .74rem; }
   .page-shell { padding: 1.15rem .8rem 2.5rem !important; }
   .page-heading { display: block; }
   .heading-badges { justify-content: flex-start; margin-top: .8rem; }
@@ -481,6 +492,7 @@ footer strong { color: #334e68; }
   .case-snapshot { grid-template-columns: 1fr 1fr; }
   .result-headline { flex-direction: column; }
   footer { flex-direction: column; align-items: flex-start; }
+  .footer-meta { justify-items: start; text-align: left; }
 }
 
 @media print {

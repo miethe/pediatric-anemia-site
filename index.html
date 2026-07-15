@@ -26,7 +26,7 @@
         </span>
       </a>
       <div class="header-actions">
-        <span class="privacy-chip"><span aria-hidden="true">●</span> Browser-local assessment</span>
+        <span class="privacy-chip"><span aria-hidden="true">●</span> No data logged or saved</span>
         <div class="version-card" aria-label="Knowledge base status">
           <span class="status-dot" aria-hidden="true"></span>
           <div>
@@ -46,19 +46,19 @@
   <div class="app-shell">
     <nav class="tab-nav" aria-label="Application sections">
       <p class="nav-heading">Clinical workspace</p>
-      <button class="tab-button active" data-tab="assessment" aria-selected="true">
+      <button class="tab-button active" data-tab="assessment" aria-selected="true" aria-label="Assessment">
         <span class="nav-index">01</span><span class="nav-copy"><strong>Assessment</strong><small>Evaluate a case</small></span>
       </button>
-      <button class="tab-button" data-tab="algorithm" aria-selected="false">
+      <button class="tab-button" data-tab="algorithm" aria-selected="false" aria-label="Algorithm">
         <span class="nav-index">02</span><span class="nav-copy"><strong>Algorithm</strong><small>Review decision paths</small></span>
       </button>
-      <button class="tab-button" data-tab="evidence" aria-selected="false">
+      <button class="tab-button" data-tab="evidence" aria-selected="false" aria-label="Evidence">
         <span class="nav-index">03</span><span class="nav-copy"><strong>Evidence</strong><small>Inspect source registry</small></span>
       </button>
-      <button class="tab-button" data-tab="rules" aria-selected="false">
+      <button class="tab-button" data-tab="rules" aria-selected="false" aria-label="Rule catalog">
         <span class="nav-index">04</span><span class="nav-copy"><strong>Rule catalog</strong><small>Search deterministic logic</small></span>
       </button>
-      <button class="tab-button" data-tab="audit" aria-selected="false">
+      <button class="tab-button" data-tab="audit" aria-selected="false" aria-label="Audit JSON">
         <span class="nav-index">05</span><span class="nav-copy"><strong>Audit JSON</strong><small>Export reproducible output</small></span>
       </button>
       <div class="nav-status">
@@ -487,7 +487,10 @@
 
   <footer>
     <div><strong>Pediatric Anemia Decision Support</strong><span>Research prototype · Intended for licensed clinicians · No PHI persistence</span></div>
-    <span>Knowledge base reviewed through 2026-07-15</span>
+    <div class="footer-meta">
+      <span>Knowledge base reviewed through 2026-07-15</span>
+      <span class="footer-credit">Created by <strong>Nick Miethe</strong></span>
+    </div>
   </footer>
   <script type="module" src="./src/app.js"></script>
 </body>
