@@ -1,0 +1,13 @@
+{
+  "patient": { "ageMonths": 120, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 10.9, "mcv": 62, "rdw": 13.0, "rbc": 6.1, "wbc": 7.0, "platelets": 275,
+    "rbcInterpretation": "high-for-age", "localRanges": {}, "localFlags": {}
+  },
+  "reticulocytes": { "response": "appropriate" },
+  "symptoms": {},
+  "history": { "familyThalassemia": true },
+  "exam": {},
+  "labs": { "ferritin": 48, "ferritinStatus": "normal", "crpStatus": "normal", "hbA2Status": "elevated" },
+  "smear": ["target-cells"]
+}

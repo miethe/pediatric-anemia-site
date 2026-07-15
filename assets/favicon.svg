@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Pediatric anemia decision support">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b53a4a"/>
+      <stop offset="1" stop-color="#7d1f30"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="#132238"/>
+  <ellipse cx="31" cy="32" rx="20" ry="14" fill="url(#g)" transform="rotate(-12 31 32)"/>
+  <ellipse cx="31" cy="32" rx="10" ry="5.5" fill="#d87580" opacity=".74" transform="rotate(-12 31 32)"/>
+  <path d="M46 13v13M39.5 19.5h13" stroke="#f5fbfc" stroke-width="4" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/patient-input.schema.json",
+  "title": "Pediatric Anemia CDSS Patient Input",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "patient": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ageMonths": { "type": ["number", "null"], "minimum": 0, "maximum": 300 },
+        "sexAtBirth": { "type": ["string", "null"], "enum": ["female", "male", "unspecified", null] },
+        "menstruating": { "type": "boolean", "default": false },
+        "recentTransfusion": { "type": "boolean", "default": false },
+        "highAltitude": { "type": "boolean", "default": false }
+      }
+    },
+    "cbc": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hemoglobin": { "type": ["number", "null"], "minimum": 0, "maximum": 30, "description": "g/dL" },
+        "mcv": { "type": ["number", "null"], "minimum": 20, "maximum": 160, "description": "fL" },
+        "rdw": { "type": ["number", "null"], "minimum": 5, "maximum": 40, "description": "%" },
+        "rbc": { "type": ["number", "null"], "minimum": 0, "maximum": 12, "description": "10^12/L" },
+        "wbc": { "type": ["number", "null"], "minimum": 0, "maximum": 100, "description": "10^9/L" },
+        "anc": { "type": ["number", "null"], "minimum": 0, "maximum": 50, "description": "10^9/L" },
+        "platelets": { "type": ["number", "null"], "minimum": 0, "maximum": 2000, "description": "10^9/L" },
+        "rbcInterpretation": { "type": "string", "enum": ["unknown", "high-for-age", "normal", "low"] },
+        "localRanges": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "hbLower": { "type": ["number", "null"] },
+            "mcvLower": { "type": ["number", "null"] },
+            "mcvUpper": { "type": ["number", "null"] },
+            "rdwUpper": { "type": ["number", "null"] },
+            "wbcLower": { "type": ["number", "null"] },
+            "ancLower": { "type": ["number", "null"] },
+            "plateletsLower": { "type": ["number", "null"] }
+          }
+        },
+        "localFlags": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "leukopenia": { "type": "boolean" },
+            "neutropenia": { "type": "boolean" },
+            "thrombocytopenia": { "type": "boolean" },
+            "thrombocytosis": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "reticulocytes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "response": { "type": "string", "enum": ["unknown", "low", "inappropriately-normal", "appropriate", "high"] },
+        "absolute": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "symptoms": { "$ref": "#/$defs/booleanMap" },
+    "history": { "$ref": "#/$defs/booleanMap" },
+    "exam": { "$ref": "#/$defs/booleanMap" },
+    "labs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ferritin": { "type": ["number", "null"], "minimum": 0, "description": "ng/mL" },
+        "ferritinStatus": { "$ref": "#/$defs/genericStatus" },
+        "crpStatus": { "type": "string", "enum": ["unknown", "normal", "elevated"] },
+        "tsatStatus": { "$ref": "#/$defs/lowNormalHigh" },
+        "tibcStatus": { "$ref": "#/$defs/lowNormalHigh" },
+        "ironStatus": { "$ref": "#/$defs/lowNormalHigh" },
+        "stfrFerritinIndex": { "type": ["number", "null"], "minimum": 0 },
+        "indirectBilirubinStatus": { "type": "string", "enum": ["unknown", "normal", "high"] },
+        "ldhStatus": { "type": "string", "enum": ["unknown", "normal", "high"] },
+        "haptoglobinStatus": { "type": "string", "enum": ["unknown", "normal", "low"] },
+        "datStatus": { "type": "string", "enum": ["unknown", "negative", "positive"] },
+        "bloodLeadLevel": { "type": ["number", "null"], "minimum": 0, "description": "µg/dL" },
+        "leadSpecimen": { "type": "string", "enum": ["unknown", "capillary", "venous"] },
+        "hbA2Status": { "type": "string", "enum": ["unknown", "normal", "elevated"] },
+        "hbBartNewbornScreen": { "type": "boolean" },
+        "alphaGlobinTestingPositive": { "type": "boolean" },
+        "betaGlobinTestingPositive": { "type": "boolean" },
+        "sicklingHemoglobinDetected": { "type": "boolean" },
+        "g6pdStatus": { "type": "string", "enum": ["unknown", "normal", "deficient"] },
+        "g6pdTestDuringAcuteHemolysis": { "type": "boolean" },
+        "g6pdTestSoonAfterTransfusion": { "type": "boolean" },
+        "b12Status": { "$ref": "#/$defs/lowNormalUnknown" },
+        "folateStatus": { "$ref": "#/$defs/lowNormalUnknown" },
+        "copperStatus": { "$ref": "#/$defs/lowNormalUnknown" },
+        "creatinineStatus": { "type": "string", "enum": ["unknown", "normal", "high"] },
+        "tshStatus": { "type": "string", "enum": ["unknown", "normal", "high"] },
+        "liverTestsStatus": { "type": "string", "enum": ["unknown", "normal", "abnormal"] }
+      }
+    },
+    "smear": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "target-cells", "spherocytes", "schistocytes", "bite-or-blister-cells",
+          "sickle-cells", "basophilic-stippling", "hypersegmented-neutrophils",
+          "blasts", "teardrops", "nucleated-rbc", "elliptocytes"
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "booleanMap": {
+      "type": "object",
+      "additionalProperties": { "type": "boolean" }
+    },
+    "genericStatus": { "type": "string", "enum": ["unknown", "normal", "high"] },
+    "lowNormalHigh": { "type": "string", "enum": ["unknown", "low", "normal", "high"] },
+    "lowNormalUnknown": { "type": "string", "enum": ["unknown", "low", "normal"] }
+  }
+}

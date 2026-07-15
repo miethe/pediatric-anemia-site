@@ -1,0 +1,15 @@
+{
+  "patient": { "ageMonths": 84, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 8.9, "mcv": 85, "rdw": 15, "rbc": 3.1, "wbc": 2.0, "anc": 0.5, "platelets": 42,
+    "rbcInterpretation": "low",
+    "localRanges": { "wbcLower": 4.0, "ancLower": 1.5, "plateletsLower": 150 },
+    "localFlags": { "leukopenia": true, "neutropenia": true, "thrombocytopenia": true }
+  },
+  "reticulocytes": { "response": "low" },
+  "symptoms": { "fever": true, "fatigue": true },
+  "history": {},
+  "exam": { "lymphadenopathy": true, "petechiae": true, "unexplainedBruising": true },
+  "labs": {},
+  "smear": ["blasts"]
+}

@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/assessment-output.schema.json",
+  "title": "Pediatric Anemia CDSS Assessment Output",
+  "type": "object",
+  "required": ["meta", "classification", "alerts", "rankedDifferential", "nextQuestions", "limitations", "provenance"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["knowledgeBaseVersion", "generatedAt", "status"],
+      "properties": {
+        "engine": { "type": "string" },
+        "knowledgeBaseVersion": { "type": "string" },
+        "evidenceReviewedThrough": { "type": "string", "format": "date" },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "intendedUser": { "type": "string" },
+        "status": { "type": "string" }
+      }
+    },
+    "classification": { "type": "object" },
+    "alerts": { "type": "array", "items": { "$ref": "#/$defs/alert" } },
+    "rankedDifferential": { "type": "array", "items": { "$ref": "#/$defs/candidate" } },
+    "nextQuestions": { "type": "array", "items": { "$ref": "#/$defs/question" } },
+    "interpretiveNotes": { "type": "array", "items": { "type": "object" } },
+    "limitations": { "type": "array", "items": { "type": "string" } },
+    "provenance": {
+      "type": "object",
+      "required": ["evaluatedRuleCount", "matchedRuleIds", "ruleAudit"],
+      "properties": {
+        "evaluatedRuleCount": { "type": "integer", "minimum": 0 },
+        "matchedRuleIds": { "type": "array", "items": { "type": "string" } },
+        "ruleAudit": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["ruleId", "matched"],
+            "properties": { "ruleId": { "type": "string" }, "matched": { "type": "boolean" } }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "alert": {
+      "type": "object",
+      "required": ["id", "severity", "title", "detail", "actions", "evidence"],
+      "properties": {
+        "id": { "type": "string" },
+        "severity": { "type": "string", "enum": ["emergency", "urgent", "important", "informational"] },
+        "title": { "type": "string" },
+        "detail": { "type": "string" },
+        "actions": { "type": "array", "items": { "type": "string" } },
+        "evidence": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "required": ["id", "label", "level", "score", "rank", "matchedRules", "evidence"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "level": { "type": "string", "enum": ["meets-defined-pattern", "strongly-supported", "supported", "possible", "not-excluded"] },
+        "score": { "type": "number", "description": "Deterministic sort priority; not a probability." },
+        "rank": { "type": "integer", "minimum": 1 },
+        "supportingFindings": { "type": "array", "items": { "type": "string" } },
+        "cautions": { "type": "array", "items": { "type": "string" } },
+        "nextSteps": { "type": "array", "items": { "type": "string" } },
+        "matchedRules": { "type": "array", "items": { "type": "string" } },
+        "evidence": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "question": {
+      "type": "object",
+      "required": ["id", "priority", "prompt", "why", "evidence"],
+      "properties": {
+        "id": { "type": "string" },
+        "priority": { "type": "number" },
+        "section": { "type": "string" },
+        "prompt": { "type": "string" },
+        "why": { "type": "string" },
+        "evidence": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

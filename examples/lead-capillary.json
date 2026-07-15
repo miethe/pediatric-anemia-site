@@ -1,0 +1,13 @@
+{
+  "patient": { "ageMonths": 36, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 10.2, "mcv": 70, "rdw": 16.1, "rbc": 4.2, "wbc": 7.8, "platelets": 340,
+    "rbcInterpretation": "normal", "localRanges": {}, "localFlags": {}
+  },
+  "reticulocytes": { "response": "inappropriately-normal" },
+  "symptoms": {},
+  "history": { "leadExposureRisk": true, "pica": true },
+  "exam": {},
+  "labs": { "bloodLeadLevel": 8.2, "leadSpecimen": "capillary", "ferritin": 22, "crpStatus": "normal" },
+  "smear": ["basophilic-stippling"]
+}

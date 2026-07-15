@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Transparent, deterministic pediatric anemia clinical decision support with rule-level evidence provenance.">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="theme-color" content="#102a43">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <title>Pediatric Anemia Decision Support — Research Prototype</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./site-overrides.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#assessment" aria-label="Pediatric Anemia Decision Support home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48"><path d="M24 5C18 14 11 21 11 30a13 13 0 0 0 26 0c0-9-7-16-13-25Z"/><path class="brand-mark-line" d="M17.5 30.5h4l2.2-5.2 3.4 10.1 2.2-4.9h4.2"/></svg>
+        </span>
+        <span class="brand-copy">
+          <strong>Pediatric Anemia CDS</strong>
+          <small>Evidence-linked diagnostic reference</small>
+        </span>
+      </a>
+      <div class="header-actions">
+        <span class="privacy-chip"><span aria-hidden="true">●</span> Browser-local assessment</span>
+        <div class="version-card" aria-label="Knowledge base status">
+          <span class="status-dot" aria-hidden="true"></span>
+          <div>
+            <strong>Research prototype</strong>
+            <span>KB v0.1.0 · reviewed 2026-07-15</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="safety-banner" role="alert">
+    <span class="safety-icon" aria-hidden="true">!</span>
+    <div><strong>Not clinically validated.</strong> This tool does not diagnose, prescribe, set a transfusion threshold, or replace bedside assessment. Unstable patients, active major bleeding, fever with neutropenia, blasts, or suspected microangiopathy require immediate local escalation.</div>
+  </div>
+
+  <div class="app-shell">
+    <nav class="tab-nav" aria-label="Application sections">
+      <p class="nav-heading">Clinical workspace</p>
+      <button class="tab-button active" data-tab="assessment" aria-selected="true">
+        <span class="nav-index">01</span><span class="nav-copy"><strong>Assessment</strong><small>Evaluate a case</small></span>
+      </button>
+      <button class="tab-button" data-tab="algorithm" aria-selected="false">
+        <span class="nav-index">02</span><span class="nav-copy"><strong>Algorithm</strong><small>Review decision paths</small></span>
+      </button>
+      <button class="tab-button" data-tab="evidence" aria-selected="false">
+        <span class="nav-index">03</span><span class="nav-copy"><strong>Evidence</strong><small>Inspect source registry</small></span>
+      </button>
+      <button class="tab-button" data-tab="rules" aria-selected="false">
+        <span class="nav-index">04</span><span class="nav-copy"><strong>Rule catalog</strong><small>Search deterministic logic</small></span>
+      </button>
+      <button class="tab-button" data-tab="audit" aria-selected="false">
+        <span class="nav-index">05</span><span class="nav-copy"><strong>Audit JSON</strong><small>Export reproducible output</small></span>
+      </button>
+      <div class="nav-status">
+        <span>Knowledge base</span>
+        <strong><span id="nav-rule-count">91</span> rules · <span id="nav-pattern-count">26</span> patterns</strong>
+        <small>Deterministic inference only</small>
+      </div>
+    </nav>
+
+  <main id="main" class="page-shell">
+    <section id="assessment" class="tab-panel active" aria-labelledby="assessment-title">
+      <div class="page-heading assessment-heading">
+        <div>
+          <p class="eyebrow">Case workspace</p>
+          <h1 id="assessment-title">Evaluate pediatric anemia</h1>
+          <p>Enter de-identified clinical findings. The browser applies explicit rules, exposes every matched rule, and links each recommendation to its evidence source.</p>
+        </div>
+        <div class="heading-badges" aria-label="Application characteristics">
+          <span>6 months–&lt;18 years</span>
+          <span>Deterministic</span>
+          <span>No PHI persistence</span>
+        </div>
+      </div>
+
+      <div class="workflow-strip" aria-label="Assessment workflow">
+        <button type="button" class="workflow-step active" data-step-target="step-patient"><span>1</span><strong>CBC</strong><small>Core inputs</small></button>
+        <button type="button" class="workflow-step" data-step-target="step-safety"><span>2</span><strong>Safety</strong><small>Red flags</small></button>
+        <button type="button" class="workflow-step" data-step-target="step-iron"><span>3</span><strong>Iron</strong><small>Retic + inflammation</small></button>
+        <button type="button" class="workflow-step" data-step-target="step-specialized"><span>4</span><strong>Labs</strong><small>Hemolysis + lead</small></button>
+        <button type="button" class="workflow-step" data-step-target="step-history"><span>5</span><strong>History</strong><small>Risk discriminators</small></button>
+        <button type="button" class="workflow-step" data-step-target="step-smear"><span>6</span><strong>Smear</strong><small>Exam findings</small></button>
+      </div>
+
+      <div class="assessment-layout">
+        <form id="assessment-form" class="assessment-form" novalidate>
+          <div class="form-toolbar">
+            <div class="toolbar-copy"><span>Quick start</span><strong>Load a worked clinical example</strong></div>
+            <label for="example-select"><span class="sr-only">Clinical example</span>
+            <select id="example-select">
+              <option value="">Start blank</option>
+              <option value="ida-toddler">Iron deficiency anemia</option>
+              <option value="beta-thalassemia-trait">Beta-thalassemia pattern</option>
+              <option value="anemia-inflammation">Anemia of inflammation</option>
+              <option value="hemolysis-hs">DAT-negative hemolysis / spherocytes</option>
+              <option value="marrow-red-flags">Marrow red flags</option>
+              <option value="lead-capillary">Elevated capillary lead</option>
+            </select></label>
+            <button type="button" id="load-example" class="button secondary">Load example</button>
+            <button type="reset" class="button ghost">Clear</button>
+          </div>
+
+          <fieldset id="step-patient" class="card form-section" data-workflow-step="1">
+            <legend><span class="step-number">1</span> Patient and CBC</legend>
+            <p class="section-help">Local laboratory intervals override the built-in AAP fallback ranges.</p>
+            <div class="field-grid four">
+              <label>Age (months)<input name="ageMonths" type="number" min="0" max="300" step="1" required></label>
+              <label>Sex assigned at birth
+                <select name="sexAtBirth">
+                  <option value="">Select</option>
+                  <option value="female">Female</option>
+                  <option value="male">Male</option>
+                  <option value="unspecified">Unspecified—local limits required</option>
+                </select>
+              </label>
+              <label>Hemoglobin (g/dL)<input name="hemoglobin" type="number" min="0" max="30" step="0.1" required></label>
+              <label>MCV (fL)<input name="mcv" type="number" min="20" max="160" step="0.1" required></label>
+              <label>RDW (%)<input name="rdw" type="number" min="5" max="40" step="0.1"></label>
+              <label>RBC (×10<sup>12</sup>/L)<input name="rbc" type="number" min="0" max="12" step="0.01"></label>
+              <label>WBC (×10<sup>9</sup>/L)<input name="wbc" type="number" min="0" max="100" step="0.01"></label>
+              <label>ANC (×10<sup>9</sup>/L)<input name="anc" type="number" min="0" max="50" step="0.01"></label>
+              <label>Platelets (×10<sup>9</sup>/L)<input name="platelets" type="number" min="0" max="2000" step="1"></label>
+              <label>RBC interpretation
+                <select name="rbcInterpretation">
+                  <option value="unknown">Unknown/not interpreted</option>
+                  <option value="high-for-age">Relatively high for age/microcytosis</option>
+                  <option value="normal">Within local range</option>
+                  <option value="low">Low</option>
+                </select>
+              </label>
+              <label class="check-label"><input name="menstruating" type="checkbox"> Currently menstruating</label>
+              <label class="check-label"><input name="recentTransfusion" type="checkbox"> Recent RBC transfusion</label>
+              <label class="check-label"><input name="highAltitude" type="checkbox"> High-altitude residence/exposure</label>
+            </div>
+
+            <details class="subsection">
+              <summary>Local laboratory reference intervals</summary>
+              <div class="field-grid four padded-top">
+                <label>Hb lower (g/dL)<input name="hbLower" type="number" min="0" max="25" step="0.1"></label>
+                <label>MCV lower (fL)<input name="mcvLower" type="number" min="20" max="150" step="0.1"></label>
+                <label>MCV upper (fL)<input name="mcvUpper" type="number" min="20" max="160" step="0.1"></label>
+                <label>RDW upper (%)<input name="rdwUpper" type="number" min="5" max="40" step="0.1"></label>
+                <label>WBC lower<input name="wbcLower" type="number" min="0" max="50" step="0.01"></label>
+                <label>ANC lower<input name="ancLower" type="number" min="0" max="20" step="0.01"></label>
+                <label>Platelet lower<input name="plateletsLower" type="number" min="0" max="1000" step="1"></label>
+              </div>
+              <div class="check-grid padded-top">
+                <label><input name="leukopenia" type="checkbox"> Lab flagged leukopenia</label>
+                <label><input name="neutropenia" type="checkbox"> Lab flagged neutropenia</label>
+                <label><input name="thrombocytopenia" type="checkbox"> Lab flagged thrombocytopenia</label>
+                <label><input name="thrombocytosis" type="checkbox"> Lab flagged thrombocytosis</label>
+              </div>
+            </details>
+          </fieldset>
+
+          <fieldset id="step-safety" class="card form-section urgency-section" data-workflow-step="2">
+            <legend><span class="step-number">2</span> Immediate safety screen</legend>
+            <label class="safety-clear"><input id="safety-reviewed-no-flags" type="checkbox"> Safety screen reviewed — no immediate instability, major bleeding, cardiopulmonary, or neurologic red flags</label>
+            <div class="check-grid">
+              <label><input name="hemodynamicInstability" type="checkbox"> Hemodynamic instability</label>
+              <label><input name="respiratoryDistress" type="checkbox"> Respiratory distress</label>
+              <label><input name="syncope" type="checkbox"> Syncope</label>
+              <label><input name="alteredMentalStatus" type="checkbox"> Altered mental status</label>
+              <label><input name="chestPain" type="checkbox"> Chest pain</label>
+              <label><input name="heartFailureSigns" type="checkbox"> Heart-failure signs</label>
+              <label><input name="activeMajorBleeding" type="checkbox"> Active major bleeding</label>
+              <label><input name="fever" type="checkbox"> Fever</label>
+              <label><input name="neurologicSymptoms" type="checkbox"> Other neurologic symptoms</label>
+              <label><input name="renalSymptoms" type="checkbox"> Oliguria/renal symptoms</label>
+              <label><input name="jaundice" type="checkbox"> Jaundice</label>
+              <label><input name="darkUrine" type="checkbox"> Dark urine/hemoglobinuria</label>
+              <label><input name="fatigue" type="checkbox"> Fatigue/exercise intolerance</label>
+              <label><input name="pallor" type="checkbox"> Pallor</label>
+            </div>
+          </fieldset>
+
+          <fieldset id="step-iron" class="card form-section" data-workflow-step="3">
+            <legend><span class="step-number">3</span> Reticulocytes, iron, and inflammation</legend>
+            <div class="field-grid four">
+              <label>Reticulocyte response
+                <select name="reticResponse">
+                  <option value="unknown">Unknown</option>
+                  <option value="low">Low</option>
+                  <option value="inappropriately-normal">Inappropriately normal for anemia</option>
+                  <option value="appropriate">Appropriate, not elevated</option>
+                  <option value="high">High</option>
+                </select>
+              </label>
+              <label>Absolute reticulocytes (optional)<input name="absoluteRetic" type="number" min="0" max="2000" step="0.1"></label>
+              <label>Ferritin (ng/mL)<input name="ferritin" type="number" min="0" max="10000" step="0.1"></label>
+              <label>Ferritin by local lab
+                <select name="ferritinStatus">
+                  <option value="unknown">Unknown/not flagged</option>
+                  <option value="normal">Normal</option>
+                  <option value="high">High</option>
+                </select>
+              </label>
+              <label>CRP status
+                <select name="crpStatus">
+                  <option value="unknown">Unknown/not needed</option>
+                  <option value="normal">Normal</option>
+                  <option value="elevated">Elevated</option>
+                </select>
+              </label>
+              <label>Transferrin saturation
+                <select name="tsatStatus">
+                  <option value="unknown">Unknown</option>
+                  <option value="low">Low by local range</option>
+                  <option value="normal">Normal</option>
+                  <option value="high">High</option>
+                </select>
+              </label>
+              <label>TIBC/transferrin
+                <select name="tibcStatus">
+                  <option value="unknown">Unknown</option>
+                  <option value="low">Low</option>
+                  <option value="normal">Normal</option>
+                  <option value="high">High</option>
+                </select>
+              </label>
+              <label>Serum iron
+                <select name="ironStatus">
+                  <option value="unknown">Unknown</option>
+                  <option value="low">Low</option>
+                  <option value="normal">Normal</option>
+                  <option value="high">High</option>
+                </select>
+              </label>
+              <label>sTfR/log<sub>10</sub>(ferritin) index<input name="stfrFerritinIndex" type="number" min="0" max="20" step="0.01"></label>
+            </div>
+          </fieldset>
+
+          <details id="step-specialized" class="card form-section" data-workflow-step="4">
+            <summary class="fieldset-summary"><span class="step-number">4</span> Hemolysis, lead, and specialized laboratory data</summary>
+            <div class="field-grid four padded-top">
+              <label>Indirect bilirubin
+                <select name="indirectBilirubinStatus"><option value="unknown">Unknown</option><option value="normal">Normal</option><option value="high">High</option></select>
+              </label>
+              <label>LDH
+                <select name="ldhStatus"><option value="unknown">Unknown</option><option value="normal">Normal</option><option value="high">High</option></select>
+              </label>
+              <label>Haptoglobin
+                <select name="haptoglobinStatus"><option value="unknown">Unknown</option><option value="normal">Normal</option><option value="low">Low</option></select>
+              </label>
+              <label>Direct antiglobulin test
+                <select name="datStatus"><option value="unknown">Unknown</option><option value="negative">Negative</option><option value="positive">Positive</option></select>
+              </label>
+              <label>Blood lead level (µg/dL)<input name="bloodLeadLevel" type="number" min="0" max="500" step="0.1"></label>
+              <label>Lead specimen
+                <select name="leadSpecimen"><option value="unknown">Unknown</option><option value="capillary">Capillary</option><option value="venous">Venous</option></select>
+              </label>
+              <label>HbA2 interpretation
+                <select name="hbA2Status"><option value="unknown">Unknown/not performed</option><option value="normal">Not elevated</option><option value="elevated">Elevated for age/lab</option></select>
+              </label>
+              <label>G6PD result
+                <select name="g6pdStatus"><option value="unknown">Unknown/not performed</option><option value="normal">Normal</option><option value="deficient">Deficient</option></select>
+              </label>
+              <label>Vitamin B12
+                <select name="b12Status"><option value="unknown">Unknown</option><option value="normal">Normal</option><option value="low">Low</option></select>
+              </label>
+              <label>Folate
+                <select name="folateStatus"><option value="unknown">Unknown</option><option value="normal">Normal</option><option value="low">Low</option></select>
+              </label>
+              <label>Copper
+                <select name="copperStatus"><option value="unknown">Unknown</option><option value="normal">Normal</option><option value="low">Low</option></select>
+              </label>
+              <label>Creatinine/eGFR interpretation
+                <select name="creatinineStatus"><option value="unknown">Unknown</option><option value="normal">Normal</option><option value="high">Renal dysfunction/creatinine high</option></select>
+              </label>
+              <label>TSH interpretation
+                <select name="tshStatus"><option value="unknown">Unknown</option><option value="normal">Normal</option><option value="high">High / hypothyroid pattern</option></select>
+              </label>
+              <label>Liver tests
+                <select name="liverTestsStatus"><option value="unknown">Unknown</option><option value="normal">Normal</option><option value="abnormal">Abnormal</option></select>
+              </label>
+            </div>
+            <div class="check-grid padded-top">
+              <label><input name="hbBartNewbornScreen" type="checkbox"> Hb Bart’s on newborn screen</label>
+              <label><input name="alphaGlobinTestingPositive" type="checkbox"> Alpha-globin testing positive</label>
+              <label><input name="betaGlobinTestingPositive" type="checkbox"> Beta-globin testing positive</label>
+              <label><input name="sicklingHemoglobinDetected" type="checkbox"> Sickling hemoglobin detected</label>
+              <label><input name="g6pdTestDuringAcuteHemolysis" type="checkbox"> G6PD tested during acute hemolysis</label>
+              <label><input name="g6pdTestSoonAfterTransfusion" type="checkbox"> G6PD tested soon after transfusion</label>
+            </div>
+          </details>
+
+          <details id="step-history" class="card form-section" data-workflow-step="5">
+            <summary class="fieldset-summary"><span class="step-number">5</span> History and exposure questionnaire</summary>
+            <div class="question-group">
+              <h3>Iron/diet and blood loss</h3>
+              <div class="check-grid">
+                <label><input name="excessCowMilk" type="checkbox"> Cow milk &gt;24 oz/day</label>
+                <label><input name="cowMilkBefore12Months" type="checkbox"> Cow milk before 12 months</label>
+                <label><input name="lowIronDiet" type="checkbox"> Low iron intake</label>
+                <label><input name="vegetarianOrVegan" type="checkbox"> Vegetarian/vegan diet</label>
+                <label><input name="foodInsecurity" type="checkbox"> Food insecurity</label>
+                <label><input name="pica" type="checkbox"> Pica</label>
+                <label><input name="prematurity" type="checkbox"> Prematurity/low birth weight</label>
+                <label><input name="malabsorption" type="checkbox"> Celiac/GI malabsorption risk</label>
+                <label><input name="heavyMenstrualBleeding" type="checkbox"> Heavy menstrual bleeding</label>
+                <label><input name="giBloodLoss" type="checkbox"> GI blood loss</label>
+                <label><input name="recurrentEpistaxis" type="checkbox"> Recurrent epistaxis</label>
+                <label><input name="frequentBloodDonation" type="checkbox"> Frequent blood donation</label>
+                <label><input name="otherBloodLoss" type="checkbox"> Other blood loss</label>
+              </div>
+            </div>
+            <div class="question-group">
+              <h3>Inflammatory, renal, endocrine, infectious</h3>
+              <div class="check-grid">
+                <label><input name="inflammatoryBowelDisease" type="checkbox"> Inflammatory bowel disease</label>
+                <label><input name="rheumatologicDisease" type="checkbox"> Rheumatologic disease</label>
+                <label><input name="chronicInfection" type="checkbox"> Chronic infection</label>
+                <label><input name="otherInflammatoryDisease" type="checkbox"> Other inflammatory disease</label>
+                <label><input name="chronicKidneyDisease" type="checkbox"> Chronic kidney disease</label>
+                <label><input name="liverDisease" type="checkbox"> Liver disease</label>
+                <label><input name="thyroidDisease" type="checkbox"> Thyroid disease</label>
+                <label><input name="recentViralIllness" type="checkbox"> Recent viral illness</label>
+                <label><input name="malariaTravelOrResidence" type="checkbox"> Malaria travel/residence</label>
+              </div>
+            </div>
+            <div class="question-group">
+              <h3>Inherited, medication, and exposure</h3>
+              <div class="check-grid">
+                <label><input name="familyThalassemia" type="checkbox"> Family thalassemia</label>
+                <label><input name="familySickleCell" type="checkbox"> Family sickle hemoglobinopathy</label>
+                <label><input name="familyHemoglobinopathy" type="checkbox"> Other family hemoglobinopathy</label>
+                <label><input name="knownSickleCellDisease" type="checkbox"> Known sickle cell disease</label>
+                <label><input name="knownHereditarySpherocytosis" type="checkbox"> Known hereditary spherocytosis</label>
+                <label><input name="knownThalassemiaMajor" type="checkbox"> Known thalassemia major/intermedia</label>
+                <label><input name="otherChronicHemolyticDisease" type="checkbox"> Other chronic hemolytic disease</label>
+                <label><input name="oxidantMedicationOrFavaExposure" type="checkbox"> Oxidant drug/fava exposure</label>
+                <label><input name="macrocytosisAssociatedMedication" type="checkbox"> Medication associated with macrocytosis</label>
+                <label><input name="leadExposureRisk" type="checkbox"> Lead exposure risk/older housing</label>
+              </div>
+            </div>
+            <div class="question-group">
+              <h3>Congenital/marrow and prior response</h3>
+              <div class="check-grid">
+                <label><input name="congenitalAnomalies" type="checkbox"> Congenital anomalies</label>
+                <label><input name="thumbOrRadiusAnomaly" type="checkbox"> Thumb/radius anomaly</label>
+                <label><input name="shortStature" type="checkbox"> Short stature/growth failure</label>
+                <label><input name="abnormalSkinPigmentation" type="checkbox"> Abnormal skin pigmentation</label>
+                <label><input name="microcephaly" type="checkbox"> Microcephaly</label>
+                <label><input name="priorAdequateIronTrialNoResponse" type="checkbox"> No response to adequate iron trial</label>
+                <label><input name="adherenceVerified" type="checkbox"> Iron adherence verified</label>
+                <label><input name="ongoingBloodLossKnown" type="checkbox"> Ongoing blood loss already known</label>
+              </div>
+            </div>
+          </details>
+
+          <details id="step-smear" class="card form-section" data-workflow-step="6">
+            <summary class="fieldset-summary"><span class="step-number">6</span> Smear and examination</summary>
+            <div class="question-group">
+              <h3>Peripheral smear</h3>
+              <div class="check-grid">
+                <label><input name="smear" value="target-cells" type="checkbox"> Target cells</label>
+                <label><input name="smear" value="spherocytes" type="checkbox"> Spherocytes</label>
+                <label><input name="smear" value="schistocytes" type="checkbox"> Schistocytes</label>
+                <label><input name="smear" value="bite-or-blister-cells" type="checkbox"> Bite/blister cells</label>
+                <label><input name="smear" value="sickle-cells" type="checkbox"> Sickle cells</label>
+                <label><input name="smear" value="basophilic-stippling" type="checkbox"> Basophilic stippling</label>
+                <label><input name="smear" value="hypersegmented-neutrophils" type="checkbox"> Hypersegmented neutrophils</label>
+                <label><input name="smear" value="blasts" type="checkbox"> Blasts</label>
+                <label><input name="smear" value="teardrops" type="checkbox"> Teardrop cells</label>
+                <label><input name="smear" value="nucleated-rbc" type="checkbox"> Nucleated RBCs</label>
+                <label><input name="smear" value="elliptocytes" type="checkbox"> Elliptocytes</label>
+              </div>
+            </div>
+            <div class="question-group">
+              <h3>Examination</h3>
+              <div class="check-grid">
+                <label><input name="splenomegaly" type="checkbox"> Splenomegaly</label>
+                <label><input name="hepatomegaly" type="checkbox"> Hepatomegaly</label>
+                <label><input name="lymphadenopathy" type="checkbox"> Lymphadenopathy</label>
+                <label><input name="petechiae" type="checkbox"> Petechiae</label>
+                <label><input name="unexplainedBruising" type="checkbox"> Unexplained bruising</label>
+              </div>
+            </div>
+          </details>
+
+          <div class="sticky-action">
+            <div class="completion-block">
+              <div class="completion-copy"><strong id="completion-label">Core inputs incomplete</strong><span id="completion-detail">Enter age, hemoglobin, and MCV to assess.</span></div>
+              <div class="completion-track" aria-hidden="true"><span id="completion-bar"></span></div>
+            </div>
+            <button id="run-assessment" type="submit" class="button primary"><span>Run assessment</span><span aria-hidden="true">→</span></button>
+          </div>
+        </form>
+
+        <aside class="results-column" aria-live="polite">
+          <div id="results-placeholder" class="card placeholder-card">
+            <div class="placeholder-topline"><span class="live-dot" aria-hidden="true"></span> Live case snapshot</div>
+            <div class="placeholder-icon" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M12 34h10l5-12 8 25 6-13h11"/><circle cx="32" cy="32" r="26"/></svg></div>
+            <h2 id="snapshot-title">Ready for case data</h2>
+            <p id="snapshot-subtitle">Enter de-identified findings to build a deterministic, evidence-linked assessment.</p>
+            <div id="case-snapshot" class="case-snapshot">
+              <div><span>Age</span><strong>Not entered</strong></div>
+              <div><span>Hemoglobin</span><strong>Not entered</strong></div>
+              <div><span>MCV</span><strong>Not entered</strong></div>
+              <div><span>Reticulocytes</span><strong>Unknown</strong></div>
+            </div>
+            <div class="privacy-note"><strong>Privacy boundary</strong><span>Do not enter names, dates of birth, MRNs, or other identifiers. This prototype evaluates data locally in the browser.</span></div>
+            <div class="output-preview">
+              <strong>Output includes</strong>
+              <ul>
+                <li>Age-aware anemia and morphology classification</li>
+                <li>Urgent safety and escalation rules</li>
+                <li>Ranked, non-probabilistic diagnostic patterns</li>
+                <li>Adaptive questions and confirmatory workup</li>
+                <li>Rule-level citations and audit JSON</li>
+              </ul>
+            </div>
+          </div>
+          <div id="results" hidden></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="algorithm" class="tab-panel" hidden>
+      <div class="content-page">
+        <div class="page-heading">
+          <p class="eyebrow">Transparent reasoning model</p>
+          <h2>Deterministic pediatric anemia algorithm</h2>
+          <p>Every branch uses explicit facts and outputs a diagnostic pattern plus confirmatory steps. No generative model participates in inference.</p>
+        </div>
+        <div class="algorithm-flow" aria-label="Algorithm flow">
+          <article class="flow-card"><span>1</span><h3>Establish scope and urgency</h3><p>Age, local ranges, instability, bleeding, severe anemia, other cytopenias, blasts, lead level, and microangiopathy flags.</p></article>
+          <article class="flow-card"><span>2</span><h3>Confirm anemia</h3><p>Hemoglobin is compared with the local lower limit; if absent, the age/sex-specific AAP fallback is used only from 6 months to &lt;18 years.</p></article>
+          <article class="flow-card"><span>3</span><h3>Classify morphology</h3><p>MCV is categorized as microcytic, normocytic, or macrocytic using local limits first. RDW and transfusion context modify interpretation.</p></article>
+          <article class="flow-card"><span>4</span><h3>Classify marrow response</h3><p>Reticulocyte response separates loss/destruction from impaired production; the user supplies the laboratory-context interpretation rather than a universal cutoff.</p></article>
+          <article class="flow-card"><span>5</span><h3>Apply morphology-specific rules</h3><p>Iron/inflammation/globin/lead; bleeding/hemolysis; renal/inflammatory/marrow; or megaloblastic/non-megaloblastic branches.</p></article>
+          <article class="flow-card"><span>6</span><h3>Rank and expose provenance</h3><p>Rules merge into a ranked pattern differential. The interface shows all matched rule IDs, findings, cautions, next tests, and citations.</p></article>
+        </div>
+
+        <div class="branch-grid">
+          <article class="card branch-card micro"><h3>Microcytic branch</h3><ol><li>Ferritin relative to AAP threshold</li><li>CRP and inflammatory iron restriction</li><li>sTfR/ferritin index if available</li><li>Newborn screen, HbA2/globin testing</li><li>Lead and exposure history</li><li>Rare iron-loading/sideroblastic pathway</li></ol></article>
+          <article class="card branch-card normo"><h3>Normocytic branch</h3><ol><li>High retic: blood loss vs hemolysis</li><li>Hemolysis labs, DAT, smear</li><li>Low retic: renal/inflammation/viral</li><li>Other cytopenias and marrow red flags</li><li>Chronic hemolytic disease + abrupt reticulocytopenia</li></ol></article>
+          <article class="card branch-card macro"><h3>Macrocytic branch</h3><ol><li>Reticulocytosis vs production failure</li><li>B12, folate, smear</li><li>TSH, liver, medications</li><li>Copper and nutrition/malabsorption</li><li>Congenital phenotype or progressive cytopenias</li></ol></article>
+        </div>
+
+        <div class="card implementation-card">
+          <h3>Rule execution contract</h3>
+          <pre><code>input → deriveFacts() → evaluate 91 JSON rules → merge candidates
+      → sort by evidence level + deterministic priority → render provenance</code></pre>
+          <p><strong>Evidence levels:</strong> meets defined pattern, strongly supported, supported, possible, and not excluded. These are ordinal rule labels—not probabilities.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="evidence" class="tab-panel" hidden>
+      <div class="content-page">
+        <div class="page-heading"><p class="eyebrow">Source registry</p><h2>Evidence and provenance</h2><p>Recent sources are prioritized; older material is explicitly labeled when retained as foundational.</p></div>
+        <div id="evidence-list" class="evidence-grid"></div>
+      </div>
+    </section>
+
+    <section id="rules" class="tab-panel" hidden>
+      <div class="content-page">
+        <div class="page-heading"><p class="eyebrow">Machine-readable knowledge base</p><h2>Rule catalog</h2><p id="rule-count"></p></div>
+        <div class="rule-toolbar"><input id="rule-filter" type="search" placeholder="Filter by rule ID, category, or output…"></div>
+        <div id="rule-list" class="rule-list"></div>
+      </div>
+    </section>
+
+    <section id="audit" class="tab-panel" hidden>
+      <div class="content-page">
+        <div class="page-heading"><p class="eyebrow">Reproducibility</p><h2>Assessment audit JSON</h2><p>Exported data include the normalized input, output, matched rules, KB version, and timestamp. The prototype does not persist this data.</p></div>
+        <div class="audit-actions">
+          <button id="copy-audit" class="button secondary" disabled>Copy JSON</button>
+          <button id="download-audit" class="button secondary" disabled>Download JSON</button>
+        </div>
+        <pre id="audit-json" class="audit-json"><code>No assessment has been run.</code></pre>
+      </div>
+    </section>
+  </main>
+  </div>
+
+  <footer>
+    <div><strong>Pediatric Anemia Decision Support</strong><span>Research prototype · Intended for licensed clinicians · No PHI persistence</span></div>
+    <span>Knowledge base reviewed through 2026-07-15</span>
+  </footer>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

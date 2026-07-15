@@ -1,0 +1,16 @@
+{
+  "patient": { "ageMonths": 168, "sexAtBirth": "female", "menstruating": true, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 9.8, "mcv": 82, "rdw": 14.2, "rbc": 3.6, "wbc": 10.2, "platelets": 460,
+    "rbcInterpretation": "normal", "localRanges": {}, "localFlags": { "thrombocytosis": true }
+  },
+  "reticulocytes": { "response": "inappropriately-normal" },
+  "symptoms": { "fatigue": true },
+  "history": { "inflammatoryBowelDisease": true, "heavyMenstrualBleeding": false },
+  "exam": {},
+  "labs": {
+    "ferritin": 85, "ferritinStatus": "high", "crpStatus": "elevated", "tsatStatus": "low", "tibcStatus": "low",
+    "ironStatus": "low", "stfrFerritinIndex": 0.8
+  },
+  "smear": []
+}

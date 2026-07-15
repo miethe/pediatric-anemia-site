@@ -1,0 +1,121 @@
+openapi: 3.1.0
+info:
+  title: Pediatric Anemia Deterministic CDSS API
+  version: 0.1.0
+  description: >-
+    Research-prototype API for deterministic pediatric anemia pattern assessment.
+    Not clinically validated; not an autonomous diagnosis or treatment service.
+servers:
+  - url: http://127.0.0.1:8080
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Health and knowledge-base version
+      responses:
+        '200':
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string }
+                  knowledgeBaseVersion: { type: string }
+                  evidenceReviewedThrough: { type: string, format: date }
+  /api/v1/knowledge-base:
+    get:
+      operationId: getKnowledgeBase
+      summary: Knowledge-base metadata and evidence registry
+      responses:
+        '200':
+          description: Knowledge-base metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  knowledgeBaseVersion: { type: string }
+                  evidenceReviewedThrough: { type: string, format: date }
+                  ruleCount: { type: integer }
+                  diagnosticPatternCount: { type: integer }
+                  evidence:
+                    type: array
+                    items: { type: object }
+  /api/v1/assess:
+    post:
+      operationId: assessPediatricAnemia
+      summary: Run deterministic pediatric anemia assessment
+      description: >-
+        Returns transparent rule-based pattern classification, alerts, adaptive
+        questions, matched rules, and evidence IDs. The result is not a diagnosis.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/patient-input.schema.json'
+            examples:
+              ironDeficiencyAnemia:
+                summary: Toddler with iron deficiency anemia pattern
+                value:
+                  patient:
+                    ageMonths: 20
+                    sexAtBirth: female
+                    menstruating: false
+                    recentTransfusion: false
+                    highAltitude: false
+                  cbc:
+                    hemoglobin: 8.4
+                    mcv: 64
+                    rdw: 19.1
+                    rbc: 3.9
+                    wbc: 8.1
+                    platelets: 510
+                    rbcInterpretation: normal
+                    localRanges: {}
+                    localFlags:
+                      thrombocytosis: true
+                  reticulocytes:
+                    response: inappropriately-normal
+                  history:
+                    excessCowMilk: true
+                    lowIronDiet: true
+                    pica: true
+                  labs:
+                    ferritin: 6
+                    crpStatus: normal
+                    tsatStatus: low
+                    tibcStatus: high
+                    ironStatus: low
+                  smear: []
+      responses:
+        '200':
+          description: Deterministic assessment
+          headers:
+            X-Request-Id:
+              description: Per-request trace identifier; no patient meaning
+              schema: { type: string, format: uuid }
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/assessment-output.schema.json'
+        '400':
+          description: Invalid JSON or invalid root object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Request body too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string }

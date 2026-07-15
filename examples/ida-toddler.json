@@ -1,0 +1,15 @@
+{
+  "patient": { "ageMonths": 20, "sexAtBirth": "female", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 8.4, "mcv": 64, "rdw": 19.1, "rbc": 3.9, "wbc": 8.1, "platelets": 510,
+    "rbcInterpretation": "normal",
+    "localRanges": {},
+    "localFlags": { "thrombocytosis": true }
+  },
+  "reticulocytes": { "response": "inappropriately-normal" },
+  "symptoms": { "pallor": true, "fatigue": true },
+  "history": { "excessCowMilk": true, "lowIronDiet": true, "pica": true },
+  "exam": {},
+  "labs": { "ferritin": 6, "ferritinStatus": "normal", "crpStatus": "normal", "tsatStatus": "low", "tibcStatus": "high", "ironStatus": "low" },
+  "smear": []
+}

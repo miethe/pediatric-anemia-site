@@ -1,0 +1,13 @@
+{
+  "patient": { "ageMonths": 96, "sexAtBirth": "female", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 8.7, "mcv": 84, "rdw": 18, "rbc": 3.2, "wbc": 8.6, "platelets": 290,
+    "rbcInterpretation": "low", "localRanges": {}, "localFlags": {}
+  },
+  "reticulocytes": { "response": "high" },
+  "symptoms": { "jaundice": true, "darkUrine": true },
+  "history": { "knownHereditarySpherocytosis": true },
+  "exam": { "splenomegaly": true },
+  "labs": { "indirectBilirubinStatus": "high", "ldhStatus": "high", "haptoglobinStatus": "low", "datStatus": "negative" },
+  "smear": ["spherocytes"]
+}

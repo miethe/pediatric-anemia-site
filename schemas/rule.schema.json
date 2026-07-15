@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/rule.schema.json",
+  "title": "Pediatric Anemia CDSS Rule",
+  "type": "object",
+  "required": ["id", "category", "when", "evidence", "output"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[A-Z0-9-]+$" },
+    "category": { "type": "string", "minLength": 1 },
+    "when": { "$ref": "#/$defs/condition" },
+    "evidence": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+    "output": {
+      "oneOf": [
+        { "$ref": "#/$defs/candidateOutput" },
+        { "$ref": "#/$defs/alertOutput" },
+        { "$ref": "#/$defs/questionOutput" },
+        { "$ref": "#/$defs/noteOutput" }
+      ]
+    }
+  },
+  "$defs": {
+    "condition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["all"],
+          "additionalProperties": false,
+          "properties": { "all": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } }
+        },
+        {
+          "type": "object",
+          "required": ["any"],
+          "additionalProperties": false,
+          "properties": { "any": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } }
+        },
+        {
+          "type": "object",
+          "required": ["not"],
+          "additionalProperties": false,
+          "properties": { "not": { "$ref": "#/$defs/condition" } }
+        },
+        {
+          "type": "object",
+          "required": ["fact", "op"],
+          "additionalProperties": false,
+          "properties": {
+            "fact": { "type": "string", "minLength": 1 },
+            "op": { "type": "string", "enum": ["eq", "neq", "gt", "gte", "lt", "lte", "in", "not-in", "includes", "exists", "missing", "truthy", "falsy"] },
+            "value": {}
+          }
+        }
+      ]
+    },
+    "baseOutput": {
+      "type": "object",
+      "properties": { "type": { "type": "string" }, "evidence": { "type": "array", "items": { "type": "string" } } }
+    },
+    "candidateOutput": {
+      "type": "object",
+      "required": ["type", "candidateId", "level", "points", "support"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "candidate" },
+        "candidateId": { "type": "string" },
+        "level": { "type": "string", "enum": ["meets-defined-pattern", "strongly-supported", "supported", "possible", "not-excluded"] },
+        "points": { "type": "number" },
+        "support": { "type": "array", "items": { "type": "string" } },
+        "cautions": { "type": "array", "items": { "type": "string" } },
+        "nextSteps": { "type": "array", "items": { "type": "string" } },
+        "evidence": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "alertOutput": {
+      "type": "object",
+      "required": ["type", "severity", "title", "detail", "actions"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "alert" },
+        "severity": { "type": "string", "enum": ["emergency", "urgent", "important", "informational"] },
+        "title": { "type": "string" },
+        "detail": { "type": "string" },
+        "actions": { "type": "array", "items": { "type": "string" } },
+        "evidence": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "questionOutput": {
+      "type": "object",
+      "required": ["type", "priority", "section", "prompt", "why"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "question" },
+        "priority": { "type": "number" },
+        "section": { "type": "string" },
+        "prompt": { "type": "string" },
+        "why": { "type": "string" },
+        "evidence": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "noteOutput": {
+      "type": "object",
+      "required": ["type", "title", "detail"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "note" },
+        "title": { "type": "string" },
+        "detail": { "type": "string" },
+        "evidence": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

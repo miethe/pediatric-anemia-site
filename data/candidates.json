@@ -1,0 +1,344 @@
+{
+  "iron-deficiency-anemia": {
+    "id": "iron-deficiency-anemia",
+    "label": "Iron deficiency anemia pattern",
+    "category": "microcytic / nutritional or blood loss",
+    "summary": "Anemia with biochemical or pattern evidence of iron deficiency. Ferritin below the age/menstrual threshold is the strongest built-in criterion.",
+    "defaultNextSteps": [
+      "Identify the source: dietary insufficiency, excessive cow milk, menstrual/GI/other blood loss, malabsorption, or increased requirement.",
+      "Review ferritin in inflammatory context and use local assay units/reference intervals.",
+      "If the course is atypical or response is inadequate, reassess adherence, ongoing blood loss, malabsorption, inflammation, thalassemia, lead, and alternative diagnoses."
+    ],
+    "evidence": [
+      "AAP2026_IDA",
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "iron-deficiency-without-anemia": {
+    "id": "iron-deficiency-without-anemia",
+    "label": "Iron deficiency without anemia pattern",
+    "category": "pre-anemic iron deficiency",
+    "summary": "Ferritin meets the AAP iron-deficiency threshold, but hemoglobin is not below the supplied age/sex or local lower limit.",
+    "defaultNextSteps": [
+      "Assess dietary, menstrual, gastrointestinal, blood donation, and malabsorption contributors.",
+      "Interpret in the context of inflammation and local assay methods."
+    ],
+    "evidence": [
+      "AAP2026_IDA"
+    ]
+  },
+  "anemia-of-inflammation": {
+    "id": "anemia-of-inflammation",
+    "label": "Anemia of inflammation / inflammatory iron restriction pattern",
+    "category": "production-limited anemia",
+    "summary": "Anemia associated with inflammation and an iron-restricted pattern in which ferritin may be normal or elevated.",
+    "defaultNextSteps": [
+      "Confirm and characterize the inflammatory condition and trend CBC, ferritin, CRP/ESR, transferrin saturation, and TIBC using local interpretation.",
+      "Assess for coexisting absolute iron deficiency; a low ferritin remains important even with inflammation."
+    ],
+    "evidence": [
+      "AAP2026_IDA",
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "thalassemia-pattern": {
+    "id": "thalassemia-pattern",
+    "label": "Thalassemia trait or other globin-production pattern",
+    "category": "microcytic inherited anemia",
+    "summary": "Persistent microcytosis with non-low ferritin and supporting CBC, smear, newborn-screen, family, or hemoglobin-analysis findings.",
+    "defaultNextSteps": [
+      "Review newborn-screen results and family/ancestry history.",
+      "Use hemoglobin analysis/HPLC for beta-chain variants and age-appropriate beta-thalassemia evaluation.",
+      "For suspected alpha thalassemia outside the newborn period, recognize that routine electrophoresis may be normal and consider alpha-globin testing.",
+      "Correct coexisting iron deficiency before using a normal HbA2 to exclude beta-thalassemia trait."
+    ],
+    "evidence": [
+      "AAP2026_IDA",
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "beta-thalassemia-pattern": {
+    "id": "beta-thalassemia-pattern",
+    "label": "Beta-thalassemia pattern",
+    "category": "microcytic inherited anemia",
+    "summary": "Age-appropriate elevated HbA2 or beta-globin testing supports a beta-thalassemia diagnosis/trait pattern.",
+    "defaultNextSteps": [
+      "Confirm with age-appropriate hemoglobin analysis and/or molecular testing when clinically indicated.",
+      "Evaluate for coexisting iron deficiency because it can lower HbA2 and complicate interpretation."
+    ],
+    "evidence": [
+      "AAP2026_IDA"
+    ]
+  },
+  "alpha-thalassemia-pattern": {
+    "id": "alpha-thalassemia-pattern",
+    "label": "Alpha-thalassemia pattern",
+    "category": "microcytic inherited anemia",
+    "summary": "Hemoglobin Bart\u2019s on the newborn screen or alpha-globin testing supports alpha thalassemia.",
+    "defaultNextSteps": [
+      "Review the newborn screen and consider alpha-globin molecular testing when persistent microcytosis remains unexplained.",
+      "Do not rely on a normal routine electrophoresis outside the newborn period to exclude alpha thalassemia."
+    ],
+    "evidence": [
+      "AAP2026_IDA"
+    ]
+  },
+  "lead-exposure-associated-anemia": {
+    "id": "lead-exposure-associated-anemia",
+    "label": "Lead exposure requiring a lead clinical pathway",
+    "category": "toxic / microcytic anemia contributor",
+    "summary": "A blood lead level at or above the CDC blood lead reference value requires exposure follow-up; lead may coexist with iron deficiency and can contribute to anemia.",
+    "defaultNextSteps": [
+      "If the elevated result is capillary, obtain confirmatory venous testing on the CDC timeline.",
+      "Take an environmental exposure history and involve public health/environmental services as indicated.",
+      "Assess and address coexisting iron deficiency."
+    ],
+    "evidence": [
+      "CDC2025_LEAD",
+      "AAP2026_IDA"
+    ]
+  },
+  "sideroblastic-iron-loading-microcytosis": {
+    "id": "sideroblastic-iron-loading-microcytosis",
+    "label": "Sideroblastic or iron-loading microcytic process",
+    "category": "rare microcytic anemia",
+    "summary": "Microcytosis with high iron/ferritin and compatible smear or exposure findings requires specialist evaluation for congenital/acquired sideroblastic processes and mimics.",
+    "defaultNextSteps": [
+      "Review medications, toxins, nutrition, congenital history, iron studies, and smear with pediatric hematology.",
+      "Do not diagnose sideroblastic anemia from basophilic stippling alone; consider lead and other causes."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "blood-loss": {
+    "id": "blood-loss",
+    "label": "Acute or chronic blood-loss pattern",
+    "category": "loss anemia",
+    "summary": "Bleeding history with an appropriate reticulocyte response, or iron deficiency with a chronic bleeding source, supports blood loss.",
+    "defaultNextSteps": [
+      "Localize and quantify bleeding: menstrual, gastrointestinal, epistaxis, trauma/procedure, blood donation, urinary, or other.",
+      "Assess hemodynamic status and coagulation/bleeding-disorder history when indicated."
+    ],
+    "evidence": [
+      "AAP2026_IDA",
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "hemolysis-unspecified": {
+    "id": "hemolysis-unspecified",
+    "label": "Hemolytic anemia pattern\u2014etiology not yet specified",
+    "category": "high-destruction anemia",
+    "summary": "Anemia with elevated reticulocyte response and biochemical or clinical evidence of red-cell destruction.",
+    "defaultNextSteps": [
+      "Review smear, DAT, bilirubin fractionation, LDH, haptoglobin, urinalysis, medication/exposure history, family history, and newborn-screen/hemoglobinopathy data.",
+      "Interpret haptoglobin and other markers in age, liver, inflammatory, and specimen context."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "autoimmune-hemolytic-anemia": {
+    "id": "autoimmune-hemolytic-anemia",
+    "label": "Immune hemolytic anemia pattern",
+    "category": "hemolytic anemia",
+    "summary": "A positive direct antiglobulin test in a hemolytic pattern supports immune-mediated hemolysis, subject to transfusion and assay context.",
+    "defaultNextSteps": [
+      "Have the DAT pattern and smear reviewed with hematology/transfusion medicine.",
+      "Assess recent transfusion, infection, immune disease, and medication context."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "hereditary-spherocytosis": {
+    "id": "hereditary-spherocytosis",
+    "label": "Hereditary spherocytosis pattern",
+    "category": "inherited hemolytic anemia",
+    "summary": "DAT-negative hemolysis with spherocytes, splenomegaly, neonatal jaundice, or family history is compatible with hereditary spherocytosis.",
+    "defaultNextSteps": [
+      "Confirm with an appropriate specialized red-cell membrane test (for example EMA binding) and hematology interpretation.",
+      "Review transfusion timing because it can affect specialized testing."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "g6pd-deficiency": {
+    "id": "g6pd-deficiency",
+    "label": "G6PD deficiency pattern",
+    "category": "red-cell enzymopathy / hemolysis",
+    "summary": "Oxidant-associated hemolysis, bite/blister cells, or a deficient quantitative G6PD result supports G6PD deficiency.",
+    "defaultNextSteps": [
+      "Use a quantitative G6PD assay interpreted for sex, reticulocytosis, transfusion, and assay method.",
+      "If a result is normal during acute hemolysis or soon after transfusion but suspicion remains, repeat testing at baseline with hematology guidance."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA",
+      "BSH2020_G6PD"
+    ]
+  },
+  "microangiopathic-hemolysis": {
+    "id": "microangiopathic-hemolysis",
+    "label": "Microangiopathic or mechanical hemolysis pattern",
+    "category": "urgent hemolytic anemia",
+    "summary": "Schistocytes with hemolysis may indicate microangiopathic or mechanical red-cell destruction; thrombocytopenia, renal, or neurologic findings increase urgency.",
+    "defaultNextSteps": [
+      "Urgently correlate with platelets, renal function, neurologic findings, coagulation studies, blood pressure, infection history, and expert smear review."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "sickling-hemoglobinopathy": {
+    "id": "sickling-hemoglobinopathy",
+    "label": "Sickling hemoglobinopathy pattern",
+    "category": "inherited hemolytic anemia",
+    "summary": "Known newborn-screen disease, confirmatory hemoglobin analysis, or sickled cells supports a sickling hemoglobinopathy pathway.",
+    "defaultNextSteps": [
+      "Verify newborn-screen and confirmatory hemoglobin analysis/genotype.",
+      "Use disease-specific pediatric hematology pathways for acute symptoms and longitudinal care."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "malaria-or-parasitic-hemolysis": {
+    "id": "malaria-or-parasitic-hemolysis",
+    "label": "Malaria or travel-associated hemolysis pattern",
+    "category": "infectious anemia",
+    "summary": "Fever, relevant travel/residence, and anemia/hemolysis require prompt pathogen-specific evaluation.",
+    "defaultNextSteps": [
+      "Obtain urgent travel history and appropriate malaria testing according to local infectious-disease protocols; repeat testing may be required when suspicion is high."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "renal-anemia": {
+    "id": "renal-anemia",
+    "label": "Renal/EPO-limited anemia pattern",
+    "category": "production-limited normocytic anemia",
+    "summary": "Normocytic anemia with an inappropriately low reticulocyte response and kidney disease/renal dysfunction supports a renal production-limited pattern.",
+    "defaultNextSteps": [
+      "Review renal function, urinalysis, blood pressure, inflammation, iron status, nutrition, and nephrology context."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "transient-erythroblastopenia": {
+    "id": "transient-erythroblastopenia",
+    "label": "Transient erythroblastopenia of childhood pattern",
+    "category": "temporary production failure",
+    "summary": "An isolated, usually normocytic anemia with reticulocytopenia in a young child, often after a viral illness, may fit transient erythroblastopenia after exclusion of dangerous alternatives.",
+    "defaultNextSteps": [
+      "Confirm isolated red-cell suppression, trend reticulocytes/CBC, and exclude congenital marrow failure, leukemia, renal/inflammatory disease, and parvovirus in a chronic hemolytic disorder."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "parvovirus-aplastic-crisis": {
+    "id": "parvovirus-aplastic-crisis",
+    "label": "Parvovirus-associated aplastic crisis pattern",
+    "category": "infectious production failure",
+    "summary": "Abrupt anemia with reticulocytopenia in a patient with a chronic hemolytic disorder is compatible with parvovirus-associated aplastic crisis.",
+    "defaultNextSteps": [
+      "Urgently involve pediatric hematology and obtain parvovirus testing using the local acute-care pathway."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "marrow-failure-infiltration": {
+    "id": "marrow-failure-infiltration",
+    "label": "Bone marrow failure, infiltration, or malignancy pattern",
+    "category": "urgent production failure",
+    "summary": "Reticulocytopenia with additional cytopenias, blasts, organomegaly, lymphadenopathy, or constitutional/exam red flags requires urgent evaluation for marrow failure or infiltration.",
+    "defaultNextSteps": [
+      "Obtain urgent expert review of CBC differential and smear; coordinate pediatric hematology/oncology evaluation and further testing.",
+      "Do not delay escalation because anemia is mild if blasts or multiple cytopenias are present."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "b12-folate-deficiency": {
+    "id": "b12-folate-deficiency",
+    "label": "Vitamin B12 or folate deficiency pattern",
+    "category": "megaloblastic / macrocytic anemia",
+    "summary": "Macrocytosis with low B12/folate or hypersegmented neutrophils supports a megaloblastic pathway.",
+    "defaultNextSteps": [
+      "Confirm the deficient nutrient and investigate diet, malabsorption, medications, autoimmune disease, and associated neurologic findings.",
+      "Consider mixed iron deficiency when RDW is high or MCV is not frankly elevated."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "copper-deficiency": {
+    "id": "copper-deficiency",
+    "label": "Copper deficiency pattern",
+    "category": "nutritional / production-limited anemia",
+    "summary": "Low copper with anemia, especially with neutropenia or malabsorption/enteral nutrition risk, supports copper deficiency.",
+    "defaultNextSteps": [
+      "Confirm copper status and evaluate zinc exposure, malabsorption, intestinal surgery, and nutrition support with specialist input."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "thyroid-liver-medication-macrocytosis": {
+    "id": "thyroid-liver-medication-macrocytosis",
+    "label": "Non-megaloblastic macrocytosis pattern",
+    "category": "macrocytic anemia",
+    "summary": "Thyroid disease, liver disease, reticulocytosis, or medication exposure may produce macrocytosis without primary B12/folate deficiency.",
+    "defaultNextSteps": [
+      "Review TSH, liver tests, reticulocyte response, medication list, alcohol/toxin exposure where age-appropriate, and smear."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "inherited-marrow-failure": {
+    "id": "inherited-marrow-failure",
+    "label": "Inherited bone-marrow-failure syndrome pattern",
+    "category": "rare congenital anemia",
+    "summary": "Early-onset macrocytic/production-limited anemia, congenital anomalies, short stature, skin pigmentation, limb anomalies, or progressive cytopenias raise inherited marrow-failure syndromes such as Diamond-Blackfan or Fanconi anemia.",
+    "defaultNextSteps": [
+      "Refer to pediatric hematology/genetics for syndrome-specific marrow, chromosome-breakage, ribosomal, and germline evaluation.",
+      "Avoid assigning a specific syndrome from phenotype alone."
+    ],
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "mixed-anemia-or-transfusion-effect": {
+    "id": "mixed-anemia-or-transfusion-effect",
+    "label": "Mixed anemia or recent-transfusion effect",
+    "category": "interpretive limitation",
+    "summary": "Coexisting deficiencies, reticulocytosis, inflammation, or recent transfusion can normalize or broaden MCV/RDW and obscure a single morphology.",
+    "defaultNextSteps": [
+      "Interpret trends and pre-transfusion CBC/smear when available; assess iron, B12/folate, inflammation, reticulocytes, and transfusion timing."
+    ],
+    "evidence": [
+      "AAP2026_IDA",
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  },
+  "iron-refractory-iron-deficiency-anemia": {
+    "id": "iron-refractory-iron-deficiency-anemia",
+    "label": "Iron-refractory iron-deficiency anemia or rare iron-handling disorder pattern",
+    "category": "rare microcytic anemia",
+    "summary": "Persistent microcytic iron-restricted anemia that does not follow the expected course after adherence, blood loss, malabsorption, inflammation, and thalassemia are addressed may require evaluation for rare iron-handling disorders.",
+    "defaultNextSteps": [
+      "First verify dose/adherence, diagnosis, ongoing blood loss, malabsorption, inflammation, and coexisting hemoglobinopathy.",
+      "If unexplained and persistent, involve pediatric hematology for specialized iron/hepcidin and genetic evaluation."
+    ],
+    "evidence": [
+      "AAP2026_IDA",
+      "BLOOD2022_PED_ANEMIA"
+    ]
+  }
+}

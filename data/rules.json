@@ -1,0 +1,3022 @@
+[
+  {
+    "id": "SCOPE-001",
+    "category": "safety",
+    "when": {
+      "fact": "scope.neonatalOrYoungInfant",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "WHO2024_HB",
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "important",
+      "title": "Neonatal/young-infant pathway required",
+      "detail": "The built-in reference intervals begin at 6 months. Hemoglobin and MCV change rapidly in early infancy and depend on gestational/birth history.",
+      "actions": [
+        "Use local age-in-days/weeks and gestational-age reference intervals.",
+        "Apply a neonatal/young-infant anemia pathway and involve neonatology/hematology as clinically indicated."
+      ]
+    }
+  },
+  {
+    "id": "SCOPE-002",
+    "category": "safety",
+    "when": {
+      "fact": "scope.outsidePediatricRange",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "WHO2024_HB"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "important",
+      "title": "Outside built-in pediatric age range",
+      "detail": "The built-in CBC intervals stop before 18 years. Supply local laboratory reference intervals and use an age-appropriate adolescent/adult pathway.",
+      "actions": [
+        "Enter local hemoglobin, MCV, and RDW limits before interpreting the result."
+      ]
+    }
+  },
+  {
+    "id": "SCOPE-003",
+    "category": "safety",
+    "when": {
+      "fact": "scope.needsLocalRanges",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "AAP2026_IDA",
+      "WHO2024_HB"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "important",
+      "title": "Reference interval incomplete",
+      "detail": "Anemia and/or morphology cannot be classified until hemoglobin and MCV limits are available.",
+      "actions": [
+        "Enter the reporting laboratory\u2019s lower hemoglobin and MCV lower/upper limits."
+      ]
+    }
+  },
+  {
+    "id": "ALERT-001",
+    "category": "safety",
+    "when": {
+      "fact": "symptoms.instability",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "emergency",
+      "title": "Potentially unstable symptomatic anemia",
+      "detail": "Respiratory, neurologic, cardiovascular, syncopal, or hemodynamic red flags were selected.",
+      "actions": [
+        "Use immediate bedside assessment and local emergency/escalation protocols.",
+        "Do not use this calculator to delay stabilization or specialist consultation."
+      ]
+    }
+  },
+  {
+    "id": "ALERT-002",
+    "category": "safety",
+    "when": {
+      "fact": "symptoms.activeMajorBleeding",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "emergency",
+      "title": "Active major bleeding",
+      "detail": "Active major bleeding was selected and requires real-time clinical management rather than calculator-based sequencing.",
+      "actions": [
+        "Activate the local acute bleeding/resuscitation pathway and identify the source."
+      ]
+    }
+  },
+  {
+    "id": "ALERT-003",
+    "category": "safety",
+    "when": {
+      "fact": "anemia.severeIdaHbCategory",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "AAP2026_IDA",
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "urgent",
+      "title": "Hemoglobin is below 7 g/dL",
+      "detail": "The AAP classifies hemoglobin <7 g/dL as severe iron deficiency anemia when IDA is the diagnosis. This is not a universal transfusion threshold and does not establish etiology.",
+      "actions": [
+        "Perform urgent clinical assessment for symptoms, instability, bleeding, hemolysis, and alternative etiologies.",
+        "Use local hematology/transfusion protocols and clinician judgment."
+      ]
+    }
+  },
+  {
+    "id": "ALERT-004",
+    "category": "safety",
+    "when": {
+      "fact": "cbc.multilineageCytopenia",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "urgent",
+      "title": "Anemia with another cytopenia",
+      "detail": "Leukopenia, neutropenia, or thrombocytopenia was flagged with anemia; this broadens concern beyond isolated nutritional anemia.",
+      "actions": [
+        "Obtain prompt expert CBC differential and smear review.",
+        "Consider urgent pediatric hematology/oncology evaluation based on severity and clinical findings."
+      ]
+    }
+  },
+  {
+    "id": "ALERT-005",
+    "category": "safety",
+    "when": {
+      "fact": "smear.blasts",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "urgent",
+      "title": "Blasts reported on peripheral smear",
+      "detail": "Blasts require urgent expert confirmation and evaluation for marrow infiltration or hematologic malignancy.",
+      "actions": [
+        "Contact pediatric hematology/oncology urgently and follow local critical-result procedures."
+      ]
+    }
+  },
+  {
+    "id": "ALERT-006",
+    "category": "safety",
+    "when": {
+      "all": [
+        {
+          "fact": "smear.schistocytes",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "any": [
+            {
+              "fact": "cbc.thrombocytopenia",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "symptoms.renalSymptoms",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "symptoms.neurologicSymptoms",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "emergency",
+      "title": "Possible thrombotic microangiopathy or severe microangiopathic process",
+      "detail": "Schistocytes plus thrombocytopenia, renal, or neurologic findings were selected.",
+      "actions": [
+        "Use immediate local emergency/hematology/nephrology evaluation; confirm smear and obtain organ-injury/coagulation studies."
+      ]
+    }
+  },
+  {
+    "id": "ALERT-007",
+    "category": "safety",
+    "when": {
+      "fact": "lead.level45Plus",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "CDC2025_LEAD"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "emergency",
+      "title": "Blood lead level \u226545 \u00b5g/dL",
+      "detail": "CDC guidance places this level in the highest action tier, with urgent confirmatory and toxicology/clinical management requirements.",
+      "actions": [
+        "Contact a Pediatric Environmental Health Specialty Unit or Poison Control and use the CDC/local high-level lead pathway.",
+        "If the child is symptomatic or exposure is ongoing, evaluate urgently in an appropriate facility."
+      ]
+    }
+  },
+  {
+    "id": "ALERT-008",
+    "category": "safety",
+    "when": {
+      "fact": "lead.level20to44",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "CDC2025_LEAD"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "urgent",
+      "title": "Blood lead level 20\u201344 \u00b5g/dL",
+      "detail": "This level requires prompt venous confirmation if needed, environmental investigation, clinical evaluation, and scheduled follow-up under CDC/local guidance.",
+      "actions": [
+        "Use the current CDC/local lead pathway and arrange environmental/public-health follow-up."
+      ]
+    }
+  },
+  {
+    "id": "ALERT-009",
+    "category": "safety",
+    "when": {
+      "all": [
+        {
+          "fact": "cbc.neutropenia",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "symptoms.fever",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "emergency",
+      "title": "Fever with neutropenia flagged",
+      "detail": "Fever and laboratory-reported neutropenia can be time critical and should not be managed by this anemia algorithm.",
+      "actions": [
+        "Use the local febrile-neutropenia/emergency pathway immediately."
+      ]
+    }
+  },
+  {
+    "id": "NOTE-001",
+    "category": "interpretive-note",
+    "when": {
+      "fact": "anemia.absent",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "AAP2026_IDA",
+      "WHO2024_HB"
+    ],
+    "output": {
+      "type": "note",
+      "title": "No anemia by the supplied threshold",
+      "detail": "Hemoglobin is not below the effective lower limit. This does not exclude iron deficiency without anemia, evolving disease, abnormal indices, or clinically important symptoms."
+    }
+  },
+  {
+    "id": "NOTE-002",
+    "category": "interpretive-note",
+    "when": {
+      "fact": "ferritin.potentiallyInflammationConfounded",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "note",
+      "title": "Ferritin is inflammation-confounded",
+      "detail": "Ferritin is not low and CRP is elevated. A normal or high ferritin cannot reliably exclude iron deficiency in this context; use the full iron/inflammation pattern and, when available, the sTfR/log10(ferritin) index."
+    }
+  },
+  {
+    "id": "NOTE-003",
+    "category": "interpretive-note",
+    "when": {
+      "all": [
+        {
+          "fact": "ferritin.low",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "hemoglobinAnalysis.hbA2Elevated",
+          "op": "eq",
+          "value": false
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "note",
+      "title": "Low ferritin can complicate beta-thalassemia interpretation",
+      "detail": "Iron deficiency can lower HbA2. A non-elevated HbA2 during iron deficiency should not be treated as definitive exclusion of beta-thalassemia trait."
+    }
+  },
+  {
+    "id": "NOTE-004",
+    "category": "interpretive-note",
+    "when": {
+      "all": [
+        {
+          "fact": "g6pd.normal",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "any": [
+            {
+              "fact": "g6pd.testedDuringAcuteHemolysis",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "g6pd.testedSoonAfterTransfusion",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "BSH2020_G6PD"
+    ],
+    "output": {
+      "type": "note",
+      "title": "Normal G6PD result may be falsely reassuring",
+      "detail": "A normal assay during acute reticulocytosis/hemolysis or soon after transfusion may not exclude G6PD deficiency. Repeat quantitative testing at baseline if suspicion remains."
+    }
+  },
+  {
+    "id": "NOTE-005",
+    "category": "interpretive-note",
+    "when": {
+      "fact": "patient.recentTransfusion",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA",
+      "BSH2020_G6PD"
+    ],
+    "output": {
+      "type": "note",
+      "title": "Recent transfusion limits interpretation",
+      "detail": "Transfusion can alter MCV/RDW, reticulocytes, smear, hemoglobin analysis, and red-cell enzyme/membrane tests. Review pre-transfusion data and timing."
+    }
+  },
+  {
+    "id": "NOTE-006",
+    "category": "interpretive-note",
+    "when": {
+      "fact": "patient.highAltitude",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "WHO2024_HB"
+    ],
+    "output": {
+      "type": "note",
+      "title": "No altitude adjustment applied",
+      "detail": "Hemoglobin interpretation may require altitude-specific adjustment. The prototype does not calculate one; local guidance and reference intervals are required."
+    }
+  },
+  {
+    "id": "ID-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "ferritin.low",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "iron-deficiency-anemia",
+      "level": "meets-defined-pattern",
+      "points": 110,
+      "support": [
+        "Hemoglobin {{cbc.hb}} g/dL is below the effective lower limit of {{thresholds.hbLower}} g/dL.",
+        "Ferritin {{ferritin.value}} ng/mL is at or below the AAP threshold of {{ferritin.threshold}} ng/mL."
+      ]
+    }
+  },
+  {
+    "id": "ID-002",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.rdwHigh",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.ironRiskHistory",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "ferritin.available",
+          "op": "eq",
+          "value": false
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "iron-deficiency-anemia",
+      "level": "possible",
+      "points": 45,
+      "support": [
+        "Microcytosis, elevated RDW, and at least one dietary/blood-loss/malabsorption risk were supplied."
+      ],
+      "nextSteps": [
+        "Obtain ferritin as the next core discriminator; add CRP if the child is currently ill or has inflammatory disease."
+      ]
+    }
+  },
+  {
+    "id": "ID-003",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "iron.stfrIndexHigh",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "iron-deficiency-anemia",
+      "level": "strongly-supported",
+      "points": 85,
+      "support": [
+        "sTfR/log10(ferritin) index is >2 (entered value {{iron.stfrFerritinIndex}}), supporting iron deficiency."
+      ]
+    }
+  },
+  {
+    "id": "ID-004",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.absent",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "ferritin.low",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "iron-deficiency-without-anemia",
+      "level": "meets-defined-pattern",
+      "points": 100,
+      "support": [
+        "Hemoglobin is not below the effective lower limit, but ferritin {{ferritin.value}} ng/mL meets the AAP iron-deficiency threshold of {{ferritin.threshold}} ng/mL."
+      ]
+    }
+  },
+  {
+    "id": "ID-005",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "ferritin.potentiallyInflammationConfounded",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.ironRiskHistory",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "iron-deficiency-anemia",
+      "level": "not-excluded",
+      "points": 35,
+      "support": [
+        "Microcytosis and iron-deficiency risk are present, but elevated CRP makes a non-low ferritin less exclusionary."
+      ],
+      "nextSteps": [
+        "Use transferrin saturation/TIBC and, when available, sTfR/log10(ferritin) index to assess coexisting absolute iron deficiency."
+      ]
+    }
+  },
+  {
+    "id": "ID-006",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "iron.tsatLow",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.ironRiskHistory",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "iron-deficiency-anemia",
+      "level": "supported",
+      "points": 55,
+      "support": [
+        "Microcytic anemia, locally interpreted low transferrin saturation, and an iron-risk history were supplied."
+      ]
+    }
+  },
+  {
+    "id": "AINF-001",
+    "category": "differential",
+    "when": {
+      "fact": "iron.inflammatoryIronRestrictionPattern",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "AAP2026_IDA",
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "anemia-of-inflammation",
+      "level": "strongly-supported",
+      "points": 95,
+      "support": [
+        "Anemia, elevated CRP, non-low ferritin, low transferrin saturation, and low/normal TIBC form an inflammatory iron-restriction pattern."
+      ]
+    }
+  },
+  {
+    "id": "AINF-002",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.chronicInflammation",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "ferritin.notLow",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.low",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA",
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "anemia-of-inflammation",
+      "level": "supported",
+      "points": 60,
+      "support": [
+        "Chronic inflammatory disease, non-low ferritin, and an inappropriately low reticulocyte response were supplied."
+      ]
+    }
+  },
+  {
+    "id": "AINF-003",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "iron.stfrIndexLow",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "ferritin.crpElevated",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "anemia-of-inflammation",
+      "level": "strongly-supported",
+      "points": 90,
+      "support": [
+        "sTfR/log10(ferritin) index is <1 with elevated CRP, favoring anemia of inflammation without absolute iron deficiency."
+      ]
+    }
+  },
+  {
+    "id": "AINF-004",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.normocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.low",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.chronicInflammation",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "anemia-of-inflammation",
+      "level": "possible",
+      "points": 40,
+      "support": [
+        "Normocytic, production-limited anemia occurs with a chronic inflammatory condition."
+      ]
+    }
+  },
+  {
+    "id": "THAL-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "ferritin.notLow",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "any": [
+            {
+              "fact": "cbc.rbcRelativelyHigh",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "smear.targetCells",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "history.familyHemoglobinopathy",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "thalassemia-pattern",
+      "level": "supported",
+      "points": 65,
+      "support": [
+        "Microcytosis with non-low ferritin and at least one globin-production clue (relatively high RBC count, target cells, or family history)."
+      ]
+    }
+  },
+  {
+    "id": "THAL-002",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.rdwHigh",
+          "op": "eq",
+          "value": false
+        },
+        {
+          "any": [
+            {
+              "fact": "cbc.rbcRelativelyHigh",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "smear.targetCells",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "thalassemia-pattern",
+      "level": "possible",
+      "points": 45,
+      "support": [
+        "Microcytosis with non-elevated RDW and an RBC/smear clue is more compatible with a thalassemia trait pattern than classic isolated IDA, but is not diagnostic."
+      ]
+    }
+  },
+  {
+    "id": "THAL-BETA-001",
+    "category": "differential",
+    "when": {
+      "fact": "hemoglobinAnalysis.hbA2Elevated",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "beta-thalassemia-pattern",
+      "level": "strongly-supported",
+      "points": 95,
+      "support": [
+        "HbA2 was reported elevated on age-appropriate hemoglobin analysis."
+      ],
+      "cautions": [
+        "Coexisting iron deficiency can lower HbA2 and should be addressed in interpretation."
+      ]
+    }
+  },
+  {
+    "id": "THAL-BETA-002",
+    "category": "differential",
+    "when": {
+      "fact": "hemoglobinAnalysis.betaGlobinPositive",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "beta-thalassemia-pattern",
+      "level": "meets-defined-pattern",
+      "points": 120,
+      "support": [
+        "Beta-globin molecular testing was reported positive."
+      ]
+    }
+  },
+  {
+    "id": "THAL-ALPHA-001",
+    "category": "differential",
+    "when": {
+      "fact": "hemoglobinAnalysis.hbBartNewbornScreen",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "alpha-thalassemia-pattern",
+      "level": "strongly-supported",
+      "points": 95,
+      "support": [
+        "Hemoglobin Bart\u2019s was reported on the newborn screen."
+      ]
+    }
+  },
+  {
+    "id": "THAL-ALPHA-002",
+    "category": "differential",
+    "when": {
+      "fact": "hemoglobinAnalysis.alphaGlobinPositive",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "alpha-thalassemia-pattern",
+      "level": "meets-defined-pattern",
+      "points": 120,
+      "support": [
+        "Alpha-globin molecular testing was reported positive."
+      ]
+    }
+  },
+  {
+    "id": "LEAD-001",
+    "category": "differential",
+    "when": {
+      "fact": "lead.atOrAboveReference",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "CDC2025_LEAD"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "lead-exposure-associated-anemia",
+      "level": "meets-defined-pattern",
+      "points": 110,
+      "support": [
+        "Blood lead level {{lead.value}} \u00b5g/dL is at or above the CDC reference value of 3.5 \u00b5g/dL."
+      ]
+    }
+  },
+  {
+    "id": "LEAD-002",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "lead.available",
+          "op": "eq",
+          "value": false
+        },
+        {
+          "any": [
+            {
+              "fact": "history.leadExposureRisk",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "history.pica",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "smear.basophilicStippling",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "CDC2025_LEAD",
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "lead-exposure-associated-anemia",
+      "level": "possible",
+      "points": 45,
+      "support": [
+        "Microcytosis plus lead-exposure risk, pica, or basophilic stippling was supplied; no blood lead level was entered."
+      ],
+      "nextSteps": [
+        "Obtain an age- and jurisdiction-appropriate blood lead test."
+      ]
+    }
+  },
+  {
+    "id": "LEAD-003",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "lead.atOrAboveReference",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "CDC2025_LEAD",
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "lead-exposure-associated-anemia",
+      "level": "strongly-supported",
+      "points": 25,
+      "support": [
+        "Microcytosis coexists with an elevated blood lead level; iron deficiency should also be evaluated."
+      ]
+    }
+  },
+  {
+    "id": "SID-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "any": [
+            {
+              "fact": "iron.ironHigh",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "ferritin.highByLab",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        },
+        {
+          "fact": "smear.basophilicStippling",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "sideroblastic-iron-loading-microcytosis",
+      "level": "supported",
+      "points": 65,
+      "support": [
+        "Microcytosis, high iron/ferritin by the reporting laboratory, and basophilic stippling were supplied."
+      ],
+      "cautions": [
+        "Basophilic stippling is not specific; lead and thalassemia remain alternatives."
+      ]
+    }
+  },
+  {
+    "id": "SID-002",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "iron.ironHigh",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "sideroblastic-iron-loading-microcytosis",
+      "level": "possible",
+      "points": 30,
+      "support": [
+        "Microcytosis with locally interpreted high serum iron is atypical for isolated iron deficiency."
+      ]
+    }
+  },
+  {
+    "id": "LOSS-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.high",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.bleedingHistory",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "blood-loss",
+      "level": "strongly-supported",
+      "points": 90,
+      "support": [
+        "Anemia, an elevated reticulocyte response, and a bleeding source/history were supplied."
+      ]
+    }
+  },
+  {
+    "id": "LOSS-002",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "ferritin.low",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.bleedingHistory",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "blood-loss",
+      "level": "supported",
+      "points": 70,
+      "support": [
+        "Iron deficiency anemia coexists with a menstrual, gastrointestinal, epistaxis, donation, or other blood-loss history."
+      ]
+    }
+  },
+  {
+    "id": "LOSS-003",
+    "category": "differential",
+    "when": {
+      "fact": "symptoms.activeMajorBleeding",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "blood-loss",
+      "level": "strongly-supported",
+      "points": 100,
+      "support": [
+        "Active major bleeding was selected."
+      ]
+    }
+  },
+  {
+    "id": "HEM-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.high",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "hemolysis.pattern",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "hemolysis-unspecified",
+      "level": "strongly-supported",
+      "points": 100,
+      "support": [
+        "Anemia, elevated reticulocyte response, and at least two biochemical hemolysis markers were supplied."
+      ]
+    }
+  },
+  {
+    "id": "HEM-002",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.high",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "symptoms.jaundiceOrDarkUrine",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "hemolysis-unspecified",
+      "level": "supported",
+      "points": 65,
+      "support": [
+        "Anemia with elevated reticulocytes and jaundice/dark urine supports a red-cell destruction pathway."
+      ]
+    }
+  },
+  {
+    "id": "HEM-003",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "hemolysis.pattern",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.unknown",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "hemolysis-unspecified",
+      "level": "supported",
+      "points": 55,
+      "support": [
+        "At least two biochemical hemolysis markers are present, but reticulocyte response is missing."
+      ]
+    }
+  },
+  {
+    "id": "AIHA-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "hemolysis.pattern",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "hemolysis.datPositive",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "autoimmune-hemolytic-anemia",
+      "level": "strongly-supported",
+      "points": 110,
+      "support": [
+        "Biochemical hemolysis and a positive direct antiglobulin test were supplied."
+      ]
+    }
+  },
+  {
+    "id": "HS-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "hemolysis.pattern",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "smear.spherocytes",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "hemolysis.datNegative",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "hereditary-spherocytosis",
+      "level": "strongly-supported",
+      "points": 105,
+      "support": [
+        "Hemolysis, spherocytes, and a negative DAT form a hereditary-spherocytosis-compatible pattern."
+      ]
+    }
+  },
+  {
+    "id": "HS-002",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "smear.spherocytes",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "any": [
+            {
+              "fact": "exam.splenomegaly",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "history.knownHereditarySpherocytosis",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "hereditary-spherocytosis",
+      "level": "supported",
+      "points": 55,
+      "support": [
+        "Spherocytes plus splenomegaly or known hereditary spherocytosis were supplied."
+      ]
+    }
+  },
+  {
+    "id": "G6PD-001",
+    "category": "differential",
+    "when": {
+      "fact": "g6pd.deficient",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "BSH2020_G6PD"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "g6pd-deficiency",
+      "level": "meets-defined-pattern",
+      "points": 120,
+      "support": [
+        "A quantitative G6PD assay was reported deficient."
+      ]
+    }
+  },
+  {
+    "id": "G6PD-002",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "hemolysis.pattern",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "smear.biteOrBlisterCells",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.oxidantTrigger",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA",
+      "BSH2020_G6PD"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "g6pd-deficiency",
+      "level": "strongly-supported",
+      "points": 100,
+      "support": [
+        "Hemolysis, bite/blister cells, and an oxidant medication/fava exposure were supplied."
+      ]
+    }
+  },
+  {
+    "id": "G6PD-003",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "g6pd.normal",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "any": [
+            {
+              "fact": "g6pd.testedDuringAcuteHemolysis",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "g6pd.testedSoonAfterTransfusion",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        },
+        {
+          "any": [
+            {
+              "fact": "smear.biteOrBlisterCells",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "history.oxidantTrigger",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "BSH2020_G6PD"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "g6pd-deficiency",
+      "level": "not-excluded",
+      "points": 40,
+      "support": [
+        "The normal G6PD assay was obtained in a context that can obscure deficiency, and clinical/smear suspicion remains."
+      ]
+    }
+  },
+  {
+    "id": "TMA-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "smear.schistocytes",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "any": [
+            {
+              "fact": "hemolysis.pattern",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "retic.high",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "microangiopathic-hemolysis",
+      "level": "strongly-supported",
+      "points": 105,
+      "support": [
+        "Schistocytes coexist with biochemical hemolysis or an elevated reticulocyte response."
+      ]
+    }
+  },
+  {
+    "id": "SICKLE-001",
+    "category": "differential",
+    "when": {
+      "any": [
+        {
+          "fact": "hemoglobinAnalysis.sicklingHemoglobinDetected",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "smear.sickleCells",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.knownSickleCellDisease",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "sickling-hemoglobinopathy",
+      "level": "meets-defined-pattern",
+      "points": 120,
+      "support": [
+        "Known disease, sickling hemoglobin on analysis, or sickled cells were supplied."
+      ]
+    }
+  },
+  {
+    "id": "MAL-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "history.malariaRisk",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "symptoms.fever",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "any": [
+            {
+              "fact": "hemolysis.pattern",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "anemia.present",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "malaria-or-parasitic-hemolysis",
+      "level": "possible",
+      "points": 60,
+      "support": [
+        "Fever, relevant malaria travel/residence, and anemia or hemolysis were supplied."
+      ]
+    }
+  },
+  {
+    "id": "REN-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.normocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.low",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.renalSignal",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "renal-anemia",
+      "level": "strongly-supported",
+      "points": 90,
+      "support": [
+        "Normocytic anemia, an inappropriately low reticulocyte response, and kidney disease/abnormal creatinine were supplied."
+      ]
+    }
+  },
+  {
+    "id": "TEC-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.normocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.low",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "cbc.isolatedAnemia",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.recentViral",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "marrow.ageCompatibleWithTec",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "not": {
+            "any": [
+              {
+                "fact": "exam.splenomegaly",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "fact": "exam.hepatomegaly",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "fact": "exam.lymphadenopathy",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "fact": "smear.blasts",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "transient-erythroblastopenia",
+      "level": "possible",
+      "points": 70,
+      "support": [
+        "A young child has isolated normocytic anemia, reticulocytopenia, and a recent viral illness without selected organomegaly/lymphadenopathy/blasts."
+      ],
+      "cautions": [
+        "This is a diagnosis of exclusion; trend and clinical context are essential."
+      ]
+    }
+  },
+  {
+    "id": "PARVO-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.low",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.knownChronicHemolyticDisease",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.recentViral",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "parvovirus-aplastic-crisis",
+      "level": "strongly-supported",
+      "points": 95,
+      "support": [
+        "Reticulocytopenic anemia followed a viral illness in a patient with a chronic hemolytic disorder."
+      ]
+    }
+  },
+  {
+    "id": "MARROW-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.low",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "cbc.multilineageCytopenia",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "marrow-failure-infiltration",
+      "level": "strongly-supported",
+      "points": 110,
+      "support": [
+        "Production-limited anemia coexists with another cytopenia."
+      ]
+    }
+  },
+  {
+    "id": "MARROW-002",
+    "category": "differential",
+    "when": {
+      "fact": "smear.blasts",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "marrow-failure-infiltration",
+      "level": "meets-defined-pattern",
+      "points": 150,
+      "support": [
+        "Blasts were reported on the peripheral smear; this meets an urgent marrow/infiltration concern pattern, not a final diagnosis."
+      ]
+    }
+  },
+  {
+    "id": "MARROW-003",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.low",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "any": [
+            {
+              "fact": "exam.hepatomegaly",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "exam.splenomegaly",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "exam.lymphadenopathy",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "exam.petechiaeOrBruising",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "marrow-failure-infiltration",
+      "level": "supported",
+      "points": 75,
+      "support": [
+        "Production-limited anemia coexists with organomegaly, lymphadenopathy, petechiae, or unexplained bruising."
+      ]
+    }
+  },
+  {
+    "id": "MEG-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.macrocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "any": [
+            {
+              "fact": "nutrition.b12Low",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "nutrition.folateLow",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "b12-folate-deficiency",
+      "level": "strongly-supported",
+      "points": 100,
+      "support": [
+        "Macrocytic anemia coexists with a locally interpreted low vitamin B12 or folate result."
+      ]
+    }
+  },
+  {
+    "id": "MEG-002",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.macrocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "smear.hypersegmentedNeutrophils",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "b12-folate-deficiency",
+      "level": "supported",
+      "points": 70,
+      "support": [
+        "Macrocytosis and hypersegmented neutrophils support a megaloblastic process."
+      ]
+    }
+  },
+  {
+    "id": "COPPER-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "nutrition.copperLow",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "cbc.neutropenia",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "copper-deficiency",
+      "level": "strongly-supported",
+      "points": 95,
+      "support": [
+        "Anemia, low copper, and neutropenia were supplied."
+      ]
+    }
+  },
+  {
+    "id": "MACRO-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.macrocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.thyroidSignal",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "thyroid-liver-medication-macrocytosis",
+      "level": "supported",
+      "points": 65,
+      "support": [
+        "Macrocytic anemia coexists with thyroid disease or elevated TSH."
+      ]
+    }
+  },
+  {
+    "id": "MACRO-002",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.macrocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.liverSignal",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "thyroid-liver-medication-macrocytosis",
+      "level": "supported",
+      "points": 65,
+      "support": [
+        "Macrocytic anemia coexists with liver disease or abnormal liver tests."
+      ]
+    }
+  },
+  {
+    "id": "MACRO-003",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.macrocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.medicationMacrocytosisRisk",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "thyroid-liver-medication-macrocytosis",
+      "level": "possible",
+      "points": 50,
+      "support": [
+        "Macrocytic anemia coexists with a medication known by the clinician to be associated with macrocytosis."
+      ]
+    }
+  },
+  {
+    "id": "MACRO-004",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.macrocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.high",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "thyroid-liver-medication-macrocytosis",
+      "level": "possible",
+      "points": 40,
+      "support": [
+        "Macrocytosis with elevated reticulocytes may reflect reticulocytosis rather than a primary megaloblastic process."
+      ],
+      "nextSteps": [
+        "Evaluate for hemolysis or blood loss before assigning a nutrient deficiency."
+      ]
+    }
+  },
+  {
+    "id": "IMF-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.low",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "marrow.congenitalSignalCount",
+          "op": "gte",
+          "value": 1
+        },
+        {
+          "any": [
+            {
+              "fact": "morphology.macrocytic",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "cbc.multilineageCytopenia",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "inherited-marrow-failure",
+      "level": "strongly-supported",
+      "points": 95,
+      "support": [
+        "Production-limited anemia plus congenital/phenotypic signals and macrocytosis or another cytopenia were supplied."
+      ]
+    }
+  },
+  {
+    "id": "IMF-DBA-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.macrocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.low",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "marrow.ageCompatibleWithDba",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "cbc.isolatedAnemia",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "marrow.congenitalSignalCount",
+          "op": "gte",
+          "value": 1
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "inherited-marrow-failure",
+      "level": "possible",
+      "points": 75,
+      "support": [
+        "Early infancy, macrocytic isolated reticulocytopenic anemia, and a congenital signal are compatible with a Diamond-Blackfan-type pathway."
+      ]
+    }
+  },
+  {
+    "id": "IMF-FANCONI-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "cbc.multilineageCytopenia",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "any": [
+            {
+              "fact": "history.thumbOrRadiusAnomaly",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "history.abnormalSkinPigmentation",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "history.shortStature",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "inherited-marrow-failure",
+      "level": "possible",
+      "points": 80,
+      "support": [
+        "Anemia with another cytopenia and a limb, pigmentation, or growth phenotype is compatible with a Fanconi/inherited-marrow-failure pathway."
+      ]
+    }
+  },
+  {
+    "id": "MIX-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "ferritin.low",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "any": [
+            {
+              "fact": "nutrition.b12Low",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "nutrition.folateLow",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA",
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "mixed-anemia-or-transfusion-effect",
+      "level": "strongly-supported",
+      "points": 85,
+      "support": [
+        "Biochemical iron deficiency coexists with low B12 or folate, so MCV may be deceptively normal."
+      ]
+    }
+  },
+  {
+    "id": "MIX-002",
+    "category": "differential",
+    "when": {
+      "fact": "patient.recentTransfusion",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA",
+      "BSH2020_G6PD"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "mixed-anemia-or-transfusion-effect",
+      "level": "possible",
+      "points": 55,
+      "support": [
+        "Recent transfusion can mix red-cell populations and alter indices, smear, reticulocytes, and specialized assays."
+      ]
+    }
+  },
+  {
+    "id": "IRIDA-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.priorAdequateIronTrialNoResponse",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.adherenceVerified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "not": {
+            "fact": "history.ongoingBloodLossKnown",
+            "op": "eq",
+            "value": true
+          }
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA",
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "iron-refractory-iron-deficiency-anemia",
+      "level": "possible",
+      "points": 65,
+      "support": [
+        "Persistent microcytic anemia despite a clinician-verified adequate iron trial and adherence was supplied, without a known ongoing blood-loss source."
+      ],
+      "cautions": [
+        "A rare iron-handling disorder should be considered only after common causes of apparent nonresponse are excluded."
+      ]
+    }
+  },
+  {
+    "id": "Q-001",
+    "category": "adaptive-question",
+    "when": {
+      "fact": "patient.ageMonths",
+      "op": "missing"
+    },
+    "evidence": [
+      "AAP2026_IDA",
+      "WHO2024_HB"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 1,
+      "section": "demographics",
+      "prompt": "What is the patient age in months?",
+      "why": "Age determines the appropriate hemoglobin/MCV reference interval and several age-specific differentials."
+    }
+  },
+  {
+    "id": "Q-002",
+    "category": "adaptive-question",
+    "when": {
+      "fact": "cbc.hb",
+      "op": "missing"
+    },
+    "evidence": [
+      "AAP2026_IDA",
+      "WHO2024_HB"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 2,
+      "section": "cbc",
+      "prompt": "What is the hemoglobin in g/dL?",
+      "why": "Hemoglobin relative to an age/sex or local lower limit defines anemia."
+    }
+  },
+  {
+    "id": "Q-003",
+    "category": "adaptive-question",
+    "when": {
+      "fact": "thresholds.hbLower",
+      "op": "missing"
+    },
+    "evidence": [
+      "AAP2026_IDA",
+      "WHO2024_HB"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 3,
+      "section": "cbc",
+      "prompt": "What lower hemoglobin limit did the reporting laboratory use?",
+      "why": "No safe built-in threshold is available for this age/sex configuration."
+    }
+  },
+  {
+    "id": "Q-004",
+    "category": "adaptive-question",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.unknown",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 5,
+      "section": "reticulocytes",
+      "prompt": "Is the reticulocyte response low/inappropriately normal or high for this patient and laboratory?",
+      "why": "Reticulocyte response is the highest-yield discriminator between impaired production and blood loss/hemolysis."
+    }
+  },
+  {
+    "id": "Q-005",
+    "category": "adaptive-question",
+    "when": {
+      "fact": "morphology.indeterminate",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "AAP2026_IDA",
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 6,
+      "section": "cbc",
+      "prompt": "Enter MCV and the local MCV lower/upper limits.",
+      "why": "Morphology cannot be classified without MCV and appropriate limits."
+    }
+  },
+  {
+    "id": "Q-MICRO-001",
+    "category": "adaptive-question",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "ferritin.available",
+          "op": "eq",
+          "value": false
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 10,
+      "section": "microcytic",
+      "prompt": "What is the ferritin in ng/mL?",
+      "why": "Ferritin is the core biochemical discriminator for iron deficiency; a low value remains important even with inflammation."
+    }
+  },
+  {
+    "id": "Q-MICRO-002",
+    "category": "adaptive-question",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "ferritin.notLow",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "ferritin.crpKnown",
+          "op": "eq",
+          "value": false
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 11,
+      "section": "microcytic",
+      "prompt": "Is CRP normal or elevated, or is the child clinically well without inflammatory disease?",
+      "why": "Inflammation can elevate ferritin and obscure coexisting iron deficiency."
+    }
+  },
+  {
+    "id": "Q-MICRO-003",
+    "category": "adaptive-question",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "ferritin.notLow",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "not": {
+            "any": [
+              {
+                "fact": "hemoglobinAnalysis.hbA2Elevated",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "fact": "hemoglobinAnalysis.hbBartNewbornScreen",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "fact": "hemoglobinAnalysis.alphaGlobinPositive",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "fact": "hemoglobinAnalysis.betaGlobinPositive",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 12,
+      "section": "microcytic",
+      "prompt": "What do the newborn screen and age-appropriate hemoglobin analysis show?",
+      "why": "Persistent non-iron-deficient microcytosis warrants evaluation for alpha/beta thalassemia and other hemoglobinopathies."
+    }
+  },
+  {
+    "id": "Q-MICRO-004",
+    "category": "adaptive-question",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "lead.available",
+          "op": "eq",
+          "value": false
+        },
+        {
+          "any": [
+            {
+              "fact": "history.leadExposureRisk",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "history.pica",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "smear.basophilicStippling",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "CDC2025_LEAD"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 13,
+      "section": "microcytic",
+      "prompt": "Obtain/enter a blood lead level and specimen type.",
+      "why": "Lead risk or compatible smear findings require direct blood lead testing."
+    }
+  },
+  {
+    "id": "Q-MICRO-005",
+    "category": "adaptive-question",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.microcytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.bleedingHistory",
+          "op": "eq",
+          "value": false
+        }
+      ]
+    },
+    "evidence": [
+      "AAP2026_IDA"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 14,
+      "section": "microcytic",
+      "prompt": "Has menstrual, gastrointestinal, nasal, donation-related, urinary, or other blood loss been assessed?",
+      "why": "Chronic blood loss is an important cause of iron deficiency in older children and adolescents."
+    }
+  },
+  {
+    "id": "Q-NORMO-HIGH-001",
+    "category": "adaptive-question",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.normocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.high",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "hemolysis.markerCount",
+          "op": "lt",
+          "value": 2
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 10,
+      "section": "normocytic-high-retic",
+      "prompt": "Enter indirect bilirubin, LDH, haptoglobin, DAT, and smear findings.",
+      "why": "A high reticulocyte response shifts the differential toward hemolysis or blood loss."
+    }
+  },
+  {
+    "id": "Q-NORMO-HIGH-002",
+    "category": "adaptive-question",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.normocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.high",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "history.bleedingHistory",
+          "op": "eq",
+          "value": false
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 11,
+      "section": "normocytic-high-retic",
+      "prompt": "Is there occult or overt blood loss?",
+      "why": "Blood loss and hemolysis are the main high-reticulocyte branches."
+    }
+  },
+  {
+    "id": "Q-NORMO-LOW-001",
+    "category": "adaptive-question",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.normocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.low",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "not": {
+            "any": [
+              {
+                "fact": "history.renalSignal",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "fact": "history.chronicInflammation",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "fact": "cbc.multilineageCytopenia",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 10,
+      "section": "normocytic-low-retic",
+      "prompt": "Assess renal function, inflammatory disease/CRP, recent viral illness, and the other cell lines.",
+      "why": "Low-reticulocyte normocytic anemia requires evaluation for renal/inflammatory suppression, transient erythroblastopenia, infection, and marrow disease."
+    }
+  },
+  {
+    "id": "Q-MACRO-001",
+    "category": "adaptive-question",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.macrocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "retic.unknown",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 10,
+      "section": "macrocytic",
+      "prompt": "What is the reticulocyte response?",
+      "why": "Reticulocytosis itself can elevate MCV; low reticulocytes suggest production failure."
+    }
+  },
+  {
+    "id": "Q-MACRO-002",
+    "category": "adaptive-question",
+    "when": {
+      "all": [
+        {
+          "fact": "morphology.macrocytic",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "not": {
+            "any": [
+              {
+                "fact": "nutrition.b12Low",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "fact": "nutrition.folateLow",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 11,
+      "section": "macrocytic",
+      "prompt": "Enter B12, folate, smear, TSH, liver tests, and relevant medication exposure.",
+      "why": "These data separate megaloblastic from non-megaloblastic macrocytosis."
+    }
+  },
+  {
+    "id": "Q-SMEAR-001",
+    "category": "adaptive-question",
+    "when": {
+      "all": [
+        {
+          "fact": "anemia.present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "smear.provided",
+          "op": "eq",
+          "value": false
+        },
+        {
+          "any": [
+            {
+              "fact": "retic.high",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "cbc.multilineageCytopenia",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": "morphology.macrocytic",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 15,
+      "section": "smear",
+      "prompt": "Has a peripheral smear been reviewed by an experienced laboratory professional?",
+      "why": "Smear findings can identify hemolysis, blasts, abnormal morphology, and megaloblastic changes."
+    }
+  },
+  {
+    "id": "Q-CYT-001",
+    "category": "adaptive-question",
+    "when": {
+      "fact": "cbc.multilineageCytopenia",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "BLOOD2022_PED_ANEMIA"
+    ],
+    "output": {
+      "type": "question",
+      "priority": 4,
+      "section": "urgent",
+      "prompt": "Has the CBC differential and smear been urgently reviewed, and is pediatric hematology/oncology involved?",
+      "why": "Anemia with another cytopenia may indicate marrow failure, infiltration, severe infection, immune disease, or other systemic pathology."
+    }
+  },
+  {
+    "id": "ALERT-LEAD-CAPILLARY",
+    "category": "safety",
+    "when": {
+      "fact": "lead.elevatedCapillary",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "CDC2025_LEAD"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "important",
+      "title": "Elevated capillary lead screen requires venous confirmation",
+      "detail": "The capillary blood lead level is at or above 3.5 \u00b5g/dL. CDC guidance calls for confirmatory venous testing on a level-dependent timeline.",
+      "actions": [
+        "Arrange confirmatory venous testing using the current CDC/local timeline.",
+        "Take an environmental exposure history and assess for coexisting iron deficiency."
+      ]
+    }
+  }
+]

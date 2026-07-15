@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/candidate.schema.json",
+  "title": "Pediatric Anemia CDSS Diagnostic Pattern",
+  "type": "object",
+  "required": ["id", "label", "category", "summary", "defaultNextSteps", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string" },
+    "label": { "type": "string" },
+    "category": { "type": "string" },
+    "summary": { "type": "string" },
+    "defaultNextSteps": { "type": "array", "items": { "type": "string" } },
+    "evidence": { "type": "array", "uniqueItems": true, "items": { "type": "string" } }
+  }
+}
