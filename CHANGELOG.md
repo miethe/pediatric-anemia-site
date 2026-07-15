@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.1 — 2026-07-15
+
+- Selecting a stage now folds the six-stage grid down to that stage so the decision specification becomes the focus; the grid re-expands from the collapsed card or the "Show all six steps" control.
+- Added Previous/Next step controls to the collapsed pipeline, which move the decision specification between stages.
+- Made the decision specification collapsible, matching the morphology deep dives.
+- Added a sticky table of contents to the algorithm tab on desktop, with a scroll indicator, every section, and all six stages as clickable sub-entries.
+- Stamped built asset URLs with a content hash so a deploy cannot serve new markup against cached code or an outdated knowledge base.
+
 ## 0.3.0 — 2026-07-15
 
 - Replaced the static Algorithm tab with an interactive algorithm explorer: per-step evidence, data fields, executed expressions, worked examples, and outputs.

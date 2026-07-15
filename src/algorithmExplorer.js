@@ -85,8 +85,21 @@ function renderStepCards(steps = []) {
           <span>${step.examples?.length ?? 0} examples</span>
         </span>
         <span class="algorithm-step-action">Explore step <span aria-hidden="true">→</span></span>
+        <span class="algorithm-step-reopen">Expand <span aria-hidden="true">▾</span></span>
       </button>`;
   }).join('');
+}
+
+function renderTocSteps(steps = []) {
+  const root = $('#algorithm-toc-steps');
+  if (!root) return;
+  root.innerHTML = steps.map((step, index) => `
+    <li>
+      <a class="algorithm-toc-step" href="#algorithm-step-detail" data-step-index="${index}">
+        <span class="algorithm-toc-step-number">${escapeHtml(step.number)}</span>
+        <span class="algorithm-toc-step-title">${escapeHtml(step.title)}</span>
+      </a>
+    </li>`).join('');
 }
 
 function renderInputTable(inputs = []) {
@@ -137,23 +150,29 @@ function renderExamples(examples = []) {
     </article>`).join('')}</div>`;
 }
 
-function renderStepDetail(step) {
+// Mirrors the branch deep dives: a <details> whose <summary> keeps the header
+// styling, so the specification can be folded away while its step stays legible.
+function renderStepDetail(step, { open = true } = {}) {
   const root = $('#algorithm-step-detail');
   if (!root || !step) return;
   root.innerHTML = `
-    <article class="algorithm-detail-card" tabindex="-1">
-      <header class="algorithm-detail-header">
+    <details class="algorithm-detail-card"${open ? ' open' : ''}>
+      <summary class="algorithm-detail-header">
         <div class="algorithm-detail-title">
           <span class="algorithm-detail-number">${escapeHtml(step.number)}</span>
           <div><p>Detailed decision specification</p><h3>${escapeHtml(step.title)}</h3></div>
         </div>
-        <div class="algorithm-detail-counts">
-          <span><strong>${step.inputs?.length ?? 0}</strong> input groups</span>
-          <span><strong>${step.equations?.length ?? 0}</strong> expressions</span>
-          <span><strong>${step.evidence?.length ?? 0}</strong> evidence sources</span>
+        <div class="algorithm-detail-head-meta">
+          <div class="algorithm-detail-counts">
+            <span><strong>${step.inputs?.length ?? 0}</strong> input groups</span>
+            <span><strong>${step.equations?.length ?? 0}</strong> expressions</span>
+            <span><strong>${step.evidence?.length ?? 0}</strong> evidence sources</span>
+          </div>
+          <span class="algorithm-detail-toggle">Details</span>
         </div>
-      </header>
+      </summary>
 
+      <div class="algorithm-detail-body" tabindex="-1">
       <div class="algorithm-question-callout">
         <span>Clinical question</span>
         <strong>${escapeHtml(step.clinicalQuestion)}</strong>
@@ -185,7 +204,8 @@ function renderStepDetail(step) {
       </div>
 
       <aside class="algorithm-caveat"><strong>Interpretive boundary</strong><span>${escapeHtml(step.caveat)}</span></aside>
-    </article>`;
+      </div>
+    </details>`;
 }
 
 function renderBranches(branches = []) {
@@ -401,6 +421,147 @@ function renderWalkthrough(input, result, facts, metadata) {
     </article>`;
 }
 
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+// Selecting a step folds the six-card grid down to the chosen card so the
+// specification below it becomes the focus. The grid is not re-rendered — the
+// collapsed class hides the other cards — so card state survives the fold.
+function setupStepExplorer(steps = []) {
+  const map = $('#algorithm-step-map');
+  const section = $('#algorithm-section-pipeline');
+  if (!map || !section || !steps.length) return;
+
+  const controls = $('#algorithm-map-controls');
+  const previousButton = $('#algorithm-prev-step');
+  const nextButton = $('#algorithm-next-step');
+  const position = $('#algorithm-step-position');
+  const expandButton = $('#algorithm-expand-steps');
+
+  let activeIndex = 0;
+  let collapsed = false;
+
+  function sync() {
+    section.classList.toggle('collapsed', collapsed);
+    $$('.algorithm-step-card', map).forEach((card, index) => {
+      const active = index === activeIndex;
+      card.classList.toggle('active', active);
+      card.setAttribute('aria-pressed', String(active));
+      // A hidden card must not stay in the tab order once the grid folds.
+      card.tabIndex = collapsed && !active ? -1 : 0;
+    });
+    $$('.algorithm-toc-step').forEach((link, index) => {
+      link.classList.toggle('active', index === activeIndex);
+      if (index === activeIndex) link.setAttribute('aria-current', 'true');
+      else link.removeAttribute('aria-current');
+    });
+    if (controls) controls.hidden = !collapsed;
+    if (position) position.textContent = `Step ${steps[activeIndex].number} of ${steps.length}`;
+    if (previousButton) previousButton.disabled = activeIndex === 0;
+    if (nextButton) nextButton.disabled = activeIndex === steps.length - 1;
+    if (expandButton) expandButton.setAttribute('aria-expanded', String(!collapsed));
+  }
+
+  function selectStep(index, { collapse = true, focusDetail = false } = {}) {
+    activeIndex = clamp(index, 0, steps.length - 1);
+    if (collapse) collapsed = true;
+    // Re-render open: a step selected while the specification is folded shut
+    // would otherwise change nothing the reader can see.
+    renderStepDetail(steps[activeIndex], { open: true });
+    sync();
+    if (focusDetail) $('#algorithm-step-detail .algorithm-detail-body')?.focus({ preventScroll: true });
+  }
+
+  function expandMap({ focusActive = false } = {}) {
+    collapsed = false;
+    sync();
+    if (focusActive) $$('.algorithm-step-card', map)[activeIndex]?.focus({ preventScroll: true });
+  }
+
+  map.addEventListener('click', (event) => {
+    const card = event.target.closest('[data-algorithm-step]');
+    if (!card) return;
+    const index = $$('.algorithm-step-card', map).indexOf(card);
+    if (index < 0) return;
+    // The lone visible card doubles as the control that unfolds the grid.
+    if (collapsed && index === activeIndex) expandMap({ focusActive: true });
+    else selectStep(index, { focusDetail: true });
+  });
+
+  previousButton?.addEventListener('click', () => selectStep(activeIndex - 1, { focusDetail: true }));
+  nextButton?.addEventListener('click', () => selectStep(activeIndex + 1, { focusDetail: true }));
+  expandButton?.addEventListener('click', () => expandMap({ focusActive: true }));
+
+  $('#algorithm-toc-steps')?.addEventListener('click', (event) => {
+    const link = event.target.closest('[data-step-index]');
+    if (!link) return;
+    selectStep(Number(link.dataset.stepIndex));
+  });
+
+  sync();
+}
+
+// Section-level indicator: the active entry is the last section whose top has
+// passed the reading line, so it tracks what the reader is actually looking at
+// rather than whatever happens to be intersecting the viewport.
+function setupTableOfContents() {
+  const panel = $('#algorithm');
+  const nav = $('#algorithm-toc-nav');
+  if (!panel || !nav) return;
+
+  const links = $$('.algorithm-toc-link', nav);
+  const sections = links
+    .map((link) => ({ link, section: document.getElementById(link.getAttribute('href').slice(1)) }))
+    .filter((entry) => entry.section);
+  if (!sections.length) return;
+
+  // The tab router in app.js switches panels on hashchange and treats any hash
+  // that is not a panel id as the Assessment tab. Letting these anchors reach
+  // location.hash would therefore throw the reader out of the Algorithm tab, so
+  // the links keep their href for semantics but scroll themselves.
+  nav.addEventListener('click', (event) => {
+    const link = event.target.closest('a[href^="#"]');
+    if (!link) return;
+    const target = document.getElementById(link.getAttribute('href').slice(1));
+    if (!target) return;
+    event.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  const READING_LINE = 140;
+  let queued = false;
+
+  function update() {
+    queued = false;
+    if (panel.hidden) return;
+    const scrolled = window.scrollY + window.innerHeight;
+    const atBottom = scrolled >= document.body.scrollHeight - 2;
+    let current = sections[0];
+    for (const entry of sections) {
+      if (entry.section.getBoundingClientRect().top <= READING_LINE) current = entry;
+    }
+    // The last section is often too short to ever reach the reading line.
+    if (atBottom) current = sections[sections.length - 1];
+    for (const entry of sections) {
+      const active = entry === current;
+      entry.link.classList.toggle('active', active);
+      if (active) entry.link.setAttribute('aria-current', 'true');
+      else entry.link.removeAttribute('aria-current');
+    }
+  }
+
+  function onScroll() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(update);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  // The panel starts hidden when another tab is active; recheck when shown.
+  new MutationObserver(update).observe(panel, { attributes: true, attributeFilter: ['hidden'] });
+  update();
+}
+
 export async function initializeAlgorithmExplorer({ rules, candidates, onUseCase } = {}) {
   const explorer = $('#algorithm-explorer');
   if (!explorer || explorer.dataset.initialized === 'true') return;
@@ -414,21 +575,9 @@ export async function initializeAlgorithmExplorer({ rules, candidates, onUseCase
   renderStepCards(data.steps);
   renderStepDetail(data.steps[0]);
   renderBranches(data.branches);
-
-  const stepById = new Map(data.steps.map((step) => [step.id, step]));
-  $('#algorithm-step-map')?.addEventListener('click', (event) => {
-    const button = event.target.closest('[data-algorithm-step]');
-    if (!button) return;
-    const step = stepById.get(button.dataset.algorithmStep);
-    if (!step) return;
-    $$('.algorithm-step-card', $('#algorithm-step-map')).forEach((item) => {
-      const active = item === button;
-      item.classList.toggle('active', active);
-      item.setAttribute('aria-pressed', String(active));
-    });
-    renderStepDetail(step);
-    $('#algorithm-step-detail .algorithm-detail-card')?.focus({ preventScroll: true });
-  });
+  renderTocSteps(data.steps);
+  setupStepExplorer(data.steps);
+  setupTableOfContents();
 
   const select = $('#algorithm-example-select');
   const description = $('#algorithm-example-description');

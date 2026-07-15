@@ -427,8 +427,9 @@
     </section>
 
     <section id="algorithm" class="tab-panel" hidden>
+      <div class="algorithm-layout">
       <div id="algorithm-explorer" class="content-page algorithm-explorer">
-        <div class="page-heading algorithm-heading">
+        <div class="page-heading algorithm-heading" id="algorithm-section-top">
           <div>
             <p class="eyebrow">Transparent reasoning model</p>
             <h2>Deterministic pediatric anemia algorithm</h2>
@@ -441,7 +442,7 @@
           </div>
         </div>
 
-        <section class="algorithm-overview" aria-labelledby="algorithm-overview-title">
+        <section class="algorithm-overview" id="algorithm-section-overview" aria-labelledby="algorithm-overview-title">
           <div class="algorithm-overview-copy">
             <p class="eyebrow">How to read the model</p>
             <h3 id="algorithm-overview-title">Every decision is independently reviewable</h3>
@@ -457,17 +458,31 @@
           <span><i class="key-output" aria-hidden="true">→</i><strong>Output</strong><small>Alert, fact, question, or pattern</small></span>
         </div>
 
-        <section class="algorithm-map-section" aria-labelledby="algorithm-map-title">
+        <section class="algorithm-map-section" id="algorithm-section-pipeline" aria-labelledby="algorithm-map-title">
           <div class="algorithm-section-title">
             <div><p class="eyebrow">Six-stage pipeline</p><h3 id="algorithm-map-title">Select a step to inspect its evidence and mechanics</h3></div>
-            <p>Each card previews the central expression and shows how much supporting detail is available.</p>
+            <p class="algorithm-map-hint">Each card previews the central expression and shows how much supporting detail is available.</p>
           </div>
           <div id="algorithm-step-map" class="algorithm-step-map" aria-label="Interactive algorithm steps"></div>
+          <div class="algorithm-map-controls" id="algorithm-map-controls" hidden>
+            <div class="algorithm-step-paging">
+              <button type="button" id="algorithm-prev-step" class="algorithm-step-nav" aria-controls="algorithm-step-detail">
+                <span aria-hidden="true">←</span><span>Previous step</span>
+              </button>
+              <span class="algorithm-step-position" id="algorithm-step-position" aria-live="polite"></span>
+              <button type="button" id="algorithm-next-step" class="algorithm-step-nav" aria-controls="algorithm-step-detail">
+                <span>Next step</span><span aria-hidden="true">→</span>
+              </button>
+            </div>
+            <button type="button" id="algorithm-expand-steps" class="algorithm-expand-steps" aria-expanded="false" aria-controls="algorithm-step-map">
+              Show all six steps
+            </button>
+          </div>
         </section>
 
         <div id="algorithm-step-detail" class="algorithm-step-detail" aria-live="polite"></div>
 
-        <section class="algorithm-branches-section" aria-labelledby="algorithm-branches-title">
+        <section class="algorithm-branches-section" id="algorithm-section-branches" aria-labelledby="algorithm-branches-title">
           <div class="algorithm-section-title">
             <div><p class="eyebrow">Morphology deep dives</p><h3 id="algorithm-branches-title">What each branch is trying to distinguish</h3></div>
             <p>Open a branch to compare its sequence, discriminating findings, counterpoints, and primary evidence.</p>
@@ -475,7 +490,7 @@
           <div id="algorithm-branch-grid" class="algorithm-branch-grid"></div>
         </section>
 
-        <section class="algorithm-case-lab" aria-labelledby="algorithm-case-title">
+        <section class="algorithm-case-lab" id="algorithm-section-case" aria-labelledby="algorithm-case-title">
           <div class="algorithm-case-toolbar">
             <div>
               <p class="eyebrow">Live case illustration</p>
@@ -490,7 +505,7 @@
           <div id="algorithm-walkthrough" aria-live="polite"></div>
         </section>
 
-        <section class="card algorithm-contract-card" aria-labelledby="algorithm-contract-title">
+        <section class="card algorithm-contract-card" id="algorithm-section-contract" aria-labelledby="algorithm-contract-title">
           <div>
             <p class="eyebrow">Execution contract</p>
             <h3 id="algorithm-contract-title">From normalized input to reviewable output</h3>
@@ -513,6 +528,20 @@
         </section>
 
         <noscript><p class="algorithm-error"><strong>JavaScript is required for the interactive algorithm explorer.</strong><span>The underlying static clinical algorithm remains available in the project documentation.</span></p></noscript>
+      </div>
+
+      <aside class="algorithm-toc" id="algorithm-toc" aria-labelledby="algorithm-toc-heading">
+        <p class="algorithm-toc-heading" id="algorithm-toc-heading">On this page</p>
+        <nav class="algorithm-toc-nav" id="algorithm-toc-nav" aria-labelledby="algorithm-toc-heading">
+          <a class="algorithm-toc-link" href="#algorithm-section-overview">How to read the model</a>
+          <a class="algorithm-toc-link" href="#algorithm-section-pipeline">Six-stage pipeline</a>
+          <ol class="algorithm-toc-steps" id="algorithm-toc-steps"></ol>
+          <a class="algorithm-toc-link" href="#algorithm-step-detail">Decision specification</a>
+          <a class="algorithm-toc-link" href="#algorithm-section-branches">Morphology deep dives</a>
+          <a class="algorithm-toc-link" href="#algorithm-section-case">Live case illustration</a>
+          <a class="algorithm-toc-link" href="#algorithm-section-contract">Execution contract</a>
+        </nav>
+      </aside>
       </div>
     </section>
 

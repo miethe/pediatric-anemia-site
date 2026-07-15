@@ -504,6 +504,9 @@ footer strong { color: #334e68; }
 /* --------------------------------------------------------------------------
    Algorithm evidence explorer
    -------------------------------------------------------------------------- */
+/* The palette sits on the layout wrapper, not the explorer, because the table
+   of contents is a sibling of the explorer and needs the same custom props. */
+.algorithm-layout,
 .algorithm-explorer {
   --algorithm-navy: #102a43;
   --algorithm-blue: #0b7285;
@@ -511,8 +514,8 @@ footer strong { color: #334e68; }
   --algorithm-pale: #eef8f9;
   --algorithm-gold: #b7791f;
   --algorithm-purple: #6b4fa1;
-  max-width: 1280px;
 }
+.algorithm-explorer { max-width: 1280px; }
 
 .algorithm-heading {
   display: flex;
@@ -635,12 +638,179 @@ footer strong { color: #334e68; }
 .algorithm-section-title h3 { margin: 0; color: var(--ink); font-size: 1.18rem; }
 .algorithm-section-title > p { max-width: 470px; margin: 0; color: var(--muted); font-size: .78rem; text-align: right; }
 
+/* The algorithm tab pairs the explorer with a table of contents. The document
+   itself scrolls, so the aside sticks against the viewport exactly like
+   .tab-nav does on the left — neither rail moves while the middle scrolls. */
+.algorithm-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 224px;
+  gap: 1.6rem;
+  align-items: start;
+}
+/* Anchor jumps land just below the viewport edge rather than flush against it,
+   and clear of the sticky tab strip once the shell stacks on small screens. */
+.algorithm-overview,
+.algorithm-map-section,
+.algorithm-step-detail,
+.algorithm-branches-section,
+.algorithm-case-lab,
+.algorithm-contract-card { scroll-margin-top: 1rem; }
+.algorithm-toc {
+  position: sticky;
+  top: 1rem;
+  align-self: start;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: .9rem .75rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  /* Opaque, not translucent: the rail owns its own column with nothing behind
+     it, so a backdrop-filter would only cost compositing on every scroll. */
+  background: var(--surface);
+}
+.algorithm-toc-heading {
+  margin: 0 0 .55rem;
+  padding-left: .5rem;
+  color: var(--muted);
+  font-size: .6rem;
+  font-weight: 900;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.algorithm-toc-nav { display: grid; gap: .1rem; }
+.algorithm-toc-link {
+  position: relative;
+  display: block;
+  padding: .4rem .5rem .4rem .68rem;
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: .74rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-decoration: none;
+}
+.algorithm-toc-link::before {
+  content: '';
+  position: absolute;
+  top: .42rem;
+  bottom: .42rem;
+  left: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: transparent;
+}
+.algorithm-toc-link:hover { background: var(--surface-alt); color: var(--ink); }
+.algorithm-toc-link.active { color: var(--algorithm-blue); background: rgba(23,72,100,.07); }
+.algorithm-toc-link.active::before { background: var(--algorithm-blue); }
+.algorithm-toc-steps {
+  display: grid;
+  gap: .06rem;
+  margin: .1rem 0 .3rem;
+  padding: 0 0 0 .68rem;
+  list-style: none;
+  border-left: 1px solid var(--line);
+}
+.algorithm-toc-step {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: .4rem;
+  align-items: center;
+  padding: .3rem .4rem;
+  border-radius: 7px;
+  color: var(--muted);
+  font-size: .69rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.algorithm-toc-step-number {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  background: var(--surface-alt);
+  color: var(--muted);
+  font-size: .56rem;
+  font-weight: 900;
+}
+.algorithm-toc-step-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.algorithm-toc-step:hover { background: var(--surface-alt); color: var(--ink); }
+.algorithm-toc-step.active { color: var(--algorithm-blue); }
+.algorithm-toc-step.active .algorithm-toc-step-number { background: var(--algorithm-cyan); color: #04252c; }
+
 .algorithm-step-map {
   position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: .75rem;
 }
+/* Collapsed: every card but the active one is removed from the grid, and the
+   survivor flattens into a single summary row. */
+.algorithm-map-section.collapsed .algorithm-step-map { grid-template-columns: 1fr; }
+.algorithm-map-section.collapsed .algorithm-step-card:not(.active) { display: none; }
+.algorithm-map-section.collapsed .algorithm-step-card.active {
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  grid-template-rows: auto;
+  align-items: center;
+  min-height: 0;
+  cursor: zoom-out;
+}
+.algorithm-map-section.collapsed .algorithm-step-card.active .algorithm-step-copy > span,
+.algorithm-map-section.collapsed .algorithm-step-card.active .algorithm-step-copy code,
+.algorithm-map-section.collapsed .algorithm-step-card.active .algorithm-step-meta,
+.algorithm-map-section.collapsed .algorithm-step-card.active .algorithm-step-action { display: none; }
+.algorithm-map-section.collapsed .algorithm-step-card.active .algorithm-step-reopen { display: inline-flex; }
+.algorithm-step-reopen {
+  display: none;
+  align-self: center;
+  gap: .3rem;
+  align-items: center;
+  color: var(--algorithm-blue);
+  font-size: .64rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.algorithm-map-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+  margin-top: .6rem;
+}
+.algorithm-step-paging { display: flex; align-items: center; gap: .4rem; }
+.algorithm-step-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .42rem .7rem;
+  border: 1px solid #d5e1e9;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--algorithm-blue);
+  font-size: .7rem;
+  font-weight: 850;
+}
+.algorithm-step-nav:hover:not(:disabled) { border-color: var(--algorithm-cyan); background: #f2fbfb; }
+.algorithm-step-nav:disabled { opacity: .42; cursor: not-allowed; }
+.algorithm-step-position {
+  min-width: 84px;
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 850;
+  text-align: center;
+}
+.algorithm-expand-steps {
+  padding: .42rem .75rem;
+  border: 1px dashed #c3d3de;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--algorithm-blue);
+  font-size: .68rem;
+  font-weight: 900;
+}
+.algorithm-expand-steps:hover { border-style: solid; background: #f2fbfb; }
 .algorithm-step-card {
   position: relative;
   display: grid;
@@ -760,6 +930,22 @@ footer strong { color: #334e68; }
   box-shadow: 0 16px 34px rgba(16,42,67,.08);
 }
 .algorithm-detail-card:focus { outline: none; }
+.algorithm-detail-body:focus { outline: none; }
+/* .algorithm-detail-header is a <summary> so the specification can fold; the
+   marker is suppressed and the +/- affordance matches the branch deep dives. */
+.algorithm-detail-header { cursor: pointer; list-style: none; }
+.algorithm-detail-header::-webkit-details-marker { display: none; }
+.algorithm-detail-header:hover .algorithm-detail-toggle { color: #fff; }
+.algorithm-detail-head-meta { display: flex; align-items: center; gap: .7rem; }
+.algorithm-detail-toggle {
+  flex: 0 0 auto;
+  color: var(--algorithm-cyan);
+  font-size: .65rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.algorithm-detail-toggle::after { content: ' +'; }
+.algorithm-detail-card[open] .algorithm-detail-toggle::after { content: ' −'; }
 .algorithm-detail-header {
   display: flex;
   align-items: center;
@@ -1153,6 +1339,11 @@ footer strong { color: #334e68; }
 .algorithm-level-key strong { display: grid; place-items: center; width: 23px; height: 23px; border-radius: 7px; background: #dff1f3; color: #075a69; }
 
 @media (max-width: 1080px) {
+  /* Below desktop the explorer takes the full column and the table of
+     contents is dropped rather than stacked: a non-sticky list of links above
+     the content would just push the actual material off the screen. */
+  .algorithm-layout { grid-template-columns: minmax(0, 1fr); }
+  .algorithm-toc { display: none; }
   .algorithm-overview { grid-template-columns: 1fr; }
   .algorithm-step-map { grid-template-columns: 1fr; }
   .algorithm-step-card.active::after { display: none; }
@@ -1227,7 +1418,12 @@ footer strong { color: #334e68; }
   .algorithm-heading-badges,
   .algorithm-visual-key,
   .algorithm-case-controls,
+  .algorithm-toc,
+  .algorithm-map-controls,
+  .algorithm-step-reopen,
+  .algorithm-detail-toggle,
   .algorithm-step-action { display: none !important; }
+  .algorithm-layout { display: block; }
   .algorithm-step-map { grid-template-columns: repeat(2,1fr); }
   .algorithm-step-card { min-height: 0; box-shadow: none; }
   .algorithm-step-card:not(.active) { display: none; }

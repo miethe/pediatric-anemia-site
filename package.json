@@ -1,6 +1,6 @@
 {
   "name": "pediatric-anemia-cdss",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "type": "module",
   "description": "Deterministic, evidence-linked pediatric anemia clinical decision-support research prototype.",
