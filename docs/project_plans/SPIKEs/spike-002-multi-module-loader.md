@@ -17,6 +17,16 @@ estimated_research_time: "4h"
 
 # SPIKE-002 — Multi-module loader without breaking content-hash cache-busting
 
+> **Superseded decisions.** Q4's public-API design below — an optional `?moduleId=` query param /
+> body field on `GET /api/v1/knowledge-base` and `POST /api/v1/assess`, its `400` unknown-module error
+> path, and the `meta.moduleId` response echo — is **superseded** by the binding OQ-2 arbitration
+> (Opus arbitration overriding this spike in favor of SPIKE-001's no-surface-change position): **no
+> public API surface change ships in P0.** Module iteration in `server.mjs` is internal only; existing
+> request/response shapes and `openapi.yaml` are untouched. See
+> `.claude/worknotes/platform-foundation-p0/decisions-block.md` §7 OQ-2 and the PRD's AC-5
+> (`docs/project_plans/PRDs/refactors/platform-foundation-p0-v1.md`). The original Q4 text is left
+> unmodified below for research-record purposes — treat it as historical rationale, not current spec.
+
 Gates: **P0** (P0-WP5: `scripts/validate-kb.mjs`, `scripts/build-static.mjs`, `scripts/smoke-test.mjs`, `server.mjs`, `tests/`).
 Depends on: P0-WP1 (module package contract; `modules/anemia/{rules,candidates,evidence,reference-ranges}.json`, `module.json` stub).
 Companion: SPIKE-001 (module-package boundary + fact-registry design — this spike assumes SPIKE-001's `modules/<id>/` layout and does not re-litigate it).
