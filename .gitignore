@@ -2,3 +2,9 @@ node_modules/
 dist/
 *.zip
 .DS_Store
+
+# AOS local state (deploy tracking + writeback markers + operator run records); keep committed
+# workflow artifacts under .claude/, ignore local/runtime state. Run IDs are referenced in the docs.
+.claude/.aos-writeback-state
+.claude/.skillmeat-deployed.toml
+.operator/
