@@ -151,10 +151,12 @@ graph LR
 
 ## 7. Open Questions for Expansion
 
-- **OQ-1**: Module registration mechanism — explicit static registry file (`modules/index.js` vs `modules/modules.json`): adopt SPIKE-002's recommendation and name the exact file in P1 tasks.
-- **OQ-2**: Does `POST /api/v1/assess` accept an optional `moduleId` field in P0 (default `anemia`, shapes unchanged), or is any API surface change deferred to Phase 1? If accepted, does `openapi.yaml` update land in P5 or P7?
-- **OQ-3**: Golden-output fixtures — committed under `tests/golden/` vs regenerated on the fly in the harness; pick per SPIKE-001 §equivalence strategy and make the harness a permanent `npm run` script vs a P0-only tool.
-- **OQ-4**: Do `examples/` move into `modules/anemia/examples/` in P1 or stay top-level until Phase 1? (Byte-compare tooling must not lose its inputs mid-phase.)
+- **OQ-1** (RESOLVED per SPIKE-002): static registry at `src/modules/registry.js` — literal `MODULE_IDS`/`DEFAULT_MODULE_ID` + explicit `MODULE_CODE_LOADERS` map; single source of truth for all consumers.
+- **OQ-2** (RESOLVED, Opus arbitration): **no public `moduleId` on the API in P0.** SPIKE-001 and SPIKE-002 conflicted here; SPIKE-001's no-surface-change position wins (zero-behavior-change guardrail). Scripts/server iterate modules internally per SPIKE-002; public request/response shapes and `openapi.yaml` are untouched until Phase 1.
+- **OQ-3** (RESOLVED per SPIKE-001): golden fixtures committed at `tests/golden/*.json`, captured pre-refactor in P1; permanent `tests/module-equivalence.test.mjs` auto-picked up by `npm test` — the harness is a lasting regression net, not P0-only tooling.
+- **OQ-4** (RESOLVED per SPIKE-001): `examples/` and `data/algorithm-explainers.json` stay top-level in P0; relocation deferred.
+- **OQ-6** (new, from SPIKE-001): `assess(input, moduleId, rules, candidates)` 4-arg signature supersedes the roadmap's literal 2-arg sketch (KB JSON is always caller-loaded; browser has no fs). `assessPediatricAnemia` and `src/facts.js`/`src/referenceRanges.js` become 1-line re-export shims so unbundled browser imports keep working — planner must carry the shim strategy into P2/P3 tasks and add an explicit app-surface smoke check (shim breakage is invisible to `npm run check`).
+- **OQ-7** (new, from both spikes): `src/evidence.js` vs `data/evidence.json` / `module.json` version-const duplication — P0 mitigates with a validate-kb drift check (SPIKE-001 OQ-3, SPIKE-002 OQ-001); real unification deferred to Phase 1 signed manifest. Needs a DOC-006 deferred-item row.
 - **OQ-5**: Deferred-items sweep — roadmap defers tri-state model, exact-passage evidence, and signing to P1+; confirm each gets a design-spec authoring task row (DOC-006) in P7 rather than silent omission.
 
 ---
