@@ -109,7 +109,8 @@ below is committed to the repo except the IntentTree graph, which lives on the p
 | **AOS writeback hook** | `.claude/hooks/aos-writeback.sh` + `.claude/settings.json` (Stop event) | AARs / DECISIONS auto-flow to the node story-inbox + vault on session stop — no agent memory required. |
 | **Project context** | `CLAUDE.md` | Orients any agent on the hard clinical guardrails, architecture, and AOS routing. |
 | **Operator run record** | `.operator/runs/op_run_20260717_050047_pediatric-cds-platform-e/` (`op new --tier 3`) | Durable operator tracking of the expansion program. |
-| **IntentTree task graph** | Tree **`tree_01KXQ7WC1HQE2GKZSCNDVXA9G7`** ("Pediatric CDS Platform Expansion") in the **Work** workspace (`ws_01KV8VMWXK05CTAZVHKT57HY0H`) — 1 pillar + 7 phase work-areas (P0–P6) + 42 work-packages + phase dependency links, seeded from doc 01 §E. | Live, navigable, delegatable program graph. `itt tree get tree_01KXQ7WC1HQE2GKZSCNDVXA9G7` / `itt today` to drive it. |
+| **IntentTree task graph** | Tree **`tree_01KXQ7WC1HQE2GKZSCNDVXA9G7`** ("Pediatric CDS Platform Expansion") in the **Work** workspace (`ws_01KV8VMWXK05CTAZVHKT57HY0H`) — 1 pillar + **11 work-areas** (P0–P6 product phases + `EF` Evidence Foundry + `EVID` rf research runs + `RFUP` rf-upstream enhancements + `XC` cross-cutting) + **63 work-packages** + dependency links. Product phases seeded from doc 01 §E; the EF/EVID/RFUP/XC work-areas added 2026-07-17. | Live, navigable, delegatable program graph. `itt tree get tree_01KXQ7WC1HQE2GKZSCNDVXA9G7` / `itt today` to drive it. |
+| **RF handoff package** | [`rf-handoff/`](rf-handoff/) — manifest + self-contained per-run briefs; the 7 evidence/regulatory `rf` runs registered + `planned` on the agentic node with `run_id`s written back to their IntentTree nodes. | Makes rf agents ready to plan + drive every evidence run with full context. |
 
 > Tooling note: the graph was seeded via the REST API because the `itt tree create` CLI currently
 > has a `title`/`name` field skew (a separate CLI↔API fix). Node/link creation via `itt` is fine.
@@ -123,11 +124,15 @@ Ordered. The first block is the 90-day / P0–P1 + E0 wedge.
    *before coding*, then execute under `dev-execution` (git-worktree → commit-per-phase → PR). Exit
    gate: `npm run check` green **and** byte-equivalent anemia output for all 6 `examples/`. (IntentTree
    work-area `P0`.) **No clinical scope creep in this phase.**
-2. **Launch the P0-priority research runs in parallel** (no code dependency — doc 01 §D):
+2. **Launch the P0-priority research runs in parallel** (no code dependency — doc 01 §D).
+   **Status (2026-07-17): registered + `planned` on the agentic node** — see the local RF handoff
+   package [`rf-handoff/`](rf-handoff/) (manifest + self-contained per-run briefs + run_ids). What
+   remains is driving the discovery swarm + deterministic tail per `run_id`.
    - `RF-EV-001` exact-passage backfill for the 6 anemia sources → `rf` run.
    - `RF-CBC-001` (neutropenia scope-exits) and `RF-CBC-002` (pancytopenia marrow-failure exits) →
      `rf` runs, using the doc 02 §3 module template. These gate P2 and take the longest.
    - `REG-001` intended-use / non-device-CDS mapping memo → `rf` + flagged legal review.
+   - Also registered ahead: `RF-KID-001` (P4), `RF-GRO-002` (P5), `REG-004` (P3 HIPAA).
 3. **Stand up E0 of the Evidence Foundry** (doc 02 §7.2): pick the CBC *vertical slice*, hand-seed
    its authoritative sources, run the offline `rf` deterministic spine, and build the first cut of the
    `rf-bundle → kb-pack` converter emitting proposals only (nothing release-ready). This proves the
