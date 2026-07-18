@@ -5,13 +5,66 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { assessPediatricAnemia } from './src/engine.js';
 import { EVIDENCE, KNOWLEDGE_BASE_VERSION, REVIEWED_THROUGH } from './src/evidence.js';
+import { MODULE_IDS } from './src/modules/registry.js';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 8080);
 const host = process.env.HOST || '127.0.0.1';
 const maxBodyBytes = 1_000_000;
-const rules = JSON.parse(await readFile(path.join(root, 'modules/anemia/rules.json'), 'utf8'));
-const candidates = JSON.parse(await readFile(path.join(root, 'modules/anemia/candidates.json'), 'utf8'));
+
+// Startup: load every registered module's knowledge base. Fail fast — exit, not a silent
+// partial start — if any registered module's JSON is missing or fails to parse, even though
+// only the default module is served today (no client-facing moduleId surface exists, per
+// platform-foundation-p0-v1.md Sequencing Note 6).
+async function loadModuleData(moduleId) {
+  const moduleDir = path.join(root, 'modules', moduleId);
+  const moduleRules = JSON.parse(await readFile(path.join(moduleDir, 'rules.json'), 'utf8'));
+  const moduleCandidates = JSON.parse(await readFile(path.join(moduleDir, 'candidates.json'), 'utf8'));
+  const moduleEvidence = JSON.parse(await readFile(path.join(moduleDir, 'evidence.json'), 'utf8'));
+  // module.json (manifest) does not exist until Phase 6 (platform-foundation-p0-v1.md,
+  // Phase 6: Module Manifest Stub) — tolerate its absence at startup.
+  let manifest = null;
+  try {
+    manifest = JSON.parse(await readFile(path.join(moduleDir, 'module.json'), 'utf8'));
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+  return {
+    rules: moduleRules,
+    candidates: moduleCandidates,
+    evidenceSources: moduleEvidence.sources ?? [],
+    manifest,
+  };
+}
+
+const modulesById = {};
+for (const moduleId of MODULE_IDS) {
+  try {
+    modulesById[moduleId] = await loadModuleData(moduleId);
+  } catch (error) {
+    console.error(`Fatal: failed to load knowledge base for module "${moduleId}": ${error.message}`);
+    process.exit(1);
+  }
+}
+
+const rules = modulesById.anemia.rules;
+const candidates = modulesById.anemia.candidates;
+
+// Additive per-module discovery breakdown surfaced on GET /api/v1/knowledge-base — always
+// present, not conditional on any request param (no moduleId request surface exists, AC-5).
+const modulesSummary = Object.fromEntries(
+  MODULE_IDS.map((moduleId) => {
+    const moduleData = modulesById[moduleId];
+    return [
+      moduleId,
+      {
+        ruleCount: moduleData.rules.length,
+        diagnosticPatternCount: Object.keys(moduleData.candidates).length,
+        evidenceRecordCount: moduleData.evidenceSources.length,
+      },
+    ];
+  }),
+);
 
 const mime = {
   '.html': 'text/html; charset=utf-8',
@@ -93,6 +146,7 @@ const server = http.createServer(async (request, response) => {
         ruleCount: rules.length,
         diagnosticPatternCount: Object.keys(candidates).length,
         evidence: Object.values(EVIDENCE),
+        modules: modulesSummary,
       }, requestId);
     }
 

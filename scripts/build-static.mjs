@@ -2,11 +2,12 @@ import { createHash } from 'node:crypto';
 import { cp, copyFile, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { MODULE_IDS } from '../src/modules/registry.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
 const files = ['index.html', 'styles.css', 'site-overrides.css', 'robots.txt', '_headers'];
-const directories = ['assets', 'src', 'data', 'examples'];
+const directories = ['assets', 'src', 'data', 'examples', 'modules'];
 
 await rm(dist, { recursive: true, force: true });
 await mkdir(dist, { recursive: true });
@@ -38,6 +39,7 @@ const stampTargets = [
   ...(await collectFiles(path.join(dist, 'src'))),
   ...(await collectFiles(path.join(dist, 'data'))),
   ...(await collectFiles(path.join(dist, 'examples'))),
+  ...(await collectFiles(path.join(dist, 'modules'))),
   path.join(dist, 'styles.css'),
   path.join(dist, 'site-overrides.css'),
   path.join(dist, 'index.html'),
@@ -74,6 +76,36 @@ const rules = JSON.parse(await readFile(path.join(root, 'modules/anemia/rules.js
 const candidates = JSON.parse(await readFile(path.join(root, 'modules/anemia/candidates.json'), 'utf8'));
 const evidence = JSON.parse(await readFile(path.join(root, 'modules/anemia/evidence.json'), 'utf8'));
 const packageMetadata = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
+
+// Per-module breakdown, additive to the flat top-level fields above (which keep echoing the
+// default module's numbers unchanged — today MODULE_IDS has exactly one entry, 'anemia').
+async function readModuleBuildInfo(moduleId) {
+  const moduleDir = path.join(root, 'modules', moduleId);
+  const moduleRules = JSON.parse(await readFile(path.join(moduleDir, 'rules.json'), 'utf8'));
+  const moduleCandidates = JSON.parse(await readFile(path.join(moduleDir, 'candidates.json'), 'utf8'));
+  const moduleEvidence = JSON.parse(await readFile(path.join(moduleDir, 'evidence.json'), 'utf8'));
+  // module.json (manifest) does not exist until Phase 6 (platform-foundation-p0-v1.md,
+  // Phase 6: Module Manifest Stub) — tolerate its absence here.
+  let manifest = null;
+  try {
+    manifest = JSON.parse(await readFile(path.join(moduleDir, 'module.json'), 'utf8'));
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+  return {
+    knowledgeBaseVersion: moduleEvidence.knowledgeBaseVersion,
+    evidenceReviewedThrough: moduleEvidence.reviewedThrough,
+    ruleCount: moduleRules.length,
+    diagnosticPatternCount: Object.keys(moduleCandidates).length,
+    evidenceRecordCount: moduleEvidence.sources.length,
+    manifest,
+  };
+}
+
+const modulesInfo = Object.fromEntries(
+  await Promise.all(MODULE_IDS.map(async (moduleId) => [moduleId, await readModuleBuildInfo(moduleId)])),
+);
+
 const buildInfo = {
   application: 'Pediatric Anemia Diagnosis Aide',
   releaseVersion: packageMetadata.version,
@@ -85,6 +117,7 @@ const buildInfo = {
   ruleCount: rules.length,
   diagnosticPatternCount: Object.keys(candidates).length,
   evidenceRecordCount: evidence.sources.length,
+  modules: modulesInfo,
 };
 await writeFile(path.join(dist, 'build-info.json'), `${JSON.stringify(buildInfo, null, 2)}\n`);
 await writeFile(path.join(dist, '.nojekyll'), '');
