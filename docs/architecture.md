@@ -25,6 +25,14 @@ flowchart LR
 
 The browser runs the full assessment locally. The included API mirrors the engine for integration testing but is not called by the UI.
 
+## 2a. Module package architecture (Phase 0)
+
+Each module (e.g., `modules/anemia/`) is a self-contained package holding rules.json, candidates.json, evidence.json, reference-ranges.json, module.json (unsigned-stub manifest), and index.js (hook descriptor). The hook descriptor exports: module id, manifest reference, deriveFacts function, summarize function, and limitations. Supporting code (facts.anemia.js, ranges.js) lives in the package.
+
+Three registries dispatch module behavior: `src/facts/registry.js` (fact-derivation by moduleId), `src/ranges/registry.js` (reference-range bands and threshold rules), and `src/modules/registry.js` (getModule/listModules; MODULE_IDS and loadModuleCode enumeration). A shim strategy ensures zero-edit backwards compatibility: `src/facts.js`, `src/referenceRanges.js`, and assessPediatricAnemia() in `src/engine.js` are thin re-export/wrapper shims bound to the 'anemia' module so existing callers need no updates.
+
+The unsigned module.json stub (modules/anemia/module.json) holds metadata that the eventual production signed manifest (§6) will supersede with approval chains and validation run IDs.
+
 ## 3. Recommended production deployment
 
 ```mermaid

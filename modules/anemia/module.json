@@ -1,0 +1,15 @@
+{
+  "id": "anemia",
+  "title": "Pediatric Anemia",
+  "schemaVersion": 1,
+  "status": "unsigned-stub",
+  "knowledgeBaseVersion": "0.1.0-2026-07-15",
+  "evidenceReviewedThrough": "2026-07-15",
+  "engineLabel": "Pediatric Anemia Deterministic CDSS",
+  "supportedAgeMonths": { "min": 6, "max": 216 },
+  "clinicalContentHash": null,
+  "approvedBy": [],
+  "validationRunId": null,
+  "supersedes": null,
+  "releasedAt": null
+}

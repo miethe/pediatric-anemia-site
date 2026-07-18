@@ -3,6 +3,7 @@ import { spawn } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { MODULE_IDS } from '../src/modules/registry.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const port = 43119;
@@ -32,7 +33,7 @@ try {
   const health = await waitForServer();
   assert.equal(health.status, 'ok');
 
-  for (const resource of ['/', '/styles.css', '/site-overrides.css', '/src/app.js', '/data/rules.json', '/assets/favicon.svg']) {
+  for (const resource of ['/', '/styles.css', '/site-overrides.css', '/src/app.js', '/modules/anemia/rules.json', '/assets/favicon.svg']) {
     const response = await fetch(`${base}${resource}`);
     assert.equal(response.status, 200, `${resource} should return 200`);
   }
@@ -53,6 +54,35 @@ try {
   assert.ok(Array.isArray(assessment.rankedDifferential));
   assert.ok(assessment.rankedDifferential.length > 0);
   assert.ok(Array.isArray(assessment.provenance?.matchedRuleIds));
+
+  // Internal registry/module-data consistency check — not an HTTP `?moduleId=` surface (none
+  // exists per platform-foundation-p0-v1.md Sequencing Note 6). Confirms the discovery
+  // breakdown the running server computed at startup for each registered module matches that
+  // module's own KB files on disk. For P0 this loop body executes once (anemia only), proving
+  // the plumbing generalizes correctly if a second module were registered.
+  const kbResponse = await fetch(`${base}/api/v1/knowledge-base`);
+  assert.equal(kbResponse.status, 200);
+  const knowledgeBase = await kbResponse.json();
+  for (const moduleId of MODULE_IDS) {
+    const moduleDir = path.join(root, 'modules', moduleId);
+    const moduleRules = JSON.parse(await readFile(path.join(moduleDir, 'rules.json'), 'utf8'));
+    const moduleCandidates = JSON.parse(await readFile(path.join(moduleDir, 'candidates.json'), 'utf8'));
+    const moduleEvidence = JSON.parse(await readFile(path.join(moduleDir, 'evidence.json'), 'utf8'));
+    const moduleSummary = knowledgeBase.modules?.[moduleId];
+    assert.ok(moduleSummary, `modules key missing entry for "${moduleId}"`);
+    assert.equal(moduleSummary.ruleCount, moduleRules.length, `${moduleId}: served ruleCount does not match rules.json`);
+    assert.equal(
+      moduleSummary.diagnosticPatternCount,
+      Object.keys(moduleCandidates).length,
+      `${moduleId}: served diagnosticPatternCount does not match candidates.json`,
+    );
+    assert.equal(
+      moduleSummary.evidenceRecordCount,
+      (moduleEvidence.sources ?? []).length,
+      `${moduleId}: served evidenceRecordCount does not match evidence.json`,
+    );
+  }
+
   console.log(`Smoke test passed: KB ${health.knowledgeBaseVersion}; ${assessment.rankedDifferential.length} differential pattern(s) returned.`);
 } finally {
   server.kill('SIGTERM');

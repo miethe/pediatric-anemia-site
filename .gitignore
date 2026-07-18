@@ -8,3 +8,4 @@ dist/
 .claude/.aos-writeback-state
 .claude/.skillmeat-deployed.toml
 .operator/
+__pycache__/

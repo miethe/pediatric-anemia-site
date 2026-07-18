@@ -516,8 +516,8 @@ function downloadJson() {
 
 async function initialize() {
   const [rulesResponse, candidatesResponse] = await Promise.all([
-    fetch('./data/rules.json'),
-    fetch('./data/candidates.json'),
+    fetch('./modules/anemia/rules.json'),
+    fetch('./modules/anemia/candidates.json'),
   ]);
   if (!rulesResponse.ok || !candidatesResponse.ok) {
     throw new Error('Unable to load the local rule knowledge base. Serve the directory over HTTP rather than opening index.html directly.');

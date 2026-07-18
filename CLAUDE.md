@@ -36,18 +36,19 @@ interventional) are passed.
 ## Architecture orientation
 
 ```
-patient JSON → deriveFacts() (src/facts.js) → JSON rule engine (src/ruleEngine.js over data/rules.json)
-            → merge/rank candidate patterns (data/candidates.json) → evidence-linked output + audit (src/engine.js)
+patient JSON → deriveFacts() (src/facts.js, shim over modules/anemia/facts.anemia.js) → JSON rule engine (src/ruleEngine.js over modules/anemia/rules.json)
+            → merge/rank candidate patterns (modules/anemia/candidates.json) → evidence-linked output + audit (src/engine.js)
 ```
 
-- Knowledge base: `data/rules.json` (91 rules), `data/candidates.json` (26 patterns),
-  `data/evidence.json` (6 records), `data/reference-ranges.json` (AAP fallbacks; local ranges override).
+- Knowledge base: `modules/anemia/rules.json` (91 rules), `modules/anemia/candidates.json` (26 patterns),
+  `modules/anemia/evidence.json` (6 records), `modules/anemia/reference-ranges.json` (AAP fallbacks; local ranges override).
 - Rule DSL: `all`/`any`/`not`, equality/numeric/existence checks → candidate/alert/question/note outputs
   with evidence IDs. Schemas in `schemas/`. See `docs/architecture.md` §7 for the production-hardening
   additions (typed facts, exact-passage locators, effective/retire dates, signed manifest).
+- Module package architecture: see `docs/architecture.md` (Module package architecture subsection).
 - API: `GET /health`, `GET /api/v1/knowledge-base`, `POST /api/v1/assess` (`server.mjs`, `openapi.yaml`).
 - **Gate before commit:** `npm run check` (= `npm test` + `npm run validate` + `npm run build` +
-  `npm run smoke`). All must pass. Node ≥ 20.
+  `npm run check:imports` + `npm run smoke`). All must pass. Node ≥ 20.
 
 ## Where the plan lives
 
