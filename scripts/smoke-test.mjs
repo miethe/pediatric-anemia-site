@@ -32,7 +32,7 @@ try {
   const health = await waitForServer();
   assert.equal(health.status, 'ok');
 
-  for (const resource of ['/', '/styles.css', '/site-overrides.css', '/src/app.js', '/data/rules.json', '/assets/favicon.svg']) {
+  for (const resource of ['/', '/styles.css', '/site-overrides.css', '/src/app.js', '/modules/anemia/rules.json', '/assets/favicon.svg']) {
     const response = await fetch(`${base}${resource}`);
     assert.equal(response.status, 200, `${resource} should return 200`);
   }

@@ -70,9 +70,9 @@ for (const file of await collectFiles(path.join(dist, 'src'))) {
   await writeFile(file, stamped);
 }
 
-const rules = JSON.parse(await readFile(path.join(root, 'data/rules.json'), 'utf8'));
-const candidates = JSON.parse(await readFile(path.join(root, 'data/candidates.json'), 'utf8'));
-const evidence = JSON.parse(await readFile(path.join(root, 'data/evidence.json'), 'utf8'));
+const rules = JSON.parse(await readFile(path.join(root, 'modules/anemia/rules.json'), 'utf8'));
+const candidates = JSON.parse(await readFile(path.join(root, 'modules/anemia/candidates.json'), 'utf8'));
+const evidence = JSON.parse(await readFile(path.join(root, 'modules/anemia/evidence.json'), 'utf8'));
 const packageMetadata = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 const buildInfo = {
   application: 'Pediatric Anemia Diagnosis Aide',

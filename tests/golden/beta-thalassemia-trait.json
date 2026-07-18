@@ -1,0 +1,484 @@
+{
+  "meta": {
+    "engine": "Pediatric Anemia Deterministic CDSS",
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "evidenceReviewedThrough": "2026-07-15",
+    "generatedAt": "x",
+    "intendedUser": "Licensed health care professional",
+    "status": "Research prototype—not clinically validated"
+  },
+  "classification": {
+    "anemiaStatus": "present",
+    "hemoglobin": 10.9,
+    "hemoglobinLowerLimit": 11.3,
+    "morphology": "microcytic",
+    "mcv": 62,
+    "mcvLowerLimit": 77.8,
+    "mcvUpperLimit": 86.5,
+    "rdw": 13,
+    "rdwHigh": false,
+    "reticulocyteResponse": "appropriate",
+    "thresholdSource": "AAP2026_IDA",
+    "ageBand": "6 to <12 years"
+  },
+  "alerts": [],
+  "rankedDifferential": [
+    {
+      "id": "beta-thalassemia-pattern",
+      "label": "Beta-thalassemia pattern",
+      "category": "microcytic inherited anemia",
+      "summary": "Age-appropriate elevated HbA2 or beta-globin testing supports a beta-thalassemia diagnosis/trait pattern.",
+      "defaultNextSteps": [
+        "Confirm with age-appropriate hemoglobin analysis and/or molecular testing when clinically indicated.",
+        "Evaluate for coexisting iron deficiency because it can lower HbA2 and complicate interpretation."
+      ],
+      "evidence": [
+        "AAP2026_IDA"
+      ],
+      "level": "strongly-supported",
+      "score": 95,
+      "matchedRules": [
+        "THAL-BETA-001"
+      ],
+      "supportingFindings": [
+        "HbA2 was reported elevated on age-appropriate hemoglobin analysis."
+      ],
+      "cautions": [
+        "Coexisting iron deficiency can lower HbA2 and should be addressed in interpretation."
+      ],
+      "nextSteps": [
+        "Confirm with age-appropriate hemoglobin analysis and/or molecular testing when clinically indicated.",
+        "Evaluate for coexisting iron deficiency because it can lower HbA2 and complicate interpretation."
+      ],
+      "rank": 1
+    },
+    {
+      "id": "thalassemia-pattern",
+      "label": "Thalassemia trait or other globin-production pattern",
+      "category": "microcytic inherited anemia",
+      "summary": "Persistent microcytosis with non-low ferritin and supporting CBC, smear, newborn-screen, family, or hemoglobin-analysis findings.",
+      "defaultNextSteps": [
+        "Review newborn-screen results and family/ancestry history.",
+        "Use hemoglobin analysis/HPLC for beta-chain variants and age-appropriate beta-thalassemia evaluation.",
+        "For suspected alpha thalassemia outside the newborn period, recognize that routine electrophoresis may be normal and consider alpha-globin testing.",
+        "Correct coexisting iron deficiency before using a normal HbA2 to exclude beta-thalassemia trait."
+      ],
+      "evidence": [
+        "AAP2026_IDA",
+        "BLOOD2022_PED_ANEMIA"
+      ],
+      "level": "supported",
+      "score": 110,
+      "matchedRules": [
+        "THAL-001",
+        "THAL-002"
+      ],
+      "supportingFindings": [
+        "Microcytosis with non-low ferritin and at least one globin-production clue (relatively high RBC count, target cells, or family history).",
+        "Microcytosis with non-elevated RDW and an RBC/smear clue is more compatible with a thalassemia trait pattern than classic isolated IDA, but is not diagnostic."
+      ],
+      "cautions": [],
+      "nextSteps": [
+        "Review newborn-screen results and family/ancestry history.",
+        "Use hemoglobin analysis/HPLC for beta-chain variants and age-appropriate beta-thalassemia evaluation.",
+        "For suspected alpha thalassemia outside the newborn period, recognize that routine electrophoresis may be normal and consider alpha-globin testing.",
+        "Correct coexisting iron deficiency before using a normal HbA2 to exclude beta-thalassemia trait."
+      ],
+      "rank": 2
+    }
+  ],
+  "nextQuestions": [
+    {
+      "id": "Q-MICRO-005",
+      "priority": 14,
+      "section": "microcytic",
+      "prompt": "Has menstrual, gastrointestinal, nasal, donation-related, urinary, or other blood loss been assessed?",
+      "why": "Chronic blood loss is an important cause of iron deficiency in older children and adolescents.",
+      "evidence": [
+        "AAP2026_IDA"
+      ]
+    }
+  ],
+  "interpretiveNotes": [],
+  "limitations": [
+    "This output is a deterministic clinical decision-support reference, not a diagnosis, treatment order, or substitute for examination and specialist judgment.",
+    "The ranking is rule priority—not a calibrated probability, sensitivity, specificity, or risk score.",
+    "Only supplied data are evaluated; missing, mistyped, or unit-mismatched data can materially change the output.",
+    "Local laboratory reference intervals, specimen methods, and clinical context override built-in fallback intervals."
+  ],
+  "provenance": {
+    "evaluatedRuleCount": 91,
+    "matchedRuleIds": [
+      "THAL-001",
+      "THAL-002",
+      "THAL-BETA-001",
+      "Q-MICRO-005"
+    ],
+    "ruleAudit": [
+      {
+        "ruleId": "SCOPE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SCOPE-002",
+        "matched": false
+      },
+      {
+        "ruleId": "SCOPE-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-002",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-004",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-005",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-006",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-007",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-008",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-009",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-002",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-003",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-004",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-005",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-006",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-002",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-004",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-005",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-006",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-001",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-002",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-003",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-004",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-001",
+        "matched": true
+      },
+      {
+        "ruleId": "THAL-002",
+        "matched": true
+      },
+      {
+        "ruleId": "THAL-BETA-001",
+        "matched": true
+      },
+      {
+        "ruleId": "THAL-BETA-002",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-ALPHA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-ALPHA-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-001",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-003",
+        "matched": false
+      },
+      {
+        "ruleId": "SID-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SID-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-001",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-003",
+        "matched": false
+      },
+      {
+        "ruleId": "HEM-001",
+        "matched": false
+      },
+      {
+        "ruleId": "HEM-002",
+        "matched": false
+      },
+      {
+        "ruleId": "HEM-003",
+        "matched": false
+      },
+      {
+        "ruleId": "AIHA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "HS-001",
+        "matched": false
+      },
+      {
+        "ruleId": "HS-002",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-001",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-002",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-003",
+        "matched": false
+      },
+      {
+        "ruleId": "TMA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SICKLE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MAL-001",
+        "matched": false
+      },
+      {
+        "ruleId": "REN-001",
+        "matched": false
+      },
+      {
+        "ruleId": "TEC-001",
+        "matched": false
+      },
+      {
+        "ruleId": "PARVO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-002",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-003",
+        "matched": false
+      },
+      {
+        "ruleId": "MEG-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MEG-002",
+        "matched": false
+      },
+      {
+        "ruleId": "COPPER-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-003",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-004",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-001",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-DBA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-FANCONI-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MIX-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MIX-002",
+        "matched": false
+      },
+      {
+        "ruleId": "IRIDA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-003",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-004",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-005",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-003",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-004",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-005",
+        "matched": true
+      },
+      {
+        "ruleId": "Q-NORMO-HIGH-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-NORMO-HIGH-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-NORMO-LOW-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MACRO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MACRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-SMEAR-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-CYT-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-LEAD-CAPILLARY",
+        "matched": false
+      }
+    ]
+  }
+}

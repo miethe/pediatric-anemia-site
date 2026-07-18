@@ -2,8 +2,8 @@ import { readFile } from 'node:fs/promises';
 import { EVIDENCE } from '../src/evidence.js';
 import { evaluateCondition } from '../src/ruleEngine.js';
 
-const rules = JSON.parse(await readFile(new URL('../data/rules.json', import.meta.url), 'utf8'));
-const candidates = JSON.parse(await readFile(new URL('../data/candidates.json', import.meta.url), 'utf8'));
+const rules = JSON.parse(await readFile(new URL('../modules/anemia/rules.json', import.meta.url), 'utf8'));
+const candidates = JSON.parse(await readFile(new URL('../modules/anemia/candidates.json', import.meta.url), 'utf8'));
 const errors = [];
 const ruleIds = new Set();
 

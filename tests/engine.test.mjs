@@ -4,8 +4,8 @@ import { readFile } from 'node:fs/promises';
 import { assessPediatricAnemia } from '../src/engine.js';
 import { getBuiltInRange } from '../src/referenceRanges.js';
 
-const rules = JSON.parse(await readFile(new URL('../data/rules.json', import.meta.url), 'utf8'));
-const candidates = JSON.parse(await readFile(new URL('../data/candidates.json', import.meta.url), 'utf8'));
+const rules = JSON.parse(await readFile(new URL('../modules/anemia/rules.json', import.meta.url), 'utf8'));
+const candidates = JSON.parse(await readFile(new URL('../modules/anemia/candidates.json', import.meta.url), 'utf8'));
 
 async function example(name) {
   return JSON.parse(await readFile(new URL(`../examples/${name}.json`, import.meta.url), 'utf8'));

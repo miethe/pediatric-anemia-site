@@ -10,8 +10,8 @@ const root = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 8080);
 const host = process.env.HOST || '127.0.0.1';
 const maxBodyBytes = 1_000_000;
-const rules = JSON.parse(await readFile(path.join(root, 'data/rules.json'), 'utf8'));
-const candidates = JSON.parse(await readFile(path.join(root, 'data/candidates.json'), 'utf8'));
+const rules = JSON.parse(await readFile(path.join(root, 'modules/anemia/rules.json'), 'utf8'));
+const candidates = JSON.parse(await readFile(path.join(root, 'modules/anemia/candidates.json'), 'utf8'));
 
 const mime = {
   '.html': 'text/html; charset=utf-8',
