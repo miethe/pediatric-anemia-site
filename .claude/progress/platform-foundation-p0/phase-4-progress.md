@@ -1,13 +1,14 @@
 ---
 schema_version: 2
 doc_type: progress
-title: "Progress: platform-foundation-p0 Phase 4 — Reference-Range Registry"
-status: pending
+title: 'Progress: platform-foundation-p0 Phase 4 — Reference-Range Registry'
+status: completed
 created: 2026-07-17
 feature_slug: platform-foundation-p0
 phase: 4
 plan_ref: docs/project_plans/implementation_plans/refactors/platform-foundation-p0-v1.md
 prd_ref: docs/project_plans/PRDs/refactors/platform-foundation-p0-v1.md
+updated: '2026-07-18'
 ---
 
 # Phase 4: Reference-Range Registry
@@ -39,3 +40,14 @@ prd_ref: docs/project_plans/PRDs/refactors/platform-foundation-p0-v1.md
 - **P4-T1**: general-purpose — "src/ranges/registry.js — generic primitives — see plan §Phase 4, P4-T1"
 - **P4-T2**: general-purpose — "modules/anemia/ranges.js — registration + composition wrapper — see plan §Phase 4, P4-T2"
 - **P4-T3**: general-purpose — "src/referenceRanges.js shim + facts.anemia.js rewire — see plan §Phase 4, P4-T3 + Sequencing Note 3"
+
+## Karen P4 Milestone Review (recorded)
+
+Verdict: CONCERNS (non-blocking). All discipline checks PASS (KB purity, contract fidelity,
+file ownership, estimation on track). Two MEDIUM carries for P5-P7:
+1. `modules/anemia/ranges.js` uses a JSON import attribute (`with { type: 'json' }`) on the live
+   browser path — new evergreen-browser requirement (Chrome/Edge 123+, Safari 17.2+, Firefox 138+).
+   Must be recorded as an explicit accepted assumption (DEF-8 spec + PR description) and P7-T2
+   broadened to load the module graph, not just check file existence.
+2. dist/ build omits modules/ until P5-T3 lands — built artifact currently 404s on module JSON.
+   P5 exit gate must verify dist/modules/anemia/*.json physically exist post-build and are stamped.

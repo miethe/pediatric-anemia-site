@@ -1,5 +1,5 @@
 import { finite, num, isTrue, statusIs, includes, countTrue } from '../../src/facts/core.js';
-import { getEffectiveRanges, getFerritinThreshold } from '../../src/referenceRanges.js';
+import { getEffectiveRanges, getFerritinThreshold } from '../../modules/anemia/ranges.js';
 
 export function deriveFacts(rawInput = {}) {
   const input = structuredClone(rawInput ?? {});
