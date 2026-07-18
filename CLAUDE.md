@@ -48,7 +48,7 @@ patient JSON → deriveFacts() (src/facts.js, shim over modules/anemia/facts.ane
 - Module package architecture: see `docs/architecture.md` (Module package architecture subsection).
 - API: `GET /health`, `GET /api/v1/knowledge-base`, `POST /api/v1/assess` (`server.mjs`, `openapi.yaml`).
 - **Gate before commit:** `npm run check` (= `npm test` + `npm run validate` + `npm run build` +
-  `npm run smoke`). All must pass. Node ≥ 20.
+  `npm run check:imports` + `npm run smoke`). All must pass. Node ≥ 20.
 
 ## Where the plan lives
 
