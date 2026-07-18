@@ -3,20 +3,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { evaluateCondition } from '../src/ruleEngine.js';
 import { MODULE_IDS } from '../src/modules/registry.js';
+import { KNOWLEDGE_BASE_VERSION, REVIEWED_THROUGH } from '../src/evidence.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, 'utf8'));
-}
-
-async function readJsonIfExists(filePath) {
-  try {
-    return await readJson(filePath);
-  } catch (error) {
-    if (error.code === 'ENOENT') return null;
-    throw error;
-  }
 }
 
 async function validateModule(moduleId, rootDir) {
@@ -56,13 +48,27 @@ async function validateModule(moduleId, rootDir) {
     }
   }
 
-  // module.json (manifest) does not exist until Phase 6
-  // (platform-foundation-p0-v1.md, Phase 6: Module Manifest Stub, P6-T1) — tolerate its
-  // absence here and only shape-check `id` against the directory name when it is present.
-  // P6-T3 extends tests/module-registry.test.mjs with the corresponding assertion.
-  const manifest = await readJsonIfExists(path.join(moduleDir, 'module.json'));
-  if (manifest && manifest.id !== moduleId) {
+  // module.json (manifest) is a required per-module file as of Phase 6 (P6-T1). It is read
+  // directly here (not via src/evidence.js) so this check catches an unparsable/missing
+  // manifest as a validation error rather than a silent gap.
+  const manifest = await readJson(path.join(moduleDir, 'module.json'));
+  if (manifest.id !== moduleId) {
     errors.push(`${moduleId}/module.json: id "${manifest.id}" does not match directory name "${moduleId}"`);
+  }
+
+  // P6-T2 drift check: module.json's version fields must byte-match src/evidence.js's
+  // exported consts (SPIKE-001 OQ-3 / SPIKE-002 OQ-001). This is a mitigation of the evidence
+  // dual-source problem (DEF-1), not a unification — src/evidence.js keeps its own consts for
+  // synchronous browser access.
+  if (manifest.knowledgeBaseVersion !== KNOWLEDGE_BASE_VERSION) {
+    errors.push(
+      `${moduleId}/module.json: knowledgeBaseVersion "${manifest.knowledgeBaseVersion}" does not match src/evidence.js KNOWLEDGE_BASE_VERSION "${KNOWLEDGE_BASE_VERSION}"`,
+    );
+  }
+  if (manifest.evidenceReviewedThrough !== REVIEWED_THROUGH) {
+    errors.push(
+      `${moduleId}/module.json: evidenceReviewedThrough "${manifest.evidenceReviewedThrough}" does not match src/evidence.js REVIEWED_THROUGH "${REVIEWED_THROUGH}"`,
+    );
   }
 
   return {

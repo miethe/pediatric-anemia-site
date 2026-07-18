@@ -5,10 +5,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MODULE_IDS, DEFAULT_MODULE_ID, loadModuleCode } from '../src/modules/registry.js';
 
-// SPIKE-002 Q5 / platform-foundation-p0-v1.md Sequencing Note 5: this file ships assertions
-// 1, 3, 4, and 5 in Phase 5. Assertion 2 (manifest shape) has a hard dependency on
-// modules/<id>/module.json, which does not exist until Phase 6 — P6-T3 extends this same file
-// with that assertion once module.json lands.
+// SPIKE-002 Q5 / platform-foundation-p0-v1.md Sequencing Note 5: this file shipped assertions
+// 1, 3, 4, and 5 in Phase 5. Assertion 2 (manifest shape) had a hard dependency on
+// modules/<id>/module.json, which did not exist until Phase 6 — P6-T3 adds it below now that
+// module.json has landed.
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -24,8 +24,17 @@ test('assertion 1: registry completeness — MODULE_IDS non-empty, unique, inclu
   assert.equal(DEFAULT_MODULE_ID, 'anemia');
 });
 
-// Assertion 2 (manifest shape: modules/<id>/module.json exists, parses, and
-// manifest.id === id) is deferred to Phase 6 (P6-T3) — module.json is a Phase 6 deliverable.
+test('assertion 2: manifest shape — modules/<id>/module.json exists, parses, and manifest.id === id', async () => {
+  for (const moduleId of MODULE_IDS) {
+    const filePath = path.join(root, 'modules', moduleId, 'module.json');
+    const raw = await readFile(filePath, 'utf8');
+    let manifest;
+    assert.doesNotThrow(() => {
+      manifest = JSON.parse(raw);
+    }, `modules/${moduleId}/module.json must parse as JSON`);
+    assert.equal(manifest.id, moduleId, `modules/${moduleId}/module.json id must equal directory id`);
+  }
+});
 
 test('assertion 3: per-module KB files exist and parse for every registered module', async () => {
   for (const moduleId of MODULE_IDS) {
