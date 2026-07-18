@@ -2,9 +2,9 @@
 title: "Implementation Plan: Platform Foundation Refactor (Phase 0)"
 schema_version: 2
 doc_type: implementation_plan
-status: draft
+status: completed
 created: 2026-07-17
-updated: 2026-07-17
+updated: 2026-07-18
 feature_slug: "platform-foundation-p0"
 feature_version: "v1"
 prd_ref: docs/project_plans/PRDs/refactors/platform-foundation-p0-v1.md
@@ -27,7 +27,15 @@ spike_ref:
   - docs/project_plans/SPIKEs/spike-001-module-package-boundary.md
   - docs/project_plans/SPIKEs/spike-002-multi-module-loader.md
 adr_refs: []
-deferred_items_spec_refs: []
+deferred_items_spec_refs:
+  - docs/project_plans/design-specs/evidence-dual-source-unification.md
+  - docs/project_plans/design-specs/tri-state-fact-model.md
+  - docs/project_plans/design-specs/exact-passage-evidence-schema.md
+  - docs/project_plans/design-specs/signed-kb-manifest.md
+  - docs/project_plans/design-specs/module-manifest-json-schema.md
+  - docs/project_plans/design-specs/public-moduleid-api-surface.md
+  - docs/project_plans/design-specs/algorithm-explainers-examples-relocation.md
+  - docs/project_plans/design-specs/headless-browser-runtime-smoke-check.md
 findings_doc_ref: null
 charter_ref: null
 changelog_ref: null
@@ -42,7 +50,13 @@ risk_level: medium
 category: "product-planning"
 tags: [implementation, refactor, platform, module-architecture, phase-0]
 milestone: null
-commit_refs: []
+commit_refs:
+  - b808b95  # P1 golden harness + relocation
+  - 5f9bf62  # P2 facts registry
+  - f26d63c  # P3 engine generalization
+  - a01971d  # P4 ranges registry
+  - d9cfd1e  # P5 scripts/server multi-module
+  - 741f35f  # P6 manifest stub
 pr_refs: []
 files_affected:
   - src/facts.js
@@ -71,6 +85,10 @@ files_affected:
   - tests/golden/*.json
   - tests/module-equivalence.test.mjs
   - tests/module-registry.test.mjs
+  - scripts/check-app-imports.mjs
+  - modules/anemia/README.md
+  - package.json
+  - docs/project_plans/design-specs/*.md
   - docs/architecture.md
   - CLAUDE.md
 wave_plan:

@@ -1,0 +1,99 @@
+---
+doc_type: design_spec
+title: "Public `moduleId` API Surface"
+status: draft
+maturity: shaping
+created: 2026-07-18
+feature_slug: platform-foundation-p0
+prd_ref: docs/project_plans/PRDs/refactors/platform-foundation-p0-v1.md
+plan_ref: docs/project_plans/implementation_plans/refactors/platform-foundation-p0-v1.md
+---
+
+# Public `moduleId` API Surface (DEF-6)
+
+## Problem / Context
+
+Platform Foundation P0 introduces `moduleId` as an internal concept throughout the codebase —
+`src/modules/registry.js` (`MODULE_IDS`, `DEFAULT_MODULE_ID`, `getModule`, `isRegisteredModule`,
+`loadModuleCode`), `src/facts/registry.js` (`deriveFacts(input, moduleId)`), `src/ranges/
+registry.js` — but the module-selection value is never exposed as something a client (the browser
+SPA, or an external API caller) can set. There is exactly one registered module (`anemia`), and
+`DEFAULT_MODULE_ID = 'anemia'` is hardcoded with a comment calling it a "deliberate tripwire ...
+revisit this the day a second module is registered."
+
+The Deferred Items Triage Table categorizes this as **scope-cut**, citing two binding constraints:
+the plan's zero-behavior-change guardrail (any new client-settable parameter is a public API
+surface change, which P0's Acceptance Criteria AC-5 explicitly forbids), and a binding Open
+Question resolution (Sequencing Note 6 / OQ-2) that a client-facing `moduleId` was deliberately
+excluded from P0's scope. Building it now, with only one module ever registered, would also be
+speculative — there's no second module yet to prove the query-param/body-field design against.
+
+## Current State (what P0 actually shipped)
+
+The `POST /api/v1/assess` endpoint (`server.mjs`) accepts no `moduleId` request parameter at all.
+Server startup loads **every** registered module unconditionally:
+
+```js
+for (const moduleId of MODULE_IDS) {
+  modulesById[moduleId] = await loadModuleData(moduleId);
+}
+```
+
+and the comment directly above the knowledge-base listing construction states the guardrail
+explicitly: `// present, not conditional on any request param (no moduleId request surface exists,
+AC-5)`. The `/api/v1/knowledge-base` endpoint (per `modulesById`) advertises all loaded modules
+unconditionally rather than accepting a selector. `assessPediatricAnemia(input, rules, candidates)`
+— called from the assess handler — still takes `rules`/`candidates` directly, not a `moduleId`; the
+server resolves which module's `rules`/`candidates` to pass in internally, not from client input.
+`src/modules/registry.js`'s `MODULE_IDS = Object.freeze(['anemia'])` is the sole source of what
+modules exist, and nothing reads a request-supplied value against it.
+
+In short: `moduleId` is a fully wired *internal* dispatch key (registry lookups, fact derivation,
+range derivation all take it as a parameter) but has zero external surface — no query param, no
+body field, no header. This is a deliberate, documented gap, not an omission.
+
+## Design Sketch
+
+Once a second module is registered (the trigger below), the natural shape is additive to the
+existing `POST /api/v1/assess` contract:
+
+- Accept an optional `moduleId` field in the request body (defaulting to `DEFAULT_MODULE_ID` when
+  absent, preserving today's single-module behavior for any caller that doesn't opt in — this
+  keeps the change backward-compatible rather than breaking).
+- Validate the supplied `moduleId` against `isRegisteredModule()` (already exported by `src/
+  modules/registry.js`) and return a clear 4xx error for an unknown module, rather than the current
+  internal `throw new Error('Unknown module: ' + id)` behavior in `getModule`/`loadModuleCode`,
+  which is not currently reachable from any external input.
+- `GET /api/v1/knowledge-base` would similarly need either a `moduleId` query param to scope the
+  response to one module, or keep returning all modules and let the client select — this is a
+  genuine design fork that needs the second module's actual UI-integration pattern to resolve
+  sensibly (module picker UI vs. always-all-modules response).
+- The browser SPA (`src/app.js`) would need a module-selection UI element wired to the new
+  parameter — currently entirely absent since there is nothing to select.
+
+This spec intentionally sketches direction only; the concrete shape (body field vs. query param vs.
+URL path segment, e.g. `/api/v1/assess/:moduleId`) should be decided against the actual second
+module's integration needs, not speculatively now.
+
+## Promotion Trigger
+
+Phase 1+, when a second module needs client-selectable targeting (per the Deferred Items Triage
+Table) — concretely, whenever the CBC/cytopenia suite (the next planned module per `docs/
+project_plans/expansion/01-platform-expansion-roadmap.md`) is registered and a client needs to
+choose between it and `anemia`.
+
+## Open Questions
+
+- Body field, query param, or URL path segment (`/api/v1/assess/:moduleId`) — does REST convention
+  favor the path segment given `moduleId` identifies *which resource/engine* is being invoked, not
+  a filter on a shared resource?
+- Does `GET /api/v1/knowledge-base` stay "always all modules" (today's behavior, harmless to keep
+  even with multiple modules) or does it need module-scoping too, and on what trigger?
+- Does the SPA support single-module-at-a-time selection, or eventually a combined/multi-module
+  assessment view — this affects whether `moduleId` should ever be an array in the request shape?
+- What is the exact error contract for an invalid/unknown `moduleId` — HTTP status code, error body
+  shape — and does it follow an existing error-response convention elsewhere in `server.mjs`, or
+  does one need to be established?
+- Does exposing `moduleId` publicly require updating `openapi.yaml`, and does that itself count as
+  a "public API surface change" requiring the same review rigor as a rule/KB content change under
+  CLAUDE.md's guardrails (it is not clinical content, but it is a contract change)?
