@@ -9,7 +9,7 @@ phase_title: "Adversarial Validation Corpus"
 prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-foundation-v1.md
 feature_slug: wave0-safety-foundation
-entry_criteria: "EP-5 closed: manifest verifies, fail-closed paths tested."
+entry_criteria: "EP-5 closed (manifest verifies, fail-closed paths tested) AND EP-0.5 closed (baseline activation-witness corpus exists)."
 exit_criteria: "4 suites green; mutation-score baseline defined and met; 10 DM families executable; npm run check green."
 ---
 
@@ -17,6 +17,20 @@ exit_criteria: "4 suites green; mutation-score baseline defined and met; 10 DM f
 
 **Maps to roadmap/PRD WP6.** **9 pts** (10 original decisions-block anchor − 1 pt moved to EP-0 for CI
 hardening per **OQ-6**, resolved — see the main plan's EP↔WP mapping section).
+
+> **AMENDMENT 2026-07-19 (post-EP-0): re-scoped from "build a corpus" to "make the corpus
+> adversarial."** This phase was written assuming it starts from the 6-fixture baseline. EP-0 found
+> that baseline gives an activation witness to only **30 of 91 rules** (61 never fire, including six
+> ALERTs), which made corpus-building a blocker for EP-1 and EP-5 — not a finale. The foundational
+> witness work therefore moved into the new **EP-0.5**, which this phase now builds on.
+>
+> This phase's remaining scope: the adversarial layer — ARC's 10 DM-* families, property/boundary
+> suites, mutation scoring, and **SPIKE-005's seeded-mutation corpus M01–M57** (52 rows from EP0-T3
+> plus M53–M57 from EP0-T4's cross-family adversarial pass, including the verified double-blind M57).
+> Note SPIKE-005 marks M38/M39/M48–M52 as deliberately **blind** rows whose assertion is inverted: the
+> structural classifier is *expected* to report clean and the behavioral probe must fail instead.
+>
+> **Estimate to be revisited at EP-5 close** now that the foundational work has moved out.
 
 **Dependencies**: EP-5 complete (validates the corpus against a manifest-verified KB, per the
 decisions block's P5↔P6 boundary rationale: running these suites against an unverified KB would leave

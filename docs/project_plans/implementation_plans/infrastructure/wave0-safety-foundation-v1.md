@@ -10,7 +10,7 @@ feature_version: "v1"
 prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
 plan_ref: null
 scope: "Install the safety/provenance contract (tri-state facts, fail-closed units, exact-passage evidence, governed rule metadata, verifiable KB manifest + semantic diff, adversarial validation corpus) on the existing anemia module. Zero new clinical modules, zero new/retuned thresholds, zero new clinical claims."
-effort_estimate: "68 pts"
+effort_estimate: "76.5 pts"
 architecture_summary: "EP-0 de-risks (4 SPIKEs + DEF-1 + CI hardening) before EP-1 (tri-state facts) and EP-2 (units/ranges) parallelize; EP-3+EP-4 (evidence provenance + rule governance) run serially on content already de-risked; EP-5 (manifest+diff) attests to EP-3/4's output; EP-6 (adversarial corpus) proves the whole substrate; EP-7 (review contract + docs) floats from EP-0 and seals last."
 related_documents:
   - docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
@@ -156,6 +156,7 @@ a de-risking/prerequisite phase this plan adds ahead of WP1.
 | Execution Phase | Roadmap/PRD Unit | Scope |
 |---|---|---|
 | **EP-0** | *(none — de-risk prerequisite)* | Execute SPIKE-003..006; resolve DEF-1 (D-2); resync IntentTree; launch RF-EV-002/REG-002; promote DEF-2; CI hardening (moved in, OQ-6) |
+| **EP-0.5** | *(none — inserted by EP-0 finding)* | Activation-witness corpus: give every rule EP-1 migrates, and every uncovered ALERT, a fixture that makes it fire; coverage ratchet in CI |
 | **EP-1** | WP1 | Tri-state fact model |
 | **EP-2** | WP2 | Local reference-range registry + unit service |
 | **EP-3** | WP3 | Exact-passage evidence records |
@@ -167,6 +168,29 @@ a de-risking/prerequisite phase this plan adds ahead of WP1.
 **OQ-6 resolved**: CI hardening (`check:imports` wired into CI, PR-trigger job added) moves from EP-6
 to EP-0 — the gate must exist *before* the risky migrations, not after. EP-0 gains ~1 pt; EP-6 loses
 ~1 pt. Phase-total sum is unchanged (68).
+
+**AMENDMENT 2026-07-19 (post-EP-0): EP-0.5 inserted; total 68 → 76.5 pts.** EP-0 measured what the
+6-fixture golden corpus actually exercises and found the plan's sequencing unsafe:
+
+- **30 of 91 rules** have an activation witness; **61 never fire**, including `ALERT-001/-002/-003/
+  -006/-007/-008`.
+- **EP-1 migrates 49 rules; only 17 have a witness — 32 migrate blind**, including 3 alerts and both
+  `TEC-001` and `IRIDA-001` (the two rules SPIKE-003 carved out of its GO verdict).
+
+Three independent EP-0 findings converged here: SPIKE-003's prototype showed a staged rollout breaks a
+fixture with **zero test failures**; SPIKE-005 found the behavioral backstop is corpus-gated and
+inherits corpus blindness; EP0-T4 verified **M57**, a change where the structural classifier *and* the
+behavioral probe both report clean while patient-facing output changes (0/6 fixtures moved).
+
+Validation work (EP-6) was scheduled last but is a **dependency of the first migration**. EP-0.5
+supplies the witnesses EP-1, EP-5, and EP-6 all require. EP-6 is correspondingly re-scoped from "build
+a corpus" to "make the corpus adversarial" — its estimate is revisited at EP-5 close.
+
+**Also amended**: EP-1's scope is **49 rules, not 33** (SPIKE-003 RQ7a supersedes the charter figure),
+and EP-1's exit criteria now require an activation witness per migrated rule, not merely "golden
+fixtures unchanged."
+
+Full rationale: `.claude/worknotes/wave0-safety-foundation/aar-ep0-derisk-and-align.md`.
 
 ## Executive Summary
 
@@ -191,7 +215,10 @@ repositories/DTOs apply. The sequence follows the phase boundaries in the decisi
 de-risk → semantics (tri-state, units) → provenance → governance → attestation → adversarial
 validation → contract/docs.
 
-1. **De-risk & align** (EP-0) — must resolve before any WP1/WP2/WP5 design is finalized.
+1. **De-risk & align** (EP-0) — must resolve before any WP1/WP2/WP5 design is finalized. **Complete
+   2026-07-19** (PR #4).
+1.5. **Activation-witness corpus** (EP-0.5) — inserted post-EP-0; blocks EP-1's migration verification,
+   EP-5's probe, and EP-6. A corpus-gated safety net cannot be built before the corpus.
 2. **Tri-state facts** (EP-1) ∥ **Units & ranges** (EP-2) — disjoint files, one shared seam line, one
    converged safety `council-review` gate before EP-3.
 3. **Evidence provenance** (EP-3) → **Rule governance** (EP-4) — strict serial edge: EP-4's
@@ -217,7 +244,7 @@ validation → contract/docs.
 
 ### Critical Path
 
-**EP-0 → EP-1 → EP-3 → EP-4 → EP-5 → EP-6.** EP-2 rejoins before EP-3 (parallel with EP-1, same
+**EP-0 → EP-0.5 → EP-1 → EP-3 → EP-4 → EP-5 → EP-6.** EP-2 rejoins before EP-3 (parallel with EP-1, same
 convergence gate). EP-7 floats (starts EP-0, seals after EP-6). See the dependency map in the
 decisions block §5 for the full mermaid graph; the Phase Summary table below is this plan's
 canonical orchestration index.
@@ -227,13 +254,14 @@ canonical orchestration index.
 | Phase | Title | Estimate | Target Subagent(s) | Model(s) | Notes |
 |-------|-------|---------:|--------------------|----------|-------|
 | EP-0 | De-risk & align | 9 pts | general-purpose, backend-architect, artifact-tracker | sonnet, fable, gpt-5.6-sol (codex exec), haiku | 4 SPIKEs + DEF-1 (D-2) + CI hardening (OQ-6, moved in) + DEF-2 promotion |
-| EP-1 | Tri-state fact model | 13 pts | backend-architect, general-purpose, code-reviewer | opus (design), sonnet (execution) | Parallel with EP-2; owns the EP-1/EP-2 seam (R-P3) |
+| EP-0.5 | Activation-witness corpus | 8.5 pts | general-purpose, code-reviewer | sonnet, fable (branch seam), gpt-5.6-sol (coherence review), haiku | **Inserted post-EP-0.** Blocks EP-1/EP-5/EP-6. 32 of EP-1's 49 rules currently migrate blind |
+| EP-1 | Tri-state fact model | 13 pts | backend-architect, general-purpose, code-reviewer | opus (design), sonnet (execution) | Parallel with EP-2; owns the EP-1/EP-2 seam (R-P3). **49 rules, not 33**; requires EP-0.5 witnesses |
 | EP-2 | Units & range registry | 8 pts | backend-architect, code-reviewer | sonnet | Parallel with EP-1; R-P4 runtime smoke (browser unit-rejection) |
 | EP-3+EP-4 | Evidence provenance + rule governance | 15 pts | general-purpose, documentation-writer, artifact-validator | sonnet, haiku (codemod), gpt-5.6-terra (audit) | Strict serial edge (sourcePassageId) |
 | EP-5 | Manifest & semantic diff | 10 pts | backend-architect, code-reviewer | sonnet, gpt-5.6-sol (adversarial) | SPIKE-006 signing branch documented |
-| EP-6 | Adversarial validation corpus | 9 pts | general-purpose, adversarial reviewer | sonnet, fable (dangerous-miss review) | Consumes ARC's 10 DM-* families |
+| EP-6 | Adversarial validation corpus | 9 pts | general-purpose, adversarial reviewer | sonnet, fable (dangerous-miss review) | Consumes ARC's 10 DM-* families **plus SPIKE-005's M01–M57 seeded corpus**. Re-scoped: builds on EP-0.5, not from scratch |
 | EP-7 | Review contract & docs | 4 pts | documentation-writer, artifact-tracker | sonnet (contract), haiku (docs) | Fixes stale `data/*.json` refs + test count |
-| **Total** | — | **68 pts** | — | — | — |
+| **Total** | — | **76.5 pts** | — | — | — |
 
 > Full task tables, per-task ACs, and model/effort routing live in the phase files linked below.
 > Estimation rationale (H1–H6) lives in the decisions block §4; this plan carries per-phase anchors

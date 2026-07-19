@@ -9,22 +9,45 @@ phase_title: "Tri-State Fact Model"
 prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-foundation-v1.md
 feature_slug: wave0-safety-foundation
-entry_criteria: "EP-0 closed: SPIKE-003 decisions recorded, DEF-2 promoted, npm run check green."
-exit_criteria: "not-assessed provably cannot satisfy any rule-out branch; all 6 golden diffs enumerated + rationalized per D-3; safety council-review passed before merge; npm run check green."
+entry_criteria: "EP-0 closed (SPIKE-003 decisions recorded, DEF-2 promoted) AND EP-0.5 closed (activation witness for all 49 migration-table rules); npm run check green."
+exit_criteria: "not-assessed provably cannot satisfy any rule-out branch; every one of the 49 migrated rules has an activation witness whose output is enumerated + rationalized per D-3 (not merely the 6 original golden fixtures); safety council-review passed before merge; npm run check green."
 ---
 
 # Phase EP-1: Tri-State Fact Model (WP1)
 
 **Maps to roadmap/PRD WP1.** **13 pts.** Parallel with EP-2 (disjoint files; one shared seam line).
 
-**Dependencies**: EP-0 complete (SPIKE-003 decisions, DEF-2 promoted).
+**Dependencies**: EP-0 complete (SPIKE-003 decisions, DEF-2 promoted) **and EP-0.5 complete**
+(activation-witness corpus — see the amendment note below).
+
+> **AMENDMENT 2026-07-19 (post-EP-0).** Two corrections to this phase, both from SPIKE-003's empirical
+> census and EP-0's coverage measurement:
+>
+> 1. **Scope is 49 rules, not 33.** SPIKE-003 RQ7a supersedes the charter figure: 49 of 91 rules
+>    reference a boolean-collapse fact path (including derived `cbc.*`/`g6pd.*`/`hemoglobinAnalysis.*`
+>    facts, not only the raw `history.*`/`symptoms.*`/`exam.*` namespace). The full 49-row migration
+>    table is in SPIKE-003 § "RQ7(b) — Full 49-row migration table (durable copy)". The census also
+>    corrected 56 → **60** boolean fields and 19 → **25** `=== true` occurrences.
+> 2. **EP-0.5 is now a hard prerequisite.** Only **17 of the 49** rules being migrated currently have
+>    any test witness — **32 migrate blind**, including 3 alerts and both `TEC-001` and `IRIDA-001`
+>    (the two rules SPIKE-003 carved out of its GO verdict). "All 6 golden fixtures byte-identical" is
+>    a statement about 17 of 49 rules, so it cannot serve as this phase's verification evidence.
+>
+> **Migration must land atomically.** SPIKE-003's prototype proved a *staged* rollout (fact-shape
+> change before rule-syntax change) silently breaks a real fixture with **zero test failures**. Related
+> hazard: a tri-state string fed to the old `countTrue()`/`Boolean()` coercion over-counts, since any
+> non-empty string is JS-truthy.
+>
+> **Carve-outs from SPIKE-003's GO verdict**: `TEC-001`/`IRIDA-001` exclusion-gate tightening requires
+> `council-review` plus companion question rules; the `statusIs()`/`hemolysisMarkerCount` latent
+> missingness gap is explicitly **out of scope** and needs its own ticket.
 **Assigned Subagent(s)**: `backend-architect` (design) → `general-purpose` (JS executor, migration);
 `code-reviewer` (secondary). Design and execution are split deliberately: the 9 `countTrue` aggregates
-need judgment; the 33-rule edit is mechanical once the mapping table exists.
-**Entry criteria**: EP-0's SPIKE-003 output (33-rule migration table, aggregate decisions, operator
-semantics) available; `npm run check` green.
+need judgment; the 49-rule edit is mechanical once the mapping table exists.
+**Entry criteria**: EP-0's SPIKE-003 output (49-row migration table, aggregate decisions, operator
+semantics) available; **EP-0.5's activation-witness corpus in place**; `npm run check` green.
 **Exit criteria**: dedicated invariant test passes (no rule-out branch satisfiable by `not-assessed`);
-D-3's golden-diff enumeration shows zero unexplained diffs; safety `council-review` gate passed **before
+D-3's diff enumeration over the EP-0.5 witness corpus (all 49 migrated rules, not just the 6 original fixtures) shows zero unexplained diffs; safety `council-review` gate passed **before
 merge**; `npm run check` green; golden outputs match the AC-D3 migration record exactly (no
 undocumented diff).
 
