@@ -9,3 +9,6 @@ dist/
 .claude/.skillmeat-deployed.toml
 .operator/
 __pycache__/
+
+# git worktrees created by EnterWorktree / dev-execution protocol
+.claude/worktrees/

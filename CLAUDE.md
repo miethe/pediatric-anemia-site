@@ -61,6 +61,26 @@ patient JSON → deriveFacts() (src/facts.js, shim over modules/anemia/facts.ane
 - Source strategy: `docs/project_plans/pediatric-cds-expansion-dr.md` and the
   `pediatric-cds-commercialization-package-2026-07-16/` bundle.
 
+## AOS assets already available to this program
+
+Index: `docs/project_plans/expansion/aos-asset-index.md` (capability table, delivered/not-delivered,
+when-to-reach-for-what, honesty boundaries). Linked handoff docs there are canonical for depth.
+
+- **`rf` (Research Foundry) has delivered 7 verified pediatric evidence bundles** — they are
+  *claims, not rules*; nothing converts them into `modules/<id>/*.json` yet (`EF-WP0`/`EF-WP1`,
+  not started). Treating an unconverted `rf` bundle as production clinical evidence is the
+  mistake a future session is most likely to make.
+- **ARC has a repository-ready pediatric clinical council** with a completed synthetic readiness
+  audit — non-qualifying. Treating that ARC review as credentialed clinical sign-off is the other
+  most likely mistake; `clinicalApprovers[]`/`approvedBy[]` need real named humans, never ARC
+  output.
+- **Check the `rf` catalog before launching a new evidence run**:
+  `GET $RF_API_URL/api/catalog/search?q=...` — a verified claim may already exist.
+- **IntentTree node status is known stale** (merged P0 work and all 7 verified `rf` runs still
+  show `not_started`) — verify against git log / `rf-handoff/RESULTS.md` before trusting `itt`.
+- `rf` API reach: `http://10.42.10.76:7432`; creds at `~/.config/research-foundry/serve.env`
+  (`RF_API_URL` + `RF_TOKEN_AGENT`).
+
 ## Program tracking
 
 - **Operator run:** `.operator/runs/op_run_20260717_050047_pediatric-cds-platform-e/`.
