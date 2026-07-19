@@ -149,3 +149,15 @@ No external models (offline deterministic work; no UI, no image, no web research
   migrate §6 above into its Estimation Sanity Check)
 - Frontmatter: `changelog_required: true` (new tooling + KB pipeline is user/dev-facing);
   `findings_doc_ref: null`; `deferred_items_spec_refs: []` initialized.
+
+## 11. Addendum — rulings on PRD-discovered OQs (binding)
+
+- **OQ-5 (test layout)**: generated corpus lands flat in `tests/` with prefix naming
+  `ef-<module>-<category>.test.mjs` — do NOT change the `npm test` glob (the check gate is
+  load-bearing; touching it is out of scope).
+- **OQ-6 (build output)**: add `build/` to `.gitignore` (Phase 1 task). `build/kb-pack/` output is
+  generated, never committed. Committed golden outputs for converter tests live under
+  `tests/fixtures/` instead.
+- **OQ-7 (schemas)**: yes — new artifact types (`evidence-assertions`, `rule-provenance`,
+  `authoring-decisions`, pack `release-manifest`) each get a `schemas/*.schema.json`, wired into
+  `scripts/validate-kb.mjs`. JSON Schema is the repo idiom; hand-rolled structural checks are not.
