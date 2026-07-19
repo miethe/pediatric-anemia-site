@@ -2,146 +2,219 @@
 type: progress
 schema_version: 2
 doc_type: progress
-prd: "wave0-safety-foundation"
-feature_slug: "wave0-safety-foundation"
+prd: wave0-safety-foundation
+feature_slug: wave0-safety-foundation
 prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-foundation-v1.md
 execution_model: batch-parallel
 phase: 0
-title: "EP-0: De-Risk & Align"
-status: "planning"
+title: 'EP-0: De-Risk & Align'
+status: in_progress
 started: null
 completed: null
 commit_refs: []
 pr_refs: []
-
 overall_progress: 0
-completion_estimate: "on-track"
-
+completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 0
-in_progress_tasks: 0
+completed_tasks: 3
+in_progress_tasks: 3
 blocked_tasks: 0
 at_risk_tasks: 0
-
-owners: ["general-purpose", "backend-architect", "artifact-tracker"]
+owners:
+- general-purpose
+- backend-architect
+- artifact-tracker
 contributors: []
-
 model_usage:
-  primary: "sonnet"
-  external: ["fable", "gpt-5.6-sol (codex exec)"]
-
+  primary: sonnet
+  external:
+  - fable
+  - gpt-5.6-sol (codex exec)
 tasks:
-  - id: "EP0-T1"
-    description: "Execute SPIKE-003 (tri-state fact model migration): re-run the field/rule/countTrue census, build the throwaway prototype, produce RQ1-RQ7 decisions including the full 33-rule migration table."
-    status: "pending"
-    assigned_to: ["general-purpose"]
-    dependencies: []
-    estimated_effort: "1.5 pts"
-    priority: "high"
-    assigned_model: "sonnet"
-    model_effort: "high"
-  - id: "EP0-T2"
-    description: "Execute SPIKE-004 (UCUM unit handling & mismatch rejection): decide the closed unit table shape, D-5 dependency-vs-hand-roll call, and the fail-closed rejection boundary (API + browser) including the missing-unit policy (OQ-5)."
-    status: "pending"
-    assigned_to: ["general-purpose"]
-    dependencies: []
-    estimated_effort: "1.5 pts"
-    priority: "high"
-    assigned_model: "sonnet"
-    model_effort: "high"
-  - id: "EP0-T3"
-    description: "Execute SPIKE-005 (semantic diff classification) — design: enumerate change classes for kb-diff.mjs, explicitly hunt the false-negative under-reporting mode, produce the seeded-mutation-corpus design EP-5 implements against."
-    status: "pending"
-    assigned_to: ["general-purpose"]
-    dependencies: []
-    estimated_effort: "1.25 pts"
-    priority: "critical"
-    assigned_model: "fable"
-    model_effort: "max"
-  - id: "EP0-T4"
-    description: "SPIKE-005 adversarial second lens: cross-family review of EP0-T3's output, tasked explicitly with 'find a safety-relevant change this classifier misses.'"
-    status: "pending"
-    assigned_to: ["general-purpose"]
-    dependencies: ["EP0-T3"]
-    estimated_effort: "0.5 pts"
-    priority: "high"
-    assigned_model: "gpt-5.6-sol (codex exec)"
-    model_effort: "xhigh"
-  - id: "EP0-T5"
-    description: "Execute SPIKE-006 (KB signing key custody & browser-side verification): threat-model whether real cryptographic signing is warranted at this trust boundary, or clinicalContentHash + supersedes chain suffices."
-    status: "pending"
-    assigned_to: ["general-purpose"]
-    dependencies: ["EP0-T6"]
-    estimated_effort: "1.0 pt"
-    priority: "high"
-    assigned_model: "gpt-5.6-sol (codex exec)"
-    model_effort: "xhigh"
-  - id: "EP0-T6"
-    description: "Resolve DEF-1 — evidence dual-source unification (D-2 prerequisite, FR-WP3-01): src/evidence.js stops hand-duplicating modules/anemia/evidence.json. Must land before EP-3 extends the evidence shape."
-    status: "pending"
-    assigned_to: ["backend-architect"]
-    dependencies: []
-    estimated_effort: "1.5 pts"
-    priority: "high"
-    assigned_model: "sonnet"
-    model_effort: "medium"
-  - id: "EP0-T7"
-    description: "Promote DEF-2 (tri-state-fact-model.md) from 'shaping' to 'ready'/committed using EP0-T1's SPIKE-003 output (migration table, aggregate decisions, operator semantics)."
-    status: "pending"
-    assigned_to: ["general-purpose"]
-    dependencies: ["EP0-T1"]
-    estimated_effort: "0.25 pts"
-    priority: "high"
-    assigned_model: "sonnet"
-    model_effort: "adaptive"
-  - id: "EP0-T8"
-    description: "Resync IntentTree tracker to real git/rf state; launch RF-EV-002 (CALIPER/Bohn 2023 pediatric CBC reference intervals) and REG-002 (content-rights/licensing review) — no code dependency."
-    status: "pending"
-    assigned_to: ["artifact-tracker"]
-    dependencies: []
-    estimated_effort: "0.5 pts"
-    priority: "high"
-    assigned_model: "haiku"
-    model_effort: "low"
-  - id: "EP0-T9"
-    description: "CI hardening (FR-WP6-05, moved in from EP-6 per OQ-6): add npm run check:imports to .github/workflows/deploy-pages.yml; add a PR-trigger job (today only push:[main] + workflow_dispatch)."
-    status: "pending"
-    assigned_to: ["general-purpose"]
-    dependencies: []
-    estimated_effort: "1.0 pt"
-    priority: "high"
-    assigned_model: "haiku"
-    model_effort: "low"
-
+- id: EP0-T1
+  description: 'Execute SPIKE-003 (tri-state fact model migration): re-run the field/rule/countTrue
+    census, build the throwaway prototype, produce RQ1-RQ7 decisions including the
+    full 33-rule migration table.'
+  status: in_progress
+  assigned_to:
+  - general-purpose
+  dependencies: []
+  estimated_effort: 1.5 pts
+  priority: high
+  assigned_model: sonnet
+  model_effort: high
+  started: 2026-07-19T00:00Z
+- id: EP0-T2
+  description: 'Execute SPIKE-004 (UCUM unit handling & mismatch rejection): decide
+    the closed unit table shape, D-5 dependency-vs-hand-roll call, and the fail-closed
+    rejection boundary (API + browser) including the missing-unit policy (OQ-5).'
+  status: in_progress
+  assigned_to:
+  - general-purpose
+  dependencies: []
+  estimated_effort: 1.5 pts
+  priority: high
+  assigned_model: sonnet
+  model_effort: high
+  started: 2026-07-19T00:00Z
+- id: EP0-T3
+  description: 'Execute SPIKE-005 (semantic diff classification) — design: enumerate
+    change classes for kb-diff.mjs, explicitly hunt the false-negative under-reporting
+    mode, produce the seeded-mutation-corpus design EP-5 implements against.'
+  status: in_progress
+  assigned_to:
+  - general-purpose
+  dependencies: []
+  estimated_effort: 1.25 pts
+  priority: critical
+  assigned_model: fable
+  model_effort: max
+  started: 2026-07-19T00:00Z
+- id: EP0-T4
+  description: 'SPIKE-005 adversarial second lens: cross-family review of EP0-T3''s
+    output, tasked explicitly with ''find a safety-relevant change this classifier
+    misses.'''
+  status: pending
+  assigned_to:
+  - general-purpose
+  dependencies:
+  - EP0-T3
+  estimated_effort: 0.5 pts
+  priority: high
+  assigned_model: gpt-5.6-sol (codex exec)
+  model_effort: xhigh
+- id: EP0-T5
+  description: 'Execute SPIKE-006 (KB signing key custody & browser-side verification):
+    threat-model whether real cryptographic signing is warranted at this trust boundary,
+    or clinicalContentHash + supersedes chain suffices.'
+  status: pending
+  assigned_to:
+  - general-purpose
+  dependencies:
+  - EP0-T6
+  estimated_effort: 1.0 pt
+  priority: high
+  assigned_model: gpt-5.6-sol (codex exec)
+  model_effort: xhigh
+- id: EP0-T6
+  description: 'Resolve DEF-1 — evidence dual-source unification (D-2 prerequisite,
+    FR-WP3-01): src/evidence.js stops hand-duplicating modules/anemia/evidence.json.
+    Must land before EP-3 extends the evidence shape.'
+  status: completed
+  assigned_to:
+  - backend-architect
+  dependencies: []
+  estimated_effort: 1.5 pts
+  priority: high
+  assigned_model: sonnet
+  model_effort: medium
+  started: 2026-07-19T00:00Z
+  completed: 2026-07-19T00:05Z
+  evidence:
+  - test: tests/module-equivalence.test.mjs (6/6 golden fixtures unchanged)
+  - test: deep-equal old-vs-new EVIDENCE export — 6 ids, same order, frozen
+  - gate: npm run check exit 0 (20/20 tests)
+- id: EP0-T7
+  description: Promote DEF-2 (tri-state-fact-model.md) from 'shaping' to 'ready'/committed
+    using EP0-T1's SPIKE-003 output (migration table, aggregate decisions, operator
+    semantics).
+  status: pending
+  assigned_to:
+  - general-purpose
+  dependencies:
+  - EP0-T1
+  estimated_effort: 0.25 pts
+  priority: high
+  assigned_model: sonnet
+  model_effort: adaptive
+- id: EP0-T8
+  description: Resync IntentTree tracker to real git/rf state; launch RF-EV-002 (CALIPER/Bohn
+    2023 pediatric CBC reference intervals) and REG-002 (content-rights/licensing
+    review) — no code dependency.
+  status: completed
+  assigned_to:
+  - artifact-tracker
+  dependencies: []
+  estimated_effort: 0.5 pts
+  priority: high
+  assigned_model: haiku
+  model_effort: low
+  started: 2026-07-19T00:00Z
+  completed: 2026-07-19T00:03Z
+  evidence:
+  - itt: 10 nodes resynced to completed (P0 WP + 6 children, 3 verified rf runs)
+  - rf: rf_run_20260719_caliper_pediatric_cbc_reference_intervals_age (RF-EV-002)
+  - rf: rf_run_20260719_content_rights_and_licensing_review_what (REG-002)
+- id: EP0-T9
+  description: 'CI hardening (FR-WP6-05, moved in from EP-6 per OQ-6): add npm run
+    check:imports to .github/workflows/deploy-pages.yml; add a PR-trigger job (today
+    only push:[main] + workflow_dispatch).'
+  status: completed
+  assigned_to:
+  - general-purpose
+  dependencies: []
+  estimated_effort: 1.0 pt
+  priority: high
+  assigned_model: haiku
+  model_effort: low
+  started: 2026-07-19T00:00Z
+  completed: 2026-07-19T00:02Z
+  evidence:
+  - file: .github/workflows/deploy-pages.yml (verify job on pull_request; deploy guarded
+      non-PR)
+  - test: negative-test confirmed check:imports fails on broken specifier
 parallelization:
-  batch_1: ["EP0-T1", "EP0-T2", "EP0-T3", "EP0-T6", "EP0-T8", "EP0-T9"]
-  batch_2: ["EP0-T4", "EP0-T5", "EP0-T7"]
-  critical_path: ["EP0-T6", "EP0-T5"]
-  estimated_total_time: "2.5 pts (critical path: EP0-T6 -> EP0-T5)"
-
+  batch_1:
+  - EP0-T1
+  - EP0-T2
+  - EP0-T3
+  - EP0-T6
+  - EP0-T8
+  - EP0-T9
+  batch_2:
+  - EP0-T4
+  - EP0-T5
+  - EP0-T7
+  critical_path:
+  - EP0-T6
+  - EP0-T5
+  estimated_total_time: '2.5 pts (critical path: EP0-T6 -> EP0-T5)'
 blockers: []
-
-success_criteria: [
-  { id: "SC-1", description: "All 4 SPIKE charters closed with recorded decisions (EP0-T1, T2, T3+T4, T5)", status: "pending" },
-  { id: "SC-2", description: "DEF-1 resolved; golden-fixture equivalence holds (EP0-T6)", status: "pending" },
-  { id: "SC-3", description: "DEF-2 promoted from shaping (EP0-T7)", status: "pending" },
-  { id: "SC-4", description: "IntentTree resynced; RF-EV-002 and REG-002 launched (EP0-T8)", status: "pending" },
-  { id: "SC-5", description: "CI runs check:imports and gates on PR events (EP0-T9)", status: "pending" },
-  { id: "SC-6", description: "npm run check green", status: "pending" },
-  { id: "SC-7", description: "task-completion-validator sign-off", status: "pending" }
-]
-
-files_modified: [
-  "docs/project_plans/SPIKEs/spike-003-tri-state-fact-model-migration.md",
-  "docs/project_plans/SPIKEs/spike-004-ucum-unit-handling-mismatch-rejection.md",
-  "docs/project_plans/SPIKEs/spike-005-semantic-diff-classification.md",
-  "docs/project_plans/SPIKEs/spike-006-kb-signing-key-custody-verification.md",
-  "docs/project_plans/design-specs/tri-state-fact-model.md",
-  "src/evidence.js",
-  "modules/anemia/evidence.json",
-  ".github/workflows/deploy-pages.yml"
-]
+success_criteria:
+- id: SC-1
+  description: All 4 SPIKE charters closed with recorded decisions (EP0-T1, T2, T3+T4,
+    T5)
+  status: pending
+- id: SC-2
+  description: DEF-1 resolved; golden-fixture equivalence holds (EP0-T6)
+  status: pending
+- id: SC-3
+  description: DEF-2 promoted from shaping (EP0-T7)
+  status: pending
+- id: SC-4
+  description: IntentTree resynced; RF-EV-002 and REG-002 launched (EP0-T8)
+  status: pending
+- id: SC-5
+  description: CI runs check:imports and gates on PR events (EP0-T9)
+  status: pending
+- id: SC-6
+  description: npm run check green
+  status: pending
+- id: SC-7
+  description: task-completion-validator sign-off
+  status: pending
+files_modified:
+- docs/project_plans/SPIKEs/spike-003-tri-state-fact-model-migration.md
+- docs/project_plans/SPIKEs/spike-004-ucum-unit-handling-mismatch-rejection.md
+- docs/project_plans/SPIKEs/spike-005-semantic-diff-classification.md
+- docs/project_plans/SPIKEs/spike-006-kb-signing-key-custody-verification.md
+- docs/project_plans/design-specs/tri-state-fact-model.md
+- src/evidence.js
+- modules/anemia/evidence.json
+- .github/workflows/deploy-pages.yml
+progress: 33
+updated: '2026-07-19'
 ---
 
 # wave0-safety-foundation - Phase 0: De-Risk & Align

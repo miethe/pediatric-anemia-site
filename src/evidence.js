@@ -1,109 +1,27 @@
-export const KNOWLEDGE_BASE_VERSION = '0.1.0-2026-07-15';
-export const REVIEWED_THROUGH = '2026-07-15';
+// DEF-1 (evidence dual-source unification, per
+// docs/project_plans/design-specs/evidence-dual-source-unification.md, Direction 1): this module
+// used to hand-duplicate modules/anemia/evidence.json as a JS object literal. That second,
+// hand-maintained copy is gone. modules/anemia/evidence.json is now the single source of truth;
+// this file is a thin loader/reshaper over it, using the same `with { type: 'json' }`
+// import-attribute pattern modules/anemia/ranges.js already relies on for reference-ranges.json
+// (proven to load under both the Node/API path and the browser SPA path — see DEF-8 and
+// scripts/check-app-imports.mjs's dynamic module-graph load pass).
+import evidenceData from '../modules/anemia/evidence.json' with { type: 'json' };
+
+export const KNOWLEDGE_BASE_VERSION = evidenceData.knowledgeBaseVersion;
+export const REVIEWED_THROUGH = evidenceData.reviewedThrough;
 
 /**
  * Evidence registry. Rule outputs reference these IDs; the UI renders the
  * citation, relevance, publication date, and direct source link.
+ *
+ * Reshaped from evidenceData.sources (an array, the natural JSON shape) into an
+ * id-keyed object (the shape the SPA's citation rendering in src/app.js and
+ * src/algorithmExplorer.js expects) — same record order, same fields, no content change.
  */
-export const EVIDENCE = Object.freeze({
-  AAP2026_IDA: {
-    id: 'AAP2026_IDA',
-    priority: 'primary-current',
-    year: 2026,
-    title:
-      'Prevention, Screening, Diagnosis, and Treatment of Iron Deficiency and Iron Deficiency Anemia in Infants, Children, and Adolescents: Clinical Report',
-    organization: 'American Academy of Pediatrics',
-    journal: 'Pediatrics. 2026;158(1):e2026077414',
-    doi: '10.1542/peds.2026-077414',
-    url:
-      'https://publications.aap.org/pediatrics/article/158/1/e2026077414/207901/Prevention-Screening-Diagnosis-and-Treatment-of',
-    supports: [
-      'CBC and ferritin as core diagnostic testing for iron deficiency anemia',
-      'Age- and sex-specific fallback hemoglobin, MCV, and RDW intervals for 6 months to <18 years',
-      'Ferritin thresholds of ≤20 ng/mL in young/school-aged children and ≤30 ng/mL in adolescents and all menstruating patients',
-      'Ferritin interpretation with inflammation and CRP',
-      'sTfR/log10(ferritin) index interpretation',
-      'Microcytic differentiation among iron deficiency, thalassemia, and anemia of inflammation',
-      'Severe iron deficiency anemia category at hemoglobin <7 g/dL (not a universal transfusion threshold)',
-    ],
-  },
-  WHO2024_HB: {
-    id: 'WHO2024_HB',
-    priority: 'primary-current',
-    year: 2024,
-    title: 'Guideline on haemoglobin cutoffs to define anaemia in individuals and populations',
-    organization: 'World Health Organization',
-    journal: 'WHO guideline; ISBN 978-92-4-008854-2',
-    url: 'https://www.who.int/publications/i/item/9789240088542',
-    supports: [
-      'Use of current age/population-appropriate hemoglobin cutoffs',
-      'Recognition that physiologic and contextual factors affect hemoglobin interpretation',
-      'Need for transparent cutoff provenance rather than a single universal pediatric threshold',
-    ],
-  },
-  BLOOD2022_PED_ANEMIA: {
-    id: 'BLOOD2022_PED_ANEMIA',
-    priority: 'peer-reviewed-recent',
-    year: 2022,
-    title: 'Anemia in the pediatric patient',
-    organization: 'American Society of Hematology',
-    journal: 'Blood. 2022;140(6):571-593',
-    doi: '10.1182/blood.2021013018',
-    url: 'https://doi.org/10.1182/blood.2021013018',
-    pmcid: 'PMC9373018',
-    supports: [
-      'Morphology-first and reticulocyte-response framework for pediatric anemia',
-      'Broad differential for microcytic, normocytic, and macrocytic anemia',
-      'Peripheral smear and multi-lineage cytopenia interpretation',
-      'Hemolysis, marrow production failure, nutritional, renal, endocrine, infectious, and inherited causes',
-    ],
-  },
-  CDC2025_LEAD: {
-    id: 'CDC2025_LEAD',
-    priority: 'authoritative-current',
-    year: 2025,
-    title: 'Recommended Actions Based on Blood Lead Level',
-    organization: 'US Centers for Disease Control and Prevention',
-    journal: 'Clinical guidance updated August 21, 2025',
-    url: 'https://www.cdc.gov/lead-prevention/hcp/clinical-guidance/index.html',
-    supports: [
-      'CDC blood lead reference value of 3.5 µg/dL',
-      'Venous confirmation after elevated capillary screening',
-      'Urgency tiers and confirmation timelines for higher blood lead levels',
-      'Assessment and treatment of coexisting iron deficiency',
-    ],
-  },
-  FDA2026_CDS: {
-    id: 'FDA2026_CDS',
-    priority: 'regulatory-current',
-    year: 2026,
-    title: 'Clinical Decision Support Software: Guidance for Industry and Food and Drug Administration Staff',
-    organization: 'US Food and Drug Administration',
-    journal: 'Final guidance, January 2026',
-    url: 'https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software',
-    supports: [
-      'Non-device CDS criteria under section 520(o)(1)(E) of the FD&C Act',
-      'Need for a health care professional to independently review the basis of recommendations',
-      'Regulatory importance of intended use, time criticality, and specificity of outputs',
-    ],
-  },
-  BSH2020_G6PD: {
-    id: 'BSH2020_G6PD',
-    priority: 'foundational-outside-five-year-window',
-    year: 2020,
-    title: 'Laboratory diagnosis of G6PD deficiency: A British Society for Haematology Guideline',
-    organization: 'British Society for Haematology',
-    journal: 'British Journal of Haematology. 2020;189(1):24-38',
-    url: 'https://pubmed.ncbi.nlm.nih.gov/?term=Laboratory+diagnosis+of+G6PD+deficiency+British+Society+for+Haematology',
-    supports: [
-      'Quantitative enzyme testing for G6PD deficiency',
-      'Risk of a falsely normal assay during or soon after acute hemolysis or transfusion',
-      'Repeat testing when clinical suspicion remains',
-    ],
-    recencyNote:
-      'Retained as a foundational laboratory guideline because no newer replacement was identified in the prioritized review set.',
-  },
-});
+export const EVIDENCE = Object.freeze(
+  Object.fromEntries(evidenceData.sources.map((source) => [source.id, source])),
+);
 
 export function evidenceFor(ids = []) {
   return [...new Set(ids)].map((id) => EVIDENCE[id]).filter(Boolean);

@@ -3,6 +3,8 @@ name: Deploy static site to GitHub Pages
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -10,13 +12,34 @@ permissions:
   pages: write
   id-token: write
 
+# PR verification runs get their own per-PR group so they never queue behind (or block) a
+# production Pages deploy. The deploy path keeps the original `pages` group and
+# cancel-in-progress: false, so an in-flight publish is never interrupted.
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: ${{ github.event_name == 'pull_request' && format('pr-verify-{0}', github.event.number) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  verify:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # PR verification gate: mirrors npm run check (test, validate, build, check:imports, smoke)
+      - run: npm test
+      - run: npm run validate
+      - run: npm run build
+      - run: npm run check:imports
+      - run: npm run smoke
+
   build:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v4
 
@@ -29,6 +52,7 @@ jobs:
       - run: npm test
       - run: npm run validate
       - run: npm run build
+      - run: npm run check:imports
       - run: npm run smoke
 
       - uses: actions/configure-pages@v5
@@ -39,6 +63,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
