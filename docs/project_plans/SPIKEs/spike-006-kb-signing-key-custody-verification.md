@@ -2,7 +2,7 @@
 schema_version: 2
 doc_type: spike
 title: "SPIKE-006: KB Signing Key Custody and Browser-Side Verification"
-status: draft
+status: completed
 created: 2026-07-19
 feature_slug: wave0-safety-foundation
 research_questions:
@@ -209,3 +209,289 @@ Skipping this SPIKE is equivalent to accepting that no-go condition as permanent
 - `docs/architecture.md` §6 (`:103-122`), §9 (`:167-176`), §10 (`:178-188`)
 - `.claude/worknotes/wave0-safety-foundation/repo-current-state.md` §B, §D, §G (P1-WP5 row), cross-cutting observation
 - `server.mjs:19-48`, `modules/anemia/module.json`, `src/app.js:627-630`
+
+---
+
+## Authorship note
+
+Primary reasoning for this SPIKE was routed to `gpt-5.6-sol` (reasoning effort `xhigh`) via `codex
+exec` as a deliberate cross-family lens, per this task's plan (EP0-T5). The section below is a
+transcription of that model's output, not independent Claude analysis; disagreement, if any, is
+recorded as a labelled dissent rather than silently substituted. Raw transcript:
+`/Users/miethe/.claude/jobs/fc2ff3fd/tmp/ep0-t5-codex.md` (Codex accepted `gpt-5.6-sol` on the first
+attempt — no fallback to `gpt-5.6-terra` was needed).
+
+## Findings by research question
+
+### RQ1 — Key custody and honest threat model
+
+**Decision**: do not create or hold a signing private key in the current phase. The hash-and-chain
+design defends against accidental or partial KB substitution and provides content-level provenance
+for auditors. It does **not** defend against unreviewed content shipping or a fully compromised
+GitHub account, workflow, or Pages origin.
+
+**Rationale**: the actual actors are — one maintainer authors the clinical content; that same
+maintainer controls `main`, can dispatch the workflow, and would hold any signing key; the new PR
+`verify` job (`.github/workflows/deploy-pages.yml`, added in EP0-T9/commit `5eaa048`) runs the
+software gates but cannot reach the Pages `deploy` job, so push-to-main or manual dispatch remains
+under the same single account; the public microsite has no PHI, server authentication, or
+third-party runtime scripts. A cryptographic signature would prove only "this exact byte content was
+what the release script signed" — it would **not** prove "independent clinical review happened."
+That assurance can come only from a real out-of-band review process recorded truthfully in
+`approvedBy[]`; the signature itself cannot create it. Custody alternatives were weighed and none
+change the conclusion:
+
+- **Maintainer laptop**: separates the private key from GitHub, so an independent auditor with an
+  out-of-band trusted public key could detect a forged release — but does not protect against laptop
+  compromise or the maintainer signing their own unreviewed change.
+- **GitHub Actions secret**: offers little separation, since the same account controls content,
+  workflow changes, dispatch, and deployment; a compromised account or workflow can invoke or expose
+  the key.
+- **Hardware token**: makes key extraction harder but cannot stop the maintainer from signing
+  unreviewed content, nor protect the browser if an attacker can replace the verification JavaScript.
+
+**Explicitly not defended against**: independent-review bypass by the maintainer; clinical
+invalidity, diagnostic error, or failure to pass the validation-gate ladder; malicious replacement of
+the KB, manifest, and verifier together at the static origin; general tamper-in-transit by an
+attacker capable of defeating HTTPS and replacing all same-origin assets (HTTPS is the primary
+transit control — the digest only catches isolated corruption or substitution while the expected
+anchor itself remains unchanged).
+
+### RQ2 — Public key location for browser-only verification
+
+**Decision**: no public key, because RQ6 rejects cryptographic signing. Embed the current
+hash-chain tip as a literal release anchor in a new `src/kbVerify.js` (e.g. an
+`EXPECTED_MANIFEST_HASH` constant) — do not fetch a separate `public-key.json` or trust-root
+document. Browser flow: load `module.json` and the four KB JSON inputs at startup, verify the
+canonical `module.json` against the embedded anchor, recompute `clinicalContentHash` from the four
+KB inputs, and require the result to match. `supersedes` identifies the prior version and prior
+canonical manifest digest; historical manifests and their KB inputs must stay retained in release
+tags/artifacts so the chain is actually auditable.
+
+**Rationale**: fetching a public key from the same GitHub Pages origin would be circular — the
+browser would be trusting the same channel to provide both the content under verification and the
+key supposedly establishing trust in that content. Embedding an anchor in JavaScript avoids a
+separately mutable key fetch and still detects partial deployment, stale-file mixing, corruption, or
+a KB-only replacement — but it does **not** create an independent trust root: an attacker controlling
+Pages can replace `src/kbVerify.js` or `src/app.js` along with the KB. Note: `build-static.mjs`'s
+existing asset stamp (`?v=<hash>`) is cache-busting, not a clinical-content trust anchor — it is
+generated from the deployed assets and is never compared against the manifest.
+
+**Explicitly not defended against**: a compromise capable of replacing the same-origin verification
+code — such an attacker can replace the embedded anchor or disable the check entirely.
+
+### RQ3 — Signing primitive and hashing scope
+
+**Decision**: a plain SHA-256 `clinicalContentHash` plus the manifest `supersedes` chain. Not
+Ed25519, not HMAC. Hash preimage: the UTF-8 encoding of an RFC 8785/JCS-canonicalized structure —
+
+```json
+{
+  "domain": "pediatric-cds-clinical-content-v1",
+  "files": [
+    { "path": "modules/anemia/rules.json", "content": {} },
+    { "path": "modules/anemia/candidates.json", "content": {} },
+    { "path": "modules/anemia/evidence.json", "content": {} },
+    { "path": "modules/anemia/reference-ranges.json", "content": {} }
+  ]
+}
+```
+
+— where each `content` value is the parsed JSON value, `files` order is fixed exactly as shown, and
+the result is stored as lowercase hex with a `sha256:` prefix.
+
+**Rationale**: HMAC is unsuitable — browser verification would require shipping the shared secret,
+making it non-secret. Ed25519 is technically feasible but offers no meaningful browser trust
+improvement without an independently distributed public-key root and a separated release authority
+(RQ1/RQ2 already establish neither exists here). SHA-256 is available in both Node and browser
+WebCrypto and directly satisfies architecture §10's fail-closed hash/signature requirement.
+Architecture §9's cryptographic package-signing control remains an appropriate future
+production-hardening goal — it does not justify an ineffective key ceremony now.
+
+**DEF-1 confirmation (RQ3 acceptance criterion)**: DEF-1 is resolved at current HEAD `5eaa048`.
+`src/evidence.js` is now a thin loader over `modules/anemia/evidence.json` (`import evidenceData from
+'../modules/anemia/evidence.json' with { type: 'json' }`); the former hand-maintained JS evidence
+literal is gone. Therefore **the four KB JSON files above are the complete `clinicalContentHash`
+scope** — there is no second evidence copy to hash and no independently editable evidence
+representation that can drift out of step with what gets hashed. (The now-removed P6-T2
+manifest-vs-const drift check in `validate-kb.mjs` existed precisely to catch that class of drift
+between two hand-maintained copies; EP0-T6 made it structurally unnecessary rather than leaving it
+passing-but-vacuous.) The thin loader and engine code themselves belong to the software/build
+integrity surface, not the clinical-content digest.
+
+**Explicitly not defended against**: the digest does not authenticate an author, establish clinical
+approval, or prevent a privileged maintainer or origin attacker from changing both content and
+expected digest together.
+
+### RQ4 — Verification-failure behavior, server vs. browser
+
+**Decision**: both surfaces fail closed before any assessment is possible.
+
+**Server** — replace `server.mjs`'s `ENOENT` tolerance for `module.json` with mandatory loading and
+verification: require a parseable manifest; reject `status: "unsigned-stub"`; recompute the
+four-file `clinicalContentHash`; validate the current manifest anchor and `supersedes` shape; on any
+failure, log a concise fatal integrity error and call `process.exit(1)` — do not start the HTTP
+listener and do not defer failure to a per-request 4xx. This matches the existing all-or-nothing
+startup pattern for missing/unparsable KB JSON. `scripts/build-static.mjs` must use the same
+verifier and exit nonzero before a Pages artifact can be uploaded. Recommended `status` vocabulary
+for DEF-5's schema (supersedes the draft `unsigned-stub` → `signed` binary): `unsigned-stub` (not
+loadable once verification is enforced), `integrity-recorded` (hash and chain verified; makes no
+cryptographic-signature or clinical-validation claim), `superseded` (retained and verifiable
+historically, not current), `revoked` (never loadable for assessment).
+
+**Browser** — `src/app.js` must complete verification before assigning KB data, attaching the
+submit/example handlers, or initializing the algorithm explorer. Failure needs a distinct **"KB
+integrity blocked"** UI state, not today's generic `showFatalError()` (`src/app.js:627-630`): disable
+the entire assessment form and example-loading controls, do not render the rule explorer or any
+stale result, display "No assessment produced — the knowledge base could not be verified," and keep
+technical details in the console or a non-clinical diagnostic disclosure only.
+
+**Rationale**: the current generic fatal path only replaces the result placeholder — it does not
+clearly communicate that assessment is prohibited. Architecture §10 requires an explicit "no
+assessment produced" state and forbids stale or partial advice, so this needs to be a distinct state
+from today's fatal-error path, not a reuse of it.
+
+**Explicitly not defended against**: successful hash verification proves content consistency only —
+it does not prove the verified content is clinically valid or independently reviewed.
+
+### RQ5 — Key rotation
+
+**Decision**: **not applicable pending RQ6.** There is no private key, public key, `keyId`, or
+previously cryptographically signed KB, so no key-rotation mechanism should be designed or
+implemented now. For the selected hash-chain design, succession is not rotation: every new manifest
+records the prior version and prior manifest digest in `supersedes`; previous hash-recorded releases
+remain verifiable indefinitely from retained tags/artifacts; a new release does not invalidate
+earlier hashes.
+
+**Rationale**: adding archived-key schemas and rotation procedures for a nonexistent key would
+preserve the appearance that signing is still planned for this phase, contradicting RQ6. Reopen RQ5
+only when the trust boundary actually changes — e.g. an independent release authority must sign,
+consumers need to verify packages outside GitHub Pages, or an out-of-band public-key root is
+established. At that point compromise suspicion or custody change should trigger rotation (routine
+calendar rotation alone is not useful); until roles separate, the solo operator is necessarily the
+one who would perform it.
+
+**Explicitly not defended against**: the hash chain has no key-compromise recovery property; its
+auditability depends entirely on retained, independently observable git history or release
+artifacts.
+
+### RQ6 — Signing vs. hash + manifest chain: an honest recommendation
+
+**Decision — GO/NO-GO: NO-GO on cryptographic signing now.** Defer it; ship
+`clinicalContentHash` plus the `supersedes` manifest chain as the Phase 1 deliverable (this is
+option (b) of the charter's exit criterion, not (a)).
+
+**Rationale**: in this exact deployment model, signing is theater. The same maintainer authors
+content, holds any key, and controls release. The browser obtains the KB, verification code, and any
+public key from the same static origin. An origin attacker who can replace the KB can equally replace
+the key or verification code — the specific circularity the charter asked to be reasoned about. The
+project has not passed any clinical validation gate, so a signature risks visually upgrading
+unvalidated content into something that appears clinically endorsed — protecting a claim of
+trustworthiness the KB does not yet have. The new PR `verify` job provides useful software-quality
+gates but cannot deploy; the same single account still controls push-to-main and workflow-dispatch
+publication, so it does not change the custody analysis.
+
+The right-sized deliverable is a canonical content digest, immutable release ancestry through
+`supersedes`, fail-closed build/server/browser checks (RQ4), and truthful approval/validation
+metadata: `validationRunId` must identify a technical validation run and must never be presented as
+clinical validation; `approvedBy[]` must contain only real human approvals — never inferred approval
+from a hash, a CI pass, or a signature. Cryptographic signing should be reconsidered when there is a
+genuinely independent approver or release authority and an out-of-band trust root, or when clinically
+validated packages need verification outside the GitHub Pages origin.
+
+**Explicitly not defended against**: hash plus chain does not authenticate the maintainer, does not
+stop that maintainer from shipping unreviewed content, does not survive a full origin compromise, and
+does not establish clinical correctness.
+
+**Plain-English summary** (as authored): "Do not build a key-management system for this prototype.
+It would add ceremony and a misleading aura of clinical assurance without separating the author,
+signer, host, or browser trust root. Record exactly which four KB files make up each release, link
+every release to its predecessor, reject mismatches everywhere, and continue labeling the product as
+an unvalidated research prototype. Revisit real signing only when another accountable party or an
+external verifier creates a trust boundary that a signature can genuinely protect."
+
+**Claude's position on RQ6**: no dissent. The circularity argument (verification code and any key
+travel over the same static origin as the content they verify) is sound and matches the charter's own
+framing; the recommendation is consistent with CLAUDE.md's validation-gate ladder (signing content
+that hasn't passed content/technical/retrospective/silent-mode/human-factors/interventional review
+would misrepresent its trust status) and with `module.json`'s existing self-documenting
+`"unsigned-stub"` placeholder. Concurring, not rubber-stamping: the "PR verify job can't deploy, so
+custody is unchanged" point independently checks out against `.github/workflows/deploy-pages.yml`
+read directly for this task.
+
+## Recommended design
+
+- **`clinicalContentHash`**: SHA-256 over a JCS-canonicalized `{domain, files[]}` structure spanning
+  exactly `modules/anemia/{rules,candidates,evidence,reference-ranges}.json` (RQ3), stored as
+  `sha256:<hex>`. DEF-1's resolution (commit `5eaa048`) makes this scope final — no second evidence
+  copy exists to hash or drift.
+- **No cryptographic signature, no key, no `keyId` field** (RQ6, RQ5 not-applicable).
+- **`src/kbVerify.js`** (new): embeds the current release's expected manifest digest as a literal
+  constant (RQ2, analogous to `src/evidence.js`'s existing hardcoded-consts pattern for synchronous
+  browser access) and exposes a verify function used by both `server.mjs` and `src/app.js`.
+- **`status` enum**: `unsigned-stub` → `integrity-recorded` → `superseded` / `revoked` (RQ4),
+  replacing the draft's binary `unsigned-stub`/`signed` sketch.
+- **Fail-closed everywhere**: `server.mjs` (`process.exit(1)` at startup, no per-request fallback),
+  `scripts/build-static.mjs` (nonzero exit before Pages artifact upload), `src/app.js` (new "KB
+  integrity blocked" UI state gating the entire form, not `showFatalError()`) (RQ4).
+- **`supersedes`**: points to the prior release's version + manifest digest, forming an auditable,
+  indefinitely-retained chain (RQ2, RQ5).
+
+## Alternatives considered
+
+- **Ed25519 via WebCrypto detached signature.** Rejected: technically feasible (WebCrypto has the
+  primitive), but with no independently distributed public-key root and no separated release
+  authority (RQ1/RQ2), a signature adds no verifiable trust beyond what the hash already provides —
+  only the appearance of one.
+- **HMAC-style shared secret.** Rejected outright: browser-side verification would require shipping
+  the "secret" to the browser, which makes it not a secret — this option was never viable for a
+  no-server static-verification path.
+- **GitHub Actions secret custody for a signing key.** Considered under RQ1, rejected: the same
+  account already controls content, workflow, dispatch, and deploy, so a key stored there adds a
+  ceremony step without adding separation of duties.
+- **Hardware-token custody.** Considered under RQ1, rejected for this phase: raises the bar against
+  key extraction but does nothing about the maintainer signing their own unreviewed content or an
+  attacker replacing the browser-side verifier.
+- **Server-fetched public key / separate `public-key.json`.** Rejected under RQ2 as circular by
+  construction — it would travel over the same static-hosting channel as the KB it claims to verify.
+
+## Risks & open questions
+
+- **Perception risk**: even `integrity-recorded` status and a "verified" UI treatment could be
+  misread by a clinician as a clinical-validation claim if UI copy is not careful — RQ6's rationale
+  explicitly warns that any signing-adjacent apparatus risks "visually upgrading unvalidated content."
+  Recommend the eventual implementation PR (P1-WP5) include explicit copy review for this failure
+  mode, not just a functional fail-closed check.
+- **`approvedBy[]` integrity is a process risk, not a software risk**: nothing in this design
+  prevents the sole maintainer from writing a false entry into `approvedBy[]`. That is explicitly
+  out of scope for a software fix per RQ1/RQ6 — it can only be mitigated by an actual second human
+  reviewer existing, which is a program-level (not SPIKE-level) gap already tracked via the ARC
+  clinical-council non-qualifying-review finding (see repo CLAUDE.md's AOS-assets section).
+  Recommend the implementation PR log this as an explicit known limitation in
+  `docs/architecture.md` §10 rather than let a passing check imply more than it proves.
+- **Revisit trigger for RQ6 is not calendar-based**: reconsider cryptographic signing only on a
+  structural change (second independent release authority, external-to-Pages verification need) —
+  flagged so a future session doesn't reopen this SPIKE on a "it's been N months" cadence.
+- **DEF-5 schema authoring is now unblocked**: this SPIKE's `status` enum and the absence of a
+  `signature`/`keyId` field are exactly DEF-5's stated blocking input
+  (`docs/project_plans/design-specs/module-manifest-json-schema.md`) — sequence DEF-5's
+  `schemas/module-manifest.schema.json` authoring immediately after this SPIKE closes, per the
+  charter's own note.
+
+## Implications per work package
+
+- **P1-WP5 (signed KB manifest + semantic diff)**: scope changes from "signed manifest" to
+  "integrity-recorded manifest" — implement `clinicalContentHash` computation (RQ3's canonicalization
+  spec), `src/kbVerify.js` (RQ2), the `status` enum (RQ4), fail-closed checks in `server.mjs` and
+  `scripts/build-static.mjs` (RQ4), and the new browser "KB integrity blocked" UI state in
+  `src/app.js` (RQ4). No key generation, no `keyId` field, no rotation tooling (RQ5/RQ6) — do not
+  build what RQ6 rejected.
+- **P1-WP7 (review-portal concept)**: `approvedBy[]`-emission target is now concrete —
+  `{reviewer, role, approvedAt}` entries recorded as the machine-readable trace of an out-of-band
+  human review, never auto-populated from a hash/CI/signature pass (RQ6's explicit constraint).
+- **DEF-5 (module-manifest-json-schema.md)**: unblocked — author `schemas/module-manifest.schema.json`
+  next, using this SPIKE's `status` enum (`unsigned-stub`/`integrity-recorded`/`superseded`/`revoked`)
+  and confirming no `signature`/`keyId` field is added.
+- **`docs/architecture.md` §9/§10**: §9's "cryptographic signature verification for KB packages" line
+  should be annotated as a deferred future-hardening goal (not a Phase 1 commitment) per RQ6; §10's
+  fail-closed language is satisfied by the hash-chain design, not weakened by deferring signing.
