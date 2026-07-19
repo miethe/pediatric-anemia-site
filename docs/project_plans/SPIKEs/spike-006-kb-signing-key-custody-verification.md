@@ -3,6 +3,7 @@ schema_version: 2
 doc_type: spike
 title: "SPIKE-006: KB Signing Key Custody and Browser-Side Verification"
 status: completed
+status_note: "Findings recorded 2026-07-19 (EP0-T5). RQ6's NO-GO-on-signing recommendation has NOT yet had the council-review pass this charter's own exit criterion (2) and Method step 4 require — see Risks/OQ-8. Treat RQ6 as a recorded engineering recommendation, not a safety-vetted decision."
 created: 2026-07-19
 feature_slug: wave0-safety-foundation
 research_questions:
@@ -495,3 +496,25 @@ read directly for this task.
 - **`docs/architecture.md` §9/§10**: §9's "cryptographic signature verification for KB packages" line
   should be annotated as a deferred future-hardening goal (not a Phase 1 commitment) per RQ6; §10's
   fail-closed language is satisfied by the hash-chain design, not weakened by deferring signing.
+
+---
+
+## OQ-8 — council-review pass not performed (added at EP-0 phase sign-off)
+
+**Raised by the EP-0 reviewer gate, not by the authoring pass.** This charter's own *Overall SPIKE
+exit criteria* item (2) requires that RQ6's recommendation "is explicit (signing now vs. defer to
+hash+chain) **and has passed `council-review`**", and *Method* step 4 requires routing RQ1's
+threat-model statement and RQ6's recommendation through `council-review` "before treating either as
+final". Neither happened.
+
+The SPIKE was nonetheless marked `status: completed` with no disclosure — SPIKE-005 hit the identical
+gap and self-disclosed it as OQ-7, so this is a documentation inconsistency between two SPIKEs in the
+same phase, not a difference in what was actually done. Both are recorded now.
+
+**What this means concretely.** RQ6's NO-GO on cryptographic signing is a well-argued engineering
+recommendation authored by a single cross-family model pass (`gpt-5.6-sol`, `xhigh`). It has not had
+adversarial clinical-governance review. EP-5 must not treat "signing is not required" as safety-vetted
+on the strength of this document alone.
+
+**Resolution required before**: the EP-5 SPIKE-006 contingency branch acts on the hash-vs-signing
+decision.

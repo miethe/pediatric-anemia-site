@@ -683,3 +683,79 @@ of P1-WP1:
 Everything else — the type, the operators, the schema shape, the wire-compat decision, the 45
 behavior-preserving rule edits, the nested-aggregate-hazard checklist item — is ready for direct
 implementation without a second design pass.
+
+---
+
+## RQ7(b) — Full 49-row migration table (durable copy)
+
+**Provenance note (added by the EP-0 orchestrator at phase sign-off).** The reviewer gate found this
+table — the SPIKE's own stated exit artifact ("the table, not a sample, is the exit artifact") — was
+referenced only by a pointer to a machine-local agent scratch path, i.e. it did not exist anywhere a
+future session, machine, or agent could reach. It is reproduced here in full so P1-WP1 can implement
+against it. Every one of the 49 rule IDs below was validated to exist in `modules/anemia/rules.json`
+(91 rules) at the time of writing.
+
+Reading the last column: each entry is a boolean-collapse leaf in the rule's `when` condition, in the
+form `factPath[currentOperator:value]->postMigrationOperator`. `is-present` is the tri-state operator
+that replaces a bare `=== true` / `eq: true` equality check, and — per RQ1 — an `unknown` value must
+NOT satisfy it.
+
+| # | Rule ID | Output type | Boolean-collapse leaf → post-migration operator |
+|---|---|---|---|
+| 1 | `ALERT-001` | alert | `symptoms.instability[eq:True]->is-present` |
+| 2 | `ALERT-002` | alert | `symptoms.activeMajorBleeding[eq:True]->is-present` |
+| 3 | `ALERT-004` | alert | `cbc.multilineageCytopenia[eq:True]->is-present` |
+| 4 | `ALERT-006` | alert | `cbc.thrombocytopenia[eq:True]->is-present`<br>`symptoms.renalSymptoms[eq:True]->is-present`<br>`symptoms.neurologicSymptoms[eq:True]->is-present` |
+| 5 | `ALERT-009` | alert | `cbc.neutropenia[eq:True]->is-present`<br>`symptoms.fever[eq:True]->is-present` |
+| 6 | `NOTE-004` | note | `g6pd.testedDuringAcuteHemolysis[eq:True]->is-present`<br>`g6pd.testedSoonAfterTransfusion[eq:True]->is-present` |
+| 7 | `NOTE-005` | note | `patient.recentTransfusion[eq:True]->is-present` |
+| 8 | `NOTE-006` | note | `patient.highAltitude[eq:True]->is-present` |
+| 9 | `ID-002` | candidate | `history.ironRiskHistory[eq:True]->is-present` |
+| 10 | `ID-005` | candidate | `history.ironRiskHistory[eq:True]->is-present` |
+| 11 | `ID-006` | candidate | `history.ironRiskHistory[eq:True]->is-present` |
+| 12 | `AINF-002` | candidate | `history.chronicInflammation[eq:True]->is-present` |
+| 13 | `AINF-004` | candidate | `history.chronicInflammation[eq:True]->is-present` |
+| 14 | `THAL-001` | candidate | `cbc.rbcRelativelyHigh[eq:True]->is-present`<br>`history.familyHemoglobinopathy[eq:True]->is-present` |
+| 15 | `THAL-002` | candidate | `cbc.rbcRelativelyHigh[eq:True]->is-present` |
+| 16 | `THAL-BETA-002` | candidate | `hemoglobinAnalysis.betaGlobinPositive[eq:True]->is-present` |
+| 17 | `THAL-ALPHA-001` | candidate | `hemoglobinAnalysis.hbBartNewbornScreen[eq:True]->is-present` |
+| 18 | `THAL-ALPHA-002` | candidate | `hemoglobinAnalysis.alphaGlobinPositive[eq:True]->is-present` |
+| 19 | `LEAD-002` | candidate | `history.leadExposureRisk[eq:True]->is-present`<br>`history.pica[eq:True]->is-present` |
+| 20 | `LOSS-001` | candidate | `history.bleedingHistory[eq:True]->is-present` |
+| 21 | `LOSS-002` | candidate | `history.bleedingHistory[eq:True]->is-present` |
+| 22 | `LOSS-003` | candidate | `symptoms.activeMajorBleeding[eq:True]->is-present` |
+| 23 | `HEM-002` | candidate | `symptoms.jaundiceOrDarkUrine[eq:True]->is-present` |
+| 24 | `HS-002` | candidate | `exam.splenomegaly[eq:True]->is-present`<br>`history.knownHereditarySpherocytosis[eq:True]->is-present` |
+| 25 | `G6PD-002` | candidate | `history.oxidantTrigger[eq:True]->is-present` |
+| 26 | `G6PD-003` | candidate | `g6pd.testedDuringAcuteHemolysis[eq:True]->is-present`<br>`g6pd.testedSoonAfterTransfusion[eq:True]->is-present`<br>`history.oxidantTrigger[eq:True]->is-present` |
+| 27 | `SICKLE-001` | candidate | `hemoglobinAnalysis.sicklingHemoglobinDetected[eq:True]->is-present`<br>`history.knownSickleCellDisease[eq:True]->is-present` |
+| 28 | `MAL-001` | candidate | `history.malariaRisk[eq:True]->is-present`<br>`symptoms.fever[eq:True]->is-present` |
+| 29 | `REN-001` | candidate | `history.renalSignal[eq:True]->is-present` |
+| 30 | `TEC-001` | candidate | `cbc.isolatedAnemia[eq:True]->is-present`<br>`history.recentViral[eq:True]->is-present`<br>`exam.splenomegaly[eq:True(negated)]->not:is-present`<br>`exam.hepatomegaly[eq:True(negated)]->not:is-present`<br>`exam.lymphadenopathy[eq:True(negated)]->not:is-present` |
+| 31 | `PARVO-001` | candidate | `history.knownChronicHemolyticDisease[eq:True]->is-present`<br>`history.recentViral[eq:True]->is-present` |
+| 32 | `MARROW-001` | candidate | `cbc.multilineageCytopenia[eq:True]->is-present` |
+| 33 | `MARROW-003` | candidate | `exam.hepatomegaly[eq:True]->is-present`<br>`exam.splenomegaly[eq:True]->is-present`<br>`exam.lymphadenopathy[eq:True]->is-present`<br>`exam.petechiaeOrBruising[eq:True]->is-present` |
+| 34 | `COPPER-001` | candidate | `cbc.neutropenia[eq:True]->is-present` |
+| 35 | `MACRO-001` | candidate | `history.thyroidSignal[eq:True]->is-present` |
+| 36 | `MACRO-002` | candidate | `history.liverSignal[eq:True]->is-present` |
+| 37 | `MACRO-003` | candidate | `history.medicationMacrocytosisRisk[eq:True]->is-present` |
+| 38 | `IMF-001` | candidate | `cbc.multilineageCytopenia[eq:True]->is-present` |
+| 39 | `IMF-DBA-001` | candidate | `cbc.isolatedAnemia[eq:True]->is-present` |
+| 40 | `IMF-FANCONI-001` | candidate | `cbc.multilineageCytopenia[eq:True]->is-present`<br>`history.thumbOrRadiusAnomaly[eq:True]->is-present`<br>`history.abnormalSkinPigmentation[eq:True]->is-present`<br>`history.shortStature[eq:True]->is-present` |
+| 41 | `MIX-002` | candidate | `patient.recentTransfusion[eq:True]->is-present` |
+| 42 | `IRIDA-001` | candidate | `history.priorAdequateIronTrialNoResponse[eq:True]->is-present`<br>`history.adherenceVerified[eq:True]->is-present`<br>`history.ongoingBloodLossKnown[eq:True(negated)]->not:is-present` |
+| 43 | `Q-MICRO-003` | question | `hemoglobinAnalysis.hbBartNewbornScreen[eq:True(negated)]->not:is-present`<br>`hemoglobinAnalysis.alphaGlobinPositive[eq:True(negated)]->not:is-present`<br>`hemoglobinAnalysis.betaGlobinPositive[eq:True(negated)]->not:is-present` |
+| 44 | `Q-MICRO-004` | question | `history.leadExposureRisk[eq:True]->is-present`<br>`history.pica[eq:True]->is-present` |
+| 45 | `Q-MICRO-005` | question | `history.bleedingHistory[eq:False]->not:is-present  [DEVIATION: preserves prompt-on-unknown]` |
+| 46 | `Q-NORMO-HIGH-002` | question | `history.bleedingHistory[eq:False]->not:is-present  [DEVIATION: preserves prompt-on-unknown]` |
+| 47 | `Q-NORMO-LOW-001` | question | `history.renalSignal[eq:True(negated)]->not:is-present`<br>`history.chronicInflammation[eq:True(negated)]->not:is-present`<br>`cbc.multilineageCytopenia[eq:True(negated)]->not:is-present` |
+| 48 | `Q-SMEAR-001` | question | `cbc.multilineageCytopenia[eq:True]->is-present` |
+| 49 | `Q-CYT-001` | question | `cbc.multilineageCytopenia[eq:True]->is-present` |
+**Scope reminder (RQ7a).** These 49 rules are those referencing at least one of the 45 fact paths that
+trace to an `isTrue()`/`countTrue()`/`=== true`/raw-passthrough collapse point, including derived
+`cbc.*`/`g6pd.*`/`hemoglobinAnalysis.*` facts — not only the raw `history.*`/`symptoms.*`/`exam.*`
+namespace. The charter's "33" is superseded; see the correction note above. An independent
+re-derivation by the orchestrator bracketed this figure between 25 (narrowest reading: rules whose
+every hit is a raw namespace path) and 88 (broadest: all rules touching any boolean-valued derived
+fact), with 33 being the count of rules referencing at least one raw `history.*`/`symptoms.*`/`exam.*`
+path. 49 sits inside that bracket; it was not independently reproduced row-for-row.

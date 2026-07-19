@@ -12,9 +12,13 @@ title: 'EP-0: De-Risk & Align'
 status: completed
 started: null
 completed: null
-commit_refs: []
+commit_refs:
+- 5eaa048
+- 98429df
+- 6cc4bca
+- 5cbd2e6
 pr_refs: []
-overall_progress: 0
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 9
 completed_tasks: 9
@@ -56,6 +60,8 @@ tasks:
       staged rollout silently broke a fixture with zero test failure
   - verdict: GO with 2 carve-outs (TEC-001/IRIDA-001 need council-review; statusIs()/hemolysisMarkerCount
       gap needs own ticket)
+  verified_by:
+  - EP0-REVIEW-GATE
 - id: EP0-T2
   description: 'Execute SPIKE-004 (UCUM unit handling & mismatch rejection): decide
     the closed unit table shape, D-5 dependency-vs-hand-roll call, and the fail-closed
@@ -79,6 +85,8 @@ tasks:
       400 UNIT_REJECTED
   - verified: 3 load-bearing claims independently confirmed (SPA bypasses server.mjs;
       no runtime schema validation; submit handler lacks try/catch)
+  verified_by:
+  - EP0-REVIEW-GATE
 - id: EP0-T3
   description: 'Execute SPIKE-005 (semantic diff classification) — design: enumerate
     change classes for kb-diff.mjs, explicitly hunt the false-negative under-reporting
@@ -102,6 +110,8 @@ tasks:
   - corpus: 52 seeded mutations M01-M52 incl 7 blind rows for EP-5-T4
   - VERIFIED: golden corpus gives activation witness to only 30/91 rules; 61 never
       fire incl ALERT-001/-002/-003/-006/-007/-008 (reproduced independently via provenance.matchedRuleIds)
+  verified_by:
+  - EP0-REVIEW-GATE
 - id: EP0-T4
   description: 'SPIKE-005 adversarial second lens: cross-family review of EP0-T3''s
     output, tasked explicitly with ''find a safety-relevant change this classifier
@@ -126,6 +136,8 @@ tasks:
       ID-001+NOTE-003 lost for menstruating 120mo ferritin-25 patient
   - correction: reviewer claim 'IDA pattern disappears' corrected — label survives
       via ID-006; loss is evidential downgrade not deletion
+  verified_by:
+  - EP0-REVIEW-GATE
 - id: EP0-T5
   description: 'Execute SPIKE-006 (KB signing key custody & browser-side verification):
     threat-model whether real cryptographic signing is warranted at this trust boundary,
@@ -149,6 +161,8 @@ tasks:
   - decision: RQ3 hashing scope finalized on DEF-1 resolution at commit 5eaa048
   - provenance: authored by gpt-5.6-sol effort xhigh via codex exec; transcript 13k/1740
       words retained
+  verified_by:
+  - EP0-REVIEW-GATE
 - id: EP0-T6
   description: 'Resolve DEF-1 — evidence dual-source unification (D-2 prerequisite,
     FR-WP3-01): src/evidence.js stops hand-duplicating modules/anemia/evidence.json.
@@ -167,6 +181,8 @@ tasks:
   - test: tests/module-equivalence.test.mjs (6/6 golden fixtures unchanged)
   - test: deep-equal old-vs-new EVIDENCE export — 6 ids, same order, frozen
   - gate: npm run check exit 0 (20/20 tests)
+  verified_by:
+  - EP0-REVIEW-GATE
 - id: EP0-T7
   description: Promote DEF-2 (tri-state-fact-model.md) from 'shaping' to 'ready'/committed
     using EP0-T1's SPIKE-003 output (migration table, aggregate decisions, operator
@@ -188,6 +204,8 @@ tasks:
   - reduce-not-merge: migration table referenced by pointer to SPIKE-003 RQ7b, not
       restated; no duplication
   - note: no DEF-2<->SPIKE-003 conflict; DEF-3 interaction carried forward as still-open
+  verified_by:
+  - EP0-REVIEW-GATE
 - id: EP0-T8
   description: Resync IntentTree tracker to real git/rf state; launch RF-EV-002 (CALIPER/Bohn
     2023 pediatric CBC reference intervals) and REG-002 (content-rights/licensing
@@ -206,6 +224,8 @@ tasks:
   - itt: 10 nodes resynced to completed (P0 WP + 6 children, 3 verified rf runs)
   - rf: rf_run_20260719_caliper_pediatric_cbc_reference_intervals_age (RF-EV-002)
   - rf: rf_run_20260719_content_rights_and_licensing_review_what (REG-002)
+  verified_by:
+  - EP0-REVIEW-GATE
 - id: EP0-T9
   description: 'CI hardening (FR-WP6-05, moved in from EP-6 per OQ-6): add npm run
     check:imports to .github/workflows/deploy-pages.yml; add a PR-trigger job (today
@@ -224,6 +244,8 @@ tasks:
   - file: .github/workflows/deploy-pages.yml (verify job on pull_request; deploy guarded
       non-PR)
   - test: negative-test confirmed check:imports fails on broken specifier
+  verified_by:
+  - EP0-REVIEW-GATE
 parallelization:
   batch_1:
   - EP0-T1
@@ -245,25 +267,49 @@ success_criteria:
 - id: SC-1
   description: All 4 SPIKE charters closed with recorded decisions (EP0-T1, T2, T3+T4,
     T5)
-  status: pending
+  status: met
+  note: 'All 4 charters status: completed with real findings. CAVEAT: SPIKE-005 (OQ-7)
+    and SPIKE-006 (OQ-8) each skipped a charter-mandated council-review pass on their
+    central safety judgment; both are now disclosed in-document. Neither RQ2''s diff
+    decision function nor RQ6''s no-signing recommendation is safety-vetted.'
 - id: SC-2
   description: DEF-1 resolved; golden-fixture equivalence holds (EP0-T6)
-  status: pending
+  status: met
+  note: Equivalence proven by execution — 6/6 golden fixtures unchanged plus a deep-equal
+    of old vs new EVIDENCE export (6 ids, same order, frozen). Import-guard coverage
+    gap closed and negative-tested.
 - id: SC-3
   description: DEF-2 promoted from shaping (EP0-T7)
-  status: pending
+  status: met
+  note: 'maturity: committed; migration table referenced by pointer, not restated.'
 - id: SC-4
   description: IntentTree resynced; RF-EV-002 and REG-002 launched (EP0-T8)
-  status: pending
+  status: met
+  note: '10 nodes resynced (2 spot-checked against the live server by the reviewer).
+    CAVEAT: both rf runs are registered/status planned, NOT executed — no CALIPER
+    or licensing evidence exists yet.'
 - id: SC-5
   description: CI runs check:imports and gates on PR events (EP0-T9)
-  status: pending
+  status: partial
+  note: 'check:imports runs in CI and a verify job triggers on pull_request and fails
+    the run — everything the YAML can control is done. BUT "gates merge" additionally
+    requires GitHub branch-protection (require-status-checks), which is repo config,
+    not in-tree, and is UNVERIFIED. Follow-up: confirm/configure branch protection
+    before EP-1/EP-2 rely on PRs being gated.'
 - id: SC-6
   description: npm run check green
-  status: pending
+  status: met
+  note: Verified at phase close — exit 0, 20/20 tests, 91 rules / 26 patterns / 6
+    evidence records, check:imports and smoke pass.
 - id: SC-7
   description: task-completion-validator sign-off
-  status: pending
+  status: met
+  note: 'Reviewer gate run 2026-07-19 (Mode E, independent agent) in place of the
+    task-completion-validator agentType, which is not available in this environment.
+    Verdict: APPROVE-WITH-CAVEATS. It independently found 4 gaps the orchestrator
+    missed (orphaned migration table, undisclosed SPIKE-006 council-review gap, progress-file
+    inconsistency, unflagged branch-protection dependency); the first three are fixed
+    in commit series, the fourth is tracked as SC-5 partial.'
 files_modified:
 - docs/project_plans/SPIKEs/spike-003-tri-state-fact-model-migration.md
 - docs/project_plans/SPIKEs/spike-004-ucum-unit-handling-mismatch-rejection.md
