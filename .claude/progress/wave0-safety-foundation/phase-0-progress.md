@@ -9,7 +9,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-fo
 execution_model: batch-parallel
 phase: 0
 title: 'EP-0: De-Risk & Align'
-status: in_progress
+status: completed
 started: null
 completed: null
 commit_refs: []
@@ -17,8 +17,8 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 7
-in_progress_tasks: 2
+completed_tasks: 9
+in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
 owners:
@@ -106,7 +106,7 @@ tasks:
   description: 'SPIKE-005 adversarial second lens: cross-family review of EP0-T3''s
     output, tasked explicitly with ''find a safety-relevant change this classifier
     misses.'''
-  status: in_progress
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -116,6 +116,16 @@ tasks:
   assigned_model: gpt-5.6-sol (codex exec)
   model_effort: xhigh
   started: 2026-07-19T00:15Z
+  completed: 2026-07-19T00:30Z
+  evidence:
+  - doc: spike-005 '## Adversarial second lens (EP0-T4)' section appended (5 gaps
+      M53-M57)
+  - provenance: gpt-5.6-terra xhigh via codex exec (gpt-5.6-sol attempt failed, exited
+      400s no output); transcript retained
+  - VERIFIED: M57 double-blind reproduced by execution — 0/6 golden fixtures change;
+      ID-001+NOTE-003 lost for menstruating 120mo ferritin-25 patient
+  - correction: reviewer claim 'IDA pattern disappears' corrected — label survives
+      via ID-006; loss is evidential downgrade not deletion
 - id: EP0-T5
   description: 'Execute SPIKE-006 (KB signing key custody & browser-side verification):
     threat-model whether real cryptographic signing is warranted at this trust boundary,
@@ -161,7 +171,7 @@ tasks:
   description: Promote DEF-2 (tri-state-fact-model.md) from 'shaping' to 'ready'/committed
     using EP0-T1's SPIKE-003 output (migration table, aggregate decisions, operator
     semantics).
-  status: in_progress
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -171,6 +181,13 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   started: 2026-07-19T00:18Z
+  completed: 2026-07-19T00:22Z
+  evidence:
+  - doc: docs/project_plans/design-specs/tri-state-fact-model.md maturity shaping
+      -> committed
+  - reduce-not-merge: migration table referenced by pointer to SPIKE-003 RQ7b, not
+      restated; no duplication
+  - note: no DEF-2<->SPIKE-003 conflict; DEF-3 interaction carried forward as still-open
 - id: EP0-T8
   description: Resync IntentTree tracker to real git/rf state; launch RF-EV-002 (CALIPER/Bohn
     2023 pediatric CBC reference intervals) and REG-002 (content-rights/licensing
@@ -256,7 +273,7 @@ files_modified:
 - src/evidence.js
 - modules/anemia/evidence.json
 - .github/workflows/deploy-pages.yml
-progress: 77
+progress: 100
 updated: '2026-07-19'
 ---
 
