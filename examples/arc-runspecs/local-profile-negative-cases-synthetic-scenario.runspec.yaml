@@ -1,0 +1,50 @@
+apiVersion: arc/v1alpha1
+kind: CouncilRunSpec
+
+# P1-T4 fixture: synthetic_scenario_specification target. The target is the
+# synthetic negative-case manifest for local laboratory and terminology
+# applicability — fully synthetic identifiers and expected fail-closed blockers,
+# no patient record, no patient-derived value. Reached through the same portable
+# `repo:<alias>/<relative-path>` locator (ARC ADR-0004), so this file contains no
+# absolute path.
+#
+# Prerequisite (once per machine, human-approved):
+#   arc roots add pediatric-anemia-site <path-to-this-repository-checkout>
+
+council: pediatric-anemia-clinical-review-council
+
+target: repo:pediatric-anemia-site/tests/fixtures/local-profile/negative-cases.json
+target_artifact_class: synthetic_scenario_specification
+target_sha256: 3e396935ac2b18ef340f93b761b11512f1d1fe91f9a235be9502b7ff87cac157
+
+objective: >-
+  Review the synthetic local-profile negative-case specification for coverage of
+  dangerous misses, expected fail-closed blocker behavior, scope-exit and
+  abstention handling, subgroup and applicability gaps, and the additional
+  scenario coverage that owner-held validation must still execute.
+
+constraints:
+  - read_only
+  - decision_support_only
+  - no_patient_specific_advice
+  - no_phi_or_copyrighted_full_text
+  - metadata_only_evidence
+  - credentialed_clinician_approval_required
+
+evidence_source_manifest: knowledge-packs/pediatric-anemia/source-manifest.yaml
+evidence_source_manifest_sha256: f4c33c82fe4977a7d4db2633ab04d82b39bb7bf421d048aba5a5b37a51b711f6
+
+parameters:
+  non_patient_artifact_confirmed: true
+  target_artifact_class: synthetic_scenario_specification
+
+slug: pediatric-local-profile-negative-cases
+
+notes: >-
+  Raw YAML is authoritative. Council version is resolved from the council
+  definition at run time and recorded as
+  pediatric-anemia-clinical-review-council@0.1.0 in the run manifest. Every
+  identifier in the target is synthetic (SYNTHETIC-/SYN- prefixed) and no value
+  in it derives from a real record. `arc run --dry-run` previews and validates
+  the spec and resolves the target identity; it executes no reviewer, produces no
+  finding, and confers no clinical, laboratory, or certification state.

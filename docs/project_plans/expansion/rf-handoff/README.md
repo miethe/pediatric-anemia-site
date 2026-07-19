@@ -1,7 +1,7 @@
 ---
 title: "Research Foundry handoff — Pediatric CDS evidence runs"
-description: "Local handoff so rf agents can plan and drive the pediatric-CDS evidence runs with full context. 7 runs registered + planned on the agentic node; run_ids below."
-status: active
+description: "Local handoff so rf agents can plan and drive the pediatric-CDS evidence runs with full context. 7 runs registered on the agentic node; run_ids below. All 7 now verified — see RESULTS.md."
+status: superseded-by-results
 created: 2026-07-17
 owner: Nick Miethe
 project: pediatric-cds-platform
@@ -9,12 +9,24 @@ project: pediatric-cds-platform
 
 # Research Foundry handoff — Pediatric CDS evidence runs
 
+> **Current status (2026-07-18, supersedes the §2 heading below): all 7 runs are `verified`, not
+> merely `planned`.** See [`RESULTS.md`](RESULTS.md) for the authoritative completion record,
+> verification numbers, and cross-model audit. The §2 table's *columns* (run IDs, IntentTree nodes,
+> gates, legal flags, briefs) have no status field and stay accurate as reference data; the stale
+> `planned` status lived in the §2 **section heading**, not in a table column — corrected below.
+> Do not cite the RF API's `status_derived` field (`published`) as evidence of this upgrade: it, along
+> with `verification_passed`/`governance_verdict`, reads identically for **every run in the RF store**
+> (48/48, all repos and projects), including this program's, and does not distinguish a real
+> completion from a default. The load-bearing evidence is each run's on-disk
+> `runs/<run_id>/reviews/verification.yaml` (`passed: true`, `exit_code: 0`, dated 2026-07-18) — see
+> `RESULTS.md` §1.
+
 > **Purpose.** This is the durable, local handoff that makes the Research Foundry (`rf`) agents ready
 > to **plan and drive** every evidence run the Pediatric CDS platform needs — with all relevant
-> context in one place. The 7 runs below are already **registered and `planned`** on the agentic node
+> context in one place. The 7 runs below were **registered and `planned`** on the agentic node
 > (`http://10.42.10.76:7432`, runs-viewer at `:3030`); each has a `research_brief.md`, `swarm_plan.yaml`,
-> and `routing_decision.yaml`. What remains for the rf agents is to **drive the discovery swarm** and
-> the deterministic tail, then hand the verified bundle to the CDS converter.
+> and `routing_decision.yaml`. The discovery swarm and deterministic tail have since been driven for
+> all 7 (see `RESULTS.md`); what remains is the CDS-side `rf-bundle → kb-pack` converter.
 
 ## 1. The seam (read this first — it bounds every run)
 
@@ -35,7 +47,7 @@ CDS owns:  verified claim → executable rule → test → validated → signed 
 Full spec: [`../02-evidence-foundry-on-research-foundry.md`](../02-evidence-foundry-on-research-foundry.md)
 (§1 seam, §3 per-module run template, §6 gap register).
 
-## 2. Run registry — status: all `planned` on the node (2026-07-17)
+## 2. Run registry — registered `planned` on the node (2026-07-17); now `verified` (2026-07-18, see [`RESULTS.md`](RESULTS.md))
 
 | Item | rf `run_id` | IntentTree node | Gates | Legal | Brief |
 |---|---|---|---|---|---|

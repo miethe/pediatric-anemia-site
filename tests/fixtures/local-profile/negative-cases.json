@@ -1,0 +1,994 @@
+{
+  "$comment": "Negative-case manifest for local laboratory and terminology applicability. Each case is expressed as a MUTATION of the SYNTHETIC base fixture rather than as a full duplicate document. This is deliberate: the thing under test is the difference, and a reviewer auditing 'what makes this profile expired?' should see one line, not a 130-line near-copy they must diff. It also single-sources the base document, so a schema change cannot silently leave a dozen stale fixtures that still pass. `expectedBlockers` are the codes that MUST be present; a case may legitimately raise additional blockers, but never fewer, and never zero. NOTE ON MUTATION CHOICE: a mutation must exercise the encoding that actually reaches production. The P3-V1 review found a case that used `{\"op\":\"unset\"}` where real payloads carry an explicit `null`, and the code under test only checked `=== undefined` — so the test passed while the defect was live. Prefer the value a wire format would send.",
+  "referenceBaseRequest": {
+    "candidate": { "candidateDigest": "sha256:a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4" },
+    "populationId": "SYNTHETIC-POPULATION-A",
+    "ageValue": 12,
+    "ageUnit": "months",
+    "gestationalAgeAtBirthWeeks": 38,
+    "sex": "female",
+    "specimen": { "code": "SYN-SPECIMEN-A" },
+    "analyzer": { "model": "SYNTHETIC-ANALYZER-MODEL-A", "method": "SYNTHETIC-METHOD-A" },
+    "altitudeMeters": 100,
+    "unitCode": "SYN-UNIT-A",
+    "analyteCode": { "code": "SYN-0001" }
+  },
+  "terminologyBaseObservation": {
+    "id": "urn:synthetic:observation-0001",
+    "resourceType": "Observation",
+    "candidate": { "candidateDigest": "sha256:a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4" },
+    "localCode": "SYN-LOCAL-0001",
+    "localSystem": "https://example.org/synthetic-local-system",
+    "status": "final",
+    "statusLineage": {
+      "complete": true,
+      "states": ["registered", "preliminary", "final"],
+      "supersedingObservationRef": null
+    },
+    "effectiveDateTime": "2026-07-10T08:00:00Z",
+    "issuedDateTime": "2026-07-10T09:00:00Z",
+    "specimenCode": "SYN-SPECIMEN-A",
+    "unitCode": "SYN-UNIT-A"
+  },
+  "cases": [
+    {
+      "id": "NEG-REF-missing-interval",
+      "failureMode": "missing interval",
+      "target": "reference",
+      "layer": "applicability",
+      "requestMutations": [{ "path": "analyteCode.code", "value": "SYN-9999" }],
+      "expectedBlockers": ["INTERVAL_MISSING"],
+      "rationale": "An analyte the profile does not cover must surface as missing, never fall back to a published or default interval."
+    },
+    {
+      "id": "NEG-REF-conflicting-intervals",
+      "failureMode": "conflicting intervals",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [
+        {
+          "op": "push",
+          "path": "intervals",
+          "value": {
+            "analyte": "SYNTHETIC-ANALYTE-A",
+            "analyteCode": {
+              "system": "https://example.org/synthetic-analyte-system",
+              "code": "SYN-0001",
+              "version": "0.0.0-synthetic",
+              "display": "Synthetic analyte A (not a real laboratory analyte)",
+              "assertion": "asserted"
+            },
+            "ageBand": { "unit": "months", "low": 12, "high": 24, "assertion": "asserted" },
+            "sex": "any",
+            "low": 3,
+            "high": 4,
+            "unitCode": "SYN-UNIT-A",
+            "assertion": "asserted"
+          }
+        }
+      ],
+      "expectedBlockers": ["INTERVAL_CONFLICT"],
+      "rationale": "Two asserted intervals that disagree must not be resolved by picking one, ordering, or averaging."
+    },
+    {
+      "id": "NEG-REF-interval-age-band-not-evaluated",
+      "failureMode": "age-band mismatch (interval's own band does not cover the request age)",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [
+        { "path": "intervals[1].ageBand", "value": { "unit": "days", "low": 0, "high": 14, "assertion": "asserted" } }
+      ],
+      "expectedBlockers": ["AGE_BAND_MISMATCH"],
+      "rationale": "REGRESSION (P3-V1 F2). `intervals[].ageBand` was required by the schema and read by nothing: only the profile-level applicability band was matched. A 0-to-14-day interval could therefore be delivered for a twelve-month-old with zero blockers. Each interval's own band is now matched independently."
+    },
+    {
+      "id": "NEG-REF-interval-bounds-missing",
+      "failureMode": "interval with no bounds",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [
+        { "path": "intervals[1].low", "value": null },
+        { "path": "intervals[1].high", "value": null }
+      ],
+      "expectedBlockers": ["INTERVAL_BOUNDS_MISSING"],
+      "rationale": "REGRESSION (P3-V1 F4). An interval with null bounds classified nothing and raised nothing; it was `applicable`."
+    },
+    {
+      "id": "NEG-REF-interval-bounds-invalid",
+      "failureMode": "interval with inverted bounds",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [
+        { "path": "intervals[1].low", "value": 12 },
+        { "path": "intervals[1].high", "value": 2 }
+      ],
+      "expectedBlockers": ["INTERVAL_BOUNDS_INVALID"],
+      "rationale": "REGRESSION (P3-V1 F4). `{low: 12, high: 2}` is empty, not permissive, and was previously accepted."
+    },
+    {
+      "id": "NEG-REF-interval-sex-null-is-not-a-wildcard",
+      "failureMode": "unknown-value coercion (interval sex null read as `any`)",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "intervals[1].sex", "value": null }],
+      "expectedBlockers": ["DIMENSION_NOT_SUPPLIED"],
+      "rationale": "REGRESSION (P3-V1 F3). `interval.sex === null` was treated as `any`. `any` must be a deliberate assertion that the interval does not vary by sex in that band; null is an omission and fails closed."
+    },
+    {
+      "id": "NEG-REF-expired-profile",
+      "failureMode": "expired profile",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "lifecycle.reviewState", "value": "expired" }],
+      "expectedBlockers": ["PROFILE_EXPIRED"],
+      "rationale": "An expired profile is not a slightly-out-of-date profile; it has no current authority."
+    },
+    {
+      "id": "NEG-REF-effective-period-ended",
+      "failureMode": "expired profile (effective period elapsed while still marked active)",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "lifecycle.effectiveEnd", "value": "2026-03-01" }],
+      "expectedBlockers": ["PROFILE_EXPIRED"],
+      "rationale": "The effective window is checked independently of the review state, so a stale `active` flag cannot keep an elapsed profile alive."
+    },
+    {
+      "id": "NEG-REF-superseded-without-successor",
+      "failureMode": "superseded without successor",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [
+        { "path": "lifecycle.reviewState", "value": "superseded" },
+        { "path": "lifecycle.supersededBy", "value": null }
+      ],
+      "expectedBlockers": ["PROFILE_SUPERSEDED_WITHOUT_SUCCESSOR"],
+      "rationale": "A dangling authority chain is a hard failure: the replacement interval cannot be located, so neither document can be trusted."
+    },
+    {
+      "id": "NEG-REF-stale-profile",
+      "failureMode": "stale profile",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [
+        { "path": "lifecycle.lastReviewedOn", "value": "2024-01-01" },
+        { "path": "lifecycle.reviewIntervalDays", "value": 90 }
+      ],
+      "expectedBlockers": ["PROFILE_STALE"],
+      "rationale": "The profile is still marked `active` and has no effectiveEnd. Staleness must be caught on review cadence alone, or an unreviewed profile lives forever."
+    },
+    {
+      "id": "NEG-REF-review-cadence-unknown",
+      "failureMode": "unknown-value coercion (review cadence)",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "lifecycle.reviewIntervalDays", "value": null }],
+      "expectedBlockers": ["REVIEW_CADENCE_UNKNOWN"],
+      "rationale": "An unknown review cadence must not be read as 'no review needed'. Staleness cannot be established, so the profile fails closed."
+    },
+    {
+      "id": "NEG-REF-evaluation-time-unparseable",
+      "failureMode": "unknown-value coercion (unparseable evaluation time silently disables expiry, effective window, and staleness)",
+      "target": "reference",
+      "layer": "applicability",
+      "evaluationTime": "not-a-parseable-instant",
+      "expectedBlockers": ["EVALUATION_TIME_INVALID"],
+      "rationale": "REGRESSION (P3-V1 F9). An unparseable `options.now` became NaN, and every NaN comparison is false, so expiry, not-yet-effective AND staleness were all disabled at once by a single bad input. An unparseable value must raise a blocker, never remove three."
+    },
+    {
+      "id": "NEG-REF-unit-mismatch-request",
+      "failureMode": "unit mismatch (request unit differs from the matched analyte's unit)",
+      "target": "reference",
+      "layer": "applicability",
+      "requestMutations": [{ "path": "unitCode", "value": "SYN-UNIT-B" }],
+      "expectedBlockers": ["UNIT_MISMATCH"],
+      "rationale": "Units are compared as codes and never converted; a silent conversion at an anemia cutoff is a factor-of-ten error. The comparison is now against the requested ANALYTE's unit, not a single profile-level unit."
+    },
+    {
+      "id": "NEG-REF-unit-mismatch-interval",
+      "failureMode": "unit mismatch (intervals for one analyte disagree on their unit)",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "intervals[0].unitCode", "value": "SYN-UNIT-B" }],
+      "expectedBlockers": ["UNIT_MISMATCH"],
+      "rationale": "Internal unit inconsistency inside one analyte's intervals is caught even when the inconsistent band is not the band the request selects."
+    },
+    {
+      "id": "NEG-REF-analyzer-mismatch",
+      "failureMode": "analyzer mismatch",
+      "target": "reference",
+      "layer": "applicability",
+      "requestMutations": [{ "path": "analyzer.model", "value": "SYNTHETIC-ANALYZER-MODEL-B" }],
+      "expectedBlockers": ["ANALYZER_MISMATCH"],
+      "rationale": "A value that is normal on one analyzer can be flagged on another; intervals do not transfer across analyzers."
+    },
+    {
+      "id": "NEG-REF-method-mismatch",
+      "failureMode": "method mismatch",
+      "target": "reference",
+      "layer": "applicability",
+      "requestMutations": [{ "path": "analyzer.method", "value": "SYNTHETIC-METHOD-B" }],
+      "expectedBlockers": ["METHOD_MISMATCH"],
+      "rationale": "Method is checked independently of analyzer: the same analyzer running a different method yields different intervals."
+    },
+    {
+      "id": "NEG-REF-method-not-asserted",
+      "failureMode": "unknown-value coercion (analyzer method bypasses the assertion choke point)",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "applicability.analyzer.method", "value": null }],
+      "expectedBlockers": ["DIMENSION_NOT_SUPPLIED"],
+      "rationale": "REGRESSION (P3-V1 F3). `method` was read straight off the container instead of through `readAsserted`, so a null method was COMPARED as a value rather than refused as an unasserted dimension. It happened to raise METHOD_MISMATCH, which is the wrong diagnosis — nothing was mismatched, the dimension was never asserted — and it would have been silent had the request also omitted the method."
+    },
+    {
+      "id": "NEG-REF-population-mismatch",
+      "failureMode": "population mismatch",
+      "target": "reference",
+      "layer": "applicability",
+      "requestMutations": [{ "path": "populationId", "value": "SYNTHETIC-POPULATION-B" }],
+      "expectedBlockers": ["POPULATION_MISMATCH"],
+      "rationale": "Intervals derived in one population are not transferable to another."
+    },
+    {
+      "id": "NEG-REF-age-band-mismatch",
+      "failureMode": "age-band mismatch",
+      "target": "reference",
+      "layer": "applicability",
+      "requestMutations": [{ "path": "ageValue", "value": 48 }],
+      "expectedBlockers": ["AGE_BAND_MISMATCH"],
+      "rationale": "An age outside the asserted band is a mismatch, never an extrapolation to the nearest band."
+    },
+    {
+      "id": "NEG-REF-age-band-unbounded",
+      "failureMode": "unbounded age band matches every child",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "applicability.ageBand.high", "value": null }],
+      "expectedBlockers": ["AGE_BAND_UNBOUNDED"],
+      "rationale": "REGRESSION (P3-V1 C3/F3). `high: null` became Infinity, so `{unit: years, low: 0, high: null}` was valid and matched every child — one band spanning birth, two weeks, and the physiologic nadir at roughly 6-9 weeks, the steepest part of the pediatric hemoglobin curve."
+    },
+    {
+      "id": "NEG-REF-age-band-gap",
+      "failureMode": "age bands leave a gap in the applicability range",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "intervals[0].ageBand.low", "value": 8 }],
+      "expectedBlockers": ["AGE_BAND_GAP"],
+      "rationale": "REGRESSION (P3-V1 C3). Nothing required a profile's bands to partition the age axis, so an age inside the profile's own applicability range could have no interval at all."
+    },
+    {
+      "id": "NEG-REF-age-band-overlap",
+      "failureMode": "age bands overlap",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "intervals[0].ageBand.high", "value": 18 }],
+      "expectedBlockers": ["AGE_BAND_OVERLAP"],
+      "rationale": "REGRESSION (P3-V1 C3). An overlapping band means an age with two candidate intervals and no rule for choosing between them."
+    },
+    {
+      "id": "NEG-REF-age-band-too-wide",
+      "failureMode": "age band exceeds the site's asserted maximum width",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "ageBandPolicy.maxBandWidthDays", "value": 100 }],
+      "expectedBlockers": ["AGE_BAND_TOO_WIDE"],
+      "rationale": "REGRESSION (P3-V1 C3). Band width was unconstrained. The acceptable width is an owner-held clinical input; the mechanism enforcing whatever the site asserts is not."
+    },
+    {
+      "id": "NEG-REF-age-band-straddles-boundary",
+      "failureMode": "age band straddles a declared physiologic boundary",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [
+        {
+          "op": "push",
+          "path": "ageBandPolicy.mandatoryBoundaries",
+          "value": { "unit": "months", "value": 18, "rationale": "SYNTHETIC placeholder boundary used only to exercise the straddle check." }
+        }
+      ],
+      "expectedBlockers": ["AGE_BAND_STRADDLES_BOUNDARY"],
+      "rationale": "REGRESSION (P3-V1 C3). A single interval cannot be correct on both sides of an age where the underlying physiology changes."
+    },
+    {
+      "id": "NEG-REF-age-band-policy-unknown",
+      "failureMode": "unknown-value coercion (age-band policy unresolvable)",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [
+        { "path": "ageBandPolicy.mandatoryBoundaries", "value": [{ "unit": "months", "value": null, "rationale": "unresolvable" }] }
+      ],
+      "expectedBlockers": ["AGE_BAND_POLICY_UNKNOWN"],
+      "rationale": "An unresolvable boundary must not be skipped. This case also proves the evaluator does not assume schema validation has already run: it fails closed on a document the schema would separately reject."
+    },
+    {
+      "id": "NEG-REF-altitude-mismatch",
+      "failureMode": "altitude mismatch",
+      "target": "reference",
+      "layer": "applicability",
+      "requestMutations": [{ "path": "altitudeMeters", "value": 2500 }],
+      "expectedBlockers": ["ALTITUDE_MISMATCH"],
+      "rationale": "Hemoglobin reference intervals shift with altitude, so altitude is a matched dimension rather than a footnote."
+    },
+    {
+      "id": "NEG-REF-altitude-bounds-null",
+      "failureMode": "unknown-value coercion (null altitude bounds match every altitude)",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [
+        { "path": "applicability.altitude.metersLow", "value": null },
+        { "path": "applicability.altitude.metersHigh", "value": null }
+      ],
+      "requestMutations": [{ "path": "altitudeMeters", "value": 9999 }],
+      "expectedBlockers": ["DIMENSION_NOT_SUPPLIED"],
+      "rationale": "REGRESSION (P3-V1 F3). `?? -Infinity` / `?? Infinity` made a null-bounded altitude match everything, reintroducing 'sea level is assumed' by another route — the exact inference the surrounding comment says is never made."
+    },
+    {
+      "id": "NEG-REF-corrected-age-required-not-supplied",
+      "failureMode": "corrected age required but not supplied",
+      "target": "reference",
+      "layer": "applicability",
+      "requestMutations": [{ "path": "gestationalAgeAtBirthWeeks", "value": null }],
+      "expectedBlockers": ["CORRECTED_AGE_REQUIRED_NOT_SUPPLIED"],
+      "rationale": "REGRESSION (P3-V1 C2). There was no representation for gestational age, postmenstrual age, prematurity, or birth weight at all, so a four-week-old born at 27 weeks and one born at 40 weeks were the same patient to this system. Anemia of prematurity has a different nadir, depth, and timing."
+    },
+    {
+      "id": "NEG-REF-gestational-age-mismatch",
+      "failureMode": "gestational age outside the profile's asserted applicability range",
+      "target": "reference",
+      "layer": "applicability",
+      "requestMutations": [{ "path": "gestationalAgeAtBirthWeeks", "value": 50 }],
+      "expectedBlockers": ["GESTATIONAL_AGE_MISMATCH"],
+      "rationale": "A profile applies over a stated range of gestational ages at birth; outside it, its intervals were never validated."
+    },
+    {
+      "id": "NEG-REF-age-value-non-numeric",
+      "failureMode": "unknown-value coercion (numeric request field supplied as a string)",
+      "target": "reference",
+      "layer": "applicability",
+      "requestMutations": [{ "path": "ageValue", "value": "12" }],
+      "expectedBlockers": ["NON_NUMERIC_VALUE"],
+      "rationale": "REGRESSION (P3-V1 F9). `\"12\" * 30.4375` coerces silently and the band appeared to match. A string is refused, never parsed."
+    },
+    {
+      "id": "NEG-REF-altitude-non-numeric",
+      "failureMode": "unknown-value coercion (non-numeric altitude yields NaN comparisons that both pass)",
+      "target": "reference",
+      "layer": "applicability",
+      "requestMutations": [{ "path": "altitudeMeters", "value": "abc" }],
+      "expectedBlockers": ["NON_NUMERIC_VALUE"],
+      "rationale": "REGRESSION (P3-V1 F9). `NaN < low` and `NaN > high` are both false, so an unparseable altitude passed the range check silently."
+    },
+    {
+      "id": "NEG-REF-critical-value-missing",
+      "failureMode": "missing critical value",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "criticalValues", "value": [] }],
+      "expectedBlockers": ["CRITICAL_VALUE_MISSING"],
+      "rationale": "REGRESSION (P3-V1 C11). `criticalValues[]` was required by the schema and referenced by NOTHING in either implementation. The panic threshold was modelled and never consulted, and no blocker code existed for a missing, unmapped, conflicting, or stale one. An urgent alert must dominate routine interval logic."
+    },
+    {
+      "id": "NEG-REF-critical-value-unit-mismatch",
+      "failureMode": "critical value in a different unit from its own reference interval",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "criticalValues[1].unitCode", "value": "SYN-UNIT-B" }],
+      "expectedBlockers": ["CRITICAL_VALUE_UNIT_MISMATCH"],
+      "rationale": "A panic threshold compared in the wrong unit is a factor-of-ten error on the most urgent path in the system."
+    },
+    {
+      "id": "NEG-REF-critical-value-conflict",
+      "failureMode": "conflicting critical values",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [
+        {
+          "op": "push",
+          "path": "criticalValues",
+          "value": {
+            "analyte": "SYNTHETIC-ANALYTE-A",
+            "analyteCode": {
+              "system": "https://example.org/synthetic-analyte-system",
+              "code": "SYN-0001",
+              "version": "0.0.0-synthetic",
+              "display": "Synthetic analyte A (not a real laboratory analyte)",
+              "assertion": "asserted"
+            },
+            "ageBand": { "unit": "months", "low": 12, "high": 24, "assertion": "asserted" },
+            "criticalLow": 0.9,
+            "criticalHigh": 9,
+            "unitCode": "SYN-UNIT-A",
+            "assertion": "asserted"
+          }
+        }
+      ],
+      "expectedBlockers": ["CRITICAL_VALUE_CONFLICT"],
+      "rationale": "Two disagreeing panic thresholds for the same analyte and age are never resolved by picking one."
+    },
+    {
+      "id": "NEG-REF-critical-value-not-asserted",
+      "failureMode": "unknown-value coercion (critical value not asserted)",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "criticalValues[1].assertion", "value": "unknown" }],
+      "expectedBlockers": ["CRITICAL_VALUE_NOT_ASSERTED"],
+      "rationale": "An unasserted panic threshold is not a threshold. It is refused rather than applied on the strength of its numbers alone."
+    },
+    {
+      "id": "NEG-REF-critical-value-bounds-missing",
+      "failureMode": "critical value with neither a low nor a high threshold",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [
+        { "path": "criticalValues[1].criticalLow", "value": null },
+        { "path": "criticalValues[1].criticalHigh", "value": null }
+      ],
+      "expectedBlockers": ["CRITICAL_VALUE_BOUNDS_MISSING"],
+      "rationale": "A critical value that can never fire is worse than an absent one: it is indistinguishable from a configured alert."
+    },
+    {
+      "id": "NEG-REF-unknown-dimension",
+      "failureMode": "unknown-value coercion (dimension explicitly unknown)",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "applicability.analyzer.assertion", "value": "unknown" }],
+      "expectedBlockers": ["UNKNOWN_DIMENSION"],
+      "rationale": "An explicitly unknown analyzer must not be treated as 'matches anything'. Unknown is representable and fails closed."
+    },
+    {
+      "id": "NEG-REF-unknown-token-not-coerced",
+      "failureMode": "unknown-value coercion (reserved token smuggled into an asserted field)",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "applicability.population.populationId", "value": "unknown" }],
+      "expectedBlockers": ["UNKNOWN_TOKEN_NOT_COERCIBLE"],
+      "rationale": "Marking a dimension `asserted` while its value is the reserved unknown token must not launder the unknown into a usable value."
+    },
+    {
+      "id": "NEG-REF-request-dimension-absent",
+      "failureMode": "unknown-value coercion (request side omits a dimension)",
+      "target": "reference",
+      "layer": "applicability",
+      "requestMutations": [{ "path": "analyzer.model", "value": null }],
+      "expectedBlockers": ["REQUEST_DIMENSION_UNKNOWN"],
+      "rationale": "Request-side unknowns are refused with the same rigour as profile-side unknowns; an absent analyzer is not a wildcard."
+    },
+    {
+      "id": "NEG-REF-candidate-digest-mismatch",
+      "failureMode": "profile bound to a different candidate version",
+      "target": "reference",
+      "layer": "applicability",
+      "requestMutations": [
+        { "path": "candidate.candidateDigest", "value": "sha256:00000000000000000000000000000000000000000000000000000000deadbeef" }
+      ],
+      "expectedBlockers": ["CANDIDATE_BINDING_MISMATCH"],
+      "rationale": "Applicability is asserted against an exact candidate digest; it does not carry over to a different candidate."
+    },
+    {
+      "id": "NEG-REF-derivation-transferred-unverified",
+      "failureMode": "intervals transferred from another source without local verification",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "provenance.derivation", "value": "transferred_unverified" }],
+      "expectedBlockers": ["DERIVATION_NOT_LOCALLY_VERIFIED"],
+      "rationale": "Transferred-but-unverified intervals stay representable so they remain visible, and they fail closed."
+    },
+    {
+      "id": "NEG-REF-lifecycle-section-absent",
+      "failureMode": "absent profile section crashes instead of failing closed",
+      "target": "reference",
+      "layer": "applicability",
+      "profileMutations": [{ "op": "unset", "path": "lifecycle" }],
+      "expectedBlockers": ["PROFILE_SECTION_MISSING"],
+      "rationale": "REGRESSION (P3-V1 F9). An absent `lifecycle` threw a TypeError. A crash is not a fail-closed decision — a caller may catch it and read the absence of a decision as the absence of objections."
+    },
+
+    {
+      "id": "NEG-TERM-unmapped-local-code",
+      "failureMode": "unmapped local code",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [{ "path": "localCode", "value": "SYN-LOCAL-9999" }],
+      "expectedBlockers": ["UNMAPPED_LOCAL_CODE"],
+      "rationale": "A local code with no mapping is not interpretable. It must not pass through as if it were already a standard code."
+    },
+    {
+      "id": "NEG-TERM-mapping-conflict",
+      "failureMode": "conflicting local mappings",
+      "target": "terminology",
+      "layer": "applicability",
+      "profileMutations": [
+        {
+          "op": "push",
+          "path": "localMappings",
+          "value": {
+            "localCode": "SYN-LOCAL-0001",
+            "localSystem": "https://example.org/synthetic-local-system",
+            "localDisplay": "Synthetic local analyte A (duplicate, disagreeing)",
+            "standardCode": "SYN-0002",
+            "standardSystem": "https://example.org/synthetic-analyte-system",
+            "standardSystemVersion": "0.0.0-synthetic",
+            "unitCode": "SYN-UNIT-B",
+            "specimenCode": "SYN-SPECIMEN-A",
+            "mappingVersion": "1.0.0",
+            "mappingAuthority": "SYNTHETIC-MAPPING-AUTHORITY-PLACEHOLDER",
+            "equivalence": "equivalent",
+            "assertion": "asserted"
+          }
+        }
+      ],
+      "expectedBlockers": ["MAPPING_CONFLICT"],
+      "rationale": "REGRESSION (P3-V1 F5). `.find` resolved a mapping conflict by first-match: two mappings for the same local code with different standard codes, units, or equivalences silently produced whichever was declared first. `INTERVAL_CONFLICT` existed for the interval side; there was no equivalent for mappings."
+    },
+    {
+      "id": "NEG-TERM-mapping-unit-null-is-not-a-wildcard",
+      "failureMode": "unknown-value coercion (null mapping unit read as a wildcard)",
+      "target": "terminology",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "localMappings[0].unitCode", "value": null }],
+      "observationMutations": [{ "path": "unitCode", "value": "SYN-UNIT-ZZZ" }],
+      "expectedBlockers": ["DIMENSION_NOT_SUPPLIED"],
+      "rationale": "REGRESSION (P3-V1 F3). Unit and specimen were truthiness-guarded on BOTH sides, so a null mapping unit compared against nothing and passed, whatever unit the observation reported."
+    },
+    {
+      "id": "NEG-TERM-preliminary-treated-as-final",
+      "failureMode": "preliminary result treated as final",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [
+        { "path": "status", "value": "preliminary" },
+        { "path": "statusLineage.states", "value": ["registered", "preliminary"] }
+      ],
+      "expectedBlockers": ["RESULT_STATUS_BLOCKING_STATE"],
+      "rationale": "A preliminary result is not a final result. It may be revised, so it cannot inform a decision. NOTE: this expectation changed from the overloaded RESULT_STATUS_BLOCKED, which covered five situations demanding three different human actions."
+    },
+    {
+      "id": "NEG-TERM-entered-in-error-is-a-retraction",
+      "failureMode": "retracted result treated as merely non-decision-grade",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [
+        { "path": "status", "value": "entered-in-error" },
+        { "path": "statusLineage.states", "value": ["registered", "preliminary", "final", "entered-in-error"] }
+      ],
+      "expectedBlockers": ["RESULT_RETRACTED_ENTERED_IN_ERROR"],
+      "rationale": "REGRESSION (P3-V1 F7). `entered-in-error` failed closed only as 'not decision-grade'. It is a RETRACTION: the value must not be displayed or retained for interpretation at all, which is a materially different obligation and could not be expressed through a shared blocker code."
+    },
+    {
+      "id": "NEG-TERM-cancelled-never-performed",
+      "failureMode": "cancelled result conflated with a blocked one",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [
+        { "path": "status", "value": "cancelled" },
+        { "path": "statusLineage.states", "value": ["registered", "cancelled"] }
+      ],
+      "expectedBlockers": ["RESULT_CANCELLED_NEVER_PERFORMED"],
+      "rationale": "The test was never performed. The correct human action is to re-order, not to wait and not to discard a displayed value."
+    },
+    {
+      "id": "NEG-TERM-registered-not-yet-available",
+      "failureMode": "not-yet-resulted observation conflated with a blocked one",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [
+        { "path": "status", "value": "registered" },
+        { "path": "statusLineage.states", "value": ["registered"] }
+      ],
+      "expectedBlockers": ["RESULT_NOT_YET_AVAILABLE"],
+      "rationale": "No result has been reported yet. The correct human action is to wait — the opposite of re-ordering."
+    },
+    {
+      "id": "NEG-TERM-corrected-state-dropped",
+      "failureMode": "corrected state dropped in transit",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [
+        { "path": "statusLineage.states", "value": ["registered", "preliminary", "final", "corrected"] },
+        { "path": "statusLineage.supersedingObservationRef", "value": "urn:synthetic:observation-0002" }
+      ],
+      "expectedBlockers": ["CORRECTION_UNRESOLVED"],
+      "rationale": "The most dangerous case: the value on hand reads `final` and authoritative while a correction exists upstream. Detected as a hard failure, not a warning."
+    },
+    {
+      "id": "NEG-TERM-amended-state-dropped",
+      "failureMode": "amended state dropped in transit",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [
+        { "path": "statusLineage.states", "value": ["registered", "preliminary", "final", "amended"] },
+        { "path": "statusLineage.supersedingObservationRef", "value": "urn:synthetic:observation-0002" }
+      ],
+      "expectedBlockers": ["CORRECTION_UNRESOLVED"],
+      "rationale": "Amendment is treated with the same severity as correction; both supersede the value in hand."
+    },
+    {
+      "id": "NEG-TERM-superseding-ref-explicitly-null",
+      "failureMode": "corrected/amended state present but the superseding observation reference is explicitly null",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [
+        { "path": "statusLineage.states", "value": ["registered", "preliminary", "final", "corrected"] },
+        { "path": "statusLineage.supersedingObservationRef", "value": null }
+      ],
+      "expectedBlockers": ["CORRECTION_UNRESOLVED", "SUPERSEDING_REFERENCE_UNRESOLVABLE"],
+      "rationale": "REGRESSION (P3-V1 F6). The check tested `=== undefined`, so an explicit `null` passed — and `null` is exactly what the base observation carried and what a wire format sends. The prior test for this failure mode used `{op: unset}`, the one encoding that DID trip the check, so the suite proved the opposite of what it claimed. Knowing a correction happened is not enough; if the superseding result cannot be reached, the state is ambiguous."
+    },
+    {
+      "id": "NEG-TERM-superseding-ref-absent",
+      "failureMode": "corrected/amended state present but the superseding observation reference is absent",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [
+        { "path": "statusLineage.states", "value": ["registered", "preliminary", "final", "corrected"] },
+        { "op": "unset", "path": "statusLineage.supersedingObservationRef" }
+      ],
+      "expectedBlockers": ["CORRECTION_UNRESOLVED", "SUPERSEDING_REFERENCE_UNRESOLVABLE"],
+      "rationale": "The absent encoding must fail identically to the explicit-null encoding. Both are unresolvable; neither means 'no correction'."
+    },
+    {
+      "id": "NEG-TERM-observation-itself-superseded",
+      "failureMode": "revision that is itself superseded",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [
+        { "path": "status", "value": "corrected" },
+        { "path": "statusLineage.states", "value": ["registered", "preliminary", "final", "corrected"] },
+        { "path": "statusLineage.supersedingObservationRef", "value": "urn:synthetic:observation-0002" }
+      ],
+      "expectedBlockers": ["OBSERVATION_SUPERSEDED"],
+      "rationale": "REGRESSION (P3-V1 F6). The old check had the semantics INVERTED: it demanded a superseding observation from any result whose lineage recorded a revision, including a `corrected` result that IS the latest version and by definition has none. The requirement belongs on the result that is not the revision; for a result that IS the revision, a resolvable reference means something newer supersedes IT."
+    },
+    {
+      "id": "NEG-TERM-superseding-ref-self-referential",
+      "failureMode": "superseding observation reference points at the observation itself",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [
+        { "path": "status", "value": "corrected" },
+        { "path": "statusLineage.states", "value": ["registered", "preliminary", "final", "corrected"] },
+        { "path": "statusLineage.supersedingObservationRef", "value": "urn:synthetic:observation-0001" }
+      ],
+      "expectedBlockers": ["SUPERSEDING_REFERENCE_SELF"],
+      "rationale": "REGRESSION (P3-V1 F6). Nothing checked for self-reference. A pointer to itself resolves nothing and hides whatever actually superseded it, while satisfying a presence check."
+    },
+    {
+      "id": "NEG-TERM-status-not-in-lineage",
+      "failureMode": "current status absent from the lineage that claims to describe it",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [{ "path": "statusLineage.states", "value": ["registered", "preliminary"] }],
+      "expectedBlockers": ["STATUS_NOT_IN_LINEAGE"],
+      "rationale": "REGRESSION (P3-V1 F6). Nothing checked that `status` appeared in `lineage.states`, so a lineage could describe a different observation entirely and still be accepted as proof about this one."
+    },
+    {
+      "id": "NEG-TERM-lineage-out-of-order",
+      "failureMode": "status lineage is not ordered",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [{ "path": "statusLineage.states", "value": ["registered", "final", "preliminary"] }],
+      "expectedBlockers": ["STATUS_LINEAGE_OUT_OF_ORDER"],
+      "rationale": "REGRESSION (P3-V1 F6). Nothing checked that the states were ordered, yet establishing which state is current is the only thing the lineage exists to prove."
+    },
+    {
+      "id": "NEG-TERM-status-lineage-incomplete",
+      "failureMode": "corrected/amended state droppable (lineage not provable)",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [{ "path": "statusLineage.complete", "value": false }],
+      "expectedBlockers": ["STATUS_LINEAGE_INCOMPLETE"],
+      "rationale": "Silence is not proof that nothing was corrected. Positive proof of a complete lineage is required."
+    },
+    {
+      "id": "NEG-TERM-status-unknown",
+      "failureMode": "unknown-value coercion (result status)",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [{ "path": "status", "value": "unknown" }],
+      "expectedBlockers": ["RESULT_STATUS_UNKNOWN"],
+      "rationale": "An unknown status is never assumed final."
+    },
+    {
+      "id": "NEG-TERM-status-missing",
+      "failureMode": "missing result status",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [{ "path": "status", "value": null }],
+      "expectedBlockers": ["RESULT_STATUS_MISSING"],
+      "rationale": "An absent status cannot be defaulted to final."
+    },
+    {
+      "id": "NEG-TERM-resource-type-missing",
+      "failureMode": "status value set applied without a resource type",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [{ "op": "unset", "path": "resourceType" }],
+      "expectedBlockers": ["RESOURCE_TYPE_MISSING"],
+      "rationale": "REGRESSION (P3-V1 F7). The status value set was not bound to a resource type, so Observation.status and DiagnosticReport.status were conflated and `partial`/`appended` — DiagnosticReport statuses — were accepted as observation statuses."
+    },
+    {
+      "id": "NEG-TERM-resource-type-unsupported",
+      "failureMode": "status value set applied to the wrong resource type",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [{ "path": "resourceType", "value": "DiagnosticReport" }],
+      "expectedBlockers": ["RESOURCE_TYPE_UNSUPPORTED"],
+      "rationale": "A DiagnosticReport-level profile is a separate contract with a different value set; it is refused rather than approximated."
+    },
+    {
+      "id": "NEG-TERM-mapping-equivalence-inexact",
+      "failureMode": "local mapping is not an exact equivalence",
+      "target": "terminology",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "localMappings[0].equivalence", "value": "wider" }],
+      "expectedBlockers": ["MAPPING_EQUIVALENCE_NOT_EXACT"],
+      "rationale": "A wider/narrower/inexact mapping is representable so it stays visible, and it is never rounded up to `equivalent`."
+    },
+    {
+      "id": "NEG-TERM-mapping-assertion-unknown",
+      "failureMode": "unknown-value coercion (mapping not asserted)",
+      "target": "terminology",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "localMappings[0].assertion", "value": "unknown" }],
+      "expectedBlockers": ["UNKNOWN_DIMENSION"],
+      "rationale": "A mapping that exists but is not asserted by a named authority carries no weight."
+    },
+    {
+      "id": "NEG-TERM-code-system-version-unasserted",
+      "failureMode": "code system version not asserted by the profile",
+      "target": "terminology",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "localMappings[0].standardSystemVersion", "value": "9.9.9-not-asserted" }],
+      "expectedBlockers": ["CODE_SYSTEM_VERSION_UNASSERTED"],
+      "rationale": "Code systems are pinned to exact versions; an unpinned or unasserted version is not interpretable."
+    },
+    {
+      "id": "NEG-TERM-unit-mismatch",
+      "failureMode": "unit mismatch",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [{ "path": "unitCode", "value": "SYN-UNIT-B" }],
+      "expectedBlockers": ["UNIT_MISMATCH"],
+      "rationale": "An observation reporting a different unit than its mapping declares is never auto-converted."
+    },
+    {
+      "id": "NEG-TERM-specimen-mismatch",
+      "failureMode": "specimen mismatch",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [{ "path": "specimenCode", "value": "SYN-SPECIMEN-B" }],
+      "expectedBlockers": ["SPECIMEN_MISMATCH"],
+      "rationale": "Specimen type changes expected values; a capillary and a venous specimen are not interchangeable."
+    },
+    {
+      "id": "NEG-TERM-stale-result",
+      "failureMode": "stale result",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [{ "path": "effectiveDateTime", "value": "2026-01-01T08:00:00Z" }],
+      "expectedBlockers": ["RESULT_STALE"],
+      "rationale": "A result older than the site's staleness limit no longer describes the patient's current state."
+    },
+    {
+      "id": "NEG-TERM-staleness-policy-unknown",
+      "failureMode": "unknown-value coercion (staleness policy)",
+      "target": "terminology",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "observationRequirements.maxResultAgeDays", "value": null }],
+      "expectedBlockers": ["STALENESS_POLICY_UNKNOWN"],
+      "rationale": "An unknown staleness policy must not be read as 'never stale'."
+    },
+    {
+      "id": "NEG-TERM-effective-time-missing",
+      "failureMode": "missing effective time",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [{ "path": "effectiveDateTime", "value": null }],
+      "expectedBlockers": ["EFFECTIVE_TIME_MISSING"],
+      "rationale": "Without an effective time the result cannot be age-banded, which is the axis pediatric intervals turn on."
+    },
+    {
+      "id": "NEG-TERM-issued-time-missing",
+      "failureMode": "missing issued time",
+      "target": "terminology",
+      "layer": "applicability",
+      "observationMutations": [{ "path": "issuedDateTime", "value": null }],
+      "expectedBlockers": ["ISSUED_TIME_MISSING"],
+      "rationale": "Issued time is what makes a later correction detectable."
+    },
+    {
+      "id": "NEG-TERM-result-status-policy-absent",
+      "failureMode": "absent profile section crashes instead of failing closed",
+      "target": "terminology",
+      "layer": "applicability",
+      "profileMutations": [{ "op": "unset", "path": "resultStatusPolicy" }],
+      "expectedBlockers": ["PROFILE_SECTION_MISSING"],
+      "rationale": "REGRESSION (P3-V1 F9). An absent `resultStatusPolicy` threw a TypeError rather than failing closed."
+    },
+    {
+      "id": "NEG-TERM-expired-profile",
+      "failureMode": "expired profile",
+      "target": "terminology",
+      "layer": "applicability",
+      "profileMutations": [{ "path": "lifecycle.reviewState", "value": "expired" }],
+      "expectedBlockers": ["PROFILE_EXPIRED"],
+      "rationale": "Terminology profiles expire exactly as laboratory profiles do."
+    },
+    {
+      "id": "NEG-TERM-superseded-without-successor",
+      "failureMode": "superseded without successor",
+      "target": "terminology",
+      "layer": "applicability",
+      "profileMutations": [
+        { "path": "lifecycle.reviewState", "value": "superseded" },
+        { "path": "lifecycle.supersededBy", "value": null }
+      ],
+      "expectedBlockers": ["PROFILE_SUPERSEDED_WITHOUT_SUCCESSOR"],
+      "rationale": "A dangling successor pointer breaks the mapping-authority chain."
+    },
+
+    {
+      "id": "NEG-STRUCT-synthetic-claiming-authority",
+      "failureMode": "synthetic profile edited to claim laboratory authority",
+      "target": "reference",
+      "layer": "structural",
+      "profileMutations": [{ "path": "authority.assertion", "value": "asserted" }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "A synthetic_example profile is structurally forbidden from asserting authority, so it cannot be quietly promoted into an approved site profile by flipping one field."
+    },
+    {
+      "id": "NEG-STRUCT-synthetic-claiming-signature",
+      "failureMode": "synthetic profile edited to claim a bound signature",
+      "target": "reference",
+      "layer": "structural",
+      "profileMutations": [{ "path": "attestation.signatureState", "value": "bound" }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "Same containment on the attestation axis, so the synthetic fixture cannot satisfy the P2 attachment gate either."
+    },
+    {
+      "id": "NEG-STRUCT-site-asserted-retaining-synthetic-declaration",
+      "failureMode": "profile reclassified as site_asserted while retaining its synthetic marker",
+      "target": "reference",
+      "layer": "structural",
+      "profileMutations": [{ "path": "profileClass", "value": "site_asserted" }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "Reclassifying is not enough to launder a synthetic document: a site_asserted profile may not carry a syntheticDeclaration, so the contradiction is caught rather than resolved in favour of the more permissive reading."
+    },
+    {
+      "id": "NEG-STRUCT-authority-asserted-by-nobody",
+      "failureMode": "authority asserted with every identity field still null",
+      "target": "reference",
+      "layer": "structural",
+      "profileMutations": [
+        { "path": "profileClass", "value": "site_asserted" },
+        { "op": "unset", "path": "syntheticDeclaration" },
+        { "path": "authority.assertion", "value": "asserted" }
+      ],
+      "expectedStructurallyInvalid": true,
+      "rationale": "REGRESSION (P3-V1 F1). The prose said `asserted` requires every sibling to be non-null; nothing enforced it, so `authority.assertion: asserted` with a null institution, director, credential, statement, and date was structurally valid. This mutation is two of the four edits that promoted the shipped synthetic fixture to `{decision: applicable, blockers: []}`."
+    },
+    {
+      "id": "NEG-STRUCT-bound-signature-without-attachment-ref",
+      "failureMode": "signature declared bound with no attachment reference",
+      "target": "reference",
+      "layer": "structural",
+      "profileMutations": [
+        { "path": "profileClass", "value": "site_asserted" },
+        { "op": "unset", "path": "syntheticDeclaration" },
+        { "path": "attestation.signatureState", "value": "bound" }
+      ],
+      "expectedStructurallyInvalid": true,
+      "rationale": "REGRESSION (P3-V1 F1). '`bound` additionally requires attachmentRef' was prose, not a constraint. It is now a conditional — and independently, the activation gate refuses a self-declared `bound` because no attachment verifier exists on this side."
+    },
+    {
+      "id": "NEG-STRUCT-analyzer-asserted-with-null-method",
+      "failureMode": "container asserted while a secondary value is null",
+      "target": "reference",
+      "layer": "structural",
+      "profileMutations": [{ "path": "applicability.analyzer.method", "value": null }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "REGRESSION (P3-V1 F3). The `assertion` discriminator guarded only one key per container; every other value was a silent wildcard when null. It is now enforced across all siblings."
+    },
+    {
+      "id": "NEG-STRUCT-altitude-asserted-with-null-bounds",
+      "failureMode": "container asserted while a secondary value is null (altitude)",
+      "target": "reference",
+      "layer": "structural",
+      "profileMutations": [{ "path": "applicability.altitude.metersLow", "value": null }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "Same defect on the altitude axis, where a null bound previously matched every altitude."
+    },
+    {
+      "id": "NEG-STRUCT-age-band-asserted-unbounded",
+      "failureMode": "asserted age band with no upper bound",
+      "target": "reference",
+      "layer": "structural",
+      "profileMutations": [{ "path": "applicability.ageBand.high", "value": null }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "REGRESSION (P3-V1 C3). An unbounded band is now structurally invalid, not merely refused at evaluation time."
+    },
+    {
+      "id": "NEG-STRUCT-interval-asserted-with-null-sex",
+      "failureMode": "asserted interval with a null sex",
+      "target": "reference",
+      "layer": "structural",
+      "profileMutations": [{ "path": "intervals[0].sex", "value": null }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "Null is not a wildcard on an asserted interval; `any` must be written deliberately."
+    },
+    {
+      "id": "NEG-STRUCT-critical-value-with-no-thresholds",
+      "failureMode": "asserted critical value with neither a low nor a high threshold",
+      "target": "reference",
+      "layer": "structural",
+      "profileMutations": [
+        { "path": "criticalValues[0].criticalLow", "value": null },
+        { "path": "criticalValues[0].criticalHigh", "value": null }
+      ],
+      "expectedStructurallyInvalid": true,
+      "rationale": "An alert that can never fire is indistinguishable from a configured one, which is the worst state for an urgent path."
+    },
+    {
+      "id": "NEG-STRUCT-no-assume-default-assertion-state",
+      "failureMode": "attempt to introduce an 'assume default' assertion state",
+      "target": "reference",
+      "layer": "structural",
+      "profileMutations": [{ "path": "applicability.sex.assertion", "value": "assume_default" }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "The assertion enum admits exactly asserted / unknown / not_supplied. There is deliberately no state that means 'infer it'."
+    },
+    {
+      "id": "NEG-STRUCT-terminology-opting-out-of-lineage",
+      "failureMode": "terminology profile opting out of status-lineage proof",
+      "target": "terminology",
+      "layer": "structural",
+      "profileMutations": [{ "path": "resultStatusPolicy.requireStatusLineage", "value": false }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "requireStatusLineage is a const, not a boolean: a profile that opts out cannot detect a dropped correction at all, so opting out is refused at the schema level."
+    },
+    {
+      "id": "NEG-STRUCT-terminology-accepting-preliminary",
+      "failureMode": "terminology profile accepting preliminary results for decision use",
+      "target": "terminology",
+      "layer": "structural",
+      "profileMutations": [{ "path": "resultStatusPolicy.acceptedForDecision", "value": ["final", "preliminary"] }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "`preliminary` is excluded from the acceptedForDecision enum by construction, so no site can configure its way into treating preliminary results as final."
+    },
+    {
+      "id": "NEG-STRUCT-terminology-accepting-appended",
+      "failureMode": "terminology profile accepting a DiagnosticReport status for Observation decision use",
+      "target": "terminology",
+      "layer": "structural",
+      "profileMutations": [{ "path": "resultStatusPolicy.acceptedForDecision", "value": ["final", "appended"] }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "REGRESSION (P3-V1 F7). `appended` is a DiagnosticReport status and was permitted in acceptedForDecision, so a site could accept a status its observations can never legally carry."
+    },
+    {
+      "id": "NEG-STRUCT-terminology-recognizing-partial",
+      "failureMode": "terminology profile recognizing a DiagnosticReport status as an Observation status",
+      "target": "terminology",
+      "layer": "structural",
+      "profileMutations": [{ "op": "push", "path": "resultStatusPolicy.recognizedStates", "value": "partial" }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "REGRESSION (P3-V1 F7). `partial` is not a member of FHIR R4/R5 ObservationStatus. The value set is now bound to an explicit resourceType."
+    },
+    {
+      "id": "NEG-STRUCT-terminology-blocking-states-incomplete",
+      "failureMode": "terminology profile omitting a required blocking state",
+      "target": "terminology",
+      "layer": "structural",
+      "profileMutations": [{ "path": "resultStatusPolicy.blockingStates", "value": ["preliminary"] }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "REGRESSION (P3-V1 F7). 'Must include preliminary, unknown, entered-in-error, and cancelled' was prose and was unenforced, so a site could simply omit them."
+    },
+    {
+      "id": "NEG-STRUCT-mapping-asserted-with-null-unit",
+      "failureMode": "asserted mapping with a null unit code",
+      "target": "terminology",
+      "layer": "structural",
+      "profileMutations": [{ "path": "localMappings[0].unitCode", "value": null }],
+      "expectedStructurallyInvalid": true,
+      "rationale": "REGRESSION (P3-V1 F3). A null mapping unit was truthiness-guarded into a wildcard at evaluation time; it is now invalid at the structural layer too."
+    }
+  ]
+}

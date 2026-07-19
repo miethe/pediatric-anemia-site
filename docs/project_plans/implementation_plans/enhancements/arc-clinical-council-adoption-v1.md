@@ -27,7 +27,7 @@ references:
     - schemas/rule.schema.json
   related_prds: []
 deferred_items_spec_refs: []
-findings_doc_ref: null
+findings_doc_ref: .claude/findings/arc-clinical-council-adoption-v1-findings.md
 changelog_ref: null
 changelog_required: false
 test_plan_ref: null

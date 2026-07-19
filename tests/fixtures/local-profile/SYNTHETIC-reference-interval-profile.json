@@ -1,0 +1,238 @@
+{
+  "kind": "LocalReferenceIntervalProfile",
+  "schemaVersion": "1.1.0",
+  "profileId": "SYNTHETIC-reference-interval-profile",
+  "profileVersion": "1.1.0",
+  "profileClass": "synthetic_example",
+  "syntheticDeclaration": {
+    "synthetic": true,
+    "notForClinicalUse": true,
+    "notAnApprovedSiteProfile": true,
+    "purpose": "SYNTHETIC TEST FIXTURE. Exercises the shape of a local reference-interval profile and the dimension-matching layer. The analytes, code systems, analyzer, method, unit codes, age bands, interval values, critical-value thresholds, gestational-age bounds, and age-band policy below are invented placeholders and are NOT real laboratory values; no real institution, laboratory director, analyzer make/model, reference interval, or panic threshold is named or implied. Two analytes with DIFFERENT unit codes are present deliberately, to demonstrate that a multi-analyte panel is expressible now that the unit belongs to the analyte rather than to the profile. This document can never satisfy an activation gate: profileClass, authority.assertion, and attestation.signatureState each independently refuse it."
+  },
+  "boundCandidate": {
+    "candidateId": "SYNTHETIC-CANDIDATE-A",
+    "candidateVersion": "0.0.0-synthetic",
+    "candidateDigest": "sha256:a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4",
+    "assertion": "asserted"
+  },
+  "authority": {
+    "institutionName": null,
+    "laboratoryDirectorName": null,
+    "laboratoryDirectorCredential": null,
+    "designeeName": null,
+    "assertionStatement": null,
+    "assertedOn": null,
+    "assertion": "not_executed_owner_held"
+  },
+  "attestation": {
+    "attachmentContract": "p2-authenticated-attachment",
+    "signatureState": "not_executed_owner_held",
+    "attachmentRef": null
+  },
+  "lifecycle": {
+    "effectiveStart": "2026-01-01",
+    "effectiveEnd": null,
+    "reviewState": "active",
+    "supersededBy": null,
+    "lastReviewedOn": "2026-06-01",
+    "reviewIntervalDays": 365,
+    "rollbackTrigger": "SYNTHETIC placeholder: any analyzer replacement, method change, unit change, or recalibration withdraws this profile.",
+    "rollbackOwner": "SYNTHETIC-ROLLBACK-OWNER-PLACEHOLDER"
+  },
+  "applicability": {
+    "population": {
+      "populationId": "SYNTHETIC-POPULATION-A",
+      "description": "Invented placeholder population for fixture purposes only.",
+      "assertion": "asserted"
+    },
+    "ageBand": {
+      "unit": "months",
+      "low": 6,
+      "high": 24,
+      "assertion": "asserted"
+    },
+    "gestationalAge": {
+      "correctedAgeRequired": true,
+      "gestationalAgeWeeksLow": 0,
+      "gestationalAgeWeeksHigh": 45,
+      "assertion": "asserted"
+    },
+    "sex": {
+      "value": "any",
+      "assertion": "asserted"
+    },
+    "specimen": {
+      "system": "https://example.org/synthetic-specimen-system",
+      "code": "SYN-SPECIMEN-A",
+      "display": "Synthetic specimen placeholder",
+      "assertion": "asserted"
+    },
+    "analyzer": {
+      "manufacturer": "SYNTHETIC-MANUFACTURER-PLACEHOLDER",
+      "model": "SYNTHETIC-ANALYZER-MODEL-A",
+      "method": "SYNTHETIC-METHOD-A",
+      "assertion": "asserted"
+    },
+    "altitude": {
+      "metersLow": 0,
+      "metersHigh": 500,
+      "assertion": "asserted"
+    }
+  },
+  "ageBandPolicy": {
+    "maxBandWidthDays": 400,
+    "mandatoryBoundaries": [
+      {
+        "unit": "months",
+        "value": 12,
+        "rationale": "SYNTHETIC placeholder boundary. The real set of ages across which a band may not be pooled is an owner-held clinical input (charter §2.2a); this entry exists only so the straddle check has something to enforce in the fixture."
+      }
+    ],
+    "assertion": "asserted"
+  },
+  "unitSystem": {
+    "system": "https://example.org/synthetic-unit-system",
+    "assertion": "asserted"
+  },
+  "intervals": [
+    {
+      "analyte": "SYNTHETIC-ANALYTE-A",
+      "analyteCode": {
+        "system": "https://example.org/synthetic-analyte-system",
+        "code": "SYN-0001",
+        "version": "0.0.0-synthetic",
+        "display": "Synthetic analyte A (not a real laboratory analyte)",
+        "assertion": "asserted"
+      },
+      "ageBand": { "unit": "months", "low": 6, "high": 12, "assertion": "asserted" },
+      "sex": "any",
+      "low": 1,
+      "high": 2,
+      "unitCode": "SYN-UNIT-A",
+      "assertion": "asserted"
+    },
+    {
+      "analyte": "SYNTHETIC-ANALYTE-A",
+      "analyteCode": {
+        "system": "https://example.org/synthetic-analyte-system",
+        "code": "SYN-0001",
+        "version": "0.0.0-synthetic",
+        "display": "Synthetic analyte A (not a real laboratory analyte)",
+        "assertion": "asserted"
+      },
+      "ageBand": { "unit": "months", "low": 12, "high": 24, "assertion": "asserted" },
+      "sex": "any",
+      "low": 1.2,
+      "high": 2.2,
+      "unitCode": "SYN-UNIT-A",
+      "assertion": "asserted"
+    },
+    {
+      "analyte": "SYNTHETIC-ANALYTE-B",
+      "analyteCode": {
+        "system": "https://example.org/synthetic-analyte-system",
+        "code": "SYN-0002",
+        "version": "0.0.0-synthetic",
+        "display": "Synthetic analyte B (not a real laboratory analyte)",
+        "assertion": "asserted"
+      },
+      "ageBand": { "unit": "months", "low": 6, "high": 12, "assertion": "asserted" },
+      "sex": "any",
+      "low": 10,
+      "high": 20,
+      "unitCode": "SYN-UNIT-B",
+      "assertion": "asserted"
+    },
+    {
+      "analyte": "SYNTHETIC-ANALYTE-B",
+      "analyteCode": {
+        "system": "https://example.org/synthetic-analyte-system",
+        "code": "SYN-0002",
+        "version": "0.0.0-synthetic",
+        "display": "Synthetic analyte B (not a real laboratory analyte)",
+        "assertion": "asserted"
+      },
+      "ageBand": { "unit": "months", "low": 12, "high": 24, "assertion": "asserted" },
+      "sex": "any",
+      "low": 11,
+      "high": 21,
+      "unitCode": "SYN-UNIT-B",
+      "assertion": "asserted"
+    }
+  ],
+  "criticalValues": [
+    {
+      "analyte": "SYNTHETIC-ANALYTE-A",
+      "analyteCode": {
+        "system": "https://example.org/synthetic-analyte-system",
+        "code": "SYN-0001",
+        "version": "0.0.0-synthetic",
+        "display": "Synthetic analyte A (not a real laboratory analyte)",
+        "assertion": "asserted"
+      },
+      "ageBand": { "unit": "months", "low": 6, "high": 12, "assertion": "asserted" },
+      "criticalLow": 0.5,
+      "criticalHigh": 3,
+      "unitCode": "SYN-UNIT-A",
+      "assertion": "asserted"
+    },
+    {
+      "analyte": "SYNTHETIC-ANALYTE-A",
+      "analyteCode": {
+        "system": "https://example.org/synthetic-analyte-system",
+        "code": "SYN-0001",
+        "version": "0.0.0-synthetic",
+        "display": "Synthetic analyte A (not a real laboratory analyte)",
+        "assertion": "asserted"
+      },
+      "ageBand": { "unit": "months", "low": 12, "high": 24, "assertion": "asserted" },
+      "criticalLow": 0.6,
+      "criticalHigh": 3.1,
+      "unitCode": "SYN-UNIT-A",
+      "assertion": "asserted"
+    },
+    {
+      "analyte": "SYNTHETIC-ANALYTE-B",
+      "analyteCode": {
+        "system": "https://example.org/synthetic-analyte-system",
+        "code": "SYN-0002",
+        "version": "0.0.0-synthetic",
+        "display": "Synthetic analyte B (not a real laboratory analyte)",
+        "assertion": "asserted"
+      },
+      "ageBand": { "unit": "months", "low": 6, "high": 12, "assertion": "asserted" },
+      "criticalLow": 5,
+      "criticalHigh": 30,
+      "unitCode": "SYN-UNIT-B",
+      "assertion": "asserted"
+    },
+    {
+      "analyte": "SYNTHETIC-ANALYTE-B",
+      "analyteCode": {
+        "system": "https://example.org/synthetic-analyte-system",
+        "code": "SYN-0002",
+        "version": "0.0.0-synthetic",
+        "display": "Synthetic analyte B (not a real laboratory analyte)",
+        "assertion": "asserted"
+      },
+      "ageBand": { "unit": "months", "low": 12, "high": 24, "assertion": "asserted" },
+      "criticalLow": 6,
+      "criticalHigh": 31,
+      "unitCode": "SYN-UNIT-B",
+      "assertion": "asserted"
+    }
+  ],
+  "terminologyServer": {
+    "endpoint": "https://example.invalid/synthetic-terminology-server",
+    "profileRef": "SYNTHETIC-terminology-profile",
+    "assertion": "asserted"
+  },
+  "provenance": {
+    "source": "SYNTHETIC fixture — invented for schema and fail-closed testing.",
+    "locator": "tests/fixtures/local-profile/SYNTHETIC-reference-interval-profile.json",
+    "retrievedOn": "2026-07-19",
+    "derivation": "local_validation_study",
+    "assertion": "asserted"
+  }
+}

@@ -110,7 +110,7 @@ below is committed to the repo except the IntentTree graph, which lives on the p
 | **Project context** | `CLAUDE.md` | Orients any agent on the hard clinical guardrails, architecture, and AOS routing. |
 | **Operator run record** | `.operator/runs/op_run_20260717_050047_pediatric-cds-platform-e/` (`op new --tier 3`) | Durable operator tracking of the expansion program. |
 | **IntentTree task graph** | Tree **`tree_01KXQ7WC1HQE2GKZSCNDVXA9G7`** ("Pediatric CDS Platform Expansion") in the **Work** workspace (`ws_01KV8VMWXK05CTAZVHKT57HY0H`) — 1 pillar + **11 work-areas** (P0–P6 product phases + `EF` Evidence Foundry + `EVID` rf research runs + `RFUP` rf-upstream enhancements + `XC` cross-cutting) + **63 work-packages** + dependency links. Product phases seeded from doc 01 §E; the EF/EVID/RFUP/XC work-areas added 2026-07-17. | Live, navigable, delegatable program graph. `itt tree get tree_01KXQ7WC1HQE2GKZSCNDVXA9G7` / `itt today` to drive it. |
-| **RF handoff package** | [`rf-handoff/`](rf-handoff/) — manifest + self-contained per-run briefs; the 7 evidence/regulatory `rf` runs registered + `planned` on the agentic node with `run_id`s written back to their IntentTree nodes. | Makes rf agents ready to plan + drive every evidence run with full context. |
+| **RF handoff package** | [`rf-handoff/`](rf-handoff/) — manifest + self-contained per-run briefs; the 7 evidence/regulatory `rf` runs registered on the agentic node with `run_id`s written back to their IntentTree nodes, and as of 2026-07-18 driven end-to-end to `verified` per each run's on-disk `reviews/verification.yaml` (see [`rf-handoff/RESULTS.md`](rf-handoff/RESULTS.md), which supersedes the `planned` status below). | Makes rf agents ready to plan + drive every evidence run with full context. |
 
 > Tooling note: the graph was seeded via the REST API because the `itt tree create` CLI currently
 > has a `title`/`name` field skew (a separate CLI↔API fix). Node/link creation via `itt` is fine.
@@ -119,20 +119,37 @@ below is committed to the repo except the IntentTree graph, which lives on the p
 
 Ordered. The first block is the 90-day / P0–P1 + E0 wedge.
 
-1. **Kick off P0 (platform foundation refactor).** Author the impl-plan with `/plan-feature`
-   (`planning` skill), gate the module-package boundary design with `council-review` (architecture)
-   *before coding*, then execute under `dev-execution` (git-worktree → commit-per-phase → PR). Exit
-   gate: `npm run check` green **and** byte-equivalent anemia output for all 6 `examples/`. (IntentTree
-   work-area `P0`.) **No clinical scope creep in this phase.**
+1. ~~Kick off P0 (platform foundation refactor).~~ **Status (2026-07-18): complete and merged to
+   `main`** as commit `ff4b519a160cbfa2a4d19337130cd031c9a7c12b` ("Platform foundation P0:
+   `modules/<id>/` package contract", squash of a 7-phase Tier-3 execution). V2 gate AC-1..AC-6 passed
+   — see `.claude/worknotes/platform-foundation-p0/v2-gate-results.md` and
+   `.claude/progress/platform-foundation-p0/plan-completion.md` (per-wave commit trail + reviewer
+   verdicts; note the two files live in different directories — `worknotes/` vs `progress/`).
+   Zero clinical behavior change; byte-identical `assess()` output for all 6 worked examples is
+   enforced by a permanent golden-fixture equivalence harness. **Current next action is P1 (Wave-0
+   safety & defensibility foundation, doc 01 §Phase 1):** the PRD and Tier-3 implementation plan are
+   authored on branch `worktree-wave0-safety-foundation`
+   (`.claude/worktrees/wave0-safety-foundation/`, unmerged) but **implementation has not started** —
+   do not treat the existence of that plan as executed Wave-0 safety work.
 2. **Launch the P0-priority research runs in parallel** (no code dependency — doc 01 §D).
-   **Status (2026-07-17): registered + `planned` on the agentic node** — see the local RF handoff
-   package [`rf-handoff/`](rf-handoff/) (manifest + self-contained per-run briefs + run_ids). What
-   remains is driving the discovery swarm + deterministic tail per `run_id`.
-   - `RF-EV-001` exact-passage backfill for the 6 anemia sources → `rf` run.
+   **Status (2026-07-18): all 7 driven end-to-end and `verified`** — superseding the
+   `registered + planned` (2026-07-17) status. Load-bearing evidence is each run's on-disk
+   `runs/<run_id>/reviews/verification.yaml` (`passed: true`, `exit_code: 0`, `generated_at` between
+   2026-07-18T17:09 and 20:27 — after the 2026-07-17 "planned" snapshot), not the RF API's
+   `status_derived`/`verification_passed`/`governance_verdict` fields, which read identically
+   (`published` / `true` / `true`) for **all 48 runs in the store** and so cannot by themselves
+   distinguish this program's runs from any other. See [`rf-handoff/RESULTS.md`](rf-handoff/RESULTS.md)
+   for the full verification table, cross-model audit, and the two runs still needing owner legal
+   review (`REG-001`, `REG-004`). What remains is the CDS-side `rf-bundle → kb-pack` converter
+   (`EF-WP0`, not yet built) that turns these verified evidence bundles into rule *proposals* — the
+   bundles themselves are not rules and confer no clinical validity.
+   - `RF-EV-001` exact-passage backfill for the 6 anemia sources → `rf` run. Verified.
    - `RF-CBC-001` (neutropenia scope-exits) and `RF-CBC-002` (pancytopenia marrow-failure exits) →
-     `rf` runs, using the doc 02 §3 module template. These gate P2 and take the longest.
-   - `REG-001` intended-use / non-device-CDS mapping memo → `rf` + flagged legal review.
-   - Also registered ahead: `RF-KID-001` (P4), `RF-GRO-002` (P5), `REG-004` (P3 HIPAA).
+     `rf` runs, using the doc 02 §3 module template. These gate P2. Verified.
+   - `REG-001` intended-use / non-device-CDS mapping memo → `rf` + flagged legal review. Verified
+     as an evidence bundle; legal review itself remains `not_executed_owner_held`.
+   - Also completed: `RF-KID-001` (P4), `RF-GRO-002` (P5), `REG-004` (P3 HIPAA, legal review
+     `not_executed_owner_held`).
 3. **Stand up E0 of the Evidence Foundry** (doc 02 §7.2): pick the CBC *vertical slice*, hand-seed
    its authoritative sources, run the offline `rf` deterministic spine, and build the first cut of the
    `rf-bundle → kb-pack` converter emitting proposals only (nothing release-ready). This proves the

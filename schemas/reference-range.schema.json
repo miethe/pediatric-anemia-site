@@ -1,0 +1,596 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/reference-range.schema.json",
+  "title": "Local Laboratory Reference Interval Profile",
+  "description": "A local laboratory's ASSERTED reference intervals and critical-value thresholds for one candidate version. A published pediatric reference interval is never site-applicable by default: intervals vary by population, age band, sex, altitude, specimen type, analyzer/method, and units, and a value that is normal on one analyzer can be flagged on another. Applicability therefore cannot be inferred from this document's structure — it must be asserted by a named local laboratory authority and bound to an exact candidate version. Structural validity against this schema NEVER implies clinical validity, local applicability, or authorization to activate, release, or apply to patient care. Every dimension carries an explicit `assertion` discriminator so that `unknown` and `not_supplied` are representable as first-class states and can never be coerced into a usable default. IMPORTANT: the `assertion` discriminator is enforced across EVERY sibling value in its container, not merely the first one. A container that says `asserted` while one of its values is null used to leave that value a silent wildcard; each container below now carries a conditional pinning all of its values non-null whenever it claims to be asserted.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "schemaVersion",
+    "profileId",
+    "profileVersion",
+    "profileClass",
+    "boundCandidate",
+    "authority",
+    "attestation",
+    "lifecycle",
+    "applicability",
+    "ageBandPolicy",
+    "unitSystem",
+    "intervals",
+    "criticalValues",
+    "terminologyServer",
+    "provenance"
+  ],
+  "properties": {
+    "kind": { "const": "LocalReferenceIntervalProfile" },
+    "schemaVersion": { "const": "1.1.0" },
+    "profileId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier for this profile lineage. Does not change across versions."
+    },
+    "profileVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Exact version of this profile. Any material edit requires a new version; approvals bind to profileId + profileVersion, never to profileId alone."
+    },
+    "profileClass": {
+      "enum": ["site_asserted", "synthetic_example"],
+      "description": "`site_asserted` is a real institutional profile signed by a named laboratory authority. `synthetic_example` is a non-clinical illustration that is structurally forbidden from carrying authority (see the conditional at the end of this schema) and can never satisfy an activation gate."
+    },
+    "syntheticDeclaration": {
+      "$ref": "#/$defs/syntheticDeclaration",
+      "description": "Required when profileClass is `synthetic_example`. Forbidden otherwise."
+    },
+    "boundCandidate": {
+      "$ref": "#/$defs/boundCandidate",
+      "description": "The exact candidate version this profile is asserted against. A profile bound to a different digest than the candidate under evaluation is not applicable."
+    },
+    "authority": { "$ref": "#/$defs/authority" },
+    "attestation": { "$ref": "#/$defs/attestation" },
+    "lifecycle": { "$ref": "#/$defs/lifecycle" },
+    "applicability": { "$ref": "#/$defs/applicability" },
+    "ageBandPolicy": { "$ref": "#/$defs/ageBandPolicy" },
+    "unitSystem": {
+      "$ref": "#/$defs/unitSystem",
+      "description": "The code system all unit codes in this profile are drawn from (UCUM). The unit CODE is NOT profile-level: it belongs to the analyte, and lives on each interval and critical value. A single profile-level unit code made a complete blood count inexpressible — hemoglobin is g/dL, hematocrit %, MCV fL, RBC 10*12/L, platelets 10*9/L, reticulocytes % — so any real profile covered exactly one analyte or self-blocked on every other with a unit mismatch."
+    },
+    "intervals": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/interval" },
+      "description": "Reference intervals asserted by the local laboratory, each carrying its OWN age band, sex, bounds, and unit code. An analyte with no interval entry is NOT covered by this profile; the absence must surface as a missing-interval blocker rather than falling back to a published or default interval. The intervals for a given analyte must partition the profile's applicability age band without gaps or overlaps: a gap is an age with no interval, an overlap is an age with two."
+    },
+    "criticalValues": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/criticalValue" },
+      "description": "Critical-value (panic) thresholds, per analyte and age band. An empty array asserts that no critical thresholds are supplied by this profile — it does not assert that none exist, and the evaluator refuses to deliver a reference interval for an analyte whose panic threshold at the request age is unknown. An urgent alert must dominate routine interval logic, so an unconsulted critical value is worse than an absent one."
+    },
+    "terminologyServer": { "$ref": "#/$defs/terminologyServer" },
+    "provenance": { "$ref": "#/$defs/provenance" }
+  },
+  "if": {
+    "type": "object",
+    "properties": { "profileClass": { "const": "synthetic_example" } },
+    "required": ["profileClass"]
+  },
+  "then": {
+    "type": "object",
+    "required": ["syntheticDeclaration"],
+    "properties": {
+      "authority": {
+        "type": "object",
+        "properties": { "assertion": { "const": "not_executed_owner_held" } }
+      },
+      "attestation": {
+        "type": "object",
+        "properties": { "signatureState": { "const": "not_executed_owner_held" } }
+      }
+    }
+  },
+  "else": {
+    "type": "object",
+    "not": { "type": "object", "required": ["syntheticDeclaration"] }
+  },
+  "$defs": {
+    "assertion": {
+      "enum": ["asserted", "unknown", "not_supplied"],
+      "description": "Three-state discriminator required on every applicability dimension. `asserted` means a named local authority positively claims this value. `unknown` means the value is explicitly not known. `not_supplied` means it was never provided. Only `asserted` can contribute to an applicability match; `unknown` and `not_supplied` both fail closed and remain visible. There is deliberately no fourth 'assume default' state. When a container is `asserted`, EVERY value in that container must be non-null — a null secondary value is not a wildcard."
+    },
+    "syntheticDeclaration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["synthetic", "notForClinicalUse", "notAnApprovedSiteProfile", "purpose"],
+      "properties": {
+        "synthetic": { "const": true },
+        "notForClinicalUse": { "const": true },
+        "notAnApprovedSiteProfile": { "const": true },
+        "purpose": { "type": "string", "minLength": 1 }
+      },
+      "description": "Machine-checkable marker that this document is a non-clinical example. Its presence forces authority, attestation, and lifecycle into terminal non-authoritative states via this schema's top-level conditional, so a synthetic profile cannot be edited into an approved one without changing profileClass and removing this block."
+    },
+    "boundCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidateId", "candidateVersion", "candidateDigest", "assertion"],
+      "properties": {
+        "candidateId": { "type": ["string", "null"], "minLength": 1 },
+        "candidateVersion": { "type": ["string", "null"], "minLength": 1 },
+        "candidateDigest": {
+          "type": ["string", "null"],
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "Exact content digest of the candidate this profile was asserted against."
+        },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "properties": {
+          "candidateId": { "type": "string", "minLength": 1 },
+          "candidateVersion": { "type": "string", "minLength": 1 },
+          "candidateDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "institutionName",
+        "laboratoryDirectorName",
+        "laboratoryDirectorCredential",
+        "designeeName",
+        "assertionStatement",
+        "assertedOn",
+        "assertion"
+      ],
+      "properties": {
+        "institutionName": { "type": ["string", "null"], "minLength": 1 },
+        "laboratoryDirectorName": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Named laboratory director accountable for this assertion. OWNER-HELD (plan OQ-3): no repository agent may populate this field. Until an owner supplies it, it is null and `assertion` is `not_executed_owner_held`."
+        },
+        "laboratoryDirectorCredential": { "type": ["string", "null"], "minLength": 1 },
+        "designeeName": { "type": ["string", "null"], "minLength": 1 },
+        "assertionStatement": { "type": ["string", "null"], "minLength": 1 },
+        "assertedOn": { "type": ["string", "null"], "format": "date" },
+        "assertion": {
+          "enum": ["asserted", "not_executed_owner_held"],
+          "description": "`asserted` requires every sibling field to be non-null and supplied by the real owner — and that requirement is now a CONSTRAINT below, not prose. `not_executed_owner_held` is the correct state for any profile in this repository today (OQ-3 is unresolved) and fails closed."
+        }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "description": "An assertion by nobody is not an assertion. `asserted` with every identity field still null was previously valid and was one of the four edits that promoted a synthetic fixture past the activation gate.",
+        "properties": {
+          "institutionName": { "type": "string", "minLength": 1 },
+          "laboratoryDirectorName": { "type": "string", "minLength": 1 },
+          "laboratoryDirectorCredential": { "type": "string", "minLength": 1 },
+          "assertionStatement": { "type": "string", "minLength": 1 },
+          "assertedOn": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attachmentContract", "signatureState", "attachmentRef"],
+      "properties": {
+        "attachmentContract": {
+          "const": "p2-authenticated-attachment",
+          "description": "PLACEHOLDER — bound to the P2 attachment contract. The cryptographic signature/attestation envelope (signer identity, signature verification, revocation) is deliberately NOT defined here; it is P2's authenticated-attachment primitive and lands after it so the two contracts do not diverge. This field records which contract the signature will attach to."
+        },
+        "signatureState": {
+          "enum": ["not_executed_owner_held", "bound"],
+          "description": "`not_executed_owner_held` means no authenticated attachment exists yet. Unsigned profiles fail closed TODAY: they can never satisfy an activation gate. `bound` is reserved for P2 and additionally requires a non-null attachmentRef — which is now a CONSTRAINT below rather than prose. Note that satisfying this schema still does not make `bound` acceptable: no attachment verifier exists on this side, so `evaluateActivationGate` refuses a self-declared `bound` regardless."
+        },
+        "attachmentRef": {
+          "type": ["string", "null"],
+          "description": "Opaque reference to the P2 authenticated attachment. Null while signatureState is not_executed_owner_held."
+        }
+      },
+      "if": { "type": "object", "properties": { "signatureState": { "const": "bound" } }, "required": ["signatureState"] },
+      "then": {
+        "type": "object",
+        "properties": { "attachmentRef": { "type": "string", "minLength": 1 } }
+      },
+      "else": {
+        "type": "object",
+        "properties": { "attachmentRef": { "type": "null" } }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "effectiveStart",
+        "effectiveEnd",
+        "reviewState",
+        "supersededBy",
+        "lastReviewedOn",
+        "reviewIntervalDays",
+        "rollbackTrigger",
+        "rollbackOwner"
+      ],
+      "properties": {
+        "effectiveStart": { "type": ["string", "null"], "format": "date" },
+        "effectiveEnd": {
+          "type": ["string", "null"],
+          "format": "date",
+          "description": "Null means no scheduled end. Null does NOT mean 'never expires' — the staleness check via lastReviewedOn + reviewIntervalDays still applies."
+        },
+        "reviewState": {
+          "enum": ["draft", "active", "expired", "superseded", "withdrawn", "unknown"],
+          "description": "Only `active` is eligible for applicability. `superseded` additionally requires a resolvable supersededBy pointer. Note that `active` governs only the dimension-matching layer: a synthetic profile may be structurally `active` and still be unable to gate anything, because authority and attestation are forced to non-authoritative states by this schema's top-level conditional."
+        },
+        "supersededBy": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["profileId", "profileVersion"],
+          "properties": {
+            "profileId": { "type": "string", "minLength": 1 },
+            "profileVersion": { "type": "string", "minLength": 1 }
+          },
+          "description": "Required to be non-null whenever reviewState is `superseded`. A superseded profile without a successor is a dangling authority chain and is a hard failure, not a warning."
+        },
+        "lastReviewedOn": { "type": ["string", "null"], "format": "date" },
+        "reviewIntervalDays": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "Maximum age of lastReviewedOn before this profile is considered stale. Null is DELIBERATELY still permitted: it is a representable unknown that fails closed at evaluation time as REVIEW_CADENCE_UNKNOWN. It is not a licence to skip the check."
+        },
+        "rollbackTrigger": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The named condition under which this profile is withdrawn (e.g. analyzer replacement, method change, unit change, recalibration)."
+        },
+        "rollbackOwner": { "type": ["string", "null"], "minLength": 1 }
+      }
+    },
+    "ageBand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit", "low", "high", "assertion"],
+      "description": "An age band is half-open: lower bound INCLUSIVE, upper bound EXCLUSIVE. An asserted band must be fully bounded. `high: null` previously meant 'unbounded above', which made `{unit: years, low: 0, high: null}` match every child — one band spanning birth, the two-week mark, and the physiologic nadir at roughly 6-9 weeks, which is the steepest part of the pediatric hemoglobin curve. No single interval is correct across that span, so an unbounded band is now structurally invalid.",
+      "properties": {
+        "unit": { "enum": ["days", "months", "years", null] },
+        "low": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "Inclusive lower bound of the age band."
+        },
+        "high": {
+          "type": ["number", "null"],
+          "description": "Exclusive upper bound of the age band. Must be non-null when the band is asserted."
+        },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "properties": {
+          "unit": { "enum": ["days", "months", "years"] },
+          "low": { "type": "number", "minimum": 0 },
+          "high": { "type": "number" }
+        }
+      }
+    },
+    "ageBandPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxBandWidthDays", "mandatoryBoundaries", "assertion"],
+      "description": "Constraints on how the age axis may be divided. Nothing previously constrained band width or placement, so a profile could declare one band spanning the whole of childhood. WHICH physiologic boundaries no band may straddle, and WHAT maximum band width is acceptable at each life stage, are clinical inputs the laboratory director must specify (charter §2.2a, owner-held). This schema carries the representation and the evaluator enforces whatever the profile asserts; neither invents the values.",
+      "properties": {
+        "maxBandWidthDays": {
+          "type": ["number", "null"],
+          "minimum": 1,
+          "description": "Maximum width, in days, of any single interval or critical-value age band. Null fails closed as an unknown policy."
+        },
+        "mandatoryBoundaries": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["unit", "value", "rationale"],
+            "properties": {
+              "unit": { "enum": ["days", "months", "years"] },
+              "value": { "type": "number", "minimum": 0 },
+              "rationale": { "type": "string", "minLength": 1, "description": "Why a band may not straddle this age. Owner-supplied clinical justification." }
+            }
+          },
+          "description": "Ages at which a band MUST break because the underlying physiology changes across them. An empty array asserts that the site declares none; it does not assert that none exist. Null fails closed."
+        },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "properties": {
+          "maxBandWidthDays": { "type": "number", "minimum": 1 },
+          "mandatoryBoundaries": { "type": "array" }
+        }
+      }
+    },
+    "gestationalAge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["correctedAgeRequired", "gestationalAgeWeeksLow", "gestationalAgeWeeksHigh", "assertion"],
+      "description": "Gestational age at birth and whether corrected (postmenstrual) age is required. For pediatric anemia this is the dimension chronological age cannot express: a four-week-old born at 27 weeks and one born at 40 weeks are not the same patient, because anemia of prematurity has a different nadir, depth, and timing. `ageValue`/`ageUnit` are chronological only and have nowhere to put corrected age. WHEN correction is required, and over which gestations a profile applies, are owner-held clinical inputs (charter §2.2b). When `correctedAgeRequired` is true and the request supplies no gestational age at birth, the evaluation fails closed.",
+      "properties": {
+        "correctedAgeRequired": {
+          "type": ["boolean", "null"],
+          "description": "True means an evaluation request MUST carry gestational age at birth. False must be a deliberate assertion that this profile does not depend on it, not an omission — `not_supplied` is the way to say 'unknown'."
+        },
+        "gestationalAgeWeeksLow": { "type": ["number", "null"], "minimum": 0, "description": "Inclusive lower bound of the gestational ages at birth this profile applies to. OWNER-HELD." },
+        "gestationalAgeWeeksHigh": { "type": ["number", "null"], "description": "Inclusive upper bound of the gestational ages at birth this profile applies to. OWNER-HELD." },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "properties": {
+          "correctedAgeRequired": { "type": "boolean" },
+          "gestationalAgeWeeksLow": { "type": "number", "minimum": 0 },
+          "gestationalAgeWeeksHigh": { "type": "number" }
+        }
+      }
+    },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["population", "ageBand", "gestationalAge", "sex", "specimen", "analyzer", "altitude"],
+      "description": "The dimensions along which a pediatric reference interval is or is not transferable. Every one of these must be `asserted` and must match the evaluation request before this profile contributes anything. A single `unknown` dimension fails the whole profile closed.",
+      "properties": {
+        "population": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["populationId", "description", "assertion"],
+          "properties": {
+            "populationId": { "type": ["string", "null"], "minLength": 1 },
+            "description": { "type": ["string", "null"], "minLength": 1 },
+            "assertion": { "$ref": "#/$defs/assertion" }
+          },
+          "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+          "then": {
+            "type": "object",
+            "properties": {
+              "populationId": { "type": "string", "minLength": 1 },
+              "description": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "ageBand": { "$ref": "#/$defs/ageBand" },
+        "gestationalAge": { "$ref": "#/$defs/gestationalAge" },
+        "sex": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "assertion"],
+          "properties": {
+            "value": { "enum": ["female", "male", "any", null] },
+            "assertion": { "$ref": "#/$defs/assertion" }
+          },
+          "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+          "then": { "type": "object", "properties": { "value": { "enum": ["female", "male", "any"] } } }
+        },
+        "specimen": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["system", "code", "display", "assertion"],
+          "properties": {
+            "system": { "type": ["string", "null"], "minLength": 1 },
+            "code": { "type": ["string", "null"], "minLength": 1 },
+            "display": { "type": ["string", "null"], "minLength": 1 },
+            "assertion": { "$ref": "#/$defs/assertion" }
+          },
+          "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+          "then": {
+            "type": "object",
+            "properties": {
+              "system": { "type": "string", "minLength": 1 },
+              "code": { "type": "string", "minLength": 1 },
+              "display": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "analyzer": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["manufacturer", "model", "method", "assertion"],
+          "description": "Analyzer make/model and measurement method. OWNER-HELD (plan OQ-3): no repository agent may name a real analyzer as approved. A value that is normal on one analyzer can be flagged on another, so an analyzer/method mismatch is a hard failure. `method` is checked INDEPENDENTLY of `model` and must be non-null when the container is asserted — a null method previously bypassed the assertion choke point entirely.",
+          "properties": {
+            "manufacturer": { "type": ["string", "null"], "minLength": 1 },
+            "model": { "type": ["string", "null"], "minLength": 1 },
+            "method": { "type": ["string", "null"], "minLength": 1 },
+            "assertion": { "$ref": "#/$defs/assertion" }
+          },
+          "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+          "then": {
+            "type": "object",
+            "properties": {
+              "manufacturer": { "type": "string", "minLength": 1 },
+              "model": { "type": "string", "minLength": 1 },
+              "method": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "altitude": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["metersLow", "metersHigh", "assertion"],
+          "description": "Altitude of the served population. Hemoglobin reference intervals shift with altitude, so this cannot be omitted or assumed to be sea level. Both bounds must be non-null when asserted: null bounds previously read as -Infinity/+Infinity, which matched every altitude and reintroduced the sea-level assumption by another route.",
+          "properties": {
+            "metersLow": { "type": ["number", "null"] },
+            "metersHigh": { "type": ["number", "null"] },
+            "assertion": { "$ref": "#/$defs/assertion" }
+          },
+          "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+          "then": {
+            "type": "object",
+            "properties": { "metersLow": { "type": "number" }, "metersHigh": { "type": "number" } }
+          }
+        }
+      }
+    },
+    "unitSystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "assertion"],
+      "description": "The code system every unit code in this profile is drawn from. Units are expressed as coded values (UCUM), never as free text, because 'g/dL' and 'g/L' differ by a factor of ten and a free-text field cannot be safely compared. There is deliberately NO profile-level unit CODE: see `intervals[].unitCode`.",
+      "properties": {
+        "system": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Unit code system, normally http://unitsofmeasure.org (UCUM). Free-text units are not accepted."
+        },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": { "type": "object", "properties": { "system": { "type": "string", "minLength": 1 } } }
+    },
+    "analyteCode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "code", "version", "display", "assertion"],
+      "properties": {
+        "system": { "type": ["string", "null"], "minLength": 1 },
+        "code": { "type": ["string", "null"], "minLength": 1 },
+        "version": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Version of the code system. An unversioned code cannot be safely compared across releases."
+        },
+        "display": { "type": ["string", "null"], "minLength": 1 },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "properties": {
+          "system": { "type": "string", "minLength": 1 },
+          "code": { "type": "string", "minLength": 1 },
+          "version": { "type": "string", "minLength": 1 },
+          "display": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "interval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analyte", "analyteCode", "ageBand", "sex", "low", "high", "unitCode", "assertion"],
+      "properties": {
+        "analyte": { "type": "string", "minLength": 1 },
+        "analyteCode": { "$ref": "#/$defs/analyteCode" },
+        "ageBand": {
+          "$ref": "#/$defs/ageBand",
+          "description": "The interval's OWN age band, matched against the request age independently of the profile-level applicability band. This field was previously read by nothing at all, so a 0-to-14-day interval could be delivered for a twelve-month-old with zero blockers."
+        },
+        "sex": {
+          "enum": ["female", "male", "any", null],
+          "description": "`any` must be a deliberate assertion that the interval does not vary by sex in this band. Null is NOT a wildcard and is invalid on an asserted interval."
+        },
+        "low": { "type": ["number", "null"] },
+        "high": { "type": ["number", "null"], "description": "Must be strictly greater than `low`. An interval with absent or inverted bounds cannot classify any value." },
+        "unitCode": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The unit this ANALYTE reports in, drawn from `unitSystem.system`. Every interval for the same analyte must agree on it; intervals for different analytes need not, which is what makes a complete blood count expressible. A request whose unit differs from the matched analyte's unit fails closed; it is never auto-converted."
+        },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "properties": {
+          "sex": { "enum": ["female", "male", "any"] },
+          "low": { "type": "number" },
+          "high": { "type": "number" },
+          "unitCode": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "criticalValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analyte", "analyteCode", "ageBand", "criticalLow", "criticalHigh", "unitCode", "assertion"],
+      "description": "A panic threshold. At least one of criticalLow/criticalHigh must be non-null on an asserted entry: an entry with neither can never fire, which is the worst possible state for an urgent alert because it is indistinguishable from a configured one.",
+      "properties": {
+        "analyte": { "type": "string", "minLength": 1 },
+        "analyteCode": { "$ref": "#/$defs/analyteCode" },
+        "ageBand": { "$ref": "#/$defs/ageBand" },
+        "criticalLow": { "type": ["number", "null"] },
+        "criticalHigh": { "type": ["number", "null"] },
+        "unitCode": { "type": ["string", "null"], "minLength": 1, "description": "Must equal the unit code of the same analyte's reference intervals. A panic threshold compared in the wrong unit is a factor-of-ten error on an urgent alert." },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "properties": { "unitCode": { "type": "string", "minLength": 1 } },
+        "anyOf": [
+          { "type": "object", "properties": { "criticalLow": { "type": "number" } }, "required": ["criticalLow"] },
+          { "type": "object", "properties": { "criticalHigh": { "type": "number" } }, "required": ["criticalHigh"] }
+        ]
+      }
+    },
+    "terminologyServer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["endpoint", "profileRef", "assertion"],
+      "properties": {
+        "endpoint": { "type": ["string", "null"], "minLength": 1 },
+        "profileRef": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "profileId of the companion terminology-profile document that governs code/unit/status applicability for this site."
+        },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "properties": {
+          "endpoint": { "type": "string", "minLength": 1 },
+          "profileRef": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "locator", "retrievedOn", "derivation", "assertion"],
+      "properties": {
+        "source": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Where these intervals came from (local validation study, manufacturer insert, published reference)."
+        },
+        "locator": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Exact locator within the source — document id plus table/page/section. A bare citation is not a locator."
+        },
+        "retrievedOn": { "type": ["string", "null"], "format": "date" },
+        "derivation": {
+          "enum": ["local_validation_study", "manufacturer_insert", "published_reference", "transferred_unverified", null],
+          "description": "`transferred_unverified` records that intervals were carried over from another site or source without local verification. It is representable so it stays visible, and it can never satisfy an activation gate."
+        },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "properties": {
+          "source": { "type": "string", "minLength": 1 },
+          "locator": { "type": "string", "minLength": 1 },
+          "retrievedOn": { "type": "string", "format": "date" },
+          "derivation": { "enum": ["local_validation_study", "manufacturer_insert", "published_reference", "transferred_unverified"] }
+        }
+      }
+    }
+  }
+}

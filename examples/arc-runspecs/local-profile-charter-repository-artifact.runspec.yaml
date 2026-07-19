@@ -1,0 +1,49 @@
+apiVersion: arc/v1alpha1
+kind: CouncilRunSpec
+
+# P1-T4 fixture: repository_artifact target in this repository, reached from the
+# ARC checkout through the portable `repo:<alias>/<relative-path>` locator
+# (ARC ADR-0004). The alias is resolved by the operator-local approved-roots
+# registry on the machine running `arc`; this file therefore contains no
+# absolute path and is portable across machines and checkouts.
+#
+# Prerequisite (once per machine, human-approved):
+#   arc roots add pediatric-anemia-site <path-to-this-repository-checkout>
+
+council: pediatric-anemia-clinical-review-council
+
+target: repo:pediatric-anemia-site/docs/clinical/local-profile-charter-contract.md
+target_artifact_class: repository_artifact
+target_sha256: 96991fffa9eef772c486444244850d514b2015b2dbee10641bd96ad221320192
+
+objective: >-
+  Review the local laboratory and terminology applicability contract for evidence
+  support, developmental and local applicability limits, dangerous misses, safe
+  abstention behavior, preserved dissent, and the owner-held validation work that
+  must still be executed before any clinician-facing use.
+
+constraints:
+  - read_only
+  - decision_support_only
+  - no_patient_specific_advice
+  - no_phi_or_copyrighted_full_text
+  - metadata_only_evidence
+  - credentialed_clinician_approval_required
+
+evidence_source_manifest: knowledge-packs/pediatric-anemia/source-manifest.yaml
+evidence_source_manifest_sha256: f4c33c82fe4977a7d4db2633ab04d82b39bb7bf421d048aba5a5b37a51b711f6
+
+parameters:
+  non_patient_artifact_confirmed: true
+  target_artifact_class: repository_artifact
+
+slug: pediatric-local-profile-charter-contract
+
+notes: >-
+  Raw YAML is authoritative. Council version is resolved from the council
+  definition at run time and recorded as
+  pediatric-anemia-clinical-review-council@0.1.0 in the run manifest; pin the ARC
+  commit if an exact council version is required. The target is a committed,
+  non-patient repository document. `arc run --dry-run` previews and validates the
+  spec and resolves the target identity; it executes no reviewer, produces no
+  finding, and confers no clinical, laboratory, or certification state.

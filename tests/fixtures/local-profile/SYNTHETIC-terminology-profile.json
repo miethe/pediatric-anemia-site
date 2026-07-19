@@ -1,0 +1,118 @@
+{
+  "kind": "LocalTerminologyProfile",
+  "schemaVersion": "1.1.0",
+  "profileId": "SYNTHETIC-terminology-profile",
+  "profileVersion": "1.1.0",
+  "profileClass": "synthetic_example",
+  "syntheticDeclaration": {
+    "synthetic": true,
+    "notForClinicalUse": true,
+    "notAnApprovedSiteProfile": true,
+    "purpose": "SYNTHETIC TEST FIXTURE. Exercises the terminology applicability contract and its fail-closed lifecycle handling. Every code system, local code, standard code, unit, and specimen below is an invented placeholder; no real terminology server, code system, mapping, or institution is named or implied. This document can never satisfy an activation gate."
+  },
+  "boundCandidate": {
+    "candidateId": "SYNTHETIC-CANDIDATE-A",
+    "candidateVersion": "0.0.0-synthetic",
+    "candidateDigest": "sha256:a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4",
+    "assertion": "asserted"
+  },
+  "authority": {
+    "institutionName": null,
+    "informaticsOwnerName": null,
+    "informaticsOwnerCredential": null,
+    "assertionStatement": null,
+    "assertedOn": null,
+    "assertion": "not_executed_owner_held"
+  },
+  "attestation": {
+    "attachmentContract": "p2-authenticated-attachment",
+    "signatureState": "not_executed_owner_held",
+    "attachmentRef": null
+  },
+  "lifecycle": {
+    "effectiveStart": "2026-01-01",
+    "effectiveEnd": null,
+    "reviewState": "active",
+    "supersededBy": null,
+    "lastReviewedOn": "2026-06-01",
+    "reviewIntervalDays": 365,
+    "rollbackTrigger": "SYNTHETIC placeholder: any code-system version upgrade, mapping revision, or unit change withdraws this profile.",
+    "rollbackOwner": "SYNTHETIC-ROLLBACK-OWNER-PLACEHOLDER"
+  },
+  "codeSystems": [
+    {
+      "system": "https://example.org/synthetic-analyte-system",
+      "version": "0.0.0-synthetic",
+      "purpose": "analyte",
+      "assertion": "asserted"
+    },
+    {
+      "system": "https://example.org/synthetic-specimen-system",
+      "version": "0.0.0-synthetic",
+      "purpose": "specimen",
+      "assertion": "asserted"
+    },
+    {
+      "system": "https://example.org/synthetic-unit-system",
+      "version": "0.0.0-synthetic",
+      "purpose": "unit",
+      "assertion": "asserted"
+    }
+  ],
+  "resultStatusPolicy": {
+    "resourceType": "Observation",
+    "recognizedStates": [
+      "registered",
+      "preliminary",
+      "final",
+      "amended",
+      "corrected",
+      "cancelled",
+      "entered-in-error",
+      "unknown"
+    ],
+    "acceptedForDecision": ["final"],
+    "blockingStates": [
+      "registered",
+      "preliminary",
+      "amended",
+      "corrected",
+      "cancelled",
+      "entered-in-error",
+      "unknown"
+    ],
+    "requireStatusLineage": true,
+    "assertion": "asserted"
+  },
+  "observationRequirements": {
+    "requireEffectiveTime": true,
+    "requireIssuedTime": true,
+    "requireSpecimen": true,
+    "requireUnit": true,
+    "maxResultAgeDays": 30,
+    "assertion": "asserted"
+  },
+  "localMappings": [
+    {
+      "localCode": "SYN-LOCAL-0001",
+      "localSystem": "https://example.org/synthetic-local-system",
+      "localDisplay": "Synthetic local analyte A (not a real laboratory code)",
+      "standardCode": "SYN-0001",
+      "standardSystem": "https://example.org/synthetic-analyte-system",
+      "standardSystemVersion": "0.0.0-synthetic",
+      "unitCode": "SYN-UNIT-A",
+      "specimenCode": "SYN-SPECIMEN-A",
+      "mappingVersion": "1.0.0",
+      "mappingAuthority": "SYNTHETIC-MAPPING-AUTHORITY-PLACEHOLDER",
+      "equivalence": "equivalent",
+      "assertion": "asserted"
+    }
+  ],
+  "provenance": {
+    "source": "SYNTHETIC fixture — invented for schema and fail-closed testing.",
+    "locator": "tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json",
+    "retrievedOn": "2026-07-19",
+    "terminologyServerEndpoint": "https://example.invalid/synthetic-terminology-server",
+    "assertion": "asserted"
+  }
+}

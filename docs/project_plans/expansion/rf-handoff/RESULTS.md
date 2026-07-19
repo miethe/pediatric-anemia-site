@@ -1,8 +1,9 @@
 ---
 title: "Research Foundry handoff — RESULTS (all 7 pediatric-CDS evidence runs verified)"
-description: "Completion record for the 7 rf evidence runs. All verified (rf verify exit 0, 0 unsupported), landed on the agentic node + runs-viewer, cross-model audited with gpt-5.6. Handoff to the CDS rf-bundle → kb-pack converter (EF-WP0)."
+description: "Completion record for the 7 rf evidence runs. All verified (rf verify exit 0, 0 unsupported), landed on the agentic node + runs-viewer, cross-model audited with gpt-5.6, and independently reconfirmed against the live RF API during P0 truth reconciliation (2026-07-19). Handoff to the CDS rf-bundle → kb-pack converter (EF-WP0)."
 status: complete
 created: 2026-07-18
+updated: 2026-07-19
 owner: Nick Miethe
 project: pediatric-cds-platform
 supersedes_status_of: README.md §2 (runs were `planned`; now `verified`)
@@ -17,6 +18,69 @@ the governance guardrails. `rf` stopped at the verified bundle per the seam — 
 FHIR, or signed packs were authored. **The bundles are the input to the CDS `rf-bundle → kb-pack`
 converter (IntentTree `EF-WP0`).**
 
+> **Provenance note (added 2026-07-19, P0 truth reconciliation; corrected 2026-07-19 after P0-V1
+> independent review returned PASS-WITH-FINDINGS).** This file existed on disk since 2026-07-18 but
+> was **untracked in git** until this reconciliation pass wrote it into
+> `feat/arc-clinical-council-adoption-p0-p3`. Verification below is scoped per-section — an earlier
+> version of this note over-claimed a single API pull as substantiating §1, §3, and §4 together; it
+> does not, and has been corrected:
+>
+> - **§1 (per-run rows only, not the totals row):** independently re-pulled from the live Research
+>   Foundry API (`GET http://10.42.10.76:7432/api/runs`, owner token) on 2026-07-19; the per-run
+>   `claim_counts` (source_cards / claims_total / supported / inference / speculation / unsupported)
+>   matched this table exactly for all 7 `run_id`s — that per-run breakdown is real, discriminating
+>   data. The API's `status_derived` (`published`), `verification_passed` (`true`), and
+>   `governance_verdict` (`true`) fields do **not** discriminate and are **not** cited as evidence of
+>   completion: a full-store query on 2026-07-19 showed all three read identically across **all 48
+>   runs** in the RF store (every project, not only this one's 7), while `status_raw` reads `planned`
+>   for all 48 including these 7. The load-bearing, discriminating primary evidence for the
+>   `planned → verified` upgrade is each run's on-disk `runs/<run_id>/reviews/verification.yaml`
+>   (`passed: true`, `exit_code: 0`, `generated_at` timestamps between 2026-07-18T17:09:50-04:00 and
+>   2026-07-18T20:27:34-04:00 — after the 2026-07-17 `planned` registration snapshot), read directly on
+>   2026-07-19. The **totals row was not separately re-verified by any of the above and, on first
+>   publication, was arithmetically wrong** (see the correction below the table) — a reminder that a
+>   per-row match does not guarantee a correct aggregate.
+> - **§3:** the `pediatric_cds` evidence-card extension's presence was independently confirmed by
+>   reading the local run source-card files directly (`research-foundry/runs/<run_id>/sources/*.md`,
+>   `pediatric_cds:` key) — 6/6 for RF-EV-001, 12/12 for each of the other six runs. The live-API
+>   `/api/runs` endpoint carries no per-source-card data and cannot substantiate this on its own.
+> - **§4:** `corroborated-by-artifact, no standalone audit record`. No separate gpt-5.6/Codex audit
+>   report file exists anywhere in the run trees (checked). What exists, and was read directly, is the
+>   evidence-layer fix documented in the affected source cards' own `trust.reliability_notes`
+>   frontmatter and `## Limitations & conflicts` section — e.g.
+>   `runs/rf_run_20260717_rf_cbc_002_pediatric_cds_establish/sources/src_20260718_rfcbc002_00.md`,
+>   which records the Europe PMC JATS re-fetch against `PMC11331724`, the restored `× 10⁹/L` unit, and
+>   the deliberately preserved `<7 g/L` source typo flagged (not silently corrected) as an intra-source
+>   conflict. REG-004's CFR-enumeration fix is similarly present across its own source cards
+>   (`runs/rf_run_20260717_reg_004_pediatric_cds_scope_the/sources/*.md`). Treat §4 as artifact-backed
+>   narrative, not an independently reproducible audit trail.
+>
+> **Retracted correction (2026-07-19, third pass).** An earlier pass of this reconciliation claimed
+> the original §2 "committed locally `4144634`" statement was false. **That refutation was itself
+> wrong, and the original claim stands.** `4144634` is a real commit — `data: land 7 verified
+> pediatric-CDS evidence bundles (RF-EV-001, REG-001/004, RF-CBC-001/002, RF-KID-001, RF-GRO-002)` —
+> and all 7 pediatric runs (253 files) are tracked in it.
+>
+> The error came from checking the wrong set of repositories. The Research Foundry data plane
+> (`runs/`, `ccdash/`, `registries/`, …) lives physically inside the `research-foundry` working tree
+> but is tracked by a **separate dual git-dir** at `research-foundry/.git-data`, which pushes to the
+> private `github.com/miethe/research-foundry-data` repo. The public project repo deliberately
+> `.gitignore`s the data plane so it never ships this data. Both the reconciling pass and the
+> independent review searched the four *project* repos and `research-foundry`'s public `.git`, found
+> nothing, and concluded the SHA was fabricated — never considering the dual git-dir. Operate it with
+> `research-foundry/scripts/rf-data <git-subcommand>`.
+>
+> So the accurate statement is the original one, with detail added: the run data **is**
+> version-controlled, in the data-plane repo, at `4144634`; the live node + API remain the
+> operational source of truth; and the push is genuinely deferred — `rf-data status` reports
+> `main...origin/main [ahead 1, behind 2]`, matching the original note's "unrelated in-flight drift +
+> is behind origin" precisely.
+>
+> This is recorded rather than quietly reverted because it is the same failure class this
+> reconciliation exists to catch — a confident claim resting on evidence that could not support it —
+> and here the unearned claim was a *refutation*, produced by this pipeline and ratified by its own
+> reviewer. Absence of evidence in the repositories you thought to search is not evidence of absence.
+
 ## 1. Status — all 7 `verified`
 
 | Item | Gate | Mode | Source cards | Claims (supp / inf / spec) | `rf verify` | Bundle |
@@ -28,10 +92,17 @@ converter (IntentTree `EF-WP0`).**
 | RF-KID-001 | P4 | clinical | 12 | 87 (73 / 10 / 4) | ✅ exit 0, 0 unsupported | verified |
 | RF-GRO-002 | P5 | clinical | 12 | 92 (79 / 10 / 3) | ✅ exit 0, 0 unsupported | verified |
 | REG-004 | P3 | regulatory · **LEGAL** | 12 | 85 (72 / 10 / 3) | ✅ exit 0, 0 unsupported | verified |
-| **Total** | | | **78** | **576 (485 / 50 / 31)** | **7/7 pass** | **7/7 verified** |
+| **Total** | | | **78** | **576 (485 / 60 / 31)** | **7/7 pass** | **7/7 verified** |
+
+Totals check (2026-07-19 correction): supported 35+77+74+75+73+79+72=485; inference 8+6+8+8+10+10+10=**60**
+(the original published totals row said 50 — an arithmetic error, corrected here); speculation
+5+6+5+5+4+3+3=31; 485+60+31=576, matching the total-claims column and confirming the row now closes.
+Source cards 6+12+12+12+12+12+12=78.
 
 Every run's `rf verify` was re-run authoritatively (not trusting workflow self-reports): exit 0,
-`passed: true`, `unsupported: 0`.
+`passed: true`, `unsupported: 0`. The **per-run rows** were independently reconfirmed via a live API
+pull on 2026-07-19 (see provenance note above) — `claim_counts` matched this table exactly, row for
+row, for all 7 runs. The totals row is a manual sum of those rows, not a separate API-verified figure.
 
 ## 2. Where the deliverables live
 
@@ -41,8 +112,14 @@ Every run's `rf verify` was re-run authoritatively (not trusting workflow self-r
 - **Runs-viewer (live):** <http://10.42.10.76:3030> — all 7 show `status: published` with full claim graphs.
 - **API:** `GET http://10.42.10.76:7432/api/runs` (owner token) — reads the same store; catalog imported
   (`rf catalog import`) so `/api/catalog/search` finds the claims/sources across all 7.
-- **Local mirror + versioned checkpoint:** `research-foundry/runs/<run_id>/` (data-plane repo, committed
-  locally `4144634`; push deferred — the shared data repo has unrelated in-flight drift + is behind origin).
+- **Local mirror + versioned checkpoint:** `research-foundry/runs/<run_id>/` (same tree structure as
+  the node), committed locally at `4144634` in the **data-plane repo** — a separate dual git-dir at
+  `research-foundry/.git-data` that tracks the data plane and pushes to the private
+  `github.com/miethe/research-foundry-data`. The public `research-foundry` repo `.gitignore`s this
+  path by design, so a plain `git log` there will not find the commit; operate it via
+  `research-foundry/scripts/rf-data <git-subcommand>`. Push is deferred — `rf-data status` reports
+  `ahead 1, behind 2` against origin (unrelated in-flight drift). The live node + API remain the
+  operational source of truth.
 
 The `run_id`s are exactly those in [`README.md`](README.md) §2.
 
@@ -83,23 +160,30 @@ Clean on first audit: RF-EV-001, REG-001, RF-KID-001, RF-GRO-002.
 
 Both regulatory runs are **research input only — flagged for legal review; not legal advice.** Their reports
 carry the legal-review banner and frame all interpretive conclusions as inference/speculation/pending-review.
-Do not act on them as legal positioning until a qualified reviewer signs off.
+Do not act on them as legal positioning until a qualified reviewer signs off. **Status remains
+`not_executed_owner_held` as of 2026-07-19** — no owner legal sign-off is recorded anywhere in this
+program's trackers.
 
 ## 6. Governance posture (unchanged)
 
 No autonomous diagnosis/treatment/dosing/transfusion directives; no unsupported confidence %; missingness
 never treated as normal. `rf` output is a **proposal** — it becomes a rule only after the CDS converter +
 clinical-review portal + executable tests + dual clinical sign-off + signed release. The product remains an
-**UNVALIDATED research prototype** until the V1–V6 gates pass per module.
+**UNVALIDATED research prototype** until the V1–V6 gates pass per module. Evidence-bundle verification is a
+Research Foundry structural/governance check, not clinical validation, and does not authorize CDS content
+authoring, release, or activation on its own.
 
 ## 7. Next steps (owner)
 
 1. **Converter (EF-WP0):** run each `evidence_bundle.yaml` through the CDS `rf-bundle → kb-pack` converter to
    emit rule *proposals*; `EF-WP1` enforces the `pediatric_cds` extension is present (it is, on every card).
-2. **Legal:** route REG-001 + REG-004 memos to legal review.
-3. **Data-plane push (optional):** once the shared `research-foundry-data` repo's unrelated drift is reconciled,
-   `./scripts/rf-data push` then `./scripts/rf-data pull` on the node to version the run data in the private repo
-   (the runs are already live on the node's working tree + viewer regardless).
+   **Status: not started** — no converter code exists in this repo as of 2026-07-19.
+2. **Legal:** route REG-001 + REG-004 memos to legal review. **Status: `not_executed_owner_held`.**
+3. **Data-plane push (optional):** the run data is already committed locally at `4144634` in the
+   data-plane repo (`research-foundry/.git-data`, private remote `research-foundry-data`). Once that
+   repo's unrelated in-flight drift is reconciled (`rf-data status` currently reports `ahead 1,
+   behind 2`), run `./scripts/rf-data push` then `./scripts/rf-data pull` on the node to publish it.
+   The runs are live on the node's working tree + viewer regardless.
 
 ## 8. How they were driven (for reproducibility)
 

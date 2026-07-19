@@ -1,0 +1,374 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/terminology-profile.schema.json",
+  "title": "Local Terminology Applicability Profile",
+  "description": "A local site's ASSERTED terminology contract: which code systems and versions it speaks, how its local codes map to standard codes, which result-status lifecycle states may inform a decision, and what an observation must carry before it can be interpreted. Terminology applicability cannot be inferred — an unversioned code system, an unmapped local code, or an ambiguous result status means the observation is not interpretable, not that it is interpretable by default. `preliminary`, `corrected`, and `amended` are first-class lifecycle states here, not annotations: a preliminary result is not a final result, and a lost or ambiguous corrected/amended state is a hard failure rather than a warning, because acting on a superseded value is precisely the harm this contract exists to prevent. Structural validity NEVER implies clinical validity or local applicability. NOTE ON THE STATUS VALUE SET: it is bound to an explicit `resourceType`. Observation.status and DiagnosticReport.status are DIFFERENT value sets, and the earlier unbound list mixed them — `partial` and `appended` are DiagnosticReport statuses and are not valid Observation statuses at all.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "schemaVersion",
+    "profileId",
+    "profileVersion",
+    "profileClass",
+    "boundCandidate",
+    "authority",
+    "attestation",
+    "lifecycle",
+    "codeSystems",
+    "resultStatusPolicy",
+    "observationRequirements",
+    "localMappings",
+    "provenance"
+  ],
+  "properties": {
+    "kind": { "const": "LocalTerminologyProfile" },
+    "schemaVersion": { "const": "1.1.0" },
+    "profileId": { "type": "string", "minLength": 1 },
+    "profileVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "profileClass": {
+      "enum": ["site_asserted", "synthetic_example"],
+      "description": "`synthetic_example` is structurally forbidden from carrying authority by this schema's top-level conditional and can never satisfy an activation gate."
+    },
+    "syntheticDeclaration": { "$ref": "#/$defs/syntheticDeclaration" },
+    "boundCandidate": { "$ref": "#/$defs/boundCandidate" },
+    "authority": { "$ref": "#/$defs/authority" },
+    "attestation": { "$ref": "#/$defs/attestation" },
+    "lifecycle": { "$ref": "#/$defs/lifecycle" },
+    "codeSystems": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/codeSystemBinding" },
+      "description": "Code systems this site asserts it speaks, each pinned to an exact version. An observation carrying a code system version this profile does not assert is not interpretable."
+    },
+    "resultStatusPolicy": { "$ref": "#/$defs/resultStatusPolicy" },
+    "observationRequirements": { "$ref": "#/$defs/observationRequirements" },
+    "localMappings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/localMapping" },
+      "description": "Local code to standard code mappings. A local code with no entry here is UNMAPPED — the observation fails closed and stays visible. An empty array is legal and means nothing is mapped; it does not mean everything passes through. Two entries for the same localCode + localSystem that disagree are a MAPPING_CONFLICT and are never resolved by declaration order."
+    },
+    "provenance": { "$ref": "#/$defs/provenance" }
+  },
+  "if": {
+    "type": "object",
+    "properties": { "profileClass": { "const": "synthetic_example" } },
+    "required": ["profileClass"]
+  },
+  "then": {
+    "type": "object",
+    "required": ["syntheticDeclaration"],
+    "properties": {
+      "authority": {
+        "type": "object",
+        "properties": { "assertion": { "const": "not_executed_owner_held" } }
+      },
+      "attestation": {
+        "type": "object",
+        "properties": { "signatureState": { "const": "not_executed_owner_held" } }
+      }
+    }
+  },
+  "else": {
+    "type": "object",
+    "not": { "type": "object", "required": ["syntheticDeclaration"] }
+  },
+  "$defs": {
+    "assertion": {
+      "enum": ["asserted", "unknown", "not_supplied"],
+      "description": "Three-state discriminator. Only `asserted` can contribute to applicability; `unknown` and `not_supplied` fail closed and remain visible. No 'assume default' state exists. When a container is `asserted`, EVERY value in that container must be non-null — a null secondary value is not a wildcard."
+    },
+    "observationStatus": {
+      "enum": ["registered", "preliminary", "final", "amended", "corrected", "cancelled", "entered-in-error", "unknown"],
+      "description": "FHIR R4/R5 ObservationStatus, complete and exact. `partial` and `appended` are DiagnosticReport statuses and are deliberately absent: an Observation cannot legally carry them, so permitting them let a site configure acceptance of a status its results can never have."
+    },
+    "syntheticDeclaration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["synthetic", "notForClinicalUse", "notAnApprovedSiteProfile", "purpose"],
+      "properties": {
+        "synthetic": { "const": true },
+        "notForClinicalUse": { "const": true },
+        "notAnApprovedSiteProfile": { "const": true },
+        "purpose": { "type": "string", "minLength": 1 }
+      }
+    },
+    "boundCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidateId", "candidateVersion", "candidateDigest", "assertion"],
+      "properties": {
+        "candidateId": { "type": ["string", "null"], "minLength": 1 },
+        "candidateVersion": { "type": ["string", "null"], "minLength": 1 },
+        "candidateDigest": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$" },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "properties": {
+          "candidateId": { "type": "string", "minLength": 1 },
+          "candidateVersion": { "type": "string", "minLength": 1 },
+          "candidateDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["institutionName", "informaticsOwnerName", "informaticsOwnerCredential", "assertionStatement", "assertedOn", "assertion"],
+      "properties": {
+        "institutionName": { "type": ["string", "null"], "minLength": 1 },
+        "informaticsOwnerName": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "OWNER-HELD (plan OQ-3). No repository agent may populate this field."
+        },
+        "informaticsOwnerCredential": { "type": ["string", "null"], "minLength": 1 },
+        "assertionStatement": { "type": ["string", "null"], "minLength": 1 },
+        "assertedOn": { "type": ["string", "null"], "format": "date" },
+        "assertion": { "enum": ["asserted", "not_executed_owner_held"] }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "description": "An assertion by nobody is not an assertion. `asserted` with every identity field still null was previously valid.",
+        "properties": {
+          "institutionName": { "type": "string", "minLength": 1 },
+          "informaticsOwnerName": { "type": "string", "minLength": 1 },
+          "informaticsOwnerCredential": { "type": "string", "minLength": 1 },
+          "assertionStatement": { "type": "string", "minLength": 1 },
+          "assertedOn": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attachmentContract", "signatureState", "attachmentRef"],
+      "properties": {
+        "attachmentContract": {
+          "const": "p2-authenticated-attachment",
+          "description": "PLACEHOLDER — bound to the P2 attachment contract. The signature/attestation envelope (signer identity, verification, revocation) is out of scope here and lands with P2's authenticated-attachment primitive so the two do not diverge."
+        },
+        "signatureState": {
+          "enum": ["not_executed_owner_held", "bound"],
+          "description": "Unsigned profiles fail closed today: `not_executed_owner_held` can never satisfy an activation gate. `bound` additionally requires a non-null attachmentRef, and is refused by `evaluateActivationGate` regardless because no attachment verifier exists on this side."
+        },
+        "attachmentRef": { "type": ["string", "null"] }
+      },
+      "if": { "type": "object", "properties": { "signatureState": { "const": "bound" } }, "required": ["signatureState"] },
+      "then": { "type": "object", "properties": { "attachmentRef": { "type": "string", "minLength": 1 } } },
+      "else": { "type": "object", "properties": { "attachmentRef": { "type": "null" } } }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["effectiveStart", "effectiveEnd", "reviewState", "supersededBy", "lastReviewedOn", "reviewIntervalDays", "rollbackTrigger", "rollbackOwner"],
+      "properties": {
+        "effectiveStart": { "type": ["string", "null"], "format": "date" },
+        "effectiveEnd": { "type": ["string", "null"], "format": "date" },
+        "reviewState": {
+          "enum": ["draft", "active", "expired", "superseded", "withdrawn", "unknown"]
+        },
+        "supersededBy": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["profileId", "profileVersion"],
+          "properties": {
+            "profileId": { "type": "string", "minLength": 1 },
+            "profileVersion": { "type": "string", "minLength": 1 }
+          },
+          "description": "Must be non-null whenever reviewState is `superseded`. A dangling successor pointer is a hard failure."
+        },
+        "lastReviewedOn": { "type": ["string", "null"], "format": "date" },
+        "reviewIntervalDays": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "Null is DELIBERATELY still permitted: it is a representable unknown that fails closed at evaluation time as REVIEW_CADENCE_UNKNOWN."
+        },
+        "rollbackTrigger": { "type": ["string", "null"], "minLength": 1 },
+        "rollbackOwner": { "type": ["string", "null"], "minLength": 1 }
+      }
+    },
+    "codeSystemBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "version", "purpose", "assertion"],
+      "properties": {
+        "system": { "type": ["string", "null"], "minLength": 1 },
+        "version": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Exact code-system version. Null with assertion `unknown` is representable and fails closed; it is never treated as 'current'."
+        },
+        "purpose": { "enum": ["analyte", "specimen", "unit", "other", null] },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "properties": {
+          "system": { "type": "string", "minLength": 1 },
+          "version": { "type": "string", "minLength": 1 },
+          "purpose": { "enum": ["analyte", "specimen", "unit", "other"] }
+        }
+      }
+    },
+    "resultStatusPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resourceType", "recognizedStates", "acceptedForDecision", "blockingStates", "requireStatusLineage", "assertion"],
+      "description": "Which observation lifecycle states this site recognizes and which may inform a decision. `preliminary`, `corrected`, and `amended` are first-class states: a preliminary result treated as final, or a corrected/amended result whose lineage is missing, must fail closed. The required memberships stated below are ENFORCED by `contains` constraints, not asserted in prose.",
+      "properties": {
+        "resourceType": {
+          "const": "Observation",
+          "description": "The FHIR resource type this status value set is bound to. A status value set is only meaningful bound to a resource type: Observation.status and DiagnosticReport.status are different value sets and were previously conflated. Only Observation is supported in this phase; a DiagnosticReport-level profile is a separate contract (charter §2.6a, owner-held)."
+        },
+        "recognizedStates": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/observationStatus" },
+          "allOf": [
+            { "contains": { "const": "preliminary" } },
+            { "contains": { "const": "corrected" } },
+            { "contains": { "const": "amended" } },
+            { "contains": { "const": "entered-in-error" } },
+            { "contains": { "const": "cancelled" } },
+            { "contains": { "const": "unknown" } }
+          ],
+          "description": "Must include `preliminary`, `corrected`, `amended`, `entered-in-error`, `cancelled`, and `unknown`. A profile that does not recognize a state cannot safely receive observations carrying it."
+        },
+        "acceptedForDecision": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["final", "corrected", "amended"] },
+          "description": "Statuses that may inform a decision. `preliminary` is deliberately not permissible here by construction, and `appended` has been removed because it is not an Observation status at all. Including `corrected`/`amended` is only meaningful together with requireStatusLineage true, so the superseding relationship is proven rather than assumed."
+        },
+        "blockingStates": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/observationStatus" },
+          "allOf": [
+            { "contains": { "const": "preliminary" } },
+            { "contains": { "const": "registered" } },
+            { "contains": { "const": "unknown" } },
+            { "contains": { "const": "entered-in-error" } },
+            { "contains": { "const": "cancelled" } }
+          ],
+          "description": "Statuses that must fail closed and stay visible. Must include `preliminary`, `registered`, `unknown`, `entered-in-error`, and `cancelled` — now enforced. Note that `entered-in-error` and `cancelled` additionally receive their own distinct blocker codes at evaluation time, because a retraction and a never-performed test demand different actions from a human than a merely non-decision-grade status."
+        },
+        "requireStatusLineage": {
+          "const": true,
+          "description": "Always true. The site must be able to prove, for every observation, that its status lineage is complete — i.e. that no correction or amendment has been dropped in transit. This is a const rather than a boolean because a profile that opts out of lineage proof cannot detect a dropped correction at all."
+        },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      }
+    },
+    "observationRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requireEffectiveTime", "requireIssuedTime", "requireSpecimen", "requireUnit", "maxResultAgeDays", "assertion"],
+      "properties": {
+        "requireEffectiveTime": { "const": true, "description": "Clinically meaningful time of observation. Always required; a result with no effective time cannot be age-banded." },
+        "requireIssuedTime": { "const": true, "description": "Time the result was released. Required to detect a later correction." },
+        "requireSpecimen": { "const": true },
+        "requireUnit": { "const": true },
+        "maxResultAgeDays": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "Beyond this age a result is stale for decision purposes. Null is DELIBERATELY still permitted: it is a representable unknown that fails closed at evaluation time as STALENESS_POLICY_UNKNOWN."
+        },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      }
+    },
+    "localMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "localCode",
+        "localSystem",
+        "localDisplay",
+        "standardCode",
+        "standardSystem",
+        "standardSystemVersion",
+        "unitCode",
+        "specimenCode",
+        "mappingVersion",
+        "mappingAuthority",
+        "equivalence",
+        "assertion"
+      ],
+      "properties": {
+        "localCode": { "type": ["string", "null"], "minLength": 1 },
+        "localSystem": { "type": ["string", "null"], "minLength": 1 },
+        "localDisplay": { "type": ["string", "null"], "minLength": 1 },
+        "standardCode": { "type": ["string", "null"], "minLength": 1 },
+        "standardSystem": { "type": ["string", "null"], "minLength": 1 },
+        "standardSystemVersion": { "type": ["string", "null"], "minLength": 1 },
+        "unitCode": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "UCUM unit the mapped local code reports in. Must be non-null on an asserted mapping: a null unit was previously truthiness-guarded on both sides and became a silent wildcard. An observation whose unit differs fails closed; it is never converted."
+        },
+        "specimenCode": { "type": ["string", "null"], "minLength": 1, "description": "Must be non-null on an asserted mapping, for the same reason as unitCode." },
+        "mappingVersion": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "description": "The mapping carries its own version, independent of the profile version, because a mapping can be revised without the surrounding profile changing."
+        },
+        "mappingAuthority": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Named authority accountable for this mapping. OWNER-HELD (plan OQ-3)."
+        },
+        "equivalence": {
+          "enum": ["equivalent", "wider", "narrower", "inexact", "unmatched", "unknown", null],
+          "description": "Only `equivalent` supports decision use. `wider`, `narrower`, and `inexact` are representable so they stay visible, and they fail closed rather than being rounded to `equivalent`."
+        },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "properties": {
+          "localCode": { "type": "string", "minLength": 1 },
+          "localSystem": { "type": "string", "minLength": 1 },
+          "localDisplay": { "type": "string", "minLength": 1 },
+          "standardCode": { "type": "string", "minLength": 1 },
+          "standardSystem": { "type": "string", "minLength": 1 },
+          "standardSystemVersion": { "type": "string", "minLength": 1 },
+          "unitCode": { "type": "string", "minLength": 1 },
+          "specimenCode": { "type": "string", "minLength": 1 },
+          "mappingVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+          "mappingAuthority": { "type": "string", "minLength": 1 },
+          "equivalence": { "enum": ["equivalent", "wider", "narrower", "inexact", "unmatched"] }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "locator", "retrievedOn", "terminologyServerEndpoint", "assertion"],
+      "properties": {
+        "source": { "type": ["string", "null"], "minLength": 1 },
+        "locator": { "type": ["string", "null"], "minLength": 1 },
+        "retrievedOn": { "type": ["string", "null"], "format": "date" },
+        "terminologyServerEndpoint": { "type": ["string", "null"], "minLength": 1 },
+        "assertion": { "$ref": "#/$defs/assertion" }
+      },
+      "if": { "type": "object", "properties": { "assertion": { "const": "asserted" } }, "required": ["assertion"] },
+      "then": {
+        "type": "object",
+        "properties": {
+          "source": { "type": "string", "minLength": 1 },
+          "locator": { "type": "string", "minLength": 1 },
+          "retrievedOn": { "type": "string", "format": "date" },
+          "terminologyServerEndpoint": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

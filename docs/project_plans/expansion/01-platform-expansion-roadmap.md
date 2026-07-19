@@ -2,8 +2,9 @@
 
 **Deliverable:** 01 of 2 deep-dive inputs to the pediatric-CDS expansion plan (product / clinical / engineering / validation phasing).
 **Companion:** 02 — *Evidence Foundry powered by Research Foundry* (the evidence-to-executable pipeline). This document **references** that track and names where it plugs in; it does **not** design it in depth.
-**Date:** 2026-07-17
+**Date:** 2026-07-17 (authored); **phase-status corrected 2026-07-19 during P0 truth reconciliation — see below.**
 **Status of the product being planned:** UNVALIDATED research prototype (v0.3.1). Every phase below preserves that honesty until the validation gates in §B are actually passed. Software tests prove behavior, not clinical validity.
+**Phase-ladder status as of 2026-07-19 (this line is authoritative; §A.1 and §B.0 below describe the pre-P0 starting state and are historical framing, not current status):** **P0 (platform foundation refactor) is complete**, merged to `main` as `ff4b519a160cbfa2a4d19337130cd031c9a7c12b`, V2 gate AC-1..AC-6 passed (`.claude/worknotes/platform-foundation-p0/v2-gate-results.md`). **P1 (Wave-0 safety & defensibility foundation) is in planning only** — PRD + Tier-3 implementation plan exist on unmerged branch `worktree-wave0-safety-foundation`; no Phase-1 code has landed on `main`. P2–P6+ have not started. See `00-expansion-plan.md` §5 for the current next-action list.
 **Source docs this roadmap executes against:**
 - `docs/project_plans/pediatric-cds-expansion-dr.md` (the deep-research strategy — hereafter **DR**)
 - `docs/project_plans/pediatric-cds-commercialization-package-2026-07-16/Pediatric_CDS_Commercialization_Strategy.md` (**COMM**)
