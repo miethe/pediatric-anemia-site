@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 3
+completed_tasks: 4
 in_progress_tasks: 3
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -49,7 +49,7 @@ tasks:
   description: 'Execute SPIKE-004 (UCUM unit handling & mismatch rejection): decide
     the closed unit table shape, D-5 dependency-vs-hand-roll call, and the fail-closed
     rejection boundary (API + browser) including the missing-unit policy (OQ-5).'
-  status: in_progress
+  status: completed
   assigned_to:
   - general-purpose
   dependencies: []
@@ -58,6 +58,16 @@ tasks:
   assigned_model: sonnet
   model_effort: high
   started: 2026-07-19T00:00Z
+  completed: 2026-07-19T00:08Z
+  evidence:
+  - doc: 'docs/project_plans/SPIKEs/spike-004-ucum-unit-handling-mismatch-rejection.md
+      (status: completed, RQ1-RQ6 answered)'
+  - decision: D-5 = hand-roll closed unit table (~250 LOC) over UCUM dependency; CSP
+      script-src 'self', zero existing deps
+  - decision: OQ-5 = accept-with-unitAssumed flag; declared-wrong units still hard-reject
+      400 UNIT_REJECTED
+  - verified: 3 load-bearing claims independently confirmed (SPA bypasses server.mjs;
+      no runtime schema validation; submit handler lacks try/catch)
 - id: EP0-T3
   description: 'Execute SPIKE-005 (semantic diff classification) — design: enumerate
     change classes for kb-diff.mjs, explicitly hunt the false-negative under-reporting
@@ -88,7 +98,7 @@ tasks:
   description: 'Execute SPIKE-006 (KB signing key custody & browser-side verification):
     threat-model whether real cryptographic signing is warranted at this trust boundary,
     or clinicalContentHash + supersedes chain suffices.'
-  status: pending
+  status: in_progress
   assigned_to:
   - general-purpose
   dependencies:
@@ -97,6 +107,7 @@ tasks:
   priority: high
   assigned_model: gpt-5.6-sol (codex exec)
   model_effort: xhigh
+  started: 2026-07-19T00:06Z
 - id: EP0-T6
   description: 'Resolve DEF-1 — evidence dual-source unification (D-2 prerequisite,
     FR-WP3-01): src/evidence.js stops hand-duplicating modules/anemia/evidence.json.
@@ -213,7 +224,7 @@ files_modified:
 - src/evidence.js
 - modules/anemia/evidence.json
 - .github/workflows/deploy-pages.yml
-progress: 33
+progress: 44
 updated: '2026-07-19'
 ---
 
