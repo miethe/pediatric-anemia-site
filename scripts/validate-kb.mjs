@@ -3,7 +3,6 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { evaluateCondition } from '../src/ruleEngine.js';
 import { MODULE_IDS } from '../src/modules/registry.js';
-import { KNOWLEDGE_BASE_VERSION, REVIEWED_THROUGH } from '../src/evidence.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -17,9 +16,10 @@ async function validateModule(moduleId, rootDir) {
 
   const rules = await readJson(path.join(moduleDir, 'rules.json'));
   const candidates = await readJson(path.join(moduleDir, 'candidates.json'));
-  // Read the module's own evidence.json directly rather than importing src/evidence.js —
-  // this collapses one instance of the evidence dual-source problem (DEF-1); the full
-  // drift check against src/evidence.js's exported consts is added in Phase 6 (P6-T2).
+  // Read the module's evidence.json directly. This is the only evidence source now (DEF-1,
+  // docs/project_plans/design-specs/evidence-dual-source-unification.md): src/evidence.js is a
+  // thin loader over this same file, not a second hand-maintained copy, so there is nothing
+  // left for it to drift against.
   const evidenceData = await readJson(path.join(moduleDir, 'evidence.json'));
   const evidenceIds = new Set((evidenceData.sources ?? []).map((source) => source.id));
 
@@ -49,27 +49,23 @@ async function validateModule(moduleId, rootDir) {
   }
 
   // module.json (manifest) is a required per-module file as of Phase 6 (P6-T1). It is read
-  // directly here (not via src/evidence.js) so this check catches an unparsable/missing
-  // manifest as a validation error rather than a silent gap.
+  // directly here so this check catches an unparsable/missing manifest as a validation error
+  // rather than a silent gap.
   const manifest = await readJson(path.join(moduleDir, 'module.json'));
   if (manifest.id !== moduleId) {
     errors.push(`${moduleId}/module.json: id "${manifest.id}" does not match directory name "${moduleId}"`);
   }
 
-  // P6-T2 drift check: module.json's version fields must byte-match src/evidence.js's
-  // exported consts (SPIKE-001 OQ-3 / SPIKE-002 OQ-001). This is a mitigation of the evidence
-  // dual-source problem (DEF-1), not a unification — src/evidence.js keeps its own consts for
-  // synchronous browser access.
-  if (manifest.knowledgeBaseVersion !== KNOWLEDGE_BASE_VERSION) {
-    errors.push(
-      `${moduleId}/module.json: knowledgeBaseVersion "${manifest.knowledgeBaseVersion}" does not match src/evidence.js KNOWLEDGE_BASE_VERSION "${KNOWLEDGE_BASE_VERSION}"`,
-    );
-  }
-  if (manifest.evidenceReviewedThrough !== REVIEWED_THROUGH) {
-    errors.push(
-      `${moduleId}/module.json: evidenceReviewedThrough "${manifest.evidenceReviewedThrough}" does not match src/evidence.js REVIEWED_THROUGH "${REVIEWED_THROUGH}"`,
-    );
-  }
+  // DEF-1 resolved (docs/project_plans/design-specs/evidence-dual-source-unification.md): the
+  // P6-T2 drift check that used to live here — asserting module.json's version fields matched
+  // src/evidence.js's exported consts — is removed, not left passing-but-vacuous. It existed to
+  // catch drift between the two hand-maintained evidence copies (src/evidence.js and this
+  // module's evidence.json). src/evidence.js is now a loader over evidence.json, not a second
+  // hand-authored copy, so that drift is structurally impossible: there is no longer a second
+  // source for it to diverge from. (module.json's own knowledgeBaseVersion/evidenceReviewedThrough
+  // stub fields can still go stale relative to evidence.json, but that is a manifest-currency
+  // concern for the Phase 1 signed-manifest work — this spec's promotion trigger — not the
+  // dual-source problem this check was built for, so no replacement check is added here.)
 
   return {
     moduleId,

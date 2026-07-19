@@ -39,7 +39,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..');
 const distRoot = path.join(repoRoot, 'dist');
 
-const APP_SURFACE_FILES = ['src/app.js', 'src/algorithmExplorer.js'];
+// src/evidence.js is included here as of DEF-1 (evidence dual-source unification): it stopped
+// being a self-contained JS object literal and became a loader that imports
+// modules/anemia/evidence.json via `with { type: 'json' }`. That introduced exactly the class of
+// relative-specifier bug pass (a) exists to catch — the dev and dist/ layouts must BOTH resolve
+// it — and neither pass covered it before, because pass (a) only parses the files listed here
+// (it does not walk the import graph transitively).
+const APP_SURFACE_FILES = ['src/app.js', 'src/algorithmExplorer.js', 'src/evidence.js'];
 
 const DYNAMIC_IMPORT_TARGETS = [
   'src/engine.js',
@@ -47,6 +53,9 @@ const DYNAMIC_IMPORT_TARGETS = [
   'src/modules/registry.js',
   'modules/anemia/index.js',
   'modules/anemia/ranges.js',
+  // DEF-1: proves src/evidence.js's JSON import-attribute path actually loads end-to-end,
+  // the same guarantee modules/anemia/ranges.js already gets for reference-ranges.json.
+  'src/evidence.js',
 ];
 
 let failures = 0;
