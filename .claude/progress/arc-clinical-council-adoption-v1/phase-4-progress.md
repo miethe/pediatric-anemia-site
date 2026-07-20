@@ -7,11 +7,13 @@ feature_slug: arc-clinical-council-adoption-v1
 phase: 4
 status: in_progress
 created: '2026-07-19'
-updated: '2026-07-19'
+updated: '2026-07-20'
 prd_ref: docs/project_plans/expansion/00-expansion-plan.md
 plan_ref: docs/project_plans/implementation_plans/enhancements/arc-clinical-council-adoption-v1.md
 commit_refs:
 - 7a73cb6
+- 347384c
+- 37ab945
 pr_refs: []
 execution_model: batch-parallel
 plan_structure: unified
