@@ -1,0 +1,466 @@
+{
+  "meta": {
+    "engine": "Pediatric Anemia Deterministic CDSS",
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "evidenceReviewedThrough": "2026-07-15",
+    "generatedAt": "x",
+    "intendedUser": "Licensed health care professional",
+    "status": "Research prototype—not clinically validated"
+  },
+  "classification": {
+    "anemiaStatus": "absent",
+    "hemoglobin": 12,
+    "hemoglobinLowerLimit": 11,
+    "morphology": "normocytic",
+    "mcv": 80,
+    "mcvLowerLimit": 75.2,
+    "mcvUpperLimit": 85,
+    "rdw": null,
+    "rdwHigh": null,
+    "reticulocyteResponse": "normal",
+    "thresholdSource": "AAP2026_IDA",
+    "ageBand": "2 to <6 years"
+  },
+  "alerts": [],
+  "rankedDifferential": [
+    {
+      "id": "mixed-anemia-or-transfusion-effect",
+      "label": "Mixed anemia or recent-transfusion effect",
+      "category": "interpretive limitation",
+      "summary": "Coexisting deficiencies, reticulocytosis, inflammation, or recent transfusion can normalize or broaden MCV/RDW and obscure a single morphology.",
+      "defaultNextSteps": [
+        "Interpret trends and pre-transfusion CBC/smear when available; assess iron, B12/folate, inflammation, reticulocytes, and transfusion timing."
+      ],
+      "evidence": [
+        "AAP2026_IDA",
+        "BLOOD2022_PED_ANEMIA",
+        "BSH2020_G6PD"
+      ],
+      "level": "possible",
+      "score": 55,
+      "matchedRules": [
+        "MIX-002"
+      ],
+      "supportingFindings": [
+        "Recent transfusion can mix red-cell populations and alter indices, smear, reticulocytes, and specialized assays."
+      ],
+      "cautions": [],
+      "nextSteps": [
+        "Interpret trends and pre-transfusion CBC/smear when available; assess iron, B12/folate, inflammation, reticulocytes, and transfusion timing."
+      ],
+      "rank": 1
+    }
+  ],
+  "nextQuestions": [],
+  "interpretiveNotes": [
+    {
+      "id": "NOTE-001",
+      "title": "No anemia by the supplied threshold",
+      "detail": "Hemoglobin is not below the effective lower limit. This does not exclude iron deficiency without anemia, evolving disease, abnormal indices, or clinically important symptoms.",
+      "evidence": [
+        "AAP2026_IDA",
+        "WHO2024_HB"
+      ]
+    },
+    {
+      "id": "NOTE-005",
+      "title": "Recent transfusion limits interpretation",
+      "detail": "Transfusion can alter MCV/RDW, reticulocytes, smear, hemoglobin analysis, and red-cell enzyme/membrane tests. Review pre-transfusion data and timing.",
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA",
+        "BSH2020_G6PD"
+      ]
+    },
+    {
+      "id": "NOTE-006",
+      "title": "No altitude adjustment applied",
+      "detail": "Hemoglobin interpretation may require altitude-specific adjustment. The prototype does not calculate one; local guidance and reference intervals are required.",
+      "evidence": [
+        "WHO2024_HB"
+      ]
+    }
+  ],
+  "limitations": [
+    "This output is a deterministic clinical decision-support reference, not a diagnosis, treatment order, or substitute for examination and specialist judgment.",
+    "The ranking is rule priority—not a calibrated probability, sensitivity, specificity, or risk score.",
+    "Only supplied data are evaluated; missing, mistyped, or unit-mismatched data can materially change the output.",
+    "Local laboratory reference intervals, specimen methods, and clinical context override built-in fallback intervals.",
+    "Recent transfusion can obscure MCV, reticulocyte response, hemoglobin analysis, red-cell enzyme assays, and hemolysis interpretation.",
+    "High-altitude hemoglobin interpretation requires locally appropriate adjustment; no altitude correction is applied in this prototype."
+  ],
+  "provenance": {
+    "evaluatedRuleCount": 91,
+    "matchedRuleIds": [
+      "NOTE-001",
+      "NOTE-005",
+      "NOTE-006",
+      "MIX-002"
+    ],
+    "ruleAudit": [
+      {
+        "ruleId": "SCOPE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SCOPE-002",
+        "matched": false
+      },
+      {
+        "ruleId": "SCOPE-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-002",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-004",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-005",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-006",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-007",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-008",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-009",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-001",
+        "matched": true
+      },
+      {
+        "ruleId": "NOTE-002",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-003",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-004",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-005",
+        "matched": true
+      },
+      {
+        "ruleId": "NOTE-006",
+        "matched": true
+      },
+      {
+        "ruleId": "ID-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-002",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-004",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-005",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-006",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-001",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-002",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-003",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-004",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-001",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-002",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-BETA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-BETA-002",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-ALPHA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-ALPHA-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-001",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-003",
+        "matched": false
+      },
+      {
+        "ruleId": "SID-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SID-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-001",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-003",
+        "matched": false
+      },
+      {
+        "ruleId": "HEM-001",
+        "matched": false
+      },
+      {
+        "ruleId": "HEM-002",
+        "matched": false
+      },
+      {
+        "ruleId": "HEM-003",
+        "matched": false
+      },
+      {
+        "ruleId": "AIHA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "HS-001",
+        "matched": false
+      },
+      {
+        "ruleId": "HS-002",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-001",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-002",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-003",
+        "matched": false
+      },
+      {
+        "ruleId": "TMA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SICKLE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MAL-001",
+        "matched": false
+      },
+      {
+        "ruleId": "REN-001",
+        "matched": false
+      },
+      {
+        "ruleId": "TEC-001",
+        "matched": false
+      },
+      {
+        "ruleId": "PARVO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-002",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-003",
+        "matched": false
+      },
+      {
+        "ruleId": "MEG-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MEG-002",
+        "matched": false
+      },
+      {
+        "ruleId": "COPPER-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-003",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-004",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-001",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-DBA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-FANCONI-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MIX-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MIX-002",
+        "matched": true
+      },
+      {
+        "ruleId": "IRIDA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-003",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-004",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-005",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-003",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-004",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-005",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-NORMO-HIGH-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-NORMO-HIGH-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-NORMO-LOW-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MACRO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MACRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-SMEAR-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-CYT-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-LEAD-CAPILLARY",
+        "matched": false
+      }
+    ]
+  }
+}

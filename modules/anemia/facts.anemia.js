@@ -1,5 +1,31 @@
-import { finite, num, isTrue, statusIs, includes, countTrue } from '../../src/facts/core.js';
+import { finite, num, statusIs, includes, countTrue } from '../../src/facts/core.js';
+import { allAssessed, countPresent, toTri } from '../../src/facts/tristate.js';
 import { getEffectiveRanges, getFerritinThreshold } from '../../modules/anemia/ranges.js';
+
+function triAny(values) {
+  if (countPresent(values) > 0) return 'true';
+  return allAssessed(values) ? 'false' : 'unknown';
+}
+
+function triAll(values) {
+  if (values.some((value) => toTri(value) === 'false')) return 'false';
+  return allAssessed(values) ? 'true' : 'unknown';
+}
+
+function triNone(values) {
+  if (countPresent(values) > 0) return 'false';
+  return allAssessed(values) ? 'true' : 'unknown';
+}
+
+function cytopeniaTri(localFlag, countValue, localLowerBound) {
+  const flagTri = toTri(localFlag);
+  if (flagTri === 'true') return 'true';
+  if (countValue !== null && finite(localLowerBound)) {
+    return countValue < Number(localLowerBound) ? 'true' : 'false';
+  }
+  if (flagTri === 'false') return 'false';
+  return 'unknown';
+}
 
 export function deriveFacts(rawInput = {}) {
   const input = structuredClone(rawInput ?? {});
@@ -84,74 +110,85 @@ export function deriveFacts(rawInput = {}) {
   const lead45Plus = bll !== null && bll >= 45;
   const elevatedCapillaryLead = leadAtOrAboveReference && leadSpecimen === 'capillary';
 
-  const leukopenia = isTrue(localFlags.leukopenia)
-    || (wbc !== null && finite(cbc.localRanges?.wbcLower) && wbc < Number(cbc.localRanges.wbcLower));
-  const neutropenia = isTrue(localFlags.neutropenia)
-    || (anc !== null && finite(cbc.localRanges?.ancLower) && anc < Number(cbc.localRanges.ancLower));
-  const thrombocytopenia = isTrue(localFlags.thrombocytopenia)
-    || (platelets !== null
-      && finite(cbc.localRanges?.plateletsLower)
-      && platelets < Number(cbc.localRanges.plateletsLower));
-  const thrombocytosis = isTrue(localFlags.thrombocytosis);
-  const additionalCytopeniaCount = countTrue([leukopenia, neutropenia, thrombocytopenia]);
-  const multilineageCytopenia = anemiaStatus === 'present' && additionalCytopeniaCount > 0;
+  const leukopeniaTri = cytopeniaTri(localFlags.leukopenia, wbc, cbc.localRanges?.wbcLower);
+  const neutropeniaTri = cytopeniaTri(localFlags.neutropenia, anc, cbc.localRanges?.ancLower);
+  const thrombocytopeniaTri = cytopeniaTri(
+    localFlags.thrombocytopenia,
+    platelets,
+    cbc.localRanges?.plateletsLower,
+  );
+  const additionalCytopeniaValues = [leukopeniaTri, neutropeniaTri, thrombocytopeniaTri];
+  const anemiaPresentTri = anemiaStatus === 'present'
+    ? 'true'
+    : anemiaStatus === 'absent' ? 'false' : 'unknown';
+  const thrombocytosis = toTri(localFlags.thrombocytosis);
+  const additionalCytopeniaCount = countPresent(additionalCytopeniaValues);
+  const multilineageCytopenia = triAll([anemiaPresentTri, triAny(additionalCytopeniaValues)]);
+  const isolatedAnemia = triAll([anemiaPresentTri, triNone(additionalCytopeniaValues)]);
 
-  const instability = countTrue([
-    symptoms.respiratoryDistress,
-    symptoms.syncope,
-    symptoms.alteredMentalStatus,
-    symptoms.chestPain,
-    symptoms.heartFailureSigns,
-    symptoms.hemodynamicInstability,
-  ]) > 0;
+  const instability = triAny([
+    toTri(symptoms.respiratoryDistress),
+    toTri(symptoms.syncope),
+    toTri(symptoms.alteredMentalStatus),
+    toTri(symptoms.chestPain),
+    toTri(symptoms.heartFailureSigns),
+    toTri(symptoms.hemodynamicInstability),
+  ]);
 
-  const bleedingHistory = countTrue([
-    history.giBloodLoss,
-    history.heavyMenstrualBleeding,
-    history.recurrentEpistaxis,
-    history.frequentBloodDonation,
-    history.otherBloodLoss,
-    symptoms.activeMajorBleeding,
-  ]) > 0;
+  const activeMajorBleeding = toTri(symptoms.activeMajorBleeding);
+  const bleedingHistory = triAny([
+    toTri(history.giBloodLoss),
+    toTri(history.heavyMenstrualBleeding),
+    toTri(history.recurrentEpistaxis),
+    toTri(history.frequentBloodDonation),
+    toTri(history.otherBloodLoss),
+    activeMajorBleeding,
+  ]);
 
-  const ironRiskHistory = countTrue([
-    history.excessCowMilk,
-    history.cowMilkBefore12Months,
-    history.lowIronDiet,
-    history.vegetarianOrVegan,
-    history.foodInsecurity,
-    history.pica,
-    history.prematurity,
-    history.malabsorption,
+  const ironRiskHistory = triAny([
+    toTri(history.excessCowMilk),
+    toTri(history.cowMilkBefore12Months),
+    toTri(history.lowIronDiet),
+    toTri(history.vegetarianOrVegan),
+    toTri(history.foodInsecurity),
+    toTri(history.pica),
+    toTri(history.prematurity),
+    toTri(history.malabsorption),
     bleedingHistory,
-  ]) > 0;
+  ]);
 
-  const chronicInflammation = countTrue([
-    history.inflammatoryBowelDisease,
-    history.rheumatologicDisease,
-    history.chronicInfection,
-    history.otherInflammatoryDisease,
-  ]) > 0;
+  const chronicInflammation = triAny([
+    toTri(history.inflammatoryBowelDisease),
+    toTri(history.rheumatologicDisease),
+    toTri(history.chronicInfection),
+    toTri(history.otherInflammatoryDisease),
+  ]);
 
-  const renalSignal = history.chronicKidneyDisease === true || statusIs(labs.creatinineStatus, 'high');
-  const liverSignal = history.liverDisease === true || statusIs(labs.liverTestsStatus, 'abnormal');
-  const thyroidSignal = history.thyroidDisease === true || statusIs(labs.tshStatus, 'high');
+  const renalSignal = statusIs(labs.creatinineStatus, 'high')
+    ? 'true'
+    : toTri(history.chronicKidneyDisease);
+  const liverSignal = statusIs(labs.liverTestsStatus, 'abnormal')
+    ? 'true'
+    : toTri(history.liverDisease);
+  const thyroidSignal = statusIs(labs.tshStatus, 'high')
+    ? 'true'
+    : toTri(history.thyroidDisease);
   const b12Low = statusIs(labs.b12Status, 'low');
   const folateLow = statusIs(labs.folateStatus, 'low');
   const copperLow = statusIs(labs.copperStatus, 'low');
 
-  const familyHemoglobinopathy = countTrue([
-    history.familyThalassemia,
-    history.familySickleCell,
-    history.familyHemoglobinopathy,
-  ]) > 0;
+  const familyHemoglobinopathy = triAny([
+    toTri(history.familyThalassemia),
+    toTri(history.familySickleCell),
+    toTri(history.familyHemoglobinopathy),
+  ]);
 
-  const knownChronicHemolyticDisease = countTrue([
-    history.knownSickleCellDisease,
-    history.knownHereditarySpherocytosis,
-    history.knownThalassemiaMajor,
-    history.otherChronicHemolyticDisease,
-  ]) > 0;
+  const knownChronicHemolyticDisease = triAny([
+    toTri(history.knownSickleCellDisease),
+    toTri(history.knownHereditarySpherocytosis),
+    toTri(history.knownThalassemiaMajor),
+    toTri(history.otherChronicHemolyticDisease),
+  ]);
 
   const smear = {
     provided: smearValues.length > 0,
@@ -172,32 +209,35 @@ export function deriveFacts(rawInput = {}) {
   const hbModerateIdaCategory = anemiaStatus === 'present' && hb !== null && hb >= 7 && hb < 9;
   const hbMildIdaCategory = anemiaStatus === 'present' && hb !== null && hb >= 9;
 
-  const rbcRelativelyHigh = cbc.rbcInterpretation === 'high-for-age';
+  const rbcRelativelyHigh = cbc.rbcInterpretation === 'high-for-age'
+    ? 'true'
+    : ['normal', 'low'].includes(cbc.rbcInterpretation) ? 'false' : 'unknown';
   const hemoglobinAnalysis = {
     hbA2Elevated: statusIs(labs.hbA2Status, 'elevated'),
-    hbBartNewbornScreen: isTrue(labs.hbBartNewbornScreen),
-    alphaGlobinPositive: isTrue(labs.alphaGlobinTestingPositive),
-    betaGlobinPositive: isTrue(labs.betaGlobinTestingPositive),
-    sicklingHemoglobinDetected: isTrue(labs.sicklingHemoglobinDetected),
+    hbBartNewbornScreen: toTri(labs.hbBartNewbornScreen),
+    alphaGlobinPositive: toTri(labs.alphaGlobinTestingPositive),
+    betaGlobinPositive: toTri(labs.betaGlobinTestingPositive),
+    sicklingHemoglobinDetected: toTri(labs.sicklingHemoglobinDetected),
   };
 
   const g6pd = {
     deficient: statusIs(labs.g6pdStatus, 'deficient'),
     normal: statusIs(labs.g6pdStatus, 'normal'),
-    testedDuringAcuteHemolysis: isTrue(labs.g6pdTestDuringAcuteHemolysis),
-    testedSoonAfterTransfusion: isTrue(labs.g6pdTestSoonAfterTransfusion),
+    testedDuringAcuteHemolysis: toTri(labs.g6pdTestDuringAcuteHemolysis),
+    testedSoonAfterTransfusion: toTri(labs.g6pdTestSoonAfterTransfusion),
   };
 
-  const congenitalMarrowFailureSignals = countTrue([
-    history.congenitalAnomalies,
-    history.thumbOrRadiusAnomaly,
-    history.shortStature,
-    history.abnormalSkinPigmentation,
-    history.microcephaly,
-  ]);
+  const congenitalMarrowFailureSignalValues = [
+    toTri(history.congenitalAnomalies),
+    toTri(history.thumbOrRadiusAnomaly),
+    toTri(history.shortStature),
+    toTri(history.abnormalSkinPigmentation),
+    toTri(history.microcephaly),
+  ];
+  const congenitalMarrowFailureSignals = countPresent(congenitalMarrowFailureSignalValues);
+  const congenitalSignalsFullyAssessed = allAssessed(congenitalMarrowFailureSignalValues);
 
-  const isolatedAnemia = anemiaStatus === 'present' && additionalCytopeniaCount === 0;
-  const recentViral = history.recentViralIllness === true;
+  const recentViral = toTri(history.recentViralIllness);
   const ageCompatibleWithTec = ageMonths !== null && ageMonths >= 6 && ageMonths < 72;
   const ageCompatibleWithDba = ageMonths !== null && ageMonths < 12;
 
@@ -206,9 +246,9 @@ export function deriveFacts(rawInput = {}) {
     patient: {
       ageMonths,
       sexAtBirth: patient.sexAtBirth ?? null,
-      menstruating: patient.menstruating === true,
-      recentTransfusion: patient.recentTransfusion === true,
-      highAltitude: patient.highAltitude === true,
+      menstruating: toTri(patient.menstruating),
+      recentTransfusion: toTri(patient.recentTransfusion),
+      highAltitude: toTri(patient.highAltitude),
     },
     scope: {
       supportedAge,
@@ -232,9 +272,9 @@ export function deriveFacts(rawInput = {}) {
       wbc,
       anc,
       platelets,
-      leukopenia,
-      neutropenia,
-      thrombocytopenia,
+      leukopenia: leukopeniaTri,
+      neutropenia: neutropeniaTri,
+      thrombocytopenia: thrombocytopeniaTri,
       thrombocytosis,
       additionalCytopeniaCount,
       multilineageCytopenia,
@@ -312,21 +352,34 @@ export function deriveFacts(rawInput = {}) {
     smear,
     symptoms: {
       instability,
-      activeMajorBleeding: symptoms.activeMajorBleeding === true,
-      jaundiceOrDarkUrine: symptoms.jaundice === true || symptoms.darkUrine === true,
-      fever: symptoms.fever === true,
-      neurologicSymptoms: symptoms.alteredMentalStatus === true || symptoms.neurologicSymptoms === true,
-      renalSymptoms: symptoms.oliguria === true || symptoms.renalSymptoms === true,
-      fatigueOrPallor: symptoms.fatigue === true || symptoms.pallor === true,
+      activeMajorBleeding,
+      jaundiceOrDarkUrine: triAny([toTri(symptoms.jaundice), toTri(symptoms.darkUrine)]),
+      fever: toTri(symptoms.fever),
+      neurologicSymptoms: triAny([
+        toTri(symptoms.alteredMentalStatus),
+        toTri(symptoms.neurologicSymptoms),
+      ]),
+      renalSymptoms: triAny([toTri(symptoms.oliguria), toTri(symptoms.renalSymptoms)]),
+      fatigueOrPallor: triAny([toTri(symptoms.fatigue), toTri(symptoms.pallor)]),
     },
     exam: {
-      splenomegaly: exam.splenomegaly === true,
-      hepatomegaly: exam.hepatomegaly === true,
-      lymphadenopathy: exam.lymphadenopathy === true,
-      petechiaeOrBruising: exam.petechiae === true || exam.unexplainedBruising === true,
+      splenomegaly: toTri(exam.splenomegaly),
+      hepatomegaly: toTri(exam.hepatomegaly),
+      lymphadenopathy: toTri(exam.lymphadenopathy),
+      petechiaeOrBruising: triAny([toTri(exam.petechiae), toTri(exam.unexplainedBruising)]),
     },
     history: {
       ...history,
+      pica: toTri(history.pica),
+      leadExposureRisk: toTri(history.leadExposureRisk),
+      knownHereditarySpherocytosis: toTri(history.knownHereditarySpherocytosis),
+      knownSickleCellDisease: toTri(history.knownSickleCellDisease),
+      thumbOrRadiusAnomaly: toTri(history.thumbOrRadiusAnomaly),
+      abnormalSkinPigmentation: toTri(history.abnormalSkinPigmentation),
+      shortStature: toTri(history.shortStature),
+      priorAdequateIronTrialNoResponse: toTri(history.priorAdequateIronTrialNoResponse),
+      adherenceVerified: toTri(history.adherenceVerified),
+      ongoingBloodLossKnown: toTri(history.ongoingBloodLossKnown),
       bleedingHistory,
       ironRiskHistory,
       chronicInflammation,
@@ -336,9 +389,9 @@ export function deriveFacts(rawInput = {}) {
       familyHemoglobinopathy,
       knownChronicHemolyticDisease,
       recentViral,
-      oxidantTrigger: history.oxidantMedicationOrFavaExposure === true,
-      malariaRisk: history.malariaTravelOrResidence === true,
-      medicationMacrocytosisRisk: history.macrocytosisAssociatedMedication === true,
+      oxidantTrigger: toTri(history.oxidantMedicationOrFavaExposure),
+      malariaRisk: toTri(history.malariaTravelOrResidence),
+      medicationMacrocytosisRisk: toTri(history.macrocytosisAssociatedMedication),
     },
     nutrition: {
       b12Low,
@@ -349,6 +402,7 @@ export function deriveFacts(rawInput = {}) {
     g6pd,
     marrow: {
       congenitalSignalCount: congenitalMarrowFailureSignals,
+      congenitalSignalsFullyAssessed,
       ageCompatibleWithTec,
       ageCompatibleWithDba,
     },

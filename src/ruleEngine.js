@@ -1,3 +1,5 @@
+import { toTri } from './facts/tristate.js';
+
 const LEVEL_RANK = Object.freeze({
   'meets-defined-pattern': 5,
   'strongly-supported': 4,
@@ -32,6 +34,14 @@ function evaluateLeaf(leaf, facts) {
     case 'missing': return actual === null || actual === undefined || actual === '';
     case 'truthy': return Boolean(actual);
     case 'falsy': return !actual;
+    // Tri-state operators (EP-1 / SPIKE-003). Every one routes through toTri() so that
+    // null, '' and an absent path all resolve to 'unknown' exactly as a missing path does —
+    // "missingness is never treated as normal" must not depend on how the caller spelled
+    // the absence. is-unknown / is-not-assessed are deliberate synonyms.
+    case 'is-present': return toTri(actual) === 'true';
+    case 'is-absent': return toTri(actual) === 'false';
+    case 'is-unknown':
+    case 'is-not-assessed': return toTri(actual) === 'unknown';
     default: throw new Error(`Unknown rule operator: ${leaf.op}`);
   }
 }

@@ -61,7 +61,7 @@
       "title": "Reference interval incomplete",
       "detail": "Anemia and/or morphology cannot be classified until hemoglobin and MCV limits are available.",
       "actions": [
-        "Enter the reporting laboratory\u2019s lower hemoglobin and MCV lower/upper limits."
+        "Enter the reporting laboratory’s lower hemoglobin and MCV lower/upper limits."
       ]
     }
   },
@@ -70,8 +70,7 @@
     "category": "safety",
     "when": {
       "fact": "symptoms.instability",
-      "op": "eq",
-      "value": true
+      "op": "is-present"
     },
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
@@ -92,8 +91,7 @@
     "category": "safety",
     "when": {
       "fact": "symptoms.activeMajorBleeding",
-      "op": "eq",
-      "value": true
+      "op": "is-present"
     },
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
@@ -136,8 +134,7 @@
     "category": "safety",
     "when": {
       "fact": "cbc.multilineageCytopenia",
-      "op": "eq",
-      "value": true
+      "op": "is-present"
     },
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
@@ -188,18 +185,15 @@
           "any": [
             {
               "fact": "cbc.thrombocytopenia",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "symptoms.renalSymptoms",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "symptoms.neurologicSymptoms",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             }
           ]
         }
@@ -232,7 +226,7 @@
     "output": {
       "type": "alert",
       "severity": "emergency",
-      "title": "Blood lead level \u226545 \u00b5g/dL",
+      "title": "Blood lead level ≥45 µg/dL",
       "detail": "CDC guidance places this level in the highest action tier, with urgent confirmatory and toxicology/clinical management requirements.",
       "actions": [
         "Contact a Pediatric Environmental Health Specialty Unit or Poison Control and use the CDC/local high-level lead pathway.",
@@ -254,7 +248,7 @@
     "output": {
       "type": "alert",
       "severity": "urgent",
-      "title": "Blood lead level 20\u201344 \u00b5g/dL",
+      "title": "Blood lead level 20–44 µg/dL",
       "detail": "This level requires prompt venous confirmation if needed, environmental investigation, clinical evaluation, and scheduled follow-up under CDC/local guidance.",
       "actions": [
         "Use the current CDC/local lead pathway and arrange environmental/public-health follow-up."
@@ -268,13 +262,11 @@
       "all": [
         {
           "fact": "cbc.neutropenia",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         },
         {
           "fact": "symptoms.fever",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -366,13 +358,11 @@
           "any": [
             {
               "fact": "g6pd.testedDuringAcuteHemolysis",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "g6pd.testedSoonAfterTransfusion",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             }
           ]
         }
@@ -392,8 +382,7 @@
     "category": "interpretive-note",
     "when": {
       "fact": "patient.recentTransfusion",
-      "op": "eq",
-      "value": true
+      "op": "is-present"
     },
     "evidence": [
       "BLOOD2022_PED_ANEMIA",
@@ -410,8 +399,7 @@
     "category": "interpretive-note",
     "when": {
       "fact": "patient.highAltitude",
-      "op": "eq",
-      "value": true
+      "op": "is-present"
     },
     "evidence": [
       "WHO2024_HB"
@@ -475,8 +463,7 @@
         },
         {
           "fact": "history.ironRiskHistory",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         },
         {
           "fact": "ferritin.available",
@@ -583,8 +570,7 @@
         },
         {
           "fact": "history.ironRiskHistory",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -626,8 +612,7 @@
         },
         {
           "fact": "history.ironRiskHistory",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -678,8 +663,7 @@
         },
         {
           "fact": "history.chronicInflammation",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         },
         {
           "fact": "ferritin.notLow",
@@ -764,8 +748,7 @@
         },
         {
           "fact": "history.chronicInflammation",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -801,8 +784,7 @@
           "any": [
             {
               "fact": "cbc.rbcRelativelyHigh",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "smear.targetCells",
@@ -811,8 +793,7 @@
             },
             {
               "fact": "history.familyHemoglobinopathy",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             }
           ]
         }
@@ -850,8 +831,7 @@
           "any": [
             {
               "fact": "cbc.rbcRelativelyHigh",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "smear.targetCells",
@@ -904,8 +884,7 @@
     "category": "differential",
     "when": {
       "fact": "hemoglobinAnalysis.betaGlobinPositive",
-      "op": "eq",
-      "value": true
+      "op": "is-present"
     },
     "evidence": [
       "AAP2026_IDA"
@@ -925,8 +904,7 @@
     "category": "differential",
     "when": {
       "fact": "hemoglobinAnalysis.hbBartNewbornScreen",
-      "op": "eq",
-      "value": true
+      "op": "is-present"
     },
     "evidence": [
       "AAP2026_IDA"
@@ -937,7 +915,7 @@
       "level": "strongly-supported",
       "points": 95,
       "support": [
-        "Hemoglobin Bart\u2019s was reported on the newborn screen."
+        "Hemoglobin Bart’s was reported on the newborn screen."
       ]
     }
   },
@@ -946,8 +924,7 @@
     "category": "differential",
     "when": {
       "fact": "hemoglobinAnalysis.alphaGlobinPositive",
-      "op": "eq",
-      "value": true
+      "op": "is-present"
     },
     "evidence": [
       "AAP2026_IDA"
@@ -979,7 +956,7 @@
       "level": "meets-defined-pattern",
       "points": 110,
       "support": [
-        "Blood lead level {{lead.value}} \u00b5g/dL is at or above the CDC reference value of 3.5 \u00b5g/dL."
+        "Blood lead level {{lead.value}} µg/dL is at or above the CDC reference value of 3.5 µg/dL."
       ]
     }
   },
@@ -1002,13 +979,11 @@
           "any": [
             {
               "fact": "history.leadExposureRisk",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "history.pica",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "smear.basophilicStippling",
@@ -1161,8 +1136,7 @@
         },
         {
           "fact": "history.bleedingHistory",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -1196,8 +1170,7 @@
         },
         {
           "fact": "history.bleedingHistory",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -1219,8 +1192,7 @@
     "category": "differential",
     "when": {
       "fact": "symptoms.activeMajorBleeding",
-      "op": "eq",
-      "value": true
+      "op": "is-present"
     },
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
@@ -1287,8 +1259,7 @@
         },
         {
           "fact": "symptoms.jaundiceOrDarkUrine",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -1419,13 +1390,11 @@
           "any": [
             {
               "fact": "exam.splenomegaly",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "history.knownHereditarySpherocytosis",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             }
           ]
         }
@@ -1482,8 +1451,7 @@
         },
         {
           "fact": "history.oxidantTrigger",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -1515,13 +1483,11 @@
           "any": [
             {
               "fact": "g6pd.testedDuringAcuteHemolysis",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "g6pd.testedSoonAfterTransfusion",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             }
           ]
         },
@@ -1534,8 +1500,7 @@
             },
             {
               "fact": "history.oxidantTrigger",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             }
           ]
         }
@@ -1600,8 +1565,7 @@
       "any": [
         {
           "fact": "hemoglobinAnalysis.sicklingHemoglobinDetected",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         },
         {
           "fact": "smear.sickleCells",
@@ -1610,8 +1574,7 @@
         },
         {
           "fact": "history.knownSickleCellDisease",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -1635,13 +1598,11 @@
       "all": [
         {
           "fact": "history.malariaRisk",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         },
         {
           "fact": "symptoms.fever",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         },
         {
           "any": [
@@ -1694,8 +1655,7 @@
         },
         {
           "fact": "history.renalSignal",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -1734,13 +1694,11 @@
         },
         {
           "fact": "cbc.isolatedAnemia",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         },
         {
           "fact": "history.recentViral",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         },
         {
           "fact": "marrow.ageCompatibleWithTec",
@@ -1752,18 +1710,15 @@
             "any": [
               {
                 "fact": "exam.splenomegaly",
-                "op": "eq",
-                "value": true
+                "op": "is-present"
               },
               {
                 "fact": "exam.hepatomegaly",
-                "op": "eq",
-                "value": true
+                "op": "is-present"
               },
               {
                 "fact": "exam.lymphadenopathy",
-                "op": "eq",
-                "value": true
+                "op": "is-present"
               },
               {
                 "fact": "smear.blasts",
@@ -1808,13 +1763,11 @@
         },
         {
           "fact": "history.knownChronicHemolyticDisease",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         },
         {
           "fact": "history.recentViral",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -1848,8 +1801,7 @@
         },
         {
           "fact": "cbc.multilineageCytopenia",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -1906,23 +1858,19 @@
           "any": [
             {
               "fact": "exam.hepatomegaly",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "exam.splenomegaly",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "exam.lymphadenopathy",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "exam.petechiaeOrBruising",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             }
           ]
         }
@@ -2032,8 +1980,7 @@
         },
         {
           "fact": "cbc.neutropenia",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -2067,8 +2014,7 @@
         },
         {
           "fact": "history.thyroidSignal",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -2102,8 +2048,7 @@
         },
         {
           "fact": "history.liverSignal",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -2137,8 +2082,7 @@
         },
         {
           "fact": "history.medicationMacrocytosisRisk",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         }
       ]
     },
@@ -2217,8 +2161,7 @@
             },
             {
               "fact": "cbc.multilineageCytopenia",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             }
           ]
         }
@@ -2264,8 +2207,7 @@
         },
         {
           "fact": "cbc.isolatedAnemia",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         },
         {
           "fact": "marrow.congenitalSignalCount",
@@ -2299,25 +2241,21 @@
         },
         {
           "fact": "cbc.multilineageCytopenia",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         },
         {
           "any": [
             {
               "fact": "history.thumbOrRadiusAnomaly",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "history.abnormalSkinPigmentation",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "history.shortStature",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             }
           ]
         }
@@ -2386,8 +2324,7 @@
     "category": "differential",
     "when": {
       "fact": "patient.recentTransfusion",
-      "op": "eq",
-      "value": true
+      "op": "is-present"
     },
     "evidence": [
       "BLOOD2022_PED_ANEMIA",
@@ -2420,19 +2357,16 @@
         },
         {
           "fact": "history.priorAdequateIronTrialNoResponse",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         },
         {
           "fact": "history.adherenceVerified",
-          "op": "eq",
-          "value": true
+          "op": "is-present"
         },
         {
           "not": {
             "fact": "history.ongoingBloodLossKnown",
-            "op": "eq",
-            "value": true
+            "op": "is-present"
           }
         }
       ]
@@ -2645,18 +2579,15 @@
               },
               {
                 "fact": "hemoglobinAnalysis.hbBartNewbornScreen",
-                "op": "eq",
-                "value": true
+                "op": "is-present"
               },
               {
                 "fact": "hemoglobinAnalysis.alphaGlobinPositive",
-                "op": "eq",
-                "value": true
+                "op": "is-present"
               },
               {
                 "fact": "hemoglobinAnalysis.betaGlobinPositive",
-                "op": "eq",
-                "value": true
+                "op": "is-present"
               }
             ]
           }
@@ -2693,13 +2624,11 @@
           "any": [
             {
               "fact": "history.leadExposureRisk",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "history.pica",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "smear.basophilicStippling",
@@ -2732,9 +2661,10 @@
           "value": true
         },
         {
-          "fact": "history.bleedingHistory",
-          "op": "eq",
-          "value": false
+          "not": {
+            "fact": "history.bleedingHistory",
+            "op": "is-present"
+          }
         }
       ]
     },
@@ -2798,9 +2728,10 @@
           "value": true
         },
         {
-          "fact": "history.bleedingHistory",
-          "op": "eq",
-          "value": false
+          "not": {
+            "fact": "history.bleedingHistory",
+            "op": "is-present"
+          }
         }
       ]
     },
@@ -2835,18 +2766,15 @@
             "any": [
               {
                 "fact": "history.renalSignal",
-                "op": "eq",
-                "value": true
+                "op": "is-present"
               },
               {
                 "fact": "history.chronicInflammation",
-                "op": "eq",
-                "value": true
+                "op": "is-present"
               },
               {
                 "fact": "cbc.multilineageCytopenia",
-                "op": "eq",
-                "value": true
+                "op": "is-present"
               }
             ]
           }
@@ -2955,8 +2883,7 @@
             },
             {
               "fact": "cbc.multilineageCytopenia",
-              "op": "eq",
-              "value": true
+              "op": "is-present"
             },
             {
               "fact": "morphology.macrocytic",
@@ -2983,8 +2910,7 @@
     "category": "adaptive-question",
     "when": {
       "fact": "cbc.multilineageCytopenia",
-      "op": "eq",
-      "value": true
+      "op": "is-present"
     },
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
@@ -3012,7 +2938,7 @@
       "type": "alert",
       "severity": "important",
       "title": "Elevated capillary lead screen requires venous confirmation",
-      "detail": "The capillary blood lead level is at or above 3.5 \u00b5g/dL. CDC guidance calls for confirmatory venous testing on a level-dependent timeline.",
+      "detail": "The capillary blood lead level is at or above 3.5 µg/dL. CDC guidance calls for confirmatory venous testing on a level-dependent timeline.",
       "actions": [
         "Arrange confirmatory venous testing using the current CDC/local timeline.",
         "Take an environmental exposure history and assess for coexisting iron deficiency."

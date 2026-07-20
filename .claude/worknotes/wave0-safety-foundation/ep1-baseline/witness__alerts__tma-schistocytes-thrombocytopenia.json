@@ -1,0 +1,511 @@
+{
+  "meta": {
+    "engine": "Pediatric Anemia Deterministic CDSS",
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "evidenceReviewedThrough": "2026-07-15",
+    "generatedAt": "x",
+    "intendedUser": "Licensed health care professional",
+    "status": "Research prototype—not clinically validated"
+  },
+  "classification": {
+    "anemiaStatus": "present",
+    "hemoglobin": 7.8,
+    "hemoglobinLowerLimit": 11,
+    "morphology": "normocytic",
+    "mcv": 80,
+    "mcvLowerLimit": 74.1,
+    "mcvUpperLimit": 84.3,
+    "rdw": 16.5,
+    "rdwHigh": true,
+    "reticulocyteResponse": "high",
+    "thresholdSource": "AAP2026_IDA",
+    "ageBand": "2 to <6 years"
+  },
+  "alerts": [
+    {
+      "id": "ALERT-006",
+      "severity": "emergency",
+      "title": "Possible thrombotic microangiopathy or severe microangiopathic process",
+      "detail": "Schistocytes plus thrombocytopenia, renal, or neurologic findings were selected.",
+      "actions": [
+        "Use immediate local emergency/hematology/nephrology evaluation; confirm smear and obtain organ-injury/coagulation studies."
+      ],
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA"
+      ]
+    },
+    {
+      "id": "ALERT-004",
+      "severity": "urgent",
+      "title": "Anemia with another cytopenia",
+      "detail": "Leukopenia, neutropenia, or thrombocytopenia was flagged with anemia; this broadens concern beyond isolated nutritional anemia.",
+      "actions": [
+        "Obtain prompt expert CBC differential and smear review.",
+        "Consider urgent pediatric hematology/oncology evaluation based on severity and clinical findings."
+      ],
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA"
+      ]
+    }
+  ],
+  "rankedDifferential": [
+    {
+      "id": "microangiopathic-hemolysis",
+      "label": "Microangiopathic or mechanical hemolysis pattern",
+      "category": "urgent hemolytic anemia",
+      "summary": "Schistocytes with hemolysis may indicate microangiopathic or mechanical red-cell destruction; thrombocytopenia, renal, or neurologic findings increase urgency.",
+      "defaultNextSteps": [
+        "Urgently correlate with platelets, renal function, neurologic findings, coagulation studies, blood pressure, infection history, and expert smear review."
+      ],
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA"
+      ],
+      "level": "strongly-supported",
+      "score": 105,
+      "matchedRules": [
+        "TMA-001"
+      ],
+      "supportingFindings": [
+        "Schistocytes coexist with biochemical hemolysis or an elevated reticulocyte response."
+      ],
+      "cautions": [],
+      "nextSteps": [
+        "Urgently correlate with platelets, renal function, neurologic findings, coagulation studies, blood pressure, infection history, and expert smear review."
+      ],
+      "rank": 1
+    },
+    {
+      "id": "hemolysis-unspecified",
+      "label": "Hemolytic anemia pattern—etiology not yet specified",
+      "category": "high-destruction anemia",
+      "summary": "Anemia with elevated reticulocyte response and biochemical or clinical evidence of red-cell destruction.",
+      "defaultNextSteps": [
+        "Review smear, DAT, bilirubin fractionation, LDH, haptoglobin, urinalysis, medication/exposure history, family history, and newborn-screen/hemoglobinopathy data.",
+        "Interpret haptoglobin and other markers in age, liver, inflammatory, and specimen context."
+      ],
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA"
+      ],
+      "level": "strongly-supported",
+      "score": 100,
+      "matchedRules": [
+        "HEM-001"
+      ],
+      "supportingFindings": [
+        "Anemia, elevated reticulocyte response, and at least two biochemical hemolysis markers were supplied."
+      ],
+      "cautions": [],
+      "nextSteps": [
+        "Review smear, DAT, bilirubin fractionation, LDH, haptoglobin, urinalysis, medication/exposure history, family history, and newborn-screen/hemoglobinopathy data.",
+        "Interpret haptoglobin and other markers in age, liver, inflammatory, and specimen context."
+      ],
+      "rank": 2
+    }
+  ],
+  "nextQuestions": [
+    {
+      "id": "Q-CYT-001",
+      "priority": 4,
+      "section": "urgent",
+      "prompt": "Has the CBC differential and smear been urgently reviewed, and is pediatric hematology/oncology involved?",
+      "why": "Anemia with another cytopenia may indicate marrow failure, infiltration, severe infection, immune disease, or other systemic pathology.",
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA"
+      ]
+    },
+    {
+      "id": "Q-NORMO-HIGH-002",
+      "priority": 11,
+      "section": "normocytic-high-retic",
+      "prompt": "Is there occult or overt blood loss?",
+      "why": "Blood loss and hemolysis are the main high-reticulocyte branches.",
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA"
+      ]
+    }
+  ],
+  "interpretiveNotes": [],
+  "limitations": [
+    "This output is a deterministic clinical decision-support reference, not a diagnosis, treatment order, or substitute for examination and specialist judgment.",
+    "The ranking is rule priority—not a calibrated probability, sensitivity, specificity, or risk score.",
+    "Only supplied data are evaluated; missing, mistyped, or unit-mismatched data can materially change the output.",
+    "Local laboratory reference intervals, specimen methods, and clinical context override built-in fallback intervals."
+  ],
+  "provenance": {
+    "evaluatedRuleCount": 91,
+    "matchedRuleIds": [
+      "ALERT-004",
+      "ALERT-006",
+      "HEM-001",
+      "TMA-001",
+      "Q-NORMO-HIGH-002",
+      "Q-CYT-001"
+    ],
+    "ruleAudit": [
+      {
+        "ruleId": "SCOPE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SCOPE-002",
+        "matched": false
+      },
+      {
+        "ruleId": "SCOPE-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-002",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-004",
+        "matched": true
+      },
+      {
+        "ruleId": "ALERT-005",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-006",
+        "matched": true
+      },
+      {
+        "ruleId": "ALERT-007",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-008",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-009",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-002",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-003",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-004",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-005",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-006",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-002",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-004",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-005",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-006",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-001",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-002",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-003",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-004",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-001",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-002",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-BETA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-BETA-002",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-ALPHA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-ALPHA-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-001",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-003",
+        "matched": false
+      },
+      {
+        "ruleId": "SID-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SID-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-001",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-003",
+        "matched": false
+      },
+      {
+        "ruleId": "HEM-001",
+        "matched": true
+      },
+      {
+        "ruleId": "HEM-002",
+        "matched": false
+      },
+      {
+        "ruleId": "HEM-003",
+        "matched": false
+      },
+      {
+        "ruleId": "AIHA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "HS-001",
+        "matched": false
+      },
+      {
+        "ruleId": "HS-002",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-001",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-002",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-003",
+        "matched": false
+      },
+      {
+        "ruleId": "TMA-001",
+        "matched": true
+      },
+      {
+        "ruleId": "SICKLE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MAL-001",
+        "matched": false
+      },
+      {
+        "ruleId": "REN-001",
+        "matched": false
+      },
+      {
+        "ruleId": "TEC-001",
+        "matched": false
+      },
+      {
+        "ruleId": "PARVO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-002",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-003",
+        "matched": false
+      },
+      {
+        "ruleId": "MEG-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MEG-002",
+        "matched": false
+      },
+      {
+        "ruleId": "COPPER-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-003",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-004",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-001",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-DBA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-FANCONI-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MIX-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MIX-002",
+        "matched": false
+      },
+      {
+        "ruleId": "IRIDA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-003",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-004",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-005",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-003",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-004",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-005",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-NORMO-HIGH-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-NORMO-HIGH-002",
+        "matched": true
+      },
+      {
+        "ruleId": "Q-NORMO-LOW-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MACRO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MACRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-SMEAR-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-CYT-001",
+        "matched": true
+      },
+      {
+        "ruleId": "ALERT-LEAD-CAPILLARY",
+        "matched": false
+      }
+    ]
+  }
+}

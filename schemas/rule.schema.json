@@ -46,7 +46,11 @@
           "additionalProperties": false,
           "properties": {
             "fact": { "type": "string", "minLength": 1 },
-            "op": { "type": "string", "enum": ["eq", "neq", "gt", "gte", "lt", "lte", "in", "not-in", "includes", "exists", "missing", "truthy", "falsy"] },
+            "op": {
+              "description": "EP-1 / SPIKE-003 adds is-present, is-absent, is-unknown, and is-not-assessed; is-unknown and is-not-assessed are synonyms.",
+              "type": "string",
+              "enum": ["eq", "neq", "gt", "gte", "lt", "lte", "in", "not-in", "includes", "exists", "missing", "truthy", "falsy", "is-present", "is-absent", "is-unknown", "is-not-assessed"]
+            },
             "value": {}
           }
         }

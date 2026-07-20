@@ -18,6 +18,7 @@ import {
   getBuiltInAnalyteValue,
   getThreshold,
 } from '../../src/ranges/registry.js';
+import { toTri } from '../../src/facts/tristate.js';
 
 const MODULE_ID = 'anemia';
 
@@ -39,7 +40,7 @@ registerAnalyteBands(MODULE_ID, 'mcv', unpackBands(['mcvLower', 'mcvUpper']));
 registerAnalyteBands(MODULE_ID, 'rdw', unpackBands(['rdwUpper']));
 
 function ferritinThresholdRule({ ageMonths, menstruating } = {}) {
-  if (menstruating === true) {
+  if (toTri(menstruating) === 'true') {
     return { value: 30, source: 'AAP2026_IDA', rationale: 'all menstruating patients' };
   }
   if (!Number.isFinite(ageMonths)) return null;

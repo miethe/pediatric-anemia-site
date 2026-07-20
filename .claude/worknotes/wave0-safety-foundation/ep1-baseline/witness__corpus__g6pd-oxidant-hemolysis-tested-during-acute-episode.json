@@ -1,0 +1,488 @@
+{
+  "meta": {
+    "engine": "Pediatric Anemia Deterministic CDSS",
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "evidenceReviewedThrough": "2026-07-15",
+    "generatedAt": "x",
+    "intendedUser": "Licensed health care professional",
+    "status": "Research prototype—not clinically validated"
+  },
+  "classification": {
+    "anemiaStatus": "present",
+    "hemoglobin": 8,
+    "hemoglobinLowerLimit": 11,
+    "morphology": "normocytic",
+    "mcv": 84,
+    "mcvLowerLimit": 74.1,
+    "mcvUpperLimit": 84.3,
+    "rdw": null,
+    "rdwHigh": null,
+    "reticulocyteResponse": "high",
+    "thresholdSource": "AAP2026_IDA",
+    "ageBand": "2 to <6 years"
+  },
+  "alerts": [],
+  "rankedDifferential": [
+    {
+      "id": "g6pd-deficiency",
+      "label": "G6PD deficiency pattern",
+      "category": "red-cell enzymopathy / hemolysis",
+      "summary": "Oxidant-associated hemolysis, bite/blister cells, or a deficient quantitative G6PD result supports G6PD deficiency.",
+      "defaultNextSteps": [
+        "Use a quantitative G6PD assay interpreted for sex, reticulocytosis, transfusion, and assay method.",
+        "If a result is normal during acute hemolysis or soon after transfusion but suspicion remains, repeat testing at baseline with hematology guidance."
+      ],
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA",
+        "BSH2020_G6PD"
+      ],
+      "level": "strongly-supported",
+      "score": 140,
+      "matchedRules": [
+        "G6PD-002",
+        "G6PD-003"
+      ],
+      "supportingFindings": [
+        "Hemolysis, bite/blister cells, and an oxidant medication/fava exposure were supplied.",
+        "The normal G6PD assay was obtained in a context that can obscure deficiency, and clinical/smear suspicion remains."
+      ],
+      "cautions": [],
+      "nextSteps": [
+        "Use a quantitative G6PD assay interpreted for sex, reticulocytosis, transfusion, and assay method.",
+        "If a result is normal during acute hemolysis or soon after transfusion but suspicion remains, repeat testing at baseline with hematology guidance."
+      ],
+      "rank": 1
+    },
+    {
+      "id": "hemolysis-unspecified",
+      "label": "Hemolytic anemia pattern—etiology not yet specified",
+      "category": "high-destruction anemia",
+      "summary": "Anemia with elevated reticulocyte response and biochemical or clinical evidence of red-cell destruction.",
+      "defaultNextSteps": [
+        "Review smear, DAT, bilirubin fractionation, LDH, haptoglobin, urinalysis, medication/exposure history, family history, and newborn-screen/hemoglobinopathy data.",
+        "Interpret haptoglobin and other markers in age, liver, inflammatory, and specimen context."
+      ],
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA"
+      ],
+      "level": "strongly-supported",
+      "score": 100,
+      "matchedRules": [
+        "HEM-001"
+      ],
+      "supportingFindings": [
+        "Anemia, elevated reticulocyte response, and at least two biochemical hemolysis markers were supplied."
+      ],
+      "cautions": [],
+      "nextSteps": [
+        "Review smear, DAT, bilirubin fractionation, LDH, haptoglobin, urinalysis, medication/exposure history, family history, and newborn-screen/hemoglobinopathy data.",
+        "Interpret haptoglobin and other markers in age, liver, inflammatory, and specimen context."
+      ],
+      "rank": 2
+    }
+  ],
+  "nextQuestions": [
+    {
+      "id": "Q-NORMO-HIGH-002",
+      "priority": 11,
+      "section": "normocytic-high-retic",
+      "prompt": "Is there occult or overt blood loss?",
+      "why": "Blood loss and hemolysis are the main high-reticulocyte branches.",
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA"
+      ]
+    }
+  ],
+  "interpretiveNotes": [
+    {
+      "id": "NOTE-004",
+      "title": "Normal G6PD result may be falsely reassuring",
+      "detail": "A normal assay during acute reticulocytosis/hemolysis or soon after transfusion may not exclude G6PD deficiency. Repeat quantitative testing at baseline if suspicion remains.",
+      "evidence": [
+        "BSH2020_G6PD"
+      ]
+    }
+  ],
+  "limitations": [
+    "This output is a deterministic clinical decision-support reference, not a diagnosis, treatment order, or substitute for examination and specialist judgment.",
+    "The ranking is rule priority—not a calibrated probability, sensitivity, specificity, or risk score.",
+    "Only supplied data are evaluated; missing, mistyped, or unit-mismatched data can materially change the output.",
+    "Local laboratory reference intervals, specimen methods, and clinical context override built-in fallback intervals."
+  ],
+  "provenance": {
+    "evaluatedRuleCount": 91,
+    "matchedRuleIds": [
+      "NOTE-004",
+      "HEM-001",
+      "G6PD-002",
+      "G6PD-003",
+      "Q-NORMO-HIGH-002"
+    ],
+    "ruleAudit": [
+      {
+        "ruleId": "SCOPE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SCOPE-002",
+        "matched": false
+      },
+      {
+        "ruleId": "SCOPE-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-002",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-004",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-005",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-006",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-007",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-008",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-009",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-002",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-003",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-004",
+        "matched": true
+      },
+      {
+        "ruleId": "NOTE-005",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-006",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-002",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-004",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-005",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-006",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-001",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-002",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-003",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-004",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-001",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-002",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-BETA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-BETA-002",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-ALPHA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-ALPHA-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-001",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-003",
+        "matched": false
+      },
+      {
+        "ruleId": "SID-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SID-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-001",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-003",
+        "matched": false
+      },
+      {
+        "ruleId": "HEM-001",
+        "matched": true
+      },
+      {
+        "ruleId": "HEM-002",
+        "matched": false
+      },
+      {
+        "ruleId": "HEM-003",
+        "matched": false
+      },
+      {
+        "ruleId": "AIHA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "HS-001",
+        "matched": false
+      },
+      {
+        "ruleId": "HS-002",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-001",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-002",
+        "matched": true
+      },
+      {
+        "ruleId": "G6PD-003",
+        "matched": true
+      },
+      {
+        "ruleId": "TMA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SICKLE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MAL-001",
+        "matched": false
+      },
+      {
+        "ruleId": "REN-001",
+        "matched": false
+      },
+      {
+        "ruleId": "TEC-001",
+        "matched": false
+      },
+      {
+        "ruleId": "PARVO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-002",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-003",
+        "matched": false
+      },
+      {
+        "ruleId": "MEG-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MEG-002",
+        "matched": false
+      },
+      {
+        "ruleId": "COPPER-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-003",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-004",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-001",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-DBA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-FANCONI-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MIX-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MIX-002",
+        "matched": false
+      },
+      {
+        "ruleId": "IRIDA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-003",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-004",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-005",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-003",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-004",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-005",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-NORMO-HIGH-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-NORMO-HIGH-002",
+        "matched": true
+      },
+      {
+        "ruleId": "Q-NORMO-LOW-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MACRO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MACRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-SMEAR-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-CYT-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-LEAD-CAPILLARY",
+        "matched": false
+      }
+    ]
+  }
+}

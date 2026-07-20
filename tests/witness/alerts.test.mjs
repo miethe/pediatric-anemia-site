@@ -20,6 +20,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { assessPediatricAnemia } from '../../src/engine.js';
 import { deriveFacts } from '../../modules/anemia/facts.anemia.js';
+import { toTri } from '../../src/facts/tristate.js';
 
 const rules = JSON.parse(await readFile(new URL('../../modules/anemia/rules.json', import.meta.url), 'utf8'));
 const candidates = JSON.parse(
@@ -117,8 +118,8 @@ test('ALERT-006 (schistocytes + numerically-derived thrombocytopenia ONLY — po
   // being silently masked by a second satisfied arm.
   const facts = deriveFacts(input);
   assert.equal(
-    facts.cbc.thrombocytopenia,
-    true,
+    toTri(facts.cbc.thrombocytopenia),
+    'true',
     'cbc.thrombocytopenia must be derived TRUE from platelets(42) < localRanges.plateletsLower(150) — ' +
       'this fixture supplies no localFlags override and no renal/neurologic symptom, so this is the only ' +
       'arm available to drive ALERT-006',
@@ -126,9 +127,9 @@ test('ALERT-006 (schistocytes + numerically-derived thrombocytopenia ONLY — po
   assert.equal(input.symptoms?.renalSymptoms, undefined, 'this fixture must not also satisfy the renal arm');
   assert.equal(input.symptoms?.oliguria, undefined, 'this fixture must not also satisfy the renal arm');
   assert.equal(
-    facts.symptoms.neurologicSymptoms,
-    false,
-    'this fixture must not also satisfy the neurologic arm',
+    toTri(facts.symptoms.neurologicSymptoms),
+    'unknown',
+    'this fixture does not report the neurologic arm, so it must remain unknown rather than regress to false',
   );
 });
 
@@ -139,15 +140,23 @@ test('ALERT-006 (schistocytes + renal symptoms ONLY, no thrombocytopenia — pos
   assert.equal(entry.title, 'Possible thrombotic microangiopathy or severe microangiopathic process');
 
   // Isolates the `symptoms.renalSymptoms` arm: no localFlags override and no localRanges
-  // plateletsLower supplied, so cbc.thrombocytopenia must be false here.
+  // plateletsLower supplied, so cbc.thrombocytopenia must not be present here.
   const facts = deriveFacts(input);
   assert.equal(
-    facts.cbc.thrombocytopenia,
-    false,
-    'this fixture must NOT witness ALERT-006 via thrombocytopenia — it isolates the renal-symptoms arm',
+    toTri(facts.cbc.thrombocytopenia),
+    'unknown',
+    'this fixture does not report thrombocytopenia or its lower bound, so that arm must remain unknown',
   );
-  assert.equal(facts.symptoms.renalSymptoms, true, 'the renal-symptoms arm must be the one driving this alert');
-  assert.equal(facts.symptoms.neurologicSymptoms, false, 'this fixture must not also satisfy the neurologic arm');
+  assert.equal(
+    toTri(facts.symptoms.renalSymptoms),
+    'true',
+    'the renal-symptoms arm must be the one driving this alert',
+  );
+  assert.equal(
+    toTri(facts.symptoms.neurologicSymptoms),
+    'unknown',
+    'this fixture does not report the neurologic arm, so it must remain unknown rather than regress to false',
+  );
 });
 
 test('ALERT-006 (schistocytes + neurologic symptoms ONLY — possible TMA) fires as an emergency alert, not a note', async () => {
@@ -162,18 +171,18 @@ test('ALERT-006 (schistocytes + neurologic symptoms ONLY — possible TMA) fires
   // does NOT catch that; only a per-arm witness does.
   const facts = deriveFacts(input);
   assert.equal(
-    facts.cbc.thrombocytopenia,
-    false,
-    'this fixture must NOT witness ALERT-006 via thrombocytopenia — it isolates the neurologic arm',
+    toTri(facts.cbc.thrombocytopenia),
+    'unknown',
+    'this fixture does not report thrombocytopenia or its lower bound, so that arm must remain unknown',
   );
   assert.equal(
-    facts.symptoms.renalSymptoms,
-    false,
-    'this fixture must NOT witness ALERT-006 via renal symptoms — it isolates the neurologic arm',
+    toTri(facts.symptoms.renalSymptoms),
+    'unknown',
+    'this fixture does not report the renal-symptoms arm, so it must remain unknown rather than regress to false',
   );
   assert.equal(
-    facts.symptoms.neurologicSymptoms,
-    true,
+    toTri(facts.symptoms.neurologicSymptoms),
+    'true',
     'the neurologic-symptoms arm must be the one driving this alert',
   );
 });
@@ -195,14 +204,14 @@ test('ALERT-006: every arm of its `any` is witnessed in isolation by exactly one
       facts.cbc.thrombocytopenia,
       facts.symptoms.renalSymptoms,
       facts.symptoms.neurologicSymptoms,
-    ].filter(Boolean).length;
+    ].filter((value) => toTri(value) === 'true').length;
     assert.equal(
       satisfied,
       1,
       `${name} must satisfy exactly ONE arm of ALERT-006's \`any\` (satisfies ${satisfied}) — `
         + 'a fixture satisfying two arms cannot detect either one breaking',
     );
-    assert.equal(targetArm(facts), true, `${name} must satisfy its own designated arm`);
+    assert.equal(toTri(targetArm(facts)), 'true', `${name} must satisfy its own designated arm`);
     assert.equal(facts.smear.schistocytes, true, `${name} must supply schistocytes`);
   }
 });

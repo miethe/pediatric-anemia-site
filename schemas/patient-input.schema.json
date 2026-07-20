@@ -113,7 +113,13 @@
   "$defs": {
     "booleanMap": {
       "type": "object",
-      "additionalProperties": { "type": "boolean" }
+      "description": "Wire-compatible boolean fact map: callers may continue sending bare JSON booleans or send the SPIKE-003 tri-state strings true, false, or unknown. Field names remain open here; scripts/validate-kb.mjs validates rule-referenced history.*, symptoms.*, and exam.* paths against the maintained allow-list.",
+      "additionalProperties": {
+        "anyOf": [
+          { "type": "boolean" },
+          { "type": "string", "enum": ["true", "false", "unknown"] }
+        ]
+      }
     },
     "genericStatus": { "type": "string", "enum": ["unknown", "normal", "high"] },
     "lowNormalHigh": { "type": "string", "enum": ["unknown", "low", "normal", "high"] },

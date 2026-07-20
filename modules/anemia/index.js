@@ -26,12 +26,12 @@ function limitations(facts) {
       'Built-in CBC reference intervals are not validated for this age. A neonatal/young-infant or adult-specific pathway and local intervals are required.',
     );
   }
-  if (facts.patient.recentTransfusion) {
+  if (facts.patient.recentTransfusion === 'true') {
     items.push(
       'Recent transfusion can obscure MCV, reticulocyte response, hemoglobin analysis, red-cell enzyme assays, and hemolysis interpretation.',
     );
   }
-  if (facts.patient.highAltitude) {
+  if (facts.patient.highAltitude === 'true') {
     items.push(
       'High-altitude hemoglobin interpretation requires locally appropriate adjustment; no altitude correction is applied in this prototype.',
     );

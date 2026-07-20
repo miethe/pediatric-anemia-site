@@ -59,6 +59,13 @@ after EP-1's migration lands (see EP-1-T7 here and EP-2-T5 in the EP-2 phase fil
 
 ## Task Table
 
+> **⚠ The figures in the rows below are the SUPERSEDED charter numbers.** The AMENDMENT above is
+> authoritative: **49 rules** (not 33), **60** boolean fields (not 56), **25** `=== true` occurrences
+> (not 19). EP1-T1's "enumerated allow-list" lean was also superseded by SPIKE-003 RQ4 (schema stays
+> open + `anyOf`, with a fail-closed allow-list in `validate-kb.mjs`), and the 4th `not-assessed`
+> enum state was rejected — `is-unknown`/`is-not-assessed` ship as synonym operators over a 3-value
+> `Tri`. As-built detail: `ep1-migration-design.md` and `ep1-migration-record.md`.
+
 | Task ID | Task Name | Description | Acceptance Criteria | Estimate | Subagent(s) | Model | Effort | Dependencies |
 |---------|-----------|--------------|----------------------|----------|-------------|-------|--------|--------------|
 | EP1-T1 | Replace `booleanMap` with `triState` schema | Per FR-WP1-01: replace `patient-input.schema.json`'s `booleanMap` $def (`:114-117`) with a `triState` $def. Per SPIKE-003 RQ4/OQ-1's lean, the 56 known `history.*`/`symptoms.*`/`exam.*` fields become an explicit per-module enumerated allow-list (not global open `additionalProperties`), each valued `present`/`absent`/`unknown`/`not-assessed`. | Schema rejects an unrecognized field name — today's silent typo-reads-as-absent becomes a validation failure. | 1.5 pts | general-purpose | sonnet | high | EP-0 (SPIKE-003 RQ4) |

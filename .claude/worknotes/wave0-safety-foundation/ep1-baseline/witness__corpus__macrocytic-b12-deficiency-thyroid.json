@@ -1,0 +1,487 @@
+{
+  "meta": {
+    "engine": "Pediatric Anemia Deterministic CDSS",
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "evidenceReviewedThrough": "2026-07-15",
+    "generatedAt": "x",
+    "intendedUser": "Licensed health care professional",
+    "status": "Research prototype—not clinically validated"
+  },
+  "classification": {
+    "anemiaStatus": "present",
+    "hemoglobin": 9,
+    "hemoglobinLowerLimit": 11.4,
+    "morphology": "macrocytic",
+    "mcv": 98,
+    "mcvLowerLimit": 80.5,
+    "mcvUpperLimit": 91.8,
+    "rdw": null,
+    "rdwHigh": null,
+    "reticulocyteResponse": "unknown",
+    "thresholdSource": "AAP2026_IDA",
+    "ageBand": "12 to <18 years"
+  },
+  "alerts": [],
+  "rankedDifferential": [
+    {
+      "id": "b12-folate-deficiency",
+      "label": "Vitamin B12 or folate deficiency pattern",
+      "category": "megaloblastic / macrocytic anemia",
+      "summary": "Macrocytosis with low B12/folate or hypersegmented neutrophils supports a megaloblastic pathway.",
+      "defaultNextSteps": [
+        "Confirm the deficient nutrient and investigate diet, malabsorption, medications, autoimmune disease, and associated neurologic findings.",
+        "Consider mixed iron deficiency when RDW is high or MCV is not frankly elevated."
+      ],
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA"
+      ],
+      "level": "strongly-supported",
+      "score": 170,
+      "matchedRules": [
+        "MEG-001",
+        "MEG-002"
+      ],
+      "supportingFindings": [
+        "Macrocytic anemia coexists with a locally interpreted low vitamin B12 or folate result.",
+        "Macrocytosis and hypersegmented neutrophils support a megaloblastic process."
+      ],
+      "cautions": [],
+      "nextSteps": [
+        "Confirm the deficient nutrient and investigate diet, malabsorption, medications, autoimmune disease, and associated neurologic findings.",
+        "Consider mixed iron deficiency when RDW is high or MCV is not frankly elevated."
+      ],
+      "rank": 1
+    },
+    {
+      "id": "thyroid-liver-medication-macrocytosis",
+      "label": "Non-megaloblastic macrocytosis pattern",
+      "category": "macrocytic anemia",
+      "summary": "Thyroid disease, liver disease, reticulocytosis, or medication exposure may produce macrocytosis without primary B12/folate deficiency.",
+      "defaultNextSteps": [
+        "Review TSH, liver tests, reticulocyte response, medication list, alcohol/toxin exposure where age-appropriate, and smear."
+      ],
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA"
+      ],
+      "level": "supported",
+      "score": 65,
+      "matchedRules": [
+        "MACRO-001"
+      ],
+      "supportingFindings": [
+        "Macrocytic anemia coexists with thyroid disease or elevated TSH."
+      ],
+      "cautions": [],
+      "nextSteps": [
+        "Review TSH, liver tests, reticulocyte response, medication list, alcohol/toxin exposure where age-appropriate, and smear."
+      ],
+      "rank": 2
+    }
+  ],
+  "nextQuestions": [
+    {
+      "id": "Q-004",
+      "priority": 5,
+      "section": "reticulocytes",
+      "prompt": "Is the reticulocyte response low/inappropriately normal or high for this patient and laboratory?",
+      "why": "Reticulocyte response is the highest-yield discriminator between impaired production and blood loss/hemolysis.",
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA"
+      ]
+    },
+    {
+      "id": "Q-MACRO-001",
+      "priority": 10,
+      "section": "macrocytic",
+      "prompt": "What is the reticulocyte response?",
+      "why": "Reticulocytosis itself can elevate MCV; low reticulocytes suggest production failure.",
+      "evidence": [
+        "BLOOD2022_PED_ANEMIA"
+      ]
+    }
+  ],
+  "interpretiveNotes": [],
+  "limitations": [
+    "This output is a deterministic clinical decision-support reference, not a diagnosis, treatment order, or substitute for examination and specialist judgment.",
+    "The ranking is rule priority—not a calibrated probability, sensitivity, specificity, or risk score.",
+    "Only supplied data are evaluated; missing, mistyped, or unit-mismatched data can materially change the output.",
+    "Local laboratory reference intervals, specimen methods, and clinical context override built-in fallback intervals.",
+    "Reticulocyte response is missing, limiting discrimination between production failure and blood loss/hemolysis."
+  ],
+  "provenance": {
+    "evaluatedRuleCount": 91,
+    "matchedRuleIds": [
+      "MEG-001",
+      "MEG-002",
+      "MACRO-001",
+      "Q-004",
+      "Q-MACRO-001"
+    ],
+    "ruleAudit": [
+      {
+        "ruleId": "SCOPE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SCOPE-002",
+        "matched": false
+      },
+      {
+        "ruleId": "SCOPE-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-002",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-004",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-005",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-006",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-007",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-008",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-009",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-002",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-003",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-004",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-005",
+        "matched": false
+      },
+      {
+        "ruleId": "NOTE-006",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-002",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-003",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-004",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-005",
+        "matched": false
+      },
+      {
+        "ruleId": "ID-006",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-001",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-002",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-003",
+        "matched": false
+      },
+      {
+        "ruleId": "AINF-004",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-001",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-002",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-BETA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-BETA-002",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-ALPHA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "THAL-ALPHA-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-001",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LEAD-003",
+        "matched": false
+      },
+      {
+        "ruleId": "SID-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SID-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-001",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-002",
+        "matched": false
+      },
+      {
+        "ruleId": "LOSS-003",
+        "matched": false
+      },
+      {
+        "ruleId": "HEM-001",
+        "matched": false
+      },
+      {
+        "ruleId": "HEM-002",
+        "matched": false
+      },
+      {
+        "ruleId": "HEM-003",
+        "matched": false
+      },
+      {
+        "ruleId": "AIHA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "HS-001",
+        "matched": false
+      },
+      {
+        "ruleId": "HS-002",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-001",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-002",
+        "matched": false
+      },
+      {
+        "ruleId": "G6PD-003",
+        "matched": false
+      },
+      {
+        "ruleId": "TMA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "SICKLE-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MAL-001",
+        "matched": false
+      },
+      {
+        "ruleId": "REN-001",
+        "matched": false
+      },
+      {
+        "ruleId": "TEC-001",
+        "matched": false
+      },
+      {
+        "ruleId": "PARVO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-002",
+        "matched": false
+      },
+      {
+        "ruleId": "MARROW-003",
+        "matched": false
+      },
+      {
+        "ruleId": "MEG-001",
+        "matched": true
+      },
+      {
+        "ruleId": "MEG-002",
+        "matched": true
+      },
+      {
+        "ruleId": "COPPER-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-001",
+        "matched": true
+      },
+      {
+        "ruleId": "MACRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-003",
+        "matched": false
+      },
+      {
+        "ruleId": "MACRO-004",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-001",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-DBA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "IMF-FANCONI-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MIX-001",
+        "matched": false
+      },
+      {
+        "ruleId": "MIX-002",
+        "matched": false
+      },
+      {
+        "ruleId": "IRIDA-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-003",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-004",
+        "matched": true
+      },
+      {
+        "ruleId": "Q-005",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-003",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-004",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MICRO-005",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-NORMO-HIGH-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-NORMO-HIGH-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-NORMO-LOW-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-MACRO-001",
+        "matched": true
+      },
+      {
+        "ruleId": "Q-MACRO-002",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-SMEAR-001",
+        "matched": false
+      },
+      {
+        "ruleId": "Q-CYT-001",
+        "matched": false
+      },
+      {
+        "ruleId": "ALERT-LEAD-CAPILLARY",
+        "matched": false
+      }
+    ]
+  }
+}

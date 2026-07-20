@@ -1,6 +1,7 @@
 import { assessPediatricAnemia } from './engine.js';
 import { EVIDENCE, KNOWLEDGE_BASE_VERSION } from './evidence.js';
 import { initializeAlgorithmExplorer } from './algorithmExplorer.js';
+import { toTri } from './facts/tristate.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -445,7 +446,7 @@ function setSimpleField(name, val) {
   const element = field(name);
   if (!element) return;
   if (element instanceof RadioNodeList) return;
-  if (element.type === 'checkbox') element.checked = Boolean(val);
+  if (element.type === 'checkbox') element.checked = toTri(val) === 'true';
   else element.value = val ?? '';
 }
 
@@ -482,7 +483,9 @@ function populateFromInput(input) {
     const element = $(`input[name="smear"][value="${CSS.escape(smearValue)}"]`, form);
     if (element) element.checked = true;
   }
-  const hasImmediateFlag = immediateSafetyNames.some((name) => Boolean(input.symptoms?.[name]));
+  const hasImmediateFlag = immediateSafetyNames.some(
+    (name) => toTri(input.symptoms?.[name]) === 'true',
+  );
   if ($('#safety-reviewed-no-flags')) $('#safety-reviewed-no-flags').checked = !hasImmediateFlag;
   updateCaseUi();
 }

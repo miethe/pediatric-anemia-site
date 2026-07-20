@@ -132,9 +132,9 @@ success_criteria: [
   { id: "SC-3", description: "Safety invariant test green: no rule-out branch satisfiable by not-assessed (EP1-T6)", status: "pending" },
   { id: "SC-4", description: "AC-SEAM passes: ranges.js:42 correct for all 4 states (EP1-T7)", status: "pending" },
   { id: "SC-5", description: "AC-D3: zero unexplained golden diffs, every expected diff rationalized (EP1-T9)", status: "pending" },
-  { id: "SC-6", description: "Safety council-review gate passed before merge", status: "pending" },
+  { id: "SC-6", description: "Safety council-review gate passed before merge — NOT SATISFIED. Requires named human clinicians; NCR-1..NCR-4 open. No agent output can close this.", status: "pending" },
   { id: "SC-7", description: "npm run check green", status: "pending" },
-  { id: "SC-8", description: "task-completion-validator sign-off", status: "pending" }
+  { id: "SC-8", description: "Independent reviewer sign-off — adversarial review run 2026-07-20 returned FAIL on overclaiming + unmet human gates; could not refute migration mechanics. Blocking findings remediated in 3a2b9ef or registered (EP1-F6 high, open). Re-review recommended.", status: "met-with-findings" }
 ]
 
 files_modified: [

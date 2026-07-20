@@ -304,6 +304,8 @@ function morphologyWalkthrough(facts) {
     else if (mcv > high) expression = `${formatNumber(mcv)} > ${formatNumber(high)} → macrocytic`;
     else expression = `${formatNumber(low)} ≤ ${formatNumber(mcv)} ≤ ${formatNumber(high)} → normocytic`;
   }
+  // rdwHigh remains boolean|null; unexpected Tri strings conservatively fall through both
+  // strict checks below and render as "not classifiable against" rather than present or absent.
   const rdw = Number.isFinite(facts.cbc.rdw)
     ? ` RDW ${formatNumber(facts.cbc.rdw)}% is ${facts.morphology.rdwHigh === true ? 'above' : facts.morphology.rdwHigh === false ? 'not above' : 'not classifiable against'} the effective upper limit.`
     : '';
