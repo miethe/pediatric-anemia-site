@@ -228,6 +228,11 @@ lenses. Opus should decide before P5 consumes this phase's output as a qualifyin
 
 ## Commits
 
-- PED `main`: see `commit_refs` in the progress file.
+- PED `main`: **`7a73cb6`** — P4 work (rebased onto `origin/main` after PRs #5/#6 landed mid-phase;
+  zero file overlap, clean rebase). Traceability follow-up commit records the ref.
+- **Post-rebase re-validation:** the 305/305 evidence predated the two remote commits, so the combined
+  tree was re-validated before push — `npm run check` **373/373 pass, 0 fail**, `coverage:rules`
+  91/91, all four P4 lanes and all three newly-arrived lanes green individually, no cross-change-set
+  interaction failure.
 - ARC: **no commit** — Phase 4 authored no ARC changes. Pre-existing unrelated uncommitted work in the
   ARC tree (owned by another agent) was left untouched and unstaged.

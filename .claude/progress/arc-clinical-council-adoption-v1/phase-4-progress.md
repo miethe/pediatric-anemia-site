@@ -11,7 +11,7 @@ updated: '2026-07-19'
 prd_ref: docs/project_plans/expansion/00-expansion-plan.md
 plan_ref: docs/project_plans/implementation_plans/enhancements/arc-clinical-council-adoption-v1.md
 commit_refs:
-- 9e85a29
+- 7a73cb6
 pr_refs: []
 execution_model: batch-parallel
 plan_structure: unified
@@ -33,7 +33,7 @@ tasks:
   - artifact: schemas/dangerous-miss-scenario.schema.json
   - test: tests/dangerous-miss-scenarios.test.mjs 46 subtests
   - test: npm run check 185/185 passed
-  - commit: 9bb895e
+  - commit: 7a73cb6
   verified_by:
   - P4-V1
 - id: P4-T2
@@ -51,7 +51,7 @@ tasks:
   - artifact: docs/safety/hazard-control-matrix.json
   - artifact: schemas/hazard-control-matrix.schema.json
   - test: npm run check 209/209 passed
-  - commit: 9bb895e
+  - commit: 7a73cb6
   verified_by:
   - P4-V1
 - id: P4-T3
@@ -69,7 +69,7 @@ tasks:
   - artifact: docs/clinical/v3-diagnostic-accuracy-contract.md
   - artifact: docs/clinical/schemas/v3-protocol-result.schema.json
   - test: npm run check 139/139 passed
-  - commit: 9bb895e
+  - commit: 7a73cb6
   verified_by:
   - P4-V1
 - id: P4-T4
@@ -87,7 +87,7 @@ tasks:
   - artifact: docs/clinical/v4-v5-safety-human-factors-contract.md
   - artifact: docs/clinical/schemas/v4-v5-safety-human-factors-result.schema.json
   - test: 8 fail-closed guards verified by rejection
-  - commit: 9bb895e
+  - commit: 7a73cb6
   verified_by:
   - P4-V1
 - id: P4-V1
@@ -112,7 +112,7 @@ tasks:
   - review: diagnostic-accuracy-methods PASS cycle 3
   - review: equity-patient-family PASS
   - review: task-completion-validator 3/3 discrimination proofs reproduced
-  - commit: 9bb895e
+  - commit: 7a73cb6
   verified_by:
   - task-completion-validator
 parallelization:
