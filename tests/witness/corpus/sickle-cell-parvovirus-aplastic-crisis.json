@@ -1,0 +1,7 @@
+{
+  "patient": { "ageMonths": 96, "sexAtBirth": "male" },
+  "cbc": { "hemoglobin": 6.5, "mcv": 82 },
+  "reticulocytes": { "response": "low" },
+  "history": { "knownSickleCellDisease": true, "recentViralIllness": true },
+  "smear": ["sickle-cells"]
+}

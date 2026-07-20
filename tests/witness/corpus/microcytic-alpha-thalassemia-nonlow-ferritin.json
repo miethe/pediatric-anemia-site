@@ -1,0 +1,7 @@
+{
+  "patient": { "ageMonths": 36, "sexAtBirth": "male" },
+  "cbc": { "hemoglobin": 9, "mcv": 68 },
+  "reticulocytes": { "response": "low" },
+  "history": { "familyHemoglobinopathy": true },
+  "labs": { "ferritin": 25, "hbBartNewbornScreen": true, "alphaGlobinTestingPositive": true }
+}

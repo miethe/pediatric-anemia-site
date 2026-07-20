@@ -1,0 +1,8 @@
+{
+  "patient": { "ageMonths": 84, "sexAtBirth": "male" },
+  "cbc": { "hemoglobin": 9, "mcv": 82 },
+  "reticulocytes": { "response": "high" },
+  "symptoms": { "fever": true },
+  "history": { "malariaTravelOrResidence": true },
+  "labs": {}
+}

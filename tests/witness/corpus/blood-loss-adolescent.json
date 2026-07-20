@@ -1,0 +1,8 @@
+{
+  "patient": { "ageMonths": 168, "sexAtBirth": "female", "menstruating": false },
+  "cbc": { "hemoglobin": 7.5, "mcv": 85 },
+  "reticulocytes": { "response": "high" },
+  "symptoms": { "activeMajorBleeding": true },
+  "history": { "giBloodLoss": true },
+  "labs": { "ferritin": 10 }
+}

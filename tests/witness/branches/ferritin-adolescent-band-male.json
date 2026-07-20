@@ -1,0 +1,13 @@
+{
+  "patient": { "ageMonths": 168, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 11.5, "mcv": 76, "rdw": 15.5, "rbc": 4.9, "wbc": 6.2, "platelets": 355,
+    "rbcInterpretation": "normal", "localRanges": {}, "localFlags": {}
+  },
+  "reticulocytes": { "response": "inappropriately-normal" },
+  "symptoms": { "fatigue": true },
+  "history": { "lowIronDiet": true, "vegetarianOrVegan": true },
+  "exam": {},
+  "labs": { "ferritin": 25, "ferritinStatus": "normal", "crpStatus": "normal", "tsatStatus": "low", "tibcStatus": "high", "ironStatus": "low" },
+  "smear": []
+}

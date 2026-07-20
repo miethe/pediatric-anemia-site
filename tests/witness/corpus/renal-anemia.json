@@ -1,0 +1,6 @@
+{
+  "patient": { "ageMonths": 120, "sexAtBirth": "female" },
+  "cbc": { "hemoglobin": 9, "mcv": 82 },
+  "reticulocytes": { "response": "low" },
+  "history": { "chronicKidneyDisease": true }
+}

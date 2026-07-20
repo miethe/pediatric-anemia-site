@@ -1,0 +1,7 @@
+{
+  "patient": { "ageMonths": 168, "sexAtBirth": "female" },
+  "cbc": { "hemoglobin": 9, "mcv": 98 },
+  "history": { "thyroidDisease": true },
+  "labs": { "b12Status": "low" },
+  "smear": ["hypersegmented-neutrophils"]
+}

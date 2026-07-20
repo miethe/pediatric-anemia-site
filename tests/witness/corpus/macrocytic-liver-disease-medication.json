@@ -1,0 +1,6 @@
+{
+  "patient": { "ageMonths": 150, "sexAtBirth": "female" },
+  "cbc": { "hemoglobin": 9, "mcv": 95 },
+  "reticulocytes": { "response": "low" },
+  "history": { "liverDisease": true, "macrocytosisAssociatedMedication": true }
+}

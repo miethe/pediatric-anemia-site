@@ -1,0 +1,18 @@
+{
+  "patient": { "ageMonths": 60, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 8.2, "mcv": 81, "rbc": 3.1, "wbc": 9.2, "platelets": 260,
+    "rbcInterpretation": "low",
+    "localRanges": {},
+    "localFlags": {}
+  },
+  "reticulocytes": { "response": "high" },
+  "symptoms": { "alteredMentalStatus": true, "fatigue": true, "pallor": true },
+  "history": {},
+  "exam": {},
+  "labs": {
+    "indirectBilirubinStatus": "high", "ldhStatus": "high", "haptoglobinStatus": "low",
+    "datStatus": "negative"
+  },
+  "smear": ["schistocytes"]
+}

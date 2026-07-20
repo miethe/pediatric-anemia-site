@@ -1,0 +1,11 @@
+{
+  "patient": { "ageMonths": 30, "sexAtBirth": "female" },
+  "cbc": {
+    "hemoglobin": 9, "mcv": 80, "wbc": 8.5, "anc": 3.2, "platelets": 290,
+    "localRanges": { "wbcLower": 4.0, "ancLower": 1.5, "plateletsLower": 150 }
+  },
+  "reticulocytes": { "response": "low" },
+  "history": { "recentViralIllness": true },
+  "exam": { "splenomegaly": false, "hepatomegaly": false, "lymphadenopathy": false },
+  "smear": []
+}

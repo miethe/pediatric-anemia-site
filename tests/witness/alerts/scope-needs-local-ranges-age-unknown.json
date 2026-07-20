@@ -1,0 +1,10 @@
+{
+  "patient": { "ageMonths": null, "sexAtBirth": "unspecified", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {},
+  "reticulocytes": {},
+  "symptoms": {},
+  "history": {},
+  "exam": {},
+  "labs": {},
+  "smear": []
+}

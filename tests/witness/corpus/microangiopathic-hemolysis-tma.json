@@ -1,0 +1,6 @@
+{
+  "patient": { "ageMonths": 60, "sexAtBirth": "female" },
+  "cbc": { "hemoglobin": 8, "mcv": 80, "localFlags": { "thrombocytopenia": true } },
+  "reticulocytes": { "response": "high" },
+  "smear": ["schistocytes"]
+}

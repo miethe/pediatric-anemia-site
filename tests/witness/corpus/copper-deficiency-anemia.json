@@ -1,0 +1,6 @@
+{
+  "patient": { "ageMonths": 48, "sexAtBirth": "female" },
+  "cbc": { "hemoglobin": 8, "mcv": 84, "localFlags": { "neutropenia": true } },
+  "reticulocytes": { "response": "low" },
+  "labs": { "copperStatus": "low" }
+}

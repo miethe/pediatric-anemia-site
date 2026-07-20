@@ -1,0 +1,6 @@
+{
+  "patient": { "ageMonths": 30, "sexAtBirth": "female" },
+  "cbc": { "hemoglobin": 8, "mcv": 68, "rdw": 16 },
+  "history": { "excessCowMilk": true },
+  "labs": {}
+}
