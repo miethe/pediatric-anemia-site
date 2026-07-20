@@ -30,9 +30,13 @@ jobs:
         with:
           node-version: '20'
 
-      # PR verification gate: mirrors npm run check (test, validate, build, check:imports, smoke)
+      # PR verification gate: mirrors npm run check (test, validate, coverage:rules, build,
+      # check:imports, smoke)
       - run: npm test
       - run: npm run validate
+      # Activation-witness ratchet: fails if fewer than 91 of the 91 rules are exercised by any
+      # fixture. A rule with no witness has zero regression protection regardless of suite status.
+      - run: npm run coverage:rules
       - run: npm run build
       - run: npm run check:imports
       - run: npm run smoke
@@ -51,6 +55,7 @@ jobs:
       # an unvalidated rule set must never reach the published site.
       - run: npm test
       - run: npm run validate
+      - run: npm run coverage:rules
       - run: npm run build
       - run: npm run check:imports
       - run: npm run smoke

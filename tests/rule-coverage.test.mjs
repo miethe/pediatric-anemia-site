@@ -10,7 +10,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { computeCoverage, checkMinimum } from '../scripts/rule-coverage.mjs';
+import { computeCoverage, checkMinimum, checkRequireAll } from '../scripts/rule-coverage.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -57,6 +57,40 @@ test('checkMinimum fails strictly below the threshold and succeeds at/above it',
 
   const aboveIsHigherThanActual = checkMinimum(coverage, 29);
   assert.equal(aboveIsHigherThanActual.ok, true);
+});
+
+test('checkRequireAll fails on any unwitnessed rule, and closes the --min count hole', async () => {
+  // The full corpus witnesses every rule.
+  const full = await computeCoverage({ rootDir: root });
+  assert.equal(checkRequireAll(full).ok, true, 'the committed corpus must witness every rule');
+
+  // The examples-only corpus leaves 61 rules unwitnessed.
+  const partial = await computeCoverage({ rootDir: root, fixtureDirs: ['examples'] });
+  const partialResult = checkRequireAll(partial);
+  assert.equal(partialResult.ok, false);
+  assert.match(partialResult.message, /have no activation witness/);
+  for (const id of ['ALERT-001', 'ALERT-007']) {
+    assert.match(partialResult.message, new RegExp(id), `${id} must be named in the failure`);
+  }
+
+  // The hole --require-all exists to close: --min pins an absolute COUNT, so a rule base
+  // that grew by one unwitnessed rule still clears a --min set at the old witnessed count.
+  // Simulated here rather than by mutating rules.json on disk.
+  const grown = {
+    ...partial,
+    total: partial.total + 1,
+    unwitnessed: [...partial.unwitnessed, 'HYPOTHETICAL-NEW-RULE-001'],
+  };
+  assert.equal(
+    checkMinimum(grown, partial.witnessed).ok,
+    true,
+    '--min still passes when the rule base grows by an unwitnessed rule — this is the hole',
+  );
+  assert.equal(
+    checkRequireAll(grown).ok,
+    false,
+    '--require-all must catch the new unwitnessed rule that --min lets through',
+  );
 });
 
 test('a fixture that fails to parse throws rather than being silently skipped', async () => {

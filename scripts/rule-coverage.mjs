@@ -28,9 +28,16 @@
 // Usage:
 //   node scripts/rule-coverage.mjs                    human-readable report
 //   node scripts/rule-coverage.mjs --json              machine-readable JSON, stdout only
+//   node scripts/rule-coverage.mjs --require-all        exit 1 if ANY rule has no witness
 //   node scripts/rule-coverage.mjs --min=60             exit 1 if witnessed count < 60
 //   node scripts/rule-coverage.mjs --min 60             (space-separated form also accepted)
 //   node scripts/rule-coverage.mjs --list-unwitnessed   print unwitnessed rule ids, one per line
+//
+// `npm run coverage:rules` runs `--require-all --min=91` and is wired into `npm run check`
+// and both CI jobs. Prefer --require-all: --min alone pins an absolute COUNT, so a newly
+// added rule with no witness keeps the count unchanged and slips through (see
+// checkRequireAll's comment). --min is kept as the weaker fallback and as a floor that
+// makes an accidental fixture deletion obvious.
 
 import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
@@ -184,14 +191,50 @@ export function checkMinimum(coverage, min) {
   };
 }
 
+/**
+ * --require-all semantics: EVERY rule must have a witness.
+ *
+ * This exists because `--min` alone is not a sufficient ratchet, and the hole is
+ * exactly the regression the ratchet is meant to prevent. `--min` pins an absolute
+ * COUNT of witnessed rules, so adding a new rule with no witness leaves the count
+ * unchanged and passes: at 91/91, adding a 92nd unwitnessed rule still reports 91
+ * witnessed, which clears `--min=91`. The new rule ships with zero regression
+ * protection and CI stays green.
+ *
+ * `--require-all` fails on any unwitnessed rule regardless of the count, so the
+ * pin cannot be outgrown. `--min` is retained as the weaker fallback for a corpus
+ * that has not yet reached full coverage.
+ */
+export function checkRequireAll(coverage) {
+  if (coverage.unwitnessed.length > 0) {
+    return {
+      ok: false,
+      message:
+        `${coverage.unwitnessed.length} of ${coverage.total} rules have no activation witness: `
+        + `${coverage.unwitnessed.join(', ')}.\n`
+        + 'A rule no fixture exercises has zero regression protection — it can be deleted, '
+        + 'inverted, or downgraded without failing a single test. Author a witness fixture '
+        + 'under tests/witness/ (see tests/witness/README.md).',
+    };
+  }
+  return {
+    ok: true,
+    message: `All ${coverage.total} rules have an activation witness.`,
+  };
+}
+
 function parseArgs(argv) {
-  const args = { json: false, listUnwitnessed: false, min: null };
+  const args = {
+    json: false, listUnwitnessed: false, min: null, requireAll: false,
+  };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--json') {
       args.json = true;
     } else if (arg === '--list-unwitnessed') {
       args.listUnwitnessed = true;
+    } else if (arg === '--require-all') {
+      args.requireAll = true;
     } else if (arg === '--min') {
       const next = argv[i + 1];
       if (next === undefined) throw new Error('--min requires a value, e.g. --min 60');
@@ -262,6 +305,15 @@ async function main() {
     console.log(JSON.stringify(coverage));
   } else {
     console.log(formatHuman(coverage));
+  }
+
+  if (args.requireAll) {
+    const result = checkRequireAll(coverage);
+    if (!result.ok) {
+      console.error(result.message);
+      process.exitCode = 1;
+      return;
+    }
   }
 
   if (args.min !== null) {
