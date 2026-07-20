@@ -15,10 +15,22 @@ Rules for any fixture added here:
 - Its only job is to make one or more otherwise-unwitnessed rules activate (`assess()`'s
   `provenance.matchedRuleIds` should include the target rule id(s)). It does not need to be a
   plausible "case" beyond internal coherence.
-- **No fixture may introduce a clinical threshold, cutoff, or numeric value that is not already
-  present in the knowledge base** (`modules/anemia/rules.json`, `modules/anemia/candidates.json`,
-  `modules/anemia/reference-ranges.json`). If witnessing a rule seems to require inventing a new
-  cutoff, that is out of scope for this corpus and must be escalated, not authored.
+- **No fixture may introduce a clinical threshold or cutoff that is not already present in the
+  knowledge base** (`modules/anemia/rules.json`, `modules/anemia/candidates.json`,
+  `modules/anemia/reference-ranges.json`, `modules/anemia/ranges.js`). If witnessing a rule seems to
+  require inventing a new cutoff, that is out of scope for this corpus and must be escalated, not
+  authored.
+  - This applies to **threshold-bearing values** — any number chosen to sit on a particular side of
+    a clinical decision boundary. Such a value must cite the existing bound it was chosen against,
+    in the directory's `NOTES.md`.
+  - It does **not** forbid ordinary observational values (a WBC, an RBC count, a platelet count
+    that no rule compares to a cutoff). Those are chosen for internal coherence, not against a
+    boundary, and are labelled as such rather than given a fabricated citation.
+  - Some fixtures must also supply **synthetic local-laboratory reference bounds**
+    (`cbc.localRanges.*`) because a derivation only evaluates when its bound is present — e.g.
+    `cbc.isolatedAnemia` cannot be established without `wbcLower`/`ancLower`/`plateletsLower`.
+    These are inputs a real deployment would receive from a local lab, **not** KB thresholds, and
+    must be described that way in `NOTES.md`. Never cite one as though the KB defined it.
 - Fixtures may be organized into subdirectories; `scripts/rule-coverage.mjs` walks this directory
   recursively.
 

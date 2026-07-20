@@ -64,7 +64,7 @@ const FIXTURE_TARGETS = {
   'copper-deficiency-anemia': ['COPPER-001'],
   'diamond-blackfan-infant': ['IMF-001', 'IMF-DBA-001'],
   'macrocytosis-from-reticulocytosis': ['MACRO-004', 'Q-MACRO-002', 'Q-SMEAR-001'],
-  'macrocytic-b12-thyroid-pernicious': ['MEG-001', 'MEG-002', 'MACRO-001', 'Q-MACRO-001'],
+  'macrocytic-b12-deficiency-thyroid': ['MEG-001', 'MEG-002', 'MACRO-001', 'Q-MACRO-001'],
   'macrocytic-liver-disease-medication': ['MACRO-002', 'MACRO-003'],
   'mixed-iron-folate-deficiency': ['MIX-001'],
   'iron-refractory-anemia-irida': ['ID-003', 'IRIDA-001'],
@@ -191,11 +191,11 @@ test('macrocytosis with high retic and no smear on file witnesses MACRO-004, Q-M
 });
 
 test('macrocytic anemia with low B12, thyroid disease, and hypersegmented neutrophils witnesses MEG-001, MEG-002, MACRO-001, Q-MACRO-001', async () => {
-  const result = assess(await fixture('macrocytic-b12-thyroid-pernicious'));
+  const result = assess(await fixture('macrocytic-b12-deficiency-thyroid'));
   assertWitnessed(
     result,
-    'macrocytic-b12-thyroid-pernicious',
-    FIXTURE_TARGETS['macrocytic-b12-thyroid-pernicious'],
+    'macrocytic-b12-deficiency-thyroid',
+    FIXTURE_TARGETS['macrocytic-b12-deficiency-thyroid'],
   );
 });
 

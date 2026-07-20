@@ -266,12 +266,20 @@ or blasts — transient erythroblastopenia of childhood.
 - `sexAtBirth: "female"` → "2 to <6 years" band: `hbLower 11`, `mcvLower 75.2`, `mcvUpper 85`.
 - `cbc.hemoglobin: 9` (< 11) → anemia present. `cbc.mcv: 80` (within 75.2–85) → normocytic.
 - `reticulocytes.response: "low"` → `retic.low`.
-- No `localFlags`/abnormal WBC/ANC/platelet values supplied → `additionalCytopeniaCount: 0` →
-  `cbc.isolatedAnemia` true. (This particular leaf is still satisfied by omission rather than a
-  genuine "other lineages checked and normal" input, the same pattern fixed explicitly for
-  `diamond-blackfan-infant.json` above; it was left as-is here because the fix requested for this
-  fixture was scoped to the exam/organomegaly exclusion below, not this leaf — see the "KNOWN
-  LIMITATION" section for the general point.)
+- `cbc.wbc: 8.5`, `cbc.anc: 3.2`, `cbc.platelets: 290` with
+  `cbc.localRanges: { wbcLower: 4.0, ancLower: 1.5, plateletsLower: 150 }` — **supplied explicitly
+  (EP05-T5 confirmation-review fix)**. Each count is above its supplied lower bound, so
+  `leukopenia`/`neutropenia`/`thrombocytopenia` all derive FALSE from real comparisons →
+  `additionalCytopeniaCount: 0` → `cbc.isolatedAnemia` true.
+  Previously these were omitted and `isolatedAnemia` was satisfied purely by the absence of data —
+  the same defect fixed in `diamond-blackfan-infant.json`, initially left unfixed here because the
+  first-round instruction scoped this fixture to the exam exclusion below. The confirmation review
+  caught the inconsistency. Unlike the exam/smear fields, this leaf **is** genuinely fixable today:
+  the derivation really does evaluate the counts, so "other lineages checked and normal" is now
+  actually demonstrated rather than assumed.
+  The `localRanges` bounds are **synthetic local-laboratory inputs**, not KB thresholds — the KB
+  defines no WBC/ANC/platelet cutoff. They are required because these derivations only evaluate
+  when their bound is present.
 - `history.recentViralIllness: true` → `history.recentViral`.
 - `exam.splenomegaly: false`, `exam.hepatomegaly: false`, `exam.lymphadenopathy: false` — **set
   explicitly (EP05-T5 fix)**. These were previously omitted, and the `not(any(splenomegaly,
@@ -390,7 +398,7 @@ reviewed yet.
 
 ---
 
-## `macrocytic-b12-thyroid-pernicious.json`
+## `macrocytic-b12-deficiency-thyroid.json`
 
 **Label softened in EP05-T5:** the clinical picture below previously described this as
 "pernicious-anemia-pattern B12 deficiency." The fixture supplies a low B12 status and coexisting

@@ -214,7 +214,11 @@ export function checkRequireAll(coverage) {
         + `${coverage.unwitnessed.join(', ')}.\n`
         + 'A rule no fixture exercises has zero regression protection — it can be deleted, '
         + 'inverted, or downgraded without failing a single test. Author a witness fixture '
-        + 'under tests/witness/ (see tests/witness/README.md).',
+        + 'under tests/witness/ (see tests/witness/README.md).\n'
+        + 'Note: activation coverage is a floor, not a ceiling. Reaching 100% means every rule '
+        + 'fires somewhere; it does NOT mean every branch of a rule\'s `any`, or the severity and '
+        + 'output type it emits, is asserted. Those need explicit per-arm and per-output tests '
+        + '(see tests/witness/alerts.test.mjs for the ALERT-006 per-arm pattern).',
     };
   }
   return {

@@ -1,16 +1,19 @@
 ---
 schema_version: 2
 doc_type: phase_plan
-title: "Phase EP-0.5: Activation-Witness Corpus"
-status: draft
+title: 'Phase EP-0.5: Activation-Witness Corpus'
+status: completed
 created: 2026-07-19
 phase: EP-0.5
-phase_title: "Activation-Witness Corpus"
+phase_title: Activation-Witness Corpus
 prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-foundation-v1.md
 feature_slug: wave0-safety-foundation
-entry_criteria: "EP-0 complete (PR #4 merged); npm run check green on main."
-exit_criteria: "Every one of the 49 rules in SPIKE-003's migration table has at least one activation witness; all 6 never-firing ALERT rules have a witness; scripts/rule-coverage.mjs exists and is wired into npm run check as a ratchet. npm run check green."
+entry_criteria: 'EP-0 complete (PR #4 merged); npm run check green on main.'
+exit_criteria: Every one of the 49 rules in SPIKE-003's migration table has at least
+  one activation witness; all 6 never-firing ALERT rules have a witness; scripts/rule-coverage.mjs
+  exists and is wired into npm run check as a ratchet. npm run check green.
+updated: '2026-07-19'
 ---
 
 # Phase EP-0.5: Activation-Witness Corpus

@@ -22,8 +22,16 @@ They are **synthetic, test-only inputs**. They are not clinical worked examples 
 `modules/anemia/ranges.js` and `modules/anemia/reference-ranges.json` as they stand today
 (ferritin 20/30; the four AAP2026_IDA age bands and their hb/mcv/rdw limits). The two `localRanges`
 values in `ranges-local-override-partial.json` (11.4 / 80.5) are deliberately copied from the
-existing adolescent band rather than invented, so the corpus introduces no number that is not
-already in the KB.
+existing adolescent band rather than invented.
+
+**Scope of that claim (corrected by the EP05-T5 review).** It covers every *asserted* and every
+*threshold-bearing* number — the values these tests pin, and any value chosen to sit on a particular
+side of a decision boundary. It does **not** cover the ordinary observational CBC values each
+fixture carries to be a coherent patient (RBC, WBC, platelet counts, and Hb/MCV values that no
+assertion compares to a bound). Those are synthetic, chosen for internal coherence — notably so the
+implied MCHC lands in a physiologic 30–36 g/dL — and are **not** claimed to come from the KB. The
+earlier wording implied every number in this directory was KB-derived; it was not, and this
+correction is the honest scope.
 
 ## Branches enumerated from the code
 
@@ -138,12 +146,13 @@ be modified here).
 (`node --test tests/*.test.mjs`) was top-level-only and did not discover
 `tests/witness/branch-seam.test.mjs`, so these pins ran only when invoked directly and were not yet
 a real CI gate. **That has since been fixed by the orchestrator.** `package.json`'s `"test"` script
-is now `node --test tests/*.test.mjs tests/witness/*.test.mjs`, and `npm test`/`npm run check` run
-**204** tests total, including every pin in this file and the parallel
-`tests/witness/alerts.test.mjs`. Verified directly: `npm test` output reports `# tests 204` /
-`# pass 204` with this file's subtests present by name in the run log. This guard is no longer
-something that has to be remembered and run manually — a regression here now fails `npm run check`
-the same way any other test failure does.
+is now `node --test tests/*.test.mjs tests/witness/*.test.mjs`, so `npm test` and `npm run check`
+execute every pin in this file alongside `tests/witness/alerts.test.mjs` and
+`tests/witness/corpus.test.mjs`. Verified directly: this file's subtests appear by name in the
+`npm test` run log. (A specific total is deliberately not quoted here — it changes whenever any test
+is added, and a stale number in this document is exactly the defect the EP05-T5 review caught.) This
+guard is no longer something that has to be remembered and run manually — a regression here now fails
+`npm run check` the same way any other test failure does.
 
 All mutation results in the table above were additionally obtained by running the suite explicitly
 (`node --test tests/*.test.mjs tests/witness/*.test.mjs`), and M-A additionally through a real

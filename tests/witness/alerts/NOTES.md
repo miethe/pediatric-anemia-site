@@ -75,7 +75,10 @@ the corpus minimal per the phase's scope-discipline instruction.
 
 ---
 
-## `tma-schistocytes-thrombocytopenia.json` and `tma-schistocytes-renal-symptoms.json`
+## The three `ALERT-006` arm fixtures
+
+`tma-schistocytes-thrombocytopenia.json`, `tma-schistocytes-renal-symptoms.json`, and
+`tma-schistocytes-neurologic-symptoms.json`.
 
 **EP05-T5 restructure note:** a single combined fixture originally witnessed `ALERT-006`
 (`schistocytes AND any(cbc.thrombocytopenia, symptoms.renalSymptoms, symptoms.neurologicSymptoms)`)
@@ -84,9 +87,21 @@ by setting BOTH `localFlags.thrombocytopenia: true` AND `symptoms.oliguria: true
 `platelets < localRanges.plateletsLower` derivation the notes claimed was exercised. An adversarial
 review correctly flagged this: the platelet derivation could break completely (wrong comparison,
 dropped `localRanges` lookup, deleted branch) and the alert assertion would stay green because the
-renal arm was still silently carrying it. Per the review's fix instruction, this is now **two**
-fixtures, one per isolated `any` arm, and `tests/witness/alerts.test.mjs` asserts the derived
+renal arm was still silently carrying it. `tests/witness/alerts.test.mjs` now asserts the derived
 `cbc.thrombocytopenia` fact directly in the platelet-only case so a broken derivation fails loudly.
+
+**Second-round correction (EP05-T5 confirmation review):** the first fix produced only **two**
+fixtures while describing them as "one per arm." `ALERT-006`'s `any` has **three** arms — the
+`symptoms.neurologicSymptoms` arm was still unwitnessed, and could have been deleted outright with
+every other ALERT-006 test still passing. `tma-schistocytes-neurologic-symptoms.json` closes it, so
+there are now **three** fixtures, one per arm. A dedicated test asserts each of the three satisfies
+**exactly one** arm, so this claim cannot quietly become false again — if a fixture starts
+satisfying two arms, or an arm loses its isolated witness, that test fails.
+
+This is worth recording as a pattern, not just a fix: rule-level activation coverage (what
+`scripts/rule-coverage.mjs` measures) reports `ALERT-006` as witnessed the moment *any* arm fires.
+Coverage at 91/91 says nothing about whether individual `any` arms are protected. Disjunctive
+conditions need per-arm witnesses, and that is a separate obligation from the coverage ratchet.
 
 ---
 
@@ -274,9 +289,10 @@ All 9 target rules (`ALERT-001`, `-002`, `-003`, `-006`, `-007`, `-008`, `SCOPE-
 (`node --test tests/*.test.mjs`) did not discover `tests/witness/*.test.mjs`, so these assertions
 were real but not part of the automated gate. **That has since been fixed by the orchestrator.**
 `package.json`'s `"test"` script is now
-`node --test tests/*.test.mjs tests/witness/*.test.mjs`, and `npm test`/`npm run check` run **204**
-tests total, including every assertion in this file (`tests/witness/alerts.test.mjs`) and the
-parallel `tests/witness/branch-seam.test.mjs`. Verified directly: `npm test` output reports
-`# tests 204` / `# pass 204` with this file's subtests present by name in the run log. The M55
-guard below is therefore now a real CI gate, not a standalone script that has to be remembered and
-run manually.
+`node --test tests/*.test.mjs tests/witness/*.test.mjs`, so `npm test` and `npm run check` execute
+every assertion in this file (`tests/witness/alerts.test.mjs`) alongside
+`tests/witness/branch-seam.test.mjs` and `tests/witness/corpus.test.mjs`. Verified directly: this
+file's subtests appear by name in the `npm test` run log. (A specific total is deliberately not
+quoted here — it changes whenever any test is added, and a stale number in this document is exactly
+the defect the EP05-T5 review caught.) The M55 guard below is therefore now a real CI gate, not a
+standalone script that has to be remembered and run manually.

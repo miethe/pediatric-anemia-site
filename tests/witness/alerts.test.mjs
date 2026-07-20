@@ -150,6 +150,63 @@ test('ALERT-006 (schistocytes + renal symptoms ONLY, no thrombocytopenia — pos
   assert.equal(facts.symptoms.neurologicSymptoms, false, 'this fixture must not also satisfy the neurologic arm');
 });
 
+test('ALERT-006 (schistocytes + neurologic symptoms ONLY — possible TMA) fires as an emergency alert, not a note', async () => {
+  const input = await fixture('tma-schistocytes-neurologic-symptoms');
+  const result = assess(input);
+  const entry = assertAlertWitnessed(result, 'ALERT-006');
+  assert.equal(entry.title, 'Possible thrombotic microangiopathy or severe microangiopathic process');
+
+  // Isolates the third and last `any` arm, `symptoms.neurologicSymptoms`. Without this fixture the
+  // neurologic arm could be deleted outright and every other ALERT-006 test would still pass — the
+  // rule would keep firing off the thrombocytopenia and renal arms. Rule-level activation coverage
+  // does NOT catch that; only a per-arm witness does.
+  const facts = deriveFacts(input);
+  assert.equal(
+    facts.cbc.thrombocytopenia,
+    false,
+    'this fixture must NOT witness ALERT-006 via thrombocytopenia — it isolates the neurologic arm',
+  );
+  assert.equal(
+    facts.symptoms.renalSymptoms,
+    false,
+    'this fixture must NOT witness ALERT-006 via renal symptoms — it isolates the neurologic arm',
+  );
+  assert.equal(
+    facts.symptoms.neurologicSymptoms,
+    true,
+    'the neurologic-symptoms arm must be the one driving this alert',
+  );
+});
+
+test('ALERT-006: every arm of its `any` is witnessed in isolation by exactly one fixture', async () => {
+  // Guards the claim made in alerts/NOTES.md. ALERT-006's condition is
+  // `schistocytes AND any(cbc.thrombocytopenia, symptoms.renalSymptoms, symptoms.neurologicSymptoms)`.
+  // A fixture satisfying more than one arm witnesses the rule but tests nothing about any single
+  // arm — the original corpus made exactly that mistake. This test fails if an arm loses its
+  // isolated witness, or if a fixture starts satisfying two arms at once.
+  const ARMS = [
+    ['tma-schistocytes-thrombocytopenia', (f) => f.cbc.thrombocytopenia],
+    ['tma-schistocytes-renal-symptoms', (f) => f.symptoms.renalSymptoms],
+    ['tma-schistocytes-neurologic-symptoms', (f) => f.symptoms.neurologicSymptoms],
+  ];
+  for (const [name, targetArm] of ARMS) {
+    const facts = deriveFacts(await fixture(name));
+    const satisfied = [
+      facts.cbc.thrombocytopenia,
+      facts.symptoms.renalSymptoms,
+      facts.symptoms.neurologicSymptoms,
+    ].filter(Boolean).length;
+    assert.equal(
+      satisfied,
+      1,
+      `${name} must satisfy exactly ONE arm of ALERT-006's \`any\` (satisfies ${satisfied}) — `
+        + 'a fixture satisfying two arms cannot detect either one breaking',
+    );
+    assert.equal(targetArm(facts), true, `${name} must satisfy its own designated arm`);
+    assert.equal(facts.smear.schistocytes, true, `${name} must supply schistocytes`);
+  }
+});
+
 test('ALERT-007 (blood lead level >=45 µg/dL) fires as an emergency alert, not a note', async () => {
   const result = assess(await fixture('lead-45plus-alert'));
   const entry = assertAlertWitnessed(result, 'ALERT-007');
@@ -196,6 +253,7 @@ test('M55 guard: every targeted alert/scope rule that fires lands in result.aler
     'unstable-major-bleeding-severe-anemia',
     'tma-schistocytes-thrombocytopenia',
     'tma-schistocytes-renal-symptoms',
+    'tma-schistocytes-neurologic-symptoms',
     'lead-45plus-alert',
     'lead-20to44-alert',
     'scope-neonatal-young-infant',

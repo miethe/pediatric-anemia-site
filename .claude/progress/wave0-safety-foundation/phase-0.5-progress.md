@@ -11,15 +11,19 @@ execution_model: batch-parallel
 plan_structure: independent
 phase: 0.5
 title: 'EP-0.5: Activation-Witness Corpus'
-status: in_progress
+status: completed
 started: 2026-07-19T00:00Z
-completed: null
-commit_refs: []
+completed: 2026-07-19T00:00Z
+commit_refs:
+- 7aa89cc
+- 526281a
+- 7bf2bc6
+- b84a598
 pr_refs: []
-overall_progress: 0
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 0
+completed_tasks: 6
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -36,7 +40,7 @@ tasks:
 - id: EP05-T1
   description: 'Build the coverage instrument: scripts/rule-coverage.mjs with --json
     and --min ratchet; establish the witness-corpus harness under tests/witness/.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies: []
@@ -44,10 +48,16 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: medium
+  started: 2026-07-19T00:00Z
+  completed: 2026-07-20T02:23Z
+  verified_by:
+  - EP05-T5
+  evidence:
+  - commit: b84a598
 - id: EP05-T2
-  description: 'Author minimal witness fixtures for the blind non-alert rules (candidate/note/question)
-    so every reachable rule appears in some fixture''s matchedRuleIds.'
-  status: pending
+  description: Author minimal witness fixtures for the blind non-alert rules (candidate/note/question)
+    so every reachable rule appears in some fixture's matchedRuleIds.
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -56,10 +66,16 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: high
+  started: 2026-07-19T00:00Z
+  completed: 2026-07-20T02:23Z
+  verified_by:
+  - EP05-T5
+  evidence:
+  - commit: b84a598
 - id: EP05-T3
-  description: 'Witness the 6 uncovered ALERT rules (ALERT-001/-002/-003/-006/-007/-008)
-    plus SCOPE-001/-002/-003, asserting severity and output type, not merely firing.'
-  status: pending
+  description: Witness the 6 uncovered ALERT rules (ALERT-001/-002/-003/-006/-007/-008)
+    plus SCOPE-001/-002/-003, asserting severity and output type, not merely firing.
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -68,10 +84,16 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: high
+  started: 2026-07-19T00:00Z
+  completed: 2026-07-20T02:23Z
+  verified_by:
+  - EP05-T5
+  evidence:
+  - commit: b84a598
 - id: EP05-T4
   description: 'Close the M57 class: pin the modules/anemia/ranges.js ferritin-threshold
     decision branches, verified by executing the mutation and observing failure.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -80,10 +102,16 @@ tasks:
   priority: high
   assigned_model: fable
   model_effort: xhigh
+  started: 2026-07-19T00:00Z
+  completed: 2026-07-20T02:23Z
+  verified_by:
+  - EP05-T5
+  evidence:
+  - commit: b84a598
 - id: EP05-T5
-  description: 'Adversarial clinical-coherence review of every fixture authored in
-    T2-T4 (coherence only, explicitly NOT clinical validation).'
-  status: pending
+  description: Adversarial clinical-coherence review of every fixture authored in
+    T2-T4 (coherence only, explicitly NOT clinical validation).
+  status: completed
   assigned_to:
   - code-reviewer
   dependencies:
@@ -94,10 +122,16 @@ tasks:
   priority: high
   assigned_model: gpt-5.6-sol (codex exec)
   model_effort: high
+  started: 2026-07-19T00:00Z
+  completed: 2026-07-20T02:23Z
+  verified_by:
+  - EP05-T5-CONFIRM
+  evidence:
+  - commit: b84a598
 - id: EP05-T6
-  description: 'Wire the rule-coverage --min ratchet into npm run check and the CI
-    verify job, pinned at the achieved level.'
-  status: pending
+  description: Wire the rule-coverage --min ratchet into npm run check and the CI
+    verify job, pinned at the achieved level.
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -106,6 +140,12 @@ tasks:
   priority: medium
   assigned_model: haiku
   model_effort: low
+  started: 2026-07-19T00:00Z
+  completed: 2026-07-20T02:23Z
+  verified_by:
+  - EP05-T6-negative-test
+  evidence:
+  - commit: b84a598
 parallelization:
   batch_1:
   - EP05-T1
@@ -121,27 +161,29 @@ success_criteria:
 - id: SC-1
   description: scripts/rule-coverage.mjs exists, is negative-tested, and reports the
     baseline correctly
-  status: pending
+  status: completed
 - id: SC-2
   description: Every reachable rule in modules/anemia/rules.json has an activation
     witness; any unreachable rule is documented with rationale
-  status: pending
+  status: completed
 - id: SC-3
   description: All 6 previously-uncovered ALERT rules fire, with severity and output
     type asserted
-  status: pending
+  status: completed
 - id: SC-4
   description: The M57 mutation now fails the suite, verified by execution
-  status: pending
+  status: completed
 - id: SC-5
   description: No new or retuned clinical thresholds introduced by any fixture
-  status: pending
+  status: completed
 - id: SC-6
   description: Coverage ratchet wired into npm run check and CI
-  status: pending
+  status: completed
 - id: SC-7
   description: npm run check green; reviewer sign-off recorded
-  status: pending
+  status: completed
+progress: 100
+updated: '2026-07-19'
 ---
 
 # Phase EP-0.5 Progress — Activation-Witness Corpus
@@ -175,6 +217,29 @@ clinical-input judgment, and correctness dominates cost here. The cross-family l
 has the most value instead — T5's adversarial coherence review on `gpt-5.6-sol` via `codex exec`.
 T5's own chain resolution (`gemma-4-26b-a4b-it`) was overridden by the plan-specified model.
 
+## Review record
+
+Two adversarial coherence-review rounds ran on `gpt-5.6-sol` via `codex exec`, each split into
+bounded reading legs (the EP-0 AAR recorded a `sol` failure on an oversized prompt).
+
+| Round | Scope | Verdict | Outcome |
+|---|---|---|---|
+| 1 | corpus (leg A) + alerts/branches (leg B) | CHANGES-REQUIRED (both legs), 11 must-fix | All adjudicated; fixes in `7bf2bc6` |
+| 2 | confirmation of round-1 fixes + the new ratchet | CHANGES-REQUIRED, 6 findings | All adjudicated; fixes in the round-2 commit |
+
+Round 2 found that the round-1 fix was itself incomplete: `ALERT-006` has **three** `any` arms, not
+the two the fix isolated, so `symptoms.neurologicSymptoms` was still unwitnessed while the notes
+claimed one-per-arm coverage. Verified by execution — deleting that arm leaves
+`npm run coverage:rules` reporting a passing 91/91, because the rule still fires off the other arms.
+Only the new per-arm test catches it.
+
+**Sign-off is coherence review only.** Neither round is clinical validation, clinical sign-off, or
+credentialed review, and no output of this phase may be represented as such. `clinicalApprovers[]`
+and `approvedBy[]` remain unset and require named humans.
+
 ## Task Log
 
-_(updated as tasks complete)_
+All 6 tasks completed. Commits: `7aa89cc` (T1), `526281a` (T2/T3/T4 + test-glob fix),
+`7bf2bc6` (T5 round-1 fixes), `b84a598` (T6 ratchet), plus the round-2 review fixes.
+
+Coverage: **30/91 → 91/91**. Test suite: 145 → 207 executing tests.
