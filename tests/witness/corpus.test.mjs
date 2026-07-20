@@ -66,7 +66,7 @@ const FIXTURE_TARGETS = {
   'macrocytosis-from-reticulocytosis': ['MACRO-004', 'Q-MACRO-002', 'Q-SMEAR-001'],
   'macrocytic-b12-thyroid-pernicious': ['MEG-001', 'MEG-002', 'MACRO-001', 'Q-MACRO-001'],
   'macrocytic-liver-disease-medication': ['MACRO-002', 'MACRO-003'],
-  'mixed-iron-b12-deficiency': ['MIX-001'],
+  'mixed-iron-folate-deficiency': ['MIX-001'],
   'iron-refractory-anemia-irida': ['ID-003', 'IRIDA-001'],
   'sideroblastic-iron-loading-microcytosis': ['SID-001', 'SID-002'],
   'microcytic-beta-thalassemia-inflammation-confounded': ['ID-005', 'THAL-BETA-002'],
@@ -209,8 +209,8 @@ test('macrocytic anemia with liver disease and a macrocytosis-associated medicat
 });
 
 test('normocytic anemia with low ferritin and low folate witnesses MIX-001', async () => {
-  const result = assess(await fixture('mixed-iron-b12-deficiency'));
-  assertWitnessed(result, 'mixed-iron-b12-deficiency', FIXTURE_TARGETS['mixed-iron-b12-deficiency']);
+  const result = assess(await fixture('mixed-iron-folate-deficiency'));
+  assertWitnessed(result, 'mixed-iron-folate-deficiency', FIXTURE_TARGETS['mixed-iron-folate-deficiency']);
 });
 
 test('elevated sTfR/log10(ferritin) index with a verified-adherent, non-responding iron trial witnesses ID-003, IRIDA-001', async () => {

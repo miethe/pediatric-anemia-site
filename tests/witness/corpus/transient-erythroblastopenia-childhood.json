@@ -3,6 +3,6 @@
   "cbc": { "hemoglobin": 9, "mcv": 80 },
   "reticulocytes": { "response": "low" },
   "history": { "recentViralIllness": true },
-  "exam": {},
+  "exam": { "splenomegaly": false, "hepatomegaly": false, "lymphadenopathy": false },
   "smear": []
 }

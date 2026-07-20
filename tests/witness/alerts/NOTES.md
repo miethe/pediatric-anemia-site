@@ -1,9 +1,16 @@
 # `tests/witness/alerts/` — fixture notes (EP05-T3)
 
 Per-fixture record of which rules each input witnesses, the one-sentence clinical picture, and —
-for every numeric value used — the existing KB threshold it was chosen against. This is the
-evidence trail for the "no new clinical claims, no new or retuned thresholds" gate and the input
-to the T5 clinical-plausibility review.
+for every **threshold-bearing value** (a number an actual rule condition compares against a KB or
+code-literal cutoff) — the existing KB/code threshold it was chosen against and which side of it
+the value sits on. This is the evidence trail for the "no new clinical claims, no new or retuned
+thresholds" gate and the input to the T5 clinical-plausibility review.
+
+**Not every number below is threshold-bearing.** Some CBC values (e.g. an MCV kept inside a band
+purely for internal coherence, an RBC chosen only so Hb/MCV/RBC imply a physiologically sensible
+MCHC) are ordinary observational values chosen for clinical coherence, not against a cutoff any
+rule reads. Where that is the case it is stated explicitly rather than implied to have a threshold
+it does not have.
 
 None of these fixtures are published (see `tests/witness/README.md`); they exist only to make
 `ALERT-001`, `-002`, `-003`, `-006`, `-007`, `-008`, `SCOPE-001`, `-002`, `-003` fire and to let
@@ -37,10 +44,29 @@ that has not yet ramped up (too early post-hemorrhage for compensatory reticuloc
 - `cbc.mcv: 82` chosen inside the same band's `mcvLower`/`mcvUpper` (78.3–87.7) → normocytic,
   consistent with acute (not chronic iron-deficiency) blood loss; not asserted by the test, kept
   in-range purely for internal coherence.
+- `cbc.rdw: 13.5` — kept below the same band's `rdwUpper` (13.9), consistent with an acute process
+  (RDW has not had time to widen) and internally coherent with the "indices kept in range" framing
+  of this fixture. (**Corrected in EP05-T5**: this value was previously `14.5`, which exceeds
+  13.9 and contradicted that framing — see the T5 fix log below.) Not a new threshold; 13.9 is the
+  existing band value.
+- `cbc.rbc: 2.4` — not read by any rule (verified: no rule condition reads numeric `cbc.rbc`, only
+  the derived `cbc.rbcRelativelyHigh` boolean), so this is not threshold-bearing. It is chosen so
+  the implied MCHC (`hb*1000/(mcv*rbc)` = `6500/(82*2.4)` ≈ 33.0 g/dL) falls in the physiologically
+  sensible 30–36 g/dL range, internally consistent with an acute normocytic blood-loss picture.
+  (**Corrected in EP05-T5**: this value was previously `2.9`, which implied MCHC ≈ 27.3 — markedly
+  hypochromic and inconsistent with the stated acute normocytic picture — see below.)
 - `reticulocytes.response: "inappropriately-normal"` — an existing enum value already used in
   `examples/ida-toddler.json` and `examples/lead-capillary.json`; represents a marrow that has not
   yet mounted a reticulocytosis, physiologically appropriate in the first 1–3 days after acute
   hemorrhage.
+
+**EP05-T5 fix log:** an adversarial cross-family review (gpt-5.6-sol) found this fixture's original
+`rdw: 14.5` exceeded the band's own `rdwUpper: 13.9` while the fixture's narrative claimed indices
+were kept in range, and separately found the original `rbc: 2.9` implied MCHC ≈ 27.3 g/dL — markedly
+hypochromic, inconsistent with the stated acute, non-chronic-iron-deficiency picture. Both were
+corrected above (rdw → 13.5, rbc → 2.4) rather than the narrative being changed, because the
+narrative (acute blood loss, indices not yet chronically deranged) is the clinically intended
+picture.
 
 **Why not split into 3 fixtures:** all three conditions are mutually compatible in a single
 "unstable child, active bleeding, critically low hemoglobin" emergency-department presentation —
@@ -49,32 +75,76 @@ the corpus minimal per the phase's scope-discipline instruction.
 
 ---
 
+## `tma-schistocytes-thrombocytopenia.json` and `tma-schistocytes-renal-symptoms.json`
+
+**EP05-T5 restructure note:** a single combined fixture originally witnessed `ALERT-006`
+(`schistocytes AND any(cbc.thrombocytopenia, symptoms.renalSymptoms, symptoms.neurologicSymptoms)`)
+by setting BOTH `localFlags.thrombocytopenia: true` AND `symptoms.oliguria: true` — two satisfied
+`any` arms at once, plus the `localFlags` override, which short-circuits the numeric
+`platelets < localRanges.plateletsLower` derivation the notes claimed was exercised. An adversarial
+review correctly flagged this: the platelet derivation could break completely (wrong comparison,
+dropped `localRanges` lookup, deleted branch) and the alert assertion would stay green because the
+renal arm was still silently carrying it. Per the review's fix instruction, this is now **two**
+fixtures, one per isolated `any` arm, and `tests/witness/alerts.test.mjs` asserts the derived
+`cbc.thrombocytopenia` fact directly in the platelet-only case so a broken derivation fails loudly.
+
+---
+
 ## `tma-schistocytes-thrombocytopenia.json`
 
-**Witnesses:** `ALERT-006` (also incidentally witnesses `ALERT-004`, "anemia with another
-cytopenia" — expected and clinically correct co-occurrence, not a new claim).
+**Witnesses:** `ALERT-006`, via the `cbc.thrombocytopenia` arm ONLY (isolated).
 
-**Clinical picture:** A 4-year-old boy with schistocytes on smear, thrombocytopenia, oliguria,
-and a hemolysis panel (elevated indirect bilirubin/LDH, low haptoglobin, DAT-negative) consistent
-with a thrombotic microangiopathy (e.g., HUS-pattern) picture.
+**Clinical picture:** A 4-year-old boy with schistocytes on smear and a hemolysis panel (elevated
+indirect bilirubin/LDH, low haptoglobin, DAT-negative) consistent with a thrombotic
+microangiopathy (e.g., HUS-pattern) picture, with a platelet count numerically below a supplied
+local lower limit.
 
-**Thresholds used, all pre-existing in the KB:**
+**Thresholds used:**
 - `smear: ["schistocytes"]` → direct boolean match, `smear.schistocytes === true`, one arm of
   `ALERT-006`'s condition.
-- `cbc.platelets: 42`, `cbc.localRanges.plateletsLower: 150` → **identical values already used in
-  `examples/marrow-red-flags.json`** (reused, not invented) to derive `cbc.thrombocytopenia` via
-  the existing numeric-compare path in `facts.anemia.js` (`platelets < localRanges.plateletsLower`).
-  This satisfies the other (any-of) arm of `ALERT-006`'s condition.
-- `symptoms.oliguria: true` → maps to `symptoms.renalSymptoms` in `facts.anemia.js`
-  (`oliguria === true || renalSymptoms === true`), an alternative satisfying arm of `ALERT-006`;
-  included in addition to thrombocytopenia because renal involvement is part of the classic
-  TMA/HUS clinical picture, not because it was needed to make the rule fire.
+- `cbc.platelets: 42`, `cbc.localRanges.plateletsLower: 150` → derives `cbc.thrombocytopenia` via
+  the numeric-compare path in `facts.anemia.js` (`platelets < localRanges.plateletsLower`). This is
+  the **only** way this fixture can satisfy `ALERT-006`'s `any` clause: there is no
+  `localFlags.thrombocytopenia` override, no `symptoms.renalSymptoms`/`oliguria`, and no
+  neurologic symptom. `150` is **not a KB-derived platelet threshold** — it is the same synthetic
+  local-laboratory input already used in `examples/marrow-red-flags.json` (an example fixture, not
+  a KB source), reused here rather than invented, to keep the corpus from introducing yet another
+  arbitrary number. See the "Known limitation" callout in `tests/witness/corpus/NOTES.md` for the
+  broader point about `localRanges`/`localFlags` values being synthetic test inputs, not KB
+  thresholds.
 - `patient.ageMonths: 48`, `sexAtBirth: "male"` → "2 to <6 years" band, `hbLower: 11` (male).
 - `cbc.hemoglobin: 7.8` < 11 → `anemia.status = present` (hemolytic anemia), consistent with the
   hemolysis panel.
+- `cbc.mcv: 80`, `cbc.rbc: 3.0` — `rbc` is not read by any rule (only the derived
+  `cbc.rbcRelativelyHigh` boolean is); it is chosen only so the implied MCHC
+  (`7800/(80*3.0)` ≈ 32.5 g/dL) is physiologically sensible, not markedly hypochromic or
+  hyperchromic. (**Corrected in EP05-T5**: the prior combined fixture used `rbc: 2.6`, which
+  implied MCHC ≈ 37.5 g/dL — above the physiologic ceiling.)
+
+---
+
+## `tma-schistocytes-renal-symptoms.json`
+
+**Witnesses:** `ALERT-006`, via the `symptoms.renalSymptoms` arm ONLY (isolated).
+
+**Clinical picture:** A 3-year-old girl with schistocytes on smear, oliguria, and a hemolysis
+panel consistent with an early- or renal-predominant thrombotic microangiopathy presentation, with
+a platelet count that is explicitly normal (no thrombocytopenia by either path).
+
+**Thresholds used:**
+- `smear: ["schistocytes"]` → direct boolean match, one arm of `ALERT-006`'s condition.
+- `symptoms.oliguria: true` → maps to `symptoms.renalSymptoms` in `facts.anemia.js`
+  (`oliguria === true || renalSymptoms === true`), the **only** satisfied arm of `ALERT-006`'s
+  `any` clause here: `cbc.platelets: 250` is set well above any plausible lower limit, no
+  `localRanges.plateletsLower` is supplied (so the numeric path cannot fire), and no
+  `localFlags.thrombocytopenia` override is present — `cbc.thrombocytopenia` derives to `false`,
+  asserted directly in `tests/witness/alerts.test.mjs`.
 - `labs.creatinineStatus: "high"` → existing categorical status value (`statusIs(...,'high')`),
-  consistent with the renal injury seen in TMA; not itself required by `ALERT-006` but keeps the
-  fixture internally coherent (oliguria + high creatinine = plausible AKI).
+  consistent with the renal injury implied by oliguria; not itself required by `ALERT-006`.
+- `patient.ageMonths: 36`, `sexAtBirth: "female"` → "2 to <6 years" band, `hbLower: 11`.
+- `cbc.hemoglobin: 8.5` < 11 → anemia present, consistent with the hemolysis panel.
+- `cbc.mcv: 82`, `cbc.rbc: 3.1` — `rbc` not read by any rule; chosen so implied MCHC
+  (`8500/(82*3.1)` ≈ 33.4 g/dL) is physiologically sensible.
 
 ---
 
@@ -186,7 +256,8 @@ a new cutoff.
 | Fixture | Rules witnessed |
 |---|---|
 | `unstable-major-bleeding-severe-anemia.json` | ALERT-001, ALERT-002, ALERT-003 (+ ALERT-004, pre-existing target elsewhere) |
-| `tma-schistocytes-thrombocytopenia.json` | ALERT-006 (+ ALERT-004) |
+| `tma-schistocytes-thrombocytopenia.json` | ALERT-006, via the `cbc.thrombocytopenia` arm only (+ ALERT-004, since this fixture's `additionalCytopeniaCount` is 1) |
+| `tma-schistocytes-renal-symptoms.json` | ALERT-006, via the `symptoms.renalSymptoms` arm only (ALERT-004 does NOT fire here — no cytopenia is present, by design, to keep this fixture an isolated-arm witness) |
 | `lead-45plus-alert.json` | ALERT-007 |
 | `lead-20to44-alert.json` | ALERT-008 |
 | `scope-neonatal-young-infant.json` | SCOPE-001 (+ SCOPE-003) |
@@ -197,25 +268,15 @@ All 9 target rules (`ALERT-001`, `-002`, `-003`, `-006`, `-007`, `-008`, `SCOPE-
 `-003`) are witnessed by at least one fixture above, confirmed by
 `node scripts/rule-coverage.mjs`.
 
-## Known gap flagged for the orchestrator: `npm test`/`npm run check` do not run these fixtures' assertions yet
+## Wiring status: `npm test`/`npm run check` DO run these fixtures' assertions (resolved)
 
-`package.json`'s `"test"` script is `node --test tests/*.test.mjs` — a **non-recursive** glob that
-only matches `*.test.mjs` files directly under `tests/`, not `tests/witness/*.test.mjs`. This
-repository's `scripts/rule-coverage.mjs` walks `tests/witness/` recursively on its own (independent
-of the npm `test` script) and does correctly count these fixtures' activation witnesses — so
-`node scripts/rule-coverage.mjs` and its `--min` ratchet see this corpus. But the actual
-`severity`/`result.alerts`-vs-`interpretiveNotes` assertions in `tests/witness/alerts.test.mjs`
-(and the parallel `tests/witness/branch-seam.test.mjs`) are **not** currently exercised by
-`npm test` or `npm run check`, because that glob never resolves into the `tests/witness/`
-subdirectory. This was confirmed directly: `node --test tests/*.test.mjs` runs exactly 145 subtests
-with none of this file's 10 subtests among them; `node --test tests/witness/alerts.test.mjs` runs
-this file's 10 subtests explicitly and they pass/fail correctly (verified against a real M55
-mutation, see the phase task's negative-test requirement).
-
-This repo's `package.json` is outside this task's file ownership (EP05-T3 owns only
-`tests/witness/alerts/*.json`, `tests/witness/alerts.test.mjs`, and this NOTES.md), so the fix
-(broadening the `test` script's glob, e.g. to also include `tests/witness/*.test.mjs`, or moving to
-a recursive pattern) is left for the orchestrator or EP05-T6 ("wire the ratchet into CI") to apply.
-Until that lands, these severity/type assertions are real and pass/fail correctly when run
-directly (`node --test tests/witness/alerts.test.mjs`), but are not yet part of the automated
-`npm run check` gate.
+**Update (EP05-T5):** this section previously flagged that `package.json`'s `"test"` script
+(`node --test tests/*.test.mjs`) did not discover `tests/witness/*.test.mjs`, so these assertions
+were real but not part of the automated gate. **That has since been fixed by the orchestrator.**
+`package.json`'s `"test"` script is now
+`node --test tests/*.test.mjs tests/witness/*.test.mjs`, and `npm test`/`npm run check` run **204**
+tests total, including every assertion in this file (`tests/witness/alerts.test.mjs`) and the
+parallel `tests/witness/branch-seam.test.mjs`. Verified directly: `npm test` output reports
+`# tests 204` / `# pass 204` with this file's subtests present by name in the run log. The M55
+guard below is therefore now a real CI gate, not a standalone script that has to be remembered and
+run manually.

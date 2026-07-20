@@ -1,6 +1,9 @@
 {
   "patient": { "ageMonths": 8, "sexAtBirth": "female" },
-  "cbc": { "hemoglobin": 8, "mcv": 90 },
+  "cbc": {
+    "hemoglobin": 8, "mcv": 90, "wbc": 8, "anc": 3, "platelets": 300,
+    "localRanges": { "wbcLower": 4.0, "ancLower": 1.5, "plateletsLower": 150 }
+  },
   "reticulocytes": { "response": "low" },
   "history": { "thumbOrRadiusAnomaly": true }
 }

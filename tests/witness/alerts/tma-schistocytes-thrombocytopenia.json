@@ -1,18 +1,18 @@
 {
   "patient": { "ageMonths": 48, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
   "cbc": {
-    "hemoglobin": 7.8, "mcv": 80, "rdw": 16.5, "rbc": 2.6, "wbc": 9.5, "platelets": 42,
+    "hemoglobin": 7.8, "mcv": 80, "rdw": 16.5, "rbc": 3.0, "wbc": 9.5, "platelets": 42,
     "rbcInterpretation": "low",
     "localRanges": { "plateletsLower": 150 },
-    "localFlags": { "thrombocytopenia": true }
+    "localFlags": {}
   },
   "reticulocytes": { "response": "high" },
-  "symptoms": { "oliguria": true, "fatigue": true, "pallor": true },
+  "symptoms": { "fatigue": true, "pallor": true },
   "history": { "recentViralIllness": true },
   "exam": {},
   "labs": {
     "indirectBilirubinStatus": "high", "ldhStatus": "high", "haptoglobinStatus": "low",
-    "datStatus": "negative", "creatinineStatus": "high"
+    "datStatus": "negative"
   },
   "smear": ["schistocytes"]
 }

@@ -220,8 +220,11 @@ test('BOUNDARY ferritin comparison is inclusive (<=) at the threshold value', ()
 
 const BAND_PINS = [
   { fixture: 'ranges-band-infant-female', ageBand: '6 to <24 months', hbLower: 11, mcvLower: 73.3, mcvUpper: 83.2, rdwUpper: 15.4 },
+  { fixture: 'ranges-band-infant-male', ageBand: '6 to <24 months', hbLower: 11, mcvLower: 71.1, mcvUpper: 82.2, rdwUpper: 15.9 },
   { fixture: 'ranges-band-preschool-male', ageBand: '2 to <6 years', hbLower: 11, mcvLower: 74.1, mcvUpper: 84.3, rdwUpper: 14.7 },
+  { fixture: 'ranges-band-preschool-female', ageBand: '2 to <6 years', hbLower: 11, mcvLower: 75.2, mcvUpper: 85, rdwUpper: 14.5 },
   { fixture: 'ranges-band-school-age-female', ageBand: '6 to <12 years', hbLower: 11.2, mcvLower: 78.3, mcvUpper: 87.7, rdwUpper: 13.9 },
+  { fixture: 'ranges-band-school-age-male', ageBand: '6 to <12 years', hbLower: 11.3, mcvLower: 77.8, mcvUpper: 86.5, rdwUpper: 13.7 },
   { fixture: 'ferritin-adolescent-band-male', ageBand: '12 to <18 years', hbLower: 12.4, mcvLower: 80.4, mcvUpper: 90.1, rdwUpper: 13.7 },
   { fixture: 'ferritin-adolescent-band-female-not-menstruating', ageBand: '12 to <18 years', hbLower: 11.4, mcvLower: 80.5, mcvUpper: 91.8, rdwUpper: 14.6 },
 ];
@@ -292,6 +295,12 @@ test('BRANCH effective-range provenance: a local lab value overrides the built-i
   assert.equal(p.hbLower.value, 11.4);
   assert.equal(p.mcvLower.source, 'LOCAL_LAB');
   assert.equal(p.mcvLower.isFallback, false);
+  assert.equal(
+    p.mcvLower.value,
+    80.5,
+    'a supplied local mcvLower must carry its own value through, not just LOCAL_LAB provenance — a wrong '
+      + 'number with the right provenance must fail here',
+  );
 
   // Same patient, analytes with no local value: built-in must still apply.
   assert.equal(p.mcvUpper.source, 'AAP2026_IDA', 'an analyte with no local value falls back to the built-in band');

@@ -19,6 +19,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { assessPediatricAnemia } from '../../src/engine.js';
+import { deriveFacts } from '../../modules/anemia/facts.anemia.js';
 
 const rules = JSON.parse(await readFile(new URL('../../modules/anemia/rules.json', import.meta.url), 'utf8'));
 const candidates = JSON.parse(
@@ -102,10 +103,51 @@ test('ALERT-003 (hemoglobin below 7 g/dL, IDA category) fires as an urgent alert
   assert.equal(entry.title, 'Hemoglobin is below 7 g/dL');
 });
 
-test('ALERT-006 (schistocytes + thrombocytopenia/renal/neuro — possible TMA) fires as an emergency alert, not a note', async () => {
-  const result = assess(await fixture('tma-schistocytes-thrombocytopenia'));
+test('ALERT-006 (schistocytes + numerically-derived thrombocytopenia ONLY — possible TMA) fires as an emergency alert, not a note', async () => {
+  const input = await fixture('tma-schistocytes-thrombocytopenia');
+  const result = assess(input);
   const entry = assertAlertWitnessed(result, 'ALERT-006');
   assert.equal(entry.title, 'Possible thrombotic microangiopathy or severe microangiopathic process');
+
+  // This fixture is deliberately built to isolate the `cbc.thrombocytopenia` arm of ALERT-006's
+  // `any`: no `localFlags.thrombocytopenia` override and no renal/neurologic symptom is present,
+  // so the only way this alert can fire is via the numeric `platelets < localRanges.plateletsLower`
+  // derivation in facts.anemia.js. Asserting the derived fact directly means a broken derivation
+  // (e.g. the comparison flipped, or the localRanges lookup dropped) fails loudly here instead of
+  // being silently masked by a second satisfied arm.
+  const facts = deriveFacts(input);
+  assert.equal(
+    facts.cbc.thrombocytopenia,
+    true,
+    'cbc.thrombocytopenia must be derived TRUE from platelets(42) < localRanges.plateletsLower(150) — ' +
+      'this fixture supplies no localFlags override and no renal/neurologic symptom, so this is the only ' +
+      'arm available to drive ALERT-006',
+  );
+  assert.equal(input.symptoms?.renalSymptoms, undefined, 'this fixture must not also satisfy the renal arm');
+  assert.equal(input.symptoms?.oliguria, undefined, 'this fixture must not also satisfy the renal arm');
+  assert.equal(
+    facts.symptoms.neurologicSymptoms,
+    false,
+    'this fixture must not also satisfy the neurologic arm',
+  );
+});
+
+test('ALERT-006 (schistocytes + renal symptoms ONLY, no thrombocytopenia — possible TMA) fires as an emergency alert, not a note', async () => {
+  const input = await fixture('tma-schistocytes-renal-symptoms');
+  const result = assess(input);
+  const entry = assertAlertWitnessed(result, 'ALERT-006');
+  assert.equal(entry.title, 'Possible thrombotic microangiopathy or severe microangiopathic process');
+
+  // Isolates the `symptoms.renalSymptoms` arm: no localFlags override and no localRanges
+  // plateletsLower supplied, so cbc.thrombocytopenia must be false here.
+  const facts = deriveFacts(input);
+  assert.equal(
+    facts.cbc.thrombocytopenia,
+    false,
+    'this fixture must NOT witness ALERT-006 via thrombocytopenia — it isolates the renal-symptoms arm',
+  );
+  assert.equal(facts.symptoms.renalSymptoms, true, 'the renal-symptoms arm must be the one driving this alert');
+  assert.equal(facts.symptoms.neurologicSymptoms, false, 'this fixture must not also satisfy the neurologic arm');
 });
 
 test('ALERT-007 (blood lead level >=45 µg/dL) fires as an emergency alert, not a note', async () => {
@@ -153,6 +195,7 @@ test('M55 guard: every targeted alert/scope rule that fires lands in result.aler
   const fixtureNames = [
     'unstable-major-bleeding-severe-anemia',
     'tma-schistocytes-thrombocytopenia',
+    'tma-schistocytes-renal-symptoms',
     'lead-45plus-alert',
     'lead-20to44-alert',
     'scope-neonatal-young-infant',

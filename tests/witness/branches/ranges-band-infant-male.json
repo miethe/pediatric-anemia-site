@@ -1,0 +1,13 @@
+{
+  "patient": { "ageMonths": 12, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 10.5, "mcv": 65, "rdw": 15.5, "rbc": 5.0, "wbc": 9.0, "platelets": 380,
+    "rbcInterpretation": "normal", "localRanges": {}, "localFlags": {}
+  },
+  "reticulocytes": { "response": "inappropriately-normal" },
+  "symptoms": { "pallor": true },
+  "history": { "excessCowMilk": true },
+  "exam": {},
+  "labs": { "ferritin": 9, "ferritinStatus": "normal", "crpStatus": "normal" },
+  "smear": []
+}

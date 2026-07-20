@@ -1,0 +1,18 @@
+{
+  "patient": { "ageMonths": 36, "sexAtBirth": "female", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 8.5, "mcv": 82, "rbc": 3.1, "wbc": 9.0, "platelets": 250,
+    "rbcInterpretation": "low",
+    "localRanges": {},
+    "localFlags": {}
+  },
+  "reticulocytes": { "response": "high" },
+  "symptoms": { "oliguria": true, "fatigue": true, "pallor": true },
+  "history": {},
+  "exam": {},
+  "labs": {
+    "indirectBilirubinStatus": "high", "ldhStatus": "high", "haptoglobinStatus": "low",
+    "datStatus": "negative", "creatinineStatus": "high"
+  },
+  "smear": ["schistocytes"]
+}

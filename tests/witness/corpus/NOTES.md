@@ -1,9 +1,17 @@
 # `tests/witness/corpus/` — fixture notes (EP05-T2)
 
 Per-fixture record of which rules each input witnesses, the one-sentence clinical picture, and —
-for every numeric value used — the existing KB threshold it was chosen against. This is the
-evidence trail for the "no new clinical claims, no new or retuned thresholds" gate and the input
-to the T5 clinical-plausibility review.
+for every **threshold-bearing value** (a number an actual rule condition compares against a KB or
+code-literal cutoff) — the existing KB threshold it was chosen against and which side of it the
+value sits on. This is the evidence trail for the "no new clinical claims, no new or retuned
+thresholds" gate and the input to the T5 clinical-plausibility review.
+
+**Not every number below is threshold-bearing.** Many CBC values (RBC, WBC, ANC, platelets, RDW,
+and several Hb/MCV values used only for internal coherence) are ordinary observational values
+chosen so a fixture reads as a complete, physiologically sensible patient — not against a cutoff
+any rule reads. Where a number IS threshold-bearing, this file says which threshold and which side
+of it; where it is not, that is stated explicitly rather than left to imply a cutoff that does not
+exist.
 
 None of these fixtures are published (see `tests/witness/README.md`); they exist only to make the
 52 candidate/note/question rules enumerated in EP05-T2 fire, asserted by `tests/witness/corpus.test.mjs`
@@ -259,10 +267,21 @@ or blasts — transient erythroblastopenia of childhood.
 - `cbc.hemoglobin: 9` (< 11) → anemia present. `cbc.mcv: 80` (within 75.2–85) → normocytic.
 - `reticulocytes.response: "low"` → `retic.low`.
 - No `localFlags`/abnormal WBC/ANC/platelet values supplied → `additionalCytopeniaCount: 0` →
-  `cbc.isolatedAnemia` true.
+  `cbc.isolatedAnemia` true. (This particular leaf is still satisfied by omission rather than a
+  genuine "other lineages checked and normal" input, the same pattern fixed explicitly for
+  `diamond-blackfan-infant.json` above; it was left as-is here because the fix requested for this
+  fixture was scoped to the exam/organomegaly exclusion below, not this leaf — see the "KNOWN
+  LIMITATION" section for the general point.)
 - `history.recentViralIllness: true` → `history.recentViral`.
-- No `exam` findings and no `smear` blasts → the `not(any(splenomegaly, hepatomegaly,
-  lymphadenopathy, blasts))` clause is satisfied.
+- `exam.splenomegaly: false`, `exam.hepatomegaly: false`, `exam.lymphadenopathy: false` — **set
+  explicitly (EP05-T5 fix)**. These were previously omitted, and the `not(any(splenomegaly,
+  hepatomegaly, lymphadenopathy, blasts))` clause is satisfied identically whether they are `false`
+  or absent (an `=== true` check fails either way). Setting them explicitly documents that this
+  fixture is meant to represent a child in whom organomegaly/lymphadenopathy were sought and not
+  found — but, per the "KNOWN LIMITATION" section below, this does **not** make the test actually
+  distinguish "examined and normal" from "not examined" in today's fact model. `smear: []`
+  similarly cannot express "smear reviewed, no blasts seen" versus "no smear done at all" — there
+  is no field for that distinction today.
   → satisfies `TEC-001` in full, and also `Q-NORMO-LOW-001` (`normocytic` + `retic.low` +
   `not(any(renalSignal, chronicInflammation, multilineageCytopenia))` — none of those three are
   present here either).
@@ -328,7 +347,21 @@ thumb anomaly — a Diamond-Blackfan-anemia-compatible pattern.
 - `sexAtBirth: "female"` → "6 to <24 months" band: `hbLower 11`, `mcvUpper 83.2`.
 - `cbc.hemoglobin: 8` (< 11) → anemia present. `cbc.mcv: 90` (> 83.2) → macrocytic.
 - `reticulocytes.response: "low"` → `retic.low`.
-- No other cytopenia flags → `cbc.isolatedAnemia` true.
+- `cbc.wbc: 8`, `cbc.anc: 3`, `cbc.platelets: 300` with `cbc.localRanges: { wbcLower: 4.0,
+  ancLower: 1.5, plateletsLower: 150 }` — **added in EP05-T5**. Previously this fixture supplied no
+  WBC/ANC/platelet values at all, so `cbc.isolatedAnemia` (`additionalCytopeniaCount === 0`) was
+  true only because `leukopenia`/`neutropenia`/`thrombocytopenia` all short-circuit `false` in
+  `facts.anemia.js` when their `localRanges` lower bound is absent — the fixture never actually
+  exercised the "other lineages are normal" derivation, it just supplied nothing for it to derive
+  from. An adversarial review correctly identified this as "missingness treated as normal." The
+  values now supplied are each above their paired local lower bound (8 > 4.0, 3 > 1.5, 300 > 150),
+  so `leukopenia`/`neutropenia`/`thrombocytopenia` are now genuinely computed and found `false`,
+  and `cbc.isolatedAnemia` is a real derivation, not an artifact of absent input. **The three
+  `localRanges` values (`wbcLower: 4.0`, `ancLower: 1.5`, `plateletsLower: 150`) are synthetic
+  local-laboratory test inputs, not KB-derived thresholds** — this project's KB does not define
+  WBC/ANC/platelet reference bounds anywhere; these three numbers are reused verbatim from
+  `examples/marrow-red-flags.json` (an example fixture, not a KB source) rather than invented, to
+  avoid adding yet another arbitrary number to the corpus.
 - `history.thumbOrRadiusAnomaly: true` → one of the five flags `facts.anemia.js` counts into
   `marrow.congenitalSignalCount` (≥1 satisfies both rules' `gte 1` leaf).
   → satisfies `IMF-001` (anemia + retic.low + congenitalSignalCount≥1 + macrocytic) and
@@ -359,10 +392,20 @@ reviewed yet.
 
 ## `macrocytic-b12-thyroid-pernicious.json`
 
+**Label softened in EP05-T5:** the clinical picture below previously described this as
+"pernicious-anemia-pattern B12 deficiency." The fixture supplies a low B12 status and coexisting
+autoimmune thyroid disease, but no pernicious-anemia-specific finding (no anti-intrinsic-factor or
+anti-parietal-cell antibody status, no documented atrophic gastritis) — nothing in this input is
+specific to pernicious anemia as opposed to any other cause of B12 deficiency. The label below now
+describes only what the fixture supports. The filename was left as-is (unlike the rename above,
+this fix was scoped to the label, not the identifier).
+
 **Witnesses:** `MEG-001`, `MEG-002`, `MACRO-001`, `Q-MACRO-001`.
 
-**Clinical picture:** A 14-year-old girl with autoimmune (Hashimoto) thyroid disease and
-pernicious-anemia-pattern B12 deficiency — a recognized autoimmune-polyglandular co-occurrence —
+**Clinical picture:** A 14-year-old girl with autoimmune (Hashimoto) thyroid disease and B12
+deficiency of unspecified cause (no pernicious-anemia-specific finding, such as intrinsic-factor or
+parietal-cell antibody status, is supplied) — thyroid autoimmunity is a recognized comorbidity of
+autoimmune B12 deficiency, but this fixture does not assert pernicious anemia specifically —
 presents with macrocytic anemia, hypersegmented neutrophils on smear, and a reticulocyte count not
 yet drawn.
 
@@ -405,7 +448,12 @@ anemia.
 
 ---
 
-## `mixed-iron-b12-deficiency.json`
+## `mixed-iron-folate-deficiency.json`
+
+**Renamed in EP05-T5** (from `mixed-iron-b12-deficiency.json`): the fixture supplies
+`labs.folateStatus: "low"`, never a B12 value — the original name claimed B12 deficiency the input
+never asserted. `tests/witness/corpus.test.mjs`'s `FIXTURE_TARGETS` key and `fixture()` call were
+updated to match; content is unchanged.
 
 **Witnesses:** `MIX-001`.
 
@@ -440,8 +488,16 @@ erythropoiesis unresponsive to oral therapy (an IRIDA-compatible pattern).
 - `labs.stfrFerritinIndex: 2.5` — the fixed `> 2` cutoff in `facts.anemia.js` for
   `stfrIndexHigh` → satisfies `ID-003`.
 - `history.priorAdequateIronTrialNoResponse: true`, `history.adherenceVerified: true` — direct
-  pass-through boolean history fields, no threshold. No `history.ongoingBloodLossKnown` supplied
-  → the `not(...)` clause is satisfied by its absence.
+  pass-through boolean history fields, no threshold.
+- `history.ongoingBloodLossKnown: false` — **set explicitly (EP05-T5 fix)**. This field was
+  previously omitted, and the `not(history.ongoingBloodLossKnown === true)` clause is satisfied
+  identically whether the field is `false` or simply absent (both fail the `=== true` check). An
+  adversarial review correctly flagged that leaving it absent let the fixture's narrative
+  ("no known ongoing blood loss") claim something the input never actually asserted — the clinician
+  never recorded a negative, the field was just never asked. Setting it to `false` here is honest
+  documentation of what this fixture is meant to represent, but see the "KNOWN LIMITATION" section
+  below: it does **not** close the underlying gap, because today's boolean fact model cannot
+  distinguish "assessed and negative" from "never assessed" in the first place.
   → satisfies `IRIDA-001` in full.
 
 ---
@@ -499,6 +555,44 @@ for clinical coherence because no clinical claim is made.
 are also absent), not a numeric comparison. `deriveFacts()` and `getEffectiveRanges()` both
 null-guard on absent input (see `modules/anemia/facts.anemia.js`, `modules/anemia/ranges.js`), so
 this input does not throw.
+
+---
+
+## KNOWN LIMITATION — exclusion conditions cannot be witnessed as assessed-negative
+
+Several rules in this KB use a `not(...)` exclusion — e.g. `IRIDA-001`'s
+`not(history.ongoingBloodLossKnown === true)`, `TEC-001`'s
+`not(any(exam.splenomegaly, exam.hepatomegaly, exam.lymphadenopathy, smear.blasts))`. **In today's
+fact model, an explicit `false` and a field that was simply never supplied are behaviourally
+IDENTICAL**, because every one of these leaves is an `=== true` equality check: both `false` and
+`undefined`/absent fail it, so the exclusion is satisfied either way.
+
+This means that, no matter how these fixtures are authored, none of them can actually distinguish
+"a clinician asked and confirmed no ongoing blood loss" from "no one ever asked about blood loss,"
+or "the spleen and liver were examined and found normal" from "no exam was documented," or
+"a smear was reviewed and no blasts were seen" from "no smear was ever done." For `smear`
+specifically there is not even a partial workaround: `smear: []` (no findings supplied) and a
+hypothetical "smear reviewed, nothing abnormal" are the exact same value — there is no field in
+this input schema that can express "assessed, negative" for the smear at all.
+
+**EP05-T5 set the affected fields to explicit `false` anyway** (`history.ongoingBloodLossKnown:
+false` in `iron-refractory-anemia-irida.json`; `exam.splenomegaly`/`hepatomegaly`/`lymphadenopathy:
+false` in `transient-erythroblastopenia-childhood.json`). This is worth doing as **honest fixture
+documentation** — it records what the fixture author intended the clinical picture to represent —
+but it must not be read as closing the gap: it does not, and cannot, with the current boolean
+(two-state) fact model. **Do not claim, in any future review or documentation pass, that these
+fixtures "prove" the exclusion was clinically assessed and found negative** — they prove only that
+the rule's condition evaluates to the same result it always would have.
+
+This is a direct, concrete input to **EP-1's tri-state fact model migration**
+(present-true / present-false / not-assessed, rather than today's true/absent-as-false). SPIKE-003
+already flagged `TEC-001` and `IRIDA-001` by name for exactly this reason — this task's fixtures are
+additional, first-hand confirmation of that finding, not a new discovery, and this section exists
+so the next reader of this corpus does not have to rediscover it. Any migration design for EP-1
+should treat "exclusion-by-omission" rules as a named category to re-validate once a genuine
+not-assessed state exists, since a rule firing today on `not(x === true)` may need to become
+`not(x === true) AND assessed(x)` (or an equivalent tri-state formulation) to keep meaning what its
+`support`/`cautions` text says it means.
 
 ---
 

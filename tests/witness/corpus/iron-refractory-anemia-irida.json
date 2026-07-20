@@ -2,6 +2,6 @@
   "patient": { "ageMonths": 96, "sexAtBirth": "female" },
   "cbc": { "hemoglobin": 9, "mcv": 70 },
   "reticulocytes": { "response": "low" },
-  "history": { "priorAdequateIronTrialNoResponse": true, "adherenceVerified": true },
+  "history": { "priorAdequateIronTrialNoResponse": true, "adherenceVerified": true, "ongoingBloodLossKnown": false },
   "labs": { "stfrFerritinIndex": 2.5 }
 }

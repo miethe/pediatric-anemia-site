@@ -1,7 +1,7 @@
 {
   "patient": { "ageMonths": 84, "sexAtBirth": "female", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
   "cbc": {
-    "hemoglobin": 6.5, "mcv": 82, "rdw": 14.5, "rbc": 2.9, "wbc": 9.0, "platelets": 310,
+    "hemoglobin": 6.5, "mcv": 82, "rdw": 13.5, "rbc": 2.4, "wbc": 9.0, "platelets": 310,
     "rbcInterpretation": "low", "localRanges": {}, "localFlags": {}
   },
   "reticulocytes": { "response": "inappropriately-normal" },

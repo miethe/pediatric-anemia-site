@@ -2,8 +2,16 @@
 
 Task **EP05-T4** ("Close the M57 class"). These fixtures + `tests/witness/branch-seam.test.mjs`
 exist to make every decision branch in the ferritin-threshold selection and the age-band range
-selection **uniquely pinned**, so that deleting or reordering any one of them fails a test with a
-readable message.
+selection **uniquely pinned**, so that **a behaviour-changing deletion or reorder of any one of
+them fails a test with a readable message.**
+
+**Narrowed in EP05-T5** (the original wording above claimed this held for "any" branch
+unconditionally, which is not true): this holds for every branch whose deletion or reorder changes
+some fixture's output. It does **not** hold for two branches that are documented, explicit
+exceptions — see "Mutations that did NOT fail" below — and it does not by itself guard against
+reordering two branches whose *outcomes never overlap on any pinned input* (see the mutually
+exclusive branches note below); such a reorder can be invisible to this suite even though it is not
+one of the two named exceptions.
 
 They are **synthetic, test-only inputs**. They are not clinical worked examples and not published
 (nothing in `scripts/build-static.mjs` copies this directory into `dist/`). They are plain
@@ -40,10 +48,15 @@ miss it.
 ### Age-band selection — 4 bands × 2 sexes = 8 value paths
 
 `6 to <24 months`, `2 to <6 years`, `6 to <12 years`, `12 to <18 years`, each with a female and a
-male column. Pinned by `ranges-band-infant-female`, `ranges-band-preschool-male`,
-`ranges-band-school-age-female`, and the two adolescent fixtures — all four hb/mcv/rdw limits plus
-`ageBand`, `source: AAP2026_IDA`, `isFallback: true`. Sex non-collapse is pinned explicitly
-(female 11.4 vs male 12.4 hbLower at 168 months).
+male column — 8 value paths in total. **All 8 are now pinned** (EP05-T5 closed a gap: only 5 of
+the 8 were actually present in `BAND_PINS` as originally delivered — infant-male, preschool-female,
+and school-age-male were missing, meaning 3 of the "8 value paths" this section claimed were pinned
+were not exercised at all). Pinned by `ranges-band-infant-female`/`-male`,
+`ranges-band-preschool-male`/`-female`, `ranges-band-school-age-female`/`-male`, and the two
+adolescent fixtures — all four hb/mcv/rdw limits plus `ageBand`, `source: AAP2026_IDA`,
+`isFallback: true`, for every band/sex combination. Sex non-collapse is pinned explicitly (female
+11.4 vs male 12.4 hbLower at 168 months). The three added fixtures use only values read directly
+out of `modules/anemia/reference-ranges.json` — no invented numbers.
 
 ### Registry guards — 3 paths
 
@@ -78,15 +91,35 @@ Every row below was **actually applied** to the source, run, observed failing, a
 | M-G | drop the `LOCAL_LAB` precedence line in `pick()` | **FAIL** — 1 test | `a supplied local hbLower must win over the built-in band: + 'AAP2026_IDA'` |
 | M-I | delete the sex guard in `src/ranges/registry.js` | **FAIL** — 2 tests | `missing sex → null` (an object was returned); `builtInAgeBand: + '6 to <12 years'` |
 
-M-A was additionally run through **`npm test` itself** (see the wiring caveat below) with the glob
+M-A was additionally run through **`npm test` itself** (see the wiring status below) with the glob
 temporarily widened: exit code **1**, `# fail 4` (2 of them mine, 2 from a parallel task's in-flight
 file). `package.json` was restored immediately afterwards and is unmodified in the final state.
 
-### Mutations that did NOT fail — branches that cannot be uniquely pinned
+### EP05-T5: an additional reorder that is genuinely invisible to this suite — reported, not fixed
 
-Reported rather than faked. Both are **behaviourally redundant defensive guards**: deleting them
-produces byte-identical output for every input, because the numeric comparisons that follow are
-already `false` for `NaN`/`undefined`.
+The ferritin branch order is `menstruating` → `adolescent-band (144–<216)` → `young-child-band
+(6–<144)` → fall-through `null`. `M-D` above proves the `menstruating` branch's position relative
+to the two age bands is pinned (a menstruating adolescent satisfies both the menstruating and the
+adolescent-band conditions, so their relative order is observable). **The adolescent-band and
+young-child-band branches, however, are mutually exclusive on age — no `ageMonths` value can ever
+satisfy both `>= 144 && < 216` and `>= 6 && < 144` simultaneously.** Swapping the order of just
+those two `if` statements (leaving the menstruating check and the fall-through where they are)
+therefore changes NOTHING for any input at any age: every age still resolves to the same value via
+whichever branch it was always going to satisfy. This was reasoned through rather than executed as
+a mutation (running it would be a no-op by construction, so there is nothing to observe) — it is
+recorded here as a second, distinct example of a reorder this suite cannot see, alongside the two
+mutations below, and it is why the headline claim at the top of this file is stated as "a
+*behaviour-changing* deletion or reorder," not "any deletion or reorder."
+
+### Mutations that did NOT fail — the stated exception to this file's headline claim
+
+Reported rather than faked. **These two mutations are the explicit, acknowledged exception to
+"every branch is uniquely pinned":** both are **behaviourally redundant defensive guards** — deleting
+either produces byte-identical output for every input, because the numeric comparisons that follow
+are already `false` for `NaN`/`undefined`. No fixture can pin them because there is no observable
+difference to pin; a test that claimed to distinguish them would be testing something else. This is
+not a gap in fixture authorship — it is a structural fact about the current code that this corpus
+records rather than papers over.
 
 | Mutation | What was changed | Result | Why unpinnable |
 |---|---|---|---|
@@ -99,23 +132,20 @@ table ever gained an open-ended or non-numeric bound, deleting either guard woul
 harmless. Worth a comment in the source (out of scope for this task: `modules/` and `src/` must not
 be modified here).
 
-## Wiring caveat — READ THIS
+## Wiring status: `npm test` / `npm run check` DO run these pins (resolved)
 
-`npm test` is `node --test tests/*.test.mjs`. That glob is **top-level only**: it does not discover
-`tests/witness/branch-seam.test.mjs`, so as delivered these pins do not run under `npm test` /
-`npm run check`. (Verified empirically with a throwaway always-failing probe file in
-`tests/witness/`: the suite stayed green at 145/145.) The same applies to the parallel task's
-`tests/witness/alerts.test.mjs`.
+**Update (EP05-T5):** this section previously warned that `npm test`'s glob
+(`node --test tests/*.test.mjs`) was top-level-only and did not discover
+`tests/witness/branch-seam.test.mjs`, so these pins ran only when invoked directly and were not yet
+a real CI gate. **That has since been fixed by the orchestrator.** `package.json`'s `"test"` script
+is now `node --test tests/*.test.mjs tests/witness/*.test.mjs`, and `npm test`/`npm run check` run
+**204** tests total, including every pin in this file and the parallel
+`tests/witness/alerts.test.mjs`. Verified directly: `npm test` output reports `# tests 204` /
+`# pass 204` with this file's subtests present by name in the run log. This guard is no longer
+something that has to be remembered and run manually — a regression here now fails `npm run check`
+the same way any other test failure does.
 
-`package.json` is outside this task's file ownership, so the one-line fix is left to the
-orchestrator (EP05-T6 already touches `npm run check`):
-
-```diff
--    "test": "node --test tests/*.test.mjs"
-+    "test": "node --test tests/*.test.mjs tests/witness/*.test.mjs"
-```
-
-Until that lands, this is a guard nobody has seen fail in CI — precisely the failure mode this
-phase exists to eliminate. All mutation results above were obtained by running the suite explicitly
+All mutation results in the table above were additionally obtained by running the suite explicitly
 (`node --test tests/*.test.mjs tests/witness/*.test.mjs`), and M-A additionally through a real
-`npm test` with the glob temporarily widened and then restored.
+`npm test` run with the glob temporarily widened and then restored, before the glob fix landed
+permanently.
