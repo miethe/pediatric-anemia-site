@@ -19,6 +19,15 @@
 // `allowed_for_public_output: false`. The pack MUST NOT carry those strings, so the rights question
 // cannot be re-opened by accident downstream.
 //
+// EP3-T5: this script also reads evidence-packs/rf-ev-001/fidelity-findings.json (an independent
+// cross-family audit, mechanically applied — see that file's header comment) and withholds the
+// `summary` text of every passage the audit flagged `near-verbatim-span-pending-rights` (finding
+// EP3T5-F01), replacing it with the file's fixed `withholdPlaceholder` string BEFORE it ever
+// reaches pack.json. That flag means the RF bundle's own `summary` field, despite being described
+// as a paraphrase, shares an 8-13-word contiguous span with rights-restricted source text. The
+// withholding happens here, not in build-evidence-pack.mjs, so the restricted text never sits in
+// any committed file, vendored or built.
+//
 // This file also hand-rolls a small YAML-subset parser for the specific frontmatter shape the RF
 // source cards actually use. Adding a `yaml` dependency to a zero-dependency repo for the sake of
 // six files would change the supply-chain posture for no gain the pinned schema does not already
@@ -32,6 +41,7 @@ import { fileURLToPath } from 'node:url';
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const DEFAULT_BUNDLE = '/Users/miethe/dev/homelab/development/research-foundry/runs/rf_run_20260717_rf_ev_001_pediatric_cds_backfill';
 const PACK_DIR = path.join(REPO_ROOT, 'evidence-packs', 'rf-ev-001');
+const FIDELITY_FINDINGS_PATH = path.join(PACK_DIR, 'fidelity-findings.json');
 
 // D-EP3-5: this 1:1 mapping is asserted in the vendor script (not inferred at build time). Any
 // unmatched card or unmatched KB id fails loudly, non-zero exit, named ids. Order matches the
@@ -414,6 +424,30 @@ function parseSexFromPopulation(population) {
   return null;
 }
 
+// ----- EP3-T5 withholding ---------------------------------------------------------------------
+
+// Reads evidence-packs/rf-ev-001/fidelity-findings.json and returns the fixed placeholder string
+// plus the set of "<kbSourceId>#<evidence_id>" passage ids the audit flagged
+// `near-verbatim-span-pending-rights` (EP3T5-F01). This is the ONLY finding this script acts on —
+// every other flag only suppresses a downstream binding decision (build-evidence-pack.mjs /
+// src/evidence.js#isBindableAsSourceSupported), it does not change what text gets vendored.
+async function loadWithholdSpec(findingsPath) {
+  const findings = JSON.parse(await readFile(findingsPath, 'utf8'));
+  const withholdPlaceholder = findings.withholdPlaceholder;
+  if (typeof withholdPlaceholder !== 'string' || withholdPlaceholder === '') {
+    throw new Error(`${findingsPath}: missing or empty withholdPlaceholder`);
+  }
+  const withheldPassageIds = new Set();
+  for (const finding of findings.findings ?? []) {
+    if (finding.flag !== 'near-verbatim-span-pending-rights') continue;
+    for (const passageId of finding.passageIds ?? []) withheldPassageIds.add(passageId);
+  }
+  if (withheldPassageIds.size === 0) {
+    throw new Error(`${findingsPath}: no passageIds found for flag "near-verbatim-span-pending-rights"`);
+  }
+  return { withholdPlaceholder, withheldPassageIds };
+}
+
 // ----- IO helpers ---------------------------------------------------------------------------
 
 async function sha256Hex(filePath) {
@@ -452,6 +486,8 @@ async function main() {
   const { bundle } = parseArgs(process.argv.slice(2));
   REPO_ROOT_OR_BUNDLE.bundle = bundle;
   const upstreamFiles = [];
+  const { withholdPlaceholder, withheldPassageIds } = await loadWithholdSpec(FIDELITY_FINDINGS_PATH);
+  const matchedWithheldIds = new Set();
 
   // Read run.json for the run id — we don't guess it from the directory name.
   const runJsonPath = path.join(bundle, 'run.json');
@@ -536,6 +572,12 @@ async function main() {
       const lifecycle = ped.lifecycle ?? {};
       const supersedes = typeof lifecycle.supersedes === 'string' && lifecycle.supersedes !== '' ? lifecycle.supersedes : null;
 
+      // EP3-T5 (EP3T5-F01): withhold at vendor time, before this summary ever reaches pack.json.
+      const passageId = `${kbSourceId}#${point.evidence_id}`;
+      const isWithheld = withheldPassageIds.has(passageId);
+      if (isWithheld) matchedWithheldIds.add(passageId);
+      const summary = isWithheld ? withholdPlaceholder : point.summary;
+
       const passage = {
         // D-EP3-4: the passage record MUST NOT carry the verbatim `quote:` field. The pack does
         // not receive it either. This is enforced by construction here: we simply do not read
@@ -543,7 +585,7 @@ async function main() {
         evidenceId: point.evidence_id,
         status,
         sourceLocator: parseLocator(point.locator),
-        summary: point.summary,
+        summary,
         evidenceGrade,
         applicability,
         supersedes,
@@ -565,6 +607,14 @@ async function main() {
     if (!hitKbIds.has(kbId)) {
       throw new Error(`KB source id "${kbId}" not covered by any source card in ${sourcesDir}`);
     }
+  }
+
+  // EP3-T5: fail loudly (not silently) if fidelity-findings.json names a withheld passage id that
+  // no source card actually produced — a stale/typo'd id in the findings file must not silently
+  // leave restricted text un-withheld.
+  if (matchedWithheldIds.size !== withheldPassageIds.size) {
+    const unmatched = [...withheldPassageIds].filter((id) => !matchedWithheldIds.has(id));
+    throw new Error(`fidelity-findings.json names withheld passage id(s) not produced by any source card: ${unmatched.join(', ')}`);
   }
 
   if (cardReviewDates.size !== 1) {

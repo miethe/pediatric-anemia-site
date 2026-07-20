@@ -79,3 +79,21 @@ export function passageApplicability(passage) {
   if (passage.applicability) return passage.applicability;
   return passage.status === 'implementation-proposal' ? { age: null, sex: null, assay: null } : null;
 }
+
+/**
+ * EP3-T5 binding rule (safety-critical, fail-safe by construction): the SOLE predicate for
+ * whether a passage may be used as source-supported grounding for a rule. A passage carrying ANY
+ * `reviewFlags` entry — from the independent fidelity audit in
+ * evidence-packs/rf-ev-001/fidelity-findings.json — must never be treated as source-backed; a
+ * rule that would bind to it falls back to that source's `<sourceId>#implementation-proposal`
+ * sentinel instead. Both EP-4's rule->passage binder and scripts/validate-kb.mjs call this one
+ * definition rather than re-deriving the rule, so the two can never drift apart. A legacy-shape
+ * passage missing `status`/`reviewFlags` entirely degrades to "not bindable" (never throws, never
+ * defaults to permissive) — consistent with this module's other accessors' degrade-not-crash
+ * posture (AC-WP3-RESIL).
+ */
+export function isBindableAsSourceSupported(passage) {
+  if (!passage || passage.status !== 'source-supported') return false;
+  const flags = Array.isArray(passage.reviewFlags) ? passage.reviewFlags : [];
+  return flags.length === 0;
+}

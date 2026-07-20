@@ -42,6 +42,8 @@ function basePassage(overrides = {}) {
     sourceLocator: { raw: 'p. 1', page: '1', section: null, table: null, figure: null },
     exactPassage: 'Something located.',
     passageFidelity: 'paraphrase',
+    reviewFlags: [],
+    reviewFindingIds: [],
     evidenceGrade: 'source-supported-fact',
     applicability: { age: null, sex: null, assay: null },
     reviewDate: '2026-07-18',

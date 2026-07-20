@@ -59,6 +59,8 @@
         "sourceLocator",
         "exactPassage",
         "passageFidelity",
+        "reviewFlags",
+        "reviewFindingIds",
         "evidenceGrade",
         "reviewDate",
         "supersedes",
@@ -87,8 +89,26 @@
           "description": "A PARAPHRASE (see `passageFidelity`, D-EP3-4) of the located passage, sourced from the RF extracted point's `summary` — never its `quote`. Empty string only on an `implementation-proposal` record."
         },
         "passageFidelity": {
-          "enum": ["verbatim", "paraphrase"],
-          "description": "States what kind of text `exactPassage` holds. REG-002 has not cleared verbatim reuse of guideline text, so every record minted by this codebase's converter is `paraphrase`; `verbatim` is schema-representable for a future cleared source but is asserted by nobody today."
+          "enum": ["verbatim", "paraphrase", "withheld"],
+          "description": "States what kind of text `exactPassage` holds. REG-002 has not cleared verbatim reuse of guideline text, so every record minted by this codebase's converter is `paraphrase` unless withheld; `verbatim` is schema-representable for a future cleared source but is asserted by nobody today. `withheld` (EP3T5-F01) means the independent EP3-T5 fidelity audit found the located span shared a rights-restricted contiguous span with source text; vendor-rf-bundle.mjs replaced `exactPassage` with the fixed placeholder before this record was ever minted, and `reviewFlags` carries `near-verbatim-span-pending-rights`."
+        },
+        "reviewFlags": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "source-not-independently-retrievable",
+              "overclaims-source-modality",
+              "adds-claim-not-in-located-passage",
+              "omits-source-numerics",
+              "near-verbatim-span-pending-rights"
+            ]
+          },
+          "description": "EP3-T5: zero or more independent-audit fidelity flags naming a specific way this passage over- or under-claims relative to its located source passage. Closed enum matching evidence-packs/rf-ev-001/fidelity-findings.json's `flagSemantics` keys — nothing outside that file may add a flag here. Empty array on a clean record. ANY non-empty value here blocks source-supported binding — see src/evidence.js#isBindableAsSourceSupported, the single shared predicate EP-4's rule->passage binder and scripts/validate-kb.mjs both call. Flags only suppress a claim; they never add or strengthen one."
+        },
+        "reviewFindingIds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "EP3-T5: the evidence-packs/rf-ev-001/fidelity-findings.json finding id(s) (e.g. \"EP3T5-F02\") that produced this record's `reviewFlags`. Empty array on a clean record. Every entry must resolve to a real finding id, and the flags it names must exactly match `reviewFlags`; both directions are enforced cross-file by scripts/validate-kb.mjs, which this schema cannot reach into the findings file to check on its own."
         },
         "evidenceGrade": {
           "type": ["string", "null"],
@@ -131,6 +151,32 @@
           },
           "then": true,
           "else": { "type": "object", "required": ["applicability"] }
+        },
+        {
+          "description": "EP3-T5 (EP3T5-F01): a record flagged near-verbatim-span-pending-rights must be marked withheld.",
+          "if": {
+            "type": "object",
+            "required": ["reviewFlags"],
+            "properties": { "reviewFlags": { "contains": { "const": "near-verbatim-span-pending-rights" } } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["passageFidelity"],
+            "properties": { "passageFidelity": { "const": "withheld" } }
+          }
+        },
+        {
+          "description": "EP3-T5 (EP3T5-F01): the converse — a record marked withheld must carry the flag that caused it.",
+          "if": {
+            "type": "object",
+            "required": ["passageFidelity"],
+            "properties": { "passageFidelity": { "const": "withheld" } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["reviewFlags"],
+            "properties": { "reviewFlags": { "contains": { "const": "near-verbatim-span-pending-rights" } } }
+          }
         }
       ]
     },

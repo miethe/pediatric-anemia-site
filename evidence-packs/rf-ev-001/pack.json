@@ -94,7 +94,7 @@
             "table": "Table 4",
             "figure": null
           },
-          "summary": "The sTfR-ferritin index (sTfR/log10 ferritin) is elevated (>2) in iron deficiency and <1 in anemia of chronic inflammation without concomitant ID, helping distinguish the two.",
+          "summary": "[withheld pending REG-002 content-rights clearance]",
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Children with chronic inflammatory conditions and risk factors for ID; used to separate ID from anemia of chronic inflammation",
@@ -381,7 +381,7 @@
             "table": null,
             "figure": null
           },
-          "summary": "CDC's Blood Lead Reference Value (BLRV) is 3.5 µg/dL; a BLL at or above this value triggers the recommended-action pathway.",
+          "summary": "[withheld pending REG-002 content-rights clearance]",
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Children (childhood lead poisoning prevention); both sexes; CDC screening context cites Medicaid-enrolled testing at ages 12 and 24 months, or 24-72 months if never screened",
@@ -419,7 +419,7 @@
             "table": "Table 1",
             "figure": null
           },
-          "summary": "CDC Table 1 sets confirmatory-venous-sample timelines that shorten as the initial capillary BLL rises: ≥3.5-9 within 3 months, 10-19 within 1 month, 20-44 within 2 weeks, ≥45 within 48 hours.",
+          "summary": "[withheld pending REG-002 content-rights clearance]",
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Children with an elevated initial screening capillary BLL; both sexes",
@@ -502,7 +502,7 @@
             "table": null,
             "figure": null
           },
-          "summary": "Criterion 4 requires the software be intended to enable the health care professional to independently review the basis for the recommendations so the HCP does not rely primarily on them.",
+          "summary": "[withheld pending REG-002 content-rights clearance]",
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "not applicable",
@@ -521,7 +521,7 @@
             "table": null,
             "figure": null
           },
-          "summary": "A software function that provides a specific preventive, diagnostic, or treatment output or directive fails Criterion 3, making specificity of the output a decisive regulatory factor.",
+          "summary": "[withheld pending REG-002 content-rights clearance]",
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "not applicable",
@@ -540,7 +540,7 @@
             "table": null,
             "figure": null
           },
-          "summary": "FDA recommends the software/labeling state the intended use, and does not consider software intended for a critical, time-sensitive task or decision to meet Criterion 4 because the HCP lacks time for independent review.",
+          "summary": "[withheld pending REG-002 content-rights clearance]",
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "not applicable",
@@ -559,7 +559,7 @@
             "table": null,
             "figure": null
           },
-          "summary": "FDA weighs both the level of software automation and the time-critical nature of the HCP's decision making (automation bias) when deciding whether a function permits independent review.",
+          "summary": "[withheld pending REG-002 content-rights clearance]",
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "not applicable",
@@ -604,7 +604,7 @@
             "table": null,
             "figure": null
           },
-          "summary": "Because reticulocytes and young red cells have much higher G6PD activity than mature cells, an assay run during or soon after a hemolytic episode can give a false-normal result.",
+          "summary": "[withheld pending REG-002 content-rights clearance]",
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Any patient tested during or soon after acute hemolysis/reticulocytosis (all ages); heightened for African-type variant",
@@ -623,7 +623,7 @@
             "table": null,
             "figure": null
           },
-          "summary": "When G6PD deficiency is still suspected and no other cause of hemolysis is found, the assay should be repeated at least 2-3 months after the hemolytic episode resolves so a deficiency is not missed.",
+          "summary": "[withheld pending REG-002 content-rights clearance]",
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Patient with clinically suspected G6PD deficiency and unexplained hemolysis, initial assay normal/equivocal (all ages)",
@@ -661,7 +661,7 @@
             "table": "Table I",
             "figure": null
           },
-          "summary": "The guideline classifies G6PD variants by residual enzyme activity as a percentage of normal — Class I and II below 10%, Class III 10-60%, Class IV 100%, Class V above 100%.",
+          "summary": "[withheld pending REG-002 content-rights clearance]",
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Hemizygous males (footnote: '*Levels of residual G6PD activity in hemizygous males'); classification framework applies across ages",
@@ -699,7 +699,7 @@
             "table": null,
             "figure": null
           },
-          "summary": "Newborns and infants have G6PD activities that deviate appreciably from the adult value (one study: newborn mean ~150% of adult mean), and activity is higher in premature infants born at 29-32 weeks gestation than in term neonates.",
+          "summary": "[withheld pending REG-002 content-rights clearance]",
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Newborns and infants; premature infants born between 29 and 32 weeks gestation vs term neonates",

@@ -34,6 +34,12 @@
           },
           "exactPassage": "AAP names the CBC (Hb, MCV, RDW) plus serum ferritin as the two core laboratory tests for identifying iron deficiency and IDA, with both performed together.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [
+            "source-not-independently-retrievable"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F02"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Infants, children, and adolescents (birth through adolescence) being screened for ID/IDA; general primary-care and subspecialty context",
@@ -62,6 +68,14 @@
           },
           "exactPassage": "Table 1 provides age- and sex-specific normal Hb (g/dL), MCV (fL), and RDW (%) intervals spanning 6–24 months through 12–<18 years, used as the KB fallback CBC reference intervals.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [
+            "adds-claim-not-in-located-passage",
+            "source-not-independently-retrievable"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F02",
+            "EP3T5-F03"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Females and males, 6–24 mo / 2–6 y / 6–12 y / 12–<18 y (table title states 'From Age 9 Months to 18 Years'); age- and sex-stratified",
@@ -90,6 +104,12 @@
           },
           "exactPassage": "AAP sets serum ferritin ≤20 ng/mL as indicating ID for young and school-aged children and ≤30 ng/mL for adolescents and all menstruating individuals.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [
+            "source-not-independently-retrievable"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F02"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Young and school-aged children (≤20 ng/mL) vs adolescents and all menstruating individuals (≤30 ng/mL); age- and menstruating-status stratified",
@@ -118,6 +138,14 @@
           },
           "exactPassage": "Ferritin is an acute-phase reactant; an elevated CRP in an ill or inflamed child means SF cannot be treated as a reliable ID marker, while CRP is unnecessary in a clinically well child.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [
+            "adds-claim-not-in-located-passage",
+            "source-not-independently-retrievable"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F02",
+            "EP3T5-F09"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Children/adolescents with acute or chronic inflammation, tissue injury, or acute illness; contrasted with clinically well children",
@@ -144,8 +172,16 @@
             "table": "Table 4",
             "figure": null
           },
-          "exactPassage": "The sTfR-ferritin index (sTfR/log10 ferritin) is elevated (>2) in iron deficiency and <1 in anemia of chronic inflammation without concomitant ID, helping distinguish the two.",
-          "passageFidelity": "paraphrase",
+          "exactPassage": "[withheld pending REG-002 content-rights clearance]",
+          "passageFidelity": "withheld",
+          "reviewFlags": [
+            "near-verbatim-span-pending-rights",
+            "source-not-independently-retrievable"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F01",
+            "EP3T5-F02"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Children with chronic inflammatory conditions and risk factors for ID; used to separate ID from anemia of chronic inflammation",
@@ -174,6 +210,12 @@
           },
           "exactPassage": "Microcytic anemia with reduced MCV and elevated RDW is most consistent with IDA, but thalassemia trait and chronic inflammation can also cause microcytic anemia and must be differentiated (Table 3).",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [
+            "source-not-independently-retrievable"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F02"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Children/adolescents with microcytic anemia; differential across IDA, alpha/beta thalassemia trait, and anemia of inflammation/chronic disease",
@@ -202,6 +244,14 @@
           },
           "exactPassage": "AAP defines severe IDA as confirmed IDA with Hb <7 g/dL, and notes some such children are minimally symptomatic — transfusion is reserved for clinical instability, not triggered by the Hb value alone.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [
+            "adds-claim-not-in-located-passage",
+            "source-not-independently-retrievable"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F02",
+            "EP3T5-F07"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Young children and adolescents with confirmed IDA; category applies within an established IDA diagnosis, not to anemia of any cause",
@@ -230,6 +280,8 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": null,
           "applicability": {
             "age": null,
@@ -274,6 +326,12 @@
           },
           "exactPassage": "WHO 2024 defines anaemia with age/population-specific haemoglobin cutoffs, including four distinct pediatric bands from 6 months to 14 years.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [
+            "omits-source-numerics"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F04"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Children 6 months-14 years, both sexes; age-banded (6-23 mo, 24-59 mo, 5-11 y, 12-14 y girls/boys); apparently-healthy reference basis; applies at individual and population level",
@@ -302,6 +360,8 @@
           },
           "exactPassage": "The 2024 revision modified the haemoglobin cutoff for exactly one pediatric group -- children 6-23 months -- rather than applying a single universal pediatric threshold.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Children 6-23 months, both sexes -- the only pediatric group whose defining cutoff was changed in the 2024 revision",
@@ -330,6 +390,12 @@
           },
           "exactPassage": "WHO states physiological, environmental, and genetic factors and lifecycle variation must be considered when defining haemoglobin cutoffs -- supporting contextual, non-universal interpretation.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [
+            "overclaims-source-modality"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F08"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "All age and lifecycle groups including children (explicitly 'early life ... and with age'); context = defining/interpreting haemoglobin cutoffs",
@@ -358,6 +424,12 @@
           },
           "exactPassage": "WHO recommends adjusting haemoglobin to define anaemia for elevation of residence, via a stated increment table and quadratic equation -- a contextual/physiologic modifier of interpretation.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [
+            "omits-source-numerics"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F05"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "All population groups including children; residents/workers at elevation, esp. below 2500 m (>98% of world population)",
@@ -386,6 +458,8 @@
           },
           "exactPassage": "WHO explicitly recommends that haemoglobin NOT be adjusted for infection/inflammation -- a contextual caveat distinguishing haemoglobin interpretation from inflammation-adjusted iron markers.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "All groups including children in infection/inflammation- and malaria-endemic settings",
@@ -414,6 +488,8 @@
           },
           "exactPassage": "WHO documents that the 2024 cutoffs update and consolidate a traceable lineage of prior WHO guidance (1968-2005), giving transparent provenance for the thresholds.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "not applicable (provenance / methodology statement)",
@@ -442,6 +518,8 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": null,
           "applicability": {
             "age": null,
@@ -489,6 +567,8 @@
           },
           "exactPassage": "The review's core framework classifies pediatric anemia first by MCV (microcytic/normocytic/macrocytic) then refines by reticulocyte count — the morphology-first, reticulocyte-response approach the KB relies on.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Infants and children with anemia (individual-patient diagnostic workup); not applicable to a single numeric cutoff",
@@ -517,6 +597,8 @@
           },
           "exactPassage": "The review anchors the normocytic band at MCV 80-100 fL, the only explicit numeric MCV range stated in the source.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Pediatric patients (age band not sub-specified in this sentence); note the review's own Figure 1/Table 1 show MCV reference limits are age-dependent in children, so this 80-100 fL band is a general anchor, not an age-specific cutoff",
@@ -545,6 +627,8 @@
           },
           "exactPassage": "Reticulocyte count direction (elevated vs low relative to anemia severity) distinguishes an adequate erythropoietic response to blood loss/hemolysis from inadequate marrow production.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Infants and children with anemia; interpretive rule, not applicable to a single sex/age band",
@@ -573,6 +657,8 @@
           },
           "exactPassage": "Peripheral smear morphology (spherocytes, elliptocytes, schistocytes/helmet cells) points to specific hemolytic mechanisms — supporting the KB's smear-interpretation use of this source.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Infants and children with anemia; qualitative smear findings, not applicable to a numeric cutoff",
@@ -601,6 +687,8 @@
           },
           "exactPassage": "Multilineage cytopenia — pancytopenia with relative reticulocytopenia, teardrop RBCs, giant platelets, and immature leukocytes — signals marrow replacement, backing the KB's multi-lineage-cytopenia escalation.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Infants and children with anemia plus another cytopenia; qualitative pattern, not applicable to a numeric cutoff",
@@ -629,6 +717,8 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": null,
           "applicability": {
             "age": null,
@@ -672,8 +762,14 @@
             "table": null,
             "figure": null
           },
-          "exactPassage": "CDC's Blood Lead Reference Value (BLRV) is 3.5 µg/dL; a BLL at or above this value triggers the recommended-action pathway.",
-          "passageFidelity": "paraphrase",
+          "exactPassage": "[withheld pending REG-002 content-rights clearance]",
+          "passageFidelity": "withheld",
+          "reviewFlags": [
+            "near-verbatim-span-pending-rights"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F01"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Children (childhood lead poisoning prevention); both sexes; CDC screening context cites Medicaid-enrolled testing at ages 12 and 24 months, or 24-72 months if never screened",
@@ -702,6 +798,12 @@
           },
           "exactPassage": "A capillary screening result at or above the BLRV must be confirmed with a venous sample before further action.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [
+            "overclaims-source-modality"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F10"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Children undergoing initial blood lead screening; both sexes",
@@ -728,8 +830,14 @@
             "table": "Table 1",
             "figure": null
           },
-          "exactPassage": "CDC Table 1 sets confirmatory-venous-sample timelines that shorten as the initial capillary BLL rises: ≥3.5-9 within 3 months, 10-19 within 1 month, 20-44 within 2 weeks, ≥45 within 48 hours.",
-          "passageFidelity": "paraphrase",
+          "exactPassage": "[withheld pending REG-002 content-rights clearance]",
+          "passageFidelity": "withheld",
+          "reviewFlags": [
+            "near-verbatim-span-pending-rights"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F01"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Children with an elevated initial screening capillary BLL; both sexes",
@@ -758,6 +866,8 @@
           },
           "exactPassage": "For a confirmed BLL of 3.5-19 µg/dL, CDC directs providers to test for and treat iron deficiency per AAP guidelines.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Children with confirmed BLL 3.5-19 µg/dL; both sexes",
@@ -786,6 +896,8 @@
           },
           "exactPassage": "CDC defines escalating action tiers at 20-44 µg/dL (history/physical, environmental investigation, PEHSU/Poison Control contact) and ≥45 µg/dL (highest tier: detailed neuro exam, possible hospital admission, toxicologist consult for chelation).",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Children with confirmed BLL 20-44 µg/dL or ≥45 µg/dL; both sexes",
@@ -814,6 +926,8 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": null,
           "applicability": {
             "age": null,
@@ -858,6 +972,8 @@
           },
           "exactPassage": "FDA states a CDS software function is excluded from the device definition under section 520(o)(1)(E) only if it meets all four listed non-device CDS criteria.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "not applicable",
@@ -884,8 +1000,14 @@
             "table": null,
             "figure": null
           },
-          "exactPassage": "Criterion 4 requires the software be intended to enable the health care professional to independently review the basis for the recommendations so the HCP does not rely primarily on them.",
-          "passageFidelity": "paraphrase",
+          "exactPassage": "[withheld pending REG-002 content-rights clearance]",
+          "passageFidelity": "withheld",
+          "reviewFlags": [
+            "near-verbatim-span-pending-rights"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F01"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "not applicable",
@@ -912,8 +1034,14 @@
             "table": null,
             "figure": null
           },
-          "exactPassage": "A software function that provides a specific preventive, diagnostic, or treatment output or directive fails Criterion 3, making specificity of the output a decisive regulatory factor.",
-          "passageFidelity": "paraphrase",
+          "exactPassage": "[withheld pending REG-002 content-rights clearance]",
+          "passageFidelity": "withheld",
+          "reviewFlags": [
+            "near-verbatim-span-pending-rights"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F01"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "not applicable",
@@ -940,8 +1068,14 @@
             "table": null,
             "figure": null
           },
-          "exactPassage": "FDA recommends the software/labeling state the intended use, and does not consider software intended for a critical, time-sensitive task or decision to meet Criterion 4 because the HCP lacks time for independent review.",
-          "passageFidelity": "paraphrase",
+          "exactPassage": "[withheld pending REG-002 content-rights clearance]",
+          "passageFidelity": "withheld",
+          "reviewFlags": [
+            "near-verbatim-span-pending-rights"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F01"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "not applicable",
@@ -968,8 +1102,14 @@
             "table": null,
             "figure": null
           },
-          "exactPassage": "FDA weighs both the level of software automation and the time-critical nature of the HCP's decision making (automation bias) when deciding whether a function permits independent review.",
-          "passageFidelity": "paraphrase",
+          "exactPassage": "[withheld pending REG-002 content-rights clearance]",
+          "passageFidelity": "withheld",
+          "reviewFlags": [
+            "near-verbatim-span-pending-rights"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F01"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "not applicable",
@@ -998,6 +1138,8 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": null,
           "applicability": {
             "age": null,
@@ -1043,6 +1185,8 @@
           },
           "exactPassage": "G6PD deficiency should be diagnosed by measuring enzyme activity directly with a quantitative spectrophotometric assay, and a quantitative assay must follow any abnormal or borderline screening test.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "All patients suspected of G6PD deficiency (males and females; applies across ages including neonates/children); not age-band-restricted",
@@ -1069,8 +1213,14 @@
             "table": null,
             "figure": null
           },
-          "exactPassage": "Because reticulocytes and young red cells have much higher G6PD activity than mature cells, an assay run during or soon after a hemolytic episode can give a false-normal result.",
-          "passageFidelity": "paraphrase",
+          "exactPassage": "[withheld pending REG-002 content-rights clearance]",
+          "passageFidelity": "withheld",
+          "reviewFlags": [
+            "near-verbatim-span-pending-rights"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F01"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Any patient tested during or soon after acute hemolysis/reticulocytosis (all ages); heightened for African-type variant",
@@ -1097,8 +1247,14 @@
             "table": null,
             "figure": null
           },
-          "exactPassage": "When G6PD deficiency is still suspected and no other cause of hemolysis is found, the assay should be repeated at least 2-3 months after the hemolytic episode resolves so a deficiency is not missed.",
-          "passageFidelity": "paraphrase",
+          "exactPassage": "[withheld pending REG-002 content-rights clearance]",
+          "passageFidelity": "withheld",
+          "reviewFlags": [
+            "near-verbatim-span-pending-rights"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F01"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Patient with clinically suspected G6PD deficiency and unexplained hemolysis, initial assay normal/equivocal (all ages)",
@@ -1127,6 +1283,8 @@
           },
           "exactPassage": "In a recently transfused patient a G6PD deficiency may be masked, so molecular analysis should be considered when a precise diagnosis is needed.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Recently transfused patients, heterozygous females, or cases where reticulocytosis may mask deficiency (all ages)",
@@ -1153,8 +1311,14 @@
             "table": "Table I",
             "figure": null
           },
-          "exactPassage": "The guideline classifies G6PD variants by residual enzyme activity as a percentage of normal — Class I and II below 10%, Class III 10-60%, Class IV 100%, Class V above 100%.",
-          "passageFidelity": "paraphrase",
+          "exactPassage": "[withheld pending REG-002 content-rights clearance]",
+          "passageFidelity": "withheld",
+          "reviewFlags": [
+            "near-verbatim-span-pending-rights"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F01"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Hemizygous males (footnote: '*Levels of residual G6PD activity in hemizygous males'); classification framework applies across ages",
@@ -1183,6 +1347,12 @@
           },
           "exactPassage": "The guideline gives adult normal-range G6PD activity reference values in international units per gram of haemoglobin at 30 C and 37 C.",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [
+            "omits-source-numerics"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F06"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Adults (explicitly 'For adults'); NOT applicable to neonates/infants, whose values deviate (see ev_007). Each lab should establish its own reference range (ICSH or commercial kit).",
@@ -1209,8 +1379,14 @@
             "table": null,
             "figure": null
           },
-          "exactPassage": "Newborns and infants have G6PD activities that deviate appreciably from the adult value (one study: newborn mean ~150% of adult mean), and activity is higher in premature infants born at 29-32 weeks gestation than in term neonates.",
-          "passageFidelity": "paraphrase",
+          "exactPassage": "[withheld pending REG-002 content-rights clearance]",
+          "passageFidelity": "withheld",
+          "reviewFlags": [
+            "near-verbatim-span-pending-rights"
+          ],
+          "reviewFindingIds": [
+            "EP3T5-F01"
+          ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
             "age": "Newborns and infants; premature infants born between 29 and 32 weeks gestation vs term neonates",
@@ -1239,6 +1415,8 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
           "evidenceGrade": null,
           "applicability": {
             "age": null,

@@ -12,6 +12,15 @@
 // This step is purely additive against `modules/anemia/evidence.json`: it never touches the
 // existing `supports[]` prose arrays or any other pre-existing source field. It exists to add
 // (or refresh) the `passages[]` array on each source record.
+//
+// EP3-T5: this script also reads evidence-packs/rf-ev-001/fidelity-findings.json (an independent
+// cross-family audit, mechanically applied — see that file's header comment) and stamps every
+// minted passage record with `reviewFlags`/`reviewFindingIds`. Both are `[]` on a clean record.
+// A passage named under the `near-verbatim-span-pending-rights` flag (EP3T5-F01) gets
+// `passageFidelity: "withheld"` instead of `"paraphrase"` — its `exactPassage` is already the
+// fixed placeholder by the time it reaches this script, because vendor-rf-bundle.mjs withheld the
+// restricted text before writing pack.json. No other flag changes what text is emitted; every
+// other flag only blocks downstream binding (src/evidence.js#isBindableAsSourceSupported).
 
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -20,6 +29,8 @@ import { fileURLToPath } from 'node:url';
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const PACK_PATH = path.join(REPO_ROOT, 'evidence-packs', 'rf-ev-001', 'pack.json');
 const EVIDENCE_PATH = path.join(REPO_ROOT, 'modules', 'anemia', 'evidence.json');
+const FIDELITY_FINDINGS_PATH = path.join(REPO_ROOT, 'evidence-packs', 'rf-ev-001', 'fidelity-findings.json');
+const WITHHOLDING_FLAG = 'near-verbatim-span-pending-rights';
 
 // The order every passage record's keys must be emitted in. `id` first because it is a natural
 // pivot for a reviewer scanning a diff; `provenance` last because it is metadata about *how* the
@@ -33,6 +44,8 @@ const PASSAGE_KEY_ORDER = [
   'sourceLocator',
   'exactPassage',
   'passageFidelity',
+  'reviewFlags',
+  'reviewFindingIds',
   'evidenceGrade',
   'applicability',
   'reviewDate',
@@ -57,17 +70,56 @@ function orderKeys(obj, order) {
   return ordered;
 }
 
-function buildPassageRecords(packSource, pack) {
+// Explicit codepoint comparator (EP3T5-F11): `String.prototype.localeCompare` is locale-dependent
+// — its result can vary across environments/ICU data even for plain ASCII strings — so it cannot
+// back a determinism guarantee (AC EP3-T2). `<`/`>` on strings compares UTF-16 code units, which
+// is fixed and environment-independent for the ASCII ids this file sorts.
+function compareCodepoints(a, b) {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+}
+
+// EP3-T5: index evidence-packs/rf-ev-001/fidelity-findings.json by passage id so
+// buildPassageRecords can look up, per passage, the exact flags/finding-ids the audit named.
+// Sorted with compareCodepoints (not Set iteration order) so the emitted arrays are deterministic
+// regardless of the findings file's own ordering.
+function buildFidelityIndex(fidelityFindings) {
+  const flagsByPassageId = new Map();
+  const findingIdsByPassageId = new Map();
+  for (const finding of fidelityFindings.findings ?? []) {
+    for (const passageId of finding.passageIds ?? []) {
+      if (!flagsByPassageId.has(passageId)) flagsByPassageId.set(passageId, new Set());
+      flagsByPassageId.get(passageId).add(finding.flag);
+      if (!findingIdsByPassageId.has(passageId)) findingIdsByPassageId.set(passageId, new Set());
+      findingIdsByPassageId.get(passageId).add(finding.id);
+    }
+  }
+  const toSortedArray = (set) => [...(set ?? [])].sort(compareCodepoints);
+  return {
+    flagsFor: (passageId) => toSortedArray(flagsByPassageId.get(passageId)),
+    findingIdsFor: (passageId) => toSortedArray(findingIdsByPassageId.get(passageId)),
+  };
+}
+
+function buildPassageRecords(packSource, pack, fidelityIndex) {
   const records = [];
   // Source-supported records — one per extracted point marked source_supported_fact in the pack.
   // Order: by RF evidence_id ascending, which for this bundle is ev_001..ev_00N in file order.
-  const sorted = packSource.passages.slice().sort((a, b) => a.evidenceId.localeCompare(b.evidenceId));
+  const sorted = packSource.passages.slice().sort((a, b) => compareCodepoints(a.evidenceId, b.evidenceId));
   for (const passage of sorted) {
     if (passage.status !== 'source-supported' && passage.status !== 'implementation-proposal') {
       throw new Error(`unexpected pack passage status "${passage.status}" on ${packSource.kbSourceId}#${passage.evidenceId}`);
     }
+    const passageId = `${packSource.kbSourceId}#${passage.evidenceId}`;
+    const reviewFlags = fidelityIndex.flagsFor(passageId);
+    const reviewFindingIds = fidelityIndex.findingIdsFor(passageId);
+    // EP3-T5 (EP3T5-F01): vendor-rf-bundle.mjs already replaced `summary` with the withhold
+    // placeholder for these passages before writing pack.json — this script only has to record
+    // that fact in passageFidelity, never author or move any text itself.
+    const passageFidelity = reviewFlags.includes(WITHHOLDING_FLAG) ? 'withheld' : 'paraphrase';
     records.push(orderKeys({
-      id: `${packSource.kbSourceId}#${passage.evidenceId}`,
+      id: passageId,
       sourceId: packSource.kbSourceId,
       status: passage.status,
       sourceLocator: orderKeys(passage.sourceLocator, SOURCE_LOCATOR_KEY_ORDER),
@@ -75,7 +127,9 @@ function buildPassageRecords(packSource, pack) {
       // script depends on the vendor step having already stripped `quote`; the passageFidelity
       // field records the current reality (REG-002 has not cleared verbatim reuse).
       exactPassage: passage.summary,
-      passageFidelity: 'paraphrase',
+      passageFidelity,
+      reviewFlags,
+      reviewFindingIds,
       evidenceGrade: passage.evidenceGrade,
       applicability: orderKeys(passage.applicability, APPLICABILITY_KEY_ORDER),
       reviewDate: pack.reviewDate,
@@ -91,6 +145,7 @@ function buildPassageRecords(packSource, pack) {
 
   // Exactly one implementation-proposal sentinel per source (D-EP3-3). Appended after the
   // source-supported records so a reviewer sees "here's what we located, here's the fallback."
+  // The sentinel is not a located passage, so it never carries a fidelity-audit flag.
   records.push(orderKeys({
     id: `${packSource.kbSourceId}#implementation-proposal`,
     sourceId: packSource.kbSourceId,
@@ -104,6 +159,8 @@ function buildPassageRecords(packSource, pack) {
     }, SOURCE_LOCATOR_KEY_ORDER),
     exactPassage: '',
     passageFidelity: 'paraphrase',
+    reviewFlags: [],
+    reviewFindingIds: [],
     evidenceGrade: null,
     applicability: orderKeys({ age: null, sex: null, assay: null }, APPLICABILITY_KEY_ORDER),
     reviewDate: pack.reviewDate,
@@ -119,7 +176,7 @@ function buildPassageRecords(packSource, pack) {
   return records;
 }
 
-function buildEvidenceDocument(existingDoc, pack) {
+function buildEvidenceDocument(existingDoc, pack, fidelityIndex) {
   // Index the pack by kbSourceId so we can attach passages to each existing source without
   // reordering the sources[] array (that ordering is set by the evidence file itself, not by us).
   const packByKb = new Map(pack.sources.map((s) => [s.kbSourceId, s]));
@@ -129,7 +186,7 @@ function buildEvidenceDocument(existingDoc, pack) {
     if (!packSource) {
       throw new Error(`no pack entry for existing evidence source "${source.id}"`);
     }
-    const passages = buildPassageRecords(packSource, pack);
+    const passages = buildPassageRecords(packSource, pack, fidelityIndex);
     // Preserve every existing property; only add or replace `passages`. This is intentionally
     // additive so we do not clobber the `supports[]` prose or per-source metadata.
     const next = {};
@@ -211,7 +268,9 @@ async function main() {
   const { check } = parseArgs(process.argv.slice(2));
   const pack = await loadJson(PACK_PATH);
   const existing = await loadJson(EVIDENCE_PATH);
-  const nextDoc = buildEvidenceDocument(existing, pack);
+  const fidelityFindings = await loadJson(FIDELITY_FINDINGS_PATH);
+  const fidelityIndex = buildFidelityIndex(fidelityFindings);
+  const nextDoc = buildEvidenceDocument(existing, pack, fidelityIndex);
   const nextSerialised = serialize(nextDoc);
 
   if (check) {

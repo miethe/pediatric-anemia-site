@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { evaluateCondition } from '../src/ruleEngine.js';
 import { MODULE_IDS } from '../src/modules/registry.js';
+import { isBindableAsSourceSupported } from '../src/evidence.js';
 import { validate } from './lib/json-schema-lite.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -214,8 +215,11 @@ export function validateEvidenceDocument(evidenceData, moduleId, evidenceSchema)
         warnings.push(`${moduleId}/evidence.json#${passageLabel}: missing exactPassage (degrades to "locator pending" downstream)`);
       }
 
-      if (!REG_002_CLEARED && passage?.passageFidelity !== 'paraphrase') {
-        errors.push(`${moduleId}/evidence.json#${passageLabel}: passageFidelity must be "paraphrase" while REG-002 is uncleared (D-EP3-4), got "${passage?.passageFidelity}"`);
+      // EP3-T5 (EP3T5-F01): "withheld" is the third legal value alongside "paraphrase" while
+      // REG-002 is uncleared — a withheld record has its restricted span replaced by the fixed
+      // placeholder at vendor time, so it is not a verbatim-reuse regression.
+      if (!REG_002_CLEARED && passage?.passageFidelity !== 'paraphrase' && passage?.passageFidelity !== 'withheld') {
+        errors.push(`${moduleId}/evidence.json#${passageLabel}: passageFidelity must be "paraphrase" or "withheld" while REG-002 is uncleared (D-EP3-4/EP3-T5), got "${passage?.passageFidelity}"`);
       }
     }
     if (proposalCount !== 1) {
@@ -224,6 +228,82 @@ export function validateEvidenceDocument(evidenceData, moduleId, evidenceSchema)
   }
 
   return { errors, warnings, passageIndex, sourcesWithPassages };
+}
+
+function setsEqual(a, b) {
+  if (a.size !== b.size) return false;
+  for (const item of a) {
+    if (!b.has(item)) return false;
+  }
+  return true;
+}
+
+/**
+ * EP3-T5: cross-checks `moduleId`'s evidence.json against fidelity-findings.json's `findings[]`.
+ * This is the "no hand-editing drift" guard the audit remediation asked for — it is bidirectional
+ * (a stray reference on either side fails) and it checks the flag SET, not just the finding-id
+ * set, so a passage cannot carry a `reviewFindingIds` entry whose implied flag was hand-edited
+ * away from (or into) `reviewFlags`:
+ *
+ *   1. every `finding.passageIds` entry resolves to a real passage id in evidenceData
+ *   2. every passage's `reviewFindingIds` entry resolves to a real finding id
+ *   3. every passage's `reviewFlags` set exactly equals the flags implied by its
+ *      `reviewFindingIds` (not just "non-empty" — the specific flags must match)
+ *   4. the set of passages carrying non-empty `reviewFlags` exactly equals the set of passage ids
+ *      named across all findings (neither a phantom flag nor a silently-dropped finding survives)
+ */
+export function validateFidelityFindings(evidenceData, findingsData, moduleId) {
+  const errors = [];
+  const passageIndex = new Map();
+  for (const source of evidenceData.sources ?? []) {
+    for (const passage of Array.isArray(source.passages) ? source.passages : []) {
+      if (typeof passage?.id === 'string') passageIndex.set(passage.id, passage);
+    }
+  }
+
+  const findingsById = new Map();
+  const impliedFlaggedPassageIds = new Set();
+  for (const finding of findingsData.findings ?? []) {
+    findingsById.set(finding.id, finding);
+    for (const passageId of finding.passageIds ?? []) {
+      impliedFlaggedPassageIds.add(passageId);
+      if (!passageIndex.has(passageId)) {
+        errors.push(`${moduleId}/fidelity-findings.json#${finding.id}: passageIds references unknown passage "${passageId}"`);
+      }
+    }
+  }
+
+  const actualFlaggedPassageIds = new Set();
+  for (const [passageId, passage] of passageIndex) {
+    const reviewFindingIds = Array.isArray(passage.reviewFindingIds) ? passage.reviewFindingIds : [];
+    const expectedFlags = new Set();
+    for (const findingId of reviewFindingIds) {
+      const finding = findingsById.get(findingId);
+      if (!finding) {
+        errors.push(`${moduleId}/evidence.json#${passageId}: reviewFindingIds references unknown finding "${findingId}"`);
+        continue;
+      }
+      expectedFlags.add(finding.flag);
+    }
+    const actualFlags = new Set(Array.isArray(passage.reviewFlags) ? passage.reviewFlags : []);
+    if (!setsEqual(expectedFlags, actualFlags)) {
+      errors.push(`${moduleId}/evidence.json#${passageId}: reviewFlags ${JSON.stringify([...actualFlags].sort())} does not match the flags implied by reviewFindingIds ${JSON.stringify([...expectedFlags].sort())}`);
+    }
+    if (actualFlags.size > 0) actualFlaggedPassageIds.add(passageId);
+  }
+
+  for (const passageId of impliedFlaggedPassageIds) {
+    if (!actualFlaggedPassageIds.has(passageId)) {
+      errors.push(`${moduleId}/evidence.json#${passageId}: fidelity-findings.json implies this passage should carry reviewFlags, but it has none (hand-editing drift)`);
+    }
+  }
+  for (const passageId of actualFlaggedPassageIds) {
+    if (!impliedFlaggedPassageIds.has(passageId)) {
+      errors.push(`${moduleId}/evidence.json#${passageId}: passage carries reviewFlags but is not named by any finding in fidelity-findings.json (hand-editing drift)`);
+    }
+  }
+
+  return errors;
 }
 
 export async function validateModule(moduleId, rootDir) {
@@ -249,6 +329,16 @@ export async function validateModule(moduleId, rootDir) {
   errors.push(...evidenceValidation.errors);
   warnings.push(...evidenceValidation.warnings);
   const { passageIndex, sourcesWithPassages } = evidenceValidation;
+
+  // EP3-T5: fidelity-findings.json is specific to the RF-EV-001 bundle backing the anemia
+  // module's evidence.json (mirrors src/modules/registry.js's own "revisit the day a second
+  // module is registered" note on DEFAULT_MODULE_ID) — extend this gate the day a second module
+  // ships its own evidence-pack + findings file.
+  if (moduleId === 'anemia') {
+    const fidelityFindingsPath = path.join(rootDir, 'evidence-packs', 'rf-ev-001', 'fidelity-findings.json');
+    const fidelityFindings = await readJson(fidelityFindingsPath);
+    errors.push(...validateFidelityFindings(evidenceData, fidelityFindings, moduleId));
+  }
 
   errors.push(...validateBooleanFactPathAllowList(rules, moduleId));
 
@@ -281,11 +371,16 @@ export async function validateModule(moduleId, rootDir) {
     // EP4-T1 has not landed: `sourcePassageId` does not exist on rule.schema.json yet, so no
     // shipped rule carries it today. Written so it is already correct the day EP-4 adds the
     // field: a present, non-null `sourcePassageId` must resolve to a real passage id (hard
-    // error); an absent/null one is tolerated with a WARNING naming the count, gated by
+    // error) AND that passage must be bindable (EP3-T5 binding rule, src/evidence.js#
+    // isBindableAsSourceSupported — the one shared predicate this check and EP-4's rule->passage
+    // binder both call); an absent/null one is tolerated with a WARNING naming the count, gated by
     // REQUIRE_RULE_SOURCE_PASSAGE_ID above.
     if (Object.hasOwn(rule, 'sourcePassageId') && rule.sourcePassageId != null) {
-      if (!passageIndex.has(rule.sourcePassageId)) {
+      const boundPassage = passageIndex.get(rule.sourcePassageId);
+      if (!boundPassage) {
         errors.push(`${moduleId}/${rule.id}: sourcePassageId "${rule.sourcePassageId}" does not resolve to a known passage`);
+      } else if (!isBindableAsSourceSupported(boundPassage)) {
+        errors.push(`${moduleId}/${rule.id}: sourcePassageId "${rule.sourcePassageId}" is flagged (reviewFlags: ${JSON.stringify(boundPassage.reviewFlags ?? [])}) and cannot be bound as source-supported grounding (EP3-T5 binding rule)`);
       }
     } else {
       rulesMissingSourcePassageId += 1;

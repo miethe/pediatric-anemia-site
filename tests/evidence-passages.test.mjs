@@ -101,6 +101,8 @@ test('EP3-T1 invariant: an empty exactPassage with status source-supported is re
     sourceLocator: { raw: 'irrelevant', page: null, section: null, table: null, figure: null },
     exactPassage: '',
     passageFidelity: 'paraphrase',
+    reviewFlags: [],
+    reviewFindingIds: [],
     evidenceGrade: 'source-supported-fact',
     applicability: { age: null, sex: null, assay: null },
     reviewDate: '2026-07-18',
@@ -120,6 +122,8 @@ test('EP3-T1 invariant: the same record with status implementation-proposal is a
     sourceLocator: { raw: 'sentinel', page: null, section: null, table: null, figure: null },
     exactPassage: '',
     passageFidelity: 'paraphrase',
+    reviewFlags: [],
+    reviewFindingIds: [],
     evidenceGrade: null,
     applicability: { age: null, sex: null, assay: null },
     reviewDate: '2026-07-18',
@@ -143,11 +147,11 @@ test('D-EP3-4: the vendored pack carries no `quote` field on any extracted point
   }
 });
 
-test('D-EP3-4: every passage is paraphrase-only (passageFidelity fixed to "paraphrase")', () => {
+test('D-EP3-4/EP3-T5: every passage is paraphrase or withheld (never verbatim) until REG-002 clears', () => {
   for (const source of evidenceDoc.sources) {
     for (const passage of source.passages) {
-      assert.equal(passage.passageFidelity, 'paraphrase',
-        `passage ${passage.id}: every record must be paraphrase-only until REG-002 clears (D-EP3-4)`);
+      assert.ok(passage.passageFidelity === 'paraphrase' || passage.passageFidelity === 'withheld',
+        `passage ${passage.id}: every record must be "paraphrase" or "withheld" until REG-002 clears (D-EP3-4), got "${passage.passageFidelity}"`);
     }
   }
 });
