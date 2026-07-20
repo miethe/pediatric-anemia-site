@@ -12,9 +12,12 @@ title: 'EP-2: Units & Range Registry'
 status: completed
 started: null
 completed: null
-commit_refs: []
-pr_refs: []
-overall_progress: 0
+commit_refs:
+- 2b638eb
+- 23e5ef8
+pr_refs:
+- miethe/pediatric-anemia-site#7
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 7
 completed_tasks: 7
@@ -30,9 +33,10 @@ model_usage:
   external: []
 tasks:
 - id: EP2-T1
-  description: 'src/units.js — closed UCUM unit table (D-5): new, hand-rolled (no
-    dependency by default) closed unit table covering the ~10 numeric lab fields (hemoglobin,
-    mcv, rdw, rbc, wbc, anc, platelets, ferritin, stfrFerritinIndex, bloodLeadLevel).'
+  description: "src/units.js \u2014 closed UCUM unit table (D-5): new, hand-rolled\
+    \ (no dependency by default) closed unit table covering the ~10 numeric lab fields\
+    \ (hemoglobin, mcv, rdw, rbc, wbc, anc, platelets, ferritin, stfrFerritinIndex,\
+    \ bloodLeadLevel)."
   status: completed
   assigned_to:
   - backend-architect
@@ -70,9 +74,9 @@ tasks:
   assigned_model: sonnet
   model_effort: high
 - id: EP2-T4
-  description: Fail-closed unit-mismatch rejection at API + browser boundary, per
-    SPIKE-004's missing-unit policy (OQ-5 — reject vs. accept-with-unitAssumed flag).
-    Applied consistently; never silent either way.
+  description: "Fail-closed unit-mismatch rejection at API + browser boundary, per\
+    \ SPIKE-004's missing-unit policy (OQ-5 \u2014 reject vs. accept-with-unitAssumed\
+    \ flag). Applied consistently; never silent either way."
   status: completed
   assigned_to:
   - backend-architect
@@ -83,8 +87,9 @@ tasks:
   assigned_model: sonnet
   model_effort: high
 - id: EP2-T5
-  description: Seam task (consumer) — verify modules/anemia/ranges.js:42 composes
-    with unit checks after EP-1 lands. Verification only — no edit to line 42.
+  description: "Seam task (consumer) \u2014 verify modules/anemia/ranges.js:42 composes\
+    \ with unit checks after EP-1 lands. Verification only \u2014 no edit to line\
+    \ 42."
   status: completed
   assigned_to:
   - code-reviewer
@@ -96,8 +101,9 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
 - id: EP2-T6
-  description: 'R-P2 resilience — consumers handle absent/unset unit metadata: a legacy-shape
-    range record encountered mid-migration (unit tag absent) must not throw.'
+  description: "R-P2 resilience \u2014 consumers handle absent/unset unit metadata:\
+    \ a legacy-shape range record encountered mid-migration (unit tag absent) must\
+    \ not throw."
   status: completed
   assigned_to:
   - code-reviewer
@@ -109,9 +115,9 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
 - id: EP2-T7
-  description: 'Runtime smoke (R-P4) — browser SPA surfaces unit-rejection errors:
-    exercise the rejection path end to end in browser-only mode; target_surfaces src/app.js,
-    src/algorithmExplorer.js.'
+  description: "Runtime smoke (R-P4) \u2014 browser SPA surfaces unit-rejection errors:\
+    \ exercise the rejection path end to end in browser-only mode; target_surfaces\
+    \ src/app.js, src/algorithmExplorer.js."
   status: completed
   assigned_to:
   - code-reviewer

@@ -2,7 +2,7 @@
 schema_version: 2
 doc_type: phase_plan
 title: "Phase EP-2: Units & Range Registry"
-status: draft
+status: completed
 created: 2026-07-19
 phase: EP-2
 phase_title: "Units & Range Registry"
@@ -11,6 +11,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-fo
 feature_slug: wave0-safety-foundation
 entry_criteria: "EP-0 closed: SPIKE-004 decisions recorded, npm run check green."
 exit_criteria: "Unit mismatch rejects rather than converts; missing-unit policy implemented per SPIKE-004; browser SPA runtime smoke passes; npm run check green."
+planning_maturity: shipped
 ---
 
 # Phase EP-2: Units & Range Registry (WP2)
