@@ -5,7 +5,7 @@ doc_type: progress
 prd: arc-clinical-council-adoption-v1
 feature_slug: arc-clinical-council-adoption-v1
 phase: 4
-status: in_progress
+status: completed
 created: '2026-07-19'
 updated: '2026-07-20'
 prd_ref: docs/project_plans/expansion/00-expansion-plan.md
@@ -94,7 +94,7 @@ tasks:
   verified_by:
   - P4-V1
 - id: P4-V1
-  status: in_progress
+  status: completed
   assigned_to:
   - pediatric-safety-human-factors-reviewer
   - diagnostic-accuracy-methods-reviewer
@@ -105,8 +105,8 @@ tasks:
   description: Execute synthetic suites and obtain the eight specialty lenses plus
     methods, safety, human-factors, and equity review. Authored scenarios and executed
     results are reported separately.
-  started: 2026-07-19T02:00Z
-  completed: 2026-07-19T04:30Z
+  started: 2026-07-19T18:00Z
+  completed: 2026-07-20T00:45Z
   evidence:
   - test: PED npm run check 305/305 pass 0 fail (validator-executed)
   - test: ARC pytest 1076 passed 6 skipped 426 subtests
@@ -116,6 +116,12 @@ tasks:
   - review: equity-patient-family PASS
   - review: task-completion-validator 3/3 discrimination proofs reproduced
   - commit: 7a73cb6
+  - commit: 7a73cb6
+  - commit: 347384c
+  - commit: e7f996c
+  - test: npm run check 416/416
+  - test: pytest 1076 passed
+  - review: 7 lens verdicts, 3 FAIL->PASS after remediation
   verified_by:
   - task-completion-validator
 parallelization:
@@ -128,10 +134,10 @@ parallelization:
   batch_3:
   - P4-V1
 total_tasks: 5
-completed_tasks: 4
-in_progress_tasks: 1
+completed_tasks: 5
+in_progress_tasks: 0
 blocked_tasks: 0
-progress: 80
+progress: 100
 ---
 
 # Phase 4 Progress — Executable dangerous-miss and V3-V5 dependencies
