@@ -11,7 +11,7 @@ updated: '2026-07-19'
 prd_ref: docs/project_plans/expansion/00-expansion-plan.md
 plan_ref: docs/project_plans/implementation_plans/enhancements/arc-clinical-council-adoption-v1.md
 commit_refs:
-- 9bb895e
+- 9e85a29
 pr_refs: []
 execution_model: batch-parallel
 plan_structure: unified
