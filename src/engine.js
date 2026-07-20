@@ -1,5 +1,6 @@
 import { runRules } from './ruleEngine.js';
 import { getModule } from './modules/registry.js';
+import { prepareUnitValidatedInput } from './units.js';
 
 const CORE_LIMITATIONS = [
   'This output is a deterministic clinical decision-support reference, not a diagnosis, treatment order, or substitute for examination and specialist judgment.',
@@ -11,8 +12,15 @@ const CORE_LIMITATIONS = [
 export function assess(input, moduleId, rules, candidates) {
   if (!Array.isArray(rules)) throw new TypeError('rules must be an array');
   const module = getModule(moduleId);
-  const facts = module.deriveFacts(input);
+  const { input: snapshot, unitValidation } = prepareUnitValidatedInput(moduleId, input);
+  const facts = module.deriveFacts(snapshot);
   const ruleOutput = runRules(facts, rules, candidates);
+  const unitsAssumed = unitValidation.fields
+    .filter((field) => field.unitAssumed)
+    .map((field) => field.field);
+  const unitLimitations = unitsAssumed.length > 0
+    ? [`Documented default units were assumed for supplied measurements: ${unitsAssumed.join(', ')}.`]
+    : [];
 
   return {
     meta: {
@@ -28,11 +36,12 @@ export function assess(input, moduleId, rules, candidates) {
     rankedDifferential: ruleOutput.candidates,
     nextQuestions: ruleOutput.questions,
     interpretiveNotes: ruleOutput.notes,
-    limitations: [...CORE_LIMITATIONS, ...module.limitations(facts)],
+    limitations: [...CORE_LIMITATIONS, ...module.limitations(facts), ...unitLimitations],
     provenance: {
       evaluatedRuleCount: ruleOutput.audit.length,
       matchedRuleIds: ruleOutput.audit.filter((entry) => entry.matched).map((entry) => entry.ruleId),
       ruleAudit: ruleOutput.audit,
+      unitsAssumed,
     },
   };
 }

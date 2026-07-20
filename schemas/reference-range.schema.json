@@ -1,100 +1,170 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/pediatric-anemia/schemas/reference-range.schema.json",
-  "title": "Local Laboratory Reference Interval Profile",
-  "description": "A local laboratory's ASSERTED reference intervals and critical-value thresholds for one candidate version. A published pediatric reference interval is never site-applicable by default: intervals vary by population, age band, sex, altitude, specimen type, analyzer/method, and units, and a value that is normal on one analyzer can be flagged on another. Applicability therefore cannot be inferred from this document's structure — it must be asserted by a named local laboratory authority and bound to an exact candidate version. Structural validity against this schema NEVER implies clinical validity, local applicability, or authorization to activate, release, or apply to patient care. Every dimension carries an explicit `assertion` discriminator so that `unknown` and `not_supplied` are representable as first-class states and can never be coerced into a usable default. IMPORTANT: the `assertion` discriminator is enforced across EVERY sibling value in its container, not merely the first one. A container that says `asserted` while one of its values is null used to leave that value a silent wildcard; each container below now carries a conditional pinning all of its values non-null whenever it claims to be asserted.",
-  "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "kind",
-    "schemaVersion",
-    "profileId",
-    "profileVersion",
-    "profileClass",
-    "boundCandidate",
-    "authority",
-    "attestation",
-    "lifecycle",
-    "applicability",
-    "ageBandPolicy",
-    "unitSystem",
-    "intervals",
-    "criticalValues",
-    "terminologyServer",
-    "provenance"
+  "title": "Reference Range Document",
+  "description": "Validates either the checked-in built-in reference-range document consumed by the engine or a locally asserted reference-interval profile. Structural validity never implies clinical validity, local applicability, or authorization to activate a local profile.",
+  "oneOf": [
+    { "$ref": "#/$defs/builtInReferenceRanges" },
+    { "$ref": "#/$defs/localReferenceIntervalProfile" }
   ],
-  "properties": {
-    "kind": { "const": "LocalReferenceIntervalProfile" },
-    "schemaVersion": { "const": "1.1.0" },
-    "profileId": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Stable identifier for this profile lineage. Does not change across versions."
-    },
-    "profileVersion": {
-      "type": "string",
-      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
-      "description": "Exact version of this profile. Any material edit requires a new version; approvals bind to profileId + profileVersion, never to profileId alone."
-    },
-    "profileClass": {
-      "enum": ["site_asserted", "synthetic_example"],
-      "description": "`site_asserted` is a real institutional profile signed by a named laboratory authority. `synthetic_example` is a non-clinical illustration that is structurally forbidden from carrying authority (see the conditional at the end of this schema) and can never satisfy an activation gate."
-    },
-    "syntheticDeclaration": {
-      "$ref": "#/$defs/syntheticDeclaration",
-      "description": "Required when profileClass is `synthetic_example`. Forbidden otherwise."
-    },
-    "boundCandidate": {
-      "$ref": "#/$defs/boundCandidate",
-      "description": "The exact candidate version this profile is asserted against. A profile bound to a different digest than the candidate under evaluation is not applicable."
-    },
-    "authority": { "$ref": "#/$defs/authority" },
-    "attestation": { "$ref": "#/$defs/attestation" },
-    "lifecycle": { "$ref": "#/$defs/lifecycle" },
-    "applicability": { "$ref": "#/$defs/applicability" },
-    "ageBandPolicy": { "$ref": "#/$defs/ageBandPolicy" },
-    "unitSystem": {
-      "$ref": "#/$defs/unitSystem",
-      "description": "The code system all unit codes in this profile are drawn from (UCUM). The unit CODE is NOT profile-level: it belongs to the analyte, and lives on each interval and critical value. A single profile-level unit code made a complete blood count inexpressible — hemoglobin is g/dL, hematocrit %, MCV fL, RBC 10*12/L, platelets 10*9/L, reticulocytes % — so any real profile covered exactly one analyte or self-blocked on every other with a unit mismatch."
-    },
-    "intervals": {
-      "type": "array",
-      "minItems": 1,
-      "items": { "$ref": "#/$defs/interval" },
-      "description": "Reference intervals asserted by the local laboratory, each carrying its OWN age band, sex, bounds, and unit code. An analyte with no interval entry is NOT covered by this profile; the absence must surface as a missing-interval blocker rather than falling back to a published or default interval. The intervals for a given analyte must partition the profile's applicability age band without gaps or overlaps: a gap is an age with no interval, an overlap is an age with two."
-    },
-    "criticalValues": {
-      "type": "array",
-      "items": { "$ref": "#/$defs/criticalValue" },
-      "description": "Critical-value (panic) thresholds, per analyte and age band. An empty array asserts that no critical thresholds are supplied by this profile — it does not assert that none exist, and the evaluator refuses to deliver a reference interval for an analyte whose panic threshold at the request age is unknown. An urgent alert must dominate routine interval logic, so an unconsulted critical value is worse than an absent one."
-    },
-    "terminologyServer": { "$ref": "#/$defs/terminologyServer" },
-    "provenance": { "$ref": "#/$defs/provenance" }
-  },
-  "if": {
-    "type": "object",
-    "properties": { "profileClass": { "const": "synthetic_example" } },
-    "required": ["profileClass"]
-  },
-  "then": {
-    "type": "object",
-    "required": ["syntheticDeclaration"],
-    "properties": {
-      "authority": {
-        "type": "object",
-        "properties": { "assertion": { "const": "not_executed_owner_held" } }
-      },
-      "attestation": {
-        "type": "object",
-        "properties": { "signatureState": { "const": "not_executed_owner_held" } }
-      }
-    }
-  },
-  "else": {
-    "type": "object",
-    "not": { "type": "object", "required": ["syntheticDeclaration"] }
-  },
   "$defs": {
+    "localReferenceIntervalProfile": {
+      "title": "Local Laboratory Reference Interval Profile",
+      "description": "A local laboratory's ASSERTED reference intervals and critical-value thresholds for one candidate version. A published pediatric reference interval is never site-applicable by default: intervals vary by population, age band, sex, altitude, specimen type, analyzer/method, and units, and a value that is normal on one analyzer can be flagged on another. Applicability therefore cannot be inferred from this document's structure — it must be asserted by a named local laboratory authority and bound to an exact candidate version. Structural validity against this schema NEVER implies clinical validity, local applicability, or authorization to activate, release, or apply to patient care. Every dimension carries an explicit `assertion` discriminator so that `unknown` and `not_supplied` are representable as first-class states and can never be coerced into a usable default. IMPORTANT: the `assertion` discriminator is enforced across EVERY sibling value in its container, not merely the first one. A container that says `asserted` while one of its values is null used to leave that value a silent wildcard; each container below now carries a conditional pinning all of its values non-null whenever it claims to be asserted.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "schemaVersion",
+        "profileId",
+        "profileVersion",
+        "profileClass",
+        "boundCandidate",
+        "authority",
+        "attestation",
+        "lifecycle",
+        "applicability",
+        "ageBandPolicy",
+        "unitSystem",
+        "intervals",
+        "criticalValues",
+        "terminologyServer",
+        "provenance"
+      ],
+      "properties": {
+        "kind": { "const": "LocalReferenceIntervalProfile" },
+        "schemaVersion": { "const": "1.1.0" },
+        "profileId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable identifier for this profile lineage. Does not change across versions."
+        },
+        "profileVersion": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "description": "Exact version of this profile. Any material edit requires a new version; approvals bind to profileId + profileVersion, never to profileId alone."
+        },
+        "profileClass": {
+          "enum": ["site_asserted", "synthetic_example"],
+          "description": "`site_asserted` is a real institutional profile signed by a named laboratory authority. `synthetic_example` is a non-clinical illustration that is structurally forbidden from carrying authority (see the conditional at the end of this schema) and can never satisfy an activation gate."
+        },
+        "syntheticDeclaration": {
+          "$ref": "#/$defs/syntheticDeclaration",
+          "description": "Required when profileClass is `synthetic_example`. Forbidden otherwise."
+        },
+        "boundCandidate": {
+          "$ref": "#/$defs/boundCandidate",
+          "description": "The exact candidate version this profile is asserted against. A profile bound to a different digest than the candidate under evaluation is not applicable."
+        },
+        "authority": { "$ref": "#/$defs/authority" },
+        "attestation": { "$ref": "#/$defs/attestation" },
+        "lifecycle": { "$ref": "#/$defs/lifecycle" },
+        "applicability": { "$ref": "#/$defs/applicability" },
+        "ageBandPolicy": { "$ref": "#/$defs/ageBandPolicy" },
+        "unitSystem": {
+          "$ref": "#/$defs/unitSystem",
+          "description": "The code system all unit codes in this profile are drawn from (UCUM). The unit CODE is NOT profile-level: it belongs to the analyte, and lives on each interval and critical value. A single profile-level unit code made a complete blood count inexpressible — hemoglobin is g/dL, hematocrit %, MCV fL, RBC 10*12/L, platelets 10*9/L, reticulocytes % — so any real profile covered exactly one analyte or self-blocked on every other with a unit mismatch."
+        },
+        "intervals": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/interval" },
+          "description": "Reference intervals asserted by the local laboratory, each carrying its OWN age band, sex, bounds, and unit code. An analyte with no interval entry is NOT covered by this profile; the absence must surface as a missing-interval blocker rather than falling back to a published or default interval. The intervals for a given analyte must partition the profile's applicability age band without gaps or overlaps: a gap is an age with no interval, an overlap is an age with two."
+        },
+        "criticalValues": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/criticalValue" },
+          "description": "Critical-value (panic) thresholds, per analyte and age band. An empty array asserts that no critical thresholds are supplied by this profile — it does not assert that none exist, and the evaluator refuses to deliver a reference interval for an analyte whose panic threshold at the request age is unknown. An urgent alert must dominate routine interval logic, so an unconsulted critical value is worse than an absent one."
+        },
+        "terminologyServer": { "$ref": "#/$defs/terminologyServer" },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      },
+      "if": {
+        "type": "object",
+        "properties": { "profileClass": { "const": "synthetic_example" } },
+        "required": ["profileClass"]
+      },
+      "then": {
+        "type": "object",
+        "required": ["syntheticDeclaration"],
+        "properties": {
+          "authority": {
+            "type": "object",
+            "properties": { "assertion": { "const": "not_executed_owner_held" } }
+          },
+          "attestation": {
+            "type": "object",
+            "properties": { "signatureState": { "const": "not_executed_owner_held" } }
+          }
+        }
+      },
+      "else": {
+        "type": "object",
+        "not": { "type": "object", "required": ["syntheticDeclaration"] }
+      }
+    },
+    "builtInReferenceRanges": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "units", "scope", "ranges"],
+      "description": "The checked-in fallback range source used by a module. Every age/sex band carries its own unit map so a band is never compared against an inferred or profile-level unit.",
+      "properties": {
+        "source": { "type": "string", "minLength": 1 },
+        "units": { "$ref": "#/$defs/builtInUnits" },
+        "scope": { "type": "string", "minLength": 1 },
+        "ranges": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/builtInBand" }
+        }
+      }
+    },
+    "builtInUnits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hb", "mcv", "rdw"],
+      "properties": {
+        "hb": { "type": "string", "pattern": ".*\\S.*" },
+        "mcv": { "type": "string", "pattern": ".*\\S.*" },
+        "rdw": { "type": "string", "pattern": ".*\\S.*" }
+      }
+    },
+    "builtInBand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minMonths", "maxMonthsExclusive", "label", "units", "female", "male"],
+      "properties": {
+        "minMonths": { "type": "number", "minimum": 0 },
+        "maxMonthsExclusive": { "type": "number", "minimum": 0 },
+        "label": { "type": "string", "minLength": 1 },
+        "units": { "$ref": "#/$defs/builtInUnits" },
+        "female": { "$ref": "#/$defs/builtInBandValues" },
+        "male": { "$ref": "#/$defs/builtInBandValues" }
+      }
+    },
+    "builtInBandValues": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hbLower", "mcvLower", "mcvUpper", "rdwUpper"],
+      "properties": {
+        "hbLower": { "type": "number" },
+        "mcvLower": { "type": "number" },
+        "mcvUpper": { "type": "number" },
+        "rdwUpper": { "type": "number" }
+      }
+    },
+    "builtInThreshold": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit", "value", "source", "rationale"],
+      "description": "A module threshold must declare its own unit; the registry rejects a request whose declared unit differs and never converts the numeric value.",
+      "properties": {
+        "unit": { "type": "string", "pattern": ".*\\S.*" },
+        "value": { "type": "number" },
+        "source": { "type": "string", "minLength": 1 },
+        "rationale": { "type": "string", "minLength": 1 }
+      }
+    },
     "assertion": {
       "enum": ["asserted", "unknown", "not_supplied"],
       "description": "Three-state discriminator required on every applicability dimension. `asserted` means a named local authority positively claims this value. `unknown` means the value is explicitly not known. `not_supplied` means it was never provided. Only `asserted` can contribute to an applicability match; `unknown` and `not_supplied` both fail closed and remain visible. There is deliberately no fourth 'assume default' state. When a container is `asserted`, EVERY value in that container must be non-null — a null secondary value is not a wildcard."

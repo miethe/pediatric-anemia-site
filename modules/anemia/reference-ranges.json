@@ -11,6 +11,11 @@
       "minMonths": 6,
       "maxMonthsExclusive": 24,
       "label": "6 to <24 months",
+      "units": {
+        "hb": "g/dL",
+        "mcv": "fL",
+        "rdw": "%"
+      },
       "female": {
         "hbLower": 11,
         "mcvLower": 73.3,
@@ -28,6 +33,11 @@
       "minMonths": 24,
       "maxMonthsExclusive": 72,
       "label": "2 to <6 years",
+      "units": {
+        "hb": "g/dL",
+        "mcv": "fL",
+        "rdw": "%"
+      },
       "female": {
         "hbLower": 11,
         "mcvLower": 75.2,
@@ -45,6 +55,11 @@
       "minMonths": 72,
       "maxMonthsExclusive": 144,
       "label": "6 to <12 years",
+      "units": {
+        "hb": "g/dL",
+        "mcv": "fL",
+        "rdw": "%"
+      },
       "female": {
         "hbLower": 11.2,
         "mcvLower": 78.3,
@@ -62,6 +77,11 @@
       "minMonths": 144,
       "maxMonthsExclusive": 216,
       "label": "12 to <18 years",
+      "units": {
+        "hb": "g/dL",
+        "mcv": "fL",
+        "rdw": "%"
+      },
       "female": {
         "hbLower": 11.4,
         "mcvLower": 80.5,

@@ -1,0 +1,90 @@
+[
+  {
+    "analyte": "hemoglobin",
+    "field": "cbc.hemoglobin",
+    "referenceFields": ["cbc.localRanges.hbLower"],
+    "canonical": "g/dL",
+    "synonyms": ["g/dl"],
+    "confusables": [
+      { "unit": "g/L", "note": "10x scale" },
+      { "unit": "mmol/L", "note": "molar rather than mass concentration" }
+    ]
+  },
+  {
+    "analyte": "mcv",
+    "field": "cbc.mcv",
+    "referenceFields": ["cbc.localRanges.mcvLower", "cbc.localRanges.mcvUpper"],
+    "canonical": "fL",
+    "synonyms": ["fl"],
+    "confusables": [
+      { "unit": "um3", "note": "different UCUM notation" },
+      { "unit": "µm³", "note": "different UCUM notation" }
+    ]
+  },
+  {
+    "analyte": "rdw",
+    "field": "cbc.rdw",
+    "referenceFields": ["cbc.localRanges.rdwUpper"],
+    "canonical": "%",
+    "synonyms": ["percent", "pct"],
+    "confusables": []
+  },
+  {
+    "analyte": "rbc",
+    "field": "cbc.rbc",
+    "canonical": "10^12/L",
+    "synonyms": ["10*12/L", "x10^12/L", "M/uL"],
+    "confusables": []
+  },
+  {
+    "analyte": "wbc",
+    "field": "cbc.wbc",
+    "referenceFields": ["cbc.localRanges.wbcLower"],
+    "canonical": "10^9/L",
+    "synonyms": ["10*9/L", "x10^9/L", "K/uL"],
+    "confusables": []
+  },
+  {
+    "analyte": "anc",
+    "field": "cbc.anc",
+    "referenceFields": ["cbc.localRanges.ancLower"],
+    "canonical": "10^9/L",
+    "synonyms": ["10*9/L", "x10^9/L", "K/uL"],
+    "confusables": []
+  },
+  {
+    "analyte": "platelets",
+    "field": "cbc.platelets",
+    "referenceFields": ["cbc.localRanges.plateletsLower"],
+    "canonical": "10^9/L",
+    "synonyms": ["10*9/L", "x10^9/L", "K/uL"],
+    "confusables": []
+  },
+  {
+    "analyte": "ferritin",
+    "field": "labs.ferritin",
+    "canonical": "ng/mL",
+    "synonyms": ["ug/L", "µg/L"],
+    "confusables": [
+      { "unit": "ng/L", "note": "1000x scale" }
+    ]
+  },
+  {
+    "analyte": "stfrFerritinIndex",
+    "field": "labs.stfrFerritinIndex",
+    "canonical": "1",
+    "synonyms": [],
+    "confusables": [
+      { "unit": "*", "note": "dimensionless ratio" }
+    ]
+  },
+  {
+    "analyte": "bloodLeadLevel",
+    "field": "labs.bloodLeadLevel",
+    "canonical": "ug/dL",
+    "synonyms": ["µg/dL", "mcg/dL"],
+    "confusables": [
+      { "unit": "µmol/L", "note": "molar rather than mass concentration" }
+    ]
+  }
+]

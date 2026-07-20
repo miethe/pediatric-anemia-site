@@ -395,6 +395,11 @@ body { min-width: 320px; background: var(--bg); }
 .result-actions .button { min-height: 33px; padding: .45rem .6rem; font-size: .68rem; }
 .metric.metric-primary { border-color: #b6dfe2; background: var(--brand-soft); }
 .metric.metric-primary strong { color: var(--brand-strong); }
+.unit-assumption-notice { display: grid; gap: .2rem; padding: .62rem .72rem; border: 1px solid #c9dceb; border-radius: 10px; background: var(--info-soft); color: var(--info); }
+.unit-assumption-notice strong { font-size: .75rem; }
+.unit-assumption-notice span { color: #496b86; font-size: .68rem; }
+.unit-assumption-notice ul { display: flex; flex-wrap: wrap; gap: .3rem .45rem; margin: .2rem 0 0; padding: 0; list-style: none; }
+.unit-assumption-notice li { margin: 0; padding: .12rem .35rem; border: 1px solid #bad1e3; border-radius: 999px; background: rgba(255,255,255,.65); color: #315b7b; font-size: .65rem; }
 .alert-clear { display: grid; gap: .15rem; padding: .68rem .72rem; border: 1px solid #b9dec9; border-radius: 10px; background: var(--success-soft); color: var(--success); }
 .alert-clear strong { font-size: .78rem; }
 .alert-clear span { color: #4d725f; font-size: .7rem; }

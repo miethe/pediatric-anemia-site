@@ -362,12 +362,24 @@ function renderLimitations(limitations) {
   return `<section class="card result-section"><h3>Limits of this output</h3>${list(limitations, 'limitation-list')}</section>`;
 }
 
+function renderUnitAssumptions(result) {
+  const fields = result.provenance?.unitsAssumed;
+  if (!Array.isArray(fields) || fields.length === 0) return '';
+  return `
+    <aside class="unit-assumption-notice" role="note" aria-label="Default units applied">
+      <strong>Documented default units applied</strong>
+      <span>The following supplied values were interpreted using their documented default unit:</span>
+      <ul>${fields.map((fieldName) => `<li><code>${escapeHtml(fieldName)}</code></li>`).join('')}</ul>
+    </aside>`;
+}
+
 function renderResult(result) {
   $('#results-placeholder').hidden = true;
   const container = $('#results');
   container.hidden = false;
   container.innerHTML = `<div class="result-stack">
     ${renderClassification(result)}
+    ${renderUnitAssumptions(result)}
     ${renderAlerts(result.alerts)}
     ${renderCandidates(result.rankedDifferential)}
     ${renderQuestions(result.nextQuestions)}
@@ -491,19 +503,27 @@ function populateFromInput(input) {
 }
 
 async function loadExample() {
-  const selected = $('#example-select').value;
-  if (!selected) {
-    form.reset();
-    return;
+  try {
+    const selected = $('#example-select').value;
+    if (!selected) {
+      form.reset();
+      return;
+    }
+    const response = await fetch(`./examples/${selected}.json`);
+    if (!response.ok) throw new Error(`Unable to load example: ${selected}`);
+    const input = await response.json();
+    populateFromInput(input);
+    const result = assessPediatricAnemia(input, rules, candidates);
+    currentAudit = { input, result };
+    renderResult(result);
+    refreshAuditView();
+  } catch (error) {
+    if (error.code === 'UNIT_REJECTED') {
+      showInputRejection(error);
+      return;
+    }
+    throw error;
   }
-  const response = await fetch(`./examples/${selected}.json`);
-  if (!response.ok) throw new Error(`Unable to load example: ${selected}`);
-  const input = await response.json();
-  populateFromInput(input);
-  const result = assessPediatricAnemia(input, rules, candidates);
-  currentAudit = { input, result };
-  renderResult(result);
-  refreshAuditView();
 }
 
 function downloadJson() {
@@ -588,10 +608,15 @@ async function initialize() {
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     const input = buildInput();
-    const result = assessPediatricAnemia(input, rules, candidates);
-    currentAudit = { input, result };
-    renderResult(result);
-    refreshAuditView();
+    try {
+      const result = assessPediatricAnemia(input, rules, candidates);
+      currentAudit = { input, result };
+      renderResult(result);
+      refreshAuditView();
+    } catch (error) {
+      if (error.code === 'UNIT_REJECTED') showInputRejection(error);
+      else throw error;
+    }
   });
 
   form.addEventListener('reset', () => {
@@ -630,6 +655,18 @@ async function initialize() {
 function showFatalError(error) {
   console.error(error);
   $('#results-placeholder').innerHTML = `<h2>Application error</h2><p>${escapeHtml(error.message)}</p>`;
+}
+
+function showInputRejection(error) {
+  currentAudit = null;
+  $('#results').hidden = true;
+  $('#results-placeholder').hidden = false;
+  const details = Array.isArray(error.details) ? error.details : [];
+  $('#results-placeholder').innerHTML = `
+    <h2>Check the entered units</h2>
+    <p>${escapeHtml(error.message)}</p>
+    <ul>${details.map((detail) => `<li><strong>${escapeHtml(detail.field)}</strong>: entered "${escapeHtml(detail.providedUnit)}", expected ${escapeHtml(detail.expectedUnit)}</li>`).join('')}</ul>`;
+  refreshAuditView();
 }
 
 initialize().catch(showFatalError);

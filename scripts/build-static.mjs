@@ -58,16 +58,27 @@ const stampedIndex = (await readFile(indexPath, 'utf8')).replace(
 );
 await writeFile(indexPath, stampedIndex);
 
-// Stamping the entry point alone is not enough: the browser resolves each
-// static ES import and each fetch() as its own cacheable request.
+// Stamping the entry point alone is not enough: the browser resolves each static,
+// side-effect, and dynamic ES import and each fetch() as its own cacheable request. Stamp the
+// complete copied JS graph, not only dist/src: registry-bearing modules must resolve every
+// shared dependency (units, ranges, and future registries) to one URL/module instance.
 let stampedModules = 0;
-for (const file of await collectFiles(path.join(dist, 'src'))) {
+const copiedJavaScript = [
+  ...(await collectFiles(path.join(dist, 'src'))),
+  ...(await collectFiles(path.join(dist, 'modules'))),
+];
+for (const file of copiedJavaScript) {
   if (!file.endsWith('.js')) continue;
   const original = await readFile(file, 'utf8');
   const stamped = original
-    .replace(/from '(\.\/[^'?]+\.js)'/g, (_m, url) => `from '${withStamp(url)}'`)
-    .replace(/fetch\('(\.\/[^'?]+\.json)'\)/g, (_m, url) => `fetch('${withStamp(url)}')`)
-    .replace(/fetch\(`(\.\/[^`?]+\.json)`\)/g, (_m, url) => `fetch(\`${withStamp(url)}\`)`);
+    .replace(
+      /(\b(?:from|import)\s*\(?\s*['"])(\.\.?\/[^'"?]+\.(?:js|json))(['"])/g,
+      (_match, prefix, url, suffix) => `${prefix}${withStamp(url)}${suffix}`,
+    )
+    .replace(
+      /(fetch\(\s*(['"`]))(\.\.?\/[^'"`?]+\.json)(\2)/g,
+      (_match, prefix, _quote, url, suffix) => `${prefix}${withStamp(url)}${suffix}`,
+    );
   if (stamped !== original) stampedModules += 1;
   await writeFile(file, stamped);
 }

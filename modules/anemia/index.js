@@ -1,4 +1,5 @@
 import { deriveFacts } from './facts.anemia.js';
+import './units.js';
 
 function summarize(facts) {
   const rangeSource = facts.thresholds.provenance?.hbLower?.source;

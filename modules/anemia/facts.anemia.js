@@ -1,6 +1,8 @@
 import { finite, num, statusIs, includes, countTrue } from '../../src/facts/core.js';
 import { allAssessed, countPresent, toTri } from '../../src/facts/tristate.js';
+import { createUnitValidatedDeriver } from '../../src/units.js';
 import { getEffectiveRanges, getFerritinThreshold } from '../../modules/anemia/ranges.js';
+import './units.js';
 
 function triAny(values) {
   if (countPresent(values) > 0) return 'true';
@@ -27,8 +29,7 @@ function cytopeniaTri(localFlag, countValue, localLowerBound) {
   return 'unknown';
 }
 
-export function deriveFacts(rawInput = {}) {
-  const input = structuredClone(rawInput ?? {});
+function deriveFactsFromSnapshot(input = {}) {
   const patient = input.patient ?? {};
   const cbc = input.cbc ?? {};
   const localFlags = cbc.localFlags ?? {};
@@ -67,7 +68,11 @@ export function deriveFacts(rawInput = {}) {
 
   const rdwHigh = rdw !== null && ranges.rdwUpper !== null ? rdw > ranges.rdwUpper : null;
   const ferritin = num(labs.ferritin);
-  const ferritinThreshold = getFerritinThreshold(ageMonths, patient.menstruating);
+  const ferritinThreshold = getFerritinThreshold(
+    ageMonths,
+    patient.menstruating,
+    ferritin === null ? undefined : labs.ferritinUnit,
+  );
   const ferritinLow = ferritin !== null && ferritinThreshold
     ? ferritin <= ferritinThreshold.value
     : null;
@@ -408,3 +413,7 @@ export function deriveFacts(rawInput = {}) {
     },
   };
 }
+
+// Shared with the engine boundary so direct module consumers receive the same one-snapshot
+// guarantee. Future modules can wrap their raw derivation function without duplicating policy.
+export const deriveFacts = createUnitValidatedDeriver('anemia', deriveFactsFromSnapshot);
