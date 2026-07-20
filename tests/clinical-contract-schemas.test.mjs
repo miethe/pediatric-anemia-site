@@ -1219,3 +1219,170 @@ test('POSITIVE (fix cycle 2): v5HumanFactorsProtocol protocolStatus "superseded"
   const errors = validate(v4v5Schema_bundled, validV5HumanFactorsProtocolSuperseded());
   assert.deepEqual(errors, []);
 });
+
+// === Fix cycle 3 (P4-V1 R3 remediation, gate REOPENED) ===========================================
+//
+// The diagnostic-accuracy-methods reviewer reopened the gate on a single HIGH finding: the P3
+// defect verbatim (a self-declared signature/authentication state read as proof, with no schema
+// narrowing behind the claim of unreachability) had been reintroduced in v3OwnerDecision.signatureRef
+// (reused by v4/v5OwnerDecision via cross-file $ref). A fabricated `signatureState: "bound"` plus an
+// invented, never-verified `attachmentRef` validated cleanly, despite `signatureRef` guarding the
+// ONLY field in this schema that directly authorizes clinical_validation_complete. Fixed by mirroring
+// schemas/terminology-profile.schema.json's attestation if/then/else pattern (see signatureRef's own
+// updated description for the exact narrowing and its limits).
+//
+// The reviewer additionally ordered a full re-sweep of every `description` in both clinical schemas
+// for the same defect class ("a description claims a constraint the schema does not enforce"). That
+// sweep found three further unenforced/unrepresentable claims, fixed below:
+//   (1) v3ResultRecord.endpointResults[].interval and v5ResultRecord.measureResults[].interval both
+//       claimed "required alongside every pointEstimate" with no if/then behind the claim -- a
+//       non-null pointEstimate could coexist with interval: null.
+//   (2) v3/v4/v5DependencyChain.blockedReleaseStates claimed "must always include
+//       clinical_validation_complete" with only `minItems: 1` and an unconstrained enum behind it --
+//       an array containing only e.g. ["activated"] validated cleanly. Fixed with `contains`.
+//   (3) Three description-only overclaims were corrected rather than newly enforced, specifically to
+//       avoid inventing new owner-held schema surface (a new date/signature/timestamp field) or
+//       over-narrowing a field whose current looseness is legitimate (v3ProtocolContract.frozenAt
+//       retaining a real timestamp through protocol_deviation/superseded/expired transitions):
+//       subgroupPlan.prespecified's "and dated" clause, analysisPlan.prespecifiedBeforeUnblinding's
+//       "signed, and timestamped" clause, and v3ProtocolContract.frozenAt's "only" (biconditional)
+//       framing. These have no executable test below -- there is nothing to assert against a
+//       description string; the schema behavior around them is otherwise unchanged and already
+//       covered by fix-cycle-1/2 tests above (e.g. the freeze-gate tests still exercise frozenAt).
+
+// --- R3 core finding: v3OwnerDecision.signatureRef bound/not-bound, both directions --------------
+
+function validV3OwnerDecisionBound(attachmentRef = 'TEST-SYNTHETIC-attachment-001') {
+  const doc = validV3OwnerDecision();
+  doc.signatureRef = { attachmentContract: 'p2-authenticated-attachment', signatureState: 'bound', attachmentRef };
+  return doc;
+}
+
+test('NEGATIVE (fix cycle 3, R3 -- the P3 defect verbatim, reproduced): v3OwnerDecision signatureState "bound" with attachmentRef null must NOT validate', () => {
+  const doc = validV3OwnerDecisionBound(null);
+  const errors = validate(v3Schema, doc);
+  assert.ok(errors.length > 0, 'a self-declared bound signature with no attachment ref must be rejected -- this is the exact fabricated-authority shape the finding described');
+});
+
+test('NEGATIVE (fix cycle 3, R3): v3OwnerDecision signatureState "not_executed_owner_held" with a non-null attachmentRef must NOT validate', () => {
+  const doc = validV3OwnerDecision();
+  doc.signatureRef = { attachmentContract: 'p2-authenticated-attachment', signatureState: 'not_executed_owner_held', attachmentRef: 'TEST-SYNTHETIC-attachment-should-not-be-here' };
+  const errors = validate(v3Schema, doc);
+  assert.ok(errors.length > 0, 'an attachmentRef must not survive alongside the honest not_executed_owner_held default');
+});
+
+test('POSITIVE (fix cycle 3, R3): v3OwnerDecision signatureState "bound" WITH a populated attachmentRef validates cleanly (bound is exercised positively too, not just rejected)', () => {
+  const errors = validate(v3Schema, validV3OwnerDecisionBound());
+  assert.deepEqual(errors, []);
+});
+
+test('POSITIVE (fix cycle 3, R3): v3OwnerDecision signatureState "not_executed_owner_held" with attachmentRef null (the honest default) still validates cleanly -- not over-narrowed', () => {
+  const errors = validate(v3Schema, validV3OwnerDecision());
+  assert.deepEqual(errors, []);
+});
+
+// --- R3 propagation: v4/v5OwnerDecision.signatureRef reuse v3's def via cross-file $ref -----------
+// (bundleV4V5Schema does a structuredClone of the whole v3OwnerDecision.properties.signatureRef
+// node, so the if/then/else fixed above must already be present without any change to this file.)
+
+test('NEGATIVE (fix cycle 3, R3 propagation): v4OwnerDecision signatureState "bound" with attachmentRef null must NOT validate', () => {
+  const doc = validV4OwnerDecision();
+  doc.signatureRef = { attachmentContract: 'p2-authenticated-attachment', signatureState: 'bound', attachmentRef: null };
+  const errors = validate(v4v5Schema_bundled, doc);
+  assert.ok(errors.length > 0);
+});
+
+test('POSITIVE (fix cycle 3, R3 propagation): v4OwnerDecision signatureState "bound" with a populated attachmentRef validates cleanly', () => {
+  const doc = validV4OwnerDecision();
+  doc.signatureRef = { attachmentContract: 'p2-authenticated-attachment', signatureState: 'bound', attachmentRef: 'TEST-SYNTHETIC-attachment-001' };
+  const errors = validate(v4v5Schema_bundled, doc);
+  assert.deepEqual(errors, []);
+});
+
+test('NEGATIVE (fix cycle 3, R3 propagation): v5OwnerDecision signatureState "bound" with attachmentRef null must NOT validate', () => {
+  const doc = validV5OwnerDecision();
+  doc.signatureRef = { attachmentContract: 'p2-authenticated-attachment', signatureState: 'bound', attachmentRef: null };
+  const errors = validate(v4v5Schema_bundled, doc);
+  assert.ok(errors.length > 0);
+});
+
+test('POSITIVE (fix cycle 3, R3 propagation): v5OwnerDecision signatureState "bound" with a populated attachmentRef validates cleanly', () => {
+  const doc = validV5OwnerDecision();
+  doc.signatureRef = { attachmentContract: 'p2-authenticated-attachment', signatureState: 'bound', attachmentRef: 'TEST-SYNTHETIC-attachment-001' };
+  const errors = validate(v4v5Schema_bundled, doc);
+  assert.deepEqual(errors, []);
+});
+
+// --- Sweep finding 1: interval required alongside a non-null pointEstimate -----------------------
+
+test('NEGATIVE (fix cycle 3, sweep finding): v3ResultRecord endpointResults[] entry with a non-null pointEstimate and interval null must NOT validate', () => {
+  const doc = validV3ResultRecord();
+  doc.endpointResults = [{ endpointId: 'dangerous_miss_rate', pointEstimate: 0.001, interval: null, n: 500 }];
+  const errors = validate(v3Schema, doc);
+  assert.ok(errors.length > 0, 'a reported point estimate with no interval must be rejected');
+});
+
+test('POSITIVE (fix cycle 3): a v3ResultRecord endpointResults[] entry with both pointEstimate and interval populated validates cleanly (already exercised by validV3ResultRecord above; asserted explicitly here)', () => {
+  const errors = validate(v3Schema, validV3ResultRecord());
+  assert.deepEqual(errors, []);
+});
+
+test('POSITIVE (fix cycle 3): a v3ResultRecord endpointResults[] entry with pointEstimate null and interval null still validates (an unresolved per-endpoint result is not over-narrowed)', () => {
+  const doc = validV3ResultRecord();
+  doc.endpointResults = [{ endpointId: 'dangerous_miss_rate', pointEstimate: null, interval: null, n: null }];
+  const errors = validate(v3Schema, doc);
+  assert.deepEqual(errors, []);
+});
+
+test('NEGATIVE (fix cycle 3, sweep finding): v5ResultRecord measureResults[] entry with a non-null pointEstimate and interval null must NOT validate', () => {
+  const doc = validV5ResultRecord();
+  doc.measureResults = [{ measureId: 'time_on_task', pointEstimate: 42, interval: null, n: 12 }];
+  const errors = validate(v4v5Schema_bundled, doc);
+  assert.ok(errors.length > 0);
+});
+
+test('POSITIVE (fix cycle 3): a v5ResultRecord measureResults[] entry with pointEstimate null and interval null still validates (not over-narrowed)', () => {
+  const doc = validV5ResultRecord();
+  doc.measureResults = [{ measureId: 'time_on_task', pointEstimate: null, interval: null, n: null }];
+  const errors = validate(v4v5Schema_bundled, doc);
+  assert.deepEqual(errors, []);
+});
+
+// --- Sweep finding 2: blockedReleaseStates must actually contain clinical_validation_complete -----
+
+function dependencyChainDoc(recordType, completionField) {
+  return {
+    recordType,
+    chainId: 'TEST-SYNTHETIC-chain',
+    candidateBinding: candidateBinding(),
+    protocolRef: null,
+    executionReceiptRef: null,
+    resultRef: null,
+    adjudicationRef: null,
+    ownerDecisionRef: null,
+    [completionField]: false,
+    blockedReleaseStates: ['activated'],
+  };
+}
+
+test('NEGATIVE (fix cycle 3, sweep finding): v3DependencyChain.blockedReleaseStates missing clinical_validation_complete must NOT validate', () => {
+  const errors = validate(v3Schema, dependencyChainDoc('v3DependencyChain', 'clinicalValidationComplete'));
+  assert.ok(errors.length > 0, 'blockedReleaseStates without clinical_validation_complete must be rejected -- the description claims it is always present');
+});
+
+test('POSITIVE (fix cycle 3): v3DependencyChain.blockedReleaseStates containing clinical_validation_complete alongside other states validates cleanly', () => {
+  const doc = dependencyChainDoc('v3DependencyChain', 'clinicalValidationComplete');
+  doc.blockedReleaseStates = ['clinical_validation_complete', 'activated'];
+  const errors = validate(v3Schema, doc);
+  assert.deepEqual(errors, []);
+});
+
+test('NEGATIVE (fix cycle 3, sweep finding): v4DependencyChain.blockedReleaseStates missing clinical_validation_complete must NOT validate', () => {
+  const errors = validate(v4v5Schema_bundled, dependencyChainDoc('v4DependencyChain', 'silentModeValidationComplete'));
+  assert.ok(errors.length > 0);
+});
+
+test('NEGATIVE (fix cycle 3, sweep finding): v5DependencyChain.blockedReleaseStates missing clinical_validation_complete must NOT validate', () => {
+  const errors = validate(v4v5Schema_bundled, dependencyChainDoc('v5DependencyChain', 'summativeHumanFactorsComplete'));
+  assert.ok(errors.length > 0);
+});

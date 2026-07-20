@@ -208,7 +208,7 @@
         "minimumCellSize": { "type": ["integer", "null"], "minimum": 1, "description": "OWNER-HELD (OQ-4). Minimum subjects per stratum below which the subgroup result is reported as underpowered rather than a point estimate." },
         "prespecified": {
           "type": ["boolean", "null"],
-          "description": "OWNER-HELD. Must be true and dated before unblinding for any subgroup result to be treated as confirmatory rather than exploratory -- a post-hoc subgroup finding is explicitly weaker evidence and must be labeled as such in the result record (see resultRecord.subgroupResults[].analysisClass)."
+          "description": "OWNER-HELD. Must be true once subgroupPlan.status is asserted (enforced: `then.properties.prespecified.const: true` below) for any subgroup result to be treated as confirmatory rather than exploratory -- a post-hoc subgroup finding is explicitly weaker evidence and must be labeled as such in the result record (see resultRecord.subgroupResults[].analysisClass). P4-V1 remediation R3 sweep: a prior version of this description additionally claimed prespecification must be 'dated' before unblinding, but this schema has no corresponding date field for subgroupPlan and enforces nothing of the kind -- that clause is REMOVED here (correcting the description) rather than left as an unenforced, unrepresentable claim. Adding a new owner-held prespecification-date field is a schema-surface change out of this sweep's scope."
         }
       },
       "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
@@ -235,7 +235,7 @@
         "statisticalAuthorityRef": { "$ref": "#/$defs/referenceLocator", "description": "Reference to the named diagnostic-accuracy/biostatistics authority (matches the 'diagnostic accuracy and biostatistics authority' role already enumerated in the ARC readiness run's human_approval_gate.required_authorities)." },
         "prespecifiedBeforeUnblinding": {
           "type": ["boolean", "null"],
-          "description": "OWNER-HELD. Must be true, signed, and timestamped strictly before any result unblinding. A statistical analysis plan authored after seeing results is not a protocol and cannot satisfy this contract regardless of content quality."
+          "description": "OWNER-HELD. Must be true once analysisPlan.status is asserted (enforced: `then.properties.prespecifiedBeforeUnblinding.const: true` below). A statistical analysis plan authored after seeing results is not a protocol and cannot satisfy this contract regardless of content quality. P4-V1 remediation R3 sweep: a prior version of this description additionally claimed the value must be 'signed, and timestamped', but this schema has no corresponding signature or timestamp field for analysisPlan and enforces neither -- those clauses are REMOVED here (correcting the description) rather than left as unenforced, unrepresentable claims. Adding new owner-held signature/timestamp fields is a schema-surface change out of this sweep's scope."
         }
       },
       "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
@@ -295,7 +295,7 @@
         "subgroupPlan": { "$ref": "#/$defs/subgroupPlan" },
         "analysisPlan": { "$ref": "#/$defs/analysisPlan" },
         "adjudicationSystemBinding": { "$ref": "#/$defs/adjudicationSystemBinding" },
-        "frozenAt": { "type": ["string", "null"], "format": "date-time", "description": "Non-null only once every owner-held section above is asserted. Freezing is an owner action, not a repository default." },
+        "frozenAt": { "type": ["string", "null"], "format": "date-time", "description": "Non-null (and every owner-held section above asserted) is REQUIRED whenever protocolStatus is protocol_frozen -- enforced by the freeze-gate `if`/`then` below. Freezing is an owner action, not a repository default. P4-V1 remediation R3 sweep: the prior wording ('Non-null ONLY once...') overclaimed a biconditional the schema does not enforce in the reverse direction -- nothing here prevents frozenAt being non-null while protocolStatus is not protocol_frozen (e.g. a protocol that has since moved to protocol_deviation, superseded, or expired legitimately RETAINS the timestamp from when it actually was frozen). Enforcing the reverse direction would incorrectly reject that legitimate lifecycle history, so the description is corrected instead of the schema being narrowed further." },
         "frozenBy": { "$ref": "#/$defs/referenceLocator", "description": "Reference to the owner who froze this protocol version. Reference only." },
         "supersededBy": { "type": ["string", "null"], "description": "protocolId of a successor. Required when protocolStatus is superseded." }
       },
@@ -393,10 +393,13 @@
                 "additionalProperties": false,
                 "required": ["low", "high"],
                 "properties": { "low": { "type": ["number", "null"] }, "high": { "type": ["number", "null"] } },
-                "description": "Required alongside every pointEstimate (plan deliverable requirement: 'uncertainty'). A point estimate with a null interval is not an acceptable V3 result."
+                "description": "Required alongside every pointEstimate (plan deliverable requirement: 'uncertainty'). A point estimate with a null interval is not an acceptable V3 result. P4-V1 remediation R3 sweep (MEDIUM, new instance of the same defect class as v3OwnerDecision.signatureRef): this claim was previously unenforced -- a non-null `pointEstimate` could coexist with `interval: null`. The sibling per-item `if`/`then` now enforces it. Only the null-vs-object shape of `interval` is narrowed; `low`/`high` inside a present `interval` remain independently nullable (not claimed as enforced by this description, and not narrowed here to avoid over-narrowing beyond what was actually asserted)."
               },
               "n": { "type": ["integer", "null"], "minimum": 0 }
-            }
+            },
+            "if": { "properties": { "pointEstimate": { "type": "number" } }, "required": ["pointEstimate"] },
+            "then": { "required": ["interval"], "properties": { "interval": { "type": "object" } } },
+            "description": "P4-V1 remediation R3 sweep addendum: enforces interval's own description claim (\"required alongside every pointEstimate\") -- an endpointResults[] entry with a non-null numeric pointEstimate must carry a non-null interval object."
           }
         },
         "subgroupResults": {
@@ -481,7 +484,10 @@
             "signatureState": { "type": "string", "enum": ["not_executed_owner_held", "bound"] },
             "attachmentRef": { "type": ["string", "null"] }
           },
-          "description": "Reuses the P2 authenticated-attachment placeholder pattern established in docs/clinical/local-profile-charter-contract.md section 4. Signature verification is P2's primitive; nothing on this side can verify one, so `bound` is unreachable here by construction until P2 lands."
+          "if": { "type": "object", "properties": { "signatureState": { "const": "bound" } }, "required": ["signatureState"] },
+          "then": { "type": "object", "properties": { "attachmentRef": { "type": "string", "minLength": 1 } } },
+          "else": { "type": "object", "properties": { "attachmentRef": { "type": "null" } } },
+          "description": "P4-V1 remediation R3 (HIGH, reopened gate): reuses the P2 authenticated-attachment placeholder pattern established in docs/clinical/local-profile-charter-contract.md section 4, and now structurally mirrors schemas/terminology-profile.schema.json's attestation if/then/else (terminology-profile.schema.json:160-162): `signatureState: bound` REQUIRES a non-null, non-empty `attachmentRef`; any other state (today only `not_executed_owner_held`) REQUIRES `attachmentRef` to be null. A prior version of this description claimed `bound` was 'unreachable here by construction' with NO schema narrowing enforcing that claim -- a fabricated authenticated go-decision (`signatureState: bound` plus an invented, never-verified `attachmentRef`) validated cleanly despite this being the ONLY field that directly authorizes clinical_validation_complete (see `decision`'s own description above). That claim is corrected here, not merely patched: this narrowing proves only internal coherence (a self-declared `bound` state names a ref) -- it is NOT proof the ref is genuine. Unlike terminology-profile.schema.json's attestation, this signatureRef has NO code-level backstop equivalent to `evaluateActivationGate` -- that function is scoped to local-profile records (docs/clinical/local-profile-charter-contract.md section 4) and does not evaluate v3/v4/v5OwnerDecision at all. Verifying an authenticated attachment for an owner decision remains entirely P2's unbuilt primitive."
         }
       },
       "if": { "properties": { "decision": { "enum": ["go", "conditional_go"] } } },
@@ -515,7 +521,8 @@
           "type": "array",
           "minItems": 1,
           "items": { "type": "string", "enum": ["clinical_validation_complete", "certified_for_defined_scope", "released", "activated"] },
-          "description": "Plan section 2 state-taxonomy entries this chain currently blocks. Must always include clinical_validation_complete while clinicalValidationComplete is false, and by the plan's own transitivity (section 2, section 5) blocking clinical_validation_complete also blocks certified_for_defined_scope, released, and activated for any release scope that declares V3 applicable."
+          "contains": { "const": "clinical_validation_complete" },
+          "description": "Plan section 2 state-taxonomy entries this chain currently blocks. Must always include clinical_validation_complete while clinicalValidationComplete is false, and by the plan's own transitivity (section 2, section 5) blocking clinical_validation_complete also blocks certified_for_defined_scope, released, and activated for any release scope that declares V3 applicable. P4-V1 remediation R3 sweep (MEDIUM, new instance of the same defect class): 'must always include clinical_validation_complete' was previously unenforced -- `minItems: 1` with an unconstrained enum item allowed e.g. `[\"activated\"]` alone to validate. `contains` now enforces the array always names clinical_validation_complete (unconditional, not if/then-gated, because clinicalValidationComplete is permanently const false in this schema -- see its own description -- so the 'while false' condition always holds)."
         }
       },
       "description": "Composition record: a single addressable object naming every link in the chain by reference plus the derived (and today permanently false) top-line gate. Individual link records (protocol/receipt/result/adjudication/decision) remain the source of truth; this record exists so the release-blocking linkage has one machine-checkable location rather than requiring a reader to walk five documents."

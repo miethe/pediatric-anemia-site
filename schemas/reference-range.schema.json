@@ -440,12 +440,12 @@
       "type": "object",
       "additionalProperties": false,
       "required": ["system", "assertion"],
-      "description": "The code system every unit code in this profile is drawn from. Units are expressed as coded values (UCUM), never as free text, because 'g/dL' and 'g/L' differ by a factor of ten and a free-text field cannot be safely compared. There is deliberately NO profile-level unit CODE: see `intervals[].unitCode`.",
+      "description": "The code system every unit code in this profile is intended to be drawn from. Units are meant to be expressed as coded values (UCUM), not free text, because 'g/dL' and 'g/L' differ by a factor of ten and a free-text field cannot be safely compared — but this is an authoring convention, not a structural constraint this schema enforces: `system` and every `unitCode` in this profile are plain non-empty strings, and nothing rejects a non-UCUM or free-text value (owner-held gap, see docs/clinical/local-profile-charter-contract.md §2.7 C13). There is deliberately NO profile-level unit CODE: see `intervals[].unitCode`.",
       "properties": {
         "system": {
           "type": ["string", "null"],
           "minLength": 1,
-          "description": "Unit code system, normally http://unitsofmeasure.org (UCUM). Free-text units are not accepted."
+          "description": "Unit code system, normally http://unitsofmeasure.org (UCUM). Held as an opaque non-empty string only — a free-text value here is not currently rejected (see C13 above)."
         },
         "assertion": { "$ref": "#/$defs/assertion" }
       },

@@ -448,7 +448,8 @@
           "type": "array",
           "minItems": 1,
           "items": { "type": "string", "enum": ["clinical_validation_complete", "certified_for_defined_scope", "released", "activated"] },
-          "description": "Must always include clinical_validation_complete while silentModeValidationComplete is false; by plan transitivity this also blocks certified_for_defined_scope, released, and activated for any scope declaring V4 applicable."
+          "contains": { "const": "clinical_validation_complete" },
+          "description": "Must always include clinical_validation_complete while silentModeValidationComplete is false; by plan transitivity this also blocks certified_for_defined_scope, released, and activated for any scope declaring V4 applicable. P4-V1 remediation R3 sweep (MEDIUM, mirrors v3DependencyChain.blockedReleaseStates' identical fix): 'must always include' was previously unenforced; `contains` now enforces it unconditionally, since silentModeValidationComplete is permanently const false in this schema."
         }
       }
     },
@@ -594,10 +595,13 @@
                 "additionalProperties": false,
                 "required": ["low", "high"],
                 "properties": { "low": { "type": ["number", "null"] }, "high": { "type": ["number", "null"] } },
-                "description": "Required alongside every pointEstimate, same uncertainty requirement as v3ResultRecord.endpointResults."
+                "description": "Required alongside every pointEstimate, same uncertainty requirement as v3ResultRecord.endpointResults. P4-V1 remediation R3 sweep (MEDIUM, same defect class found in v3ResultRecord.endpointResults.interval): this claim was previously unenforced -- a non-null `pointEstimate` could coexist with `interval: null`. The sibling per-item `if`/`then` now enforces it. `low`/`high` inside a present `interval` remain independently nullable, matching the V3 fix's scope exactly (not narrowed here for the same not-over-narrowing reason)."
               },
               "n": { "type": ["integer", "null"], "minimum": 0 }
-            }
+            },
+            "if": { "properties": { "pointEstimate": { "type": "number" } }, "required": ["pointEstimate"] },
+            "then": { "required": ["interval"], "properties": { "interval": { "type": "object" } } },
+            "description": "P4-V1 remediation R3 sweep addendum: enforces interval's own description claim (\"required alongside every pointEstimate\"), mirroring v3ResultRecord.endpointResults' identical fix -- a measureResults[] entry with a non-null numeric pointEstimate must carry a non-null interval object."
           }
         },
         "subgroupResults": {
@@ -686,7 +690,9 @@
         "blockedReleaseStates": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string", "enum": ["clinical_validation_complete", "certified_for_defined_scope", "released", "activated"] }
+          "items": { "type": "string", "enum": ["clinical_validation_complete", "certified_for_defined_scope", "released", "activated"] },
+          "contains": { "const": "clinical_validation_complete" },
+          "description": "P4-V1 remediation R3 sweep addendum (not a description-fix; this field previously carried no description at all, an asymmetry with its v3/v4 siblings): must always include clinical_validation_complete while summativeHumanFactorsComplete is false, mirroring v3DependencyChain.blockedReleaseStates and v4DependencyChain.blockedReleaseStates exactly, including their same `contains` enforcement (unconditional, since summativeHumanFactorsComplete is permanently const false in this schema)."
         }
       }
     }

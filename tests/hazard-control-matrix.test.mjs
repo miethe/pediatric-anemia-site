@@ -304,3 +304,187 @@ test('NEGATIVE: a manifest claiming clinicalValidationComplete: true is schema-i
   const errors = validate(schema, mutated);
   assert.ok(errors.length > 0, 'clinicalValidationComplete: true must fail schema validation — no evaluator in this repository can prove the full chain');
 });
+
+// ===================================================================================================
+// P4-V1 remediation (gate reopened by three independent specialty-lens FAILs). See the R1/R2/R6/R8
+// items in the remediation brief. Each block below cross-verifies the fix live against the repository
+// state it claims to describe — it does not trust the manifest's own claims, same discipline as above.
+// ===================================================================================================
+
+// --- R1 [CRITICAL, found independently by lab-medicine + general-pediatrics]: productIntegration ----
+//
+// control_bound must never again be silently readable as "protects the deployed app". Every row now
+// carries a required productIntegration disclosure distinguishing "reachable in the shipped product"
+// from "repository-only / not reachable by the deployed app".
+
+const REACHABLE_HAZARDS = new Set(['DM-CBC-001', 'DM-HEME-002', 'DM-AGE-003', 'DM-URGENT-004', 'DM-IRON-006']);
+const REPOSITORY_ONLY_HAZARDS = new Set(['DM-LAB-005', 'DM-RESULT-007', 'DM-FHIR-008']);
+// DM-EQUITY-009 / DM-WORKFLOW-010 (NO_ENGINE_HAZARDS) are not_applicable_no_control_exists.
+
+test('every row carries a productIntegration disclosure with the expected status for its actual reachability', () => {
+  for (const row of manifest.rows) {
+    assert.ok(row.productIntegration, `${row.hazardId}: productIntegration is required on every row`);
+    const expected = REACHABLE_HAZARDS.has(row.hazardId)
+      ? 'reachable_in_shipped_product'
+      : REPOSITORY_ONLY_HAZARDS.has(row.hazardId)
+        ? 'repository_only_not_reachable_by_deployed_app'
+        : 'not_applicable_no_control_exists';
+    assert.equal(row.productIntegration.status, expected, `${row.hazardId}: unexpected productIntegration.status`);
+  }
+});
+
+test('R1: the three previously-misleading control_bound rows (DM-LAB-005, DM-RESULT-007, DM-FHIR-008) are repository_only_not_reachable_by_deployed_app, each with a non-null, owned, blocking productIntegration.finding', () => {
+  for (const hazardId of REPOSITORY_ONLY_HAZARDS) {
+    const row = byHazard[hazardId];
+    assert.equal(row.productIntegration.status, 'repository_only_not_reachable_by_deployed_app');
+    assert.deepEqual(row.productIntegration.productCallers, []);
+    assert.equal(row.productIntegration.inputSurfaceSupported, false);
+    assert.ok(row.productIntegration.finding, `${hazardId}: productIntegration.finding must be non-null`);
+    assert.match(row.productIntegration.finding.findingId, /^PAC-P4T2-[0-9]{3}$/);
+    assert.equal(row.productIntegration.finding.status, 'open');
+    assert.ok(row.productIntegration.finding.ownerRole);
+  }
+});
+
+test('R1: the five engine-rule rows are reachable_in_shipped_product with at least one productCaller and inputSurfaceSupported true, and carry no productIntegration.finding', () => {
+  for (const hazardId of REACHABLE_HAZARDS) {
+    const row = byHazard[hazardId];
+    assert.equal(row.productIntegration.status, 'reachable_in_shipped_product');
+    assert.ok(row.productIntegration.productCallers.length >= 1);
+    assert.equal(row.productIntegration.inputSurfaceSupported, true);
+    assert.equal(row.productIntegration.finding, null);
+  }
+});
+
+test('R1: independently re-verify the zero-production-callers claim for scripts/lib/local-applicability.mjs live against the repository, not trusting the manifest', async () => {
+  const { readdir, readFile } = await import('node:fs/promises');
+  const srcFiles = await readdir(path.join(root, 'src'));
+  for (const filename of srcFiles.filter((name) => name.endsWith('.js'))) {
+    const source = await readFile(path.join(root, 'src', filename), 'utf8');
+    assert.ok(
+      !source.includes('local-applicability'),
+      `src/${filename} must not import scripts/lib/local-applicability.mjs — if this ever changes, DM-LAB-005/DM-RESULT-007/DM-FHIR-008's productIntegration rows must be re-authored, not left stale`,
+    );
+  }
+});
+
+test('R1: independently re-verify schemas/patient-input.schema.json has no specimen/analyzer/method/unitCode property, live against the repository', async () => {
+  const patientInputSchema = await readJson('schemas/patient-input.schema.json');
+  const serialized = JSON.stringify(patientInputSchema);
+  for (const gatedField of ['"specimen"', '"analyzer"', '"method"', '"unitCode"']) {
+    assert.ok(
+      !serialized.includes(gatedField),
+      `schemas/patient-input.schema.json must not declare a top-level ${gatedField} property — if this ever changes, DM-LAB-005's productIntegration row must be re-authored, not left stale`,
+    );
+  }
+});
+
+test('NEGATIVE: blanking a repository_only row\'s productIntegration.finding to null is schema-invalid', () => {
+  const mutated = structuredClone(manifest);
+  const target = mutated.rows.find((row) => row.hazardId === 'DM-LAB-005');
+  target.productIntegration.finding = null;
+  const errors = validate(schema, mutated);
+  assert.ok(errors.length > 0, 'blanking productIntegration.finding on a repository_only row must fail schema validation');
+});
+
+test('NEGATIVE: a reachable_in_shipped_product row carrying a non-null productIntegration.finding is schema-invalid', () => {
+  const mutated = structuredClone(manifest);
+  const target = mutated.rows.find((row) => row.hazardId === 'DM-CBC-001');
+  const donor = structuredClone(byHazard['DM-LAB-005'].productIntegration.finding);
+  target.productIntegration.finding = donor;
+  const errors = validate(schema, mutated);
+  assert.ok(errors.length > 0, 'a reachable_in_shipped_product row must not carry a productIntegration.finding');
+});
+
+test('NEGATIVE: removing productIntegration from a row entirely is schema-invalid (proves it is REQUIRED, not decorative)', () => {
+  const mutated = structuredClone(manifest);
+  const target = mutated.rows.find((row) => row.hazardId === 'DM-CBC-001');
+  delete target.productIntegration;
+  const errors = validate(schema, mutated);
+  assert.ok(errors.length > 0, 'a row missing productIntegration must fail schema validation');
+});
+
+// --- R2 [CRITICAL, hematology]: coverageFinding discloses partial coverage on a control_bound row ---
+
+test('R2: DM-HEME-002 carries a non-null coverageFinding disclosing the aplastic-crisis partial-coverage gap; all other rows carry null', () => {
+  for (const row of manifest.rows) {
+    if (row.hazardId === 'DM-HEME-002') {
+      assert.ok(row.coverageFinding, 'DM-HEME-002 must carry a non-null coverageFinding');
+      assert.equal(row.coverageFinding.findingId, 'PAC-P4T2-006');
+      assert.equal(row.coverageFinding.status, 'open');
+      assert.equal(row.coverageFinding.ownerRole, 'pediatric-safety-owner');
+    } else {
+      assert.equal(row.coverageFinding, null, `${row.hazardId}: coverageFinding must be null unless a partial-coverage gap is disclosed`);
+    }
+  }
+});
+
+test('NEGATIVE: removing coverageFinding from a row entirely is schema-invalid (proves it is REQUIRED, not decorative)', () => {
+  const mutated = structuredClone(manifest);
+  const target = mutated.rows.find((row) => row.hazardId === 'DM-HEME-002');
+  delete target.coverageFinding;
+  const errors = validate(schema, mutated);
+  assert.ok(errors.length > 0, 'a row missing coverageFinding must fail schema validation');
+});
+
+// --- R6 [MED, lab]: DM-LAB-005's coverage boundary against the P3 CRITICAL_VALUE_* lane is visible --
+
+test('R6: DM-LAB-005\'s rationale cross-references the P3 CRITICAL_VALUE_* lane as a distinct, untested-by-P4 coverage boundary', () => {
+  const rationale = byHazard['DM-LAB-005'].controlBinding.rationale;
+  assert.match(rationale, /CRITICAL_VALUE/);
+  assert.match(rationale, /tests\/local-applicability\.test\.mjs/);
+  assert.match(rationale, /negative-cases\.json/);
+});
+
+test('R6: independently re-verify live that no P4 dangerous-miss fixture/test exercises a CRITICAL_VALUE_* blocker code (the coverage-boundary claim is true, not asserted)', () => {
+  for (const code of ['CRITICAL_VALUE_MISSING', 'CRITICAL_VALUE_CONFLICT', 'CRITICAL_VALUE_NOT_ASSERTED', 'CRITICAL_VALUE_UNIT_MISMATCH', 'CRITICAL_VALUE_BOUNDS_MISSING']) {
+    assert.ok(!dmTestSource.includes(code), `tests/dangerous-miss-scenarios.test.mjs must not (yet) reference ${code} — if this ever changes, DM-LAB-005's coverage-boundary rationale must be re-authored, not left stale`);
+    for (const row of manifest.rows) {
+      assert.ok(!row.controlBinding.controlIds.includes(code), `${row.hazardId}: must not claim ${code} as a controlId — no P4 scenario exercises the critical-value sub-dimension`);
+    }
+  }
+});
+
+// --- R8 [MED, gen peds]: DM-WORKFLOW-010's gap is a PRECONDITION DEPENDENCY, not a sibling-scope gap --
+
+test('R8: DM-WORKFLOW-010\'s finding.preconditionForHazardIds lists every other hazard in the matrix (its alert-lifecycle gap is a precondition for their alerts having any practical effect)', () => {
+  const finding = byHazard['DM-WORKFLOW-010'].finding;
+  const otherNine = manifest.rows.map((row) => row.hazardId).filter((id) => id !== 'DM-WORKFLOW-010').sort();
+  assert.deepEqual([...finding.preconditionForHazardIds].sort(), otherNine);
+  assert.match(finding.description, /PRECONDITION DEPENDENCY/);
+});
+
+test('R8: every OTHER finding-bearing field (top-level finding, productIntegration.finding, coverageFinding) has an empty preconditionForHazardIds — the precondition claim is scoped to DM-WORKFLOW-010 only, not inflated to every open finding', () => {
+  for (const row of manifest.rows) {
+    if (row.hazardId !== 'DM-WORKFLOW-010' && row.finding) {
+      assert.deepEqual(row.finding.preconditionForHazardIds, []);
+    }
+    if (row.productIntegration.finding) {
+      assert.deepEqual(row.productIntegration.finding.preconditionForHazardIds, []);
+    }
+    if (row.coverageFinding) {
+      assert.deepEqual(row.coverageFinding.preconditionForHazardIds, []);
+    }
+  }
+});
+
+test('NEGATIVE: removing preconditionForHazardIds from an open finding is schema-invalid (proves the structural R8 guard is enforced, not decorative)', () => {
+  const mutated = structuredClone(manifest);
+  const target = mutated.rows.find((row) => row.hazardId === 'DM-WORKFLOW-010');
+  delete target.finding.preconditionForHazardIds;
+  const errors = validate(schema, mutated);
+  assert.ok(errors.length > 0, 'a finding missing preconditionForHazardIds must fail schema validation');
+});
+
+// --- cross-cutting: every findingId in the document (top-level, productIntegration, coverageFinding) is unique ---
+
+test('every PAC-P4T2-NNN findingId across the whole document (top-level finding, productIntegration.finding, coverageFinding) is unique — no accidental reuse', () => {
+  const ids = [];
+  for (const row of manifest.rows) {
+    if (row.finding) ids.push(row.finding.findingId);
+    if (row.productIntegration.finding) ids.push(row.productIntegration.finding.findingId);
+    if (row.coverageFinding) ids.push(row.coverageFinding.findingId);
+  }
+  assert.ok(ids.length > 0);
+  assert.deepEqual(ids, [...new Set(ids)], `duplicate findingId(s) found: ${JSON.stringify(ids)}`);
+});

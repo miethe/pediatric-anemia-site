@@ -135,3 +135,339 @@ request-side assertion discriminator, downtime and recovery) are recorded in
 rationale and the exact question each owner must answer. They were deliberately **not invented**: an
 agent authoring pediatric reference-interval semantics into a schema that gates clinical decision
 support is precisely the failure this plan exists to prevent.
+
+## P4-V1 — REOPENED: four additional specialty lenses (verdict: three FAILs, owner-held)
+
+P4-V1's first pass (see above table) dispatched four of the "eight specialty lenses plus methods,
+safety, human-factors, and equity" AC P4.1 names (`safety-human-factors`, `diagnostic-accuracy-methods`,
+`equity-patient-family`, `task-completion-validator`) and PASSed — recorded by the phase owner as an
+unresolved reviewer-count ambiguity (`.claude/progress/arc-clinical-council-adoption-v1/phase-4-completion.md`,
+"OPEN ITEM FOR THE ORCHESTRATOR"). The gate was reopened to run the remaining four domain lenses
+(`pediatric-hematology-reviewer`, `pediatric-laboratory-medicine-reviewer`,
+`general-pediatrics-reviewer`, `clinical-informatics-interoperability-reviewer`) against the current
+tree. Three returned FAIL. None is a repo-fixable defect on its own terms — each is a clinical-content
+or scope decision this plan's own §6 reserves to an external owner. Two parallel agents are landing the
+repo-side companion work in this same reopening under separate file ownership (hazard-matrix schema/
+tests, clinical-contract schemas); their finding IDs are cross-referenced below, not duplicated here.
+
+This register carries **only** the owner-held decision record for each finding. No rule, threshold,
+severity, or hazard-family definition is proposed here — see plan §6 and the discipline note at the
+top of this document's authoring instructions.
+
+### Register
+
+| ID | Severity | Source lens | Owner role | Blocks |
+|---|---|---|---|---|
+| R2(b) | **critical** | pediatric-hematology-reviewer | `pediatric-safety-owner` + credentialed pediatric-hematology reviewer | `credentialed_review_complete`, `clinical_validation_complete`, `certified_for_defined_scope`, `released`, `activated` |
+| R4 | high | general-pediatrics-reviewer | `pediatric-safety-owner` + credentialed general-pediatrics/hematology reviewers | `credentialed_review_complete`, `clinical_validation_complete`, `certified_for_defined_scope`, `released`, `activated` |
+| R5 | med-high | pediatric-hematology-reviewer | `clinical-informatics-owner` (schema-scope decision) + `pediatric-safety-owner` (clinical-risk sign-off) | `credentialed_review_complete`, `clinical_validation_complete`, `certified_for_defined_scope`, `released`, `activated` |
+| R9 (proposed OQ-7) | low/med | clinical-informatics-interoperability-reviewer | program owner (to confirm into plan §7); `clinical-governance-owner` for the underlying crosswalk decision | live-EHR/CDS-Hooks integration claims only; does not block repository-only or synthetic-pilot states |
+| R10 | low | clinical-informatics-interoperability-reviewer | informational — no owner action required to close; `pediatric-safety-owner` if scenario-level `candidateBinding` is later relied upon | none (note only) |
+| R12 | abstention | general-pediatrics-reviewer | `pediatric-safety-owner` + credentialed general-pediatrics reviewer | `credentialed_review_complete`, `clinical_validation_complete`, `certified_for_defined_scope` |
+
+Also produced in this reopening, owned by parallel agents, referenced not duplicated: **R1** (product-
+integration disclosure), **R3** (`signatureRef` self-declared-signature enforcement), **R6** (critical-
+value coverage boundary), **R7** (UCUM asserted-in-prose-only), **R8** (workflow precondition
+dependency), **R11** (unreferenced `datStatus`) — see the hazard-matrix and clinical-contract findings
+landed alongside this section.
+
+### Reconciliation note (P4-V1 remediation, added post-landing)
+
+**R-numbers** (`R1`, `R2(b)`, `R3`, `R4`, `R5`, `R6`, `R7`, `R8`, `R9`, `R10`, `R11`, `R12`) are
+**reviewer-item labels** — the ordinal names this gate's four reopened specialty lenses assigned their
+own findings during the P4-V1 review pass, used only within this register and the phase-4 completion
+note. **`PAC-P4T2-*`** are the **canonical finding IDs** carried in the machine-readable
+`docs/safety/hazard-control-matrix.json` (source of truth) and mirrored in
+`docs/safety/hazard-control-matrix.md`. They are not two separate finding sets: every `PAC-P4T2-*` ID
+below is the repo-side landing of an R-number this register already tracked; a reviewer should read
+them as one finding under two labels, not as newly discovered defects. Verified directly against the
+matrix JSON (not merely the summary that motivated this task) on 2026-07-19:
+
+| Canonical ID | Row (`hazardId`) | Field | Severity | Owner role | R-number |
+|---|---|---|---|---|---|
+| `PAC-P4T2-001` | `DM-EQUITY-009` | `finding` | high | `equity-and-family-governance-owner` | pre-existing (not a P4-V1 R-item) |
+| `PAC-P4T2-002` | `DM-WORKFLOW-010` | `finding` | high | `pediatric-safety-owner` | R8 (framing) |
+| `PAC-P4T2-003` | `DM-LAB-005` | `productIntegration.finding` | critical | `local-laboratory-director` | R1 |
+| `PAC-P4T2-004` | `DM-RESULT-007` | `productIntegration.finding` | critical | `clinical-informatics-and-privacy-owner` | R1 |
+| `PAC-P4T2-005` | `DM-FHIR-008` | `productIntegration.finding` | critical | `clinical-informatics-and-privacy-owner` | R1 |
+| `PAC-P4T2-006` | `DM-HEME-002` | `coverageFinding` | critical | `pediatric-safety-owner` | R2(b) |
+
+All six IDs, rows, fields, severities, and owner roles matched the task's supplied table exactly
+against the live JSON — no correction was needed to that table.
+
+**R2(b) ↔ PAC-P4T2-006 split, stated plainly:** `PAC-P4T2-006` is the repo-side technical finding — it
+records, with rule-tracing and a live-engine regression test, that `DM-HEME-002`'s bound control
+(`HEM-003`) covers only the fixture's own missingness/abstention branch and that the aplastic-crisis
+branch (hemolysis markers positive + `reticulocytes.response: "low"`) reaches no rule unless
+`history.knownChronicHemolyticDisease` and `history.recentViral` are both already true. **R2(b) above**
+is the owner-held clinical half of the *same* hazard: whether the engine should gain a
+history-independent safety net for that branch is a clinical-content decision (threshold, alert
+severity, false-positive risk) that this repository task does not have the authority to make. Closing
+`PAC-P4T2-006` therefore requires the signed clinical-content decision R2(b) describes — the finding is
+one hazard, disclosed once at the technical layer (`PAC-P4T2-006`, `blockedOnTask`) and once at the
+governance layer (R2(b), `Owner role` / `Blocks`), not two independent problems.
+
+**R1 ↔ `PAC-P4T2-003`/`004`/`005`:** R1 (product-integration disclosure, listed above as referenced-not-
+duplicated) is the same finding as these three IDs: `scripts/lib/local-applicability.mjs`'s
+`evaluateReferenceIntervalApplicability`/`evaluateTerminologyApplicability` have zero production
+callers, and `schemas/patient-input.schema.json` — the only input surface the shipped app accepts — has
+no specimen/analyzer/method/unitCode or FHIR/terminology-observation property, so `DM-LAB-005`,
+`DM-RESULT-007`, and `DM-FHIR-008`'s `control_bound` status does not protect the deployed product today.
+Landed as the `productIntegration.status: repository_only_not_reachable_by_deployed_app` re-label plus
+the three `productIntegration.finding` entries in `docs/safety/hazard-control-matrix.json`, narrated in
+`docs/safety/hazard-control-matrix.md` §1a.
+
+**Repo-side landing locations for R3/R6/R7/R8/R10/R11** (so a reader can find each without re-deriving
+it):
+
+- **R3** (`signatureRef` self-declared-signature enforcement) — `docs/clinical/schemas/v3-protocol-
+  result.schema.json`, `v3OwnerDecision.signatureRef` if/then/else (`signatureState: "bound"` now
+  requires a non-null `attachmentRef`; any other state requires it null). Propagates by `$ref` into
+  `docs/clinical/schemas/v4-v5-safety-human-factors-result.schema.json`'s `v4OwnerDecision`/
+  `v5OwnerDecision.signatureRef`. Narrated in `docs/clinical/v3-diagnostic-accuracy-contract.md` and
+  `docs/clinical/v4-v5-safety-human-factors-contract.md`; regression-tested in
+  `tests/clinical-contract-schemas.test.mjs`.
+- **R6** (`DM-LAB-005` coverage boundary against the P3 critical-value lane) — no P4 dangerous-miss
+  fixture exercises any `BLOCKER.CRITICAL_VALUE_*` code; that mechanism is real but tested only in the
+  P3 lane (`tests/local-applicability.test.mjs` + `tests/fixtures/local-profile/negative-cases.json`).
+  Landed as an explicit cross-reference in `DM-LAB-005`'s `controlBinding.rationale` in
+  `docs/safety/hazard-control-matrix.json`, narrated in `docs/safety/hazard-control-matrix.md` §1c.
+- **R7** (UCUM asserted-in-prose-only) — **RESOLVED; the earlier "no repo-side landing location was
+  found" flag above was a search miss, corrected here.** CONFIRMED, branch (a), fixed by prose
+  correction. The overclaim lived in JSON Schema `description` fields —
+  `schemas/terminology-profile.schema.json:314` and `schemas/reference-range.schema.json:443`/`448`
+  (the latter previously asserted "Free-text units are not accepted," which was **false** against the
+  actual unconstrained-string type) — not in the markdown docs the prior repo-side search covered,
+  which is why that search returned a false negative. `docs/validation-regulatory.md:42`'s hazard
+  table also overclaimed "strict schema/UCUM, reject ambiguous units" as an existing Primary control;
+  corrected to describe the actual mechanism (exact-string-equality, fail-closed).
+  `docs/clinical/local-profile-charter-contract.md` §2.7 **C13** (pre-existing, landed in the P0-P3
+  squash commit `e69d307`, predating this reopening) was already accurate and remains the canonical
+  owner-held-gap record; items 15/15a cross-reference it. Verified against
+  `scripts/lib/local-applicability.mjs` (lines 906-944, 1480-1487): only exact-string unit equality is
+  enforced (`analyteUnit !== requestUnit`, `observation.unitCode !== mapping.unitCode`); no UCUM-syntax
+  validation exists anywhere in the repo. No document now claims unit-code validation the code does not
+  perform.
+
+  **Correcting this register's own earlier claim:** the prior search-miss entry stated that a grep of
+  `local-profile-charter-contract.md` found zero UCUM matches. That was incorrect — C13 was present in
+  that file the whole time; the earlier pass searched it and still missed the match, a search error,
+  not an absent record.
+
+  **Process finding (orchestration, not implementation):** R7 was **missed in the first remediation
+  dispatch** — it was listed for cross-reference in the register but never assigned as a fix to any
+  agent — and was caught only by the cross-lane finding-ID reconciliation step that produced the
+  "Repo-side landing locations" section above. This is a phase-owner orchestration error: R7 should
+  have been dispatched alongside R3/R6/R8/R10/R11 in the same remediation pass and was not. It is
+  recorded plainly, and not attributed to any subagent, because the same reconciliation step is the
+  mechanism that would catch a recurrence of this class of error.
+- **R8** (`DM-WORKFLOW-010` precondition dependency, not a sibling-scope gap) — landed as the new,
+  required `finding.preconditionForHazardIds` array field (populated with all nine other hazard IDs on
+  `DM-WORKFLOW-010`'s `finding`, empty elsewhere) plus updated `finding.description` framing in
+  `docs/safety/hazard-control-matrix.json`, narrated in `docs/safety/hazard-control-matrix.md` §1d.
+- **R10** (scenario-level `candidateBinding` inert for terminology-kind hazards) — **no repo-side fix
+  landed, and none is needed.** This register's own R10 entry above already dispositions it as
+  "note only... nothing to fix"; confirmed no `candidateBinding`-related change appears in the current
+  `git diff` for any schema or matrix file. Recorded here only so the absence isn't mistaken for a
+  missed cross-link.
+- **R11** (`DM-HEME-002`'s unreferenced `labs.datStatus`) — **no field was added or changed**, matching
+  this register's own R12-style "note only" framing. Landed as prose acknowledgment in
+  `docs/safety/hazard-control-matrix.md` §1e ("No field was added or changed for this item").
+
+**R2(b) blocked-release-state cross-check (task step 4):** `docs/safety/hazard-control-matrix.json`
+row `DM-HEME-002.blockedReleaseStates` = `["credentialed_review_complete", "clinical_validation_complete",
+"certified_for_defined_scope", "released", "activated"]`, `controlBinding.status: "control_bound"` —
+i.e. one of the eight *implemented* hazards, not one of the two `no_control_exists` hazards. Per
+`docs/safety/hazard-control-matrix.md` §4, only the two unimplemented hazards additionally block
+`repository_ready`, `readiness_audit_complete`, and `qualifying_runtime_pilot`. This matches R2(b)'s
+`Blocks` line above (same five states; explicit "does not block `repository_ready`,
+`readiness_audit_complete`, or `qualifying_runtime_pilot`") exactly. **No discrepancy found** — the two
+records agree.
+
+### R2(b) [CRITICAL, hematology] — owner-held clinical decision: aplastic-crisis signature has no engine control
+
+**Location:** `tests/fixtures/dangerous-miss/SYNTHETIC-DM-HEME-002.json` (hazard `DM-HEME-002`,
+`hazardFamily: hemolysis_blood_loss_or_marrow_production_mismatch`); rule identifiers `HEM-001`/
+`HEM-002`/`HEM-003` and `PARVO-001` in `modules/anemia/rules.json`; the corresponding fixture-scope
+note in `.claude/progress/arc-clinical-council-adoption-v1/phase-4-completion.md` §"Deviations & Risks"
+item 6 ("DM-HEME-002 covers only the missingness branch of its hazard family").
+
+**What is true (verified 2026-07-19):** The shipped `DM-HEME-002` fixture exercises
+`reticulocytes.response: "unknown"` — a conflicting/incomplete-evidence branch, correctly resolved to
+abstention (HEM-003, `supported`, never `meets-defined-pattern`/`strongly-supported`). It does **not**
+exercise `reticulocytes.response: "low"` combined with two-or-more positive hemolysis markers (high
+indirect bilirubin / high LDH / low haptoglobin) — the aplastic-crisis signature associated with
+parvovirus B19 infection superimposed on hereditary spherocytosis or sickle cell disease. `PARVO-001`,
+`knownChronicHemolyticDisease`, and `recentViral` all appear in `modules/anemia/rules.json`, confirming
+a rule path exists, but by the fixture's own account (progress-file item 6) that path is reached only
+when `history.knownChronicHemolyticDisease` **and** `history.recentViral` are both already true in the
+input. A first presentation of hemolytic disease, or a returning patient whose history was not
+recaptured this encounter, has neither flag set and this branch does not fire.
+
+**What is NOT known:** Whether the product should carry a history-independent safety net for this
+specific lab-pattern (biochemical hemolysis markers positive + low retic response, irrespective of
+`history.*`) is a clinical-content decision — what threshold, what alert severity, whether it
+differentiates from other marrow-suppression causes, and whether it risks false-positive alert fatigue
+in a pediatric population where transient reticulocytopenia has many causes. No finding here proposes
+an answer.
+
+**What authenticated evidence would satisfy it:** A signed clinical-content decision from the owner
+role below, either (a) approving a specific history-independent rule/alert design with defined
+threshold and severity, entered through the normal rules/candidates authoring path and re-verified by
+`DM-HEME-002` or a sibling fixture, or (b) an explicit, signed decision that the current
+history-gated design is clinically acceptable as scoped, with rationale.
+
+**Owner role:** `pediatric-safety-owner` + credentialed pediatric-hematology reviewer. Not an
+individual.
+
+**Blocks:** `credentialed_review_complete`, `clinical_validation_complete`, `certified_for_defined_scope`,
+`released`, `activated`. Does not block `repository_ready`, `readiness_audit_complete`, or
+`qualifying_runtime_pilot` — those states describe implemented/executed repository behavior, not
+clinical sufficiency, and the current fixture's own branch executes and passes correctly.
+
+### R4 [HIGH, general pediatrics] — candidate hazard family DM-HISTORY-011 (catalog-scope gap, not a P4 authoring defect)
+
+**Location:** all ten fixtures under `tests/fixtures/dangerous-miss/SYNTHETIC-DM-*.json`
+(`patientInput.history` verified `{}` in every fixture that carries a `patientInput` block:
+`DM-AGE-003`, `DM-CBC-001`, `DM-HEME-002`, `DM-IRON-006`, `DM-URGENT-004`); `historyNames` array in
+`src/app.js` (33 named fields solicited by the product form, more than the "~18" cited when this
+finding was assigned — line 55 onward); `rules.json` gates on many of them. Ages present across the
+set: 2, 30, 48, 60, 96 months (verified) — no fixture patient exceeds 96 months (8 years).
+
+**What is true:** No fixture exercises comorbidity, nutrition, growth, bleeding/menstrual, or social
+context as the variable that changes expected engine behavior. No fixture patient is old enough for
+`menstruating`/`heavyMenstrualBleeding` interplay to be exercised (all `menstruating: false`, none
+above 96 months). This is catalog-scope carryover: the ten-family `DM-*` hazard catalog these fixtures
+implement predates P4 (it originates in the earlier readiness-audit/validation-plan work) and never
+named a comorbidity/history-context family. P4 authored one fixture per named family exactly as scoped
+by AC P4.1 ("one fixture per family"); it did not omit a family the catalog already named.
+
+**What is NOT known:** Whether a comorbidity/nutrition/growth/bleeding/social-context hazard family
+belongs in the catalog at all, and if so its exact scope, name, and expected-behavior contract, is a
+clinical-content authoring decision this plan reserves to credentialed reviewers plus the safety owner.
+It is not inferable from the existing nine other families by pattern-matching.
+
+**What authenticated evidence would satisfy it:** A signed decision from the owner role below either
+defining the `DM-HISTORY-011` (or renamed) hazard family with its expected-behavior contract — through
+the same authoring path P4-T1 used for the other ten — or explicitly declining to add it with recorded
+clinical rationale.
+
+**Owner role:** `pediatric-safety-owner` + credentialed general-pediatrics/hematology reviewers. Not an
+individual.
+
+**Blocks:** `credentialed_review_complete`, `clinical_validation_complete`, `certified_for_defined_scope`,
+`released`, `activated` — as an unnamed gap in hazard coverage, it cannot be certified against by any
+process that treats the ten-family catalog as complete. Does not block `repository_ready` or
+`qualifying_runtime_pilot`, which certify only against the catalog as currently scoped.
+
+### R5 [MED-HIGH, hematology] — gestational/corrected age unrepresentable on the product input surface
+
+**Location:** `schemas/patient-input.schema.json` — `patient` object (verified: `ageMonths` is the
+only age field; no `gestationalAge*`/`correctedAge*` property exists anywhere in the file, and
+`additionalProperties: false` on `patient` means one cannot be added without a schema change).
+Contrast: `schemas/reference-range.schema.json` — `$defs/gestationalAge` (lines ~319-345) and
+`schemas/terminology-profile.schema.json` both carry gestational-age fields, but these are the
+**local-profile/reference-range applicability schema**, not the CDSS request/product-input schema that
+`src/app.js` and `assessPediatricAnemia` consume.
+
+**Verification of the P3-scope claim (performed as instructed, read-only):** Confirmed as stated.
+`.claude/progress/arc-clinical-council-adoption-v1/phase-3-progress.md` records "gestational age" as
+fixed during P3-V1 remediation ("Two gaps were clinical rather than mechanical... Both fixed, along
+with gestational age"). The actual fix landed in `schemas/reference-range.schema.json`'s
+`gestationalAge` object (`correctedAgeRequired`, `gestationalAgeWeeksLow/High`, fail-closed
+`CORRECTED_AGE_REQUIRED_NOT_SUPPLIED` per `docs/clinical/local-profile-charter-contract.md` §2.2b) —
+this governs whether a **local reference-interval profile** applies, not whether the **product's own
+patient-input surface** can capture or act on a patient's gestational age at birth. Searching the
+codebase for `gestationalAgeAtBirthWeeks` (the request-side field named in the charter, table row 14f)
+finds it only inside `tests/fixtures/local-profile/*.json` and
+`tests/fixtures/dangerous-miss/SYNTHETIC-DM-LAB-005.json` — test fixtures, not a schema that
+`src/app.js` reads from or writes to. **P3 closed the local-profile side of this gap and did not
+address the product-input side**; the phase-3-progress.md prose does not distinguish the two, which is
+why this reads as fully addressed on a shallow read.
+
+**What is true:** A former 30-weeker at 8 months chronological age is, on the current product input
+surface, indistinguishable from a full-term 8-month-old born at 40 weeks. `ageMonths` is chronological
+only. There is no field through which corrected age, or gestational age at birth, reaches
+`assessPediatricAnemia`. If a local reference-range profile with `correctedAgeRequired: true` is ever
+wired to this product's evaluation path, it would have no request-side field to read — the more
+dangerous of the two failure modes (silent collapse to the wrong interval, not visible abstention),
+per this finding's own framing.
+
+**What is NOT known:** Whether closing this gap belongs in the product input schema (add a
+`gestationalAgeWeeks`/`correctedAgeMonths` field plus an abstention floor when required-but-missing) or
+should instead be an explicit, machine-checkable out-of-scope declaration in the release-dependency
+manifest (i.e., the product declares itself inapplicable to any patient requiring corrected-age
+evaluation until a future phase). This is a scope decision, not a mechanical fix — deciding it
+unilaterally is exactly what this finding is recorded to prevent.
+
+**What authenticated evidence would satisfy it:** A signed scope decision from the owner role below
+selecting one of the two options above (or a third option this register does not anticipate), with
+rationale, entered through the normal plan-owner path.
+
+**Owner role:** `clinical-informatics-owner` (schema/scope-surface decision) + `pediatric-safety-owner`
+(clinical-risk sign-off on whichever option is chosen). Not an individual.
+
+**Blocks:** `credentialed_review_complete`, `clinical_validation_complete`, `certified_for_defined_scope`,
+`released`, `activated`.
+
+### R9 — proposed OQ-7 (informatics; coordinator to confirm into plan §7)
+
+No CDS Hooks (or equivalent) integration crosswalk exists anywhere in this repository or ARC for the
+internal alert/severity taxonomy (`dangerous-miss-scenario.schema.json` `expectedBehavior`/
+`expectedAlerts`, `docs/safety/hazard-control-matrix.json` severities), and it is not tracked as an
+open question in plan §7 — the exact gap OQ-1..OQ-6 exist to force explicit before it is assumed away
+by implication. This finding **proposes** the row below for the coordinator to confirm into the plan;
+this document does not edit §7 itself.
+
+**Proposed OQ-7 row (verbatim, matching §7's table format):**
+
+| ID | Question | Phase | Disposition |
+|---|---|---|---|
+| OQ-7 | Which CDS Hooks (or equivalent) integration crosswalk maps the internal alert/severity taxonomy (dangerous-miss scenario `expectedBehavior`/`expectedAlerts`, hazard-control-matrix severities) to a consuming EHR's decision-support hook contract? | P4/P6 | Owner-held; no crosswalk exists and none is scheduled by any phase of this plan. Blocks any live-EHR/CDS-Hooks integration claim; does not block repository-only or synthetic-pilot release states. |
+
+**Owner role:** program owner to confirm the row into the plan; `clinical-governance-owner` for the
+underlying crosswalk decision if and when integration is pursued.
+
+### R10 [LOW, informatics] — scenario-level candidateBinding is present-but-inert for terminology-kind hazards
+
+**Location:** `schemas/dangerous-miss-scenario.schema.json` `$defs/candidateBinding` (top-level,
+required on every scenario) records `knowledgeBaseVersion`/`rulesFileDigest`/`candidatesFileDigest`/
+`moduleFileDigest` — bindings for the anemia rules engine. For hazard kind
+`local-applicability-terminology` (`input.kind: terminologyObservation`), the load-bearing binding is
+instead the **observation-level** `candidateDigest` inside the assertion object defined in
+`schemas/reference-range.schema.json` (lines ~117-134) and `schemas/terminology-profile.schema.json`
+(line ~99-103) — a separate `sha256:` digest scoped to the specific candidate an observation asserts
+against. The scenario-level `candidateBinding` is schema-required and populated on every fixture, but
+for terminology-kind scenarios it binds the wrong artifact family to answer "does this scenario apply
+to the current candidate" — that question is answered by the observation-level digest instead.
+
+**Note only** — not a defect requiring a fix decision at this time; no fixture currently relies on the
+scenario-level binding to gate a terminology-kind hazard's applicability, so nothing is silently
+wrong today. Recorded so a future author does not assume scenario-level `candidateBinding` is the
+terminology-hazard integrity check.
+
+**Owner role:** none required to close. If a future change makes scenario-level `candidateBinding`
+load-bearing for terminology hazards, `pediatric-safety-owner` should confirm the digest scope is
+correct before it ships.
+
+**Blocks:** nothing at present.
+
+### R12 [ABSTENTION, general pediatrics] — DM-AGE-003 severity tier is a clinical-judgment call, not a mechanical one
+
+**Location:** `tests/fixtures/dangerous-miss/SYNTHETIC-DM-AGE-003.json` — `expectedBehavior` expects
+`SCOPE-001`/`SCOPE-003` at severity `important` for a 2-month-old age-scope exit
+(`patient.ageMonths: 2`, below the product's stated 6-24-month scope floor).
+
+**What is true:** The fixture is internally consistent and passes its own test as authored — `important`
+is what the current expected-behavior contract asserts and what the engine returns.
+
+**What is NOT known:** Whether `important` is the clinically correct severity tier for this scope-exit
+case, versus `urgent` (or another tier), is credentialed clinical judgment about how forcefully a
+2-month-old outside the tool's validated age range should be flagged to a clinician. This register
+takes no position and changes nothing about the fixture.
+
+**Owner role:** `pediatric-safety-owner` + credentialed general-pediatrics reviewer. Not an individual.
+
+**Blocks:** `credentialed_review_complete`, `clinical_validation_complete`, `certified_for_defined_scope`
+— pending confirmation that the authored severity is clinically correct, not merely internally
+consistent. Does not block `repository_ready` or `qualifying_runtime_pilot`.

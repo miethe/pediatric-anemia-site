@@ -311,7 +311,7 @@
         "unitCode": {
           "type": ["string", "null"],
           "minLength": 1,
-          "description": "UCUM unit the mapped local code reports in. Must be non-null on an asserted mapping: a null unit was previously truthiness-guarded on both sides and became a silent wildcard. An observation whose unit differs fails closed; it is never converted."
+          "description": "Unit the mapped local code reports in, intended to be a UCUM code (docs/clinical/local-profile-charter-contract.md item 15/15a) but held here as an opaque, unvalidated string — nothing checks that the value is valid UCUM syntax (owner-held gap, see local-profile-charter-contract.md §2.7 C13). What IS enforced: it must be non-null on an asserted mapping (a null unit was previously truthiness-guarded on both sides and became a silent wildcard), and an observation whose unit string differs fails closed on exact-string mismatch; it is never parsed, normalized, or converted."
         },
         "specimenCode": { "type": ["string", "null"], "minLength": 1, "description": "Must be non-null on an asserted mapping, for the same reason as unitCode." },
         "mappingVersion": {

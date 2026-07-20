@@ -39,7 +39,7 @@ These are regulatory implementation recommendations, not clinical evidence.
 | Hazard | Potential harm | Primary controls | Verification |
 |---|---|---|---|
 | Wrong age/sex/local range | Missed or false anemia classification | local-range precedence, age guardrails, visible source | boundary tests; analyzer-site validation |
-| Unit mismatch | Grossly incorrect rule result | strict schema/UCUM, reject ambiguous units | unit fuzzing and integration tests |
+| Unit mismatch | Grossly incorrect rule result | unit-string equality, fail-closed (mismatched or missing units block rather than silently convert); UCUM-syntax validation is NOT implemented — unit codes are opaque strings (owner-held gap, `docs/clinical/local-profile-charter-contract.md` §2.7 C13) | integration tests on the mismatch/missing-unit blocker paths |
 | Ferritin falsely reassuring in inflammation | Missed iron deficiency | CRP confounding note, sTfR/iron pattern | inflammatory IDA cases |
 | HbA2 falsely reassuring during ID | Missed beta-thalassemia trait | explicit caution | combined ID/thal cases |
 | Normal G6PD during acute event | Missed enzymopathy | timing/transfusion caution | acute hemolysis cases |

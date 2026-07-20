@@ -140,7 +140,7 @@ can silently drift apart:
 | Execution receipt | `v4ExecutionReceipt` | An execution happened, against which frozen protocol, with two **structural** (`const: true`) attestations: `clinicianFacingDisplayAttestation.noDisplayDuringSilentMode` (silent mode is defined by the absence of clinician-facing display — a receipt claiming display occurred cannot validly describe a silent-mode run) and `dataBoundaryAttestation` (no patient data entered this repository, ARC, or AOS — same shape and same guard as V3's `dataAccessAttestation`). | That the execution was safe, complete, or clinically meaningful. |
 | Result | `v4ResultRecord` | Per-event-class counts (would-be alerts, missing-data events, override-simulation events, downtime events, handoff events, duplicate-suppressed events, urgent-dominance events), a direct `missingnessNeverClearedObserved` surface of the roadmap go-criterion, and subgroup/equity results with `analysisClass`. `resultStatus` tops out at `executed_unadjudicated`. | That any observed behavior has been judged acceptable — that is adjudication's and the owner decision's job, never this record's. |
 | Adjudication | `v4AdjudicationRecord` | A reference-only pointer to the OQ-6 authoritative system's adjudication status. | An ARC- or repository-synthesized conclusion — `adjudicationStatus: adjudicated` must reflect what the referenced external system reports (plan hard constraint 2). |
-| Owner decision | `v4OwnerDecision` | The single field (`decision`) that can authorize this candidate's V4 gate, reusing the P2 authenticated-attachment placeholder verbatim via `$ref` into V3's schema. | Anything — `bound` is unreachable by construction until P2 lands, exactly as in V3. |
+| Owner decision | `v4OwnerDecision` | The single field (`decision`) that can authorize this candidate's V4 gate, reusing the P2 authenticated-attachment placeholder verbatim via `$ref` into V3's `signatureRef`, including its P4-V1 R3 if/then/else narrowing (see V3 contract section 2.6) — `signatureState: "bound"` requires a non-null `attachmentRef`. | Anything a bound signature's authenticity requires — that narrowing proves only internal coherence, never verification, until P2's real attachment verifier lands. |
 | Release state | `v4DependencyChain` | Composition record naming every link plus `silentModeValidationComplete`, pinned `const: false` for the same reason as V3's `clinicalValidationComplete`: no evaluator exists in this repository. | — |
 
 ### 2.3 V5 — summative human-factors
@@ -151,7 +151,7 @@ can silently drift apart:
 | Execution receipt | `v5ExecutionReceipt` | A study session happened, against which frozen protocol, with the same shared `dataBoundaryAttestation` V4 uses — no real patient record entered this repository, ARC, or AOS, and none was used as study stimulus material. | That the session was well-run or produced meaningful data. |
 | Result | `v5ResultRecord` | Per-measure point estimates with mandatory intervals and `n` (same uncertainty requirement as V3's `endpointResults`), plus subgroup/equity results with `analysisClass`. Tops out at `executed_unadjudicated`. | That any measured value clears its threshold — thresholds live in the protocol and pass/fail is the owner decision's job. |
 | Adjudication | `v5AdjudicationRecord` | Reference-only pointer into the OQ-6 system, identical shape to V4's. | A synthesized conclusion. |
-| Owner decision | `v5OwnerDecision` | Same `decision`/P2-placeholder shape as V4's. | Anything until P2 lands. |
+| Owner decision | `v5OwnerDecision` | Same `decision`/P2-placeholder shape as V4's, including the same R3-narrowed `signatureRef`. | Anything a bound signature's authenticity requires, until P2 lands. |
 | Release state | `v5DependencyChain` | `summativeHumanFactorsComplete`, pinned `const: false`. | — |
 
 ---
@@ -168,9 +168,17 @@ Exactly the same three reasons the V3 contract's section 3 gives, restated for V
    prevent.
 3. **The P3 and V3 lessons apply here in advance.** The P3-V1 review found a self-declared
    `signatureState: "bound"` string accepted as a real signature, and the same class of hole — an
-   assertion trusted because it was typed, not because it was verified — is exactly what section 4's
-   structural (`const`) guards below close mechanically for V4/V5, verified empirically rather than
-   claimed (see the delivery report).
+   assertion trusted because it was typed, not because it was verified — is what section 4's
+   structural (`const`) guards below close mechanically for the OTHER self-declared/illustrative
+   fields in these two schemas (`isIllustrative`, `clinicianFacingDisplayAttestation`, `studyType`),
+   verified empirically rather than claimed (see the delivery report). **Correction (P4-V1 remediation
+   R3, gate reopened):** this paragraph previously implied the signature instance itself was closed
+   here too. It was NOT — `v4/v5OwnerDecision.signatureRef` (reused from V3 via `$ref`) carried no
+   if/then behind its own "unreachable by construction" claim until the R3 fix, at which point the
+   V3 schema (and by `$ref` these two) gained the narrowing described in the table rows above and in
+   section 4's new row below. The P3-class hole was reintroduced, not avoided, and closing it here
+   required no schema change of this file's own — only the upstream V3 fix this file already
+   `$ref`s.
 
 Building the evaluator, and deciding whether these schemas relocate into `schemas/`, remain future
 work — most naturally P4-V1, a P5 pilot task, or a combined V3/V4/V5 release-dependency manifest once
@@ -201,6 +209,9 @@ attack document and confirmed rejected).
 | A `superseded` protocol must name its successor, for either gate (P4-V1 fix-cycle-2) | `v4SilentModeProtocol` / `v5HumanFactorsProtocol` each gained a second, independent `if/then` (an `allOf` entry): `protocolStatus: superseded` requires `supersededBy` non-null. Applied for parity with the V3 sibling this cycle fixed — see section 9. | Covered by a permanent regression test per gate. |
 | Executions and results can never self-adjudicate or self-approve, for either gate | Adjudication and owner-decision are separate record types from result, same as V3. | Structural by type separation; no field on either result record can express an approval. |
 | A result whose upstream digest doesn't match is void, not silently accepted | `executionReceiptStatus` includes `protocol_digest_mismatch`; `resultStatus` includes `void_protocol_mismatch` / `void_receipt_missing`, for both V4 and V5. | Same enum-closure argument as V3; no additional value exists to accept a mismatch silently. |
+| A self-declared `bound` owner-decision signature cannot carry a null attachment ref, for either gate (P4-V1 remediation R3, gate reopened) | `v4OwnerDecision.signatureRef` / `v5OwnerDecision.signatureRef` (`$ref` into V3's `signatureRef`, which gained the if/then/else): `signatureState: "bound"` requires non-null `attachmentRef`; any other state requires it null. This does NOT verify the ref is genuine — no code-level backstop equivalent to `evaluateActivationGate` exists for owner decisions. | Covered by a permanent regression test per gate in `tests/clinical-contract-schemas.test.mjs` (propagation cases), proving both directions and proving the fix, made in V3's schema file alone, actually reaches V4/V5 through the bundled cross-file `$ref`. |
+| `blockedReleaseStates` must actually name `clinical_validation_complete`, for either gate (P4-V1 remediation R3 sweep) | `v4DependencyChain.blockedReleaseStates` / `v5DependencyChain.blockedReleaseStates` gained `contains: { "const": "clinical_validation_complete" }` (unconditional — the corresponding completion flag is permanently `const: false` in both schemas). Previously `minItems: 1` plus an unconstrained enum allowed e.g. `["activated"]` alone to validate. | Covered by a permanent regression test per gate. |
+| `measureResults[]`/`silentModeEventResults[]` cannot report a point estimate with no interval (P4-V1 remediation R3 sweep) | `v5ResultRecord.measureResults[].if/then`: a non-null numeric `pointEstimate` requires a non-null `interval` object, mirroring V3's identical fix to `v3ResultRecord.endpointResults`. (`v4ResultRecord.silentModeEventResults` has no pointEstimate/interval pair and was not in scope for this specific finding.) | Covered by a permanent regression test. |
 
 ---
 

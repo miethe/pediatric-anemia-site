@@ -286,6 +286,37 @@ test('DM-HEME-002 NEGATIVE: a known high reticulocyte response resolves the patt
   assert.ok(result.provenance.matchedRuleIds.includes('HEM-001'));
 });
 
+// --- P4-V1 R2 [CRITICAL, hematology]: aplastic-crisis presentation (hemolysis markers + retic LOW, ---
+// --- not unknown) falls through every differential and alert rule and yields a SILENT empty result --
+//
+// This is a permanent regression test for the finding recorded at
+// docs/safety/hazard-control-matrix.json rows[DM-HEME-002].coverageFinding (PAC-P4T2-006). It does
+// NOT fix the underlying gap — whether the engine should gain a history-independent aplastic-crisis
+// safety net is clinical content authority this repository task does not hold (see the finding's
+// blockedOnTask). This test only proves the gap is real, reproducible, and will not silently regress
+// further (e.g. a future refactor accidentally making it WORSE without anyone noticing), and it fails
+// loudly the day a rule closes it (someone must then also update PAC-P4T2-006 to closed).
+
+test('DM-HEME-002 REGRESSION (P4-V1 R2): hemolysis markers positive WITH retic.response "low" (not "unknown") — the aplastic-crisis signature — produces a SILENT empty differential and no alert when history is uncaptured', () => {
+  const patientInput = {
+    patient: { ageMonths: 24, sexAtBirth: 'female' },
+    cbc: { hemoglobin: 8 },
+    reticulocytes: { response: 'low' },
+    labs: { indirectBilirubinStatus: 'high', ldhStatus: 'high', haptoglobinStatus: 'low' },
+    symptoms: {},
+    history: {},
+    exam: {},
+    smear: [],
+  };
+  const errors = validate(patientInputSchema, patientInput);
+  assert.deepEqual(errors, [], 'reproduction input must itself be schema-valid patient input');
+
+  const result = assess(patientInput);
+  assert.equal(result.classification.anemiaStatus, 'present', 'reproduction sanity check: anemia must register as present for this to be a meaningful miss, not a moot case');
+  assert.equal(result.rankedDifferential.length, 0, 'a hemolysis-marker-positive, retic-low pattern (aplastic-crisis signature) currently yields NO ranked candidate — this is the dangerous miss, not a fix');
+  assert.equal(result.alerts.filter((alert) => alert.severity === 'urgent' || alert.severity === 'emergency').length, 0, 'no urgent/emergency alert fires either — the miss is completely silent, not merely under-ranked');
+});
+
 // === DM-AGE-003: young-infant scope exit must not silently use a fallback interval ===
 
 test('DM-AGE-003: an age below the 6-month built-in floor abstains rather than using a fallback interval', () => {

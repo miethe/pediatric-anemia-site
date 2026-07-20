@@ -189,7 +189,19 @@ tracked as satisfied or not), or `withdrawn`. Defaults to `not_executed_owner_he
 P2 authenticated-attachment placeholder already established in the P3 local-profile charter contract
 (`attachmentContract: "p2-authenticated-attachment"`, `signatureState:
 "not_executed_owner_held" | "bound"`) — signature verification is P2's primitive, not this
-contract's, so `bound` is unreachable here by construction until P2 lands.
+contract's.
+
+**P4-V1 remediation R3 (HIGH, gate reopened — the P3 defect verbatim, reintroduced here):** the
+paragraph above previously ended "`bound` is unreachable here by construction until P2 lands," with
+no schema narrowing behind that claim — a fabricated `signatureState: "bound"` plus an invented,
+never-verified `attachmentRef` validated cleanly, on the one field that directly authorizes
+`clinical_validation_complete`. `signatureRef` now mirrors the P3 local-profile charter's own
+`attestation` if/then/else (schemas/terminology-profile.schema.json:160-162): `bound` REQUIRES a
+non-null, non-empty `attachmentRef`; `not_executed_owner_held` REQUIRES it to be null. This proves
+only internal coherence, not authenticity — there is still no code-level backstop for
+`v3OwnerDecision.signatureRef` equivalent to `evaluateActivationGate` (that function is scoped to
+local-profile records only). Verifying a real attachment remains entirely P2's unbuilt primitive; a
+schema-valid `bound` decision here is proof of nothing beyond internal consistency.
 
 **P4-V1 fix-cycle-2 (new finding, MEDIUM):** the `go`/`conditional_go` gate previously narrowed only
 `decidedBy.recordId`, leaving `decidedAt` nullable — the most consequential decision in the entire
@@ -205,9 +217,12 @@ is no schema-valid document in this repository where that field is `true`, becau
 exists here that can walk the full digest-consistent chain end to end (protocol frozen -> execution
 digest matches -> result matches receipt -> adjudicated by the referenced authority -> owner decision
 `go`/`conditional_go` with every condition satisfied). `blockedReleaseStates` must always list
-`clinical_validation_complete` while that field is `false`, and per the plan's own state taxonomy
-(section 2) and gate policy (section 5), blocking `clinical_validation_complete` transitively blocks
-`certified_for_defined_scope`, `released`, and `activated` for any scope declaring V3 applicable.
+`clinical_validation_complete` while that field is `false` — as of the P4-V1 R3 sweep this is a
+schema-enforced `contains` constraint, not prose alone (previously `minItems: 1` plus an unconstrained
+enum allowed e.g. `["activated"]` to validate without naming `clinical_validation_complete` at all) —
+and per the plan's own state taxonomy (section 2) and gate policy (section 5), blocking
+`clinical_validation_complete` transitively blocks `certified_for_defined_scope`, `released`, and
+`activated` for any scope declaring V3 applicable.
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "kind": "HazardControlReleaseDependencyManifest",
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "planReference": "docs/project_plans/implementation_plans/enhancements/arc-clinical-council-adoption-v1.md#P4-T2",
   "acReference": "AC P4.1",
   "catalogSource": "agentic-research/runs/2026-07-19-pediatric-expansion-arc-readiness/validation_plan.md#Synthetic-dangerous-miss-scenarios",
@@ -69,7 +69,18 @@
         "released",
         "activated"
       ],
-      "finding": null
+      "finding": null,
+      "productIntegration": {
+        "status": "reachable_in_shipped_product",
+        "productCallers": [
+          "src/app.js (imports and invokes assessPediatricAnemia from src/engine.js on form submit)",
+          "src/engine.js assessPediatricAnemia -> runRules (src/ruleEngine.js) evaluates modules/anemia/rules.json"
+        ],
+        "inputSurfaceSupported": true,
+        "evidence": "Verified live: index.html loads <script type=\"module\" src=\"./src/app.js\">, the shipped entrypoint. src/app.js imports { assessPediatricAnemia } from './engine.js' and calls it directly on form submission. src/engine.js's assessPediatricAnemia calls module.deriveFacts (modules/anemia/facts.anemia.js) then runRules (src/ruleEngine.js) against modules/anemia/rules.json. Every input field this hazard's control rule(s) key off is a declared property of schemas/patient-input.schema.json (patient, cbc, reticulocytes, symptoms, history, exam, labs, smear) -- the same schema the shipped form submits against. grep -rn \"local-applicability\" --include=*.js --include=*.mjs . (excluding node_modules) confirms src/app.js and src/engine.js do NOT import scripts/lib/local-applicability.mjs, so this row's reachability rests on the engine path only.",
+        "finding": null
+      },
+      "coverageFinding": null
     },
     {
       "hazardId": "DM-HEME-002",
@@ -130,7 +141,26 @@
         "released",
         "activated"
       ],
-      "finding": null
+      "finding": null,
+      "productIntegration": {
+        "status": "reachable_in_shipped_product",
+        "productCallers": [
+          "src/app.js (imports and invokes assessPediatricAnemia from src/engine.js on form submit)",
+          "src/engine.js assessPediatricAnemia -> runRules (src/ruleEngine.js) evaluates modules/anemia/rules.json"
+        ],
+        "inputSurfaceSupported": true,
+        "evidence": "Verified live: index.html loads <script type=\"module\" src=\"./src/app.js\">, the shipped entrypoint. src/app.js imports { assessPediatricAnemia } from './engine.js' and calls it directly on form submission. src/engine.js's assessPediatricAnemia calls module.deriveFacts (modules/anemia/facts.anemia.js) then runRules (src/ruleEngine.js) against modules/anemia/rules.json. Every input field this hazard's control rule(s) key off is a declared property of schemas/patient-input.schema.json (patient, cbc, reticulocytes, symptoms, history, exam, labs, smear) -- the same schema the shipped form submits against. grep -rn \"local-applicability\" --include=*.js --include=*.mjs . (excluding node_modules) confirms src/app.js and src/engine.js do NOT import scripts/lib/local-applicability.mjs, so this row's reachability rests on the engine path only.",
+        "finding": null
+      },
+      "coverageFinding": {
+        "findingId": "PAC-P4T2-006",
+        "description": "DM-HEME-002 (hemolysis_blood_loss_or_marrow_production_mismatch) is control_bound (HEM-003), and HEM-003 does correctly cover the fixture's own scenario (hemolysis markers present, reticulocyte response unknown -> abstain). But the MORE DANGEROUS branch of this hazard family has NO engine control: hemolysis markers positive (>=2 of high indirect bilirubin / high LDH / low haptoglobin) WITH reticulocytes.response == 'low' -- the signature of an aplastic crisis (e.g. parvovirus B19 on hereditary spherocytosis or sickle cell disease) -- yields NO candidate and NO alert unless history.knownChronicHemolyticDisease AND history.recentViral are BOTH already true (only PARVO-001 reaches it). Verified by direct rule tracing against modules/anemia/rules.json and reproduced against the live engine (tests/dangerous-miss-scenarios.test.mjs, 'DM-HEME-002 REGRESSION (P4-V1 R2)'): a first presentation, or a known patient whose history was not captured this encounter, falls through every differential rule (HEM-001/HEM-002 need retic.high; AIHA-001 needs DAT+; HS-001 needs spherocytes+DAT-; MARROW-001 needs multilineage cytopenia; MARROW-003/TEC-001 need organomegaly-absence+recent-viral) and every alert rule (ALERT-004/006/009 need findings this pattern lacks), producing a silent empty differential indistinguishable from routine incomplete workup -- false reassurance by omission on the most time-critical miss in this hazard family. Whether the engine should gain a history-independent safety net for this branch is clinical content authority this repository task does not hold; it is recorded here as an explicit, owned, blocking finding rather than fixed by inventing a rule.",
+        "blockedOnTask": "arc-clinical-council-adoption-v1 P4-T4 (clinical content decision: whether a history-independent aplastic-crisis safety net rule should be added to modules/anemia/rules.json) -- owner-held; NOT authored by this repository task. See plan section 4 P4-T4 and pediatric_clinical_review.json seat PCR-HEME.",
+        "severity": "critical",
+        "ownerRole": "pediatric-safety-owner",
+        "status": "open",
+        "preconditionForHazardIds": []
+      }
     },
     {
       "hazardId": "DM-AGE-003",
@@ -192,7 +222,18 @@
         "released",
         "activated"
       ],
-      "finding": null
+      "finding": null,
+      "productIntegration": {
+        "status": "reachable_in_shipped_product",
+        "productCallers": [
+          "src/app.js (imports and invokes assessPediatricAnemia from src/engine.js on form submit)",
+          "src/engine.js assessPediatricAnemia -> runRules (src/ruleEngine.js) evaluates modules/anemia/rules.json"
+        ],
+        "inputSurfaceSupported": true,
+        "evidence": "Verified live: index.html loads <script type=\"module\" src=\"./src/app.js\">, the shipped entrypoint. src/app.js imports { assessPediatricAnemia } from './engine.js' and calls it directly on form submission. src/engine.js's assessPediatricAnemia calls module.deriveFacts (modules/anemia/facts.anemia.js) then runRules (src/ruleEngine.js) against modules/anemia/rules.json. Every input field this hazard's control rule(s) key off is a declared property of schemas/patient-input.schema.json (patient, cbc, reticulocytes, symptoms, history, exam, labs, smear) -- the same schema the shipped form submits against. grep -rn \"local-applicability\" --include=*.js --include=*.mjs . (excluding node_modules) confirms src/app.js and src/engine.js do NOT import scripts/lib/local-applicability.mjs, so this row's reachability rests on the engine path only.",
+        "finding": null
+      },
+      "coverageFinding": null
     },
     {
       "hazardId": "DM-URGENT-004",
@@ -254,7 +295,18 @@
         "released",
         "activated"
       ],
-      "finding": null
+      "finding": null,
+      "productIntegration": {
+        "status": "reachable_in_shipped_product",
+        "productCallers": [
+          "src/app.js (imports and invokes assessPediatricAnemia from src/engine.js on form submit)",
+          "src/engine.js assessPediatricAnemia -> runRules (src/ruleEngine.js) evaluates modules/anemia/rules.json"
+        ],
+        "inputSurfaceSupported": true,
+        "evidence": "Verified live: index.html loads <script type=\"module\" src=\"./src/app.js\">, the shipped entrypoint. src/app.js imports { assessPediatricAnemia } from './engine.js' and calls it directly on form submission. src/engine.js's assessPediatricAnemia calls module.deriveFacts (modules/anemia/facts.anemia.js) then runRules (src/ruleEngine.js) against modules/anemia/rules.json. Every input field this hazard's control rule(s) key off is a declared property of schemas/patient-input.schema.json (patient, cbc, reticulocytes, symptoms, history, exam, labs, smear) -- the same schema the shipped form submits against. grep -rn \"local-applicability\" --include=*.js --include=*.mjs . (excluding node_modules) confirms src/app.js and src/engine.js do NOT import scripts/lib/local-applicability.mjs, so this row's reachability rests on the engine path only.",
+        "finding": null
+      },
+      "coverageFinding": null
     },
     {
       "hazardId": "DM-IRON-006",
@@ -316,7 +368,18 @@
         "released",
         "activated"
       ],
-      "finding": null
+      "finding": null,
+      "productIntegration": {
+        "status": "reachable_in_shipped_product",
+        "productCallers": [
+          "src/app.js (imports and invokes assessPediatricAnemia from src/engine.js on form submit)",
+          "src/engine.js assessPediatricAnemia -> runRules (src/ruleEngine.js) evaluates modules/anemia/rules.json"
+        ],
+        "inputSurfaceSupported": true,
+        "evidence": "Verified live: index.html loads <script type=\"module\" src=\"./src/app.js\">, the shipped entrypoint. src/app.js imports { assessPediatricAnemia } from './engine.js' and calls it directly on form submission. src/engine.js's assessPediatricAnemia calls module.deriveFacts (modules/anemia/facts.anemia.js) then runRules (src/ruleEngine.js) against modules/anemia/rules.json. Every input field this hazard's control rule(s) key off is a declared property of schemas/patient-input.schema.json (patient, cbc, reticulocytes, symptoms, history, exam, labs, smear) -- the same schema the shipped form submits against. grep -rn \"local-applicability\" --include=*.js --include=*.mjs . (excluding node_modules) confirms src/app.js and src/engine.js do NOT import scripts/lib/local-applicability.mjs, so this row's reachability rests on the engine path only.",
+        "finding": null
+      },
+      "coverageFinding": null
     },
     {
       "hazardId": "DM-LAB-005",
@@ -336,7 +399,7 @@
           "METHOD_MISMATCH",
           "UNIT_MISMATCH"
         ],
-        "rationale": "Fail-closed applicability blocker code(s) SPECIMEN_MISMATCH, ANALYZER_MISMATCH, METHOD_MISMATCH, UNIT_MISMATCH in scripts/lib/local-applicability.mjs force a fail_closed decision for DM-LAB-005 against the SYNTHETIC SYNTHETIC-reference-interval-profile profile, verified by tests/dangerous-miss-scenarios.test.mjs."
+        "rationale": "Fail-closed applicability blocker code(s) SPECIMEN_MISMATCH, ANALYZER_MISMATCH, METHOD_MISMATCH, UNIT_MISMATCH in scripts/lib/local-applicability.mjs force a fail_closed decision for DM-LAB-005 against the SYNTHETIC SYNTHETIC-reference-interval-profile profile, verified by tests/dangerous-miss-scenarios.test.mjs. COVERAGE BOUNDARY (P4-V1 R6): these four controlIds cover specimen/analyzer/method/unit identity mismatch only. The panic-threshold/critical-value sub-dimension of unit_specimen_method_or_range_mismatch (BLOCKER.CRITICAL_VALUE_MISSING, CRITICAL_VALUE_CONFLICT, CRITICAL_VALUE_NOT_ASSERTED, CRITICAL_VALUE_UNIT_MISMATCH, CRITICAL_VALUE_BOUNDS_MISSING in scripts/lib/local-applicability.mjs) is a separate, independently tested mechanism exercised in the P3 lane (tests/local-applicability.test.mjs + tests/fixtures/local-profile/negative-cases.json), not by this row or by any P4 dangerous-miss scenario. No P4 scenario in this matrix exercises a CRITICAL_VALUE_* path; this row's own coverage claim is scoped to the four controlIds listed above only."
       },
       "versionBinding": {
         "bindingType": "local_profile",
@@ -379,7 +442,23 @@
         "released",
         "activated"
       ],
-      "finding": null
+      "finding": null,
+      "productIntegration": {
+        "status": "repository_only_not_reachable_by_deployed_app",
+        "productCallers": [],
+        "inputSurfaceSupported": false,
+        "evidence": "Verified live 2026-07-20 (P4-V1 R1, independently found by lab-medicine and general-pediatrics): grep -rn \"local-applicability\" --include=*.js --include=*.mjs . (excluding node_modules) returns exactly three matches, all under tests/ (tests/dangerous-miss-scenarios.test.mjs, tests/local-applicability.test.mjs, tests/synthetic-profile-containment.test.mjs) -- ZERO production callers. src/app.js imports only './engine.js', './evidence.js', './algorithmExplorer.js'; src/engine.js imports only './ruleEngine.js' and './modules/registry.js'. Neither imports scripts/lib/local-applicability.mjs. Read in full: schemas/patient-input.schema.json -- the only input surface the shipped app (src/app.js via index.html) accepts -- declares exactly these top-level properties: patient, cbc, reticulocytes, symptoms, history, exam, labs, smear. It has NO specimen, analyzer, method, or unitCode property at any level, so the gated dimensions this control's blocker codes evaluate cannot be entered through the shipped input surface even in principle. control_bound here describes an isolated, repository-tested function only.",
+        "finding": {
+          "findingId": "PAC-P4T2-003",
+          "description": "DM-LAB-005 is labelled controlBinding.status: control_bound (SPECIMEN_MISMATCH, ANALYZER_MISMATCH, METHOD_MISMATCH, UNIT_MISMATCH) and evidence.technicalExecution.status: repository_test_executed, which is true of scripts/lib/local-applicability.mjs's evaluateReferenceIntervalApplicability in isolation but materially misleading about the shipped product: that function has zero production callers (src/app.js and src/engine.js do not import it) and schemas/patient-input.schema.json (the only input surface the shipped app accepts) has no specimen/analyzer/method/unitCode property, so this gate cannot fire against a real submission today. A reader of this matrix could otherwise conclude the shipped tool protects against specimen/analyzer/method/unit mismatch; it does not.",
+          "blockedOnTask": "arc-clinical-council-adoption-v1 P4-V1 R1 (product-integration remediation) -- wiring scripts/lib/local-applicability.mjs into src/app.js/src/engine.js and extending schemas/patient-input.schema.json with specimen/analyzer/method/unitCode input surface is product/engineering work explicitly OUT OF SCOPE for this repair task (disclosure only, do not wire the evaluator into the product as part of P4).",
+          "severity": "critical",
+          "ownerRole": "local-laboratory-director",
+          "status": "open",
+          "preconditionForHazardIds": []
+        }
+      },
+      "coverageFinding": null
     },
     {
       "hazardId": "DM-RESULT-007",
@@ -440,7 +519,23 @@
         "released",
         "activated"
       ],
-      "finding": null
+      "finding": null,
+      "productIntegration": {
+        "status": "repository_only_not_reachable_by_deployed_app",
+        "productCallers": [],
+        "inputSurfaceSupported": false,
+        "evidence": "Verified live 2026-07-20 (P4-V1 R1, independently found by lab-medicine and general-pediatrics): grep -rn \"local-applicability\" --include=*.js --include=*.mjs . (excluding node_modules) returns exactly three matches, all under tests/ (tests/dangerous-miss-scenarios.test.mjs, tests/local-applicability.test.mjs, tests/synthetic-profile-containment.test.mjs) -- ZERO production callers. src/app.js imports only './engine.js', './evidence.js', './algorithmExplorer.js'; src/engine.js imports only './ruleEngine.js' and './modules/registry.js'. Neither imports scripts/lib/local-applicability.mjs. Read in full: schemas/patient-input.schema.json -- the only input surface the shipped app (src/app.js via index.html) accepts -- declares exactly these top-level properties: patient, cbc, reticulocytes, symptoms, history, exam, labs, smear. It has NO specimen, analyzer, method, or unitCode property at any level, so the gated dimensions this control's blocker codes evaluate cannot be entered through the shipped input surface even in principle. control_bound here describes an isolated, repository-tested function only.",
+        "finding": {
+          "findingId": "PAC-P4T2-004",
+          "description": "DM-RESULT-007 is labelled controlBinding.status: control_bound (CORRECTION_UNRESOLVED, SUPERSEDING_REFERENCE_UNRESOLVABLE) and evidence.technicalExecution.status: repository_test_executed, which is true of scripts/lib/local-applicability.mjs's evaluateTerminologyApplicability in isolation but materially misleading about the shipped product: that function has zero production callers (src/app.js and src/engine.js do not import it), and the FHIR/terminology-observation input shape this control evaluates (statusLineage etc.) is not part of schemas/patient-input.schema.json, the only input surface the shipped app accepts. A reader of this matrix could otherwise conclude the shipped tool protects against a dropped correction; it does not.",
+          "blockedOnTask": "arc-clinical-council-adoption-v1 P4-V1 R1 (product-integration remediation) -- wiring scripts/lib/local-applicability.mjs into src/app.js/src/engine.js and extending schemas/patient-input.schema.json with specimen/analyzer/method/unitCode input surface is product/engineering work explicitly OUT OF SCOPE for this repair task (disclosure only, do not wire the evaluator into the product as part of P4).",
+          "severity": "critical",
+          "ownerRole": "clinical-informatics-and-privacy-owner",
+          "status": "open",
+          "preconditionForHazardIds": []
+        }
+      },
+      "coverageFinding": null
     },
     {
       "hazardId": "DM-FHIR-008",
@@ -500,7 +595,23 @@
         "released",
         "activated"
       ],
-      "finding": null
+      "finding": null,
+      "productIntegration": {
+        "status": "repository_only_not_reachable_by_deployed_app",
+        "productCallers": [],
+        "inputSurfaceSupported": false,
+        "evidence": "Verified live 2026-07-20 (P4-V1 R1, independently found by lab-medicine and general-pediatrics): grep -rn \"local-applicability\" --include=*.js --include=*.mjs . (excluding node_modules) returns exactly three matches, all under tests/ (tests/dangerous-miss-scenarios.test.mjs, tests/local-applicability.test.mjs, tests/synthetic-profile-containment.test.mjs) -- ZERO production callers. src/app.js imports only './engine.js', './evidence.js', './algorithmExplorer.js'; src/engine.js imports only './ruleEngine.js' and './modules/registry.js'. Neither imports scripts/lib/local-applicability.mjs. Read in full: schemas/patient-input.schema.json -- the only input surface the shipped app (src/app.js via index.html) accepts -- declares exactly these top-level properties: patient, cbc, reticulocytes, symptoms, history, exam, labs, smear. It has NO specimen, analyzer, method, or unitCode property at any level, so the gated dimensions this control's blocker codes evaluate cannot be entered through the shipped input surface even in principle. control_bound here describes an isolated, repository-tested function only.",
+        "finding": {
+          "findingId": "PAC-P4T2-005",
+          "description": "DM-FHIR-008 is labelled controlBinding.status: control_bound (UNMAPPED_LOCAL_CODE) and evidence.technicalExecution.status: repository_test_executed, which is true of scripts/lib/local-applicability.mjs's evaluateTerminologyApplicability in isolation but materially misleading about the shipped product: that function has zero production callers (src/app.js and src/engine.js do not import it), and the terminology-observation input shape this control evaluates is not part of schemas/patient-input.schema.json, the only input surface the shipped app accepts. A reader of this matrix could otherwise conclude the shipped tool protects against an unmapped local code; it does not.",
+          "blockedOnTask": "arc-clinical-council-adoption-v1 P4-V1 R1 (product-integration remediation) -- wiring scripts/lib/local-applicability.mjs into src/app.js/src/engine.js and extending schemas/patient-input.schema.json with specimen/analyzer/method/unitCode input surface is product/engineering work explicitly OUT OF SCOPE for this repair task (disclosure only, do not wire the evaluator into the product as part of P4).",
+          "severity": "critical",
+          "ownerRole": "clinical-informatics-and-privacy-owner",
+          "status": "open",
+          "preconditionForHazardIds": []
+        }
+      },
+      "coverageFinding": null
     },
     {
       "hazardId": "DM-EQUITY-009",
@@ -563,8 +674,17 @@
         "blockedOnTask": "arc-clinical-council-adoption-v1 P4-T4 (V5 human-factors/equity protocol-through-adjudication contracts) \u2014 see plan \u00a74 P4 and OQ per pediatric_clinical_review.json seat PCR-EQUITY finding ARC-PEF-001",
         "severity": "high",
         "ownerRole": "equity-and-family-governance-owner",
-        "status": "open"
-      }
+        "status": "open",
+        "preconditionForHazardIds": []
+      },
+      "productIntegration": {
+        "status": "not_applicable_no_control_exists",
+        "productCallers": [],
+        "inputSurfaceSupported": false,
+        "evidence": "No control exists in this repository to evaluate reachability for; see the row's top-level finding PAC-P4T2-001 for the coverage gap itself.",
+        "finding": null
+      },
+      "coverageFinding": null
     },
     {
       "hazardId": "DM-WORKFLOW-010",
@@ -624,12 +744,31 @@
       ],
       "finding": {
         "findingId": "PAC-P4T2-002",
-        "description": "DM-WORKFLOW-010 (alert_override_downtime_handoff_or_recovery_failure) has no executable control in this repository: there is no alert-lifecycle/work-queue state machine (acknowledgment, escalation, override, downtime replay, handoff, recovery) anywhere in the codebase. assessPediatricAnemia (src/engine.js) is a stateless pure function evaluated once per run; the per-run rule-audit completeness property tests/dangerous-miss-scenarios.test.mjs verifies is a real but narrow adjacent signal, explicitly NOT alert-lifecycle coverage.",
+        "description": "DM-WORKFLOW-010 (alert_override_downtime_handoff_or_recovery_failure) has no executable control in this repository: there is no alert-lifecycle/work-queue state machine (acknowledgment, escalation, override, downtime replay, handoff, recovery) anywhere in the codebase. assessPediatricAnemia (src/engine.js) is a stateless pure function evaluated once per run; the per-run rule-audit completeness property tests/dangerous-miss-scenarios.test.mjs verifies is a real but narrow adjacent signal, explicitly NOT alert-lifecycle coverage. PRECONDITION DEPENDENCY (P4-V1 R8), not a sibling gap of equal scope: generating a correct alert (the other nine hazards' controlBinding) is not the same as an alert being seen, acknowledged, escalated, or acted upon. Every one of the other nine hazards' clinical effect depends on this missing lifecycle layer existing; without it, an alert that fires correctly can still be silently lost to an unattended queue, a downtime gap, or a handoff, with the same dangerous-miss outcome as if the alert had never fired. Do not read the ten-row 'eight control_bound, two no_control_exists' or 'two of ten carried, not closed' summary as '80% mitigated' -- this finding's preconditionForHazardIds lists every other hazard in this matrix precisely to make that misreading structurally checkable, not just a prose caveat.",
         "blockedOnTask": "arc-clinical-council-adoption-v1 P4-T4 (V4 silent-mode / V5 alert-lifecycle, override, downtime, handoff, recovery contracts) \u2014 see plan \u00a74 P4-T4 and pediatric_clinical_review.json seat PCR-SAFETY finding PEDS-HF-001",
         "severity": "high",
         "ownerRole": "pediatric-safety-owner",
-        "status": "open"
-      }
+        "status": "open",
+        "preconditionForHazardIds": [
+          "DM-AGE-003",
+          "DM-CBC-001",
+          "DM-EQUITY-009",
+          "DM-FHIR-008",
+          "DM-HEME-002",
+          "DM-IRON-006",
+          "DM-LAB-005",
+          "DM-RESULT-007",
+          "DM-URGENT-004"
+        ]
+      },
+      "productIntegration": {
+        "status": "not_applicable_no_control_exists",
+        "productCallers": [],
+        "inputSurfaceSupported": false,
+        "evidence": "No control exists in this repository to evaluate reachability for; see the row's top-level finding PAC-P4T2-002 for the coverage gap itself.",
+        "finding": null
+      },
+      "coverageFinding": null
     }
   ],
   "releaseDependencyManifest": {

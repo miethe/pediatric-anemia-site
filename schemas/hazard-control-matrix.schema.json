@@ -235,23 +235,79 @@
     "finding": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["findingId", "description", "blockedOnTask", "severity", "ownerRole", "status"],
+      "required": ["findingId", "description", "blockedOnTask", "severity", "ownerRole", "status", "preconditionForHazardIds"],
       "properties": {
         "findingId": { "type": "string", "pattern": "^PAC-P4T2-[0-9]{3}$" },
         "description": { "type": "string", "minLength": 1 },
         "blockedOnTask": { "type": "string", "minLength": 1 },
         "severity": { "type": "string", "enum": ["critical", "high", "medium"] },
         "ownerRole": { "$ref": "#/$defs/releaseGateOwnerRole" },
-        "status": { "type": "string", "enum": ["open"] }
+        "status": { "type": "string", "enum": ["open"] },
+        "preconditionForHazardIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^DM-[A-Z]+-[0-9]{3}$" },
+          "description": "Other hazardId(s) whose own mitigation has no practical effect until this finding is resolved (P4-V1 R8: a PRECONDITION DEPENDENCY, not a sibling-scope gap of equal weight). Empty unless this finding is a precondition for other hazards' alerts/controls actually being seen or acted upon."
+        }
       },
-      "description": "An unowned hazard is a FINDING, not a blank cell. Required (non-null) exactly when controlBinding.status is no_control_exists."
+      "description": "An unowned hazard, a repository-only control, or a partial-coverage gap is a FINDING, not a blank cell. This single shape is reused verbatim by the top-level per-row `finding`, `productIntegration.finding`, and `coverageFinding` so the NO UNOWNED GAP / R1 / R2 disclosures share one structural contract."
+    },
+    "productIntegration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "productCallers", "inputSurfaceSupported", "evidence", "finding"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["reachable_in_shipped_product", "repository_only_not_reachable_by_deployed_app", "not_applicable_no_control_exists"],
+          "description": "Whether this row's control is actually reachable through the shipped product's real input surface, or is repository-only (tested in isolation but no production caller wires it in), or not applicable because no control exists at all (mirrors controlBinding.status)."
+        },
+        "productCallers": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Live-verified production call sites (file + call path) that reach this row's control. Non-empty only when status is reachable_in_shipped_product."
+        },
+        "inputSurfaceSupported": {
+          "type": "boolean",
+          "description": "Whether the shipped app's real input surface (schemas/patient-input.schema.json) can carry the field(s) this row's control keys off."
+        },
+        "evidence": { "type": "string", "minLength": 1 },
+        "finding": { "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/finding" }] }
+      },
+      "if": { "properties": { "status": { "const": "reachable_in_shipped_product" } } },
+      "then": {
+        "properties": {
+          "productCallers": { "minItems": 1 },
+          "inputSurfaceSupported": { "const": true },
+          "finding": { "const": null }
+        }
+      },
+      "else": {
+        "if": { "properties": { "status": { "const": "repository_only_not_reachable_by_deployed_app" } } },
+        "then": {
+          "properties": {
+            "productCallers": { "maxItems": 0 },
+            "inputSurfaceSupported": { "const": false },
+            "finding": { "$ref": "#/$defs/finding" }
+          }
+        },
+        "else": {
+          "properties": {
+            "productCallers": { "maxItems": 0 },
+            "inputSurfaceSupported": { "const": false },
+            "finding": { "const": null }
+          }
+        }
+      },
+      "description": "P4-V1 R1 [CRITICAL, found independently by lab-medicine and general-pediatrics]: control_bound must never again be silently readable as 'protects the deployed app'. Required on every row, structurally enforced like NO UNOWNED GAP: reachable_in_shipped_product forces >=1 productCaller, inputSurfaceSupported true, and no finding; repository_only_not_reachable_by_deployed_app forces zero productCallers, inputSurfaceSupported false, and a non-null owned blocking finding; not_applicable_no_control_exists (the two no_control_exists hazards) forces zero productCallers, inputSurfaceSupported false, and no finding (the gap is already owned by the row's top-level finding)."
     },
     "hazardControlBinding": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "hazardId", "hazardFamily", "scenarioRef", "controlBinding", "versionBinding",
-        "requiredTests", "evidence", "ownerBinding", "blockedReleaseStates", "finding"
+        "requiredTests", "evidence", "ownerBinding", "blockedReleaseStates", "finding",
+        "productIntegration", "coverageFinding"
       ],
       "properties": {
         "hazardId": { "type": "string", "pattern": "^DM-[A-Z]+-[0-9]{3}$" },
@@ -268,7 +324,12 @@
           "uniqueItems": true,
           "items": { "$ref": "#/$defs/releaseState" }
         },
-        "finding": { "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/finding" }] }
+        "finding": { "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/finding" }] },
+        "productIntegration": { "$ref": "#/$defs/productIntegration" },
+        "coverageFinding": {
+          "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/finding" }],
+          "description": "P4-V1 R2 [CRITICAL, hematology]: schema-shape-identical to `finding`. Discloses a control_bound row whose engine control covers its own fixture's scenario but leaves a more dangerous branch of the same hazard family uncovered. REQUIRED (non-null when the gap is disclosed, null otherwise) — never omitted, so a future partial-coverage gap cannot be left silently undeclared."
+        }
       },
       "if": { "properties": { "controlBinding": { "properties": { "status": { "const": "no_control_exists" } } } } },
       "then": {
