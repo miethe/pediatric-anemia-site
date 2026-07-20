@@ -300,7 +300,14 @@ Findings register: `.claude/findings/arc-clinical-council-adoption-v1-findings.m
 
 ## Validation after remediation (independently executed, not self-reported)
 
-| Command | Result |
+> **Superseded counts — see "Final validation" at the end of this note.** The figures in this table
+> are from the remediation round, *before* the C1-C6 cleanup pass added tests. The final post-cleanup
+> numbers are **416/416**. This stale table was itself caught by the final validator as an instance of
+> the same defect class C1 fixed — a correct change at one layer not propagated to the summary a
+> reader might stop at. Left in place with this pointer rather than silently overwritten, because the
+> remediation-round numbers are the evidence for the remediation-round claims.
+
+| Command | Result (remediation round) |
 |---|---|
 | PED `npm run check` | **407 tests, 407 pass, 0 fail**; `coverage:rules` **91/91** |
 | ARC `uv run pytest` | **1076 passed, 6 skipped**, 0 failed |
@@ -310,12 +317,109 @@ Findings register: `.claude/findings/arc-clinical-council-adoption-v1-findings.m
 | Reconstruction integrity | diff `7a73cb6`→`347384c` on the rebuilt schema is **purely additive**; no prior guard dropped or weakened |
 | Cross-document consistency | all six `PAC-P4T2-*` IDs, rows, severities, owners agree between register and matrix |
 
+## Re-gate and final cleanup
+
+The three failing lenses were re-run against `d615235` and the remediation held up under independent
+re-derivation: **laboratory-medicine PASS**, **hematology PASS**, **general-pediatrics
+PASS-WITH-FINDINGS**. Both the lab and gen-peds lenses recomputed "five of ten" themselves from the
+matrix and the actual import graph; the hematology lens hand-traced the R2 regression test against
+`rules.json` and confirmed it is a real characterization test that will fail the day the gap closes,
+with no rule authored to paper it over.
+
+### Full gate history — eight lens verdicts across three runs
+
+| Lens | Verdict history |
+|---|---|
+| `diagnostic-accuracy-methods-reviewer` | FAIL → FAIL → **PASS** |
+| `pediatric-safety-human-factors-reviewer` | PASS → (re-run on current tree) **PASS** |
+| `pediatric-equity-patient-family-reviewer` | **PASS** |
+| `task-completion-validator` | FAIL → **PASS** |
+| `pediatric-laboratory-medicine-reviewer` | FAIL → **PASS** |
+| `pediatric-hematology-reviewer` | FAIL → **PASS** |
+| `general-pediatrics-reviewer` | FAIL → **PASS-WITH-FINDINGS** |
+| `clinical-informatics-interoperability-reviewer` | **PASS**, one HIGH finding (R3) |
+
+Four of the eight lenses failed at least once. Every one of those failures was found by a lens that
+would not have run at all under the original three-reviewer reading of the gate.
+
+### Final cleanup pass (C1-C6)
+
+| Item | Disposition |
+|---|---|
+| **C1** | The 8-vs-5 correction was enforced at row level but not aggregate level — the same defect one layer up. Fixed on all three skimmable surfaces: `hazardsReachableInShippedProduct: 5` and `hazardsRepositoryOnly: 3` added as **required** schema fields with a live recount test derived from `row.productIntegration.status`; a `productIntegration` column added to the §2 table; §1 rewritten to lead with the reachability-adjusted number. Counts independently re-derived, not taken on trust. |
+| **C2** | The general-pediatrics **F4** finding had been silently dropped — absent from the register entirely. Recovered as **R13** (medium; `pediatric-safety-owner` + credentialed general-pediatrics reviewer). Substance verified against both fixtures: DM-URGENT-004 and DM-CBC-001 test alert-dominance for an **already-overt** emergency, not detection of an initially non-obvious presentation. No fixture authored. |
+| **C3** | `PAC-P4T2-006` cited `P4-T4`, which the plan defines as the V4/V5 human-factors contract — the wrong work item for a rule-content decision. Re-pointed to an explicit unscheduled/owner-held marker. Four superficially similar pointers were checked and found correct. |
+| **C4** | "Five instances" was correct; the test comment's "three" was an arithmetic slip. Precisely: **five distinct description-vs-enforcement instances, comprising eight field-level fixes** (two instances are mirrored across the v3/v4/v5 schema shape). |
+| **C5** | The stale "P4-V1 has not yet run" rationale corrected. |
+| **C6** | New `tests/findings-register-coverage.test.mjs` (8 subtests) — see residual gap below. |
+
+### Two corrections made to the cleanup brief itself
+
+Both were reported rather than absorbed, which is the behaviour that matters here:
+1. **C3 stated R4 carried the same misroute — it did not.** R4 had no task pointer at all; the real
+   misroute was on `PAC-P4T2-006`/R2(b). Inventing a plausible task ID to satisfy the instruction
+   would have quietly broken the carrying discipline the gate passed on.
+2. **C5 named two stale rationales — only one was stale.** `qualifying_runtime_pilot`'s rationale is
+   scoped to "no executable engine exists," which is accurate, and was correctly left alone.
+
+### C6 residual gap — stated, not overstated
+
+The new test enforces a genuinely useful property and **fails on the next omission of two of the
+three kinds seen this cycle**:
+- **Axis 1 (sound, bidirectional):** canonical `PAC-P4T2-*` IDs derived live from the matrix JSON,
+  diffed against the register. A matrix ID missing from the register fails; a register citation with
+  no matrix counterpart fails (catches typos and phantoms).
+- **Axis 2 (register-internal only):** an `R<n>` declared in the summary table with no write-up
+  anywhere — or vice versa — fails.
+
+**It cannot catch a finding missing from every surface simultaneously — which is exactly how F4 was
+lost.** No machine-readable per-lens finding inventory exists in this repo to check against, so
+there is nothing independent to derive an expectation from. The test proves this blind spot rather
+than hiding it: a dedicated subtest simulates removing R13 from both surfaces at once and
+demonstrates it passes vacuously.
+
+**Closing it requires the lens outputs themselves** — a per-lens enumeration of raw finding IDs
+(e.g. `general-pediatrics-reviewer: [F1,F2,F3,F4] → [R4,R12,…,R13]`). I hold only F4 from the
+coordinator's message; the other lenses' internal numbering is not available to me, and authoring a
+plausible-looking inventory would reproduce the exact fabrication failure this plan exists to
+prevent. **Recorded as an open item, not closed.**
+
+## Final validation (post-cleanup, independently executed)
+
+| Command | Result |
+|---|---|
+| PED `npm run check` | **416 tests, 416 pass, 0 fail**; `coverage:rules` **91/91 (100.0%)** |
+| ARC `uv run pytest` | **1076 passed, 6 skipped**, 0 failed |
+| ARC `arc validate .` | 587 `ok:` lines, 0 errors |
+| `git diff --check` both repos | exit 0, clean |
+| Discrimination proofs | C1 live-recount and C6 axis-1 removal independently reproduced via `/tmp` copies; real files verified untouched by `sha256sum` |
+| `modules/anemia/rules.json`, `src/` | **untouched across all of P4** — verified by diff against the pre-P4 baseline *and* the uncommitted tree |
+| "Five of ten" claim | **accurate** — independently recounted from `productIntegration.status`: 5 reachable / 3 repository-only / 2 no-control |
+
+The 407→416 delta is exactly C1's aggregate recount tests plus C6's 8 register-coverage subtests.
+
+## Residual owner-held gaps at gate close
+
+Nothing below is closed by this phase, and none of it may be closed by a repository agent:
+
+- **R2(b)** — whether the engine gains a history-independent aplastic-crisis safety net (`pediatric-safety-owner` + credentialed hematology).
+- **R4 / `DM-HISTORY-011`** — whether a comorbidity/history hazard family belongs in the catalog (`pediatric-safety-owner` + credentialed general-pediatrics/hematology). Unscheduled; no plan task covers it.
+- **R5** — gestational/corrected age: add a corrected-age field with an abstention floor, or declare it machine-checkably out of scope (`clinical-informatics-owner` scope decision + `pediatric-safety-owner` sign-off).
+- **R13** — what coverage DM-URGENT-004/DM-CBC-001 represent, and whether a non-obvious-presentation fixture is required (`pediatric-safety-owner` + credentialed general-pediatrics).
+- **R12** — DM-AGE-003's severity tier for a 2-month-old scope exit.
+- **OQ-4 / OQ-6** — the full V3/V4/V5 owner-held sets (14 + 17 gaps), all `not_executed_owner_held`.
+- **C6 blind spot** — closing it needs a per-lens raw finding inventory that does not exist in this repo.
+- **PAC-P4T2-001 through -006** — two wholly unmitigated hazards, three not reachable in the shipped product, one partially covered.
+
 ## Gate status
 
-**OPEN.** The coordinator re-runs `pediatric-hematology-reviewer`,
-`pediatric-laboratory-medicine-reviewer` and `general-pediatrics-reviewer` for the verdict. I do not
-self-certify this gate, and no prior lens approval is reused across a fix cycle that touched that
-lens's domain.
+**OPEN — the coordinator performs the final verification and closes P4.** I do not self-certify this
+gate. No prior lens approval was reused across a fix cycle that touched that lens's domain.
+
+**The honest bottom line, unchanged by any of this remediation:** ten dangerous-miss scenarios were
+**authored**; none was clinically adjudicated. On the deployed application, **five of ten** families
+have a control that can actually fire. V3, V4 and V5 remain `not_executed_owner_held` and block their
+release states by construction.
 
 ## Still true, and unchanged by this remediation
 

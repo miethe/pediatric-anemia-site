@@ -164,6 +164,7 @@ top of this document's authoring instructions.
 | R9 (proposed OQ-7) | low/med | clinical-informatics-interoperability-reviewer | program owner (to confirm into plan §7); `clinical-governance-owner` for the underlying crosswalk decision | live-EHR/CDS-Hooks integration claims only; does not block repository-only or synthetic-pilot states |
 | R10 | low | clinical-informatics-interoperability-reviewer | informational — no owner action required to close; `pediatric-safety-owner` if scenario-level `candidateBinding` is later relied upon | none (note only) |
 | R12 | abstention | general-pediatrics-reviewer | `pediatric-safety-owner` + credentialed general-pediatrics reviewer | `credentialed_review_complete`, `clinical_validation_complete`, `certified_for_defined_scope` |
+| R13 (general-pediatrics F4; recovered late — see process note in its entry) | medium | general-pediatrics-reviewer | `pediatric-safety-owner` + credentialed general-pediatrics reviewer | `credentialed_review_complete`, `clinical_validation_complete`, `certified_for_defined_scope` |
 
 Also produced in this reopening, owned by parallel agents, referenced not duplicated: **R1** (product-
 integration disclosure), **R3** (`signatureRef` self-declared-signature enforcement), **R6** (critical-
@@ -355,6 +356,26 @@ clinical rationale.
 **Owner role:** `pediatric-safety-owner` + credentialed general-pediatrics/hematology reviewers. Not an
 individual.
 
+**Blocked on task:** unscheduled, owner-held. Plan §4 P4-T4 scopes only "V4 silent-mode and V5
+human-factors protocol-through-adjudication contracts, including alert lifecycle, override, downtime,
+handoff, recovery, and equity" (owner: implementation/human-factors owners) — verified 2026-07-19
+against `docs/project_plans/implementation_plans/enhancements/arc-clinical-council-adoption-v1.md`
+§4. That is V4/V5 study-protocol work, not the hazard-family/catalog-scope decision this finding
+concerns, and must not be read as covering it. No task ID in this plan defines "decide whether a new
+hazard family belongs in the catalog"; the deferred/open-question table in §7 and the owner-held list
+in §6 do not name one either. This entry therefore carries no task-ID pointer, correctly-scoped or
+otherwise — the marker above is the explicit alternative.
+
+**Routing-pointer note (added during final cleanup, this cycle):** this entry previously carried no
+task-ID pointer at all. Separately, `docs/safety/hazard-control-matrix.json`'s `DM-HEME-002` row
+(`PAC-P4T2-006`, **this register's R2(b) above, not R4**) cites `blockedOnTask` text naming P4-T4 for
+its own clinical-content decision (whether the engine needs a history-independent aplastic-crisis
+rule) — that is also mis-scoped against the same P4-T4 definition, for the same reason, and is a
+different finding on a different surface being corrected separately by the agent who owns
+`docs/safety/**`. Recorded here only so the two corrections are not conflated: R4's fix is the
+"unscheduled, owner-held" marker added above; R2(b)/`PAC-P4T2-006`'s fix is on the matrix JSON, not in
+this file.
+
 **Blocks:** `credentialed_review_complete`, `clinical_validation_complete`, `certified_for_defined_scope`,
 `released`, `activated` — as an unnamed gap in hazard coverage, it cannot be certified against by any
 process that treats the ten-family catalog as complete. Does not block `repository_ready` or
@@ -471,3 +492,56 @@ takes no position and changes nothing about the fixture.
 **Blocks:** `credentialed_review_complete`, `clinical_validation_complete`, `certified_for_defined_scope`
 — pending confirmation that the authored severity is clinically correct, not merely internally
 consistent. Does not block `repository_ready` or `qualifying_runtime_pilot`.
+
+### R13 [MEDIUM, general pediatrics] — DM-URGENT-004/DM-CBC-001 test alert-dominance for an already-overt emergency, not detection of a non-obvious presentation (general-pediatrics F4; recovered late)
+
+**Location:** `tests/fixtures/dangerous-miss/SYNTHETIC-DM-URGENT-004.json` (`hazardId: DM-URGENT-004`,
+`hazardFamily: severe_or_unstable_presentation`, `input.patientInput.symptoms.hemodynamicInstability:
+true`) and `tests/fixtures/dangerous-miss/SYNTHETIC-DM-CBC-001.json` (`hazardId: DM-CBC-001`,
+`hazardFamily: cross_lineage_cbc_abnormality`, `input.patientInput.smear: ["blasts", "teardrops"]`
+already present on input). Both fixtures declare `expectedBehavior.type: "alert_dominance"`.
+
+**What is true (verified 2026-07-19, direct read of both fixture files):** Both fixtures assert an
+emergency signal — hemodynamic instability for DM-URGENT-004, blasts already on the reported smear for
+DM-CBC-001 — as a value present in the fixture's own input at the moment it is evaluated. Both
+fixtures' `requiredSignal`/`forbiddenSignals` test only that the engine's alert ranking does not bury
+an already-overt emergency beneath ordinary differential content (DM-URGENT-004's forbidden signal:
+"...producing zero alerts"; DM-CBC-001's: "...whose top entry is an isolated single-lineage diagnosis
+... rather than marrow-failure-infiltration"). That is a real safety property — alert-dominance-over-
+ranking for a presentation that is already overt — and both fixtures test exactly that, correctly.
+
+**What is NOT known / NOT tested:** Neither of these two fixtures, nor any other fixture in the
+ten-family catalog, tests whether the engine surfaces an emergency-severity presentation when the
+initiating signal has **not yet** declared itself as a flagged input field — i.e., detection of an
+initially non-obvious presentation, where recognizing the danger would depend on the engine (or a
+reading clinician) inferring it from a subtler combination of values rather than an already-set
+instability/blasts flag. A reader who takes "dangerous miss" in these two hazard families' names to
+mean coverage of non-obvious-presentation detection will not find that coverage here; what exists is
+alert-ranking discipline once the emergency has already declared itself in the input.
+
+**What authenticated evidence would satisfy it:** A signed decision from the owner role below on
+whether a non-obvious-presentation fixture belongs in this catalog for either or both hazard families
+and, if so, what specific presentation and expected-behavior contract it should assert — through the
+same authoring path P4-T1 used for the existing ten. This register defines no subtle-presentation
+fixture, proposes no rule logic, and takes no position on what a non-obvious presentation would be;
+that is clinical-content authority it does not hold.
+
+**Owner role:** `pediatric-safety-owner` + credentialed general-pediatrics reviewer. Not an individual.
+
+**Blocks:** `credentialed_review_complete`, `clinical_validation_complete`, `certified_for_defined_scope`
+— as an unverified claim about what class of "dangerous miss" these two named hazard families cover,
+it cannot be certified against by any process that reads their names as implying non-obvious-
+presentation detection. Does not block `repository_ready` or `qualifying_runtime_pilot`, which certify
+only against what the fixtures actually assert (alert-dominance-over-ranking), not against a broader
+reading of the hazard family name.
+
+**Process finding (orchestration, not implementation):** general-pediatrics-reviewer raised this as its
+own F4 in the same P4-V1 reopening pass that produced R4 and R12 (also general-pediatrics-reviewer,
+per the Register table above) — but, unlike every other finding that lens raised, F4 was never carried
+into this register's R-numbering, never assigned to any agent as a fix, never recorded anywhere, and is
+absent from the register entirely until this entry. It surfaced only during this final cleanup pass. It
+is the **third** finding this cycle to fall out of cross-referencing discipline, after **R7** (listed
+for cross-reference but never dispatched as a fix — see the R7 process note earlier in this document)
+and the **destroyed-uncommitted-file incident** recorded in the phase-4 completion note's "Two process
+failures in this cycle, both mine" section. The routing gap that dropped F4 was the phase-owner's, not
+any subagent's, exactly as the phase owner recorded for R7 and the destroyed file.

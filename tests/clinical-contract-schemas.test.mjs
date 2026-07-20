@@ -1233,22 +1233,28 @@ test('POSITIVE (fix cycle 2): v5HumanFactorsProtocol protocolStatus "superseded"
 //
 // The reviewer additionally ordered a full re-sweep of every `description` in both clinical schemas
 // for the same defect class ("a description claims a constraint the schema does not enforce"). That
-// sweep found three further unenforced/unrepresentable claims, fixed below:
+// sweep found five further description-vs-enforcement instances of the same class, comprising eight
+// field-level fixes below (two of the five instances are each mirrored across more than one field,
+// since v3/v4/v5 reuse the same schema shape):
 //   (1) v3ResultRecord.endpointResults[].interval and v5ResultRecord.measureResults[].interval both
 //       claimed "required alongside every pointEstimate" with no if/then behind the claim -- a
-//       non-null pointEstimate could coexist with interval: null.
+//       non-null pointEstimate could coexist with interval: null. One instance, two field-level fixes
+//       (v4ResultRecord has no interval field, so there is no third mirror here).
 //   (2) v3/v4/v5DependencyChain.blockedReleaseStates claimed "must always include
 //       clinical_validation_complete" with only `minItems: 1` and an unconstrained enum behind it --
-//       an array containing only e.g. ["activated"] validated cleanly. Fixed with `contains`.
-//   (3) Three description-only overclaims were corrected rather than newly enforced, specifically to
-//       avoid inventing new owner-held schema surface (a new date/signature/timestamp field) or
-//       over-narrowing a field whose current looseness is legitimate (v3ProtocolContract.frozenAt
-//       retaining a real timestamp through protocol_deviation/superseded/expired transitions):
-//       subgroupPlan.prespecified's "and dated" clause, analysisPlan.prespecifiedBeforeUnblinding's
-//       "signed, and timestamped" clause, and v3ProtocolContract.frozenAt's "only" (biconditional)
-//       framing. These have no executable test below -- there is nothing to assert against a
-//       description string; the schema behavior around them is otherwise unchanged and already
-//       covered by fix-cycle-1/2 tests above (e.g. the freeze-gate tests still exercise frozenAt).
+//       an array containing only e.g. ["activated"] validated cleanly. Fixed with `contains`. One
+//       instance, three field-level fixes (v3, v4, and v5 each carry their own copy of the field).
+//   (3) Three further, unrelated description-only overclaims were corrected rather than newly
+//       enforced, specifically to avoid inventing new owner-held schema surface (a new
+//       date/signature/timestamp field) or over-narrowing a field whose current looseness is
+//       legitimate (v3ProtocolContract.frozenAt retaining a real timestamp through
+//       protocol_deviation/superseded/expired transitions): subgroupPlan.prespecified's "and dated"
+//       clause, analysisPlan.prespecifiedBeforeUnblinding's "signed, and timestamped" clause, and
+//       v3ProtocolContract.frozenAt's "only" (biconditional) framing. Three instances, one
+//       field-level fix each -- no mirroring. These have no executable test below -- there is
+//       nothing to assert against a description string; the schema behavior around them is
+//       otherwise unchanged and already covered by fix-cycle-1/2 tests above (e.g. the freeze-gate
+//       tests still exercise frozenAt).
 
 // --- R3 core finding: v3OwnerDecision.signatureRef bound/not-bound, both directions --------------
 

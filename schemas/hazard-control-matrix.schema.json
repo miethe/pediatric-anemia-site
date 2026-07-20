@@ -365,13 +365,26 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "totalHazards", "hazardsWithControl", "hazardsWithoutControl", "blockedStates",
+        "totalHazards", "hazardsWithControl", "hazardsWithoutControl",
+        "hazardsReachableInShippedProduct", "hazardsRepositoryOnly", "blockedStates",
         "clinicalValidationComplete", "credentialedReviewComplete"
       ],
       "properties": {
         "totalHazards": { "const": 10 },
         "hazardsWithControl": { "type": "integer", "minimum": 0, "maximum": 10 },
         "hazardsWithoutControl": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "hazardsReachableInShippedProduct": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "P4-V1 C1 [MEDIUM]: aggregate sibling to hazardsWithControl, one layer up. Count of rows whose productIntegration.status is reachable_in_shipped_product. A row can be control_bound (counted in hazardsWithControl) yet NOT reachable in the shipped product (see productIntegration) -- this field exists precisely so a reader of the aggregate alone (without opening every row) cannot re-derive the same '8 of 10 protect the product' misreading that hazardsWithControl alone invites."
+        },
+        "hazardsRepositoryOnly": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "P4-V1 C1 [MEDIUM]: count of rows whose productIntegration.status is repository_only_not_reachable_by_deployed_app -- control_bound and repository-test-executed, but not reachable through the shipped app's real input surface. hazardsReachableInShippedProduct + hazardsRepositoryOnly + count(not_applicable_no_control_exists) always equals totalHazards."
+        },
         "blockedStates": {
           "type": "array",
           "minItems": 1,

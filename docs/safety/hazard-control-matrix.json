@@ -1,6 +1,6 @@
 {
   "kind": "HazardControlReleaseDependencyManifest",
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.1.1",
   "planReference": "docs/project_plans/implementation_plans/enhancements/arc-clinical-council-adoption-v1.md#P4-T2",
   "acReference": "AC P4.1",
   "catalogSource": "agentic-research/runs/2026-07-19-pediatric-expansion-arc-readiness/validation_plan.md#Synthetic-dangerous-miss-scenarios",
@@ -155,7 +155,7 @@
       "coverageFinding": {
         "findingId": "PAC-P4T2-006",
         "description": "DM-HEME-002 (hemolysis_blood_loss_or_marrow_production_mismatch) is control_bound (HEM-003), and HEM-003 does correctly cover the fixture's own scenario (hemolysis markers present, reticulocyte response unknown -> abstain). But the MORE DANGEROUS branch of this hazard family has NO engine control: hemolysis markers positive (>=2 of high indirect bilirubin / high LDH / low haptoglobin) WITH reticulocytes.response == 'low' -- the signature of an aplastic crisis (e.g. parvovirus B19 on hereditary spherocytosis or sickle cell disease) -- yields NO candidate and NO alert unless history.knownChronicHemolyticDisease AND history.recentViral are BOTH already true (only PARVO-001 reaches it). Verified by direct rule tracing against modules/anemia/rules.json and reproduced against the live engine (tests/dangerous-miss-scenarios.test.mjs, 'DM-HEME-002 REGRESSION (P4-V1 R2)'): a first presentation, or a known patient whose history was not captured this encounter, falls through every differential rule (HEM-001/HEM-002 need retic.high; AIHA-001 needs DAT+; HS-001 needs spherocytes+DAT-; MARROW-001 needs multilineage cytopenia; MARROW-003/TEC-001 need organomegaly-absence+recent-viral) and every alert rule (ALERT-004/006/009 need findings this pattern lacks), producing a silent empty differential indistinguishable from routine incomplete workup -- false reassurance by omission on the most time-critical miss in this hazard family. Whether the engine should gain a history-independent safety net for this branch is clinical content authority this repository task does not hold; it is recorded here as an explicit, owned, blocking finding rather than fixed by inventing a rule.",
-        "blockedOnTask": "arc-clinical-council-adoption-v1 P4-T4 (clinical content decision: whether a history-independent aplastic-crisis safety net rule should be added to modules/anemia/rules.json) -- owner-held; NOT authored by this repository task. See plan section 4 P4-T4 and pediatric_clinical_review.json seat PCR-HEME.",
+        "blockedOnTask": "UNSCHEDULED, owner-held clinical-content decision -- NOT P4-T4: plan section 4 P4-T4 is 'Add V4 silent-mode and V5 human-factors protocol-through-adjudication contracts, including alert lifecycle, override, downtime, handoff, recovery, and equity' (implementation/human-factors owners) -- it does not cover this rule-content question. No task in docs/project_plans/implementation_plans/enhancements/arc-clinical-council-adoption-v1.md section 4 currently schedules whether a history-independent aplastic-crisis safety net rule should be added to modules/anemia/rules.json; that is clinical-content authority this repository does not hold and does not invent a task id for. Recorded as owner-held (pediatric-safety-owner, per pediatric_clinical_review.json seat PCR-HEME) pending the plan scheduling a task for it; NOT authored by this repository task.",
         "severity": "critical",
         "ownerRole": "pediatric-safety-owner",
         "status": "open",
@@ -775,6 +775,8 @@
     "totalHazards": 10,
     "hazardsWithControl": 8,
     "hazardsWithoutControl": 2,
+    "hazardsReachableInShippedProduct": 5,
+    "hazardsRepositoryOnly": 3,
     "blockedStates": [
       {
         "state": "repository_ready",
@@ -790,7 +792,7 @@
           "DM-EQUITY-009",
           "DM-WORKFLOW-010"
         ],
-        "rationale": "P4-V1 (the eight-lens council coordinator review of this matrix and the P4-T1 fixtures) has not yet run."
+        "rationale": "P4-V1 (the eight-lens council coordinator review of this matrix and the P4-T1 fixtures) has now run three times. Verdicts recorded so far from seven of the eight specialty lenses: methods FAIL→FAIL→PASS; safety PASS→(re-run)PASS; equity PASS; hematology FAIL→PASS; laboratory-medicine FAIL→PASS; general-pediatrics FAIL→PASS-WITH-FINDINGS; clinical-informatics PASS-with-one-HIGH-finding — plus a task-completion-validator gate FAIL→PASS. Declaring readiness_audit_complete for the program is the council coordinator's outcome to declare, not asserted by this repository on its own authority; this rationale records review history only."
       },
       {
         "state": "qualifying_runtime_pilot",

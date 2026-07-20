@@ -12,6 +12,17 @@ control cover the *whole* hazard family, or only part of it?) — and a structur
 marker on `DM-WORKFLOW-010`'s finding (§1). See `.claude/findings/` for the full council record; this
 file only carries what changed structurally and why.
 
+**P4-V1 final cleanup (this revision, 1.1.1):** closes three residual gaps left by 1.1.0 — (1) the
+8-vs-5 productIntegration fix was enforced at row level but not at the `releaseDependencyManifest`
+aggregate, the §2 table, or §1's opening sentence, so a reader who only skimmed one of those three
+surfaces could still land on "8 of 10 protect the product" (see the new `hazardsReachableInShippedProduct`
+/ `hazardsRepositoryOnly` aggregate fields, the §2 `productIntegration` column, and §1's rewritten
+opening); (2) the `readiness_audit_complete` / program-review rationale is corrected to describe P4-V1's
+actual three-run review history instead of a stale "has not yet run"; (3) `DM-HEME-002`'s
+`coverageFinding` (`PAC-P4T2-006`) no longer mis-points its `blockedOnTask` at P4-T4 (which is V4/V5
+human-factors *protocol* work, not this rule-content question) — it is now marked unscheduled and
+owner-held, without inventing a task id. No clinical content was authored or changed.
+
 **Plan:** `arc-clinical-council-adoption-v1`, task P4-T2. Acceptance criterion AC P4.1.
 **Predecessor:** P4-T1 (`schemas/dangerous-miss-scenario.schema.json`,
 `tests/fixtures/dangerous-miss/SYNTHETIC-DM-*.json`, `tests/dangerous-miss-scenarios.test.mjs`).
@@ -43,9 +54,15 @@ chain end to end, and none is added here.
 
 ## 1. NO UNOWNED GAP
 
-Eight of the ten hazards have an implemented, executable control: the anemia-assessment engine
-(`src/engine.js`) or the P3 local-applicability evaluator (`scripts/lib/local-applicability.mjs`).
-**Two do not, and this is recorded as an explicit, owned finding rather than papered over:**
+**Five of the ten hazards have a control that is both implemented and actually reachable in the
+shipped product today** (`productIntegration.status: reachable_in_shipped_product`; see §1a and the
+`hazardsReachableInShippedProduct` aggregate field). Eight of the ten have *an* implemented,
+executable control somewhere in this repository — the anemia-assessment engine (`src/engine.js`) or
+the P3 local-applicability evaluator (`scripts/lib/local-applicability.mjs`) — but three of those
+eight (`DM-LAB-005`, `DM-RESULT-007`, `DM-FHIR-008`) are repository-only and do not protect the
+shipped app; a reader who stops at "eight of ten" without continuing to §1a will overstate what is
+actually protected today. **The remaining two hazards have no control of any kind, and this is
+recorded as an explicit, owned finding rather than papered over:**
 
 | Hazard | Family | Why no control exists | Owner (release gate) | Finding |
 |---|---|---|---|---|
@@ -159,18 +176,27 @@ re-discovered as if new. No field was added or changed for this item.
 
 ## 2. The ten-row summary
 
-| Hazard | Control type | Control id(s) | Test coverage | Version binding | Reviewer role | Release-gate owner |
-|---|---|---|---|---|---|---|
-| `DM-CBC-001` | engine rule | `ALERT-004`, `ALERT-005`, `ALERT-009`, `MARROW-001/002/003` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `pediatric-safety-human-factors-reviewer` | `pediatric-safety-owner` |
-| `DM-HEME-002` | engine rule | `HEM-003` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `pediatric-hematology-reviewer` | `pediatric-safety-owner` |
-| `DM-AGE-003` | engine rule | `SCOPE-001`, `SCOPE-003` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `general-pediatrics-reviewer` | `pediatric-safety-owner` |
-| `DM-URGENT-004` | engine rule | `ALERT-001`, `ALERT-009` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `pediatric-safety-human-factors-reviewer` | `pediatric-safety-owner` |
-| `DM-IRON-006` | engine rule | `Q-MICRO-001`, `Q-MICRO-005` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `pediatric-hematology-reviewer` | `pediatric-safety-owner` |
-| `DM-LAB-005` | applicability blocker | `SPECIMEN_MISMATCH`, `ANALYZER_MISMATCH`, `METHOD_MISMATCH`, `UNIT_MISMATCH` | positive + negative | `SYNTHETIC-reference-interval-profile` | `pediatric-laboratory-medicine-reviewer` | `local-laboratory-director` |
-| `DM-RESULT-007` | applicability blocker | `CORRECTION_UNRESOLVED`, `SUPERSEDING_REFERENCE_UNRESOLVABLE` | positive + negative | `SYNTHETIC-terminology-profile` | `clinical-informatics-interoperability-reviewer` | `clinical-informatics-and-privacy-owner` |
-| `DM-FHIR-008` | applicability blocker | `UNMAPPED_LOCAL_CODE` | positive + negative | `SYNTHETIC-terminology-profile` | `clinical-informatics-interoperability-reviewer` | `clinical-informatics-and-privacy-owner` |
-| `DM-EQUITY-009` | **none** | — | honesty-guard only | none available | `pediatric-equity-patient-family-reviewer` | `equity-and-family-governance-owner` |
-| `DM-WORKFLOW-010` | **none** | — | honesty-guard only | none available | `pediatric-safety-human-factors-reviewer` | `pediatric-safety-owner` |
+The `productIntegration` column is not decorative: `control_bound` (Control type populated) means a
+control exists and is repository-test-executed, but only `reachable_in_shipped_product` means it
+actually protects the deployed app today. See §1a.
+
+| Hazard | Control type | Control id(s) | productIntegration | Test coverage | Version binding | Reviewer role | Release-gate owner |
+|---|---|---|---|---|---|---|---|
+| `DM-CBC-001` | engine rule | `ALERT-004`, `ALERT-005`, `ALERT-009`, `MARROW-001/002/003` | `reachable_in_shipped_product` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `pediatric-safety-human-factors-reviewer` | `pediatric-safety-owner` |
+| `DM-HEME-002` | engine rule | `HEM-003` | `reachable_in_shipped_product` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `pediatric-hematology-reviewer` | `pediatric-safety-owner` |
+| `DM-AGE-003` | engine rule | `SCOPE-001`, `SCOPE-003` | `reachable_in_shipped_product` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `general-pediatrics-reviewer` | `pediatric-safety-owner` |
+| `DM-URGENT-004` | engine rule | `ALERT-001`, `ALERT-009` | `reachable_in_shipped_product` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `pediatric-safety-human-factors-reviewer` | `pediatric-safety-owner` |
+| `DM-IRON-006` | engine rule | `Q-MICRO-001`, `Q-MICRO-005` | `reachable_in_shipped_product` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `pediatric-hematology-reviewer` | `pediatric-safety-owner` |
+| `DM-LAB-005` | applicability blocker | `SPECIMEN_MISMATCH`, `ANALYZER_MISMATCH`, `METHOD_MISMATCH`, `UNIT_MISMATCH` | **`repository_only_not_reachable_by_deployed_app`** | positive + negative | `SYNTHETIC-reference-interval-profile` | `pediatric-laboratory-medicine-reviewer` | `local-laboratory-director` |
+| `DM-RESULT-007` | applicability blocker | `CORRECTION_UNRESOLVED`, `SUPERSEDING_REFERENCE_UNRESOLVABLE` | **`repository_only_not_reachable_by_deployed_app`** | positive + negative | `SYNTHETIC-terminology-profile` | `clinical-informatics-interoperability-reviewer` | `clinical-informatics-and-privacy-owner` |
+| `DM-FHIR-008` | applicability blocker | `UNMAPPED_LOCAL_CODE` | **`repository_only_not_reachable_by_deployed_app`** | positive + negative | `SYNTHETIC-terminology-profile` | `clinical-informatics-interoperability-reviewer` | `clinical-informatics-and-privacy-owner` |
+| `DM-EQUITY-009` | **none** | — | `not_applicable_no_control_exists` | honesty-guard only | none available | `pediatric-equity-patient-family-reviewer` | `equity-and-family-governance-owner` |
+| `DM-WORKFLOW-010` | **none** | — | `not_applicable_no_control_exists` | honesty-guard only | none available | `pediatric-safety-human-factors-reviewer` | `pediatric-safety-owner` |
+
+**5 reachable_in_shipped_product · 3 repository_only_not_reachable_by_deployed_app · 2
+not_applicable_no_control_exists** — cross-checked live against the rows by
+`releaseDependencyManifest.hazardsReachableInShippedProduct` / `.hazardsRepositoryOnly` and
+`tests/hazard-control-matrix.test.mjs`'s recount test, not hardcoded.
 
 Owner-role attribution for the eight implemented rows follows the decisions-block risk register
 (`.claude/worknotes/arc-clinical-council-adoption-v1/decisions-block.md` section 6): `DM-LAB-005`
@@ -206,7 +232,11 @@ V3/V4/V5 execution (P4-T3/P4-T4 protocols remain `not_executed_owner_held`), or 
 implemented control to claim technical readiness for. The eight implemented hazards do **not** assert
 those three states as achieved — their absence from `blockedReleaseStates` means "not blocked by this
 specific hazard," never "this state is achieved." `readiness_audit_complete` for the *program* (not
-per-hazard) remains gated on P4-V1 (the eight-lens council coordinator review), which has not yet run.
+per-hazard) remains gated on P4-V1 (the eight-lens council coordinator review), which has now run
+three times, producing verdicts from seven of the eight specialty lenses plus a task-completion-
+validator gate (see `releaseDependencyManifest.blockedStates[readiness_audit_complete].rationale` for
+the full review-history record). Declaring the state complete remains the council coordinator's
+outcome, not asserted here.
 
 ## 5. Owner-held gaps
 
@@ -218,7 +248,7 @@ Nothing below may be filled in by a repository agent.
 | Alert-lifecycle control for `DM-WORKFLOW-010` | `hazardControlBinding[DM-WORKFLOW-010].controlBinding` | `pediatric-safety-owner` + implementation | A signed alert/work-item state-machine design and its implementation (see `docs/clinical/v4-v5-safety-human-factors-contract.md` `alertWorkflowLifecycleBinding`), bound by digest. | `not_executed_owner_held` |
 | Credentialed human approval for every hazard | `evidence.clinicalAdjudication` | `clinical-governance-owner` (+ per-row `ownerBinding.releaseGateOwnerRole` co-sign) | Named credentialed review bound to the exact candidate digest and this matrix's version (plan section 6, P2-T3/P5-T4). | `not_executed_owner_held` |
 | Authoritative adjudication/approval system (OQ-6) | `evidence.clinicalAdjudication.systemRef` | `clinical-governance-owner` | A governance ADR naming the system; this repository stores a reference/status only. | owner-held (OQ-6) |
-| Program-level `readiness_audit_complete` | not carried in this schema | council coordinator (P4-V1) | Execution of P4-V1: the eight specialty lenses plus methods, safety, human-factors, and equity review over this matrix and the P4-T1 fixtures. | pending (P4-V1 not yet run) |
+| Program-level `readiness_audit_complete` | not carried in this schema | council coordinator (P4-V1) | Execution of P4-V1: the eight specialty lenses plus methods, safety, human-factors, and equity review over this matrix and the P4-T1 fixtures. | pending (P4-V1 has run three times; seven of eight specialty-lens verdicts recorded — declaring the state complete is the council coordinator's outcome, not asserted here) |
 
 ## 6. Related artifacts
 
@@ -271,3 +301,28 @@ by `tests/hazard-control-matrix.test.mjs` NEGATIVE tests. No clinical content (r
 severity, or hazard definition) was authored or modified — every gap this revision closes is a
 disclosure/structural-enforcement gap; every gap it could not close is recorded as an explicit, owned,
 blocking finding instead.
+
+**1.1.1 — P4-V1 final cleanup: aggregate-level reachability disclosure, review-history accuracy,
+`blockedOnTask` re-pointing (three residual gaps in the 1.1.0 remediation).** (C1, MEDIUM) The 8-vs-5
+`productIntegration` fix from 1.1.0 was enforced at row level only; three surfaces still let a skimming
+reader land on "8 of 10 protect the product" without opening a single row: the `releaseDependencyManifest`
+aggregate carried `hazardsWithControl: 8` with no reachability sibling, the §2 ten-row summary table had
+no `productIntegration` column, and §1 opened with "Eight of the ten hazards..." before the correction.
+Adds `hazardsReachableInShippedProduct: 5` and `hazardsRepositoryOnly: 3` to the aggregate (new required
+schema fields), cross-checked by a live recount test (`tests/hazard-control-matrix.test.mjs`) derived
+from `row.productIntegration.status`, not hardcoded; adds the `productIntegration` column to §2; rewrites
+§1 so "Five of the ten... reachable in the shipped product today" is the first number a reader meets.
+(C5, LOW) Corrects `releaseDependencyManifest.blockedStates[readiness_audit_complete].rationale` (and the
+matching §4/§5 prose), which still read "P4-V1 ... has not yet run" after three actual review runs —
+now records the real review history (seven of eight specialty-lens verdicts plus a task-completion-
+validator gate) without asserting the gate outcome, which remains the council coordinator's to declare.
+(C3, MEDIUM, matrix half) `DM-HEME-002`'s `coverageFinding` (`PAC-P4T2-006`) cited `blockedOnTask:
+P4-T4`, but plan §4 P4-T4 is V4/V5 human-factors *protocol-through-adjudication* work (alert lifecycle,
+override, downtime, handoff, recovery, equity) — not the aplastic-crisis rule-content question. Verified
+against the plan directly: no task in `arc-clinical-council-adoption-v1.md` §4 currently schedules
+"should a history-independent safety-net rule be added to `modules/anemia/rules.json`." Re-pointed to an
+explicit UNSCHEDULED/owner-held marker rather than an invented task id; `PAC-P4T2-001`'s and
+`PAC-P4T2-002`'s `blockedOnTask: P4-T4` were independently re-checked against P4-T4's actual scope and
+are correctly scoped (equity and alert-lifecycle respectively are both named in P4-T4's own description)
+— no other `blockedOnTask` in the matrix was found misrouted. No clinical content was authored or
+modified.

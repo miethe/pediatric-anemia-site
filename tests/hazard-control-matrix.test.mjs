@@ -277,6 +277,22 @@ test('releaseDependencyManifest.hazardsWithControl/hazardsWithoutControl match a
   assert.equal(manifest.releaseDependencyManifest.totalHazards, 10);
 });
 
+// P4-V1 C1 [MEDIUM]: the 8-vs-5 fix (productIntegration) was enforced at ROW level (R1 above) but not
+// at AGGREGATE level -- hazardsWithControl: 8 had no reachability sibling, so a reader of the aggregate
+// alone (never opening a row) still concludes "8 of 10 protect the product". This recount, in the same
+// style as the hazardsWithControl/hazardsWithoutControl recount immediately above, derives both new
+// fields from a live scan of row.productIntegration.status rather than trusting the manifest's own
+// count -- it fails the moment a row's productIntegration.status changes without the aggregate being
+// re-authored to match.
+test('releaseDependencyManifest.hazardsReachableInShippedProduct/hazardsRepositoryOnly match a live recount of rows.productIntegration.status', () => {
+  const reachable = manifest.rows.filter((row) => row.productIntegration.status === 'reachable_in_shipped_product').length;
+  const repositoryOnly = manifest.rows.filter((row) => row.productIntegration.status === 'repository_only_not_reachable_by_deployed_app').length;
+  const notApplicable = manifest.rows.filter((row) => row.productIntegration.status === 'not_applicable_no_control_exists').length;
+  assert.equal(manifest.releaseDependencyManifest.hazardsReachableInShippedProduct, reachable, 'hazardsReachableInShippedProduct diverges from a live recount of productIntegration.status');
+  assert.equal(manifest.releaseDependencyManifest.hazardsRepositoryOnly, repositoryOnly, 'hazardsRepositoryOnly diverges from a live recount of productIntegration.status');
+  assert.equal(reachable + repositoryOnly + notApplicable, manifest.releaseDependencyManifest.totalHazards, 'reachable + repositoryOnly + notApplicable must account for every row');
+});
+
 test('releaseDependencyManifest.blockedStates.blockedByHazardIds match a live union of each row\'s blockedReleaseStates', () => {
   const liveAgg = new Map();
   for (const row of manifest.rows) {
