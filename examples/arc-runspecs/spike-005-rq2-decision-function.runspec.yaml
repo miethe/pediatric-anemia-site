@@ -1,0 +1,45 @@
+apiVersion: arc/v1alpha1
+kind: CouncilRunSpec
+
+council: pediatric-anemia-clinical-review-council
+
+target: repo:pediatric-anemia-site/docs/project_plans/SPIKEs/spike-005-semantic-diff-classification.md
+target_artifact_class: repository_artifact
+target_sha256: a2eeaa079b4d6698fc22fe1e94eeec48ecdc4969aad59cb408965a9e02d960b1
+
+objective: >-
+  Clinical-safety review of SPIKE-005's RQ2 safety-relevance decision function: the rule
+  that decides which knowledge-base change classes are safety-relevant (forcing clinical
+  re-review) versus cosmetic (auto-passable). Center the review on the asymmetry the SPIKE
+  itself names: under-reporting is the catastrophic failure mode. Probe whether a clinically
+  material knowledge-base edit can land in a cosmetic or low-tier class, whether the
+  taxonomy covers operator semantics, evidence-link rot, ordering effects, and
+  reference-range edits, whether the unclassifiable-residue invariant is load-bearing or
+  gameable, and whether the 52-mutation corpus covers the classes it claims.
+
+constraints:
+  - read_only
+  - decision_support_only
+  - no_patient_specific_advice
+  - no_phi_or_copyrighted_full_text
+  - metadata_only_evidence
+  - credentialed_clinician_approval_required
+
+evidence_source_manifest: knowledge-packs/pediatric-anemia/source-manifest.yaml
+evidence_source_manifest_sha256: f4c33c82fe4977a7d4db2633ab04d82b39bb7bf421d048aba5a5b37a51b711f6
+
+parameters:
+  non_patient_artifact_confirmed: true
+  target_artifact_class: repository_artifact
+
+slug: spike-005-rq2-decision-function
+
+notes: >-
+  EXECUTED 2026-07-19/20 to close SPIKE-005's OQ-7 (charter Method step 5 / overall exit
+  criterion 2). Run bundle: agentic-research/runs/2026-07-19-spike-005-rq2-decision-function/.
+  target_sha256 binds the PRE-amendment SPIKE at commit e69d307, which is what was reviewed.
+  Verdict: pediatric council recommendation `rejected` for RQ2 as written; scorecard
+  `pause_and_validate`. The shipped `arc` shim does not resolve
+  pediatric-anemia-clinical-review-council; scaffold with `uv run arc` from the
+  agentic-research checkout. Synthetic adversarial review only — confers no credentialed
+  clinical approval and never populates clinicalApprovers[] or approvedBy[].

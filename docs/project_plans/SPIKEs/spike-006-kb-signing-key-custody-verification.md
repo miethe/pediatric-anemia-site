@@ -2,8 +2,8 @@
 schema_version: 2
 doc_type: spike
 title: "SPIKE-006: KB Signing Key Custody and Browser-Side Verification"
-status: completed
-status_note: "Findings recorded 2026-07-19 (EP0-T5). RQ6's NO-GO-on-signing recommendation has NOT yet had the council-review pass this charter's own exit criterion (2) and Method step 4 require — see Risks/OQ-8. Treat RQ6 as a recorded engineering recommendation, not a safety-vetted decision."
+status: completed-with-required-amendments
+status_note: "Findings recorded 2026-07-19 (EP0-T5). The council-review pass required by exit criterion (2) and Method step 4 was performed 2026-07-19 (ARC run arc-run-2026-07-19-spike-006-kb-integrity-governance) — OQ-8 is closed-with-caveats, not cleanly closed. VERDICT: RQ1's threat model is UPHELD WITH QUALIFICATION (honest and non-euphemistic, but derived from the browser surface and stated as covering the whole deployment model, and it surveyed only cryptographic custody options). RQ6's NO-GO on cryptographic signing STANDS — no seat argued for signing now. But RQ3/RQ6's *sufficiency* claim does NOT survive: the four-file clinicalContentHash does not cover the JavaScript where real clinical thresholds live (modules/anemia/ranges.js, modules/anemia/facts.anemia.js), does not cover module.json's own governance fields, addresses no expiry requirement, and reaches no API consumer. Six amendments are REQUIRED before EP-5 acts — see OQ-8. Do not read 'clinicalContentHash verified' as 'clinical output unchanged'. The council is a synthetic adversarial review; it is not clinical validation or human approval."
 created: 2026-07-19
 feature_slug: wave0-safety-foundation
 research_questions:
@@ -499,7 +499,9 @@ read directly for this task.
 
 ---
 
-## OQ-8 — council-review pass not performed (added at EP-0 phase sign-off)
+## OQ-8 — council-review pass: performed 2026-07-19; **closed with caveats**
+
+### The gap, as originally recorded
 
 **Raised by the EP-0 reviewer gate, not by the authoring pass.** This charter's own *Overall SPIKE
 exit criteria* item (2) requires that RQ6's recommendation "is explicit (signing now vs. defer to
@@ -511,10 +513,126 @@ The SPIKE was nonetheless marked `status: completed` with no disclosure — SPIK
 gap and self-disclosed it as OQ-7, so this is a documentation inconsistency between two SPIKEs in the
 same phase, not a difference in what was actually done. Both are recorded now.
 
-**What this means concretely.** RQ6's NO-GO on cryptographic signing is a well-argued engineering
-recommendation authored by a single cross-family model pass (`gpt-5.6-sol`, `xhigh`). It has not had
-adversarial clinical-governance review. EP-5 must not treat "signing is not required" as safety-vetted
-on the strength of this document alone.
+### The pass that closes it
 
-**Resolution required before**: the EP-5 SPIKE-006 contingency branch acts on the hash-vs-signing
-decision.
+**Performed 2026-07-19.** Both objects Method step 4 names — RQ1's threat-model statement **and**
+RQ6's recommendation — were routed through `council-review`.
+
+- **Run**: `arc-run-2026-07-19-spike-006-kb-integrity-governance`
+- **Council**: `pediatric-anemia-clinical-review-council@0.1.0`
+- **Artifacts**: `agentic-research/runs/2026-07-19-spike-006-kb-integrity-governance/` — `findings.yaml`,
+  `scorecard.json`, `risk_register.yaml`, `decision_record.md`, `validation_plan.md`,
+  `adjudication_record.yaml`, `pediatric_clinical_review.json`, `evidence_pack.md`,
+  `arc_certification.yaml`, `friction_log.yaml`, `trace_bundle.jsonl`, plus per-reviewer raw output
+  under `reviewers/`. ARC run records always live in the `agentic-research` checkout, not in this
+  repository (see `docs/project_plans/expansion/03-arc-clinical-council-handoff.md:39`).
+- **Run spec**: `examples/arc-runspecs/spike-006-kb-integrity-governance.runspec.yaml` (this repo),
+  binding this file by digest `5bac1388…d3f1f6` at commit `e69d307`.
+- **Bundle gate**: `uv run arc validate runs/2026-07-19-spike-006-kb-integrity-governance` → `ok: true`.
+- **Method**: four isolated reviewer passes with disjoint briefs and no shared context — adversarial
+  code-tracer, clinical informatics/interoperability, patient safety/human factors, and reasoning-quality
+  audit — then adjudication. 27 raw findings → 20 accepted (2 critical, 8 high, 7 medium, 3 verified
+  confirmations), 1 disputed and preserved, 1 watchlist, 6 duplicates from independent convergence,
+  0 rejected on the merits. Overall recommendation: **proceed with conditions**.
+
+### Verdict on RQ1 — threat model
+
+**Upheld with qualification.** No seat disputed it. RQ1 meets the charter's "no euphemism" bar, and
+every factual premise it rests on was independently re-derived from source and held. Two qualifications:
+
+1. It is derived from the **static-browser surface** and then stated as covering the deployment model
+   as a whole. The mirror REST API (`server.mjs`, `openapi.yaml`) is a structurally different trust
+   boundary — the consumer is not the publisher — and RQ1 never analyses it. The conclusion happens to
+   hold today only because no external API consumer exists, and the SPIKE does not say that is why.
+2. **Only cryptographic custody options were surveyed.** Laptop, Actions secret and hardware token were
+   weighed; GitHub *environment protection rules* (already declared on the existing `deploy` job) and
+   branch protection on `main` were never considered, despite targeting the exact "same account controls
+   everything" threat RQ1 lists as undefended.
+
+### Verdict on RQ6 — NO-GO on cryptographic signing
+
+**The NO-GO stands. The sufficiency claim attached to it does not.**
+
+Deferring cryptographic signing is **upheld**. No seat argued for signing now, and the one dissenting
+seat concedes directly that *a signature over the same four files would carry the identical blind spot* —
+so the crypto-versus-hash choice is largely orthogonal to the council's central finding.
+
+**What does not survive: the DEF-1 objection survives DEF-1's own resolution.** RQ3 answered the
+charter's dual-evidence-copy warning by showing DEF-1 is resolved, therefore the objection evaporates.
+It does not. The objection's deeper structural form — *does the hash cover everything that determines
+clinical output?* — was never asked, and the answer is no:
+
+- **Clinical thresholds live in JavaScript the digest never sees.** `modules/anemia/ranges.js:38-53`
+  hardcodes the ferritin cutoffs 30 and 20 ng/mL with their age bands;
+  `modules/anemia/facts.anemia.js:51-55, 76, 82-84, 171-173, 201-202` hardcodes lead action levels, IDA
+  severity bands, sTfR-index cutoffs, the hemolysis marker count and marrow-failure age windows. None is
+  in the four hashed files. **Two isolated passes found this independently.** The same EP-0 phase that
+  authored this SPIKE had already proven the hazard by execution the same day (commit `2d1e5cd`:
+  deleting one `ranges.js` branch moves a menstruating child's ferritin threshold from 30 to 20 ng/mL
+  while 0 of 6 golden fixtures move).
+- **`module.json`'s own governance fields are unhashed** — `approvedBy`, `validationRunId`,
+  `evidenceReviewedThrough`, `status`, `supersedes` are all outside the preimage, so the fields RQ6 relies
+  on for truthful approval metadata are exactly the fields no check covers.
+- **Nothing addresses expiry.** `docs/architecture.md:186` requires failing closed on expired evidence and
+  the roadmap's V2 no-go names it; the design checks byte consistency only, no governance policy defining
+  expiry exists, and `src/app.js:517-532` fetches the KB once at load with no revalidation.
+- **No provenance reaches an API consumer.** `server.mjs:142-151` returns no manifest field and
+  `openapi.yaml:26-44` has nowhere to put one, so "auditable" holds only for a party with repo access.
+
+The drift risk therefore did not disappear when DEF-1 closed — it **moved from evidence-versus-evidence
+to content-versus-code**. The remedy is not "sign instead"; it is *hash more*, or *claim less*, and say
+which.
+
+Two further defects in the argument itself: the NO-GO is stated more broadly than its premise supports
+(the same-origin circularity argument does not reach **server-only** verification, where a key never
+leaves CI — that option was foreclosed without being separately rejected); and the perception argument
+("a signature would visually upgrade unvalidated content") is used to reject signing while the identical
+hazard attached to this SPIKE's own `integrity-recorded` status is downgraded to a copy-review footnote.
+
+**Preserved dissent** (`SPK6-DISSENT-001`, `findings.yaml#SPK6-DISPUTE-001`): the reasoning-quality seat
+returned `dispute` on RQ6 and holds it should be reopened as a decision; the informatics and safety seats
+returned `concur_with_qualification` and treat the gaps as closable conditions. The adjudicator resolved
+the signing decision and did **not** resolve the sufficiency claim. All three seats agree this document
+overstates what its recommended design protects.
+
+### Required amendments before EP-5 acts on the SPIKE-006 contingency branch
+
+1. Amend RQ3/RQ6 to state the digest's true scope — either extend the preimage to the threshold-bearing
+   code (or extract those constants into a hashed JSON file), or narrow the provenance claim explicitly
+   and name what is excluded, including `data/algorithm-explainers.json`.
+2. Amend RQ1/RQ6 to scope the NO-GO to *browser-verifiable* signing and to the current
+   no-external-API-consumer state; either reject server-only signing on its own merits or record it open.
+3. Reconcile the roadmap's V2 no-go ("unsigned/expired KB not rejected by the server",
+   `01-platform-expansion-roadmap.md:225-226`) explicitly rather than by implication — its own illustrative
+   manifest at `:206-216` carries a distinct `signature` field, so reading the criterion as satisfied by a
+   hash is a redefinition that must be recorded in the roadmap itself.
+4. Record `docs/architecture.md` §10's **expiry** clause as **not closed** by this SPIKE, tracked separately.
+5. Make copy review of any surface displaying `integrity-recorded` a hard P1-WP5 acceptance criterion, not
+   a recommendation.
+6. Fix the citation: `5eaa048` is cited three times as "current HEAD" but is not an ancestor of `e69d307`;
+   the DEF-1 resolution reached the mainline as `2d1e5cd` with byte-identical `src/evidence.js`.
+
+Also owed, outside this SPIKE's scope but raised by it: a control against fabricated `approvedBy[]`
+entries (critical — nothing today detects one, including one written by an agent), and verification or
+enablement of branch/environment protection, on which the hash-chain's auditability claim silently depends.
+
+### Honesty boundary — read this before citing the run
+
+The `council-review` pass is a **synthetic adversarial review**. It satisfies this charter's *process*
+requirement that RQ1 and RQ6 be routed through `council-review`. It is **not** clinical validation, **not**
+credentialed clinical sign-off, **not** laboratory or institutional approval, and **not** a regulatory
+determination. Certification state is `pending`; clinical release status is `blocked`; human approval is
+`not_executed_owner_held`. **No output of that run may ever populate `modules/anemia/module.json`'s
+`approvedBy[]`, any `clinicalApprovers[]` field, or any other record of human clinical approval** — the
+project's `CLAUDE.md` names treating ARC output as credentialed clinical sign-off as one of the two most
+likely mistakes a session can make.
+
+Coverage limit, stated rather than concealed: **five of eight voting seats returned `out_of_scope`**
+(hematology, laboratory medicine, general pediatrics, model evaluation, equity). The target is a
+key-custody and release-integrity document with no clinical thresholds under review. This run is a
+governance-and-integrity review; it says nothing about the clinical content of the anemia module, and its
+`dangerous_miss_review` records every family as `not_applicable` — a declaration of no coverage, not a pass.
+
+**Status**: OQ-8 is **closed with caveats**. The process gate is satisfied. The substantive outcome is a
+materially qualified RQ6 with six required amendments outstanding, which is why this SPIKE's frontmatter
+now reads `completed-with-required-amendments` rather than `completed`.

@@ -2,7 +2,7 @@
 schema_version: 2
 doc_type: spike
 title: "SPIKE-005: Semantic Diff Classification for KB Changes"
-status: completed
+status: completed-with-required-amendments
 created: 2026-07-19
 feature_slug: wave0-safety-foundation
 research_questions:
@@ -13,7 +13,7 @@ research_questions:
   - "What is the false-negative risk of a safety-relevant change misclassifying as cosmetic, and how do we test for it?"
 complexity: XL
 estimated_research_time: "8h"
-status_note: "Findings recorded 2026-07-19 (EP0-T3). RQ2's decision function has NOT yet had its council-review pass — see Risks/OQ-7."
+status_note: "Findings recorded 2026-07-19 (EP0-T3). The council-review pass required by Method §5 and overall exit criterion (2) WAS performed 2026-07-19/20 (ARC run arc-run-2026-07-19-spike-005-rq2-decision-function) — OQ-7 is closed-with-caveats, not cleanly closed. VERDICT: the RQ2 decision function AS WRITTEN must NOT be implemented against. Pediatric council recommendation `rejected` for RQ2-as-written; scorecard `pause_and_validate`; 5 critical and 15 high findings accepted. The council constructed and EXECUTED a false negative entirely inside the classifier's declared JSON scope: softening ALERT-001's emergency-alert detail classifies as C10, tiers at `review`, fails no gate, produces no delta on any of the six fixtures, and cannot trigger the cross-check — both proposed checks report clean while a clinician-facing emergency explanation is rewritten. Also accepted: an undefined predicate (`sameNumericValue`) can route a rule-disabling edit into the fixed-cosmetic bucket; Family E is written against a `src/evidence.js` structure deleted in the SPIKE's own commit; `A5` and `D7` are wrongly fixed-cosmetic; the `review` tier enforces nothing. Exit criterion (2) is NOT MET — the pass happened and did not return a pass. Criterion (3) is independently confirmed MET. Nine required amendments (RA-1..RA-9) must land and the SPIKE must be re-reviewed before EP-5 implements against RQ2 — see the OQ-7 section. What SURVIVED and must not be traded away: fail-closed defaults, skeleton-before-leaf comparison, enum-grounded severity, and the mandatory blind-spot warning. The council is a SYNTHETIC ADVERSARIAL REVIEW; it is not clinical validation, not credentialed clinical review, and confers no release authority."
 related_documents:
   - docs/project_plans/expansion/01-platform-expansion-roadmap.md
   - docs/project_plans/design-specs/signed-kb-manifest.md
@@ -158,6 +158,15 @@ pass; (3) RQ3's algorithm is validated against the two real nested examples; (4)
 is concrete enough to implement `scripts/kb-diff.mjs` directly from it; (5) RQ5 names at least 3
 concrete false-negative scenarios and a test strategy for each, including at least one behavioral
 (not structural-diff-dependent) backstop.
+
+> **Post-council status (2026-07-19/20).** Criterion (3) is **met** — independently re-verified, and a
+> candidate finding alleging otherwise was tested and rejected. Criterion (5) is **met in form** (ten
+> modes named with strategies, backstop mandated) but weak in substance, because the backstop has no
+> activation witness for any emergency or urgent alert. Criteria **(1), (2) and (4) are NOT met**:
+> (1) three concrete unmapped-field counterexamples and a wrong class count; (2) the council-review
+> pass was performed and did not return a pass; (4) `cosmeticOnly` and `contentHash` are undefined,
+> the release gate and the `clean` predicate disagree, and the blind-spot inventory is incomplete.
+> See the OQ-7 section for the full record.
 
 ## Timebox
 
@@ -885,10 +894,12 @@ output string resolves against the derived-facts shape produced for at least one
 - **OQ-6**: the probe's base-side child process executes code from the base snapshot. If the base
   snapshot is attacker- or accident-controlled, this is arbitrary code execution inside the release
   gate. Constrain the base to a git-object-derived snapshot of a signed tag once SPIKE-006 lands.
-- **OQ-7**: RQ2's decision function has **not** had the charter-mandated `council-review` pass
-  (Method §5). The SPIKE's overall exit criterion (2) is therefore not fully met. Recommend running
-  `council-review` on the RQ2 function specifically, before EP-5 implements against it. Flagged rather
-  than silently accepted.
+- **OQ-7** — **RESOLVED-WITH-CAVEATS 2026-07-19/20.** The charter-mandated `council-review` pass
+  (Method §5) on RQ2's decision function has now been **performed**. It did **not** return a pass:
+  the verdict is that RQ2 as written must not be implemented against. Overall exit criterion (2) is
+  therefore **still not met**, for a different reason than before — the pass happened and failed,
+  rather than never happening. Full record, verdict, required amendments and new open questions:
+  see [the OQ-7 section below](#oq-7--council-review-pass-performed-2026-07-1920-closed-with-caveats).
 - **Risk**: the taxonomy will drift out of date as the DSL grows (a second module will introduce
   operators unused today — CCF-1 shows 9 of 13 operators have zero instances). Mitigation: the
   `unclassifiable-residue == 0` invariant makes drift a loud build failure rather than a silent gap.
@@ -1074,3 +1085,156 @@ M55 and M57 are both blind for the same root cause: **the probe can only witness
 exercises, and the corpus is silent for 61 of 91 rules.** Building the behavioral backstop before
 widening the corpus would ship a safety net with a two-thirds hole. EP-5-T4's corpus work should be
 treated as a prerequisite of the probe, not a companion to it.
+
+---
+
+## OQ-7 — council-review pass: performed 2026-07-19/20; **closed with caveats**
+
+### Honesty boundary — read before anything else in this section
+
+This was a **synthetic adversarial review**. It satisfies the charter's *process* requirement for a
+`council-review` pass on RQ2 (Method §5, overall exit criterion (2)). It is **not** clinical
+validation, **not** credentialed clinical review, **not** local-laboratory approval, and **not**
+release authorization. Nothing in it may be used to populate `clinicalApprovers[]`, `approvedBy[]`,
+`module.json` attestation fields, or any waiver's `approvedBy` list — those require named,
+credentialed, independent humans, and ARC cannot mint one. Certification state remains `pending`;
+`clinical_release_status` remains `blocked`; every accepted finding routes to a named human owner
+role and none is closed by the run.
+
+### Run record
+
+| Field | Value |
+|---|---|
+| ARC run | `arc-run-2026-07-19-spike-005-rq2-decision-function` |
+| Artifact bundle | `agentic-research/runs/2026-07-19-spike-005-rq2-decision-function/` (13 artifacts + 10 reviewer files) |
+| Council | `pediatric-anemia-clinical-review-council@0.1.0` |
+| RunSpec | `examples/arc-runspecs/spike-005-rq2-decision-function.runspec.yaml` |
+| Target digest | `a2eeaa079b4d6698fc22fe1e94eeec48ecdc4969aad59cb408965a9e02d960b1` — this SPIKE **pre-amendment**, at commit `e69d307`, clean tree |
+| Evidence manifest | `pediatric-anemia-evidence-sources@0.1.0` @ `f4c33c8…b711f6`, metadata only |
+| Validation | `arc validate` exit `0` |
+| Scorecard recommendation | `pause_and_validate` |
+| Pediatric council recommendation | **`rejected`** — for RQ2's decision function *as written* |
+| Findings | 5 critical · 15 high · 9 medium · 2 low · 3 info — 28 accepted, 2 rejected, 1 disputed, 3 watchlist |
+
+### Verdict
+
+**RQ2's decision function as currently written must not be implemented against.** That is not a
+verdict on the whole SPIKE: the council actively tried to break the RQ3 structural algorithm and
+could not, and it recorded the design's sound properties explicitly so remediation cannot trade them
+away. The path forward is targeted revision plus a re-run, not abandonment.
+
+**The constructed false negative (ARC-001, critical, executed).** Softening
+`ALERT-001.output.detail` — an `emergency`-severity alert for potentially unstable symptomatic
+anemia — classifies as `C10 display-text-change`, routes through RQ2 rule 5 to `tier: 'review'`, and
+therefore does not fail the release gate, which fires only on `tier: 'block'` (`:598-600`). The
+behavioral probe is simultaneously blind: executed, **all six committed fixtures produce identical
+fingerprints**, because `ALERT-001` has no activation witness. The cross-check cannot fire, because
+its precondition is `summary.cosmeticOnly === true` (`:813-817`) and a review-tier entry falsifies
+it. Executed for a 36-month-old with hemoglobin 6.5 and respiratory distress, the emergency alert's
+clinician-facing explanation is replaced while both proposed checks report clean. **This is strictly
+more severe than M57**, which needed a code edit outside the classifier's scope; this one needs none.
+
+The other four critical findings show the same shape from different directions: `sameNumericValue`
+is undefined and sits at the head of the branch deciding cosmetic-versus-block, where under the
+natural cross-type implementation `true → 1` emits `B5 · note` while permanently disabling any of
+the 241 `eq`-with-boolean leaves (ARC-002); Family E — seven classes plus an invariant plus FN-6 plus
+mutations M38/M39 — is written against a `src/evidence.js` structure **deleted in commit `2d1e5cd`,
+the same commit that added this SPIKE** (ARC-003); the cross-check is armed almost never (ARC-004);
+and the menstruating subgroup is doubly blind while the corpus has no activation witness for any
+emergency or urgent alert (ARC-005).
+
+### What survived, and must be preserved by any revision
+
+Recorded as ARC-028 so the remediation below cannot be read as licence to weaken the design:
+
+1. **Rule 7's unconditional fail-closed to `block`** for any unresolved class. This removes the
+   silent-pass residual bucket that is the usual root cause of this failure mode.
+2. **Skeleton-before-leaf comparison** (RQ3 Step 0). It genuinely defeats the `all`/`any` swap and
+   negation-parity attacks, which are invisible to leaf-multiset comparison.
+3. **Enum-grounded severity** — using the existing `LEVEL_RANK`/`ALERT_RANK` rather than a new
+   vocabulary, so the tiering cannot drift from the ranking the engine applies.
+4. **The mandatory `scope.filesNotDiffed` + `blindSpotWarning`.** The best human-factors decision in
+   the design. The finding against it is that the inventory is incomplete, not that it is wrong.
+
+Also upheld: **RQ3's algorithm and both hand-simulations** (exit criterion (3) met; a candidate
+finding alleging inconsistency was tested and **rejected**, ARC-029), and **`F6 units-change`'s
+grounding and `block` tiering** (a candidate finding by analogy with the `A5`/`D7` failures was
+tested and **rejected**, ARC-030).
+
+### RA-1 … RA-9 — required amendments before EP-5 implements against RQ2
+
+| ID | Amendment | Closes |
+|---|---|---|
+| **RA-1** | Add a **protective-output text class tiered `block`** covering any change to `title`, `detail`, `actions`, `cautions`, `nextSteps` or `support` on a rule whose output is protective — regardless of edit shape, including in-place edits of array elements. | ARC-001, ARC-010 |
+| **RA-2** | **Define `sameNumericValue` normatively** and invert RQ3 Step 1 so the `typeof` comparison runs **before** the numeric comparison. Add seeded mutations `true→1`, `false→0`, `2→"2"`, `2→2.0`. | ARC-002, ARC-031 |
+| **RA-3** | Give **`tier: 'review'` a real gate**, or fold it into `block`. Minimum viable repair: make `check:release` fail on `summary.clean === false`, activating the already-written `changeRationale` predicate (`:601-604`), which today no command consumes. | ARC-006 |
+| **RA-4** | **Define `cosmeticOnly`**, including for an empty changeset, and **re-quantify the cross-check per `ruleId`** rather than per changeset: fail when `kb-diff` reported no block-tier change for a rule while the probe reports `D1`/`D2`/`D3`/**`D4`** for that same rule. The join key already exists (`:605-607`). | ARC-004 |
+| **RA-5** | Remove **`A5`** and **`D7`** from `FIXED_COSMETIC` and restate the cosmetic test as *"not on any clinician-facing or API surface"* — `rule.category` is rendered and searched at `src/app.js:406,412`, and candidate `category` is spread onto the assess API response (`src/ruleEngine.js:71-81`) and asserted in `tests/golden/ida-toddler.json:29`, so editing it **fails `npm test` today**. | ARC-007, ARC-008 |
+| **RA-6** | **Normalize the class-id representation.** Rule 5 tests bare ids (`'C9'`) while rules 3/4/6 test full ids (`'C3 level-change'`) and RQ4 emits the full form. Under a literal reading rule 5 never fires and its `containsTemplate` C11 escalation never executes. State which form is normative. | ARC-011 |
+| **RA-7** | **Rewrite Family E against HEAD.** `src/evidence.js` is a 28-line loader over `modules/anemia/evidence.json`; `scripts/validate-kb.mjs:59-68` is a comment recording the drift check's removal. Re-valence `E5` as behaviorally live (it reaches `GET /api/v1/knowledge-base` and the SPA citation chips); retire `E6`/`E7` or redefine `E7` against the **three-way** version drift that does exist across `module.json`, `modules/anemia/index.js` and `evidence.json`; replace M38 and M39. | ARC-003, ARC-020 |
+| **RA-8** | **Propagate the second lens's own findings** into the normative text: remove `G5` from `FIXED_COSMETIC`, add `protective-test-binding-remove` at `block`, add `H9 engine-output-projection-change`, and make an empty `requiredTestCaseIds` array **fail** the resolve check rather than satisfy it vacuously. Correct the class count from **44 to 70**. | ARC-012, ARC-021 |
+| **RA-9** | **Extend `outputIsProtective()`** to `question` outputs (all 17 — the missing-data prompts) and to any candidate rule that is the sole contributor to its `candidateId`; wrap it so a throw is treated as `block`. It currently excludes **47 of 91 rules**. The *tier calibration itself* is referred to a credentialed reviewer — see OQ-12. | ARC-009 |
+
+Corpus and scope amendments that gate the **probe** rather than the classifier: build the corpus
+**before** the probe with per-subgroup coverage (ARC-005, ARC-017); add a mutation row for each of
+the **19 unmutated classes** (ARC-015); state that the seeded corpus has no denominator and cannot
+support a rate claim (ARC-016); regenerate `filesNotDiffed` from the import graph — it omits
+`src/engine.js`, `modules/anemia/index.js`, `src/ranges/registry.js`, `src/facts/core.js` and
+`src/algorithmExplorer.js` (ARC-013); scope-rename the `unclassifiable-residue` invariant, which
+under rule 7 can never increment and passes most strongly for the most dangerous change class
+(ARC-014); and name the local-range override and site-profile subsystem in `blindSpotWarning`
+(ARC-019).
+
+### New open questions raised by the council
+
+- **OQ-8** — `tier: 'review'` has no defined enforcement, and the `clean` predicate that would supply
+  one is consumed by no command. Deciding *what `review` means operationally* is a governance choice
+  this SPIKE never made. RA-3 proposes the minimum repair; the broader question — whether a
+  three-tier model is worth keeping at all once `review` is enforced — is open.
+- **OQ-9** — The cross-check is quantified over **changesets**, so one unrelated review-tier edit
+  anywhere in a commit disarms it. RA-4 proposes per-`ruleId` re-quantification, but that has not
+  been designed against the report shape and may interact badly with `invariants[]`, which are
+  whole-after-state properties with no rule id.
+- **OQ-10** — Recording a clinical approval is itself a `G3 attestation-change`, which is
+  fixed-dangerous and `block`. The release gate is therefore **circular**: every release that records
+  approvals emits a block-tier change requiring an approval that does not yet exist. A change-level
+  approval record distinct from `G3` must be defined (ARC-026).
+- **OQ-11** — No class or invariant covers a cited source being **retracted or superseded upstream**
+  with no local diff. The KB already carries the vocabulary (`year`, `recencyNote`,
+  `priority: "primary-current"`, `reviewedThrough`) and `scripts/lib/local-applicability.mjs` already
+  implements exactly this check for *local laboratory profiles*. Whether it can be automated within
+  the microsite's no-third-party posture was **not substantiated**; it may have to be a scheduled
+  human or `rf` task (ARC-018).
+- **OQ-12** — **Referred to a named credentialed pediatric hematology reviewer, with the safety and
+  human-factors owner.** The Pediatric Hematology seat **abstained** rather than guess on: (a) the
+  tier for narrowing edits on `question`-type outputs versus candidate-level downgrades, and (b) the
+  tier for *broadening* edits on emergency alerts, where a missed escalation trades against alert
+  fatigue. The abstention was preserved and not overridden by the adjudicator. ARC cannot resolve it.
+- **OQ-13** — RQ4's `contentHash` computation is unspecified, and `scripts/build-static.mjs:35-49`
+  already digests the module tree byte-wise. If `contentHash` is computed the same way, a
+  fixed-cosmetic reformat will produce `cosmeticOnly: true` alongside a changed `contentHash`, and
+  reviewers must be told that is expected. Bears on `clinicalContentHash` in the DEF-4/SPIKE-006 work
+  (ARC-033).
+- **OQ-14** — The site-laboratory profile subsystem (`scripts/lib/local-applicability.mjs`,
+  `schemas/reference-range.schema.json`) landed **one commit after** this SPIKE and is outside its
+  five-file scope. Whether it enters the diffed scope must be decided **before** it becomes a runtime
+  path, not after (ARC-019). Note this also makes CCF-4's "no JSON-Schema validator exists in the
+  repo" stale — a homegrown one now does; the narrower "no `ajv`" claim still holds.
+
+### Preserved dissent
+
+**ARC-031 (open).** The informatics seat holds ARC-002 at **critical** on the strength of the
+241-of-247 exposed surface under the natural implementation of `sameNumericValue`. The
+diagnostic-accuracy seat holds that severity cannot attach to a consequence of an implementation the
+document never specifies, and would record the certain part — an undefined predicate at a
+note-versus-block branch — at **high**. Both agree the defect is real and blocking. The adjudicator
+recorded critical/medium-confidence, the position that fails safe, **without erasing the objection**.
+It closes by specification (RA-2), not by argument.
+
+### Status
+
+**OQ-7 is closed with caveats.** The process gate is satisfied — the pass was performed, the run
+validates, and the artifacts are durable. The substantive outcome is a **rejection of RQ2 as
+written**, so **overall exit criterion (2) remains NOT MET**. Do not record this SPIKE as fully
+closed, and do not let EP-5 implement `scripts/kb-diff.mjs` against RQ2 until RA-1…RA-9 land and the
+amended digest is re-reviewed. An approval attached to an older digest is stale.
