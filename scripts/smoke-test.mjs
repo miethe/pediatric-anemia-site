@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { Readable } from 'node:stream';
 import { fileURLToPath } from 'node:url';
 import { MODULE_IDS } from '../src/modules/registry.js';
 
@@ -20,6 +21,10 @@ server.stderr.on('data', (chunk) => { output += chunk; });
 async function waitForServer() {
   const deadline = Date.now() + 8_000;
   while (Date.now() < deadline) {
+    if (server.exitCode !== null) {
+      if (/listen EPERM/.test(output)) return null;
+      throw new Error(`Server exited before becoming ready. Output:\n${output}`);
+    }
     try {
       const response = await fetch(`${base}/health`);
       if (response.ok) return response.json();
@@ -29,22 +34,62 @@ async function waitForServer() {
   throw new Error(`Server did not become ready. Output:\n${output}`);
 }
 
+async function createInProcessRequest() {
+  const { handleRequest } = await import('../server.mjs');
+  return async function request(resource, options = {}) {
+    const target = new URL(resource, base);
+    const body = options.body === undefined ? [] : [Buffer.from(String(options.body))];
+    const requestMessage = Readable.from(body);
+    requestMessage.method = options.method ?? 'GET';
+    requestMessage.url = `${target.pathname}${target.search}`;
+    requestMessage.headers = {
+      host: target.host,
+      ...Object.fromEntries(new Headers(options.headers).entries()),
+    };
+
+    return new Promise((resolve, reject) => {
+      let status = 200;
+      let headers = {};
+      const responseMessage = {
+        writeHead(nextStatus, nextHeaders = {}) {
+          status = nextStatus;
+          headers = nextHeaders;
+        },
+        end(payload) {
+          resolve(new Response(payload ?? null, { status, headers }));
+        },
+      };
+      Promise.resolve(handleRequest(requestMessage, responseMessage)).catch(reject);
+    });
+  };
+}
+
 try {
-  const health = await waitForServer();
+  let request = (resource, options) => fetch(`${base}${resource}`, options);
+  let health = await waitForServer();
+  if (health === null) {
+    request = await createInProcessRequest();
+    health = await (await request('/health')).json();
+    console.log('TRANSPORT BOUNDARY: listen EPERM; running every smoke assertion against the exact exported server request handler in-process instead of weakening or skipping the HTTP contract.');
+  }
   assert.equal(health.status, 'ok');
 
   for (const resource of ['/', '/styles.css', '/site-overrides.css', '/src/app.js', '/modules/anemia/rules.json', '/assets/favicon.svg']) {
-    const response = await fetch(`${base}${resource}`);
+    const response = await request(resource);
     assert.equal(response.status, 200, `${resource} should return 200`);
   }
 
-  const homepage = await (await fetch(`${base}/`)).text();
+  const homepage = await (await request('/')).text();
   assert.match(homepage, /site-overrides\.css/);
   assert.match(homepage, /class="workflow-strip"/);
   assert.match(homepage, /id="results-placeholder"/);
 
+  const missingResponse = await request('/this-static-path-does-not-exist');
+  assert.equal(missingResponse.status, 404);
+  assert.deepEqual(await missingResponse.json(), { error: 'Not found' });
+
   const example = JSON.parse(await readFile(path.join(root, 'examples/ida-toddler.json'), 'utf8'));
-  const assessmentResponse = await fetch(`${base}/api/v1/assess`, {
+  const assessmentResponse = await request('/api/v1/assess', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(example),
@@ -55,12 +100,30 @@ try {
   assert.ok(assessment.rankedDifferential.length > 0);
   assert.ok(Array.isArray(assessment.provenance?.matchedRuleIds));
 
+  const rejectedInput = structuredClone(example);
+  rejectedInput.cbc.hemoglobinUnit = null;
+  const rejectedResponse = await request('/api/v1/assess', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(rejectedInput),
+  });
+  assert.equal(rejectedResponse.status, 400);
+  const rejection = await rejectedResponse.json();
+  assert.equal(rejection.error, 'Unit mismatch or unrecognized unit in patient input.');
+  assert.equal(rejection.code, 'UNIT_REJECTED');
+  assert.deepEqual(rejection.details.find((detail) => detail.field === 'cbc.hemoglobin'), {
+    field: 'cbc.hemoglobin',
+    providedUnit: null,
+    expectedUnit: 'g/dL',
+    reason: 'unrecognized',
+  });
+
   // Internal registry/module-data consistency check — not an HTTP `?moduleId=` surface (none
   // exists per platform-foundation-p0-v1.md Sequencing Note 6). Confirms the discovery
   // breakdown the running server computed at startup for each registered module matches that
   // module's own KB files on disk. For P0 this loop body executes once (anemia only), proving
   // the plumbing generalizes correctly if a second module were registered.
-  const kbResponse = await fetch(`${base}/api/v1/knowledge-base`);
+  const kbResponse = await request('/api/v1/knowledge-base');
   assert.equal(kbResponse.status, 200);
   const knowledgeBase = await kbResponse.json();
   for (const moduleId of MODULE_IDS) {
@@ -85,15 +148,17 @@ try {
 
   console.log(`Smoke test passed: KB ${health.knowledgeBaseVersion}; ${assessment.rankedDifferential.length} differential pattern(s) returned.`);
 } finally {
-  server.kill('SIGTERM');
-  await new Promise((resolve) => {
-    const timer = setTimeout(() => {
-      server.kill('SIGKILL');
-      resolve();
-    }, 2_000);
-    server.once('exit', () => {
-      clearTimeout(timer);
-      resolve();
+  if (server.exitCode === null) {
+    server.kill('SIGTERM');
+    await new Promise((resolve) => {
+      const timer = setTimeout(() => {
+        server.kill('SIGKILL');
+        resolve();
+      }, 2_000);
+      server.once('exit', () => {
+        clearTimeout(timer);
+        resolve();
+      });
     });
-  });
+  }
 }

@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { assessPediatricAnemia } from './src/engine.js';
 import { EVIDENCE, KNOWLEDGE_BASE_VERSION, REVIEWED_THROUGH } from './src/evidence.js';
 import { MODULE_IDS } from './src/modules/registry.js';
+import { shapeServerError } from './src/serverErrors.js';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 8080);
@@ -126,7 +127,7 @@ async function readJsonBody(request) {
   }
 }
 
-const server = http.createServer(async (request, response) => {
+export async function handleRequest(request, response) {
   const requestId = randomUUID();
   const url = new URL(request.url || '/', `http://${request.headers.host || 'localhost'}`);
 
@@ -175,12 +176,18 @@ const server = http.createServer(async (request, response) => {
     if (request.method === 'HEAD') response.end();
     else response.end(content);
   } catch (error) {
-    const status = error.statusCode || (error.code === 'ENOENT' ? 404 : 400);
-    sendJson(response, status, { error: status === 404 ? 'Not found' : error.message }, requestId);
+    const { status, body } = shapeServerError(error);
+    sendJson(response, status, body, requestId);
   }
-});
+}
 
-server.listen(port, host, () => {
-  console.log(`Pediatric Anemia CDSS running at http://${host}:${port}`);
-  console.log('No request bodies are logged or persisted by this prototype server.');
-});
+const isMain = process.argv[1]
+  && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isMain) {
+  const server = http.createServer(handleRequest);
+  server.listen(port, host, () => {
+    console.log(`Pediatric Anemia CDSS running at http://${host}:${port}`);
+    console.log('No request bodies are logged or persisted by this prototype server.');
+  });
+}

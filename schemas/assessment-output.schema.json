@@ -25,10 +25,14 @@
     "limitations": { "type": "array", "items": { "type": "string" } },
     "provenance": {
       "type": "object",
-      "required": ["evaluatedRuleCount", "matchedRuleIds", "ruleAudit"],
+      "required": ["evaluatedRuleCount", "matchedRuleIds", "ruleAudit", "unitsAssumed"],
       "properties": {
         "evaluatedRuleCount": { "type": "integer", "minimum": 0 },
         "matchedRuleIds": { "type": "array", "items": { "type": "string" } },
+        "unitsAssumed": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
         "ruleAudit": {
           "type": "array",
           "items": {

@@ -101,7 +101,7 @@ paths:
               schema:
                 $ref: './schemas/assessment-output.schema.json'
         '400':
-          description: Invalid JSON or invalid root object
+          description: Invalid JSON, invalid root object, or rejected analyte unit
           content:
             application/json:
               schema:
@@ -119,3 +119,14 @@ components:
       required: [error]
       properties:
         error: { type: string }
+        code: { type: string }
+        details:
+          type: array
+          items:
+            type: object
+            required: [field, reason]
+            properties:
+              field: { type: string }
+              providedUnit: { type: [string, "null"] }
+              expectedUnit: { type: [string, "null"] }
+              reason: { type: string, enum: [incompatible, unrecognized, missing_reference_unit, invalid_reference_unit] }

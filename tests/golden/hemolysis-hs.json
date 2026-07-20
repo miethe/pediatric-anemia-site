@@ -99,7 +99,8 @@
     "This output is a deterministic clinical decision-support reference, not a diagnosis, treatment order, or substitute for examination and specialist judgment.",
     "The ranking is rule priority—not a calibrated probability, sensitivity, specificity, or risk score.",
     "Only supplied data are evaluated; missing, mistyped, or unit-mismatched data can materially change the output.",
-    "Local laboratory reference intervals, specimen methods, and clinical context override built-in fallback intervals."
+    "Local laboratory reference intervals, specimen methods, and clinical context override built-in fallback intervals.",
+    "Documented default units were assumed for supplied measurements: cbc.hemoglobin, cbc.mcv, cbc.rdw, cbc.rbc, cbc.wbc, cbc.platelets."
   ],
   "provenance": {
     "evaluatedRuleCount": 91,
@@ -475,6 +476,14 @@
         "ruleId": "ALERT-LEAD-CAPILLARY",
         "matched": false
       }
+    ],
+    "unitsAssumed": [
+      "cbc.hemoglobin",
+      "cbc.mcv",
+      "cbc.rdw",
+      "cbc.rbc",
+      "cbc.wbc",
+      "cbc.platelets"
     ]
   }
 }
