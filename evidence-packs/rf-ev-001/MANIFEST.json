@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1",
+  "runId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+  "bundlePath": "/Users/miethe/dev/homelab/development/research-foundry/runs/rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+  "upstreamFiles": [
+    {
+      "path": "run.json",
+      "sha256": "sha256:68ab95c286fcd1e732d602d4ff709c2eafb8e09e0de174cd951f241c0a3a824c"
+    },
+    {
+      "path": "sources/src_20260718_rfev001_00.md",
+      "sha256": "sha256:fe26cd2585ee2c2a8b77caab98d19e099e30d7fbe8bd51fd3f19e2fb64594805"
+    },
+    {
+      "path": "sources/src_20260718_rfev001_01.md",
+      "sha256": "sha256:6ebb073ae5fc7147c6a1c6fd4791240c8889bf65d0753a15b015510aeaa051f9"
+    },
+    {
+      "path": "sources/src_20260718_rfev001_02.md",
+      "sha256": "sha256:04267a147f79b4949a1b8c8210e642017f491d0bd003bca3233d64e2d906a483"
+    },
+    {
+      "path": "sources/src_20260718_rfev001_03.md",
+      "sha256": "sha256:e731583cef249092fdd4109a69a31c920af1302182486a55c05688cbc66e7b5c"
+    },
+    {
+      "path": "sources/src_20260718_rfev001_04.md",
+      "sha256": "sha256:63daeec090cd6c58b231bccaa71c5ffb51f5ae78b6a2992720dbcf46fe40d75c"
+    },
+    {
+      "path": "sources/src_20260718_rfev001_05.md",
+      "sha256": "sha256:741fead74557e0165daec5dc53349742772ede05060f977257c4b8b2fa6024c4"
+    }
+  ]
+}

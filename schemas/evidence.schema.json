@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/evidence.schema.json",
+  "title": "Pediatric Anemia Evidence Document",
+  "description": "Validates modules/anemia/evidence.json: the single evidence source (DEF-1) — a knowledge-base-version-stamped list of cited sources, each carrying its existing prose (`supports`) and, per EP-3, an array of exact-passage-level `passages[]` records. Structural validity never implies clinical validity: a passage validating here only means the record is shaped correctly, not that its content is accurate or locally applicable.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["knowledgeBaseVersion", "reviewedThrough", "sources"],
+  "properties": {
+    "knowledgeBaseVersion": { "type": "string", "minLength": 1 },
+    "reviewedThrough": { "type": "string", "format": "date" },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": false,
+      "items": { "$ref": "#/$defs/source" }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "priority", "year", "title", "organization", "journal", "url", "supports", "passages"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+        "priority": { "type": "string", "minLength": 1 },
+        "year": { "type": "integer" },
+        "title": { "type": "string", "minLength": 1 },
+        "organization": { "type": "string", "minLength": 1 },
+        "journal": { "type": "string", "minLength": 1 },
+        "doi": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional. Not every source has a DOI (e.g. WHO2024_HB, a WHO guideline, does not); this property is simply absent rather than null on those records, matching every other genuinely-optional descriptive field on this object (journal-style citation metadata, not a passage-level clinical fact) — see `$defs/passage` for the fields where the codebase's typed-null convention instead applies."
+        },
+        "url": { "type": "string", "minLength": 1 },
+        "supports": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "pmcid": { "type": "string", "minLength": 1, "description": "Optional; present only when the source has a PubMed Central id." },
+        "recencyNote": { "type": "string", "minLength": 1, "description": "Optional free-text note explaining why an older source is still retained." },
+        "passages": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/passage" },
+          "description": "Exact-passage-level evidence records for this source (EP-3, D-EP3-2/D-EP3-3). Every source has at least one: the minted `<id>#implementation-proposal` sentinel, plus one per source-supported passage backfilled from the RF-EV-001 bundle."
+        }
+      }
+    },
+    "passage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "sourceId",
+        "status",
+        "sourceLocator",
+        "exactPassage",
+        "passageFidelity",
+        "evidenceGrade",
+        "applicability",
+        "reviewDate",
+        "supersedes",
+        "surveillanceQuery",
+        "provenance"
+      ],
+      "description": "A single exact-passage evidence record (D-EP3-3). Every member below is REQUIRED as a key — legitimate absence is expressed as an explicit typed null (`evidenceGrade`, `supersedes`, and every member of `sourceLocator`/`applicability`), never by omitting the key. The one content invariant (AC EP3-T1) is enforced by the if/then below: a record is valid only when `exactPassage` is non-empty OR `status` is `implementation-proposal` — the proposal sentinel is the only way to have an empty passage.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]+#(ev_[0-9]{3}|implementation-proposal)$",
+          "description": "\"<sourceId>#<rf evidence_id>\", or \"<sourceId>#implementation-proposal\" for the minted sentinel."
+        },
+        "sourceId": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]+$",
+          "description": "Must equal the `id` of the enclosing source record. (This schema validates the passage in isolation and cannot cross-check the parent; that equality is enforced by scripts/evidence/build-evidence-pack.mjs and tests/evidence-passages.test.mjs.)"
+        },
+        "status": {
+          "enum": ["source-supported", "implementation-proposal"],
+          "description": "`source-supported` traces to a located passage in the cited source. `implementation-proposal` is the explicit minted sentinel (D-EP3-3) — exactly one per source."
+        },
+        "sourceLocator": { "$ref": "#/$defs/sourceLocator" },
+        "exactPassage": {
+          "type": "string",
+          "description": "A PARAPHRASE (see `passageFidelity`, D-EP3-4) of the located passage, sourced from the RF extracted point's `summary` — never its `quote`. Empty string only on an `implementation-proposal` record."
+        },
+        "passageFidelity": {
+          "enum": ["verbatim", "paraphrase"],
+          "description": "States what kind of text `exactPassage` holds. REG-002 has not cleared verbatim reuse of guideline text, so every record minted by this codebase's converter is `paraphrase`; `verbatim` is schema-representable for a future cleared source but is asserted by nobody today."
+        },
+        "evidenceGrade": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Null on an `implementation-proposal` record (there is no grade to assign to a sentinel). Otherwise the mapped `pediatric_cds.classification` from the RF extracted point (e.g. `source_supported_fact` -> `source-supported-fact`)."
+        },
+        "applicability": { "$ref": "#/$defs/applicability" },
+        "reviewDate": { "type": "string", "format": "date" },
+        "supersedes": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Free-text description of what this passage's guidance supersedes, from `pediatric_cds.lifecycle.supersedes`. Null when the source states no supersession."
+        },
+        "surveillanceQuery": {
+          "type": "string",
+          "minLength": 1,
+          "description": "A standing search query for detecting whether this source has been updated. Asserted per source (not derivable from any single RF extracted point) by the converter's source map."
+        },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      },
+      "if": {
+        "type": "object",
+        "required": ["exactPassage"],
+        "properties": { "exactPassage": { "const": "" } }
+      },
+      "then": {
+        "type": "object",
+        "required": ["status"],
+        "properties": { "status": { "const": "implementation-proposal" } }
+      }
+    },
+    "sourceLocator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw", "page", "section", "table", "figure"],
+      "description": "`raw` is always present, even on a proposal sentinel (where it explains why there is no located passage). The four parsed members are independently nullable: a locator that names a page but no table has `table: null`, not an omitted key.",
+      "properties": {
+        "raw": { "type": "string", "minLength": 1 },
+        "page": { "type": ["string", "null"], "minLength": 1 },
+        "section": { "type": ["string", "null"], "minLength": 1 },
+        "table": { "type": ["string", "null"], "minLength": 1 },
+        "figure": { "type": ["string", "null"], "minLength": 1 }
+      }
+    },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["age", "sex", "assay"],
+      "description": "Population applicability of the passage. Every member is independently nullable: `sex` in particular is null whenever the source does not name a single sex (D-EP3 field map — 'parsed from population when it names a sex, else null'), which is the common case, not an error.",
+      "properties": {
+        "age": { "type": ["string", "null"], "minLength": 1 },
+        "sex": { "type": ["string", "null"], "minLength": 1 },
+        "assay": { "type": ["string", "null"], "minLength": 1 }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runId", "sourceCardId", "evidenceId"],
+      "description": "Where this passage record came from. Unlike the applicability/locator fields, none of these are legitimately absent: every passage — including the minted proposal sentinel — traces to a specific RF run and source card.",
+      "properties": {
+        "runId": { "type": "string", "minLength": 1 },
+        "sourceCardId": { "type": "string", "minLength": 1 },
+        "evidenceId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The RF `extracted_points[].evidence_id` (e.g. `ev_001`), or the literal `implementation-proposal` for the minted sentinel."
+        }
+      }
+    }
+  }
+}
