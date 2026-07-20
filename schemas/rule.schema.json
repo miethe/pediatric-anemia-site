@@ -2,8 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/pediatric-anemia/schemas/rule.schema.json",
   "title": "Pediatric Anemia CDSS Rule",
+  "description": "EP-4 (FR-WP4-01) adds 9 rule-governance fields, all REQUIRED as keys under this schema's `additionalProperties: false` — there is no incremental rollout path under that constraint, so this was landed as one reviewable diff. Several are legitimately nullable/empty (`retireDate`, `clinicalApprovers`, `requiredTestCaseIds`, `sourcePassageId`): absence of the underlying fact is expressed with an explicit typed null or empty array, never by omitting the key, so a rule that forgot the field entirely still fails validation. `sourcePassageId: null` is schema-legal (D-EP3-3, Risk 6) for a newly authored rule not yet backfilled; `scripts/validate-kb.mjs` is the stricter policy layer that rejects null for the shipped KB (EP4-T2 flips `REQUIRE_RULE_SOURCE_PASSAGE_ID` once the codemod lands). Structural validity here never implies clinical validity, safety, or that a named human clinician reviewed anything — see `clinicalApprovers`.",
   "type": "object",
-  "required": ["id", "category", "when", "evidence", "output"],
+  "required": [
+    "id", "category", "when", "evidence", "output",
+    "version", "effectiveDate", "retireDate", "owner", "safetyClass",
+    "requiredTestCaseIds", "changeRationale", "sourcePassageId", "clinicalApprovers"
+  ],
   "additionalProperties": false,
   "properties": {
     "id": { "type": "string", "pattern": "^[A-Z0-9-]+$" },
@@ -17,6 +22,52 @@
         { "$ref": "#/$defs/questionOutput" },
         { "$ref": "#/$defs/noteOutput" }
       ]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Semver-shaped governance version for this rule record (not the KB or app version). REQUIRED, non-null: every governed rule has a version, starting at \"1.0.0\" for the EP-4 backfill (FR-WP4-02)."
+    },
+    "effectiveDate": {
+      "type": "string",
+      "format": "date",
+      "description": "Date this rule's current content became effective. REQUIRED, non-null. For the EP-4 backfill this is uniformly the KB's `reviewedThrough` date (modules/anemia/evidence.json) — a governance-record stamp, not a per-rule clinical review date."
+    },
+    "retireDate": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "Date this rule was retired/superseded, or `null` while still active. REQUIRED key, legitimately nullable — `null` is the normal value for every currently active rule, never an omission."
+    },
+    "owner": {
+      "type": "string",
+      "pattern": "^(role|team):[a-z][a-z0-9-]*$",
+      "description": "The role/team accountable for this rule's content — REQUIRED, non-null, and deliberately NOT a person's name (this is an unvalidated research prototype with no credentialed clinical owner; the `role:`/`team:` prefix is schema-enforced so a named human cannot be substituted by mistake). See `changeRationale` for why no clinical re-review occurred."
+    },
+    "safetyClass": {
+      "enum": ["safety-critical", "diagnostic", "informational"],
+      "description": "REQUIRED, non-null, closed enum (not free text). `safety-critical` = alert-output/safety-category rules (emergency/urgent/important flags and missing-data-that-blocks-safe-use prompts); `diagnostic` = differential-category candidate-ranking rules; `informational` = interpretive-note and adaptive-question rules that inform but do not themselves flag a hazard or rank a pattern. Derived deterministically from the rule's existing `category` field — see scripts/evidence/backfill-rule-governance.mjs header for the exact derivation table."
+    },
+    "requiredTestCaseIds": {
+      "type": "array",
+      "minItems": 0,
+      "items": { "type": "string", "minLength": 1 },
+      "description": "REQUIRED key, legitimately empty (`[]` = no test-case linkage yet — never \"exempt from testing\"). Populated mechanically with the relative fixture path(s) under tests/witness/ or tests/fixtures/ that make this rule fire (scripts/rule-coverage.mjs's activation-witness mapping), not hand-curated."
+    },
+    "changeRationale": {
+      "type": "string",
+      "minLength": 1,
+      "description": "REQUIRED, non-null, honest statement of why this rule's governance record last changed. For the EP-4 backfill this is a uniform string naming the mechanical governance backfill and explicitly disclaiming any clinical re-review — never an invented per-rule clinical rationale."
+    },
+    "sourcePassageId": {
+      "type": ["string", "null"],
+      "pattern": "^[A-Z0-9_]+#(ev_[0-9]{3}|implementation-proposal)$",
+      "description": "REQUIRED key. Nullable in this schema (D-EP3-3, Risk 6 — legitimate absence for a not-yet-backfilled rule), though `scripts/validate-kb.mjs` rejects null for the shipped KB once EP4-T2 lands. Names exactly one passage record in modules/anemia/evidence.json#sources[].passages[] (D-EP3-1: rule.evidence[] keeps its existing source-level shape; this field is the passage-level pointer). A present value must resolve to a real passage id; per D-EP3-6, it is bound to a `source-supported` passage only when unambiguous, and otherwise falls back to that source's `<SOURCE_ID>#implementation-proposal` sentinel — both are legal values here, the distinction is enforced by src/evidence.js#isBindableAsSourceSupported and scripts/validate-kb.mjs, not by this schema."
+    },
+    "clinicalApprovers": {
+      "type": "array",
+      "minItems": 0,
+      "items": { "type": "string", "minLength": 1 },
+      "description": "REQUIRED key. `[]` means NO credentialed clinical approval yet — never treat non-empty as achievable by anything other than a real named human clinician's attestation (D-4/AC-D4). Ships `[]` on every rule; ARC/council-review output is explicitly NOT a valid source for populating this field. A dedicated structural test (EP4-T3) enforces this stays empty."
     }
   },
   "$defs": {

@@ -20,7 +20,7 @@
   },
   "candidateBinding": {
     "knowledgeBaseVersion": "0.1.0-2026-07-15",
-    "rulesFileDigest": "sha256:011e72187067b0cd4159e6592091b2c33ab2e789763e9b33d0491aa955b1010a",
+    "rulesFileDigest": "sha256:618200518de01eb913ace213aa3c9568a8af545141771d394713cb52edb0c326",
     "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
     "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
   },

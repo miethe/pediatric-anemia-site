@@ -20,7 +20,19 @@
         "Use local age-in-days/weeks and gestational-age reference intervals.",
         "Apply a neonatal/young-infant anemia pathway and involve neonatology/hematology as clinically indicated."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/scope-neonatal-young-infant.json",
+      "tests/witness/branches/ferritin-below-supported-age.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "WHO2024_HB#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "SCOPE-002",
@@ -41,7 +53,19 @@
       "actions": [
         "Enter local hemoglobin, MCV, and RDW limits before interpreting the result."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/scope-outside-pediatric-range.json",
+      "tests/witness/branches/ferritin-above-pediatric-range.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "WHO2024_HB#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "SCOPE-003",
@@ -63,7 +87,38 @@
       "actions": [
         "Enter the reporting laboratory’s lower hemoglobin and MCV lower/upper limits."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-AGE-003.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-CBC-001.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-EQUITY-009.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-FHIR-008.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-HEME-002.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-IRON-006.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-LAB-005.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-RESULT-007.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-URGENT-004.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-WORKFLOW-010.json",
+      "tests/fixtures/local-profile/SYNTHETIC-reference-interval-profile.json",
+      "tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json",
+      "tests/fixtures/local-profile/negative-cases.json",
+      "tests/witness/alerts/scope-needs-local-ranges-age-unknown.json",
+      "tests/witness/alerts/scope-neonatal-young-infant.json",
+      "tests/witness/alerts/scope-outside-pediatric-range.json",
+      "tests/witness/branches/ferritin-above-pediatric-range.json",
+      "tests/witness/branches/ferritin-below-supported-age.json",
+      "tests/witness/branches/ranges-age-not-supplied.json",
+      "tests/witness/branches/ranges-sex-not-supplied.json",
+      "tests/witness/corpus/minimal-intake-no-data.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "ALERT-001",
@@ -84,7 +139,19 @@
         "Use immediate bedside assessment and local emergency/escalation protocols.",
         "Do not use this calculator to delay stabilization or specialist consultation."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/tma-schistocytes-neurologic-symptoms.json",
+      "tests/witness/alerts/unstable-major-bleeding-severe-anemia.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "ALERT-002",
@@ -104,7 +171,19 @@
       "actions": [
         "Activate the local acute bleeding/resuscitation pathway and identify the source."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/unstable-major-bleeding-severe-anemia.json",
+      "tests/witness/corpus/blood-loss-adolescent.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "ALERT-003",
@@ -127,7 +206,19 @@
         "Perform urgent clinical assessment for symptoms, instability, bleeding, hemolysis, and alternative etiologies.",
         "Use local hematology/transfusion protocols and clinician judgment."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/unstable-major-bleeding-severe-anemia.json",
+      "tests/witness/corpus/sickle-cell-parvovirus-aplastic-crisis.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "ALERT-004",
@@ -148,7 +239,21 @@
         "Obtain prompt expert CBC differential and smear review.",
         "Consider urgent pediatric hematology/oncology evaluation based on severity and clinical findings."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/tma-schistocytes-thrombocytopenia.json",
+      "tests/witness/corpus/copper-deficiency-anemia.json",
+      "tests/witness/corpus/fanconi-anemia-phenotype.json",
+      "tests/witness/corpus/microangiopathic-hemolysis-tma.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "clinicalApprovers": []
   },
   {
     "id": "ALERT-005",
@@ -169,7 +274,16 @@
       "actions": [
         "Contact pediatric hematology/oncology urgently and follow local critical-result procedures."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "ALERT-006",
@@ -210,7 +324,21 @@
       "actions": [
         "Use immediate local emergency/hematology/nephrology evaluation; confirm smear and obtain organ-injury/coagulation studies."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/tma-schistocytes-neurologic-symptoms.json",
+      "tests/witness/alerts/tma-schistocytes-renal-symptoms.json",
+      "tests/witness/alerts/tma-schistocytes-thrombocytopenia.json",
+      "tests/witness/corpus/microangiopathic-hemolysis-tma.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_004",
+    "clinicalApprovers": []
   },
   {
     "id": "ALERT-007",
@@ -232,7 +360,18 @@
         "Contact a Pediatric Environmental Health Specialty Unit or Poison Control and use the CDC/local high-level lead pathway.",
         "If the child is symptomatic or exposure is ongoing, evaluate urgently in an appropriate facility."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/lead-45plus-alert.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "CDC2025_LEAD#ev_005",
+    "clinicalApprovers": []
   },
   {
     "id": "ALERT-008",
@@ -253,7 +392,18 @@
       "actions": [
         "Use the current CDC/local lead pathway and arrange environmental/public-health follow-up."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/lead-20to44-alert.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "CDC2025_LEAD#ev_005",
+    "clinicalApprovers": []
   },
   {
     "id": "ALERT-009",
@@ -281,7 +431,16 @@
       "actions": [
         "Use the local febrile-neutropenia/emergency pathway immediately."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "NOTE-001",
@@ -299,7 +458,20 @@
       "type": "note",
       "title": "No anemia by the supplied threshold",
       "detail": "Hemoglobin is not below the effective lower limit. This does not exclude iron deficiency without anemia, evolving disease, abnormal indices, or clinically important symptoms."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/lead-20to44-alert.json",
+      "tests/witness/corpus/administrative-interpretation-caveats.json",
+      "tests/witness/corpus/iron-deficiency-without-anemia.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "NOTE-002",
@@ -316,7 +488,18 @@
       "type": "note",
       "title": "Ferritin is inflammation-confounded",
       "detail": "Ferritin is not low and CRP is elevated. A normal or high ferritin cannot reliably exclude iron deficiency in this context; use the full iron/inflammation pattern and, when available, the sTfR/log10(ferritin) index."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/microcytic-beta-thalassemia-inflammation-confounded.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "NOTE-003",
@@ -342,7 +525,30 @@
       "type": "note",
       "title": "Low ferritin can complicate beta-thalassemia interpretation",
       "detail": "Iron deficiency can lower HbA2. A non-elevated HbA2 during iron deficiency should not be treated as definitive exclusion of beta-thalassemia trait."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/lead-45plus-alert.json",
+      "tests/witness/branches/ferritin-adolescent-band-female-not-menstruating.json",
+      "tests/witness/branches/ferritin-adolescent-band-male.json",
+      "tests/witness/branches/ferritin-menstruating-under-adolescent-band.json",
+      "tests/witness/branches/ranges-band-infant-female.json",
+      "tests/witness/branches/ranges-band-infant-male.json",
+      "tests/witness/branches/ranges-band-preschool-female.json",
+      "tests/witness/branches/ranges-band-preschool-male.json",
+      "tests/witness/branches/ranges-band-school-age-female.json",
+      "tests/witness/branches/ranges-band-school-age-male.json",
+      "tests/witness/corpus/blood-loss-adolescent.json",
+      "tests/witness/corpus/iron-deficiency-without-anemia.json",
+      "tests/witness/corpus/mixed-iron-folate-deficiency.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "NOTE-004",
@@ -375,7 +581,18 @@
       "type": "note",
       "title": "Normal G6PD result may be falsely reassuring",
       "detail": "A normal assay during acute reticulocytosis/hemolysis or soon after transfusion may not exclude G6PD deficiency. Repeat quantitative testing at baseline if suspicion remains."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/g6pd-oxidant-hemolysis-tested-during-acute-episode.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BSH2020_G6PD#ev_004",
+    "clinicalApprovers": []
   },
   {
     "id": "NOTE-005",
@@ -392,7 +609,18 @@
       "type": "note",
       "title": "Recent transfusion limits interpretation",
       "detail": "Transfusion can alter MCV/RDW, reticulocytes, smear, hemoglobin analysis, and red-cell enzyme/membrane tests. Review pre-transfusion data and timing."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/administrative-interpretation-caveats.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "NOTE-006",
@@ -408,7 +636,18 @@
       "type": "note",
       "title": "No altitude adjustment applied",
       "detail": "Hemoglobin interpretation may require altitude-specific adjustment. The prototype does not calculate one; local guidance and reference intervals are required."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/administrative-interpretation-caveats.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "WHO2024_HB#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "ID-001",
@@ -439,7 +678,29 @@
         "Hemoglobin {{cbc.hb}} g/dL is below the effective lower limit of {{thresholds.hbLower}} g/dL.",
         "Ferritin {{ferritin.value}} ng/mL is at or below the AAP threshold of {{ferritin.threshold}} ng/mL."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/lead-45plus-alert.json",
+      "tests/witness/branches/ferritin-adolescent-band-female-not-menstruating.json",
+      "tests/witness/branches/ferritin-adolescent-band-male.json",
+      "tests/witness/branches/ferritin-menstruating-under-adolescent-band.json",
+      "tests/witness/branches/ranges-band-infant-female.json",
+      "tests/witness/branches/ranges-band-infant-male.json",
+      "tests/witness/branches/ranges-band-preschool-female.json",
+      "tests/witness/branches/ranges-band-preschool-male.json",
+      "tests/witness/branches/ranges-band-school-age-female.json",
+      "tests/witness/branches/ranges-band-school-age-male.json",
+      "tests/witness/corpus/blood-loss-adolescent.json",
+      "tests/witness/corpus/mixed-iron-folate-deficiency.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "ID-002",
@@ -486,7 +747,18 @@
       "nextSteps": [
         "Obtain ferritin as the next core discriminator; add CRP if the child is currently ill or has inflammatory disease."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/microcytic-no-ferritin-iron-risk.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "ID-003",
@@ -516,7 +788,18 @@
       "support": [
         "sTfR/log10(ferritin) index is >2 (entered value {{iron.stfrFerritinIndex}}), supporting iron deficiency."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/iron-refractory-anemia-irida.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "ID-004",
@@ -546,7 +829,18 @@
       "support": [
         "Hemoglobin is not below the effective lower limit, but ferritin {{ferritin.value}} ng/mL meets the AAP iron-deficiency threshold of {{ferritin.threshold}} ng/mL."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/iron-deficiency-without-anemia.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "ID-005",
@@ -588,7 +882,18 @@
       "nextSteps": [
         "Use transferrin saturation/TIBC and, when available, sTfR/log10(ferritin) index to assess coexisting absolute iron deficiency."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/microcytic-beta-thalassemia-inflammation-confounded.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "ID-006",
@@ -627,7 +932,19 @@
       "support": [
         "Microcytic anemia, locally interpreted low transferrin saturation, and an iron-risk history were supplied."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/branches/ferritin-adolescent-band-male.json",
+      "tests/witness/branches/ferritin-menstruating-under-adolescent-band.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "AINF-001",
@@ -649,7 +966,16 @@
       "support": [
         "Anemia, elevated CRP, non-low ferritin, low transferrin saturation, and low/normal TIBC form an inflammatory iron-restriction pattern."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "AINF-002",
@@ -689,7 +1015,16 @@
       "support": [
         "Chronic inflammatory disease, non-low ferritin, and an inappropriately low reticulocyte response were supplied."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "AINF-003",
@@ -724,7 +1059,16 @@
       "support": [
         "sTfR/log10(ferritin) index is <1 with elevated CRP, favoring anemia of inflammation without absolute iron deficiency."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "AINF-004",
@@ -763,7 +1107,16 @@
       "support": [
         "Normocytic, production-limited anemia occurs with a chronic inflammatory condition."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "THAL-001",
@@ -810,7 +1163,18 @@
       "support": [
         "Microcytosis with non-low ferritin and at least one globin-production clue (relatively high RBC count, target cells, or family history)."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/microcytic-alpha-thalassemia-nonlow-ferritin.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "THAL-002",
@@ -853,7 +1217,16 @@
       "support": [
         "Microcytosis with non-elevated RDW and an RBC/smear clue is more compatible with a thalassemia trait pattern than classic isolated IDA, but is not diagnostic."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "THAL-BETA-001",
@@ -877,7 +1250,16 @@
       "cautions": [
         "Coexisting iron deficiency can lower HbA2 and should be addressed in interpretation."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "THAL-BETA-002",
@@ -897,7 +1279,18 @@
       "support": [
         "Beta-globin molecular testing was reported positive."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/microcytic-beta-thalassemia-inflammation-confounded.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "THAL-ALPHA-001",
@@ -917,7 +1310,18 @@
       "support": [
         "Hemoglobin Bart’s was reported on the newborn screen."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/microcytic-alpha-thalassemia-nonlow-ferritin.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "THAL-ALPHA-002",
@@ -937,7 +1341,18 @@
       "support": [
         "Alpha-globin molecular testing was reported positive."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/microcytic-alpha-thalassemia-nonlow-ferritin.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "LEAD-001",
@@ -958,7 +1373,19 @@
       "support": [
         "Blood lead level {{lead.value}} µg/dL is at or above the CDC reference value of 3.5 µg/dL."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/lead-20to44-alert.json",
+      "tests/witness/alerts/lead-45plus-alert.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "LEAD-002",
@@ -1009,7 +1436,18 @@
       "nextSteps": [
         "Obtain an age- and jurisdiction-appropriate blood lead test."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/sideroblastic-iron-loading-microcytosis.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "LEAD-003",
@@ -1040,7 +1478,18 @@
       "support": [
         "Microcytosis coexists with an elevated blood lead level; iron deficiency should also be evaluated."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/lead-45plus-alert.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "SID-001",
@@ -1087,7 +1536,18 @@
       "cautions": [
         "Basophilic stippling is not specific; lead and thalassemia remain alternatives."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/sideroblastic-iron-loading-microcytosis.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "SID-002",
@@ -1117,7 +1577,18 @@
       "support": [
         "Microcytosis with locally interpreted high serum iron is atypical for isolated iron deficiency."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/sideroblastic-iron-loading-microcytosis.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "LOSS-001",
@@ -1151,7 +1622,18 @@
       "support": [
         "Anemia, an elevated reticulocyte response, and a bleeding source/history were supplied."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/blood-loss-adolescent.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "LOSS-002",
@@ -1185,7 +1667,19 @@
       "support": [
         "Iron deficiency anemia coexists with a menstrual, gastrointestinal, epistaxis, donation, or other blood-loss history."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/branches/ferritin-menstruating-under-adolescent-band.json",
+      "tests/witness/corpus/blood-loss-adolescent.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "LOSS-003",
@@ -1205,7 +1699,19 @@
       "support": [
         "Active major bleeding was selected."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/unstable-major-bleeding-severe-anemia.json",
+      "tests/witness/corpus/blood-loss-adolescent.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "HEM-001",
@@ -1240,7 +1746,22 @@
       "support": [
         "Anemia, elevated reticulocyte response, and at least two biochemical hemolysis markers were supplied."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/tma-schistocytes-neurologic-symptoms.json",
+      "tests/witness/alerts/tma-schistocytes-renal-symptoms.json",
+      "tests/witness/alerts/tma-schistocytes-thrombocytopenia.json",
+      "tests/witness/corpus/autoimmune-hemolytic-anemia.json",
+      "tests/witness/corpus/g6pd-oxidant-hemolysis-tested-during-acute-episode.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "HEM-002",
@@ -1274,7 +1795,18 @@
       "support": [
         "Anemia with elevated reticulocytes and jaundice/dark urine supports a red-cell destruction pathway."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/autoimmune-hemolytic-anemia.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "HEM-003",
@@ -1309,7 +1841,18 @@
       "support": [
         "At least two biochemical hemolysis markers are present, but reticulocyte response is missing."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/g6pd-deficient-hemolysis-retic-pending.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "AIHA-001",
@@ -1339,7 +1882,18 @@
       "support": [
         "Biochemical hemolysis and a positive direct antiglobulin test were supplied."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/autoimmune-hemolytic-anemia.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "HS-001",
@@ -1374,7 +1928,16 @@
       "support": [
         "Hemolysis, spherocytes, and a negative DAT form a hereditary-spherocytosis-compatible pattern."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_004",
+    "clinicalApprovers": []
   },
   {
     "id": "HS-002",
@@ -1411,7 +1974,16 @@
       "support": [
         "Spherocytes plus splenomegaly or known hereditary spherocytosis were supplied."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_004",
+    "clinicalApprovers": []
   },
   {
     "id": "G6PD-001",
@@ -1432,7 +2004,18 @@
       "support": [
         "A quantitative G6PD assay was reported deficient."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/g6pd-deficient-hemolysis-retic-pending.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BSH2020_G6PD#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "G6PD-002",
@@ -1467,7 +2050,18 @@
       "support": [
         "Hemolysis, bite/blister cells, and an oxidant medication/fava exposure were supplied."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/g6pd-oxidant-hemolysis-tested-during-acute-episode.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "G6PD-003",
@@ -1517,7 +2111,18 @@
       "support": [
         "The normal G6PD assay was obtained in a context that can obscure deficiency, and clinical/smear suspicion remains."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/g6pd-oxidant-hemolysis-tested-during-acute-episode.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BSH2020_G6PD#ev_004",
+    "clinicalApprovers": []
   },
   {
     "id": "TMA-001",
@@ -1556,7 +2161,21 @@
       "support": [
         "Schistocytes coexist with biochemical hemolysis or an elevated reticulocyte response."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/tma-schistocytes-neurologic-symptoms.json",
+      "tests/witness/alerts/tma-schistocytes-renal-symptoms.json",
+      "tests/witness/alerts/tma-schistocytes-thrombocytopenia.json",
+      "tests/witness/corpus/microangiopathic-hemolysis-tma.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_004",
+    "clinicalApprovers": []
   },
   {
     "id": "SICKLE-001",
@@ -1589,7 +2208,18 @@
       "support": [
         "Known disease, sickling hemoglobin on analysis, or sickled cells were supplied."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/sickle-cell-parvovirus-aplastic-crisis.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "MAL-001",
@@ -1631,7 +2261,18 @@
       "support": [
         "Fever, relevant malaria travel/residence, and anemia or hemolysis were supplied."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/possible-hemolysis-malaria-incomplete-workup.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "REN-001",
@@ -1670,7 +2311,18 @@
       "support": [
         "Normocytic anemia, an inappropriately low reticulocyte response, and kidney disease/abnormal creatinine were supplied."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/renal-anemia.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "TEC-001",
@@ -1744,7 +2396,18 @@
       "cautions": [
         "This is a diagnosis of exclusion; trend and clinical context are essential."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/transient-erythroblastopenia-childhood.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "PARVO-001",
@@ -1782,7 +2445,18 @@
       "support": [
         "Reticulocytopenic anemia followed a viral illness in a patient with a chronic hemolytic disorder."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/sickle-cell-parvovirus-aplastic-crisis.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "MARROW-001",
@@ -1816,7 +2490,19 @@
       "support": [
         "Production-limited anemia coexists with another cytopenia."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/copper-deficiency-anemia.json",
+      "tests/witness/corpus/fanconi-anemia-phenotype.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "clinicalApprovers": []
   },
   {
     "id": "MARROW-002",
@@ -1837,7 +2523,16 @@
       "support": [
         "Blasts were reported on the peripheral smear; this meets an urgent marrow/infiltration concern pattern, not a final diagnosis."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "MARROW-003",
@@ -1887,7 +2582,16 @@
       "support": [
         "Production-limited anemia coexists with organomegaly, lymphadenopathy, petechiae, or unexplained bruising."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "MEG-001",
@@ -1931,7 +2635,18 @@
       "support": [
         "Macrocytic anemia coexists with a locally interpreted low vitamin B12 or folate result."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/macrocytic-b12-deficiency-thyroid.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "MEG-002",
@@ -1961,7 +2676,18 @@
       "support": [
         "Macrocytosis and hypersegmented neutrophils support a megaloblastic process."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/macrocytic-b12-deficiency-thyroid.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "COPPER-001",
@@ -1995,7 +2721,18 @@
       "support": [
         "Anemia, low copper, and neutropenia were supplied."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/copper-deficiency-anemia.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "MACRO-001",
@@ -2029,7 +2766,18 @@
       "support": [
         "Macrocytic anemia coexists with thyroid disease or elevated TSH."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/macrocytic-b12-deficiency-thyroid.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "MACRO-002",
@@ -2063,7 +2811,18 @@
       "support": [
         "Macrocytic anemia coexists with liver disease or abnormal liver tests."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/macrocytic-liver-disease-medication.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "MACRO-003",
@@ -2097,7 +2856,18 @@
       "support": [
         "Macrocytic anemia coexists with a medication known by the clinician to be associated with macrocytosis."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/macrocytic-liver-disease-medication.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "MACRO-004",
@@ -2130,7 +2900,18 @@
       "nextSteps": [
         "Evaluate for hemolysis or blood loss before assigning a nutrient deficiency."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/macrocytosis-from-reticulocytosis.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "IMF-001",
@@ -2178,7 +2959,19 @@
       "support": [
         "Production-limited anemia plus congenital/phenotypic signals and macrocytosis or another cytopenia were supplied."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/diamond-blackfan-infant.json",
+      "tests/witness/corpus/fanconi-anemia-phenotype.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "clinicalApprovers": []
   },
   {
     "id": "IMF-DBA-001",
@@ -2227,7 +3020,18 @@
       "support": [
         "Early infancy, macrocytic isolated reticulocytopenic anemia, and a congenital signal are compatible with a Diamond-Blackfan-type pathway."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/diamond-blackfan-infant.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "IMF-FANCONI-001",
@@ -2272,7 +3076,18 @@
       "support": [
         "Anemia with another cytopenia and a limb, pigmentation, or growth phenotype is compatible with a Fanconi/inherited-marrow-failure pathway."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/fanconi-anemia-phenotype.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "clinicalApprovers": []
   },
   {
     "id": "MIX-001",
@@ -2317,7 +3132,18 @@
       "support": [
         "Biochemical iron deficiency coexists with low B12 or folate, so MCV may be deceptively normal."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/mixed-iron-folate-deficiency.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "MIX-002",
@@ -2338,7 +3164,18 @@
       "support": [
         "Recent transfusion can mix red-cell populations and alter indices, smear, reticulocytes, and specialized assays."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/administrative-interpretation-caveats.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "IRIDA-001",
@@ -2386,7 +3223,18 @@
       "cautions": [
         "A rare iron-handling disorder should be considered only after common causes of apparent nonresponse are excluded."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/iron-refractory-anemia-irida.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-001",
@@ -2405,7 +3253,33 @@
       "section": "demographics",
       "prompt": "What is the patient age in months?",
       "why": "Age determines the appropriate hemoglobin/MCV reference interval and several age-specific differentials."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-AGE-003.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-CBC-001.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-EQUITY-009.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-FHIR-008.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-HEME-002.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-IRON-006.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-LAB-005.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-RESULT-007.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-URGENT-004.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-WORKFLOW-010.json",
+      "tests/fixtures/local-profile/SYNTHETIC-reference-interval-profile.json",
+      "tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json",
+      "tests/fixtures/local-profile/negative-cases.json",
+      "tests/witness/alerts/scope-needs-local-ranges-age-unknown.json",
+      "tests/witness/branches/ranges-age-not-supplied.json",
+      "tests/witness/corpus/minimal-intake-no-data.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-002",
@@ -2424,7 +3298,34 @@
       "section": "cbc",
       "prompt": "What is the hemoglobin in g/dL?",
       "why": "Hemoglobin relative to an age/sex or local lower limit defines anemia."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-AGE-003.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-CBC-001.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-EQUITY-009.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-FHIR-008.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-HEME-002.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-IRON-006.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-LAB-005.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-RESULT-007.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-URGENT-004.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-WORKFLOW-010.json",
+      "tests/fixtures/local-profile/SYNTHETIC-reference-interval-profile.json",
+      "tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json",
+      "tests/fixtures/local-profile/negative-cases.json",
+      "tests/witness/alerts/scope-needs-local-ranges-age-unknown.json",
+      "tests/witness/alerts/scope-neonatal-young-infant.json",
+      "tests/witness/alerts/scope-outside-pediatric-range.json",
+      "tests/witness/corpus/minimal-intake-no-data.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-003",
@@ -2443,7 +3344,38 @@
       "section": "cbc",
       "prompt": "What lower hemoglobin limit did the reporting laboratory use?",
       "why": "No safe built-in threshold is available for this age/sex configuration."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-AGE-003.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-CBC-001.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-EQUITY-009.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-FHIR-008.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-HEME-002.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-IRON-006.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-LAB-005.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-RESULT-007.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-URGENT-004.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-WORKFLOW-010.json",
+      "tests/fixtures/local-profile/SYNTHETIC-reference-interval-profile.json",
+      "tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json",
+      "tests/fixtures/local-profile/negative-cases.json",
+      "tests/witness/alerts/scope-needs-local-ranges-age-unknown.json",
+      "tests/witness/alerts/scope-neonatal-young-infant.json",
+      "tests/witness/alerts/scope-outside-pediatric-range.json",
+      "tests/witness/branches/ferritin-above-pediatric-range.json",
+      "tests/witness/branches/ferritin-below-supported-age.json",
+      "tests/witness/branches/ranges-age-not-supplied.json",
+      "tests/witness/branches/ranges-sex-not-supplied.json",
+      "tests/witness/corpus/minimal-intake-no-data.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-004",
@@ -2471,7 +3403,21 @@
       "section": "reticulocytes",
       "prompt": "Is the reticulocyte response low/inappropriately normal or high for this patient and laboratory?",
       "why": "Reticulocyte response is the highest-yield discriminator between impaired production and blood loss/hemolysis."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/branches/ranges-local-override-partial.json",
+      "tests/witness/corpus/g6pd-deficient-hemolysis-retic-pending.json",
+      "tests/witness/corpus/macrocytic-b12-deficiency-thyroid.json",
+      "tests/witness/corpus/microcytic-no-ferritin-iron-risk.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-005",
@@ -2491,7 +3437,38 @@
       "section": "cbc",
       "prompt": "Enter MCV and the local MCV lower/upper limits.",
       "why": "Morphology cannot be classified without MCV and appropriate limits."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-AGE-003.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-CBC-001.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-EQUITY-009.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-FHIR-008.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-HEME-002.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-IRON-006.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-LAB-005.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-RESULT-007.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-URGENT-004.json",
+      "tests/fixtures/dangerous-miss/SYNTHETIC-DM-WORKFLOW-010.json",
+      "tests/fixtures/local-profile/SYNTHETIC-reference-interval-profile.json",
+      "tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json",
+      "tests/fixtures/local-profile/negative-cases.json",
+      "tests/witness/alerts/scope-needs-local-ranges-age-unknown.json",
+      "tests/witness/alerts/scope-neonatal-young-infant.json",
+      "tests/witness/alerts/scope-outside-pediatric-range.json",
+      "tests/witness/branches/ferritin-above-pediatric-range.json",
+      "tests/witness/branches/ferritin-below-supported-age.json",
+      "tests/witness/branches/ranges-age-not-supplied.json",
+      "tests/witness/branches/ranges-sex-not-supplied.json",
+      "tests/witness/corpus/minimal-intake-no-data.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-MICRO-001",
@@ -2519,7 +3496,20 @@
       "section": "microcytic",
       "prompt": "What is the ferritin in ng/mL?",
       "why": "Ferritin is the core biochemical discriminator for iron deficiency; a low value remains important even with inflammation."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/iron-refractory-anemia-irida.json",
+      "tests/witness/corpus/microcytic-no-ferritin-iron-risk.json",
+      "tests/witness/corpus/sideroblastic-iron-loading-microcytosis.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-MICRO-002",
@@ -2552,7 +3542,19 @@
       "section": "microcytic",
       "prompt": "Is CRP normal or elevated, or is the child clinically well without inflammatory disease?",
       "why": "Inflammation can elevate ferritin and obscure coexisting iron deficiency."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/branches/ranges-local-override-partial.json",
+      "tests/witness/corpus/microcytic-alpha-thalassemia-nonlow-ferritin.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-MICRO-003",
@@ -2603,7 +3605,19 @@
       "section": "microcytic",
       "prompt": "What do the newborn screen and age-appropriate hemoglobin analysis show?",
       "why": "Persistent non-iron-deficient microcytosis warrants evaluation for alpha/beta thalassemia and other hemoglobinopathies."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/branches/ferritin-young-child-band.json",
+      "tests/witness/branches/ranges-local-override-partial.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-MICRO-004",
@@ -2648,7 +3662,18 @@
       "section": "microcytic",
       "prompt": "Obtain/enter a blood lead level and specimen type.",
       "why": "Lead risk or compatible smear findings require direct blood lead testing."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/sideroblastic-iron-loading-microcytosis.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-MICRO-005",
@@ -2677,7 +3702,33 @@
       "section": "microcytic",
       "prompt": "Has menstrual, gastrointestinal, nasal, donation-related, urinary, or other blood loss been assessed?",
       "why": "Chronic blood loss is an important cause of iron deficiency in older children and adolescents."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/lead-45plus-alert.json",
+      "tests/witness/branches/ferritin-adolescent-band-female-not-menstruating.json",
+      "tests/witness/branches/ferritin-adolescent-band-male.json",
+      "tests/witness/branches/ferritin-young-child-band.json",
+      "tests/witness/branches/ranges-band-infant-female.json",
+      "tests/witness/branches/ranges-band-infant-male.json",
+      "tests/witness/branches/ranges-band-preschool-female.json",
+      "tests/witness/branches/ranges-band-preschool-male.json",
+      "tests/witness/branches/ranges-band-school-age-female.json",
+      "tests/witness/branches/ranges-band-school-age-male.json",
+      "tests/witness/branches/ranges-local-override-partial.json",
+      "tests/witness/corpus/iron-refractory-anemia-irida.json",
+      "tests/witness/corpus/microcytic-alpha-thalassemia-nonlow-ferritin.json",
+      "tests/witness/corpus/microcytic-beta-thalassemia-inflammation-confounded.json",
+      "tests/witness/corpus/microcytic-no-ferritin-iron-risk.json",
+      "tests/witness/corpus/sideroblastic-iron-loading-microcytosis.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-NORMO-HIGH-001",
@@ -2710,7 +3761,20 @@
       "section": "normocytic-high-retic",
       "prompt": "Enter indirect bilirubin, LDH, haptoglobin, DAT, and smear findings.",
       "why": "A high reticulocyte response shifts the differential toward hemolysis or blood loss."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/blood-loss-adolescent.json",
+      "tests/witness/corpus/microangiopathic-hemolysis-tma.json",
+      "tests/witness/corpus/possible-hemolysis-malaria-incomplete-workup.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-NORMO-HIGH-002",
@@ -2744,7 +3808,24 @@
       "section": "normocytic-high-retic",
       "prompt": "Is there occult or overt blood loss?",
       "why": "Blood loss and hemolysis are the main high-reticulocyte branches."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/tma-schistocytes-neurologic-symptoms.json",
+      "tests/witness/alerts/tma-schistocytes-renal-symptoms.json",
+      "tests/witness/alerts/tma-schistocytes-thrombocytopenia.json",
+      "tests/witness/corpus/autoimmune-hemolytic-anemia.json",
+      "tests/witness/corpus/g6pd-oxidant-hemolysis-tested-during-acute-episode.json",
+      "tests/witness/corpus/microangiopathic-hemolysis-tma.json",
+      "tests/witness/corpus/possible-hemolysis-malaria-incomplete-workup.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-NORMO-LOW-001",
@@ -2790,7 +3871,21 @@
       "section": "normocytic-low-retic",
       "prompt": "Assess renal function, inflammatory disease/CRP, recent viral illness, and the other cell lines.",
       "why": "Low-reticulocyte normocytic anemia requires evaluation for renal/inflammatory suppression, transient erythroblastopenia, infection, and marrow disease."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/unstable-major-bleeding-severe-anemia.json",
+      "tests/witness/corpus/mixed-iron-folate-deficiency.json",
+      "tests/witness/corpus/sickle-cell-parvovirus-aplastic-crisis.json",
+      "tests/witness/corpus/transient-erythroblastopenia-childhood.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-MACRO-001",
@@ -2818,7 +3913,18 @@
       "section": "macrocytic",
       "prompt": "What is the reticulocyte response?",
       "why": "Reticulocytosis itself can elevate MCV; low reticulocytes suggest production failure."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/macrocytic-b12-deficiency-thyroid.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-MACRO-002",
@@ -2857,7 +3963,20 @@
       "section": "macrocytic",
       "prompt": "Enter B12, folate, smear, TSH, liver tests, and relevant medication exposure.",
       "why": "These data separate megaloblastic from non-megaloblastic macrocytosis."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/diamond-blackfan-infant.json",
+      "tests/witness/corpus/macrocytic-liver-disease-medication.json",
+      "tests/witness/corpus/macrocytosis-from-reticulocytosis.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-SMEAR-001",
@@ -2903,7 +4022,25 @@
       "section": "smear",
       "prompt": "Has a peripheral smear been reviewed by an experienced laboratory professional?",
       "why": "Smear findings can identify hemolysis, blasts, abnormal morphology, and megaloblastic changes."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/corpus/autoimmune-hemolytic-anemia.json",
+      "tests/witness/corpus/blood-loss-adolescent.json",
+      "tests/witness/corpus/copper-deficiency-anemia.json",
+      "tests/witness/corpus/diamond-blackfan-infant.json",
+      "tests/witness/corpus/fanconi-anemia-phenotype.json",
+      "tests/witness/corpus/macrocytic-liver-disease-medication.json",
+      "tests/witness/corpus/macrocytosis-from-reticulocytosis.json",
+      "tests/witness/corpus/possible-hemolysis-malaria-incomplete-workup.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "clinicalApprovers": []
   },
   {
     "id": "Q-CYT-001",
@@ -2921,7 +4058,21 @@
       "section": "urgent",
       "prompt": "Has the CBC differential and smear been urgently reviewed, and is pediatric hematology/oncology involved?",
       "why": "Anemia with another cytopenia may indicate marrow failure, infiltration, severe infection, immune disease, or other systemic pathology."
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [
+      "tests/witness/alerts/tma-schistocytes-thrombocytopenia.json",
+      "tests/witness/corpus/copper-deficiency-anemia.json",
+      "tests/witness/corpus/fanconi-anemia-phenotype.json",
+      "tests/witness/corpus/microangiopathic-hemolysis-tma.json"
+    ],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "clinicalApprovers": []
   },
   {
     "id": "ALERT-LEAD-CAPILLARY",
@@ -2943,6 +4094,15 @@
         "Arrange confirmatory venous testing using the current CDC/local timeline.",
         "Take an environmental exposure history and assess for coexisting iron deficiency."
       ]
-    }
+    },
+    "version": "1.0.0",
+    "effectiveDate": "2026-07-15",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [],
+    "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
+    "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
+    "clinicalApprovers": []
   }
 ]

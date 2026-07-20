@@ -15,11 +15,11 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // nothing else in this file should need to change.
 const REG_002_CLEARED = false;
 
-// EP-4 (EP4-T1/T2) has not landed: no rule carries `sourcePassageId` yet (D-EP3-3, Risk 6), so a
-// rule missing it is tolerated below with a WARNING naming the count instead of a hard error.
-// Flip this single constant to `true` in the same commit that lands EP4-T2's codemod over all 91
-// rules — this file then hard-fails any rule still missing `sourcePassageId`.
-const REQUIRE_RULE_SOURCE_PASSAGE_ID = false;
+// EP-4 (EP4-T1/T2) has landed: scripts/evidence/backfill-rule-governance.mjs populates
+// `sourcePassageId` (source-supported or an explicit `<sourceId>#implementation-proposal`
+// fallback, D-EP3-6) on all 91 rules. A rule missing it is therefore now a hard error, not a
+// tolerated warning.
+const REQUIRE_RULE_SOURCE_PASSAGE_ID = true;
 
 // "<sourceId>#<ev_NNN|implementation-proposal>" — mirrors schemas/evidence.schema.json's
 // $defs/passage.id pattern. Duplicated here (rather than read out of the schema at runtime)
@@ -368,18 +368,19 @@ export async function validateModule(moduleId, rootDir) {
       errors.push(`${moduleId}/${rule.id}: unknown candidate ${rule.output.candidateId}`);
     }
 
-    // EP4-T1 has not landed: `sourcePassageId` does not exist on rule.schema.json yet, so no
-    // shipped rule carries it today. Written so it is already correct the day EP-4 adds the
-    // field: a present, non-null `sourcePassageId` must resolve to a real passage id (hard
-    // error) AND that passage must be bindable (EP3-T5 binding rule, src/evidence.js#
+    // EP4-T2 (scripts/evidence/backfill-rule-governance.mjs) has landed: every rule carries a
+    // present, non-null `sourcePassageId` (D-EP3-3/D-EP3-6) — hard error if it does not resolve to
+    // a real passage id. D-EP3-3's fallback design means a resolved passage is legitimately EITHER
+    // a `source-supported` passage (which must ALSO pass the EP3-T5 binding rule, src/evidence.js#
     // isBindableAsSourceSupported — the one shared predicate this check and EP-4's rule->passage
-    // binder both call); an absent/null one is tolerated with a WARNING naming the count, gated by
-    // REQUIRE_RULE_SOURCE_PASSAGE_ID above.
+    // binder both call) OR the source's minted `implementation-proposal` sentinel, which is by
+    // definition never "bindable as source-supported" and must NOT be rejected for that reason —
+    // it is the honest, conservative fallback D-EP3-6 exists to make possible.
     if (Object.hasOwn(rule, 'sourcePassageId') && rule.sourcePassageId != null) {
       const boundPassage = passageIndex.get(rule.sourcePassageId);
       if (!boundPassage) {
         errors.push(`${moduleId}/${rule.id}: sourcePassageId "${rule.sourcePassageId}" does not resolve to a known passage`);
-      } else if (!isBindableAsSourceSupported(boundPassage)) {
+      } else if (boundPassage.status !== 'implementation-proposal' && !isBindableAsSourceSupported(boundPassage)) {
         errors.push(`${moduleId}/${rule.id}: sourcePassageId "${rule.sourcePassageId}" is flagged (reviewFlags: ${JSON.stringify(boundPassage.reviewFlags ?? [])}) and cannot be bound as source-supported grounding (EP3-T5 binding rule)`);
       }
     } else {

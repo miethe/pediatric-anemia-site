@@ -12,7 +12,7 @@
         "scenarioId": "SCN-DM-CBC-001",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-CBC-001.json",
-        "fixtureDigest": "sha256:52ac4bd7704162f10b81e963a87f42dfb50f9e5af65dd9965d6d571121b141c3"
+        "fixtureDigest": "sha256:a17e9af68b6571cf3a89c0e805ba029166609aef149d4e7127652828d2f927e5"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -31,7 +31,7 @@
         "bindingType": "candidate_rules",
         "candidateBinding": {
           "knowledgeBaseVersion": "0.1.0-2026-07-15",
-          "rulesFileDigest": "sha256:011e72187067b0cd4159e6592091b2c33ab2e789763e9b33d0491aa955b1010a",
+          "rulesFileDigest": "sha256:618200518de01eb913ace213aa3c9568a8af545141771d394713cb52edb0c326",
           "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
           "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
         },
@@ -89,7 +89,7 @@
         "scenarioId": "SCN-DM-HEME-002",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-HEME-002.json",
-        "fixtureDigest": "sha256:072c0fd2928d4ac93b56a475f4f78024ea04ef43ba76d931584b862953570293"
+        "fixtureDigest": "sha256:dbb8dc61446fd9af1f004f437339d65c417939434f7b447bdc0fe0c37e236827"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -103,7 +103,7 @@
         "bindingType": "candidate_rules",
         "candidateBinding": {
           "knowledgeBaseVersion": "0.1.0-2026-07-15",
-          "rulesFileDigest": "sha256:011e72187067b0cd4159e6592091b2c33ab2e789763e9b33d0491aa955b1010a",
+          "rulesFileDigest": "sha256:618200518de01eb913ace213aa3c9568a8af545141771d394713cb52edb0c326",
           "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
           "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
         },
@@ -169,7 +169,7 @@
         "scenarioId": "SCN-DM-AGE-003",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-AGE-003.json",
-        "fixtureDigest": "sha256:0fcfcc50863dda15fd0c32c38e53d92877a8a3c4b50e75bccbac8c5ee1898ae7"
+        "fixtureDigest": "sha256:9048fc995cdee1a6b19c8556996d3779c4447ea211f7e75b102c5ba8c284909f"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -184,7 +184,7 @@
         "bindingType": "candidate_rules",
         "candidateBinding": {
           "knowledgeBaseVersion": "0.1.0-2026-07-15",
-          "rulesFileDigest": "sha256:011e72187067b0cd4159e6592091b2c33ab2e789763e9b33d0491aa955b1010a",
+          "rulesFileDigest": "sha256:618200518de01eb913ace213aa3c9568a8af545141771d394713cb52edb0c326",
           "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
           "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
         },
@@ -242,7 +242,7 @@
         "scenarioId": "SCN-DM-URGENT-004",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-URGENT-004.json",
-        "fixtureDigest": "sha256:cb6ca8ff298d04c46360df86b99b72933be33e3130dc2e6ff263a45993a97d87"
+        "fixtureDigest": "sha256:18b406f56125d73433e385476fcc3b14dc25969ba8abe8cd9dbc4518f39eefeb"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -257,7 +257,7 @@
         "bindingType": "candidate_rules",
         "candidateBinding": {
           "knowledgeBaseVersion": "0.1.0-2026-07-15",
-          "rulesFileDigest": "sha256:011e72187067b0cd4159e6592091b2c33ab2e789763e9b33d0491aa955b1010a",
+          "rulesFileDigest": "sha256:618200518de01eb913ace213aa3c9568a8af545141771d394713cb52edb0c326",
           "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
           "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
         },
@@ -315,7 +315,7 @@
         "scenarioId": "SCN-DM-IRON-006",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-IRON-006.json",
-        "fixtureDigest": "sha256:e4d8b010d97c1deccf9b9667da4e1dc624949227d9ad54996536cf29f82fdc8b"
+        "fixtureDigest": "sha256:e5b0c174763fb8b0ceaac76e32356d60e76fedf6bf2645eac545ffcfb5c6e757"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -330,7 +330,7 @@
         "bindingType": "candidate_rules",
         "candidateBinding": {
           "knowledgeBaseVersion": "0.1.0-2026-07-15",
-          "rulesFileDigest": "sha256:011e72187067b0cd4159e6592091b2c33ab2e789763e9b33d0491aa955b1010a",
+          "rulesFileDigest": "sha256:618200518de01eb913ace213aa3c9568a8af545141771d394713cb52edb0c326",
           "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
           "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
         },
@@ -388,7 +388,7 @@
         "scenarioId": "SCN-DM-LAB-005",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-LAB-005.json",
-        "fixtureDigest": "sha256:4c5909835ea6225a37f6ba9a9a3c72b754b74b6e84ffb0d6467069f1374b14c1"
+        "fixtureDigest": "sha256:b14d3edbe6f6b57eda38fe5624aac0b65531b0d10532ae98ac1c95ec2f52aaa1"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -467,7 +467,7 @@
         "scenarioId": "SCN-DM-RESULT-007",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-RESULT-007.json",
-        "fixtureDigest": "sha256:9bb97d3e857f202a805d481004a4da8f705d2858b29bbbf43b638142f3ee3031"
+        "fixtureDigest": "sha256:9ec473bd9cd45c7ded43f5af84bcba565928d58b2aa2f8d80f482557b3b71261"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -544,7 +544,7 @@
         "scenarioId": "SCN-DM-FHIR-008",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-FHIR-008.json",
-        "fixtureDigest": "sha256:9cdb28f2f5e4fcb997eedbaec6b30d3332b7ddf747389287f24e815f708b4d0e"
+        "fixtureDigest": "sha256:8a31801f8a9d76216f994aca3fe5b064ca82dd027a6e7b15d32fc6e169ea23a9"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -620,7 +620,7 @@
         "scenarioId": "SCN-DM-EQUITY-009",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-EQUITY-009.json",
-        "fixtureDigest": "sha256:66a180e36e5a89b3cb54a4ce4d74353b9a2ed91aff5d1e6ff06df3f7a1c51825"
+        "fixtureDigest": "sha256:4cf3a563c396cad81c6c288b071d054bc504954d8f5b56e2db4ce98419e073ac"
       },
       "controlBinding": {
         "status": "no_control_exists",
@@ -645,7 +645,7 @@
         "technicalExecution": {
           "status": "not_executed",
           "command": "npm run check",
-          "note": "No control exists to execute against DM-EQUITY-009. npm run check only executes the honesty-guard tests asserting the ABSENCE of coverage (fixture declares not_yet_implemented; a mutated fixture that drops blockedOnTask fails schema validation) \u2014 this is not hazard mitigation evidence."
+          "note": "No control exists to execute against DM-EQUITY-009. npm run check only executes the honesty-guard tests asserting the ABSENCE of coverage (fixture declares not_yet_implemented; a mutated fixture that drops blockedOnTask fails schema validation) — this is not hazard mitigation evidence."
         },
         "clinicalAdjudication": {
           "status": "not_executed_owner_held",
@@ -671,7 +671,7 @@
       "finding": {
         "findingId": "PAC-P4T2-001",
         "description": "DM-EQUITY-009 (subgroup_or_access_failure) has no executable control in this repository: there is no subgroup/equity evaluator anywhere in the codebase, and assessPediatricAnemia (src/engine.js) does not accept or reason over any subgroup/access dimension. Equity limitation exposure and unsupported-generalization blocking (validation_plan.md required signal) cannot be verified by execution today.",
-        "blockedOnTask": "arc-clinical-council-adoption-v1 P4-T4 (V5 human-factors/equity protocol-through-adjudication contracts) \u2014 see plan \u00a74 P4 and OQ per pediatric_clinical_review.json seat PCR-EQUITY finding ARC-PEF-001",
+        "blockedOnTask": "arc-clinical-council-adoption-v1 P4-T4 (V5 human-factors/equity protocol-through-adjudication contracts) — see plan §4 P4 and OQ per pediatric_clinical_review.json seat PCR-EQUITY finding ARC-PEF-001",
         "severity": "high",
         "ownerRole": "equity-and-family-governance-owner",
         "status": "open",
@@ -693,7 +693,7 @@
         "scenarioId": "SCN-DM-WORKFLOW-010",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-WORKFLOW-010.json",
-        "fixtureDigest": "sha256:9aabd029f39889e7fa756cf066b526e2bdc851381cf2babdf9e92a98b9946fa3"
+        "fixtureDigest": "sha256:136152f3fab7c8555f901ee5149119edc49134fdd89bfb52997b0ea5cfcde994"
       },
       "controlBinding": {
         "status": "no_control_exists",
@@ -719,7 +719,7 @@
         "technicalExecution": {
           "status": "not_executed",
           "command": "npm run check",
-          "note": "No control exists to execute against DM-WORKFLOW-010. npm run check only executes the honesty-guard tests asserting the ABSENCE of coverage (fixture declares not_yet_implemented; a mutated fixture that drops blockedOnTask fails schema validation) \u2014 this is not hazard mitigation evidence."
+          "note": "No control exists to execute against DM-WORKFLOW-010. npm run check only executes the honesty-guard tests asserting the ABSENCE of coverage (fixture declares not_yet_implemented; a mutated fixture that drops blockedOnTask fails schema validation) — this is not hazard mitigation evidence."
         },
         "clinicalAdjudication": {
           "status": "not_executed_owner_held",
@@ -745,7 +745,7 @@
       "finding": {
         "findingId": "PAC-P4T2-002",
         "description": "DM-WORKFLOW-010 (alert_override_downtime_handoff_or_recovery_failure) has no executable control in this repository: there is no alert-lifecycle/work-queue state machine (acknowledgment, escalation, override, downtime replay, handoff, recovery) anywhere in the codebase. assessPediatricAnemia (src/engine.js) is a stateless pure function evaluated once per run; the per-run rule-audit completeness property tests/dangerous-miss-scenarios.test.mjs verifies is a real but narrow adjacent signal, explicitly NOT alert-lifecycle coverage. PRECONDITION DEPENDENCY (P4-V1 R8), not a sibling gap of equal scope: generating a correct alert (the other nine hazards' controlBinding) is not the same as an alert being seen, acknowledged, escalated, or acted upon. Every one of the other nine hazards' clinical effect depends on this missing lifecycle layer existing; without it, an alert that fires correctly can still be silently lost to an unattended queue, a downtime gap, or a handoff, with the same dangerous-miss outcome as if the alert had never fired. Do not read the ten-row 'eight control_bound, two no_control_exists' or 'two of ten carried, not closed' summary as '80% mitigated' -- this finding's preconditionForHazardIds lists every other hazard in this matrix precisely to make that misreading structurally checkable, not just a prose caveat.",
-        "blockedOnTask": "arc-clinical-council-adoption-v1 P4-T4 (V4 silent-mode / V5 alert-lifecycle, override, downtime, handoff, recovery contracts) \u2014 see plan \u00a74 P4-T4 and pediatric_clinical_review.json seat PCR-SAFETY finding PEDS-HF-001",
+        "blockedOnTask": "arc-clinical-council-adoption-v1 P4-T4 (V4 silent-mode / V5 alert-lifecycle, override, downtime, handoff, recovery contracts) — see plan §4 P4-T4 and pediatric_clinical_review.json seat PCR-SAFETY finding PEDS-HF-001",
         "severity": "high",
         "ownerRole": "pediatric-safety-owner",
         "status": "open",
