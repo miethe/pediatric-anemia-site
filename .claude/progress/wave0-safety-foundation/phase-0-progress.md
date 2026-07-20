@@ -267,11 +267,21 @@ success_criteria:
 - id: SC-1
   description: All 4 SPIKE charters closed with recorded decisions (EP0-T1, T2, T3+T4,
     T5)
-  status: met
-  note: 'All 4 charters status: completed with real findings. CAVEAT: SPIKE-005 (OQ-7)
-    and SPIKE-006 (OQ-8) each skipped a charter-mandated council-review pass on their
-    central safety judgment; both are now disclosed in-document. Neither RQ2''s diff
-    decision function nor RQ6''s no-signing recommendation is safety-vetted.'
+  status: partial
+  note: 'All 4 charters closed with real findings. The two missing council-review passes
+    (OQ-7, OQ-8) were RUN 2026-07-19/20 — and NEITHER RETURNED A PASS. SPIKE-005 and
+    SPIKE-006 are both now status `completed-with-required-amendments`. OQ-7: pediatric
+    council recommendation `rejected` for RQ2-as-written, scorecard `pause_and_validate`,
+    5 critical + 15 high accepted; the council CONSTRUCTED AND EXECUTED a false negative
+    inside the classifier''s declared scope (softening ALERT-001''s emergency detail
+    classifies C10 -> tier `review`, fails no gate, moves 0/6 fixtures, cannot trigger
+    the cross-check). SPIKE-005 exit criteria (1), (2), (4) are NOT MET; RA-1..RA-9
+    must land and be re-reviewed before EP-5 implements against RQ2. OQ-8: RQ1 upheld
+    with qualification; RQ6''s NO-GO stands but its SUFFICIENCY claim was overturned —
+    the 4-file clinicalContentHash does not cover the JS where real thresholds live
+    (modules/anemia/ranges.js, facts.anemia.js); 6 amendments required before EP-5 acts.
+    Both are SYNTHETIC ADVERSARIAL REVIEWS satisfying the charter''s PROCESS requirement
+    only — not clinical validation, and they must never populate clinicalApprovers[]/approvedBy[].'
 - id: SC-2
   description: DEF-1 resolved; golden-fixture equivalence holds (EP0-T6)
   status: met
@@ -284,10 +294,26 @@ success_criteria:
   note: 'maturity: committed; migration table referenced by pointer, not restated.'
 - id: SC-4
   description: IntentTree resynced; RF-EV-002 and REG-002 launched (EP0-T8)
-  status: met
+  status: partial
   note: '10 nodes resynced (2 spot-checked against the live server by the reviewer).
-    CAVEAT: both rf runs are registered/status planned, NOT executed — no CALIPER
-    or licensing evidence exists yet.'
+    Both rf runs are now EXECUTED and VERIFIED (2026-07-19), superseding the earlier
+    "planned, NOT executed" caveat. Load-bearing evidence is each run''s on-disk
+    reviews/verification.yaml (passed: true, exit_code: 0) — NOT the API''s status_raw,
+    which reads `planned` for all 48 runs in the store and discriminates nothing.
+    REG-002: 16 sources / 116 claims / 98 supported / 0 unsupported; bundle verified.
+    Substantive: CPT is a stop-ship exclusion (AMA EULA + UMLS Category 3); SNOMED CT
+    needs paid special permission for web deployment; LOINC is the one clean grant;
+    WHO content is CC BY-NC-SA 3.0 IGO (non-commercial + share-alike). RF-EV-002:
+    14 sources / 90 claims / 76 supported / 0 unsupported; bundle verified — BUT THE
+    SUBSTANTIVE OBJECTIVE FAILED: ZERO CALIPER numeric limits were obtained. All CALIPER
+    hematology papers are non-OA with no PMC deposit; the CALIPER DB is registration-gated
+    and all-rights-reserved. No numbers were reconstructed from memory (guardrail held).
+    CONVERGENT RISK found independently by both runs: the shipped AAP2026_IDA thresholds
+    are unverified against their own source (HTTP 403, subscription-required) AND AAP/AAFP
+    reuse terms are unknown (403/Cloudflare on every route) — REG-002 calls this its
+    biggest gap. Neither run located any CALIPER licence grant; recorded as no-grant-located,
+    explicitly NOT as permission. Known defect: `rf catalog import` fails on the node
+    (ImportError: fastapi/uvicorn), so neither run is in the shared catalog.'
 - id: SC-5
   description: CI runs check:imports and gates on PR events (EP0-T9)
   status: partial
