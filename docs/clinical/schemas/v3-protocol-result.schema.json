@@ -1,0 +1,534 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/docs/clinical/schemas/v3-protocol-result.schema.json",
+  "title": "V3 Diagnostic-Accuracy Dependency Chain",
+  "description": "Machine-readable records for the V3 (retrospective diagnostic-accuracy) validation gate defined by arc-clinical-council-adoption-v1 plan section 4, task P4-T3, AC P4.1. Five record types cover one propagation chain: exact input/version -> expected behavior (protocol) -> execution receipt -> result -> adjudication -> owner decision -> release-state linkage. AUTHORED AND EXECUTED ARE SEPARATE RECORD TYPES ON PURPOSE (plan hard constraint 4): a v3ProtocolContract can be schema-valid and complete while zero executions, results, adjudications, or owner decisions exist. Structural validity of any record here is not clinical validity and never upgrades execution or approval state (plan section 2). This file lives outside `schemas/` and `tests/` deliberately: those paths are owned by the concurrent P4-T1 task authoring dangerous-miss scenario fixtures; this file is the P4-T3 (V3 dependency contract) surface and has not been wired into any runtime importer or evaluator. A future integration task must decide whether to relocate or reference it from `schemas/`.",
+  "$defs": {
+    "ownerHeldStatus": {
+      "type": "string",
+      "enum": ["asserted", "not_executed_owner_held"],
+      "description": "Reuses this repository's established owner-held discriminator (see schemas/reference-range.schema.json `authority.assertion` and `attestation.signatureState`). `not_executed_owner_held` is the only correct value for any section a repository agent has not received authenticated owner input for. `asserted` requires every sibling field in that section to be non-null and supplied by the real owner -- never invented, never inferred, never a plausible placeholder."
+    },
+    "candidateBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidateId", "candidateVersion", "candidateDigest"],
+      "properties": {
+        "candidateId": { "type": ["string", "null"], "minLength": 1 },
+        "candidateVersion": { "type": ["string", "null"], "minLength": 1 },
+        "candidateDigest": {
+          "type": ["string", "null"],
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "Exact content digest of the pediatric CDS candidate this record binds to. A record whose candidateDigest does not match the current candidate under review does not apply to it -- V3 approval never carries over across an edited candidate."
+        }
+      },
+      "description": "The 'exact input/version' link of the propagation chain. Every other record type in this file carries its own candidateBinding and a chain is only coherent when every link's candidateBinding.candidateDigest is identical."
+    },
+    "referenceLocator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["systemName", "recordId", "status"],
+      "properties": {
+        "systemName": {
+          "type": ["string", "null"],
+          "description": "Name of the external, owner-authoritative system of record (OQ-6). ARC/the pediatric repository never becomes this system; they store a reference and status only, per plan hard constraint 2."
+        },
+        "recordId": { "type": ["string", "null"] },
+        "status": { "type": ["string", "null"] },
+        "asOf": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "description": "A reference-only pointer into an owner-held authoritative system (approval store, adjudication system, IRB registry, data-rights registry). Never carries the underlying decision content, signature, or restricted text -- only enough to resolve where the authoritative record lives and what its last-known status was."
+    },
+    "intendedUse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "population", "ageOrDevelopmentalPartitions", "setting", "regulatoryClassification", "scopeExits"],
+      "properties": {
+        "status": { "$ref": "#/$defs/ownerHeldStatus" },
+        "population": {
+          "type": ["string", "null"],
+          "description": "OWNER-HELD (OQ-4). The exact population this V3 study evaluates the candidate against. Distinct from the broader planning-scope population statement already recorded elsewhere (e.g. ARC run pediatric_clinical_review.json intended_use.population) -- that statement is planning scope, not a frozen V3 study population, and must not be silently promoted into one."
+        },
+        "ageOrDevelopmentalPartitions": {
+          "type": ["array", "null"],
+          "items": { "type": "string" },
+          "description": "OWNER-HELD (OQ-4). Exact age/developmental partitions the study is powered and reported for. May reuse the partition labels already used elsewhere in this repository, but the owner must positively select and bind them to this study -- reuse is not inheritance."
+        },
+        "setting": { "type": ["string", "null"], "description": "OWNER-HELD (OQ-4)." },
+        "candidateScopeStatement": {
+          "type": ["string", "null"],
+          "description": "OWNER-HELD (OQ-4). Which candidate branches/rules this V3 study covers. A V3 result for one branch (e.g. CBC) must not be read as covering another (e.g. kidney) branch."
+        },
+        "regulatoryClassification": {
+          "type": ["string", "null"],
+          "description": "OWNER-HELD (plan section 6: 'exact intended use and regulatory classification'). Non-device CDS posture confirmation for this exact candidate scope (roadmap track C.1 REG-001 et seq.)."
+        },
+        "scopeExits": {
+          "type": ["array", "null"],
+          "items": { "type": "string" },
+          "description": "OWNER-HELD (OQ-4). Explicit list of what this V3 study does NOT validate (e.g. direct patient care, dosing, transfusion guidance, unvalidated local laboratory interpretation) -- mirrors the authority_boundary/intended_use.scope_exits pattern already used in the ARC readiness run so a V3 pass cannot be read as validating out-of-scope behavior."
+        }
+      },
+      "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+      "then": {
+        "required": ["population", "ageOrDevelopmentalPartitions", "setting", "regulatoryClassification", "scopeExits"],
+        "properties": {
+          "population": { "type": "string", "minLength": 1 },
+          "ageOrDevelopmentalPartitions": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "setting": { "type": "string", "minLength": 1 },
+          "regulatoryClassification": { "type": "string", "minLength": 1 },
+          "scopeExits": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "datasetAndReferenceStandard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "datasetSource", "dataPartner", "sampleFrame", "referenceStandardDefinition", "referenceStandardBlinding", "phiHandling", "rightsReceiptRef"],
+      "properties": {
+        "status": { "$ref": "#/$defs/ownerHeldStatus" },
+        "datasetSource": { "type": ["string", "null"], "description": "OWNER-HELD (OQ-4/plan section 6). No dataset, institution, or data partner is named anywhere in this repository." },
+        "dataPartner": { "type": ["string", "null"], "description": "OWNER-HELD (plan section 6: 'V3 ... and data partner')." },
+        "sampleFrame": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "inclusionCriteria": { "type": ["array", "null"], "items": { "type": "string" } },
+            "exclusionCriteria": { "type": ["array", "null"], "items": { "type": "string" } },
+            "targetSampleSize": { "type": ["integer", "null"], "minimum": 1 },
+            "sampleSizeJustification": { "type": ["string", "null"] },
+            "sites": { "type": ["array", "null"], "items": { "type": "string" }, "description": "Named data-partner sites contributing charts. Multisite per roadmap V3 definition ('multisite structured data + chart adjudication')." }
+          },
+          "description": "OWNER-HELD (OQ-4)."
+        },
+        "referenceStandardDefinition": { "type": ["string", "null"], "description": "OWNER-HELD (OQ-4). The ground truth the candidate's output is compared against (e.g. specialist-adjudicated final diagnosis) -- distinct from the candidate's own output." },
+        "referenceStandardBlinding": {
+          "type": ["string", "null"],
+          "enum": [null, "blinded_to_index_test", "not_blinded", "partial_blinding_documented"],
+          "description": "OWNER-HELD (OQ-4). Whether reference-standard adjudication was blinded to the candidate's output, to bound verification/incorporation bias."
+        },
+        "phiHandling": {
+          "type": ["string", "null"],
+          "enum": [null, "deidentified_before_repository_boundary", "not_applicable_repository_never_receives_records"],
+          "description": "Structural constraint, not owner-held: plan hard constraint 5 (no patient data). This field documents which of the two permitted postures applies; no other value is valid, and the field must never resolve to raw PHI entering this repository, ARC, or AOS. `null` remains a valid base-level value (the honest default before any posture is asserted) -- the P4-V1 fix-cycle-2 narrowing below excludes it only once `datasetAndReferenceStandard.status` is `asserted`, mirroring `referenceStandardBlinding` immediately above."
+        },
+        "rightsReceiptRef": { "$ref": "#/$defs/referenceLocator", "description": "Reference into the P2 evidence-rights receipt store (plan P2-T2) covering this dataset's permitted use. Never the rights body itself." }
+      },
+      "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+      "then": {
+        "required": ["datasetSource", "dataPartner", "sampleFrame", "referenceStandardDefinition", "referenceStandardBlinding", "phiHandling"],
+        "properties": {
+          "datasetSource": { "type": "string", "minLength": 1 },
+          "dataPartner": { "type": "string", "minLength": 1 },
+          "sampleFrame": { "type": "object" },
+          "referenceStandardDefinition": { "type": "string", "minLength": 1 },
+          "referenceStandardBlinding": { "enum": ["blinded_to_index_test", "not_blinded", "partial_blinding_documented"] },
+          "phiHandling": {
+            "enum": ["deidentified_before_repository_boundary", "not_applicable_repository_never_receives_records"],
+            "description": "P4-V1 fix-cycle-2 remediation: previously omitted from this narrowing, so `status: asserted` could coexist with `phiHandling: null` (a literal enum member) all the way through `protocolStatus: protocol_frozen` -- the exact defect class this narrowing pattern exists to close, against the repository's NO-PATIENT-DATA hard constraint. The V4 sibling (`liveDataSourceBinding.dataBoundaryPosture`) already had this narrowing; this closes the parity gap."
+          }
+        }
+      }
+    },
+    "endpointDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["endpointId", "status", "metric", "thresholdValue", "goNoGoDirection", "isIllustrative"],
+      "properties": {
+        "endpointId": {
+          "type": "string",
+          "enum": ["dangerous_miss_rate", "referral_completeness_delta", "sensitivity_by_branch", "specificity_by_branch", "pattern_match_agreement"],
+          "description": "Endpoint identity reuses the field names already present in the platform roadmap's validation_result schema reference (01-platform-expansion-roadmap.md V2 CBC gate: dangerous_miss_rate, referral_completeness_delta) plus the standard diagnostic-accuracy pair. Naming a dimension is not the same as setting its value."
+        },
+        "status": { "$ref": "#/$defs/ownerHeldStatus" },
+        "metric": { "type": ["string", "null"], "description": "Owner-defined precise statistical definition of the metric (numerator/denominator, point-estimate method)." },
+        "thresholdValue": {
+          "type": ["number", "string", "null"],
+          "description": "OWNER-HELD (OQ-4). The actual go/no-go threshold. MUST NOT be populated with the roadmap's 0.008 dangerous-miss-rate figure or any other document's illustrative number -- that figure is explicitly labeled illustrative in 01-platform-expansion-roadmap.md and finding PEDS-DX-002 in the ARC readiness run specifically flagged an illustrative metric appearing in an executable go/no-go string as a defect. A schema-valid endpoint with a null thresholdValue and status not_executed_owner_held is correct; a schema-valid endpoint carrying a repository-invented number is a plan violation regardless of schema validity."
+        },
+        "goNoGoDirection": {
+          "type": ["string", "null"],
+          "enum": [null, "lower_is_better", "higher_is_better"],
+          "description": "Owner-held. Which side of thresholdValue constitutes 'go'."
+        },
+        "isIllustrative": {
+          "const": false,
+          "description": "Structural guard, not owner-held. Always false. Exists so that a document carrying an illustrative/example number cannot also claim to be an executable gate -- an illustrative value must use a sibling non-normative field (not present in this schema) or a separate clearly-labeled example document, never this record type."
+        }
+      },
+      "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+      "then": {
+        "required": ["metric", "thresholdValue", "goNoGoDirection"],
+        "properties": {
+          "metric": { "type": "string", "minLength": 1 },
+          "thresholdValue": { "type": ["number", "string"] },
+          "goNoGoDirection": { "enum": ["lower_is_better", "higher_is_better"] }
+        }
+      },
+      "description": "P4-V1 remediation (finding 1): without this if/then, `status: asserted` coexisted with `metric`/`thresholdValue`/`goNoGoDirection` all null -- `required` in JSON Schema enforces key presence, not non-null content. Mirrors the `intendedUse`/`uncertaintyPlan` narrowing pattern below."
+    },
+    "uncertaintyPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "intervalType", "confidenceLevel", "estimationMethod"],
+      "properties": {
+        "status": { "$ref": "#/$defs/ownerHeldStatus" },
+        "intervalType": { "type": ["string", "null"], "enum": [null, "confidence_interval", "credible_interval"], "description": "OWNER-HELD (OQ-4)." },
+        "confidenceLevel": { "type": ["number", "null"], "exclusiveMinimum": 0, "exclusiveMaximum": 1, "description": "OWNER-HELD (OQ-4)." },
+        "estimationMethod": { "type": ["string", "null"], "description": "OWNER-HELD (OQ-4). E.g. exact binomial, bootstrap with resample count, Wilson score -- the owner's chosen method, not a repository default." }
+      },
+      "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+      "then": { "required": ["intervalType", "confidenceLevel", "estimationMethod"], "properties": { "intervalType": { "enum": ["confidence_interval", "credible_interval"] }, "confidenceLevel": { "type": "number" }, "estimationMethod": { "type": "string", "minLength": 1 } } },
+      "description": "Every endpoint result reported under this contract must carry an interval, not a bare point estimate (plan deliverable requirement: 'uncertainty')."
+    },
+    "subgroupPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "dimensions", "minimumCellSize", "prespecified"],
+      "properties": {
+        "status": { "$ref": "#/$defs/ownerHeldStatus" },
+        "dimensions": {
+          "type": ["array", "null"],
+          "items": { "type": "string", "enum": ["age_band", "sex", "site", "analyzer_platform"] },
+          "description": "Dimension names reuse 01-platform-expansion-roadmap.md's V3 definition ('subgroup checks by age band, sex, site, analyzer platform'). The exact strata boundaries within each dimension remain OWNER-HELD (OQ-4) and are not represented by this enum."
+        },
+        "strataDefinition": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "dimension": { "type": "string" },
+              "strata": { "type": "array", "items": { "type": "string" } },
+              "localProfileRef": { "$ref": "#/$defs/referenceLocator", "description": "For the site/analyzer_platform dimension, must resolve to a P3 signed local-profile record (plan P3), never an invented site or analyzer." }
+            }
+          },
+          "description": "OWNER-HELD (OQ-4, and for the site/analyzer dimension, gated on P3 profile availability per plan section 3 dependency P3 -> P4)."
+        },
+        "minimumCellSize": { "type": ["integer", "null"], "minimum": 1, "description": "OWNER-HELD (OQ-4). Minimum subjects per stratum below which the subgroup result is reported as underpowered rather than a point estimate." },
+        "prespecified": {
+          "type": ["boolean", "null"],
+          "description": "OWNER-HELD. Must be true and dated before unblinding for any subgroup result to be treated as confirmatory rather than exploratory -- a post-hoc subgroup finding is explicitly weaker evidence and must be labeled as such in the result record (see resultRecord.subgroupResults[].analysisClass)."
+        }
+      },
+      "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+      "then": {
+        "required": ["dimensions", "strataDefinition", "minimumCellSize", "prespecified"],
+        "properties": {
+          "dimensions": { "type": "array", "minItems": 1 },
+          "strataDefinition": { "type": "array", "minItems": 1 },
+          "minimumCellSize": { "type": "integer" },
+          "prespecified": { "const": true }
+        }
+      }
+    },
+    "analysisPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "primaryAnalysisMethod", "missingDataHandling", "blinding", "statisticalAuthorityRef", "prespecifiedBeforeUnblinding"],
+      "properties": {
+        "status": { "$ref": "#/$defs/ownerHeldStatus" },
+        "primaryAnalysisMethod": { "type": ["string", "null"], "description": "OWNER-HELD (OQ-4). The named statistical method for the primary endpoint(s)." },
+        "missingDataHandling": { "type": ["string", "null"], "description": "OWNER-HELD (OQ-4). How missing/incomplete chart data is handled -- must not silently exclude in a way that biases the dangerous-miss rate downward." },
+        "interimAnalysis": { "type": ["string", "null"], "description": "OWNER-HELD. Null is a valid answer meaning no interim analysis is planned; it must be an explicit owner statement, not an omission." },
+        "blinding": { "type": ["string", "null"], "description": "OWNER-HELD (OQ-4). Who is blinded to what during analysis." },
+        "statisticalAuthorityRef": { "$ref": "#/$defs/referenceLocator", "description": "Reference to the named diagnostic-accuracy/biostatistics authority (matches the 'diagnostic accuracy and biostatistics authority' role already enumerated in the ARC readiness run's human_approval_gate.required_authorities)." },
+        "prespecifiedBeforeUnblinding": {
+          "type": ["boolean", "null"],
+          "description": "OWNER-HELD. Must be true, signed, and timestamped strictly before any result unblinding. A statistical analysis plan authored after seeing results is not a protocol and cannot satisfy this contract regardless of content quality."
+        }
+      },
+      "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+      "then": {
+        "required": ["primaryAnalysisMethod", "missingDataHandling", "blinding", "prespecifiedBeforeUnblinding"],
+        "properties": {
+          "primaryAnalysisMethod": { "type": "string", "minLength": 1 },
+          "missingDataHandling": { "type": "string", "minLength": 1 },
+          "blinding": { "type": "string", "minLength": 1 },
+          "prespecifiedBeforeUnblinding": { "const": true }
+        }
+      }
+    },
+    "adjudicationSystemBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "systemRef", "adjudicatorRefs", "independenceAttestation", "discordanceResolutionMethod"],
+      "properties": {
+        "status": { "$ref": "#/$defs/ownerHeldStatus" },
+        "systemRef": { "$ref": "#/$defs/referenceLocator", "description": "OWNER-HELD (OQ-6). Which system is authoritative for chart adjudication. ARC/the pediatric repository store this reference only and never become the authority (plan hard constraint 2)." },
+        "adjudicatorRefs": { "type": ["array", "null"], "items": { "$ref": "#/$defs/referenceLocator" }, "description": "OWNER-HELD. Named, credentialed, independent adjudicators -- reference only, never a synthesized identity." },
+        "independenceAttestation": { "type": ["string", "null"], "enum": [null, "independent_of_candidate_development", "independence_not_established"], "description": "OWNER-HELD." },
+        "discordanceResolutionMethod": { "type": ["string", "null"], "description": "OWNER-HELD. How disagreement between adjudicators is resolved (e.g. third adjudicator, consensus panel)." }
+      },
+      "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+      "then": {
+        "required": ["adjudicatorRefs", "independenceAttestation", "discordanceResolutionMethod"],
+        "properties": {
+          "adjudicatorRefs": { "type": "array", "minItems": 2 },
+          "independenceAttestation": { "const": "independent_of_candidate_development" },
+          "discordanceResolutionMethod": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "v3ProtocolContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recordType", "protocolId", "protocolVersion", "candidateBinding", "protocolStatus",
+        "intendedUse", "datasetAndReferenceStandard", "endpoints", "uncertaintyPlan", "subgroupPlan",
+        "analysisPlan", "adjudicationSystemBinding", "frozenAt", "frozenBy", "supersededBy"
+      ],
+      "properties": {
+        "recordType": { "const": "v3ProtocolContract" },
+        "protocolId": { "type": "string", "minLength": 1 },
+        "protocolVersion": { "type": "string", "minLength": 1 },
+        "candidateBinding": { "$ref": "#/$defs/candidateBinding" },
+        "protocolStatus": {
+          "type": "string",
+          "enum": ["not_executed_owner_held", "protocol_frozen", "protocol_deviation", "superseded", "expired"],
+          "description": "not_executed_owner_held: default; any owner-held section below is not asserted. protocol_frozen: every owner-held section is asserted AND frozenAt/frozenBy are non-null -- this is the ONLY status from which an execution may validly proceed. protocol_deviation: an execution referenced this protocol's digest but the candidateBinding at execution time did not match -- recorded, not silently dropped. superseded / expired: no longer eligible to authorize a new execution; supersededBy required when superseded."
+        },
+        "intendedUse": { "$ref": "#/$defs/intendedUse" },
+        "datasetAndReferenceStandard": { "$ref": "#/$defs/datasetAndReferenceStandard" },
+        "endpoints": { "type": "array", "items": { "$ref": "#/$defs/endpointDefinition" }, "minItems": 1 },
+        "uncertaintyPlan": { "$ref": "#/$defs/uncertaintyPlan" },
+        "subgroupPlan": { "$ref": "#/$defs/subgroupPlan" },
+        "analysisPlan": { "$ref": "#/$defs/analysisPlan" },
+        "adjudicationSystemBinding": { "$ref": "#/$defs/adjudicationSystemBinding" },
+        "frozenAt": { "type": ["string", "null"], "format": "date-time", "description": "Non-null only once every owner-held section above is asserted. Freezing is an owner action, not a repository default." },
+        "frozenBy": { "$ref": "#/$defs/referenceLocator", "description": "Reference to the owner who froze this protocol version. Reference only." },
+        "supersededBy": { "type": ["string", "null"], "description": "protocolId of a successor. Required when protocolStatus is superseded." }
+      },
+      "if": { "properties": { "protocolStatus": { "const": "protocol_frozen" } }, "required": ["protocolStatus"] },
+      "then": {
+        "required": ["frozenAt", "frozenBy"],
+        "properties": {
+          "frozenAt": { "type": "string" },
+          "intendedUse": { "properties": { "status": { "const": "asserted" } } },
+          "datasetAndReferenceStandard": { "properties": { "status": { "const": "asserted" } } },
+          "endpoints": { "items": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] } },
+          "uncertaintyPlan": { "properties": { "status": { "const": "asserted" } } },
+          "subgroupPlan": { "properties": { "status": { "const": "asserted" } } },
+          "analysisPlan": { "properties": { "status": { "const": "asserted" } } },
+          "adjudicationSystemBinding": { "properties": { "status": { "const": "asserted" } } }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "protocolStatus": { "const": "superseded" } }, "required": ["protocolStatus"] },
+          "then": { "required": ["supersededBy"], "properties": { "supersededBy": { "type": "string", "minLength": 1 } } },
+          "description": "P4-V1 fix-cycle-2 remediation (LOW finding): `supersededBy`'s own description said 'Required when protocolStatus is superseded' but nothing enforced it -- a document could reach `protocolStatus: superseded` with `supersededBy: null`. This `allOf` entry (a second, independent if/then alongside the freeze gate above) closes that gap."
+        }
+      ],
+      "description": "The AUTHORED half of the chain (plan hard constraint 4). Shipping this record complete and schema-valid proves a protocol was specified. It proves nothing about intended use, dataset, endpoints, or analysis plan being clinically sound, nor that anything has been executed. P4-V1 remediation (finding 1): `endpoints` is now part of the freeze gate -- every `endpoints[]` entry's `status` must be `asserted` (and, via `endpointDefinition`'s own if/then, carry non-null `metric`/`thresholdValue`/`goNoGoDirection`) before `protocolStatus: protocol_frozen` validates. Previously this gate omitted `endpoints` entirely, so a protocol could freeze with a null go/no-go threshold -- the exact field PEDS-DX-002 exists to protect. P4-V1 fix-cycle-2: `supersededBy` is now enforced non-null when `protocolStatus: superseded` (see the nested `allOf` entry)."
+    },
+    "v3ExecutionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "receiptId", "protocolRef", "candidateBindingAtExecution", "executionReceiptStatus", "executedBy", "executedAt", "dataAccessAttestation"],
+      "properties": {
+        "recordType": { "const": "v3ExecutionReceipt" },
+        "receiptId": { "type": "string", "minLength": 1 },
+        "protocolRef": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["protocolId", "protocolVersion"],
+          "properties": { "protocolId": { "type": "string" }, "protocolVersion": { "type": "string" } },
+          "description": "Must resolve to a v3ProtocolContract with protocolStatus protocol_frozen at the time of execution. A receipt referencing a not_executed_owner_held, superseded, or expired protocol is void by construction."
+        },
+        "candidateBindingAtExecution": { "$ref": "#/$defs/candidateBinding" },
+        "executionReceiptStatus": {
+          "type": "string",
+          "enum": ["not_executed", "executing", "executed", "aborted", "protocol_digest_mismatch"],
+          "description": "not_executed is the default absent any receipt. protocol_digest_mismatch: candidateBindingAtExecution.candidateDigest differs from the protocol's candidateBinding.candidateDigest -- this receipt cannot feed a valid v3ResultRecord and the protocol transitions to protocol_deviation."
+        },
+        "executedBy": { "$ref": "#/$defs/referenceLocator" },
+        "executedAt": { "type": ["string", "null"], "format": "date-time" },
+        "environment": { "type": ["string", "null"], "description": "Where execution ran (data partner environment, owner-controlled analysis environment). Never a repository CI runner -- V3 execution is off-repository by construction because it requires patient-derived chart data." },
+        "dataAccessAttestation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["noPatientDataEnteredRepository", "noPatientDataEnteredArcOrAos"],
+          "properties": {
+            "noPatientDataEnteredRepository": { "const": true },
+            "noPatientDataEnteredArcOrAos": { "const": true }
+          },
+          "description": "Structural, not owner-held (plan hard constraint 5). Both must be true for any receipt to be schema-valid; there is no value that permits patient data to have entered this repository, ARC, or AOS."
+        }
+      },
+      "if": { "properties": { "executionReceiptStatus": { "const": "executed" } }, "required": ["executionReceiptStatus"] },
+      "then": { "required": ["executedAt"], "properties": { "executedAt": { "type": "string", "format": "date-time" } } },
+      "description": "P4-V1 fix-cycle-2 remediation (new finding, MEDIUM, deliberate choice -- see docs/clinical/v3-diagnostic-accuracy-contract.md section 2.3): `executionReceiptStatus: executed` previously coexisted with `executedAt: null`. Narrowed to non-null, consistent with every other status-tied content guard in this file, notwithstanding that this record type is off-repository and its truthfulness cannot itself be verified here -- the narrowing still catches an internally incoherent receipt (a bug, not a lie) the same way the AUTHORED-side guards do."
+    },
+    "v3ResultRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "resultId", "executionReceiptRef", "resultStatus", "endpointResults", "subgroupResults", "dangerousMissRateObserved"],
+      "properties": {
+        "recordType": { "const": "v3ResultRecord" },
+        "resultId": { "type": "string", "minLength": 1 },
+        "executionReceiptRef": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["receiptId"],
+          "properties": { "receiptId": { "type": "string" } },
+          "description": "Must resolve to a v3ExecutionReceipt with executionReceiptStatus executed. A result whose receipt is missing, aborted, or protocol_digest_mismatch is void."
+        },
+        "resultStatus": {
+          "type": "string",
+          "enum": ["not_executed", "executed_unadjudicated", "void_protocol_mismatch", "void_receipt_missing"],
+          "description": "executed_unadjudicated is the ceiling this record type can reach on its own -- a result record can never carry its own approval; adjudication and owner decision are separate record types (plan hard constraint 4)."
+        },
+        "endpointResults": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["endpointId", "pointEstimate", "interval", "n"],
+            "properties": {
+              "endpointId": { "type": "string" },
+              "pointEstimate": { "type": ["number", "null"] },
+              "interval": {
+                "type": ["object", "null"],
+                "additionalProperties": false,
+                "required": ["low", "high"],
+                "properties": { "low": { "type": ["number", "null"] }, "high": { "type": ["number", "null"] } },
+                "description": "Required alongside every pointEstimate (plan deliverable requirement: 'uncertainty'). A point estimate with a null interval is not an acceptable V3 result."
+              },
+              "n": { "type": ["integer", "null"], "minimum": 0 }
+            }
+          }
+        },
+        "subgroupResults": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["dimension", "stratum", "endpointId", "pointEstimate", "interval", "n", "analysisClass"],
+            "properties": {
+              "dimension": { "type": "string" },
+              "stratum": { "type": "string" },
+              "endpointId": { "type": "string" },
+              "pointEstimate": { "type": ["number", "null"] },
+              "interval": { "type": ["object", "null"] },
+              "n": { "type": ["integer", "null"], "minimum": 0 },
+              "analysisClass": {
+                "type": "string",
+                "enum": ["confirmatory_prespecified", "exploratory_post_hoc", "underpowered_below_minimum_cell_size"],
+                "description": "Must be confirmatory_prespecified to carry decision weight equal to a primary endpoint; otherwise it is reported but explicitly downgraded, not silently equal."
+              }
+            }
+          }
+        },
+        "dangerousMissRateObserved": { "type": ["number", "null"], "description": "Convenience surface of the dangerous_miss_rate endpoint result for direct linkage to plan P4-T2's hazard-to-control matrix; the authoritative record remains endpointResults." }
+      },
+      "if": { "properties": { "resultStatus": { "const": "executed_unadjudicated" } }, "required": ["resultStatus"] },
+      "then": { "properties": { "endpointResults": { "type": "array", "minItems": 1 } } },
+      "description": "P4-V1 fix-cycle-2 remediation (new finding, MEDIUM, deliberate choice -- see docs/clinical/v3-diagnostic-accuracy-contract.md section 2.4): `resultStatus: executed_unadjudicated` previously coexisted with an empty `endpointResults` array. Narrowed to require at least one entry, consistent with `dangerousMissRateObserved` and `endpointResults[].pointEstimate` remaining nullable (a per-endpoint result may legitimately be unresolved); `subgroupResults` stays unconstrained because a subgroup plan may legitimately be `not_executed_owner_held`."
+    },
+    "v3AdjudicationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "adjudicationId", "resultRef", "adjudicationStatus", "adjudicationSystemRef", "discordanceRecords", "adjudicationDecidedAt"],
+      "properties": {
+        "recordType": { "const": "v3AdjudicationRecord" },
+        "adjudicationId": { "type": "string", "minLength": 1 },
+        "resultRef": { "type": "object", "additionalProperties": false, "required": ["resultId"], "properties": { "resultId": { "type": "string" } } },
+        "adjudicationStatus": {
+          "type": "string",
+          "enum": ["not_executed_owner_held", "adjudicated", "discordant_unresolved"],
+          "description": "OWNER-HELD (OQ-6). ARC/the pediatric repository never set this to adjudicated on their own authority -- it reflects a status pulled from the referenced authoritative system, never a locally synthesized conclusion."
+        },
+        "adjudicationSystemRef": { "$ref": "#/$defs/referenceLocator" },
+        "discordanceRecords": { "type": "array", "items": { "type": "object" }, "description": "Reference-only summary of discordant cases and resolution status. Never patient-identifying content." },
+        "adjudicationDecidedAt": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "if": { "properties": { "adjudicationStatus": { "enum": ["adjudicated", "discordant_unresolved"] } }, "required": ["adjudicationStatus"] },
+      "then": { "required": ["adjudicationDecidedAt"], "properties": { "adjudicationDecidedAt": { "type": "string", "format": "date-time" } } },
+      "description": "P4-V1 fix-cycle-2 remediation (new finding, MEDIUM, deliberate choice -- see docs/clinical/v3-diagnostic-accuracy-contract.md section 2.5): an adjudication that has actually reached a determination (`adjudicated` or `discordant_unresolved` -- as distinct from the default `not_executed_owner_held`) previously could carry no `adjudicationDecidedAt`. Narrowed to non-null. `discordanceRecords` and `adjudicationSystemRef` stay unnarrowed: they are reference-only pointers into the OQ-6 authoritative system (same convention as every other `referenceLocator` usage in this file), and this repository has no mechanism to verify their content regardless of narrowing."
+    },
+    "v3OwnerDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "decisionId", "adjudicationRef", "decision", "decidedBy", "decidedAt", "conditions", "signatureRef"],
+      "properties": {
+        "recordType": { "const": "v3OwnerDecision" },
+        "decisionId": { "type": "string", "minLength": 1 },
+        "adjudicationRef": { "type": "object", "additionalProperties": false, "required": ["adjudicationId"], "properties": { "adjudicationId": { "type": "string" } } },
+        "decision": {
+          "type": "string",
+          "enum": ["not_executed_owner_held", "go", "no_go", "conditional_go", "withdrawn"],
+          "description": "OWNER-HELD (OQ-6/plan section 6). The ONLY field in this entire schema whose value directly authorizes clinical_validation_complete for this candidate digest, and only when decision is go or conditional_go (with every condition in `conditions` independently satisfied and recorded)."
+        },
+        "decidedBy": { "$ref": "#/$defs/referenceLocator", "description": "Named clinical-governance owner or delegated credentialed authority. Reference only." },
+        "decidedAt": { "type": ["string", "null"], "format": "date-time" },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["condition", "satisfied"],
+            "properties": { "condition": { "type": "string" }, "satisfied": { "type": "boolean" } }
+          },
+          "description": "Required (may be empty array) even for a plain go decision, so 'no conditions' is an explicit assertion rather than an omission."
+        },
+        "signatureRef": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["attachmentContract", "signatureState", "attachmentRef"],
+          "properties": {
+            "attachmentContract": { "const": "p2-authenticated-attachment" },
+            "signatureState": { "type": "string", "enum": ["not_executed_owner_held", "bound"] },
+            "attachmentRef": { "type": ["string", "null"] }
+          },
+          "description": "Reuses the P2 authenticated-attachment placeholder pattern established in docs/clinical/local-profile-charter-contract.md section 4. Signature verification is P2's primitive; nothing on this side can verify one, so `bound` is unreachable here by construction until P2 lands."
+        }
+      },
+      "if": { "properties": { "decision": { "enum": ["go", "conditional_go"] } } },
+      "then": {
+        "required": ["decidedAt"],
+        "properties": {
+          "decidedBy": { "properties": { "recordId": { "type": "string", "minLength": 1 } }, "required": ["recordId"] },
+          "decidedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "description": "P4-V1 fix-cycle-2 remediation (new finding, MEDIUM): the `go`/`conditional_go` gate previously narrowed `decidedBy.recordId` but left `decidedAt` nullable, so the most consequential decision in the chain could carry no timestamp. `decidedAt` is now narrowed to non-null `date-time` in the same `then`, mirroring `decidedBy`."
+    },
+    "v3DependencyChain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "chainId", "candidateBinding", "protocolRef", "executionReceiptRef", "resultRef", "adjudicationRef", "ownerDecisionRef", "clinicalValidationComplete", "blockedReleaseStates"],
+      "properties": {
+        "recordType": { "const": "v3DependencyChain" },
+        "chainId": { "type": "string", "minLength": 1 },
+        "candidateBinding": { "$ref": "#/$defs/candidateBinding" },
+        "protocolRef": { "type": ["object", "null"] },
+        "executionReceiptRef": { "type": ["object", "null"] },
+        "resultRef": { "type": ["object", "null"] },
+        "adjudicationRef": { "type": ["object", "null"] },
+        "ownerDecisionRef": { "type": ["object", "null"] },
+        "clinicalValidationComplete": {
+          "const": false,
+          "description": "STRUCTURAL GUARD (plan hard constraint 3). This field is pinned to false in this schema. There is no valid document under this schema where clinicalValidationComplete is true, because no evaluator exists in this repository that can verify the full digest-consistent chain (protocol frozen -> execution matches protocol digest -> result matches receipt -> adjudicated by the referenced authority -> owner decision go/conditional_go with satisfied conditions) end to end. Flipping this field to true requires an evaluator (out of this task's scope; see docs/clinical/v3-diagnostic-accuracy-contract.md section 3) plus every upstream owner-held record actually being asserted -- neither exists yet."
+        },
+        "blockedReleaseStates": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "enum": ["clinical_validation_complete", "certified_for_defined_scope", "released", "activated"] },
+          "description": "Plan section 2 state-taxonomy entries this chain currently blocks. Must always include clinical_validation_complete while clinicalValidationComplete is false, and by the plan's own transitivity (section 2, section 5) blocking clinical_validation_complete also blocks certified_for_defined_scope, released, and activated for any release scope that declares V3 applicable."
+        }
+      },
+      "description": "Composition record: a single addressable object naming every link in the chain by reference plus the derived (and today permanently false) top-line gate. Individual link records (protocol/receipt/result/adjudication/decision) remain the source of truth; this record exists so the release-blocking linkage has one machine-checkable location rather than requiring a reader to walk five documents."
+    }
+  },
+  "type": "object",
+  "required": ["recordType"],
+  "oneOf": [
+    { "$ref": "#/$defs/v3ProtocolContract" },
+    { "$ref": "#/$defs/v3ExecutionReceipt" },
+    { "$ref": "#/$defs/v3ResultRecord" },
+    { "$ref": "#/$defs/v3AdjudicationRecord" },
+    { "$ref": "#/$defs/v3OwnerDecision" },
+    { "$ref": "#/$defs/v3DependencyChain" }
+  ]
+}

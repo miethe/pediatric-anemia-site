@@ -1,0 +1,63 @@
+{
+  "kind": "DangerousMissScenarioSpecification",
+  "schemaVersion": "1.0.0",
+  "scenarioId": "SCN-DM-EQUITY-009",
+  "scenarioVersion": "1.0.0",
+  "hazardId": "DM-EQUITY-009",
+  "hazardFamily": "subgroup_or_access_failure",
+  "planReference": "agentic-research/runs/2026-07-19-pediatric-expansion-arc-readiness/validation_plan.md#DM-EQUITY-009",
+  "syntheticDeclaration": {
+    "synthetic": true,
+    "nonPatientData": true,
+    "notForClinicalUse": true,
+    "notAClinicalCase": true,
+    "purpose": "SYNTHETIC TEST FIXTURE. Documents the subgroup/access dangerous-miss family so it is tracked as a first-class hazard even though no executable evaluator exists yet in this repository. No patient or subgroup data is described."
+  },
+  "owner": {
+    "role": "pediatric-equity-patient-family-reviewer",
+    "name": null,
+    "assertion": "role_assigned"
+  },
+  "candidateBinding": {
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+    "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+  },
+  "executionBinding": {
+    "engine": "not_yet_implemented",
+    "engineRationale": "This repository has no subgroup/access-limitation evaluator, no equity dimension model, and no owner-defined equity protocol (grep for 'equity'/'subgroup' across src/, modules/, scripts/ on 2026-07-19 returns no implementation). Building one requires an owner-held equity/patient-family governance protocol (plan §6, §4 P4-T4/V5) that this task must not invent.",
+    "blockedOnTask": "arc-clinical-council-adoption-v1 P4-T4 (V5 human-factors/equity protocol-through-adjudication contracts) — see plan §4 P4 and OQ per pediatric_clinical_review.json seat PCR-EQUITY finding ARC-PEF-001"
+  },
+  "input": {
+    "kind": "none",
+    "patientInput": null,
+    "referenceIntervalRequest": null,
+    "terminologyObservation": null,
+    "profileRef": null
+  },
+  "expectedBehavior": {
+    "type": "not_executable",
+    "requiredSignal": "Equity limitation shown; unsupported population generalization blocked.",
+    "expectedAlerts": [],
+    "expectedAbstention": null,
+    "expectedBlockers": [],
+    "forbiddenSignals": [
+      "any test or code path in this repository reporting this hazard family as covered, passed, or mitigated absent a real equity evaluator",
+      "inventing subgroup/access input data to make this scenario appear executable"
+    ]
+  },
+  "expectedTrace": {
+    "mechanism": "none_available",
+    "matchedRuleIdsMustInclude": [],
+    "note": "No executable engine exists for this hazard family as of 2026-07-19. The test lane asserts the honesty of this declaration (engine === 'not_yet_implemented', blockedOnTask non-null) rather than fabricating a pass."
+  },
+  "rollbackSignal": "Re-author this scenario with a real executionBinding.engine and expectedBehavior once an equity/subgroup evaluator and owner-approved protocol exist (tracked under P4-T4).",
+  "execution": {
+    "state": "not_executed",
+    "receipt": null,
+    "result": null,
+    "adjudication": null,
+    "ownerDecision": null
+  }
+}

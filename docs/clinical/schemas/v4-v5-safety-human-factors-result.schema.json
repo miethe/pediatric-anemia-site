@@ -1,0 +1,711 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/docs/clinical/schemas/v4-v5-safety-human-factors-result.schema.json",
+  "title": "V4 Silent-Mode and V5 Summative Human-Factors Dependency Chains",
+  "description": "Machine-readable records for the V4 (prospective silent-mode) and V5 (summative human-factors) validation gates defined by arc-clinical-council-adoption-v1 plan section 4, task P4-T4, AC P4.1. Two propagation chains, one per gate, each mirroring the five-record shape P4-T3 established for V3 (protocol -> execution receipt -> result -> adjudication -> owner decision) plus a composed dependency-chain gate record. AUTHORED AND EXECUTED ARE SEPARATE RECORD TYPES ON PURPOSE (plan hard constraint 4): a v4SilentModeProtocol or v5HumanFactorsProtocol can be schema-valid and complete while zero executions, results, adjudications, or owner decisions exist. Structural validity of any record here is not clinical validity and never upgrades execution or approval state (plan section 2). This file co-locates with, and cross-references by $ref, docs/clinical/schemas/v3-protocol-result.schema.json for the shared owner-held-status discriminator, candidate-binding shape, reference-locator shape, adjudication-system-binding shape, analysis-plan shape, uncertainty-plan shape, and the P2 authenticated-attachment signature placeholder -- deliberately, so this file does not carry a second, divergent copy of primitives V3 already defines (see docs/clinical/v4-v5-safety-human-factors-contract.md section 8 for the full reuse-vs-own-types rationale). This file lives outside `schemas/` and `tests/` for the same file-ownership reason as its V3 sibling: those paths are owned by the concurrent P4-T1 task authoring dangerous-miss scenario fixtures. It has not been wired into any runtime importer or evaluator.",
+  "$defs": {
+    "ownerHeldStatus": { "$ref": "v3-protocol-result.schema.json#/$defs/ownerHeldStatus" },
+    "candidateBinding": { "$ref": "v3-protocol-result.schema.json#/$defs/candidateBinding" },
+    "referenceLocator": { "$ref": "v3-protocol-result.schema.json#/$defs/referenceLocator" },
+    "analysisPlan": { "$ref": "v3-protocol-result.schema.json#/$defs/analysisPlan" },
+    "uncertaintyPlan": { "$ref": "v3-protocol-result.schema.json#/$defs/uncertaintyPlan" },
+    "adjudicationSystemBinding": { "$ref": "v3-protocol-result.schema.json#/$defs/adjudicationSystemBinding" },
+    "ownerDecisionSignatureRef": { "$ref": "v3-protocol-result.schema.json#/$defs/v3OwnerDecision/properties/signatureRef" },
+
+    "dataBoundaryAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["noPatientDataEnteredRepository", "noPatientDataEnteredArcOrAos"],
+      "properties": {
+        "noPatientDataEnteredRepository": { "const": true },
+        "noPatientDataEnteredArcOrAos": { "const": true }
+      },
+      "description": "Structural, not owner-held (plan hard constraint 5: NO PATIENT DATA). Shared verbatim between v4ExecutionReceipt and v5ExecutionReceipt via a single $def, the same containment already established for v3ExecutionReceipt.dataAccessAttestation. Both fields must be true for any receipt to be schema-valid; there is no value that permits a real patient record -- EHR-resident for V4, or used as V5 study stimulus material -- to have entered this repository, ARC, or AOS."
+    },
+
+    "alertWorkflowLifecycleBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status", "acknowledgmentAndEscalationSla", "deferralPolicy", "overrideRationalePolicy",
+        "duplicateSuppressionRule", "downtimeReplayProcedure", "downtimeProcedureOwnerRef",
+        "crossShiftHandoffProcedure", "urgentDominanceVerificationMethod", "incidentLinkageProcedure"
+      ],
+      "properties": {
+        "status": { "$ref": "#/$defs/ownerHeldStatus" },
+        "acknowledgmentAndEscalationSla": {
+          "type": ["string", "null"],
+          "description": "OWNER-HELD (finding PEDS-HF-001 recommendation: 'responsible-role assignment, acknowledgment and escalation SLAs'). Who must acknowledge an alert/work item, within what time, and to whom it escalates if unacknowledged."
+        },
+        "deferralPolicy": { "type": ["string", "null"], "description": "OWNER-HELD. Rules for deferring/snoozing an item without losing it (PEDS-HF-001: 'snooze and duplicate rules')." },
+        "overrideRationalePolicy": { "type": ["string", "null"], "description": "OWNER-HELD. Requirement that an override carry a clinically reviewed rationale (PEDS-HF-001: 'clinically reviewed override reasons'), not a bare dismissal." },
+        "duplicateSuppressionRule": { "type": ["string", "null"], "description": "OWNER-HELD. How repeated/duplicate cards are reconciled without silently dropping a distinct new event." },
+        "downtimeReplayProcedure": { "type": ["string", "null"], "description": "OWNER-HELD. How alerts/events generated during an outage are replayed and reconciled on recovery (PEDS-HF-001: 'downtime replay'; mirrors local-profile-charter-contract.md C17, still unmodelled there)." },
+        "downtimeProcedureOwnerRef": {
+          "$ref": "#/$defs/referenceLocator",
+          "description": "OWNER-HELD. The named individual/role accountable for executing downtime recovery. Hard constraint: this repository must NOT invent a downtime procedure owner -- this field stays a reference-only pointer until an authenticated owner supplies one. Holder per plan section 6 / risk register: pediatric-safety-owner (PAC-RISK-004)."
+        },
+        "crossShiftHandoffProcedure": { "type": ["string", "null"], "description": "OWNER-HELD. How an open item transfers across a shift or service boundary without loss of ownership (PEDS-HF-001: 'shift/service handoff')." },
+        "urgentDominanceVerificationMethod": { "type": ["string", "null"], "description": "OWNER-HELD. How the study/silent-mode measurement plan verifies that no benign rank, duplicate, override, outage, or handoff ever suppresses urgent visibility (PEDS-HF-001 expected_signal)." },
+        "incidentLinkageProcedure": { "type": ["string", "null"], "description": "OWNER-HELD. How a lost/mishandled alert links to the incident-response process (PEDS-HF-001 evidence: '02-evidence-foundry...1416-1424: incident-response ... evidence')." }
+      },
+      "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+      "then": {
+        "required": [
+          "acknowledgmentAndEscalationSla", "deferralPolicy", "overrideRationalePolicy",
+          "duplicateSuppressionRule", "downtimeReplayProcedure", "crossShiftHandoffProcedure",
+          "urgentDominanceVerificationMethod", "incidentLinkageProcedure"
+        ],
+        "properties": {
+          "acknowledgmentAndEscalationSla": { "type": "string", "minLength": 1 },
+          "deferralPolicy": { "type": "string", "minLength": 1 },
+          "overrideRationalePolicy": { "type": "string", "minLength": 1 },
+          "duplicateSuppressionRule": { "type": "string", "minLength": 1 },
+          "downtimeReplayProcedure": { "type": "string", "minLength": 1 },
+          "crossShiftHandoffProcedure": { "type": "string", "minLength": 1 },
+          "urgentDominanceVerificationMethod": { "type": "string", "minLength": 1 },
+          "incidentLinkageProcedure": { "type": "string", "minLength": 1 }
+        }
+      },
+      "description": "The single canonical safety-owned alert/work-item lifecycle definition finding PEDS-HF-001 calls for. Referenced identically (same $def) by v4SilentModeProtocol.alertLifecycle and v5HumanFactorsProtocol.alertLifecycle so V4 (does the machine behave safely under this lifecycle, unobserved) and V5 (do clinicians comprehend and correctly operate this lifecycle) are measured against one lifecycle definition, never two documents that can silently drift apart (plan hard constraint 5)."
+    },
+
+    "equityAndAccessibilityPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "dimensions", "minimumRepresentation", "prespecified", "equityGovernanceProtocolRef"],
+      "properties": {
+        "status": { "$ref": "#/$defs/ownerHeldStatus" },
+        "dimensions": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "string",
+            "enum": [
+              "age_band", "sex", "site", "analyzer_platform", "access_mediated_missingness",
+              "language", "disability_or_accessibility_need", "health_literacy",
+              "cost_or_follow_up_burden", "caregiver_or_adolescent_participation"
+            ]
+          },
+          "description": "Dimension names reuse the V3 subgroup axes (age_band/sex/site/analyzer_platform) plus the axes named in the ARC readiness run's watchlist finding ARC-PEF-001 ('access-mediated missingness, language, disability, health literacy, cost or follow-up burden, or caregiver and adolescent participation'). Naming a dimension is not the same as setting its target representation or pass/fail rule -- both remain owner-held below."
+        },
+        "minimumRepresentation": { "type": ["string", "null"], "description": "OWNER-HELD. Minimum representation/coverage per dimension below which a subgroup result is reported as underpowered rather than a point estimate (mirrors V3 subgroupPlan.minimumCellSize)." },
+        "prespecified": { "type": ["boolean", "null"], "description": "OWNER-HELD. Must be true and dated before study/silent-mode execution for a subgroup or accessibility finding to be treated as confirmatory rather than exploratory." },
+        "equityGovernanceProtocolRef": {
+          "$ref": "#/$defs/referenceLocator",
+          "description": "OWNER-HELD. Hard constraint: this repository must NOT invent an equity governance protocol. This field is a reference-only pointer to the owner-authenticated protocol (plan section 6: 'patient/family and equity governance protocols'; risk register PAC-RISK-007, owner equity-and-family-governance-owner)."
+        }
+      },
+      "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+      "then": {
+        "required": ["dimensions", "minimumRepresentation", "prespecified"],
+        "properties": {
+          "dimensions": { "type": "array", "minItems": 1 },
+          "minimumRepresentation": { "type": "string", "minLength": 1 },
+          "prespecified": { "const": true }
+        }
+      },
+      "description": "Shared verbatim (single $def) between v4SilentModeProtocol.equityAndAccessibilityPlan and v5HumanFactorsProtocol.equityAndAccessibilityPlan for the same anti-drift reason as alertWorkflowLifecycleBinding. P4-V1 remediation (finding 2): minimumRepresentation is now narrowed to non-null when asserted."
+    },
+
+    "goNoGoCriterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["criterionId", "status", "thresholdDescription", "isIllustrative"],
+      "properties": {
+        "criterionId": {
+          "type": "string",
+          "enum": ["no_hidden_dangerous_behavior", "missingness_never_silently_clears"],
+          "description": "Reuses the roadmap's own V4 go-criterion language verbatim (01-platform-expansion-roadmap.md:296: 'no hidden dangerous behavior; missingness never silently clears'). Naming the criterion is not the same as setting the numeric/qualitative bar that satisfies it."
+        },
+        "status": { "$ref": "#/$defs/ownerHeldStatus" },
+        "thresholdDescription": { "type": ["string", "null"], "description": "OWNER-HELD. The actual pass/fail bar for this criterion. MUST NOT be populated with a repository-invented number or the roadmap's own illustrative figures -- same PEDS-DX-002 defect class V3 section 4 closes, applied here to V4." },
+        "isIllustrative": { "const": false, "description": "Structural guard, not owner-held. Always false, for the same reason as v3 endpointDefinition.isIllustrative." }
+      },
+      "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+      "then": { "required": ["thresholdDescription"], "properties": { "thresholdDescription": { "type": "string", "minLength": 1 } } },
+      "description": "P4-V1 remediation (finding 2): without this if/then, `status: asserted` coexisted with a null `thresholdDescription` -- mirrors v3 `endpointDefinition`'s narrowing."
+    },
+
+    "humanFactorsMeasureDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["measureId", "status", "metric", "thresholdValue", "thresholdUnit", "isIllustrative"],
+      "properties": {
+        "measureId": {
+          "type": "string",
+          "enum": ["time_on_task", "interpretation_accuracy", "trust_calibration", "alert_fatigue", "comprehension", "appropriate_override"],
+          "description": "Reuses the roadmap's own V5 measure names verbatim (01-platform-expansion-roadmap.md:82,297: 'time-on-task, interpretation accuracy, trust calibration, alert fatigue' plus 'comprehension + appropriate-override metrics'). Naming a measure is not the same as setting its threshold."
+        },
+        "status": { "$ref": "#/$defs/ownerHeldStatus" },
+        "metric": { "type": ["string", "null"], "description": "OWNER-HELD. Owner-defined precise operationalization of the measure (instrument, scale, scoring method)." },
+        "thresholdValue": { "type": ["number", "string", "null"], "description": "OWNER-HELD. The actual pass/fail bar. MUST NOT be populated with a repository-invented usability threshold or SUS target -- none is named anywhere in this repository and none may be added by a repository agent (plan hard constraint 3)." },
+        "thresholdUnit": { "type": ["string", "null"], "description": "OWNER-HELD. Unit/scale the threshold is expressed in (e.g. percent correct, SUS points, seconds) -- itself owner-chosen, never assumed." },
+        "isIllustrative": { "const": false, "description": "Structural guard, not owner-held. Same isIllustrative pattern as V3 and V4 goNoGoCriterion -- an illustrative example number can never validate as a real measure definition." }
+      },
+      "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+      "then": {
+        "required": ["metric", "thresholdValue", "thresholdUnit"],
+        "properties": {
+          "metric": { "type": "string", "minLength": 1 },
+          "thresholdValue": { "type": ["number", "string"] },
+          "thresholdUnit": { "type": "string", "minLength": 1 }
+        }
+      },
+      "description": "P4-V1 remediation (finding 2): without this if/then, `status: asserted` coexisted with `metric`/`thresholdValue`/`thresholdUnit` all null -- mirrors v3 `endpointDefinition`'s narrowing."
+    },
+
+    "v4SilentModeProtocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recordType", "protocolId", "protocolVersion", "candidateBinding", "protocolStatus",
+        "operationsWindow", "liveDataSourceBinding", "alertLifecycle", "missingnessMonitoringPlan",
+        "wouldBeAlertCapturePlan", "overrideSimulationPlan", "goNoGoCriteria",
+        "equityAndAccessibilityPlan", "localProfileRef", "adjudicationSystemBinding",
+        "frozenAt", "frozenBy", "supersededBy"
+      ],
+      "properties": {
+        "recordType": { "const": "v4SilentModeProtocol" },
+        "protocolId": { "type": "string", "minLength": 1 },
+        "protocolVersion": { "type": "string", "minLength": 1 },
+        "candidateBinding": { "$ref": "#/$defs/candidateBinding" },
+        "protocolStatus": {
+          "type": "string",
+          "enum": ["not_executed_owner_held", "protocol_frozen", "protocol_deviation", "superseded", "expired"],
+          "description": "Same discriminator and freeze rule as v3ProtocolContract.protocolStatus: only protocol_frozen may validly authorize a silent-mode execution."
+        },
+        "operationsWindow": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "dataPartnerOrSite", "startDate", "endDate", "durationDays", "environment"],
+          "properties": {
+            "status": { "$ref": "#/$defs/ownerHeldStatus" },
+            "dataPartnerOrSite": {
+              "$ref": "#/$defs/referenceLocator",
+              "description": "OWNER-HELD. No silent-mode operations window, institution, or site is named anywhere in this repository (plan hard constraint 3). Must resolve, for a live-EHR execution, to a P3 signed local-profile record (plan P3 -> P4 dependency) -- never an invented site."
+            },
+            "startDate": { "type": ["string", "null"], "format": "date-time" },
+            "endDate": { "type": ["string", "null"], "format": "date-time" },
+            "durationDays": { "type": ["integer", "null"], "minimum": 1 },
+            "environment": { "type": ["string", "null"], "description": "OWNER-HELD. Where silent-mode execution runs (e.g. data-partner shadow environment). Never a repository CI runner -- like V3, this execution is off-repository by construction." }
+          },
+          "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+          "then": {
+            "required": ["dataPartnerOrSite", "startDate", "endDate", "durationDays", "environment"],
+            "properties": {
+              "startDate": { "type": "string" },
+              "endDate": { "type": "string" },
+              "durationDays": { "type": "integer" },
+              "environment": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "liveDataSourceBinding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "dataPartner", "ehrSystemRef", "dataBoundaryPosture"],
+          "properties": {
+            "status": { "$ref": "#/$defs/ownerHeldStatus" },
+            "dataPartner": { "type": ["string", "null"], "description": "OWNER-HELD. No data partner is named anywhere in this repository (mirrors V3 datasetAndReferenceStandard.dataPartner)." },
+            "ehrSystemRef": { "$ref": "#/$defs/referenceLocator", "description": "OWNER-HELD. Reference to the live EHR system silent-mode reads from. Never an embedded connection detail or credential." },
+            "dataBoundaryPosture": {
+              "type": ["string", "null"],
+              "enum": [null, "no_data_leaves_data_partner_environment", "deidentified_extract_only"],
+              "description": "Structural, not owner-held (plan hard constraint 5: NO PATIENT DATA), same posture-restriction pattern as V3 datasetAndReferenceStandard.phiHandling. Documents which of the two permitted postures applies; the receipt-level dataBoundaryAttestation is the actual enforced guard."
+            }
+          },
+          "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+          "then": { "required": ["dataPartner", "dataBoundaryPosture"], "properties": { "dataPartner": { "type": "string", "minLength": 1 }, "dataBoundaryPosture": { "enum": ["no_data_leaves_data_partner_environment", "deidentified_extract_only"] } } }
+        },
+        "alertLifecycle": { "$ref": "#/$defs/alertWorkflowLifecycleBinding" },
+        "missingnessMonitoringPlan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "monitoringMethod", "missingnessNeverClearsVerificationMethod"],
+          "properties": {
+            "status": { "$ref": "#/$defs/ownerHeldStatus" },
+            "monitoringMethod": { "type": ["string", "null"], "description": "OWNER-HELD. How missing/incomplete input data is tracked through silent-mode execution." },
+            "missingnessNeverClearsVerificationMethod": { "type": ["string", "null"], "description": "OWNER-HELD. How the study verifies the roadmap go-criterion that missingness is never silently resolved to a false-normal/false-clear state (01-platform-expansion-roadmap.md:296)." }
+          },
+          "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+          "then": { "required": ["monitoringMethod", "missingnessNeverClearsVerificationMethod"], "properties": { "monitoringMethod": { "type": "string", "minLength": 1 }, "missingnessNeverClearsVerificationMethod": { "type": "string", "minLength": 1 } } }
+        },
+        "wouldBeAlertCapturePlan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "captureMethod", "hazardMatrixRef"],
+          "properties": {
+            "status": { "$ref": "#/$defs/ownerHeldStatus" },
+            "captureMethod": { "type": ["string", "null"], "description": "OWNER-HELD. How would-be alerts (never displayed) are captured for later analysis." },
+            "hazardMatrixRef": { "$ref": "#/$defs/referenceLocator", "description": "Binds by reference to plan task P4-T2's hazard-to-control matrix rather than duplicating it (plan hard constraint 5) -- would-be-alert capture is evaluated against the same named hazards, not a second invented list." }
+          },
+          "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+          "then": { "required": ["captureMethod"], "properties": { "captureMethod": { "type": "string", "minLength": 1 } } }
+        },
+        "overrideSimulationPlan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "scenarios", "method"],
+          "properties": {
+            "status": { "$ref": "#/$defs/ownerHeldStatus" },
+            "scenarios": { "type": ["array", "null"], "items": { "type": "string" }, "description": "OWNER-HELD. The override-simulation scenarios exercised (roadmap: 'override simulation')." },
+            "method": { "type": ["string", "null"], "description": "OWNER-HELD." }
+          },
+          "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+          "then": { "required": ["scenarios", "method"], "properties": { "scenarios": { "type": "array", "minItems": 1 }, "method": { "type": "string", "minLength": 1 } } }
+        },
+        "goNoGoCriteria": { "type": "array", "items": { "$ref": "#/$defs/goNoGoCriterion" }, "minItems": 1 },
+        "equityAndAccessibilityPlan": { "$ref": "#/$defs/equityAndAccessibilityPlan" },
+        "localProfileRef": { "$ref": "#/$defs/referenceLocator", "description": "Must resolve to a P3 signed local-profile record for the live-EHR site (plan hard constraint 5: bind by reference to the P3 signed-site-profile applicability machinery rather than duplicating it)." },
+        "adjudicationSystemBinding": { "$ref": "#/$defs/adjudicationSystemBinding" },
+        "frozenAt": { "type": ["string", "null"], "format": "date-time" },
+        "frozenBy": { "$ref": "#/$defs/referenceLocator" },
+        "supersededBy": { "type": ["string", "null"] }
+      },
+      "if": { "properties": { "protocolStatus": { "const": "protocol_frozen" } }, "required": ["protocolStatus"] },
+      "then": {
+        "required": ["frozenAt", "frozenBy"],
+        "properties": {
+          "frozenAt": { "type": "string" },
+          "operationsWindow": { "properties": { "status": { "const": "asserted" } } },
+          "liveDataSourceBinding": { "properties": { "status": { "const": "asserted" } } },
+          "alertLifecycle": { "properties": { "status": { "const": "asserted" } } },
+          "missingnessMonitoringPlan": { "properties": { "status": { "const": "asserted" } } },
+          "wouldBeAlertCapturePlan": { "properties": { "status": { "const": "asserted" } } },
+          "overrideSimulationPlan": { "properties": { "status": { "const": "asserted" } } },
+          "equityAndAccessibilityPlan": { "properties": { "status": { "const": "asserted" } } },
+          "adjudicationSystemBinding": { "properties": { "status": { "const": "asserted" } } },
+          "goNoGoCriteria": { "items": { "properties": { "status": { "const": "asserted" } } } }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "protocolStatus": { "const": "superseded" } }, "required": ["protocolStatus"] },
+          "then": { "required": ["supersededBy"], "properties": { "supersededBy": { "type": "string", "minLength": 1 } } },
+          "description": "P4-V1 fix-cycle-2 remediation (LOW finding, applied for parity with the V3 sibling this cycle's item 4 fixed): `supersededBy` had no description claiming enforcement here, but leaving the same latent gap unfixed in this sibling would repeat exactly the asymmetry pattern that caused this fix cycle."
+        }
+      ],
+      "description": "The AUTHORED half of the V4 chain. Shipping this record complete and schema-valid proves a silent-mode protocol was specified. It proves nothing about the operations window, data partner, or go/no-go thresholds being clinically sound, nor that any silent-mode execution has happened. P4-V1 fix-cycle-2: `supersededBy` is now enforced non-null when `protocolStatus: superseded` (see the nested `allOf` entry)."
+    },
+
+    "v4ExecutionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "receiptId", "protocolRef", "candidateBindingAtExecution", "executionReceiptStatus", "executedBy", "executedAt", "clinicianFacingDisplayAttestation", "dataBoundaryAttestation"],
+      "properties": {
+        "recordType": { "const": "v4ExecutionReceipt" },
+        "receiptId": { "type": "string", "minLength": 1 },
+        "protocolRef": {
+          "type": "object", "additionalProperties": false, "required": ["protocolId", "protocolVersion"],
+          "properties": { "protocolId": { "type": "string" }, "protocolVersion": { "type": "string" } },
+          "description": "Must resolve to a v4SilentModeProtocol with protocolStatus protocol_frozen at execution time. A receipt referencing a not-frozen protocol is void by construction."
+        },
+        "candidateBindingAtExecution": { "$ref": "#/$defs/candidateBinding" },
+        "executionReceiptStatus": {
+          "type": "string",
+          "enum": ["not_executed", "executing", "executed", "aborted", "protocol_digest_mismatch"],
+          "description": "Same semantics as v3ExecutionReceipt.executionReceiptStatus."
+        },
+        "executedBy": { "$ref": "#/$defs/referenceLocator" },
+        "executedAt": { "type": ["string", "null"], "format": "date-time" },
+        "environment": { "type": ["string", "null"] },
+        "clinicianFacingDisplayAttestation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["noDisplayDuringSilentMode"],
+          "properties": { "noDisplayDuringSilentMode": { "const": true } },
+          "description": "STRUCTURAL GUARD, not owner-held. Silent mode is defined by the roadmap as running with 'no clinician-facing display' (01-platform-expansion-roadmap.md:296). A receipt cannot assert execution while a clinician-facing display occurred and remain schema-valid -- that would not be describing a silent-mode run at all. There is no other valid value."
+        },
+        "dataBoundaryAttestation": { "$ref": "#/$defs/dataBoundaryAttestation" }
+      },
+      "if": { "properties": { "executionReceiptStatus": { "const": "executed" } }, "required": ["executionReceiptStatus"] },
+      "then": { "required": ["executedAt"], "properties": { "executedAt": { "type": "string", "format": "date-time" } } },
+      "description": "P4-V1 fix-cycle-2 remediation (new finding, MEDIUM, deliberate choice -- see docs/clinical/v4-v5-safety-human-factors-contract.md section 2.2/4): mirrors v3ExecutionReceipt's own-status narrowing, closed for the same reason and with the same rationale."
+    },
+
+    "v4ResultRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "resultId", "executionReceiptRef", "resultStatus", "silentModeEventResults", "missingnessNeverClearedObserved", "subgroupResults"],
+      "properties": {
+        "recordType": { "const": "v4ResultRecord" },
+        "resultId": { "type": "string", "minLength": 1 },
+        "executionReceiptRef": { "type": "object", "additionalProperties": false, "required": ["receiptId"], "properties": { "receiptId": { "type": "string" } } },
+        "resultStatus": {
+          "type": "string",
+          "enum": ["not_executed", "executed_unadjudicated", "void_protocol_mismatch", "void_receipt_missing"],
+          "description": "executed_unadjudicated is the ceiling this record type can reach on its own, same as v3ResultRecord."
+        },
+        "silentModeEventResults": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["eventClass", "count", "hiddenDangerousBehaviorObserved", "n"],
+            "properties": {
+              "eventClass": {
+                "type": "string",
+                "enum": ["would_be_alert_fired", "missing_data_event", "override_simulation_event", "downtime_event", "handoff_event", "duplicate_suppressed_event", "urgent_dominance_event"]
+              },
+              "count": { "type": ["integer", "null"], "minimum": 0 },
+              "hiddenDangerousBehaviorObserved": { "type": ["boolean", "null"], "description": "Direct surface of the roadmap's 'no hidden dangerous behavior' go-criterion for this event class." },
+              "n": { "type": ["integer", "null"], "minimum": 0 }
+            }
+          }
+        },
+        "missingnessNeverClearedObserved": { "type": ["boolean", "null"], "description": "Direct surface of the roadmap's 'missingness never silently clears' go-criterion, for linkage to plan P4-T2's hazard-to-control matrix; the authoritative record remains silentModeEventResults." },
+        "subgroupResults": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["dimension", "stratum", "eventClass", "count", "n", "analysisClass"],
+            "properties": {
+              "dimension": { "type": "string" },
+              "stratum": { "type": "string" },
+              "eventClass": { "type": "string" },
+              "count": { "type": ["integer", "null"], "minimum": 0 },
+              "n": { "type": ["integer", "null"], "minimum": 0 },
+              "analysisClass": { "type": "string", "enum": ["confirmatory_prespecified", "exploratory_post_hoc", "underpowered_below_minimum_cell_size"] }
+            }
+          }
+        }
+      },
+      "if": { "properties": { "resultStatus": { "const": "executed_unadjudicated" } }, "required": ["resultStatus"] },
+      "then": { "properties": { "silentModeEventResults": { "type": "array", "minItems": 1 } } },
+      "description": "P4-V1 fix-cycle-2 remediation (new finding, MEDIUM, deliberate choice): mirrors v3ResultRecord's own-status narrowing -- `resultStatus: executed_unadjudicated` now requires at least one `silentModeEventResults` entry. `subgroupResults` stays unconstrained (equity/subgroup analysis may legitimately not be pre-specified)."
+    },
+
+    "v4AdjudicationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "adjudicationId", "resultRef", "adjudicationStatus", "adjudicationSystemRef", "discordanceRecords", "adjudicationDecidedAt"],
+      "properties": {
+        "recordType": { "const": "v4AdjudicationRecord" },
+        "adjudicationId": { "type": "string", "minLength": 1 },
+        "resultRef": { "type": "object", "additionalProperties": false, "required": ["resultId"], "properties": { "resultId": { "type": "string" } } },
+        "adjudicationStatus": {
+          "type": "string",
+          "enum": ["not_executed_owner_held", "adjudicated", "discordant_unresolved"],
+          "description": "OWNER-HELD (OQ-6). Same non-self-adjudication rule as v3AdjudicationRecord: this repository never sets adjudicated on its own authority."
+        },
+        "adjudicationSystemRef": { "$ref": "#/$defs/referenceLocator" },
+        "discordanceRecords": { "type": "array", "items": { "type": "object" } },
+        "adjudicationDecidedAt": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "if": { "properties": { "adjudicationStatus": { "enum": ["adjudicated", "discordant_unresolved"] } }, "required": ["adjudicationStatus"] },
+      "then": { "required": ["adjudicationDecidedAt"], "properties": { "adjudicationDecidedAt": { "type": "string", "format": "date-time" } } },
+      "description": "P4-V1 fix-cycle-2 remediation (new finding, MEDIUM, deliberate choice): mirrors v3AdjudicationRecord's own-status narrowing."
+    },
+
+    "v4OwnerDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "decisionId", "adjudicationRef", "decision", "decidedBy", "decidedAt", "conditions", "signatureRef"],
+      "properties": {
+        "recordType": { "const": "v4OwnerDecision" },
+        "decisionId": { "type": "string", "minLength": 1 },
+        "adjudicationRef": { "type": "object", "additionalProperties": false, "required": ["adjudicationId"], "properties": { "adjudicationId": { "type": "string" } } },
+        "decision": {
+          "type": "string",
+          "enum": ["not_executed_owner_held", "go", "no_go", "conditional_go", "withdrawn"],
+          "description": "OWNER-HELD (OQ-6/plan section 6). The only field authorizing this candidate's V4 silent-mode gate, and only when go or conditional_go with every condition independently satisfied."
+        },
+        "decidedBy": { "$ref": "#/$defs/referenceLocator" },
+        "decidedAt": { "type": ["string", "null"], "format": "date-time" },
+        "conditions": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["condition", "satisfied"], "properties": { "condition": { "type": "string" }, "satisfied": { "type": "boolean" } } } },
+        "signatureRef": { "$ref": "#/$defs/ownerDecisionSignatureRef" }
+      },
+      "if": { "properties": { "decision": { "enum": ["go", "conditional_go"] } } },
+      "then": {
+        "required": ["decidedAt"],
+        "properties": {
+          "decidedBy": { "properties": { "recordId": { "type": "string", "minLength": 1 } }, "required": ["recordId"] },
+          "decidedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "description": "P4-V1 fix-cycle-2 remediation (new finding, MEDIUM): mirrors v3OwnerDecision's `decidedAt` narrowing."
+    },
+
+    "v4DependencyChain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "chainId", "candidateBinding", "protocolRef", "executionReceiptRef", "resultRef", "adjudicationRef", "ownerDecisionRef", "silentModeValidationComplete", "blockedReleaseStates"],
+      "properties": {
+        "recordType": { "const": "v4DependencyChain" },
+        "chainId": { "type": "string", "minLength": 1 },
+        "candidateBinding": { "$ref": "#/$defs/candidateBinding" },
+        "protocolRef": { "type": ["object", "null"] },
+        "executionReceiptRef": { "type": ["object", "null"] },
+        "resultRef": { "type": ["object", "null"] },
+        "adjudicationRef": { "type": ["object", "null"] },
+        "ownerDecisionRef": { "type": ["object", "null"] },
+        "silentModeValidationComplete": {
+          "const": false,
+          "description": "STRUCTURAL GUARD (plan hard constraint 1). Pinned to false: no schema-valid document under this schema can claim V4 complete, because no evaluator exists here that can verify the digest-consistent chain end to end (protocol frozen -> execution digest matches -> result matches receipt -> adjudicated by the referenced authority -> owner decision go/conditional_go with satisfied conditions). Same non-existent-evaluator boundary as v3DependencyChain.clinicalValidationComplete."
+        },
+        "blockedReleaseStates": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "enum": ["clinical_validation_complete", "certified_for_defined_scope", "released", "activated"] },
+          "description": "Must always include clinical_validation_complete while silentModeValidationComplete is false; by plan transitivity this also blocks certified_for_defined_scope, released, and activated for any scope declaring V4 applicable."
+        }
+      }
+    },
+
+    "v5HumanFactorsProtocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recordType", "protocolId", "protocolVersion", "candidateBinding", "protocolStatus", "studyType",
+        "studyArtifactScope", "participantsAndRecruitment", "humanFactorsMeasures", "alertLifecycle",
+        "equityAndAccessibilityPlan", "analysisPlan", "uncertaintyPlan", "adjudicationSystemBinding",
+        "frozenAt", "frozenBy", "supersededBy"
+      ],
+      "properties": {
+        "recordType": { "const": "v5HumanFactorsProtocol" },
+        "protocolId": { "type": "string", "minLength": 1 },
+        "protocolVersion": { "type": "string", "minLength": 1 },
+        "candidateBinding": { "$ref": "#/$defs/candidateBinding" },
+        "protocolStatus": {
+          "type": "string",
+          "enum": ["not_executed_owner_held", "protocol_frozen", "protocol_deviation", "superseded", "expired"]
+        },
+        "studyType": {
+          "const": "summative_human_factors",
+          "description": "Structural scope guard, not owner-held. This record type covers plan section 6's 'V5 summative human-factors participation' item only. Formative human-factors testing (finding PEDS-IMPL-001's recommended precursor work package) is deliberately out of this task's scope and is not representable here -- see docs/clinical/v4-v5-safety-human-factors-contract.md section 8."
+        },
+        "studyArtifactScope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "candidateArtifacts"],
+          "properties": {
+            "status": { "$ref": "#/$defs/ownerHeldStatus" },
+            "candidateArtifacts": {
+              "type": ["array", "null"],
+              "items": { "type": "string" },
+              "description": "OWNER-HELD. The roadmap names 'referral packet + tri-state questionnaire' as the general V5 target artifacts (01-platform-expansion-roadmap.md:297), but per the V3 precedent (intendedUse.population) the owner must positively bind the exact artifact set and version for THIS study -- inheriting the planning-scope text is not the same as binding it."
+            }
+          },
+          "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+          "then": { "required": ["candidateArtifacts"], "properties": { "candidateArtifacts": { "type": "array", "minItems": 1 } } }
+        },
+        "participantsAndRecruitment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "recruitmentCriteria", "targetParticipantCount", "participantRoles", "consentProcess"],
+          "properties": {
+            "status": { "$ref": "#/$defs/ownerHeldStatus" },
+            "recruitmentCriteria": { "type": ["string", "null"], "description": "OWNER-HELD. No recruitment criteria are named anywhere in this repository (plan hard constraint 3)." },
+            "targetParticipantCount": { "type": ["integer", "null"], "minimum": 1, "description": "OWNER-HELD. No participant count is named anywhere in this repository (plan hard constraint 3) -- MUST NOT be populated with a repository-invented number." },
+            "participantRoles": { "type": ["array", "null"], "items": { "type": "string" }, "description": "OWNER-HELD. Which clinician/staff roles participate as study subjects." },
+            "consentProcess": { "type": ["string", "null"], "description": "OWNER-HELD." }
+          },
+          "if": { "properties": { "status": { "const": "asserted" } }, "required": ["status"] },
+          "then": {
+            "required": ["recruitmentCriteria", "targetParticipantCount", "participantRoles", "consentProcess"],
+            "properties": {
+              "recruitmentCriteria": { "type": "string", "minLength": 1 },
+              "targetParticipantCount": { "type": "integer" },
+              "participantRoles": { "type": "array", "minItems": 1 },
+              "consentProcess": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "humanFactorsMeasures": { "type": "array", "items": { "$ref": "#/$defs/humanFactorsMeasureDefinition" }, "minItems": 1 },
+        "alertLifecycle": { "$ref": "#/$defs/alertWorkflowLifecycleBinding" },
+        "equityAndAccessibilityPlan": { "$ref": "#/$defs/equityAndAccessibilityPlan" },
+        "analysisPlan": { "$ref": "#/$defs/analysisPlan" },
+        "uncertaintyPlan": { "$ref": "#/$defs/uncertaintyPlan" },
+        "adjudicationSystemBinding": { "$ref": "#/$defs/adjudicationSystemBinding" },
+        "frozenAt": { "type": ["string", "null"], "format": "date-time" },
+        "frozenBy": { "$ref": "#/$defs/referenceLocator" },
+        "supersededBy": { "type": ["string", "null"] }
+      },
+      "if": { "properties": { "protocolStatus": { "const": "protocol_frozen" } }, "required": ["protocolStatus"] },
+      "then": {
+        "required": ["frozenAt", "frozenBy"],
+        "properties": {
+          "frozenAt": { "type": "string" },
+          "studyArtifactScope": { "properties": { "status": { "const": "asserted" } } },
+          "participantsAndRecruitment": { "properties": { "status": { "const": "asserted" } } },
+          "alertLifecycle": { "properties": { "status": { "const": "asserted" } } },
+          "equityAndAccessibilityPlan": { "properties": { "status": { "const": "asserted" } } },
+          "analysisPlan": { "properties": { "status": { "const": "asserted" } } },
+          "uncertaintyPlan": { "properties": { "status": { "const": "asserted" } } },
+          "adjudicationSystemBinding": { "properties": { "status": { "const": "asserted" } } },
+          "humanFactorsMeasures": { "items": { "properties": { "status": { "const": "asserted" } } } }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "protocolStatus": { "const": "superseded" } }, "required": ["protocolStatus"] },
+          "then": { "required": ["supersededBy"], "properties": { "supersededBy": { "type": "string", "minLength": 1 } } },
+          "description": "P4-V1 fix-cycle-2 remediation (LOW finding, applied for parity with V3/V4)."
+        }
+      ],
+      "description": "The AUTHORED half of the V5 chain. Shipping this record complete and schema-valid proves a summative human-factors protocol was specified. It proves nothing about recruitment, comprehension thresholds, or equity coverage being clinically/scientifically sound, nor that any study session has happened. P4-V1 fix-cycle-2: `supersededBy` is now enforced non-null when `protocolStatus: superseded`."
+    },
+
+    "v5ExecutionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "receiptId", "protocolRef", "candidateBindingAtExecution", "executionReceiptStatus", "executedBy", "executedAt", "dataBoundaryAttestation"],
+      "properties": {
+        "recordType": { "const": "v5ExecutionReceipt" },
+        "receiptId": { "type": "string", "minLength": 1 },
+        "protocolRef": {
+          "type": "object", "additionalProperties": false, "required": ["protocolId", "protocolVersion"],
+          "properties": { "protocolId": { "type": "string" }, "protocolVersion": { "type": "string" } },
+          "description": "Must resolve to a v5HumanFactorsProtocol with protocolStatus protocol_frozen at execution time."
+        },
+        "candidateBindingAtExecution": { "$ref": "#/$defs/candidateBinding" },
+        "executionReceiptStatus": { "type": "string", "enum": ["not_executed", "executing", "executed", "aborted", "protocol_digest_mismatch"] },
+        "executedBy": { "$ref": "#/$defs/referenceLocator" },
+        "executedAt": { "type": ["string", "null"], "format": "date-time" },
+        "environment": { "type": ["string", "null"], "description": "Where the study session ran. Never a repository CI runner." },
+        "dataBoundaryAttestation": { "$ref": "#/$defs/dataBoundaryAttestation" }
+      },
+      "if": { "properties": { "executionReceiptStatus": { "const": "executed" } }, "required": ["executionReceiptStatus"] },
+      "then": { "required": ["executedAt"], "properties": { "executedAt": { "type": "string", "format": "date-time" } } },
+      "description": "P4-V1 fix-cycle-2 remediation (new finding, MEDIUM, deliberate choice): mirrors v3ExecutionReceipt's own-status narrowing."
+    },
+
+    "v5ResultRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "resultId", "executionReceiptRef", "resultStatus", "measureResults", "subgroupResults"],
+      "properties": {
+        "recordType": { "const": "v5ResultRecord" },
+        "resultId": { "type": "string", "minLength": 1 },
+        "executionReceiptRef": { "type": "object", "additionalProperties": false, "required": ["receiptId"], "properties": { "receiptId": { "type": "string" } } },
+        "resultStatus": { "type": "string", "enum": ["not_executed", "executed_unadjudicated", "void_protocol_mismatch", "void_receipt_missing"] },
+        "measureResults": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["measureId", "pointEstimate", "interval", "n"],
+            "properties": {
+              "measureId": { "type": "string" },
+              "pointEstimate": { "type": ["number", "null"] },
+              "interval": {
+                "type": ["object", "null"],
+                "additionalProperties": false,
+                "required": ["low", "high"],
+                "properties": { "low": { "type": ["number", "null"] }, "high": { "type": ["number", "null"] } },
+                "description": "Required alongside every pointEstimate, same uncertainty requirement as v3ResultRecord.endpointResults."
+              },
+              "n": { "type": ["integer", "null"], "minimum": 0 }
+            }
+          }
+        },
+        "subgroupResults": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["dimension", "stratum", "measureId", "pointEstimate", "interval", "n", "analysisClass"],
+            "properties": {
+              "dimension": { "type": "string" },
+              "stratum": { "type": "string" },
+              "measureId": { "type": "string" },
+              "pointEstimate": { "type": ["number", "null"] },
+              "interval": { "type": ["object", "null"] },
+              "n": { "type": ["integer", "null"], "minimum": 0 },
+              "analysisClass": { "type": "string", "enum": ["confirmatory_prespecified", "exploratory_post_hoc", "underpowered_below_minimum_cell_size"] }
+            }
+          }
+        }
+      },
+      "if": { "properties": { "resultStatus": { "const": "executed_unadjudicated" } }, "required": ["resultStatus"] },
+      "then": { "properties": { "measureResults": { "type": "array", "minItems": 1 } } },
+      "description": "P4-V1 fix-cycle-2 remediation (new finding, MEDIUM, deliberate choice): mirrors v3ResultRecord's own-status narrowing -- `resultStatus: executed_unadjudicated` now requires at least one `measureResults` entry. `subgroupResults` stays unconstrained for the same reason as V3/V4."
+    },
+
+    "v5AdjudicationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "adjudicationId", "resultRef", "adjudicationStatus", "adjudicationSystemRef", "discordanceRecords", "adjudicationDecidedAt"],
+      "properties": {
+        "recordType": { "const": "v5AdjudicationRecord" },
+        "adjudicationId": { "type": "string", "minLength": 1 },
+        "resultRef": { "type": "object", "additionalProperties": false, "required": ["resultId"], "properties": { "resultId": { "type": "string" } } },
+        "adjudicationStatus": { "type": "string", "enum": ["not_executed_owner_held", "adjudicated", "discordant_unresolved"], "description": "OWNER-HELD (OQ-6)." },
+        "adjudicationSystemRef": { "$ref": "#/$defs/referenceLocator" },
+        "discordanceRecords": { "type": "array", "items": { "type": "object" } },
+        "adjudicationDecidedAt": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "if": { "properties": { "adjudicationStatus": { "enum": ["adjudicated", "discordant_unresolved"] } }, "required": ["adjudicationStatus"] },
+      "then": { "required": ["adjudicationDecidedAt"], "properties": { "adjudicationDecidedAt": { "type": "string", "format": "date-time" } } },
+      "description": "P4-V1 fix-cycle-2 remediation (new finding, MEDIUM, deliberate choice): mirrors v3AdjudicationRecord's own-status narrowing."
+    },
+
+    "v5OwnerDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "decisionId", "adjudicationRef", "decision", "decidedBy", "decidedAt", "conditions", "signatureRef"],
+      "properties": {
+        "recordType": { "const": "v5OwnerDecision" },
+        "decisionId": { "type": "string", "minLength": 1 },
+        "adjudicationRef": { "type": "object", "additionalProperties": false, "required": ["adjudicationId"], "properties": { "adjudicationId": { "type": "string" } } },
+        "decision": { "type": "string", "enum": ["not_executed_owner_held", "go", "no_go", "conditional_go", "withdrawn"], "description": "OWNER-HELD (OQ-6/plan section 6)." },
+        "decidedBy": { "$ref": "#/$defs/referenceLocator" },
+        "decidedAt": { "type": ["string", "null"], "format": "date-time" },
+        "conditions": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["condition", "satisfied"], "properties": { "condition": { "type": "string" }, "satisfied": { "type": "boolean" } } } },
+        "signatureRef": { "$ref": "#/$defs/ownerDecisionSignatureRef" }
+      },
+      "if": { "properties": { "decision": { "enum": ["go", "conditional_go"] } } },
+      "then": {
+        "required": ["decidedAt"],
+        "properties": {
+          "decidedBy": { "properties": { "recordId": { "type": "string", "minLength": 1 } }, "required": ["recordId"] },
+          "decidedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "description": "P4-V1 fix-cycle-2 remediation (new finding, MEDIUM): mirrors v3OwnerDecision's `decidedAt` narrowing."
+    },
+
+    "v5DependencyChain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "chainId", "candidateBinding", "protocolRef", "executionReceiptRef", "resultRef", "adjudicationRef", "ownerDecisionRef", "summativeHumanFactorsComplete", "blockedReleaseStates"],
+      "properties": {
+        "recordType": { "const": "v5DependencyChain" },
+        "chainId": { "type": "string", "minLength": 1 },
+        "candidateBinding": { "$ref": "#/$defs/candidateBinding" },
+        "protocolRef": { "type": ["object", "null"] },
+        "executionReceiptRef": { "type": ["object", "null"] },
+        "resultRef": { "type": ["object", "null"] },
+        "adjudicationRef": { "type": ["object", "null"] },
+        "ownerDecisionRef": { "type": ["object", "null"] },
+        "summativeHumanFactorsComplete": {
+          "const": false,
+          "description": "STRUCTURAL GUARD (plan hard constraint 1). Pinned to false for the same reason as v4DependencyChain.silentModeValidationComplete and v3DependencyChain.clinicalValidationComplete: no evaluator exists in this repository."
+        },
+        "blockedReleaseStates": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "enum": ["clinical_validation_complete", "certified_for_defined_scope", "released", "activated"] }
+        }
+      }
+    }
+  },
+
+  "type": "object",
+  "required": ["recordType"],
+  "oneOf": [
+    { "$ref": "#/$defs/v4SilentModeProtocol" },
+    { "$ref": "#/$defs/v4ExecutionReceipt" },
+    { "$ref": "#/$defs/v4ResultRecord" },
+    { "$ref": "#/$defs/v4AdjudicationRecord" },
+    { "$ref": "#/$defs/v4OwnerDecision" },
+    { "$ref": "#/$defs/v4DependencyChain" },
+    { "$ref": "#/$defs/v5HumanFactorsProtocol" },
+    { "$ref": "#/$defs/v5ExecutionReceipt" },
+    { "$ref": "#/$defs/v5ResultRecord" },
+    { "$ref": "#/$defs/v5AdjudicationRecord" },
+    { "$ref": "#/$defs/v5OwnerDecision" },
+    { "$ref": "#/$defs/v5DependencyChain" }
+  ]
+}

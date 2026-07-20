@@ -1,0 +1,83 @@
+{
+  "kind": "DangerousMissScenarioSpecification",
+  "schemaVersion": "1.0.0",
+  "scenarioId": "SCN-DM-RESULT-007",
+  "scenarioVersion": "1.0.0",
+  "hazardId": "DM-RESULT-007",
+  "hazardFamily": "stale_duplicate_preliminary_corrected_or_amended_result",
+  "planReference": "agentic-research/runs/2026-07-19-pediatric-expansion-arc-readiness/validation_plan.md#DM-RESULT-007",
+  "syntheticDeclaration": {
+    "synthetic": true,
+    "nonPatientData": true,
+    "notForClinicalUse": true,
+    "notAClinicalCase": true,
+    "purpose": "SYNTHETIC TEST FIXTURE. Exercises a dropped-correction observation: status reads 'final' but the status lineage records a later 'corrected' state with no resolvable superseding reference. All values are invented for schema and safety-test purposes only."
+  },
+  "owner": {
+    "role": "clinical-informatics-interoperability-reviewer",
+    "name": null,
+    "assertion": "role_assigned"
+  },
+  "candidateBinding": {
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+    "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+  },
+  "executionBinding": {
+    "engine": "local-applicability-terminology",
+    "engineRationale": "Dropped correction / stale-final detection is the P3 terminology-applicability contract's own domain (status lineage checking in scripts/lib/local-applicability.mjs).",
+    "blockedOnTask": null
+  },
+  "input": {
+    "kind": "terminologyObservation",
+    "patientInput": null,
+    "referenceIntervalRequest": null,
+    "terminologyObservation": {
+      "id": "urn:synthetic:observation-dm-result-007",
+      "resourceType": "Observation",
+      "candidate": { "candidateDigest": "sha256:a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4" },
+      "localCode": "SYN-LOCAL-0001",
+      "localSystem": "https://example.org/synthetic-local-system",
+      "status": "final",
+      "statusLineage": {
+        "complete": true,
+        "states": ["registered", "preliminary", "final", "corrected"],
+        "supersedingObservationRef": null
+      },
+      "effectiveDateTime": "2026-07-10T08:00:00Z",
+      "issuedDateTime": "2026-07-10T09:00:00Z",
+      "specimenCode": "SYN-SPECIMEN-A",
+      "unitCode": "SYN-UNIT-A"
+    },
+    "profileRef": {
+      "profileId": "SYNTHETIC-terminology-profile",
+      "profileDigest": "sha256:32bff78f499eff3640eac8c26f160fbfbd7986b5d7137eba82b777118d1e9bb7",
+      "profileLocator": "tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json"
+    }
+  },
+  "expectedBehavior": {
+    "type": "fail_closed",
+    "requiredSignal": "Preliminary, corrected, stale, or duplicate results compete. Status/provenance preserved; amended/corrected data dominates stale copies.",
+    "expectedAlerts": [],
+    "expectedAbstention": null,
+    "expectedBlockers": ["CORRECTION_UNRESOLVED", "SUPERSEDING_REFERENCE_UNRESOLVABLE"],
+    "forbiddenSignals": [
+      "treating the 'final' status as authoritative when the lineage records a later 'corrected' revision that was never linked",
+      "an 'applicable' decision without a resolvable superseding reference for a recorded correction"
+    ]
+  },
+  "expectedTrace": {
+    "mechanism": "applicability_blockers",
+    "matchedRuleIdsMustInclude": [],
+    "note": "Verified by direct execution against evaluateTerminologyApplicability on 2026-07-19. The lineage records a corrected revision after 'final' but the current status is still 'final' with no superseding reference; the dropped-correction case fails closed rather than treating the stale final value as authoritative."
+  },
+  "rollbackSignal": "Re-verify by execution if tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json digest changes, is superseded, or scripts/lib/local-applicability.mjs status-lineage logic changes.",
+  "execution": {
+    "state": "not_executed",
+    "receipt": null,
+    "result": null,
+    "adjudication": null,
+    "ownerDecision": null
+  }
+}

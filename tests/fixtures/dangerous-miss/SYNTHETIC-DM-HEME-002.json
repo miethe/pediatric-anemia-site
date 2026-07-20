@@ -1,0 +1,81 @@
+{
+  "kind": "DangerousMissScenarioSpecification",
+  "schemaVersion": "1.0.0",
+  "scenarioId": "SCN-DM-HEME-002",
+  "scenarioVersion": "1.0.0",
+  "hazardId": "DM-HEME-002",
+  "hazardFamily": "hemolysis_blood_loss_or_marrow_production_mismatch",
+  "planReference": "agentic-research/runs/2026-07-19-pediatric-expansion-arc-readiness/validation_plan.md#DM-HEME-002",
+  "syntheticDeclaration": {
+    "synthetic": true,
+    "nonPatientData": true,
+    "notForClinicalUse": true,
+    "notAClinicalCase": true,
+    "purpose": "SYNTHETIC TEST FIXTURE. Exercises the case where biochemical hemolysis markers are present but reticulocyte response is unknown, so production versus destruction cannot be resolved. All values are invented for schema and safety-test purposes only."
+  },
+  "owner": {
+    "role": "pediatric-hematology-reviewer",
+    "name": null,
+    "assertion": "role_assigned"
+  },
+  "candidateBinding": {
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+    "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+  },
+  "executionBinding": {
+    "engine": "anemia-assessment-engine",
+    "engineRationale": "Hemolysis-marker/retic-missingness conflict is expressible as a patient-input.schema.json CBC/labs input and evaluated by assessPediatricAnemia.",
+    "blockedOnTask": null
+  },
+  "input": {
+    "kind": "patientInput",
+    "patientInput": {
+      "patient": { "ageMonths": 96, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+      "cbc": { "hemoglobin": 8.5, "mcv": 90 },
+      "reticulocytes": { "response": "unknown" },
+      "labs": {
+        "indirectBilirubinStatus": "high",
+        "ldhStatus": "high",
+        "haptoglobinStatus": "low",
+        "datStatus": "unknown"
+      },
+      "symptoms": {},
+      "history": {},
+      "exam": {},
+      "smear": []
+    },
+    "referenceIntervalRequest": null,
+    "terminologyObservation": null,
+    "profileRef": null
+  },
+  "expectedBehavior": {
+    "type": "abstention",
+    "requiredSignal": "Competing production/loss/destruction patterns remain conflicting or abstained when evidence is incomplete. No unsupported unifying diagnosis; required confirmatory context remains visible.",
+    "expectedAlerts": [],
+    "expectedAbstention": {
+      "rankedDifferentialEmpty": false,
+      "classificationIndeterminate": false,
+      "maxCandidateLevel": "supported"
+    },
+    "expectedBlockers": [],
+    "forbiddenSignals": [
+      "a candidate reaching meets-defined-pattern or strongly-supported for a hemolytic diagnosis while reticulocyte response is unknown",
+      "absence of a follow-up question requesting reticulocyte count or peripheral smear review"
+    ]
+  },
+  "expectedTrace": {
+    "mechanism": "rule_audit",
+    "matchedRuleIdsMustInclude": ["HEM-003"],
+    "note": "Verified by direct execution on 2026-07-19. Top candidate is hemolysis-unspecified at 'supported' (HEM-003), never meets-defined-pattern/strongly-supported (HEM-001 requires retic.high, which retic.unknown blocks). nextQuestions include Q-004 (retic count) and Q-SMEAR-001 (smear review)."
+  },
+  "rollbackSignal": "Re-verify by execution if modules/anemia/rules.json, candidates.json, or module.json digests change, or if HEM-001/002/003 conditions are edited.",
+  "execution": {
+    "state": "not_executed",
+    "receipt": null,
+    "result": null,
+    "adjudication": null,
+    "ownerDecision": null
+  }
+}

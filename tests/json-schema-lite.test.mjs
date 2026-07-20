@@ -95,3 +95,50 @@ test('`minContains` is honoured', () => {
 test('an unresolvable $ref raises rather than silently passing', () => {
   assert.throws(() => validate({ $ref: '#/$defs/missing' }, 'x'), /unresolvable ref/);
 });
+
+// json-schema-lite fix cycle 1b: SUPPORTED_KEYWORDS previously omitted `exclusiveMinimum` and
+// `exclusiveMaximum`, so any schema node using either keyword threw instead of returning an
+// errors array -- see docs/clinical/schemas/v3-protocol-result.schema.json's
+// `uncertaintyPlan.confidenceLevel` (exclusiveMinimum: 0, exclusiveMaximum: 1), which made
+// whole-document validation of v3ProtocolContract/v5HumanFactorsProtocol impossible. These cases
+// implement JSON Schema draft 2020-12 NUMERIC semantics only (exclusiveMinimum/exclusiveMaximum
+// are themselves the bound, not a boolean modifier on minimum/maximum).
+
+test('`exclusiveMinimum` (numeric form): a value strictly greater than the bound passes', () => {
+  assert.deepEqual(validate({ type: 'number', exclusiveMinimum: 0 }, 0.5), []);
+});
+
+test('`exclusiveMinimum` (numeric form): a value equal to the bound fails (boundary is exclusive)', () => {
+  const errors = validate({ type: 'number', exclusiveMinimum: 0 }, 0);
+  assert.equal(errors.length, 1);
+  assert.match(errors[0].message, /exclusiveMinimum/);
+});
+
+test('`exclusiveMinimum` (numeric form): a value below the bound fails', () => {
+  const errors = validate({ type: 'number', exclusiveMinimum: 0 }, -1);
+  assert.equal(errors.length, 1);
+  assert.match(errors[0].message, /exclusiveMinimum/);
+});
+
+test('`exclusiveMaximum` (numeric form): a value strictly less than the bound passes', () => {
+  assert.deepEqual(validate({ type: 'number', exclusiveMaximum: 1 }, 0.5), []);
+});
+
+test('`exclusiveMaximum` (numeric form): a value equal to the bound fails (boundary is exclusive)', () => {
+  const errors = validate({ type: 'number', exclusiveMaximum: 1 }, 1);
+  assert.equal(errors.length, 1);
+  assert.match(errors[0].message, /exclusiveMaximum/);
+});
+
+test('`exclusiveMaximum` (numeric form): a value above the bound fails', () => {
+  const errors = validate({ type: 'number', exclusiveMaximum: 1 }, 2);
+  assert.equal(errors.length, 1);
+  assert.match(errors[0].message, /exclusiveMaximum/);
+});
+
+test('`exclusiveMinimum` and `exclusiveMaximum` combine to express an open interval (confidenceLevel shape)', () => {
+  const schema = { type: 'number', exclusiveMinimum: 0, exclusiveMaximum: 1 };
+  assert.deepEqual(validate(schema, 0.95), [], 'interior value must pass');
+  assert.equal(validate(schema, 0).length, 1, 'lower boundary must fail');
+  assert.equal(validate(schema, 1).length, 1, 'upper boundary must fail');
+});

@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/hazard-control-matrix.schema.json",
+  "title": "Pediatric Anemia CDSS Dangerous-Miss Hazard-to-Control Release-Dependency Manifest",
+  "$comment": "arc-clinical-council-adoption-v1 P4-T2 / AC P4.1. Binds each of the ten DM-CBC-001..DM-WORKFLOW-010 hazards (validation_plan.md catalog, converted to executable synthetic scenarios by P4-T1 under tests/fixtures/dangerous-miss/) to its rule/control id(s), required test(s), candidate/profile version, evidence, owner, and blocked release gate(s). AUTHORED != EXECUTED (plan hard constraint 4): controlBinding/requiredTests/versionBinding/ownerBinding are AUTHORED facts about what exists and who is accountable; evidence.technicalExecution and evidence.clinicalAdjudication are kept as separate fields precisely so a green `npm run check` (repository-level, synthetic, technical) can never be silently read as clinical adjudication or owner decision (plan hard constraint 3: BUILD STATE CANNOT SATISFY STUDY STATE). NO UNOWNED GAP: a hazard with no implemented control is not a blank cell — it is a `finding` (non-null, owned, blocking) enforced structurally via this schema's per-row if/then, not by convention.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "schemaVersion", "planReference", "acReference", "catalogSource", "rows", "releaseDependencyManifest"],
+  "properties": {
+    "kind": { "const": "HazardControlReleaseDependencyManifest" },
+    "schemaVersion": { "type": "string", "minLength": 1 },
+    "planReference": { "type": "string", "minLength": 1 },
+    "acReference": { "type": "string", "minLength": 1 },
+    "catalogSource": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Locator into the normative DM-CBC-001..DM-WORKFLOW-010 catalog this manifest binds (validation_plan.md). This manifest does not redefine or re-derive the catalog; it references it."
+    },
+    "rows": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": { "$ref": "#/$defs/hazardControlBinding" }
+    },
+    "releaseDependencyManifest": { "$ref": "#/$defs/releaseDependencyManifest" }
+  },
+  "$defs": {
+    "releaseState": {
+      "type": "string",
+      "enum": [
+        "repository_ready",
+        "readiness_audit_complete",
+        "qualifying_runtime_pilot",
+        "credentialed_review_complete",
+        "clinical_validation_complete",
+        "certified_for_defined_scope",
+        "released",
+        "activated"
+      ],
+      "description": "Verbatim state taxonomy from arc-clinical-council-adoption-v1.md section 2."
+    },
+    "releaseGateOwnerRole": {
+      "type": "string",
+      "enum": [
+        "pediatric-safety-owner",
+        "local-laboratory-director",
+        "clinical-informatics-and-privacy-owner",
+        "equity-and-family-governance-owner",
+        "diagnostic-methods-owner",
+        "clinical-governance-owner",
+        "evidence-rights-owner",
+        "pediatric-cds-program-owner"
+      ],
+      "description": "Owner-role vocabulary reused verbatim from the plan's decisions-block risk-register owners and section 6 owner-held list (never a named individual)."
+    },
+    "reviewerRole": {
+      "type": "string",
+      "enum": [
+        "pediatric-hematology-reviewer",
+        "pediatric-laboratory-medicine-reviewer",
+        "general-pediatrics-reviewer",
+        "clinical-informatics-interoperability-reviewer",
+        "diagnostic-accuracy-methods-reviewer",
+        "pediatric-safety-human-factors-reviewer",
+        "pediatric-equity-patient-family-reviewer",
+        "prediction-implementation-evaluation-reviewer"
+      ],
+      "description": "The eight ARC council reviewer seats, reused verbatim from the P4-T1 fixtures' owner.role values."
+    },
+    "scenarioRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scenarioId", "scenarioVersion", "fixturePath", "fixtureDigest"],
+      "properties": {
+        "scenarioId": { "type": "string", "pattern": "^SCN-DM-[A-Z]+-[0-9]{3}$" },
+        "scenarioVersion": { "type": "string", "minLength": 1 },
+        "fixturePath": { "type": "string", "minLength": 1 },
+        "fixtureDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "Content digest of the P4-T1 fixture file this row binds to. Test lane recomputes and compares — a stale digest is the rollback signal."
+        }
+      },
+      "description": "Pointer into the P4-T1 authored scenario specification. This row does not duplicate fixture content — only enough to bind and detect drift."
+    },
+    "controlBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "controlType", "controlIds", "rationale"],
+      "properties": {
+        "status": { "type": "string", "enum": ["control_bound", "no_control_exists"] },
+        "controlType": { "type": "string", "enum": ["engine_rule", "applicability_blocker", "none_available"] },
+        "controlIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Rule ids (from modules/anemia/rules.json) or applicability blocker codes (from scripts/lib/local-applicability.mjs) that mitigate this hazard. Empty only when status is no_control_exists."
+        },
+        "rationale": { "type": "string", "minLength": 1 }
+      }
+    },
+    "candidateVersionBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["knowledgeBaseVersion", "rulesFileDigest", "candidatesFileDigest", "moduleFileDigest"],
+      "properties": {
+        "knowledgeBaseVersion": { "type": "string", "minLength": 1 },
+        "rulesFileDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidatesFileDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "moduleFileDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "profileVersionBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profileId", "profileDigest", "profileLocator"],
+      "properties": {
+        "profileId": { "type": "string", "minLength": 1 },
+        "profileDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "profileLocator": { "type": "string", "minLength": 1 }
+      }
+    },
+    "versionBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bindingType", "candidateBinding", "profileBinding"],
+      "properties": {
+        "bindingType": { "type": "string", "enum": ["candidate_rules", "local_profile", "none_available"] },
+        "candidateBinding": { "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/candidateVersionBinding" }] },
+        "profileBinding": { "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/profileVersionBinding" }] }
+      },
+      "if": { "properties": { "bindingType": { "const": "candidate_rules" } } },
+      "then": {
+        "properties": {
+          "candidateBinding": { "$ref": "#/$defs/candidateVersionBinding" },
+          "profileBinding": { "const": null }
+        }
+      },
+      "else": {
+        "if": { "properties": { "bindingType": { "const": "local_profile" } } },
+        "then": {
+          "properties": {
+            "profileBinding": { "$ref": "#/$defs/profileVersionBinding" },
+            "candidateBinding": { "const": null }
+          }
+        },
+        "else": {
+          "properties": {
+            "candidateBinding": { "const": null },
+            "profileBinding": { "const": null }
+          }
+        }
+      },
+      "description": "The 'candidate version it is bound to' link. Exactly one of candidateBinding/profileBinding is populated, matching bindingType; both are null when bindingType is none_available (no_control_exists rows)."
+    },
+    "requiredTests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["testFile", "testMarkers", "coverageKind"],
+      "properties": {
+        "testFile": { "type": "string", "minLength": 1 },
+        "testMarkers": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Distinctive literal substrings of real node:test test title strings in testFile. The test lane greps testFile's source for each marker so a renamed/deleted required test breaks this binding loudly rather than silently."
+        },
+        "coverageKind": {
+          "type": "string",
+          "enum": ["behavioral_positive_and_negative", "honesty_absence_of_coverage"],
+          "description": "behavioral_positive_and_negative: the test actually exercises hazard mitigation (positive + negative case). honesty_absence_of_coverage: the test only proves the fixture honestly declares no engine exists — it is NOT hazard mitigation coverage."
+        }
+      }
+    },
+    "referenceLocator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["systemName", "recordId", "status"],
+      "properties": {
+        "systemName": { "anyOf": [{ "type": "null" }, { "type": "string", "minLength": 1 }] },
+        "recordId": { "anyOf": [{ "type": "null" }, { "type": "string", "minLength": 1 }] },
+        "status": { "anyOf": [{ "type": "null" }, { "type": "string", "minLength": 1 }] }
+      },
+      "description": "Reference-only pointer into an owner-held authoritative system (OQ-6). Never the underlying decision content."
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["technicalExecution", "clinicalAdjudication"],
+      "properties": {
+        "technicalExecution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "command", "note"],
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": ["not_executed", "repository_test_executed"],
+              "description": "repository_test_executed is a technical/synthetic fact only (V2-class evidence at best per docs/clinical/v3-diagnostic-accuracy-contract.md section 0) — it is never clinical adjudication or owner approval."
+            },
+            "command": { "type": "string", "minLength": 1 },
+            "note": { "type": "string", "minLength": 1 }
+          }
+        },
+        "clinicalAdjudication": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "systemRef"],
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": ["not_executed_owner_held", "adjudicated"],
+              "description": "OWNER-HELD (OQ-6). This repository never sets adjudicated on its own authority — the value must reflect the referenced external system, never a locally synthesized conclusion (plan hard constraint 2)."
+            },
+            "systemRef": { "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/referenceLocator" }] }
+          },
+          "if": { "properties": { "status": { "const": "adjudicated" } } },
+          "then": { "properties": { "systemRef": { "$ref": "#/$defs/referenceLocator" } } },
+          "else": { "properties": { "systemRef": { "const": null } } }
+        }
+      },
+      "description": "AUTHORED vs EXECUTED separation (plan hard constraint 4): technicalExecution is a distinct, narrower, repository-scoped fact from clinicalAdjudication. Neither upgrades the other."
+    },
+    "ownerBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewerRole", "releaseGateOwnerRole", "name", "assertion"],
+      "properties": {
+        "reviewerRole": { "$ref": "#/$defs/reviewerRole" },
+        "releaseGateOwnerRole": { "$ref": "#/$defs/releaseGateOwnerRole" },
+        "name": { "const": null, "description": "Never a named individual (OQ-2 is owner-held)." },
+        "assertion": { "const": "role_assigned" }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["findingId", "description", "blockedOnTask", "severity", "ownerRole", "status"],
+      "properties": {
+        "findingId": { "type": "string", "pattern": "^PAC-P4T2-[0-9]{3}$" },
+        "description": { "type": "string", "minLength": 1 },
+        "blockedOnTask": { "type": "string", "minLength": 1 },
+        "severity": { "type": "string", "enum": ["critical", "high", "medium"] },
+        "ownerRole": { "$ref": "#/$defs/releaseGateOwnerRole" },
+        "status": { "type": "string", "enum": ["open"] }
+      },
+      "description": "An unowned hazard is a FINDING, not a blank cell. Required (non-null) exactly when controlBinding.status is no_control_exists."
+    },
+    "hazardControlBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hazardId", "hazardFamily", "scenarioRef", "controlBinding", "versionBinding",
+        "requiredTests", "evidence", "ownerBinding", "blockedReleaseStates", "finding"
+      ],
+      "properties": {
+        "hazardId": { "type": "string", "pattern": "^DM-[A-Z]+-[0-9]{3}$" },
+        "hazardFamily": { "type": "string", "minLength": 1 },
+        "scenarioRef": { "$ref": "#/$defs/scenarioRef" },
+        "controlBinding": { "$ref": "#/$defs/controlBinding" },
+        "versionBinding": { "$ref": "#/$defs/versionBinding" },
+        "requiredTests": { "$ref": "#/$defs/requiredTests" },
+        "evidence": { "$ref": "#/$defs/evidence" },
+        "ownerBinding": { "$ref": "#/$defs/ownerBinding" },
+        "blockedReleaseStates": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/releaseState" }
+        },
+        "finding": { "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/finding" }] }
+      },
+      "if": { "properties": { "controlBinding": { "properties": { "status": { "const": "no_control_exists" } } } } },
+      "then": {
+        "properties": {
+          "finding": { "$ref": "#/$defs/finding" },
+          "controlBinding": { "properties": { "controlIds": { "maxItems": 0 } } }
+        }
+      },
+      "else": {
+        "properties": {
+          "finding": { "const": null },
+          "controlBinding": { "properties": { "controlIds": { "minItems": 1 } } }
+        }
+      },
+      "description": "NO UNOWNED GAP, enforced structurally: no_control_exists forces a non-null, owned, blocking finding; control_bound forces at least one control id and forbids a finding."
+    },
+    "blockedStateEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "blockedByHazardIds", "rationale"],
+      "properties": {
+        "state": { "$ref": "#/$defs/releaseState" },
+        "blockedByHazardIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^DM-[A-Z]+-[0-9]{3}$" }
+        },
+        "rationale": { "type": "string", "minLength": 1 }
+      }
+    },
+    "releaseDependencyManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "totalHazards", "hazardsWithControl", "hazardsWithoutControl", "blockedStates",
+        "clinicalValidationComplete", "credentialedReviewComplete"
+      ],
+      "properties": {
+        "totalHazards": { "const": 10 },
+        "hazardsWithControl": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "hazardsWithoutControl": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "blockedStates": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/blockedStateEntry" }
+        },
+        "clinicalValidationComplete": {
+          "const": false,
+          "description": "STRUCTURAL GUARD mirroring docs/clinical/v3-diagnostic-accuracy-contract.md's v3DependencyChain.clinicalValidationComplete. No evaluator exists in this repository that can flip this to true."
+        },
+        "credentialedReviewComplete": {
+          "const": false,
+          "description": "STRUCTURAL GUARD. No credentialed human approval has been attached to any hazard in this matrix (P2/P5 not yet executed)."
+        }
+      },
+      "description": "The release-dependency manifest named in AC P4.1's target_surfaces: the composed, machine-checkable aggregate of the ten rows above."
+    }
+  }
+}

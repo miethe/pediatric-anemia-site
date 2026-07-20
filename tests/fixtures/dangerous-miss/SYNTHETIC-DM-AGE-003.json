@@ -1,0 +1,79 @@
+{
+  "kind": "DangerousMissScenarioSpecification",
+  "schemaVersion": "1.0.0",
+  "scenarioId": "SCN-DM-AGE-003",
+  "scenarioVersion": "1.0.0",
+  "hazardId": "DM-AGE-003",
+  "hazardFamily": "young_infant_or_developmental_edge",
+  "planReference": "agentic-research/runs/2026-07-19-pediatric-expansion-arc-readiness/validation_plan.md#DM-AGE-003",
+  "syntheticDeclaration": {
+    "synthetic": true,
+    "nonPatientData": true,
+    "notForClinicalUse": true,
+    "notAClinicalCase": true,
+    "purpose": "SYNTHETIC TEST FIXTURE. Exercises the young-infant scope exit (built-in intervals begin at 6 months) to prove the engine does not silently apply a fallback interval below that boundary. All values are invented for schema and safety-test purposes only."
+  },
+  "owner": {
+    "role": "general-pediatrics-reviewer",
+    "name": null,
+    "assertion": "role_assigned"
+  },
+  "candidateBinding": {
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+    "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+  },
+  "executionBinding": {
+    "engine": "anemia-assessment-engine",
+    "engineRationale": "Age-scope exit is expressible as a patient-input.schema.json input (ageMonths below 6) and evaluated by assessPediatricAnemia.",
+    "blockedOnTask": null
+  },
+  "input": {
+    "kind": "patientInput",
+    "patientInput": {
+      "patient": { "ageMonths": 2, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+      "cbc": { "hemoglobin": 9.0, "mcv": 95 },
+      "reticulocytes": { "response": "unknown" },
+      "labs": {},
+      "symptoms": {},
+      "history": {},
+      "exam": {},
+      "smear": []
+    },
+    "referenceIntervalRequest": null,
+    "terminologyObservation": null,
+    "profileRef": null
+  },
+  "expectedBehavior": {
+    "type": "abstention",
+    "requiredSignal": "Age/developmental partitions outside validated scope must not use fallback thresholds silently. Visible scope exit or abstention.",
+    "expectedAlerts": [
+      { "id": "SCOPE-001", "severity": "important" },
+      { "id": "SCOPE-003", "severity": "important" }
+    ],
+    "expectedAbstention": {
+      "rankedDifferentialEmpty": true,
+      "classificationIndeterminate": true,
+      "maxCandidateLevel": null
+    },
+    "expectedBlockers": [],
+    "forbiddenSignals": [
+      "a resolved hemoglobinLowerLimit, mcvLowerLimit, or mcvUpperLimit for a 2-month-old (no built-in interval covers ages under 6 months)",
+      "an anemiaStatus other than indeterminate when no local range is supplied for an age below 6 months"
+    ]
+  },
+  "expectedTrace": {
+    "mechanism": "rule_audit",
+    "matchedRuleIdsMustInclude": ["SCOPE-001", "SCOPE-003"],
+    "note": "Verified by direct execution on 2026-07-19. classification.thresholdSource/ageBand/hemoglobinLowerLimit are all null and anemiaStatus/morphology are 'indeterminate' for a 2-month-old with no local ranges supplied; the engine does not silently apply the built-in 6-24-month fallback interval."
+  },
+  "rollbackSignal": "Re-verify by execution if modules/anemia/rules.json, candidates.json, or module.json digests change, or if the supportedAge boundary (facts.anemia.js) or SCOPE-001/SCOPE-003 are edited.",
+  "execution": {
+    "state": "not_executed",
+    "receipt": null,
+    "result": null,
+    "adjudication": null,
+    "ownerDecision": null
+  }
+}

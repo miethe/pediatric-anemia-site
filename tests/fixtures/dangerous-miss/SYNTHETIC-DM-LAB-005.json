@@ -1,0 +1,79 @@
+{
+  "kind": "DangerousMissScenarioSpecification",
+  "schemaVersion": "1.0.0",
+  "scenarioId": "SCN-DM-LAB-005",
+  "scenarioVersion": "1.0.0",
+  "hazardId": "DM-LAB-005",
+  "hazardFamily": "unit_specimen_method_or_range_mismatch",
+  "planReference": "agentic-research/runs/2026-07-19-pediatric-expansion-arc-readiness/validation_plan.md#DM-LAB-005",
+  "syntheticDeclaration": {
+    "synthetic": true,
+    "nonPatientData": true,
+    "notForClinicalUse": true,
+    "notAClinicalCase": true,
+    "purpose": "SYNTHETIC TEST FIXTURE. Exercises the P3 fail-closed local-applicability gate for specimen/analyzer/method/unit mismatch against the SYNTHETIC reference-interval profile. All values are invented for schema and safety-test purposes only; this can never bind to a real site profile (see rollbackSignal)."
+  },
+  "owner": {
+    "role": "pediatric-laboratory-medicine-reviewer",
+    "name": null,
+    "assertion": "role_assigned"
+  },
+  "candidateBinding": {
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+    "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+  },
+  "executionBinding": {
+    "engine": "local-applicability-reference-interval",
+    "engineRationale": "Unit/specimen/analyzer/method mismatch is the P3 local-applicability contract's own domain; bound to the existing signed-site-profile machinery in scripts/lib/local-applicability.mjs rather than inventing a parallel mechanism.",
+    "blockedOnTask": null
+  },
+  "input": {
+    "kind": "referenceIntervalRequest",
+    "patientInput": null,
+    "referenceIntervalRequest": {
+      "candidate": { "candidateDigest": "sha256:a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4" },
+      "populationId": "SYNTHETIC-POPULATION-A",
+      "ageValue": 12,
+      "ageUnit": "months",
+      "gestationalAgeAtBirthWeeks": 38,
+      "sex": "female",
+      "specimen": { "code": "SYN-SPECIMEN-DIFFERENT" },
+      "analyzer": { "model": "SYNTHETIC-ANALYZER-MODEL-DIFFERENT", "method": "SYNTHETIC-METHOD-DIFFERENT" },
+      "altitudeMeters": 100,
+      "unitCode": "SYN-UNIT-DIFFERENT",
+      "analyteCode": { "code": "SYN-0001" }
+    },
+    "terminologyObservation": null,
+    "profileRef": {
+      "profileId": "SYNTHETIC-reference-interval-profile",
+      "profileDigest": "sha256:f3f585c6d7212695aebeacd940177f92081a17a7afeb6c9321ead7bf14f35c59",
+      "profileLocator": "tests/fixtures/local-profile/SYNTHETIC-reference-interval-profile.json"
+    }
+  },
+  "expectedBehavior": {
+    "type": "fail_closed",
+    "requiredSignal": "Unit, specimen, analyzer/method, and reference-interval mismatch. Fail closed; request local verification; no conversion or normality assumption.",
+    "expectedAlerts": [],
+    "expectedAbstention": null,
+    "expectedBlockers": ["SPECIMEN_MISMATCH", "ANALYZER_MISMATCH", "METHOD_MISMATCH", "UNIT_MISMATCH"],
+    "forbiddenSignals": [
+      "a decision of 'applicable' despite mismatched specimen, analyzer, method, and unit codes",
+      "any automatic unit conversion applied to reconcile the mismatch instead of failing closed"
+    ]
+  },
+  "expectedTrace": {
+    "mechanism": "applicability_blockers",
+    "matchedRuleIdsMustInclude": [],
+    "note": "Verified by direct execution against evaluateReferenceIntervalApplicability on 2026-07-19. decision is fail_closed with four independent mismatch blockers; none is silently reconciled. Even a fully matching request against this profile could never authorize activation: evaluateActivationGate always refuses a synthetic_example profile (SYNTHETIC_PROFILE_CANNOT_ACTIVATE, AUTHORITY_NOT_EXECUTED_OWNER_HELD, SIGNATURE_NOT_EXECUTED_OWNER_HELD)."
+  },
+  "rollbackSignal": "Re-verify by execution if tests/fixtures/local-profile/SYNTHETIC-reference-interval-profile.json digest changes, is superseded, or scripts/lib/local-applicability.mjs blocker logic changes. This scenario is bound to a SYNTHETIC profile only; OQ-3 (first real site profile) is owner-held and unresolved, so this fixture can never be promoted to bind a real site.",
+  "execution": {
+    "state": "not_executed",
+    "receipt": null,
+    "result": null,
+    "adjudication": null,
+    "ownerDecision": null
+  }
+}

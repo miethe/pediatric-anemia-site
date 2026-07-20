@@ -1,0 +1,76 @@
+{
+  "kind": "DangerousMissScenarioSpecification",
+  "schemaVersion": "1.0.0",
+  "scenarioId": "SCN-DM-IRON-006",
+  "scenarioVersion": "1.0.0",
+  "hazardId": "DM-IRON-006",
+  "hazardFamily": "inflammation_or_incomplete_iron_studies",
+  "planReference": "agentic-research/runs/2026-07-19-pediatric-expansion-arc-readiness/validation_plan.md#DM-IRON-006",
+  "syntheticDeclaration": {
+    "synthetic": true,
+    "nonPatientData": true,
+    "notForClinicalUse": true,
+    "notAClinicalCase": true,
+    "purpose": "SYNTHETIC TEST FIXTURE. Exercises anemia + microcytic morphology + elevated CRP with iron studies (ferritin/TSAT/TIBC) recorded only as 'unknown', proving the engine abstains rather than guessing iron-deficiency-anemia from morphology and inflammation status alone. All values are invented for schema and safety-test purposes only."
+  },
+  "owner": {
+    "role": "pediatric-hematology-reviewer",
+    "name": null,
+    "assertion": "role_assigned"
+  },
+  "candidateBinding": {
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+    "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+  },
+  "executionBinding": {
+    "engine": "anemia-assessment-engine",
+    "engineRationale": "Incomplete-iron-studies-with-inflammation is expressible as a patient-input.schema.json labs input and evaluated by assessPediatricAnemia.",
+    "blockedOnTask": null
+  },
+  "input": {
+    "kind": "patientInput",
+    "patientInput": {
+      "patient": { "ageMonths": 30, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+      "cbc": { "hemoglobin": 9.8, "mcv": 74 },
+      "reticulocytes": { "response": "low" },
+      "labs": { "crpStatus": "elevated", "ferritinStatus": "unknown", "tsatStatus": "unknown", "tibcStatus": "unknown" },
+      "symptoms": {},
+      "history": {},
+      "exam": {},
+      "smear": []
+    },
+    "referenceIntervalRequest": null,
+    "terminologyObservation": null,
+    "profileRef": null
+  },
+  "expectedBehavior": {
+    "type": "abstention",
+    "requiredSignal": "Inflammation or incomplete study context makes a simple iron interpretation unsafe. Conflict/missingness exposed and pathway abstains where material.",
+    "expectedAlerts": [],
+    "expectedAbstention": {
+      "rankedDifferentialEmpty": true,
+      "classificationIndeterminate": false,
+      "maxCandidateLevel": null
+    },
+    "expectedBlockers": [],
+    "forbiddenSignals": [
+      "a ranked iron-deficiency-anemia or anemia-of-inflammation candidate produced from microcytic morphology and elevated CRP alone, without ferritin/TSAT/TIBC values",
+      "silent selection of one diagnosis when the inflammatory iron-restriction pattern cannot be computed from status-only labs"
+    ]
+  },
+  "expectedTrace": {
+    "mechanism": "rule_audit",
+    "matchedRuleIdsMustInclude": ["Q-MICRO-001", "Q-MICRO-005"],
+    "note": "Verified by direct execution on 2026-07-19. Despite anemia present + microcytic morphology + CRP elevated, rankedDifferential is empty because ferritin/TSAT/TIBC are supplied only as status='unknown' (ID-001 needs a numeric ferritin value; AINF-001 needs tsatLow/tibcLowOrNormal, both false when unknown). The engine asks Q-MICRO-001/Q-MICRO-005 rather than guessing."
+  },
+  "rollbackSignal": "Re-verify by execution if modules/anemia/rules.json, candidates.json, or module.json digests change, or if ID-001/AINF-001/AINF-002/AINF-003 conditions are edited.",
+  "execution": {
+    "state": "not_executed",
+    "receipt": null,
+    "result": null,
+    "adjudication": null,
+    "ownerDecision": null
+  }
+}

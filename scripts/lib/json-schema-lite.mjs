@@ -8,18 +8,26 @@
 // bug these schemas exist to prevent.
 
 const SUPPORTED_KEYWORDS = new Set([
-  '$schema', '$id', '$defs', '$ref', '$comment', 'title', 'description', 'examples',
+  '$schema', '$id', '$defs', '$ref', '$comment', 'title', 'description', 'examples', 'default',
   'type', 'enum', 'const', 'required', 'properties', 'additionalProperties',
   'items', 'minItems', 'maxItems', 'uniqueItems', 'minLength', 'maxLength', 'pattern',
-  'minimum', 'maximum', 'format', 'if', 'then', 'else', 'allOf', 'anyOf', 'oneOf', 'not',
-  'contains', 'minContains',
+  'minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'format', 'if', 'then', 'else',
+  'allOf', 'anyOf', 'oneOf', 'not', 'contains', 'minContains',
 ]);
 
 /**
  * Keywords that carry no constraint. Everything else sitting beside a `$ref` is a real
  * constraint and is applied to the same instance rather than discarded — see `validate`.
+ *
+ * `default` is included per the JSON Schema 2020-12 spec: it is a non-validating annotation
+ * (a hint for a consumer that wants to apply a default value), not a constraint on the instance.
+ * Treating it as a real keyword requiring bespoke handling would be wrong in the other
+ * direction — it has no `data`-dependent behavior to implement. schemas/patient-input.schema.json
+ * uses `default` on several optional booleans; before this it could not be validated by this
+ * module at all once an instance supplied one of those keys, because the fail-closed unsupported-
+ * keyword check does not distinguish a missing feature from a genuinely inert annotation.
  */
-const ANNOTATION_KEYWORDS = new Set(['$schema', '$id', '$defs', '$comment', 'title', 'description', 'examples']);
+const ANNOTATION_KEYWORDS = new Set(['$schema', '$id', '$defs', '$comment', 'title', 'description', 'examples', 'default']);
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const DATE_TIME_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
@@ -128,6 +136,17 @@ export function validate(schema, data, options = {}) {
     }
     if (schema.maximum !== undefined && data > schema.maximum) {
       errors.push({ path: at, message: `value above maximum ${schema.maximum}` });
+    }
+    // JSON Schema draft 2020-12 semantics only: exclusiveMinimum/exclusiveMaximum are numbers
+    // (the bound itself), not the legacy draft-4 boolean modifier on `minimum`/`maximum`. A
+    // schema author who writes `exclusiveMinimum: true` here gets a `typeof data === 'number'`
+    // comparison against `true` (coerced to 1), which is deliberately not special-cased --
+    // draft-4 boolean-form support is out of scope and no schema in this repository uses it.
+    if (schema.exclusiveMinimum !== undefined && data <= schema.exclusiveMinimum) {
+      errors.push({ path: at, message: `value must be strictly greater than exclusiveMinimum ${schema.exclusiveMinimum}` });
+    }
+    if (schema.exclusiveMaximum !== undefined && data >= schema.exclusiveMaximum) {
+      errors.push({ path: at, message: `value must be strictly less than exclusiveMaximum ${schema.exclusiveMaximum}` });
     }
   }
 

@@ -1,0 +1,87 @@
+{
+  "kind": "DangerousMissScenarioSpecification",
+  "schemaVersion": "1.0.0",
+  "scenarioId": "SCN-DM-CBC-001",
+  "scenarioVersion": "1.0.0",
+  "hazardId": "DM-CBC-001",
+  "hazardFamily": "cross_lineage_cbc_abnormality",
+  "planReference": "agentic-research/runs/2026-07-19-pediatric-expansion-arc-readiness/validation_plan.md#DM-CBC-001",
+  "syntheticDeclaration": {
+    "synthetic": true,
+    "nonPatientData": true,
+    "notForClinicalUse": true,
+    "notAClinicalCase": true,
+    "purpose": "SYNTHETIC TEST FIXTURE. Exercises the multilineage-cytopenia + blasts safety path so it cannot be quietly reduced to an isolated anemia differential. All CBC/symptom/exam values below are invented for schema and safety-test purposes only; no real patient, encounter, or laboratory result is described."
+  },
+  "owner": {
+    "role": "pediatric-safety-human-factors-reviewer",
+    "name": null,
+    "assertion": "role_assigned"
+  },
+  "candidateBinding": {
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+    "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+  },
+  "executionBinding": {
+    "engine": "anemia-assessment-engine",
+    "engineRationale": "Multilineage cytopenia + blasts is expressible as a patient-input.schema.json CBC/smear input and evaluated by assessPediatricAnemia.",
+    "blockedOnTask": null
+  },
+  "input": {
+    "kind": "patientInput",
+    "patientInput": {
+      "patient": { "ageMonths": 60, "sexAtBirth": "female", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+      "cbc": {
+        "hemoglobin": 7.2,
+        "mcv": 88,
+        "rdw": 16,
+        "rbc": 2.9,
+        "wbc": 1.8,
+        "anc": 0.4,
+        "platelets": 38,
+        "rbcInterpretation": "low",
+        "localRanges": { "wbcLower": 5.0, "ancLower": 1.5, "plateletsLower": 150 },
+        "localFlags": { "leukopenia": true, "neutropenia": true, "thrombocytopenia": true }
+      },
+      "reticulocytes": { "response": "low" },
+      "symptoms": { "fever": true, "fatigue": true },
+      "history": {},
+      "exam": { "hepatomegaly": true, "petechiae": true },
+      "labs": {},
+      "smear": ["blasts", "teardrops"]
+    },
+    "referenceIntervalRequest": null,
+    "terminologyObservation": null,
+    "profileRef": null
+  },
+  "expectedBehavior": {
+    "type": "alert_dominance",
+    "requiredSignal": "Urgent/shared gate dominates ordinary ranking; unresolved scope exits remain visible.",
+    "expectedAlerts": [
+      { "id": "ALERT-009", "severity": "emergency" },
+      { "id": "ALERT-004", "severity": "urgent" },
+      { "id": "ALERT-005", "severity": "urgent" }
+    ],
+    "expectedAbstention": null,
+    "expectedBlockers": [],
+    "forbiddenSignals": [
+      "a ranked differential whose top entry is an isolated single-lineage diagnosis (e.g. iron-deficiency-anemia) rather than marrow-failure-infiltration",
+      "absence of an emergency-severity alert despite fever + neutropenia + thrombocytopenia + blasts on smear"
+    ]
+  },
+  "expectedTrace": {
+    "mechanism": "rule_audit",
+    "matchedRuleIdsMustInclude": ["ALERT-004", "ALERT-005", "ALERT-009", "MARROW-001", "MARROW-002", "MARROW-003"],
+    "note": "Verified by direct execution against assessPediatricAnemia on 2026-07-19 (see tests/dangerous-miss-scenarios.test.mjs). rankedDifferential[0].id is marrow-failure-infiltration at meets-defined-pattern; the multilineage cytopenia is not reduced to a single anemia pathway."
+  },
+  "rollbackSignal": "Re-verify by execution if modules/anemia/rules.json, candidates.json, or module.json digests change, or if ALERT-004/005/009 or MARROW-001/002/003 are edited or removed.",
+  "execution": {
+    "state": "not_executed",
+    "receipt": null,
+    "result": null,
+    "adjudication": null,
+    "ownerDecision": null
+  }
+}

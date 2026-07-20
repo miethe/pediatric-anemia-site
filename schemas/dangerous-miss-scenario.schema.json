@@ -1,0 +1,257 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/dangerous-miss-scenario.schema.json",
+  "title": "Pediatric Anemia CDSS Dangerous-Miss Synthetic Scenario Specification",
+  "$comment": "arc-clinical-council-adoption-v1 P4-T1 / AC P4.1. Converts DM-CBC-001..DM-WORKFLOW-010 (docs/project_plans/implementation_plans/enhancements/arc-clinical-council-adoption-v1.md §4 P4) into executable, non-patient synthetic scenario specifications. AUTHORED != EXECUTED: the `execution` block is pinned to its not-executed shape by this schema itself (state/receipt/result/adjudication/ownerDecision are all `const`), so no fixture validating against this schema can represent itself as having been executed. A scenario document is a locator plus an expectation, never a clinical case, a patient record, or an executed result.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "schemaVersion",
+    "scenarioId",
+    "scenarioVersion",
+    "hazardId",
+    "hazardFamily",
+    "planReference",
+    "syntheticDeclaration",
+    "owner",
+    "candidateBinding",
+    "executionBinding",
+    "input",
+    "expectedBehavior",
+    "expectedTrace",
+    "rollbackSignal",
+    "execution"
+  ],
+  "properties": {
+    "kind": { "const": "DangerousMissScenarioSpecification" },
+    "schemaVersion": { "type": "string", "minLength": 1 },
+    "scenarioId": { "type": "string", "pattern": "^SCN-DM-[A-Z]+-[0-9]{3}$" },
+    "scenarioVersion": { "type": "string", "minLength": 1 },
+    "hazardId": {
+      "type": "string",
+      "pattern": "^DM-[A-Z]+-[0-9]{3}$",
+      "description": "Exact link to the catalog hazard id in validation_plan.md / risk_register.yaml (DM-CBC-001..DM-WORKFLOW-010)."
+    },
+    "hazardFamily": { "type": "string", "minLength": 1 },
+    "planReference": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Locator into the dangerous-miss catalog (validation_plan.md#<hazardId>) this scenario converts."
+    },
+    "syntheticDeclaration": { "$ref": "#/$defs/syntheticDeclaration" },
+    "owner": { "$ref": "#/$defs/owner" },
+    "candidateBinding": { "$ref": "#/$defs/candidateBinding" },
+    "executionBinding": { "$ref": "#/$defs/executionBinding" },
+    "input": { "$ref": "#/$defs/input" },
+    "expectedBehavior": { "$ref": "#/$defs/expectedBehavior" },
+    "expectedTrace": { "$ref": "#/$defs/expectedTrace" },
+    "rollbackSignal": {
+      "type": "string",
+      "minLength": 1,
+      "description": "What invalidates this scenario (digest drift, profile supersession, a new engine landing) and must trigger re-authoring rather than a silent stale pass."
+    },
+    "execution": { "$ref": "#/$defs/execution" }
+  },
+  "$defs": {
+    "syntheticDeclaration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["synthetic", "nonPatientData", "notForClinicalUse", "notAClinicalCase", "purpose"],
+      "properties": {
+        "synthetic": { "const": true },
+        "nonPatientData": { "const": true },
+        "notForClinicalUse": { "const": true },
+        "notAClinicalCase": { "const": true },
+        "purpose": { "type": "string", "minLength": 1 }
+      }
+    },
+    "owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "name", "assertion"],
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "description": "An existing ARC/pediatric reviewer role name (not a named credentialed individual)."
+        },
+        "name": {
+          "const": null,
+          "description": "Never a named individual. Naming a credentialed accountable person is owner-held (plan OQ-2)."
+        },
+        "assertion": { "const": "role_assigned" }
+      }
+    },
+    "candidateBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["knowledgeBaseVersion", "rulesFileDigest", "candidatesFileDigest", "moduleFileDigest"],
+      "properties": {
+        "knowledgeBaseVersion": { "type": "string", "minLength": 1 },
+        "rulesFileDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "candidatesFileDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "moduleFileDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "executionBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engine", "engineRationale", "blockedOnTask"],
+      "properties": {
+        "engine": {
+          "type": "string",
+          "enum": [
+            "anemia-assessment-engine",
+            "local-applicability-reference-interval",
+            "local-applicability-terminology",
+            "not_yet_implemented"
+          ]
+        },
+        "engineRationale": { "type": "string", "minLength": 1 },
+        "blockedOnTask": {
+          "type": ["string", "null"],
+          "description": "Required (non-null) when engine is not_yet_implemented; must name the plan task that owns building it."
+        }
+      },
+      "if": { "properties": { "engine": { "const": "not_yet_implemented" } } },
+      "then": {
+        "properties": { "blockedOnTask": { "type": "string", "minLength": 1 } }
+      },
+      "else": {
+        "properties": { "blockedOnTask": { "type": "null" } }
+      }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "patientInput", "referenceIntervalRequest", "terminologyObservation", "profileRef"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["patientInput", "referenceIntervalRequest", "terminologyObservation", "none"] },
+        "patientInput": {
+          "type": ["object", "null"],
+          "description": "Validated separately against schemas/patient-input.schema.json by the test lane."
+        },
+        "referenceIntervalRequest": { "type": ["object", "null"] },
+        "terminologyObservation": { "type": ["object", "null"] },
+        "profileRef": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["profileId", "profileDigest", "profileLocator"],
+          "properties": {
+            "profileId": { "type": "string", "minLength": 1 },
+            "profileDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+            "profileLocator": { "type": "string", "minLength": 1 }
+          }
+        }
+      },
+      "$comment": "P4-V1 hardening: mirrors executionBinding's if/then discriminator. `kind` selects exactly one of the three payload fields; every field EXCLUDING the selected one must be null. Each of the four allOf branches guards every non-selected key (not just one), per the P3-V1 defect class — a discriminator that only pins one key leaves every other key a silent wildcard when null.",
+      "allOf": [
+        {
+          "if": { "properties": { "kind": { "const": "patientInput" } } },
+          "then": {
+            "properties": {
+              "referenceIntervalRequest": { "const": null },
+              "terminologyObservation": { "const": null }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "referenceIntervalRequest" } } },
+          "then": {
+            "properties": {
+              "patientInput": { "const": null },
+              "terminologyObservation": { "const": null }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "terminologyObservation" } } },
+          "then": {
+            "properties": {
+              "patientInput": { "const": null },
+              "referenceIntervalRequest": { "const": null }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "none" } } },
+          "then": {
+            "properties": {
+              "patientInput": { "const": null },
+              "referenceIntervalRequest": { "const": null },
+              "terminologyObservation": { "const": null }
+            }
+          }
+        }
+      ]
+    },
+    "expectedBehavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "requiredSignal", "expectedAlerts", "expectedAbstention", "expectedBlockers", "forbiddenSignals"],
+      "properties": {
+        "type": { "type": "string", "enum": ["alert_dominance", "abstention", "fail_closed", "not_executable"] },
+        "requiredSignal": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Verbatim from validation_plan.md's 'Required signal' column for this hazard id."
+        },
+        "expectedAlerts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "severity"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "severity": { "type": "string", "enum": ["emergency", "urgent", "important", "informational"] }
+            }
+          }
+        },
+        "expectedAbstention": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["rankedDifferentialEmpty", "classificationIndeterminate", "maxCandidateLevel"],
+          "properties": {
+            "rankedDifferentialEmpty": { "type": "boolean" },
+            "classificationIndeterminate": { "type": "boolean" },
+            "maxCandidateLevel": {
+              "type": ["string", "null"],
+              "enum": ["meets-defined-pattern", "strongly-supported", "supported", "possible", "not-excluded", null]
+            }
+          }
+        },
+        "expectedBlockers": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "forbiddenSignals": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Human-readable statement(s) of what a dangerous miss would look like here; the test lane encodes at least one as a JS assertion."
+        }
+      }
+    },
+    "expectedTrace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mechanism", "matchedRuleIdsMustInclude", "note"],
+      "properties": {
+        "mechanism": { "type": "string", "enum": ["rule_audit", "applicability_blockers", "none_available"] },
+        "matchedRuleIdsMustInclude": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "receipt", "result", "adjudication", "ownerDecision"],
+      "properties": {
+        "state": { "const": "not_executed" },
+        "receipt": { "const": null },
+        "result": { "const": null },
+        "adjudication": { "const": null },
+        "ownerDecision": { "const": null }
+      }
+    }
+  }
+}

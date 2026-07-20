@@ -1,0 +1,748 @@
+{
+  "kind": "HazardControlReleaseDependencyManifest",
+  "schemaVersion": "1.0.0",
+  "planReference": "docs/project_plans/implementation_plans/enhancements/arc-clinical-council-adoption-v1.md#P4-T2",
+  "acReference": "AC P4.1",
+  "catalogSource": "agentic-research/runs/2026-07-19-pediatric-expansion-arc-readiness/validation_plan.md#Synthetic-dangerous-miss-scenarios",
+  "rows": [
+    {
+      "hazardId": "DM-CBC-001",
+      "hazardFamily": "cross_lineage_cbc_abnormality",
+      "scenarioRef": {
+        "scenarioId": "SCN-DM-CBC-001",
+        "scenarioVersion": "1.0.0",
+        "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-CBC-001.json",
+        "fixtureDigest": "sha256:b15f049120d2998bd675ab70725ebed1296e4e7e400cb0f7f03385aa2c411af0"
+      },
+      "controlBinding": {
+        "status": "control_bound",
+        "controlType": "engine_rule",
+        "controlIds": [
+          "ALERT-004",
+          "ALERT-005",
+          "ALERT-009",
+          "MARROW-001",
+          "MARROW-002",
+          "MARROW-003"
+        ],
+        "rationale": "Rule id(s) ALERT-004, ALERT-005, ALERT-009, MARROW-001, MARROW-002, MARROW-003 in modules/anemia/rules.json produce the required signal for DM-CBC-001 when evaluated by the anemia-assessment engine (src/engine.js assessPediatricAnemia), verified by tests/dangerous-miss-scenarios.test.mjs."
+      },
+      "versionBinding": {
+        "bindingType": "candidate_rules",
+        "candidateBinding": {
+          "knowledgeBaseVersion": "0.1.0-2026-07-15",
+          "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+          "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+          "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+        },
+        "profileBinding": null
+      },
+      "requiredTests": {
+        "testFile": "tests/dangerous-miss-scenarios.test.mjs",
+        "testMarkers": [
+          "DM-CBC-001: multilineage cytopenia + blasts produces emergency-dominant alerts and a marrow-failure top candidate, not an isolated anemia diagnosis",
+          "DM-CBC-001 NEGATIVE: removing the multilineage/blasts findings removes the emergency dominance (proves the suite is not vacuous)"
+        ],
+        "coverageKind": "behavioral_positive_and_negative"
+      },
+      "evidence": {
+        "technicalExecution": {
+          "status": "repository_test_executed",
+          "command": "npm run check",
+          "note": "DM-CBC-001 positive+negative assertions run against the live anemia-assessment engine and pass at the current baseline (185/185 total repository tests). This is repository-level technical/synthetic evidence only, never clinical adjudication or owner approval."
+        },
+        "clinicalAdjudication": {
+          "status": "not_executed_owner_held",
+          "systemRef": null
+        }
+      },
+      "ownerBinding": {
+        "reviewerRole": "pediatric-safety-human-factors-reviewer",
+        "releaseGateOwnerRole": "pediatric-safety-owner",
+        "name": null,
+        "assertion": "role_assigned"
+      },
+      "blockedReleaseStates": [
+        "credentialed_review_complete",
+        "clinical_validation_complete",
+        "certified_for_defined_scope",
+        "released",
+        "activated"
+      ],
+      "finding": null
+    },
+    {
+      "hazardId": "DM-HEME-002",
+      "hazardFamily": "hemolysis_blood_loss_or_marrow_production_mismatch",
+      "scenarioRef": {
+        "scenarioId": "SCN-DM-HEME-002",
+        "scenarioVersion": "1.0.0",
+        "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-HEME-002.json",
+        "fixtureDigest": "sha256:e2b0687763cfef3efcd51cf6222e52d6915595f5306d8903560b718d60ecd937"
+      },
+      "controlBinding": {
+        "status": "control_bound",
+        "controlType": "engine_rule",
+        "controlIds": [
+          "HEM-003"
+        ],
+        "rationale": "Rule id(s) HEM-003 in modules/anemia/rules.json produce the required signal for DM-HEME-002 when evaluated by the anemia-assessment engine (src/engine.js assessPediatricAnemia), verified by tests/dangerous-miss-scenarios.test.mjs."
+      },
+      "versionBinding": {
+        "bindingType": "candidate_rules",
+        "candidateBinding": {
+          "knowledgeBaseVersion": "0.1.0-2026-07-15",
+          "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+          "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+          "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+        },
+        "profileBinding": null
+      },
+      "requiredTests": {
+        "testFile": "tests/dangerous-miss-scenarios.test.mjs",
+        "testMarkers": [
+          "DM-HEME-002: hemolysis markers with unknown reticulocyte response abstain from a unifying diagnosis",
+          "DM-HEME-002 NEGATIVE: a known high reticulocyte response resolves the pattern to strongly-supported (proves the abstention was driven by the unknown retic value)"
+        ],
+        "coverageKind": "behavioral_positive_and_negative"
+      },
+      "evidence": {
+        "technicalExecution": {
+          "status": "repository_test_executed",
+          "command": "npm run check",
+          "note": "DM-HEME-002 positive+negative assertions run against the live anemia-assessment engine and pass at the current baseline (185/185 total repository tests). This is repository-level technical/synthetic evidence only, never clinical adjudication or owner approval."
+        },
+        "clinicalAdjudication": {
+          "status": "not_executed_owner_held",
+          "systemRef": null
+        }
+      },
+      "ownerBinding": {
+        "reviewerRole": "pediatric-hematology-reviewer",
+        "releaseGateOwnerRole": "pediatric-safety-owner",
+        "name": null,
+        "assertion": "role_assigned"
+      },
+      "blockedReleaseStates": [
+        "credentialed_review_complete",
+        "clinical_validation_complete",
+        "certified_for_defined_scope",
+        "released",
+        "activated"
+      ],
+      "finding": null
+    },
+    {
+      "hazardId": "DM-AGE-003",
+      "hazardFamily": "young_infant_or_developmental_edge",
+      "scenarioRef": {
+        "scenarioId": "SCN-DM-AGE-003",
+        "scenarioVersion": "1.0.0",
+        "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-AGE-003.json",
+        "fixtureDigest": "sha256:51d2b5123688e2d534c01c34aac6948900e531f2301cc14fc30b73d1f019cede"
+      },
+      "controlBinding": {
+        "status": "control_bound",
+        "controlType": "engine_rule",
+        "controlIds": [
+          "SCOPE-001",
+          "SCOPE-003"
+        ],
+        "rationale": "Rule id(s) SCOPE-001, SCOPE-003 in modules/anemia/rules.json produce the required signal for DM-AGE-003 when evaluated by the anemia-assessment engine (src/engine.js assessPediatricAnemia), verified by tests/dangerous-miss-scenarios.test.mjs."
+      },
+      "versionBinding": {
+        "bindingType": "candidate_rules",
+        "candidateBinding": {
+          "knowledgeBaseVersion": "0.1.0-2026-07-15",
+          "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+          "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+          "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+        },
+        "profileBinding": null
+      },
+      "requiredTests": {
+        "testFile": "tests/dangerous-miss-scenarios.test.mjs",
+        "testMarkers": [
+          "DM-AGE-003: an age below the 6-month built-in floor abstains rather than using a fallback interval",
+          "DM-AGE-003 NEGATIVE: the same CBC at a supported age resolves a real threshold (proves indeterminate was driven by age, not the CBC values)"
+        ],
+        "coverageKind": "behavioral_positive_and_negative"
+      },
+      "evidence": {
+        "technicalExecution": {
+          "status": "repository_test_executed",
+          "command": "npm run check",
+          "note": "DM-AGE-003 positive+negative assertions run against the live anemia-assessment engine and pass at the current baseline (185/185 total repository tests). This is repository-level technical/synthetic evidence only, never clinical adjudication or owner approval."
+        },
+        "clinicalAdjudication": {
+          "status": "not_executed_owner_held",
+          "systemRef": null
+        }
+      },
+      "ownerBinding": {
+        "reviewerRole": "general-pediatrics-reviewer",
+        "releaseGateOwnerRole": "pediatric-safety-owner",
+        "name": null,
+        "assertion": "role_assigned"
+      },
+      "blockedReleaseStates": [
+        "credentialed_review_complete",
+        "clinical_validation_complete",
+        "certified_for_defined_scope",
+        "released",
+        "activated"
+      ],
+      "finding": null
+    },
+    {
+      "hazardId": "DM-URGENT-004",
+      "hazardFamily": "severe_or_unstable_presentation",
+      "scenarioRef": {
+        "scenarioId": "SCN-DM-URGENT-004",
+        "scenarioVersion": "1.0.0",
+        "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-URGENT-004.json",
+        "fixtureDigest": "sha256:523a401a9c62890e4a381301353e10a5f6a784a25e5be99110ca30425b91cc9a"
+      },
+      "controlBinding": {
+        "status": "control_bound",
+        "controlType": "engine_rule",
+        "controlIds": [
+          "ALERT-001",
+          "ALERT-009"
+        ],
+        "rationale": "Rule id(s) ALERT-001, ALERT-009 in modules/anemia/rules.json produce the required signal for DM-URGENT-004 when evaluated by the anemia-assessment engine (src/engine.js assessPediatricAnemia), verified by tests/dangerous-miss-scenarios.test.mjs."
+      },
+      "versionBinding": {
+        "bindingType": "candidate_rules",
+        "candidateBinding": {
+          "knowledgeBaseVersion": "0.1.0-2026-07-15",
+          "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+          "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+          "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+        },
+        "profileBinding": null
+      },
+      "requiredTests": {
+        "testFile": "tests/dangerous-miss-scenarios.test.mjs",
+        "testMarkers": [
+          "DM-URGENT-004: instability + febrile neutropenia dominates as emergency alerts with escalation wording and no dosing instruction",
+          "DM-URGENT-004 NEGATIVE: removing instability/fever/neutropenia removes emergency-severity dominance (proves it was driven by those findings)"
+        ],
+        "coverageKind": "behavioral_positive_and_negative"
+      },
+      "evidence": {
+        "technicalExecution": {
+          "status": "repository_test_executed",
+          "command": "npm run check",
+          "note": "DM-URGENT-004 positive+negative assertions run against the live anemia-assessment engine and pass at the current baseline (185/185 total repository tests). This is repository-level technical/synthetic evidence only, never clinical adjudication or owner approval."
+        },
+        "clinicalAdjudication": {
+          "status": "not_executed_owner_held",
+          "systemRef": null
+        }
+      },
+      "ownerBinding": {
+        "reviewerRole": "pediatric-safety-human-factors-reviewer",
+        "releaseGateOwnerRole": "pediatric-safety-owner",
+        "name": null,
+        "assertion": "role_assigned"
+      },
+      "blockedReleaseStates": [
+        "credentialed_review_complete",
+        "clinical_validation_complete",
+        "certified_for_defined_scope",
+        "released",
+        "activated"
+      ],
+      "finding": null
+    },
+    {
+      "hazardId": "DM-IRON-006",
+      "hazardFamily": "inflammation_or_incomplete_iron_studies",
+      "scenarioRef": {
+        "scenarioId": "SCN-DM-IRON-006",
+        "scenarioVersion": "1.0.0",
+        "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-IRON-006.json",
+        "fixtureDigest": "sha256:06e395f73a3c2ae0c270b5c8626ef5844e9cf7981079115bd694c2e7aa82a16a"
+      },
+      "controlBinding": {
+        "status": "control_bound",
+        "controlType": "engine_rule",
+        "controlIds": [
+          "Q-MICRO-001",
+          "Q-MICRO-005"
+        ],
+        "rationale": "Rule id(s) Q-MICRO-001, Q-MICRO-005 in modules/anemia/rules.json produce the required signal for DM-IRON-006 when evaluated by the anemia-assessment engine (src/engine.js assessPediatricAnemia), verified by tests/dangerous-miss-scenarios.test.mjs."
+      },
+      "versionBinding": {
+        "bindingType": "candidate_rules",
+        "candidateBinding": {
+          "knowledgeBaseVersion": "0.1.0-2026-07-15",
+          "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+          "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+          "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+        },
+        "profileBinding": null
+      },
+      "requiredTests": {
+        "testFile": "tests/dangerous-miss-scenarios.test.mjs",
+        "testMarkers": [
+          "DM-IRON-006: incomplete iron studies with concurrent inflammation abstain from a ranked iron/inflammation diagnosis",
+          "DM-IRON-006 NEGATIVE: a real low ferritin value with normal CRP resolves iron-deficiency-anemia (proves the abstention was driven by missingness, not by the CBC alone)"
+        ],
+        "coverageKind": "behavioral_positive_and_negative"
+      },
+      "evidence": {
+        "technicalExecution": {
+          "status": "repository_test_executed",
+          "command": "npm run check",
+          "note": "DM-IRON-006 positive+negative assertions run against the live anemia-assessment engine and pass at the current baseline (185/185 total repository tests). This is repository-level technical/synthetic evidence only, never clinical adjudication or owner approval."
+        },
+        "clinicalAdjudication": {
+          "status": "not_executed_owner_held",
+          "systemRef": null
+        }
+      },
+      "ownerBinding": {
+        "reviewerRole": "pediatric-hematology-reviewer",
+        "releaseGateOwnerRole": "pediatric-safety-owner",
+        "name": null,
+        "assertion": "role_assigned"
+      },
+      "blockedReleaseStates": [
+        "credentialed_review_complete",
+        "clinical_validation_complete",
+        "certified_for_defined_scope",
+        "released",
+        "activated"
+      ],
+      "finding": null
+    },
+    {
+      "hazardId": "DM-LAB-005",
+      "hazardFamily": "unit_specimen_method_or_range_mismatch",
+      "scenarioRef": {
+        "scenarioId": "SCN-DM-LAB-005",
+        "scenarioVersion": "1.0.0",
+        "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-LAB-005.json",
+        "fixtureDigest": "sha256:fea1a87edcbfd8e4ea35eb26d8ca535f86117ede2cb25915e35abb24ba9716da"
+      },
+      "controlBinding": {
+        "status": "control_bound",
+        "controlType": "applicability_blocker",
+        "controlIds": [
+          "SPECIMEN_MISMATCH",
+          "ANALYZER_MISMATCH",
+          "METHOD_MISMATCH",
+          "UNIT_MISMATCH"
+        ],
+        "rationale": "Fail-closed applicability blocker code(s) SPECIMEN_MISMATCH, ANALYZER_MISMATCH, METHOD_MISMATCH, UNIT_MISMATCH in scripts/lib/local-applicability.mjs force a fail_closed decision for DM-LAB-005 against the SYNTHETIC SYNTHETIC-reference-interval-profile profile, verified by tests/dangerous-miss-scenarios.test.mjs."
+      },
+      "versionBinding": {
+        "bindingType": "local_profile",
+        "candidateBinding": null,
+        "profileBinding": {
+          "profileId": "SYNTHETIC-reference-interval-profile",
+          "profileDigest": "sha256:f3f585c6d7212695aebeacd940177f92081a17a7afeb6c9321ead7bf14f35c59",
+          "profileLocator": "tests/fixtures/local-profile/SYNTHETIC-reference-interval-profile.json"
+        }
+      },
+      "requiredTests": {
+        "testFile": "tests/dangerous-miss-scenarios.test.mjs",
+        "testMarkers": [
+          "DM-LAB-005: specimen/analyzer/method/unit mismatch against the SYNTHETIC reference-interval profile fails closed on all four independent dimensions",
+          "DM-LAB-005 NEGATIVE: a fully matching request against the same profile is applicable (proves fail_closed was driven by the mismatch, not the profile itself)"
+        ],
+        "coverageKind": "behavioral_positive_and_negative"
+      },
+      "evidence": {
+        "technicalExecution": {
+          "status": "repository_test_executed",
+          "command": "npm run check",
+          "note": "DM-LAB-005 positive+negative assertions run against the live P3 local-applicability evaluator and pass at the current baseline (185/185 total repository tests). This is repository-level technical/synthetic evidence only, never clinical adjudication or owner approval."
+        },
+        "clinicalAdjudication": {
+          "status": "not_executed_owner_held",
+          "systemRef": null
+        }
+      },
+      "ownerBinding": {
+        "reviewerRole": "pediatric-laboratory-medicine-reviewer",
+        "releaseGateOwnerRole": "local-laboratory-director",
+        "name": null,
+        "assertion": "role_assigned"
+      },
+      "blockedReleaseStates": [
+        "credentialed_review_complete",
+        "clinical_validation_complete",
+        "certified_for_defined_scope",
+        "released",
+        "activated"
+      ],
+      "finding": null
+    },
+    {
+      "hazardId": "DM-RESULT-007",
+      "hazardFamily": "stale_duplicate_preliminary_corrected_or_amended_result",
+      "scenarioRef": {
+        "scenarioId": "SCN-DM-RESULT-007",
+        "scenarioVersion": "1.0.0",
+        "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-RESULT-007.json",
+        "fixtureDigest": "sha256:018db67df67318fc6a3c5a545aa7bff8c9a8927c612925bf7e33d85d2d91bcc4"
+      },
+      "controlBinding": {
+        "status": "control_bound",
+        "controlType": "applicability_blocker",
+        "controlIds": [
+          "CORRECTION_UNRESOLVED",
+          "SUPERSEDING_REFERENCE_UNRESOLVABLE"
+        ],
+        "rationale": "Fail-closed applicability blocker code(s) CORRECTION_UNRESOLVED, SUPERSEDING_REFERENCE_UNRESOLVABLE in scripts/lib/local-applicability.mjs force a fail_closed decision for DM-RESULT-007 against the SYNTHETIC SYNTHETIC-terminology-profile profile, verified by tests/dangerous-miss-scenarios.test.mjs."
+      },
+      "versionBinding": {
+        "bindingType": "local_profile",
+        "candidateBinding": null,
+        "profileBinding": {
+          "profileId": "SYNTHETIC-terminology-profile",
+          "profileDigest": "sha256:32bff78f499eff3640eac8c26f160fbfbd7986b5d7137eba82b777118d1e9bb7",
+          "profileLocator": "tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json"
+        }
+      },
+      "requiredTests": {
+        "testFile": "tests/dangerous-miss-scenarios.test.mjs",
+        "testMarkers": [
+          "DM-RESULT-007: a dropped correction (final status, later corrected state in the lineage, no superseding reference) fails closed",
+          "DM-RESULT-007 NEGATIVE: removing the corrected state from the lineage is applicable (proves fail_closed was driven by the dropped correction)"
+        ],
+        "coverageKind": "behavioral_positive_and_negative"
+      },
+      "evidence": {
+        "technicalExecution": {
+          "status": "repository_test_executed",
+          "command": "npm run check",
+          "note": "DM-RESULT-007 positive+negative assertions run against the live P3 local-applicability evaluator and pass at the current baseline (185/185 total repository tests). This is repository-level technical/synthetic evidence only, never clinical adjudication or owner approval."
+        },
+        "clinicalAdjudication": {
+          "status": "not_executed_owner_held",
+          "systemRef": null
+        }
+      },
+      "ownerBinding": {
+        "reviewerRole": "clinical-informatics-interoperability-reviewer",
+        "releaseGateOwnerRole": "clinical-informatics-and-privacy-owner",
+        "name": null,
+        "assertion": "role_assigned"
+      },
+      "blockedReleaseStates": [
+        "credentialed_review_complete",
+        "clinical_validation_complete",
+        "certified_for_defined_scope",
+        "released",
+        "activated"
+      ],
+      "finding": null
+    },
+    {
+      "hazardId": "DM-FHIR-008",
+      "hazardFamily": "incomplete_fhir_or_terminology_mapping",
+      "scenarioRef": {
+        "scenarioId": "SCN-DM-FHIR-008",
+        "scenarioVersion": "1.0.0",
+        "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-FHIR-008.json",
+        "fixtureDigest": "sha256:682f437200870c03bffcb28d6f433a6f8f6dded477d900fa67217ada885b9e0f"
+      },
+      "controlBinding": {
+        "status": "control_bound",
+        "controlType": "applicability_blocker",
+        "controlIds": [
+          "UNMAPPED_LOCAL_CODE"
+        ],
+        "rationale": "Fail-closed applicability blocker code(s) UNMAPPED_LOCAL_CODE in scripts/lib/local-applicability.mjs force a fail_closed decision for DM-FHIR-008 against the SYNTHETIC SYNTHETIC-terminology-profile profile, verified by tests/dangerous-miss-scenarios.test.mjs."
+      },
+      "versionBinding": {
+        "bindingType": "local_profile",
+        "candidateBinding": null,
+        "profileBinding": {
+          "profileId": "SYNTHETIC-terminology-profile",
+          "profileDigest": "sha256:32bff78f499eff3640eac8c26f160fbfbd7986b5d7137eba82b777118d1e9bb7",
+          "profileLocator": "tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json"
+        }
+      },
+      "requiredTests": {
+        "testFile": "tests/dangerous-miss-scenarios.test.mjs",
+        "testMarkers": [
+          "DM-FHIR-008: an unmapped local code fails closed rather than being interpreted",
+          "DM-FHIR-008 NEGATIVE: a mapped local code is applicable (proves fail_closed was driven by the missing mapping)"
+        ],
+        "coverageKind": "behavioral_positive_and_negative"
+      },
+      "evidence": {
+        "technicalExecution": {
+          "status": "repository_test_executed",
+          "command": "npm run check",
+          "note": "DM-FHIR-008 positive+negative assertions run against the live P3 local-applicability evaluator and pass at the current baseline (185/185 total repository tests). This is repository-level technical/synthetic evidence only, never clinical adjudication or owner approval."
+        },
+        "clinicalAdjudication": {
+          "status": "not_executed_owner_held",
+          "systemRef": null
+        }
+      },
+      "ownerBinding": {
+        "reviewerRole": "clinical-informatics-interoperability-reviewer",
+        "releaseGateOwnerRole": "clinical-informatics-and-privacy-owner",
+        "name": null,
+        "assertion": "role_assigned"
+      },
+      "blockedReleaseStates": [
+        "credentialed_review_complete",
+        "clinical_validation_complete",
+        "certified_for_defined_scope",
+        "released",
+        "activated"
+      ],
+      "finding": null
+    },
+    {
+      "hazardId": "DM-EQUITY-009",
+      "hazardFamily": "subgroup_or_access_failure",
+      "scenarioRef": {
+        "scenarioId": "SCN-DM-EQUITY-009",
+        "scenarioVersion": "1.0.0",
+        "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-EQUITY-009.json",
+        "fixtureDigest": "sha256:c99585c00968fe8dcf840909f2bbab22253f7993b1901a89037e4a3ad2d73ad6"
+      },
+      "controlBinding": {
+        "status": "no_control_exists",
+        "controlType": "none_available",
+        "controlIds": [],
+        "rationale": "No engine exists in this repository that implements a control for DM-EQUITY-009: assessPediatricAnemia (src/engine.js) is a stateless pure function with no subgroup/equity evaluator and no alert-lifecycle (override/downtime/handoff/recovery) state machine. Verified directly against tests/dangerous-miss-scenarios.test.mjs, which asserts this fixture declares executionBinding.engine: not_yet_implemented rather than claiming coverage."
+      },
+      "versionBinding": {
+        "bindingType": "none_available",
+        "candidateBinding": null,
+        "profileBinding": null
+      },
+      "requiredTests": {
+        "testFile": "tests/dangerous-miss-scenarios.test.mjs",
+        "testMarkers": [
+          "no executable engine exists; the fixture declares this honestly rather than claiming coverage",
+          "an executionBinding claiming not_yet_implemented without a blockedOnTask is schema-invalid"
+        ],
+        "coverageKind": "honesty_absence_of_coverage"
+      },
+      "evidence": {
+        "technicalExecution": {
+          "status": "not_executed",
+          "command": "npm run check",
+          "note": "No control exists to execute against DM-EQUITY-009. npm run check only executes the honesty-guard tests asserting the ABSENCE of coverage (fixture declares not_yet_implemented; a mutated fixture that drops blockedOnTask fails schema validation) \u2014 this is not hazard mitigation evidence."
+        },
+        "clinicalAdjudication": {
+          "status": "not_executed_owner_held",
+          "systemRef": null
+        }
+      },
+      "ownerBinding": {
+        "reviewerRole": "pediatric-equity-patient-family-reviewer",
+        "releaseGateOwnerRole": "equity-and-family-governance-owner",
+        "name": null,
+        "assertion": "role_assigned"
+      },
+      "blockedReleaseStates": [
+        "credentialed_review_complete",
+        "clinical_validation_complete",
+        "certified_for_defined_scope",
+        "released",
+        "activated",
+        "repository_ready",
+        "readiness_audit_complete",
+        "qualifying_runtime_pilot"
+      ],
+      "finding": {
+        "findingId": "PAC-P4T2-001",
+        "description": "DM-EQUITY-009 (subgroup_or_access_failure) has no executable control in this repository: there is no subgroup/equity evaluator anywhere in the codebase, and assessPediatricAnemia (src/engine.js) does not accept or reason over any subgroup/access dimension. Equity limitation exposure and unsupported-generalization blocking (validation_plan.md required signal) cannot be verified by execution today.",
+        "blockedOnTask": "arc-clinical-council-adoption-v1 P4-T4 (V5 human-factors/equity protocol-through-adjudication contracts) \u2014 see plan \u00a74 P4 and OQ per pediatric_clinical_review.json seat PCR-EQUITY finding ARC-PEF-001",
+        "severity": "high",
+        "ownerRole": "equity-and-family-governance-owner",
+        "status": "open"
+      }
+    },
+    {
+      "hazardId": "DM-WORKFLOW-010",
+      "hazardFamily": "alert_override_downtime_handoff_or_recovery_failure",
+      "scenarioRef": {
+        "scenarioId": "SCN-DM-WORKFLOW-010",
+        "scenarioVersion": "1.0.0",
+        "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-WORKFLOW-010.json",
+        "fixtureDigest": "sha256:a937467743e207cb2a3ed202f09b759230beee33ceb2bb72a0ccc310e06d0d39"
+      },
+      "controlBinding": {
+        "status": "no_control_exists",
+        "controlType": "none_available",
+        "controlIds": [],
+        "rationale": "No engine exists in this repository that implements a control for DM-WORKFLOW-010: assessPediatricAnemia (src/engine.js) is a stateless pure function with no subgroup/equity evaluator and no alert-lifecycle (override/downtime/handoff/recovery) state machine. Verified directly against tests/dangerous-miss-scenarios.test.mjs, which asserts this fixture declares executionBinding.engine: not_yet_implemented rather than claiming coverage."
+      },
+      "versionBinding": {
+        "bindingType": "none_available",
+        "candidateBinding": null,
+        "profileBinding": null
+      },
+      "requiredTests": {
+        "testFile": "tests/dangerous-miss-scenarios.test.mjs",
+        "testMarkers": [
+          "no executable engine exists; the fixture declares this honestly rather than claiming coverage",
+          "an executionBinding claiming not_yet_implemented without a blockedOnTask is schema-invalid",
+          "the one adjacent executable property (per-run rule-audit completeness) is real, but is explicitly NOT claimed as coverage of alert-lifecycle/override/downtime/handoff/recovery"
+        ],
+        "coverageKind": "honesty_absence_of_coverage"
+      },
+      "evidence": {
+        "technicalExecution": {
+          "status": "not_executed",
+          "command": "npm run check",
+          "note": "No control exists to execute against DM-WORKFLOW-010. npm run check only executes the honesty-guard tests asserting the ABSENCE of coverage (fixture declares not_yet_implemented; a mutated fixture that drops blockedOnTask fails schema validation) \u2014 this is not hazard mitigation evidence."
+        },
+        "clinicalAdjudication": {
+          "status": "not_executed_owner_held",
+          "systemRef": null
+        }
+      },
+      "ownerBinding": {
+        "reviewerRole": "pediatric-safety-human-factors-reviewer",
+        "releaseGateOwnerRole": "pediatric-safety-owner",
+        "name": null,
+        "assertion": "role_assigned"
+      },
+      "blockedReleaseStates": [
+        "credentialed_review_complete",
+        "clinical_validation_complete",
+        "certified_for_defined_scope",
+        "released",
+        "activated",
+        "repository_ready",
+        "readiness_audit_complete",
+        "qualifying_runtime_pilot"
+      ],
+      "finding": {
+        "findingId": "PAC-P4T2-002",
+        "description": "DM-WORKFLOW-010 (alert_override_downtime_handoff_or_recovery_failure) has no executable control in this repository: there is no alert-lifecycle/work-queue state machine (acknowledgment, escalation, override, downtime replay, handoff, recovery) anywhere in the codebase. assessPediatricAnemia (src/engine.js) is a stateless pure function evaluated once per run; the per-run rule-audit completeness property tests/dangerous-miss-scenarios.test.mjs verifies is a real but narrow adjacent signal, explicitly NOT alert-lifecycle coverage.",
+        "blockedOnTask": "arc-clinical-council-adoption-v1 P4-T4 (V4 silent-mode / V5 alert-lifecycle, override, downtime, handoff, recovery contracts) \u2014 see plan \u00a74 P4-T4 and pediatric_clinical_review.json seat PCR-SAFETY finding PEDS-HF-001",
+        "severity": "high",
+        "ownerRole": "pediatric-safety-owner",
+        "status": "open"
+      }
+    }
+  ],
+  "releaseDependencyManifest": {
+    "totalHazards": 10,
+    "hazardsWithControl": 8,
+    "hazardsWithoutControl": 2,
+    "blockedStates": [
+      {
+        "state": "repository_ready",
+        "blockedByHazardIds": [
+          "DM-EQUITY-009",
+          "DM-WORKFLOW-010"
+        ],
+        "rationale": "No implemented control exists in this repository for these hazard(s); repository readiness cannot be claimed for an unmitigated hazard family."
+      },
+      {
+        "state": "readiness_audit_complete",
+        "blockedByHazardIds": [
+          "DM-EQUITY-009",
+          "DM-WORKFLOW-010"
+        ],
+        "rationale": "P4-V1 (the eight-lens council coordinator review of this matrix and the P4-T1 fixtures) has not yet run."
+      },
+      {
+        "state": "qualifying_runtime_pilot",
+        "blockedByHazardIds": [
+          "DM-EQUITY-009",
+          "DM-WORKFLOW-010"
+        ],
+        "rationale": "No executable engine exists to produce qualifying runtime evidence for these hazard(s)."
+      },
+      {
+        "state": "credentialed_review_complete",
+        "blockedByHazardIds": [
+          "DM-AGE-003",
+          "DM-CBC-001",
+          "DM-EQUITY-009",
+          "DM-FHIR-008",
+          "DM-HEME-002",
+          "DM-IRON-006",
+          "DM-LAB-005",
+          "DM-RESULT-007",
+          "DM-URGENT-004",
+          "DM-WORKFLOW-010"
+        ],
+        "rationale": "No named credentialed human approval has been attached to any hazard in this matrix (P2-T3/P5-T4 not yet executed)."
+      },
+      {
+        "state": "clinical_validation_complete",
+        "blockedByHazardIds": [
+          "DM-AGE-003",
+          "DM-CBC-001",
+          "DM-EQUITY-009",
+          "DM-FHIR-008",
+          "DM-HEME-002",
+          "DM-IRON-006",
+          "DM-LAB-005",
+          "DM-RESULT-007",
+          "DM-URGENT-004",
+          "DM-WORKFLOW-010"
+        ],
+        "rationale": "V3/V4/V5 protocol-through-adjudication chains remain not_executed_owner_held (docs/clinical/v3-diagnostic-accuracy-contract.md, docs/clinical/v4-v5-safety-human-factors-contract.md)."
+      },
+      {
+        "state": "certified_for_defined_scope",
+        "blockedByHazardIds": [
+          "DM-AGE-003",
+          "DM-CBC-001",
+          "DM-EQUITY-009",
+          "DM-FHIR-008",
+          "DM-HEME-002",
+          "DM-IRON-006",
+          "DM-LAB-005",
+          "DM-RESULT-007",
+          "DM-URGENT-004",
+          "DM-WORKFLOW-010"
+        ],
+        "rationale": "Certification requires credentialed_review_complete and clinical_validation_complete first; neither is satisfied."
+      },
+      {
+        "state": "released",
+        "blockedByHazardIds": [
+          "DM-AGE-003",
+          "DM-CBC-001",
+          "DM-EQUITY-009",
+          "DM-FHIR-008",
+          "DM-HEME-002",
+          "DM-IRON-006",
+          "DM-LAB-005",
+          "DM-RESULT-007",
+          "DM-URGENT-004",
+          "DM-WORKFLOW-010"
+        ],
+        "rationale": "Release authorization is a separate organizational decision, always downstream of certification (plan section 2)."
+      },
+      {
+        "state": "activated",
+        "blockedByHazardIds": [
+          "DM-AGE-003",
+          "DM-CBC-001",
+          "DM-EQUITY-009",
+          "DM-FHIR-008",
+          "DM-HEME-002",
+          "DM-IRON-006",
+          "DM-LAB-005",
+          "DM-RESULT-007",
+          "DM-URGENT-004",
+          "DM-WORKFLOW-010"
+        ],
+        "rationale": "Production activation is a separate organizational decision, always downstream of release (plan section 2)."
+      }
+    ],
+    "clinicalValidationComplete": false,
+    "credentialedReviewComplete": false
+  }
+}

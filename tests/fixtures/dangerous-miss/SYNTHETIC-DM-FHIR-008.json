@@ -1,0 +1,83 @@
+{
+  "kind": "DangerousMissScenarioSpecification",
+  "schemaVersion": "1.0.0",
+  "scenarioId": "SCN-DM-FHIR-008",
+  "scenarioVersion": "1.0.0",
+  "hazardId": "DM-FHIR-008",
+  "hazardFamily": "incomplete_fhir_or_terminology_mapping",
+  "planReference": "agentic-research/runs/2026-07-19-pediatric-expansion-arc-readiness/validation_plan.md#DM-FHIR-008",
+  "syntheticDeclaration": {
+    "synthetic": true,
+    "nonPatientData": true,
+    "notForClinicalUse": true,
+    "notAClinicalCase": true,
+    "purpose": "SYNTHETIC TEST FIXTURE. Exercises an observation whose local code is not present in the terminology profile's local mappings, proving the engine refuses to interpret an unmapped code. All values are invented for schema and safety-test purposes only."
+  },
+  "owner": {
+    "role": "clinical-informatics-interoperability-reviewer",
+    "name": null,
+    "assertion": "role_assigned"
+  },
+  "candidateBinding": {
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+    "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+  },
+  "executionBinding": {
+    "engine": "local-applicability-terminology",
+    "engineRationale": "Unmapped local-code detection is the P3 terminology-applicability contract's own domain (local mapping check in scripts/lib/local-applicability.mjs).",
+    "blockedOnTask": null
+  },
+  "input": {
+    "kind": "terminologyObservation",
+    "patientInput": null,
+    "referenceIntervalRequest": null,
+    "terminologyObservation": {
+      "id": "urn:synthetic:observation-dm-fhir-008",
+      "resourceType": "Observation",
+      "candidate": { "candidateDigest": "sha256:a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4" },
+      "localCode": "SYN-LOCAL-UNMAPPED-9999",
+      "localSystem": "https://example.org/synthetic-local-system",
+      "status": "final",
+      "statusLineage": {
+        "complete": true,
+        "states": ["registered", "preliminary", "final"],
+        "supersedingObservationRef": null
+      },
+      "effectiveDateTime": "2026-07-10T08:00:00Z",
+      "issuedDateTime": "2026-07-10T09:00:00Z",
+      "specimenCode": "SYN-SPECIMEN-A",
+      "unitCode": "SYN-UNIT-A"
+    },
+    "profileRef": {
+      "profileId": "SYNTHETIC-terminology-profile",
+      "profileDigest": "sha256:32bff78f499eff3640eac8c26f160fbfbd7986b5d7137eba82b777118d1e9bb7",
+      "profileLocator": "tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json"
+    }
+  },
+  "expectedBehavior": {
+    "type": "fail_closed",
+    "requiredSignal": "FHIR status, code, units, effective time, specimen, or local mapping is incomplete. No clinical interpretation until required mapping/profile is verified.",
+    "expectedAlerts": [],
+    "expectedAbstention": null,
+    "expectedBlockers": ["UNMAPPED_LOCAL_CODE"],
+    "forbiddenSignals": [
+      "interpreting an unmapped local code as if it matched an approved standard code",
+      "passing an unmapped observation through to the reference-interval layer uninterpreted"
+    ]
+  },
+  "expectedTrace": {
+    "mechanism": "applicability_blockers",
+    "matchedRuleIdsMustInclude": [],
+    "note": "Verified by direct execution against evaluateTerminologyApplicability on 2026-07-19. A local code absent from profile.localMappings fails closed with UNMAPPED_LOCAL_CODE."
+  },
+  "rollbackSignal": "Re-verify by execution if tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json digest changes, is superseded, or scripts/lib/local-applicability.mjs local-mapping logic changes.",
+  "execution": {
+    "state": "not_executed",
+    "receipt": null,
+    "result": null,
+    "adjudication": null,
+    "ownerDecision": null
+  }
+}

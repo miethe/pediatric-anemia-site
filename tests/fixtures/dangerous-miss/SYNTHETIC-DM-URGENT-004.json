@@ -1,0 +1,83 @@
+{
+  "kind": "DangerousMissScenarioSpecification",
+  "schemaVersion": "1.0.0",
+  "scenarioId": "SCN-DM-URGENT-004",
+  "scenarioVersion": "1.0.0",
+  "hazardId": "DM-URGENT-004",
+  "hazardFamily": "severe_or_unstable_presentation",
+  "planReference": "agentic-research/runs/2026-07-19-pediatric-expansion-arc-readiness/validation_plan.md#DM-URGENT-004",
+  "syntheticDeclaration": {
+    "synthetic": true,
+    "nonPatientData": true,
+    "notForClinicalUse": true,
+    "notAClinicalCase": true,
+    "purpose": "SYNTHETIC TEST FIXTURE. Exercises emergency-severity alert dominance over ordinary differential ranking, and proves alert wording escalates to a clinician rather than issuing a treatment instruction. All values are invented for schema and safety-test purposes only."
+  },
+  "owner": {
+    "role": "pediatric-safety-human-factors-reviewer",
+    "name": null,
+    "assertion": "role_assigned"
+  },
+  "candidateBinding": {
+    "knowledgeBaseVersion": "0.1.0-2026-07-15",
+    "rulesFileDigest": "sha256:073ddb2fb850771a4e9fa0d635e515c8c0f20e42371e42c48d76554cef3d3c7b",
+    "candidatesFileDigest": "sha256:8d6fcd286c76263fec1771ccd74e9d5d7398525881c953bdd55a4067d17b46ab",
+    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+  },
+  "executionBinding": {
+    "engine": "anemia-assessment-engine",
+    "engineRationale": "Instability + fever/neutropenia is expressible as a patient-input.schema.json symptoms/CBC input and evaluated by assessPediatricAnemia.",
+    "blockedOnTask": null
+  },
+  "input": {
+    "kind": "patientInput",
+    "patientInput": {
+      "patient": { "ageMonths": 48, "sexAtBirth": "female", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+      "cbc": {
+        "hemoglobin": 5.2,
+        "mcv": 82,
+        "anc": 0.3,
+        "localRanges": { "ancLower": 1.5 },
+        "localFlags": { "neutropenia": true }
+      },
+      "reticulocytes": { "response": "low" },
+      "symptoms": { "fever": true, "hemodynamicInstability": true },
+      "history": {},
+      "exam": {},
+      "labs": {},
+      "smear": []
+    },
+    "referenceIntervalRequest": null,
+    "terminologyObservation": null,
+    "profileRef": null
+  },
+  "expectedBehavior": {
+    "type": "alert_dominance",
+    "requiredSignal": "An urgent instability/critical-result condition must outrank explanatory pathway content. Urgent-alert dominance and clinician escalation wording, without treatment instruction.",
+    "expectedAlerts": [
+      { "id": "ALERT-009", "severity": "emergency" },
+      { "id": "ALERT-001", "severity": "emergency" },
+      { "id": "ALERT-004", "severity": "urgent" },
+      { "id": "ALERT-003", "severity": "urgent" }
+    ],
+    "expectedAbstention": null,
+    "expectedBlockers": [],
+    "forbiddenSignals": [
+      "any alert action string containing a specific drug name, dose, or numeric dosing/transfusion-volume instruction",
+      "an emergency-severity presentation (hemodynamic instability + febrile neutropenia) producing zero alerts"
+    ]
+  },
+  "expectedTrace": {
+    "mechanism": "rule_audit",
+    "matchedRuleIdsMustInclude": ["ALERT-001", "ALERT-009"],
+    "note": "Verified by direct execution on 2026-07-19. Both ALERT-001 (instability) and ALERT-009 (fever+neutropenia) fire at emergency severity; all alert action strings direct escalation/pathway use (e.g. 'Use the local febrile-neutropenia/emergency pathway immediately.') and none specify a drug, dose, or transfusion volume."
+  },
+  "rollbackSignal": "Re-verify by execution if modules/anemia/rules.json, candidates.json, or module.json digests change, or if ALERT-001/003/004/009 conditions or action text are edited.",
+  "execution": {
+    "state": "not_executed",
+    "receipt": null,
+    "result": null,
+    "adjudication": null,
+    "ownerDecision": null
+  }
+}
