@@ -60,13 +60,12 @@
         "exactPassage",
         "passageFidelity",
         "evidenceGrade",
-        "applicability",
         "reviewDate",
         "supersedes",
         "surveillanceQuery",
         "provenance"
       ],
-      "description": "A single exact-passage evidence record (D-EP3-3). Every member below is REQUIRED as a key — legitimate absence is expressed as an explicit typed null (`evidenceGrade`, `supersedes`, and every member of `sourceLocator`/`applicability`), never by omitting the key. The one content invariant (AC EP3-T1) is enforced by the if/then below: a record is valid only when `exactPassage` is non-empty OR `status` is `implementation-proposal` — the proposal sentinel is the only way to have an empty passage.",
+      "description": "A single exact-passage evidence record (D-EP3-3). Every member below except `applicability` is REQUIRED as a key — legitimate absence is expressed as an explicit typed null (`evidenceGrade`, `supersedes`, and every member of `sourceLocator`/`applicability`), never by omitting the key. `applicability` is conditionally required by the allOf below (AC-WP3-RESIL, EP3-T6): required on every `source-supported` record (an unrestricted-by-default clinical applicability claim on a supposedly source-backed record is a safety defect), optional only on the `implementation-proposal` sentinel, where absence means \"unrestricted\" because there is no clinical claim being made at all. The one content invariant (AC EP3-T1) is enforced by the first allOf member below: a record is valid only when `exactPassage` is non-empty OR `status` is `implementation-proposal` — the proposal sentinel is the only way to have an empty passage.",
       "properties": {
         "id": {
           "type": "string",
@@ -110,16 +109,30 @@
         },
         "provenance": { "$ref": "#/$defs/provenance" }
       },
-      "if": {
-        "type": "object",
-        "required": ["exactPassage"],
-        "properties": { "exactPassage": { "const": "" } }
-      },
-      "then": {
-        "type": "object",
-        "required": ["status"],
-        "properties": { "status": { "const": "implementation-proposal" } }
-      }
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "required": ["exactPassage"],
+            "properties": { "exactPassage": { "const": "" } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "implementation-proposal" } }
+          }
+        },
+        {
+          "description": "AC-WP3-RESIL (EP3-T6): applicability is required unless the record IS the implementation-proposal sentinel.",
+          "if": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "implementation-proposal" } }
+          },
+          "then": true,
+          "else": { "type": "object", "required": ["applicability"] }
+        }
+      ]
     },
     "sourceLocator": {
       "type": "object",

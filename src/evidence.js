@@ -26,3 +26,56 @@ export const EVIDENCE = Object.freeze(
 export function evidenceFor(ids = []) {
   return [...new Set(ids)].map((id) => EVIDENCE[id]).filter(Boolean);
 }
+
+// EP3-T6 (AC-WP3-RESIL): passage accessors over the same EVIDENCE import above — no second
+// evidence store (DEF-1). Every accessor below tolerates a legacy-shape record (a source with no
+// `passages` array at all, or a passage missing `sourceLocator`/`exactPassage`) encountered
+// mid-migration: it must degrade, never throw.
+const LOCATOR_PENDING = 'locator pending';
+
+/** All passage records for a source id. Unknown id or a source with no `passages` array → []. */
+export function passagesFor(sourceId) {
+  const source = EVIDENCE[sourceId];
+  return Array.isArray(source?.passages) ? source.passages : [];
+}
+
+/** A single passage record by id, searched across every source. Unknown id → null. */
+export function passageById(passageId) {
+  if (!passageId) return null;
+  for (const source of Object.values(EVIDENCE)) {
+    const match = (Array.isArray(source.passages) ? source.passages : []).find((passage) => passage?.id === passageId);
+    if (match) return match;
+  }
+  return null;
+}
+
+/**
+ * Render-safe locator text. A legacy-shape passage missing `sourceLocator` (or with an empty
+ * `raw`) degrades to the literal string "locator pending" rather than throwing.
+ */
+export function passageLocatorText(passage) {
+  const raw = passage?.sourceLocator?.raw;
+  return typeof raw === 'string' && raw.length > 0 ? raw : LOCATOR_PENDING;
+}
+
+/**
+ * Render-safe passage text. Degrades to "locator pending" both for a legacy-shape passage
+ * missing `exactPassage` and for the intentional empty-string `implementation-proposal` sentinel
+ * — from the caller's point of view both mean "nothing located here yet."
+ */
+export function passageExactText(passage) {
+  const text = passage?.exactPassage;
+  return typeof text === 'string' && text.length > 0 ? text : LOCATOR_PENDING;
+}
+
+/**
+ * Render-safe applicability. Absent `applicability` reads as "unrestricted" ONLY on an
+ * `implementation-proposal` record (D-EP3-3 sentinel — there is no clinical claim to restrict).
+ * On any other record, absence is an unresolved defect (scripts/validate-kb.mjs fails the build
+ * on it — AC-WP3-RESIL), so this returns null rather than fabricating an "unrestricted" claim.
+ */
+export function passageApplicability(passage) {
+  if (!passage) return null;
+  if (passage.applicability) return passage.applicability;
+  return passage.status === 'implementation-proposal' ? { age: null, sex: null, assay: null } : null;
+}

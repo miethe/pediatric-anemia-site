@@ -393,7 +393,7 @@ function renderEvidence() {
   const entries = Object.values(EVIDENCE).sort((a, b) => b.year - a.year || a.id.localeCompare(b.id));
   $('#evidence-list').innerHTML = entries.map((entry) => `
     <article id="evidence-${escapeHtml(entry.id)}" class="card evidence-card">
-      <span class="priority-pill ${entry.priority.includes('foundational') ? 'foundational' : ''}">${escapeHtml(entry.priority)}</span>
+      <span class="priority-pill ${(entry.priority ?? '').includes('foundational') ? 'foundational' : ''}">${escapeHtml(entry.priority)}</span>
       <h3>${escapeHtml(entry.title)}</h3>
       <p class="meta">${escapeHtml(entry.organization)} · ${escapeHtml(entry.journal)} · ${entry.doi ? `DOI ${escapeHtml(entry.doi)}` : ''}</p>
       ${list(entry.supports)}
