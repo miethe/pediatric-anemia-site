@@ -5,7 +5,7 @@ doc_type: progress
 prd: arc-clinical-council-adoption-v1
 feature_slug: arc-clinical-council-adoption-v1
 phase: 4
-status: completed
+status: in_progress
 created: '2026-07-19'
 updated: '2026-07-19'
 prd_ref: docs/project_plans/expansion/00-expansion-plan.md
@@ -91,7 +91,7 @@ tasks:
   verified_by:
   - P4-V1
 - id: P4-V1
-  status: completed
+  status: in_progress
   assigned_to:
   - pediatric-safety-human-factors-reviewer
   - diagnostic-accuracy-methods-reviewer
@@ -125,10 +125,10 @@ parallelization:
   batch_3:
   - P4-V1
 total_tasks: 5
-completed_tasks: 5
-in_progress_tasks: 0
+completed_tasks: 4
+in_progress_tasks: 1
 blocked_tasks: 0
-progress: 100
+progress: 80
 ---
 
 # Phase 4 Progress — Executable dangerous-miss and V3-V5 dependencies

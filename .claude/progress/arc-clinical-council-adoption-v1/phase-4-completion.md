@@ -92,9 +92,14 @@ each `const: false` — no schema-valid document in this repository can assert a
 
 ---
 
-## Validator Verdict
+## Validator Verdict — SUPERSEDED, see "P4-V1 REOPENED" below
 
-**P4-V1: PASS**, after **FAIL → FAIL → PASS** on the methods lens and one **FAIL** from the validator.
+The verdict recorded in this section was reached with **four of the plan's eight specialty lenses
+unrun**. It was subsequently withdrawn. It is retained unedited for audit trail; it is **not** the
+phase's verdict.
+
+**P4-V1 (first pass): PASS**, after **FAIL → FAIL → PASS** on the methods lens and one **FAIL** from
+the validator.
 
 | Lens | Verdict |
 |---|---|
@@ -207,7 +212,122 @@ own `schemas/patient-input.schema.json` (unsupported `default` annotation).
 
 ---
 
-## OPEN ITEM FOR THE ORCHESTRATOR — reviewer-count ambiguity
+---
+
+# P4-V1 REOPENED — the first PASS was wrong
+
+The gate PASS above was **withdrawn by the coordinator**. The reviewer-count ambiguity flagged at the
+bottom of this note was resolved **in favour of the plan**: AC P4.1 requires the eight specialty
+lenses; the progress file named only three. The four missing lenses were then run against `7a73cb6`.
+
+| Lens | Verdict |
+|---|---|
+| `pediatric-hematology-reviewer` | **FAIL** |
+| `pediatric-laboratory-medicine-reviewer` | **FAIL** |
+| `general-pediatrics-reviewer` | **FAIL** |
+| `clinical-informatics-interoperability-reviewer` | PASS, one HIGH finding |
+
+**Three of four additional lenses failed a phase I had already reported complete.** Running fewer
+lenses than the AC required did not make the phase pass; it made the failures invisible. That is the
+single most important fact in this note.
+
+## What the FAILs caught
+
+**R1 [CRITICAL] — found independently by laboratory-medicine AND general-pediatrics.**
+The matrix asserted `control_bound` + `repository_test_executed` + `finding: null` for three hazards
+whose control **cannot fire in the shipped product**. `scripts/lib/local-applicability.mjs` has zero
+production callers (`src/engine.js`, the function `src/app.js` invokes, never imports it), and
+`schemas/patient-input.schema.json` — the only input surface the real app accepts — has no specimen,
+analyzer, method, or unitCode property, so the gated dimensions cannot even be entered. The labels
+were true of an isolated function and materially misleading about the product: a P5 or release reader
+would conclude the shipped tool protects against 8 of 10 dangerous-miss families. For DM-LAB-005,
+DM-RESULT-007 and DM-FHIR-008 that was false.
+
+**This one was mine to catch and I did not.** This note's own "Deviations & Risks" §1 disclosed
+exactly this inert-artifact problem for V3/V4/V5, and said nothing about it on the hazard matrix —
+the surface where it actually misleads. I documented the pattern in one place and missed it in the
+adjacent one.
+
+**R2 [CRITICAL] — hematology.** DM-HEME-002 claimed `control_bound` / `finding: null`, but its more
+dangerous branch has no engine control. Hemolysis markers positive with `reticulocytes.response:
+"low"` — the aplastic-crisis signature (parvovirus B19 on hereditary spherocytosis or sickle cell
+disease) — produces **no candidate and no alert** unless `knownChronicHemolyticDisease` AND
+`recentViral` are both already captured. A first presentation, or a known patient whose history
+wasn't taken this encounter, falls through silently: an empty differential indistinguishable from a
+routine incomplete workup. Reproduced against the live engine before any fix (`anemiaStatus:
+"present"`, `alerts: []`, `rankedDifferential: []`, only `Q-005` matched) and landed as a permanent
+regression test.
+
+**R3 [HIGH] — clinical informatics.** `v3OwnerDecision.signatureRef` *described itself* as making
+`signatureState: "bound"` unreachable, with nothing enforcing it and no code backstop. A fabricated
+authenticated go-decision validated cleanly against the one field documented as directly authorizing
+`clinical_validation_complete`. **This is the P3 defect verbatim — self-declared signature state read
+as proof — reintroduced in a schema written after P3 caught it.**
+
+## What was fixed, and what was deliberately not
+
+Disclosure and structural-enforcement fixes landed. Clinical content did not — it is recorded as
+owned, blocking, null-carrying findings.
+
+| Item | Disposition |
+|---|---|
+| R1 | `productIntegration` now a **required, schema-enforced** field on every row (prose was insufficient — the defect was truth living outside AC P4.1's `target_surfaces`). Three rows reclassified `repository_only_not_reachable_by_deployed_app` with blocking findings `PAC-P4T2-003/004/005`. **The evaluator was deliberately NOT wired into the product** — that is not a P4 decision. |
+| R2(a) | DM-HEME-002 carries `coverageFinding` `PAC-P4T2-006` (`pediatric-safety-owner`) via a new required field. |
+| R2(b) | **Owner-held.** Whether the engine gains a history-independent safety net is clinical content authority nobody here holds. `modules/anemia/rules.json` and `src/` are byte-identical across all of P4 — verified by diff. |
+| R3 | Enforced via `if/then/else` mirroring `terminology-profile.schema.json`, propagated to V4/V5 by `$ref`, with positive and negative tests. A description-vs-enforcement sweep found and fixed **five further instances** of the same class. |
+| R4 | **Owner-held.** Candidate hazard family `DM-HISTORY-011`: all ten fixtures carry `history: {}` though `src/app.js` solicits 33 such fields. Catalog-scope carryover, not a P4 authoring defect. The family definition was not invented. |
+| R5 | **Owner-held.** Gestational/corrected age is unrepresentable on the product input surface; a former 30-weeker is silently treated as full-term — collapsed rather than abstained. P3's "gestational age fixed" claim resolves to the reference-range profile, **not** the product's input surface. Verified. |
+| R6, R8, R11 | Disclosure fixes landed. R8 is structural: `finding.preconditionForHazardIds` makes DM-WORKFLOW-010's precondition relationship machine-readable, so "8 of 10 mitigated" has something to trip over. |
+| R7 | Real, and worse than reported: `reference-range.schema.json` asserted *"Free-text units are not accepted"* — false against an unconstrained string. Corrected; only exact-string equality is enforced. |
+| R9, R10, R12 | Recorded. OQ-7 (CDS Hooks crosswalk) drafted for the coordinator to confirm into plan §7; the plan body was not edited. |
+
+Findings register: `.claude/findings/arc-clinical-council-adoption-v1-findings.md`.
+
+## Two process failures in this cycle, both mine
+
+1. **R7 was never dispatched.** It appeared in my cross-reference list but was assigned to no agent as
+   a fix. It surfaced only because the cross-lane finding-ID reconciliation went looking for its
+   landing site and found none. Without that reconciliation step it would have shipped unfixed while
+   the register implied otherwise.
+2. **Uncommitted work was destroyed.** A validation agent ran `git checkout --` on
+   `schemas/hazard-control-matrix.schema.json` to undo its own temporary edit; the file carried a
+   legitimate unstaged remediation diff, which was discarded with no recovery path. It was
+   reconstructed from the intact data file and test file as spec, and all three restored guards
+   re-proven to discriminate. **Root cause is mine**: I held a full remediation round uncommitted
+   through a validation cycle, against my own durability contract. Remediation is now committed
+   before validation, and every agent touching files with unstaged diffs is instructed to `cp`-backup
+   rather than use destructive git commands.
+
+## Validation after remediation (independently executed, not self-reported)
+
+| Command | Result |
+|---|---|
+| PED `npm run check` | **407 tests, 407 pass, 0 fail**; `coverage:rules` **91/91** |
+| ARC `uv run pytest` | **1076 passed, 6 skipped**, 0 failed |
+| ARC `arc validate .` | exit 0, 260 `ok:` lines, 0 errors |
+| `git diff --check` both repos | clean |
+| Discrimination proofs | **4/4 reproduced** via `cp`-backup/restore, each restored byte-identical by SHA-256 |
+| Reconstruction integrity | diff `7a73cb6`→`347384c` on the rebuilt schema is **purely additive**; no prior guard dropped or weakened |
+| Cross-document consistency | all six `PAC-P4T2-*` IDs, rows, severities, owners agree between register and matrix |
+
+## Gate status
+
+**OPEN.** The coordinator re-runs `pediatric-hematology-reviewer`,
+`pediatric-laboratory-medicine-reviewer` and `general-pediatrics-reviewer` for the verdict. I do not
+self-certify this gate, and no prior lens approval is reused across a fix cycle that touched that
+lens's domain.
+
+## Still true, and unchanged by this remediation
+
+Ten scenarios were **authored**; no clinical suite was executed and no hazard clinically adjudicated.
+V3/V4/V5 remain `not_executed_owner_held`. Two hazards remain wholly unmitigated (DM-EQUITY-009,
+DM-WORKFLOW-010) and three more are now disclosed as **not reachable in the shipped product**. On the
+deployed application, the number of dangerous-miss families with a control that can actually fire is
+**five of ten** — not eight.
+
+---
+
+## OPEN ITEM (RESOLVED) — reviewer-count ambiguity
 
 **AC P4.1's P4-V1 row requires "the eight specialty lenses plus methods, safety, human-factors, and
 equity review." The progress file's `assigned_to` names three reviewers.** I was instructed to
@@ -223,6 +343,12 @@ resolve.
 **I am not resolving this unilaterally.** Either the progress file's `assigned_to` is authoritative
 and P4-V1 is complete, or AC P4.1 is authoritative and P4-V1 is partially satisfied pending four more
 lenses. Opus should decide before P5 consumes this phase's output as a qualifying input.
+
+**RESOLUTION (coordinator):** the plan wins — AC P4.1's eight specialty lenses are authoritative; the
+progress file's three-reviewer `assigned_to` was incomplete. The four missing lenses were run and
+three failed. Escalating this rather than deciding it was correct; **had I resolved it the other way,
+three CRITICAL/HIGH findings — including a false product-protection claim and a silently missed
+aplastic crisis — would have shipped into P5 as a qualifying input.**
 
 ---
 
