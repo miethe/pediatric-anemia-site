@@ -1,0 +1,13 @@
+{
+  "patient": { "ageMonths": 60, "sexAtBirth": "male" },
+  "cbc": { "hemoglobin": 8, "mcv": 84 },
+  "reticulocytes": { "response": "high" },
+  "history": { "oxidantMedicationOrFavaExposure": true },
+  "labs": {
+    "indirectBilirubinStatus": "high",
+    "ldhStatus": "high",
+    "g6pdStatus": "normal",
+    "g6pdTestDuringAcuteHemolysis": true
+  },
+  "smear": ["bite-or-blister-cells"]
+}

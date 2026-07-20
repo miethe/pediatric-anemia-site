@@ -1,0 +1,7 @@
+{
+  "patient": { "ageMonths": 96, "sexAtBirth": "male" },
+  "cbc": { "hemoglobin": 9, "mcv": 70 },
+  "reticulocytes": { "response": "low" },
+  "labs": { "ironStatus": "high" },
+  "smear": ["basophilic-stippling"]
+}

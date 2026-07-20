@@ -1,0 +1,7 @@
+{
+  "patient": { "ageMonths": 96, "sexAtBirth": "female" },
+  "cbc": { "hemoglobin": 9, "mcv": 70 },
+  "reticulocytes": { "response": "low" },
+  "history": { "lowIronDiet": true },
+  "labs": { "ferritin": 25, "crpStatus": "elevated", "betaGlobinTestingPositive": true }
+}

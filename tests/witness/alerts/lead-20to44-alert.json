@@ -1,0 +1,13 @@
+{
+  "patient": { "ageMonths": 24, "sexAtBirth": "female", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 11.6, "mcv": 80, "rdw": 13.5, "rbc": 4.6, "wbc": 7.5, "platelets": 300,
+    "rbcInterpretation": "normal", "localRanges": {}, "localFlags": {}
+  },
+  "reticulocytes": { "response": "appropriate" },
+  "symptoms": {},
+  "history": { "pica": true },
+  "exam": {},
+  "labs": { "bloodLeadLevel": 30, "leadSpecimen": "venous", "ferritin": 25, "crpStatus": "normal" },
+  "smear": []
+}

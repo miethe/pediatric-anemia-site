@@ -1,0 +1,5 @@
+{
+  "patient": { "ageMonths": 60, "sexAtBirth": "female", "recentTransfusion": true, "highAltitude": true },
+  "cbc": { "hemoglobin": 12, "mcv": 80 },
+  "reticulocytes": { "response": "normal" }
+}

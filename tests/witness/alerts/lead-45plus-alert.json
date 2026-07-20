@@ -1,0 +1,13 @@
+{
+  "patient": { "ageMonths": 30, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 9.6, "mcv": 68, "rdw": 17.2, "rbc": 4.5, "wbc": 8.0, "platelets": 340,
+    "rbcInterpretation": "normal", "localRanges": {}, "localFlags": {}
+  },
+  "reticulocytes": { "response": "inappropriately-normal" },
+  "symptoms": { "fatigue": true },
+  "history": { "pica": true, "excessCowMilk": true },
+  "exam": {},
+  "labs": { "bloodLeadLevel": 55, "leadSpecimen": "venous", "ferritin": 14, "crpStatus": "normal" },
+  "smear": ["basophilic-stippling"]
+}

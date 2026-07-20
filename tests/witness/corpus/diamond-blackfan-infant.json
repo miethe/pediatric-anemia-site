@@ -1,0 +1,6 @@
+{
+  "patient": { "ageMonths": 8, "sexAtBirth": "female" },
+  "cbc": { "hemoglobin": 8, "mcv": 90 },
+  "reticulocytes": { "response": "low" },
+  "history": { "thumbOrRadiusAnomaly": true }
+}

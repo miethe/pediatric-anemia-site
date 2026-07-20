@@ -1,0 +1,6 @@
+{
+  "patient": { "ageMonths": 60, "sexAtBirth": "male" },
+  "cbc": { "hemoglobin": 8, "mcv": 84, "localFlags": { "thrombocytopenia": true } },
+  "reticulocytes": { "response": "low" },
+  "history": { "abnormalSkinPigmentation": true, "shortStature": true }
+}

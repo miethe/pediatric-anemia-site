@@ -1,0 +1,6 @@
+{
+  "patient": { "ageMonths": 96, "sexAtBirth": "female" },
+  "cbc": { "hemoglobin": 12, "mcv": 80 },
+  "reticulocytes": { "response": "normal" },
+  "labs": { "ferritin": 8 }
+}

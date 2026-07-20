@@ -1,0 +1,13 @@
+{
+  "patient": { "ageMonths": 156, "sexAtBirth": "female", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 11, "mcv": 78, "rdw": 15, "rbc": 4.3, "wbc": 5.9, "platelets": 320,
+    "rbcInterpretation": "normal", "localRanges": {}, "localFlags": {}
+  },
+  "reticulocytes": { "response": "inappropriately-normal" },
+  "symptoms": { "pallor": true },
+  "history": { "lowIronDiet": true },
+  "exam": {},
+  "labs": { "ferritin": 25, "ferritinStatus": "normal", "crpStatus": "normal" },
+  "smear": []
+}

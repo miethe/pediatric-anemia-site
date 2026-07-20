@@ -1,0 +1,12 @@
+{
+  "patient": { "ageMonths": 60, "sexAtBirth": "female" },
+  "cbc": { "hemoglobin": 7, "mcv": 80 },
+  "reticulocytes": { "response": "high" },
+  "symptoms": { "jaundice": true },
+  "labs": {
+    "indirectBilirubinStatus": "high",
+    "ldhStatus": "high",
+    "haptoglobinStatus": "low",
+    "datStatus": "positive"
+  }
+}

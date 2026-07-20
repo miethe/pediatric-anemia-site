@@ -1,0 +1,5 @@
+{
+  "patient": { "ageMonths": 48, "sexAtBirth": "male" },
+  "cbc": { "hemoglobin": 8, "mcv": 84 },
+  "labs": { "g6pdStatus": "deficient", "indirectBilirubinStatus": "high", "ldhStatus": "high" }
+}

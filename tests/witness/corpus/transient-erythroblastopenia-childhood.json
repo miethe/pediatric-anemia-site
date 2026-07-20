@@ -1,0 +1,8 @@
+{
+  "patient": { "ageMonths": 30, "sexAtBirth": "female" },
+  "cbc": { "hemoglobin": 9, "mcv": 80 },
+  "reticulocytes": { "response": "low" },
+  "history": { "recentViralIllness": true },
+  "exam": {},
+  "smear": []
+}

@@ -1,0 +1,15 @@
+{
+  "patient": { "ageMonths": 100, "sexAtBirth": "female", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+  "cbc": {
+    "hemoglobin": 11.3, "mcv": 79, "rdw": 13.5, "rbc": 4.5, "wbc": 6.9, "platelets": 330,
+    "rbcInterpretation": "normal",
+    "localRanges": { "hbLower": 11.4, "mcvLower": 80.5 },
+    "localFlags": {}
+  },
+  "reticulocytes": { "response": "unknown" },
+  "symptoms": {},
+  "history": {},
+  "exam": {},
+  "labs": { "ferritin": 25, "ferritinStatus": "normal" },
+  "smear": []
+}
