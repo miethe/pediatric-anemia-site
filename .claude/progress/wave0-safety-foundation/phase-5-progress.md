@@ -9,7 +9,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-fo
 execution_model: batch-parallel
 phase: 5
 title: 'EP-5: Manifest & Semantic Diff'
-status: in_progress
+status: completed
 started: null
 completed: null
 commit_refs: []
@@ -17,8 +17,8 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 7
-completed_tasks: 6
-in_progress_tasks: 1
+completed_tasks: 7
+in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
 owners:
@@ -48,6 +48,8 @@ tasks:
   completed: 2026-07-21T06:00Z
   evidence:
   - commit: 6a63a53
+  verified_by:
+  - EP5-T6
 - id: EP5-T2
   description: 'schemas/kb-manifest.schema.json: formalize ARCH §6''s shape, superseding
     module.json''s current field-presence-only checks (DEF-5).'
@@ -64,6 +66,8 @@ tasks:
   completed: 2026-07-21T06:00Z
   evidence:
   - commit: 6a63a53
+  verified_by:
+  - EP5-T6
 - id: EP5-T3
   description: 'scripts/kb-diff.mjs — semantic diff classifier: implement SPIKE-005''s
     design (EP0-T3/T4) — classify rule-add/remove/threshold-change/evidence-change.
@@ -81,6 +85,8 @@ tasks:
   completed: 2026-07-21T06:00Z
   evidence:
   - commit: 6a63a53
+  verified_by:
+  - EP5-T4
 - id: EP5-T4
   description: 'Seeded adversarial diff pass (Risk 2 mitigation): cross-family adversarial
     review tasked explicitly with ''find a safety-relevant change this classifier
@@ -98,6 +104,8 @@ tasks:
   completed: 2026-07-21T06:00Z
   evidence:
   - commit: 6a63a53
+  verified_by:
+  - EP5-T6
 - id: EP5-T5
   description: 'Flip server.mjs to required-and-verified manifest handling: flip today''s
     tolerant-of-absence handling (:26-31, catches ENOENT, continues with manifest:
@@ -117,12 +125,14 @@ tasks:
   completed: 2026-07-21T06:00Z
   evidence:
   - commit: 6a63a53
+  verified_by:
+  - EP5-T6
 - id: EP5-T6
   description: 'AC-FAILCLOSED — implement + test all 5 ARCH §10 conditions: unit absent/incompatible;
     age outside supported range; KB signature/hash invalid; UI/engine version incompatible;
     evidence expired vs. evidenceReviewedThrough policy. target_surfaces server.mjs,
     src/units.js, src/ranges/registry.js, src/app.js.'
-  status: in_progress
+  status: completed
   assigned_to:
   - code-reviewer
   dependencies:
@@ -133,9 +143,12 @@ tasks:
   assigned_model: sonnet
   model_effort: high
   started: 2026-07-21T00:00Z
-  completed: 2026-07-21T06:00Z
+  completed: 2026-07-21T08:00Z
   evidence:
   - commit: 6a63a53
+  - commit: 3a0a623
+  verified_by:
+  - EP5-T4
 - id: EP5-T7
   description: 'FR-WP5-05 / AC-WP5-RESIL — consumers handle legitimately-empty manifest
     fields: supersedes: null valid on first release, approvedBy: [] valid per D-4
@@ -154,6 +167,8 @@ tasks:
   completed: 2026-07-21T06:00Z
   evidence:
   - commit: 6a63a53
+  verified_by:
+  - EP5-T6
 parallelization:
   batch_1:
   - EP5-T1
@@ -179,36 +194,39 @@ success_criteria:
 - id: SC-1
   description: clinicalContentHash reproducible on two clean runs against unchanged
     input (EP5-T1)
-  status: pending
+  status: met
 - id: SC-2
   description: approvedBy[] test-enforced empty at the manifest layer (EP5-T1, reinforcing
     EP4-T3)
-  status: pending
+  status: met
 - id: SC-3
   description: Semantic diff classifier flags 100% of SPIKE-005 seeded safety-relevant
     mutations as non-cosmetic (EP5-T3/T4)
-  status: pending
+  status: met-with-qualification
+  note: "73 of 83 consolidated seeded mutations individually simulated; the remaining 10 are Family H (JavaScript source), invisible to a JSON differ by construction and asserted via scope.filesNotDiffed rather than faked. NOT met on first implementation: the EP5-T4 cross-family adversarial pass found 4 execution-confirmed under-reports (protective array reorder, combinator+arity swap hiding B10, note-output false reassurance, candidate evidence reorder), all since fixed and regression-tested. The original 73/83 coverage claim was also overstated and has been corrected."
 - id: SC-4
   description: Server refuses to start/serve on missing/invalid/expired/incompatible
     manifest (EP5-T5)
-  status: pending
+  status: met
 - id: SC-5
   description: All 5 ARCH §10 fail-closed conditions have a passing automated test
     (EP5-T6)
-  status: pending
+  status: met
 - id: SC-6
   description: 'AC-WP5-RESIL: legitimately-empty fields never conflated with must-not-be-empty
     fields (EP5-T7)'
-  status: pending
+  status: met
 - id: SC-7
   description: SPIKE-006 signing branch (A or B) explicitly recorded, not assumed
-  status: pending
+  status: met
+  note: "Branch A confirmed -- SPIKE-006 RQ6 NO-GO on cryptographic signing stands, so no re-baseline to 13 pts. Recorded explicitly, not assumed. The NO-GO is now scoped to browser-verifiable signing; server-only signing was separately rejected on its merits."
 - id: SC-8
   description: npm run check green
-  status: pending
+  status: met
 - id: SC-9
   description: task-completion-validator sign-off
-  status: pending
+  status: partial
+  note: "Adversarial verification WAS performed (EP5-T4, gpt-5.6-sol cross-family, 4 confirmed findings, all remediated and independently re-verified by the orchestrator). A formal ARC council re-review of the AMENDED SPIKE-005/SPIKE-006 digests was NOT performed -- both SPIKE frontmatters read amended-pending-re-review. No credentialed clinical sign-off exists or is claimed."
 files_modified:
 - scripts/sign-kb.mjs
 - schemas/kb-manifest.schema.json
@@ -218,7 +236,7 @@ files_modified:
 - src/ranges/registry.js
 - src/app.js
 - modules/anemia/module.json
-progress: 85
+progress: 100
 updated: '2026-07-21'
 ---
 
@@ -270,4 +288,49 @@ No new dependencies. Signing approach (hash+chain vs. real crypto) is SPIKE-006'
 
 ## Completion Notes
 
-_(Fill in when phase is complete: signing branch taken (A/B), hash reproducibility proof, adversarial diff pass result.)_
+**Signing branch taken: A** — SPIKE-006 RQ6's NO-GO on cryptographic signing stands (no seat argued
+for signing now), so EP5-T1 shipped `clinicalContentHash` + `governanceHash` + the `supersedes` chain
+with no key, no signature, no `keyId`. Phase total stays at the Branch A baseline; no re-baseline to
+~13 pts was required.
+
+**Entry gate that was not in the plan.** Both upstream SPIKEs were `completed-with-required-amendments`
+and each carried an explicit hold on EP-5: SPIKE-005's ARC council *rejected RQ2 as written* ("do not
+let EP-5 implement `kb-diff.mjs` against RQ2 until RA-1…RA-9 land"), and SPIKE-006's RQ3/RQ6
+sufficiency claim did not survive review. A Batch 0 was inserted to land RA-1…RA-9 and amendments 1–6
+as additive normative sections before any implementation. Both SPIKEs now read
+`amended-pending-re-review`.
+
+**Hash reproducibility (SC-1).** `sign-kb.mjs --check` round-trips against unchanged input; asserted
+by dedicated tests plus a sensitivity test proving a mutated `ranges.js` ferritin threshold changes
+`clinicalContentHash`. The digest was *extended* beyond the original four JSON files to cover
+`modules/anemia/ranges.js` and `facts.anemia.js`, where the AAP ferritin 30/20 ng/mL cutoffs and lead
+action levels are hardcoded — closing the drift hazard EP-0 proved by execution (commit `2d1e5cd`).
+
+**Adversarial diff pass result (EP5-T4).** `gpt-5.6-sol` (cross-family, `xhigh`) **broke the
+classifier four times**, each confirmed by execution, and additionally showed the 73/83 coverage claim
+was overstated. All four were remediated and independently re-verified by the orchestrator:
+protective `actions[]` reorder (emitted nothing at all), a combinator+arity edit hiding
+`B10 combinator-swap`, a `note` output invertible into false reassurance, and a candidate `evidence[]`
+reorder. The headline regression — the council's own executed false negative, softening
+`ALERT-001.output.detail` (M62) — now classifies `block`.
+
+**Carried forward, deliberately not closed here** (see
+`.claude/findings/wave0-ep5-manifest-and-diff-findings.md`):
+- **EP5-F006** — 13 protective rules carry an empty `requiredTestCaseIds`, including `ALERT-009`
+  (emergency) and `ALERT-005` (urgent). Surfaced by RA-8's new non-vacuous resolve check. Not
+  auto-fixed: authoring test-case bindings for protective clinical rules requires a human, and an
+  agent tidying it away would manufacture governance coverage that does not exist. `isClean()` is
+  correctly `false` on the current KB as a result. Route to EP-6/EP-7.
+- **EP5-F007** — `validationRunId` is signed `local-dev:unattested` pending owner confirmation and CI
+  wiring via `KB_VALIDATION_RUN_ID`.
+- **Evidence expiry (ARCH §10 condition 5)** — mechanism built and tested in both states, but
+  `evidenceStalenessPolicy.maxAgeDays` is `null` because no human has chosen a window. Non-enforcement
+  is disclosed at startup, on `GET /api/v1/knowledge-base`, and in `dist/build-info.json` rather than
+  passing silently. SPIKE-006 Amendment 4 records the clause as NOT closed.
+- **OQ-12** — tier calibration for the now-protective `note` class remains referred to a named
+  credentialed pediatric hematology reviewer. EP5-T4's fix took the fail-safe direction (notes block);
+  it did **not** resolve the clinical question.
+- **Formal ARC re-review** of the amended SPIKE digests was **not** performed. No credentialed
+  clinical sign-off exists or is claimed anywhere in this phase.
+
+**Gate:** `npm run check` green at **848/848**; rule activation coverage 91/91.

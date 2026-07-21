@@ -1,16 +1,19 @@
 ---
 schema_version: 2
 doc_type: phase_plan
-title: "Phase EP-5: Manifest & Semantic Diff"
-status: draft
+title: 'Phase EP-5: Manifest & Semantic Diff'
+status: completed
 created: 2026-07-19
 phase: EP-5
-phase_title: "Manifest & Semantic Diff"
+phase_title: Manifest & Semantic Diff
 prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-foundation-v1.md
 feature_slug: wave0-safety-foundation
-entry_criteria: "EP-3+EP-4 closed: evidence and rule governance fields complete on all 91 rules."
-exit_criteria: "Manifest verifies; unverifiable/expired KB refused at startup; seeded diff correctly classifies a seeded change set; npm run check green."
+entry_criteria: 'EP-3+EP-4 closed: evidence and rule governance fields complete on
+  all 91 rules.'
+exit_criteria: Manifest verifies; unverifiable/expired KB refused at startup; seeded
+  diff correctly classifies a seeded change set; npm run check green.
+updated: '2026-07-21'
 ---
 
 # Phase EP-5: Manifest & Semantic Diff (WP5)
