@@ -79,8 +79,14 @@ import { resolveRightsRecordsForIdentifier } from './validate-kb.mjs';
 // allowlist is frozen empty by design. Homing the axis-reading gate in a rights-authority-free module
 // keeps that barrier honest. Re-exported below so the CLI, GATES list, and tests import it from here.
 import { checkEvidenceItemLocatorCapture } from './lib/evidence-item-capture-gate.mjs';
+// Gate (g)'s implementation likewise lives in its own module (EPR3-T6). It reads only a passage's
+// numeric_recapture resolution, reviewFlags, and id — no evidence-item axis and no rights-authority
+// field — so homing it here would not itself trip the D2 barrier probe; it is split out anyway to
+// mirror gate (f)'s pattern and keep this authority-field-reading file free of capture-side reads.
+import { checkNumericRecaptureResolution } from './lib/evidence-numeric-recapture-gate.mjs';
 
 export { checkEvidenceItemLocatorCapture };
+export { checkNumericRecaptureResolution };
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -516,6 +522,11 @@ export const GATES = [
     id: 'evidence-item-locator-capture',
     description: 'Cross-field consistency of each evidence item\'s structured_locator / not_captured[]: no valued-yet-unresolved component, table-derived items address table/row/column individually, and table-derived items name the omitted table_structure (EPR3-T4, FR-WP3-04/06, D1). Semantics only; field PRESENCE is schema-owned.',
     run: checkEvidenceItemLocatorCapture,
+  },
+  {
+    id: 'evidence-numeric-recapture-resolution',
+    description: 'Every in-scope numeric-omission passage (reviewFlag omits-source-numerics, plus the audit-named AAP2026_IDA#ev_002) resolves to per_value_atoms or no_reported_value_available — never to neither — and the resolution/atoms pairing is consistent (EPR3-T6, FR-WP3-05, AC-WP3-NUMERICS, D1). Coverage/consistency only; reads no authority field or taxonomy axis (D7).',
+    run: checkNumericRecaptureResolution,
   },
   // EP-R3 (later tasks): append your gate here as a new `{ id, description, run }` entry, with
   // its own `export function checkX(context) {...}` defined above (per this file's module

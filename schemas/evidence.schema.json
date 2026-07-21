@@ -304,6 +304,10 @@
           "$ref": "#/$defs/notCaptured",
           "description": "EPR3-T4 (FR-WP3-06, D1). REQUIRED, and non-empty on every located record (the `allOf` clause below exempts only the `implementation-proposal` sentinel, which captured nothing from a source). Maximal capture means maximal addressable provenance, NOT retained third-party expression — so what was deliberately NOT stored (the verbatim wording, a table's structure, a figure, the visual layout) is recorded here EXPLICITLY, each entry naming a `kind` and a `rationale`, rather than left implicit. The `evidence-item-locator-capture` gate additionally requires any table-derived item to carry a `not_captured[]` entry of kind `table_structure`: per-value atoms are captured, the table itself is named as omitted, and no reproduced table exists in any form (D1, REG_002 uncleared). Each `rationale` is this project's own explanation of an omission, never a transcription of the omitted third-party text (that would defeat the point and trip EPR3-T1's negative invariant)."
         },
+        "numeric_recapture": {
+          "$ref": "#/$defs/numericRecapture",
+          "description": "EPR3-T6 (FR-WP3-05, AC-WP3-NUMERICS, D1). OPTIONAL — present only on a passage the independent EP3-T5 fidelity audit found dropped source numerics (reviewFlag `omits-source-numerics`), plus AAP2026_IDA#ev_002, which docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md additionally names. It records how that numeric omission was RESOLVED, to exactly one of two states and never to neither: (a) `per_value_atoms` — a set of per-value typed atoms, each independently worded, each carrying the source's *reported* value transcribed at a component-addressable `structured_locator`, its own `evidence_item_type`/`rights_component_class`/`judgment_basis: unassessed`, and never a reproduced table (the omitted table structure stays named in this passage's `not_captured[]`, D1/REG_002 uncleared); or (b) `no_reported_value_available` — an explicit not-captured resolution stating why no atom could be captured (the reported value is absent from the retrievable in-repo provenance; nothing is authored, adjusted, or interpolated — no invented thresholds). Coverage/consistency only, never a clearance surface (D7); a passage with no numeric omission simply omits this key. The `omits-source-numerics`-flagged passages, and the audit-named AAP case, are proven to carry a well-formed value here by the `evidence-numeric-recapture-resolution` coverage gate (scripts/validate-rights.mjs)."
+        },
         "reviewFlags": {
           "type": "array",
           "items": {
@@ -646,6 +650,120 @@
           }
         }
       }
+    },
+    "numericRecapture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resolution", "reason", "atoms"],
+      "description": "EPR3-T6 (FR-WP3-05, AC-WP3-NUMERICS, D1). The resolution of ONE numeric-omission passage to exactly one of two states — never to neither. `per_value_atoms` carries at least one atom in `atoms`; `no_reported_value_available` carries an empty `atoms` and states its `reason`. The atoms-present-iff-`per_value_atoms` invariant is enforced by the `allOf` below and re-asserted by the `evidence-numeric-recapture-resolution` coverage gate. This object records HOW MUCH was captured and WHY; it makes no clearance or legal determination (D7).",
+      "properties": {
+        "resolution": {
+          "enum": ["per_value_atoms", "no_reported_value_available"],
+          "description": "`per_value_atoms`: the source's reported numeric values were present in the retrievable in-repo provenance and are captured as per-value atoms (state a). `no_reported_value_available`: the reported values are absent from the retrievable provenance (the source is quarantined / not independently retrievable and the extraction retained no numeric value), so nothing could be captured without authoring it — which this project does not do (no invented thresholds). Closed enum: there is no third 'partial' state, because partiality is expressed WITHIN state (a) by an atom whose `structured_locator.unresolved_components` names what stayed unknown."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "This project's own explanation of the resolution: for `per_value_atoms`, what was transcribed and what stayed unresolved; for `no_reported_value_available`, why no reported value could be captured. Never a transcription of the omitted third-party expression (that would trip EPR3-T1's negative invariant)."
+        },
+        "atoms": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/numericAtom" },
+          "description": "The per-value typed atoms (state a). Empty on `no_reported_value_available` (state b). Each atom is an independently-worded record of ONE reported value at ONE component-addressable locator — never a reproduced row/column table."
+        }
+      },
+      "allOf": [
+        {
+          "description": "EPR3-T6: atoms present iff per_value_atoms. `per_value_atoms` requires at least one atom (a state (a) with no atom captured nothing); `no_reported_value_available` forbids any (a state (b) that carried an atom is really state (a)). This clause references only `resolution` and `atoms` — neither is a taxonomy axis field — so it couples no axes (D2).",
+          "if": {
+            "type": "object",
+            "required": ["resolution"],
+            "properties": { "resolution": { "const": "per_value_atoms" } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["atoms"],
+            "properties": { "atoms": { "minItems": 1 } }
+          },
+          "else": {
+            "type": "object",
+            "required": ["atoms"],
+            "properties": { "atoms": { "maxItems": 0 } }
+          }
+        }
+      ]
+    },
+    "numericAtom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "value",
+        "unit",
+        "evidence_item_type",
+        "rights_component_class",
+        "judgment_basis",
+        "judgment_basis_attestation",
+        "structured_locator",
+        "not_captured"
+      ],
+      "description": "EPR3-T6 (FR-WP3-05, D1, D2). ONE re-captured numeric value as a self-contained per-value atom — the rights-safe alternative to a reproduced table. It carries the source's *reported* `value` (transcribed, never authored/adjusted/interpolated — no invented thresholds), its `unit`, an independently-worded `label`, its own three taxonomy axes (`evidence_item_type` x `rights_component_class` x `judgment_basis`, none derived from another — AC-WP3-AXES), a component-addressable `structured_locator` (the same $def the passage uses; the atom's cell is addressed by table/row/column or the unresolved facet is named in `unresolved_components`, D2), and a `not_captured[]` recording the omitted table structure (D1). `judgment_basis_attestation` is `const: null` here for the same D6 reason as on the passage: no human attestation exists and none may be agent-authored.",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "This project's own independent wording of what this value is — never source phrasing (D1)."
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The source's reported value, transcribed exactly as a single atom (e.g. `<105 g/L`). A string, not a number, so a cutoff operator, an interval, or a unit annotation is representable without loss. Transcribed from a recorded in-repo provenance; never authored, rounded, or interpolated (no invented thresholds)."
+        },
+        "unit": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The unit the value is reported in (e.g. `g/L`), or null when the value carries no separable unit."
+        },
+        "evidence_item_type": {
+          "$ref": "#/$defs/evidenceItemType",
+          "description": "The atom's epistemic kind — axis 1, independent of the other axes (AC-WP3-AXES)."
+        },
+        "rights_component_class": {
+          "$ref": "#/$defs/rightsComponentClass",
+          "description": "Which rights component the atom draws on — axis 3, independent of `evidence_item_type` (a per-value atom is very often a `table`, but need not be)."
+        },
+        "judgment_basis": {
+          "$ref": "#/$defs/judgmentBasis",
+          "description": "`unassessed` today (OQ-1 routes the measured-vs-judged determination to counsel); a non-`unassessed` value is structurally unreachable while `judgment_basis_attestation` is `const: null` and paired by the `allOf` below."
+        },
+        "judgment_basis_attestation": {
+          "const": null,
+          "description": "REQUIRED and forced `null` (D6) — the same posture as the passage's field; no attestation may be agent-authored."
+        },
+        "structured_locator": {
+          "$ref": "#/$defs/structuredLocator",
+          "description": "The atom's component-addressable provenance (D1). For a table-derived value the specific cell is addressed by table/row/column, or the unresolved facet (e.g. the age/sex band) is named in `unresolved_components` (D2 — missingness never treated as normal)."
+        },
+        "not_captured": {
+          "$ref": "#/$defs/notCaptured",
+          "description": "What the atom deliberately did not store — at minimum the omitted table structure for a table-derived value (D1: the atom is captured, the table itself is named as not stored; REG_002 uncleared)."
+        }
+      },
+      "allOf": [
+        {
+          "description": "EPR3-T6 (mirrors the passage's D6 pairing rule): an atom may leave `judgment_basis: unassessed` only against a human attestation record, and `judgment_basis_attestation` is `const: null`, so every non-`unassessed` value is structurally unreachable. Written against the attestation SHAPE so it stays operative if a future process relaxes the const. Coverage/consistency on an unassessed atom, never a clearance gate (D7).",
+          "if": {
+            "type": "object",
+            "required": ["judgment_basis"],
+            "properties": { "judgment_basis": { "not": { "const": "unassessed" } } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["judgment_basis_attestation"],
+            "properties": { "judgment_basis_attestation": { "$ref": "#/$defs/judgmentBasisAttestation" } }
+          }
+        }
+      ]
     },
     "applicability": {
       "type": "object",

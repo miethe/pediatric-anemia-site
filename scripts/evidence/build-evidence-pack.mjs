@@ -78,6 +78,7 @@ const PASSAGE_KEY_ORDER = [
   'rights_component_class',
   'structured_locator',
   'not_captured',
+  'numeric_recapture',
   'reviewFlags',
   'reviewFindingIds',
   'evidenceGrade',
@@ -101,7 +102,14 @@ const TAXONOMY_KEY_ORDER = [
   'structured_locator',
   'not_captured',
 ];
-const OPTIONAL_PASSAGE_KEYS = new Set(TAXONOMY_KEY_ORDER);
+// EPR3-T6 (FR-WP3-05): `numeric_recapture` is a SEVENTH authored, optional passage key — present
+// only on the handful of passages the EP3-T5 fidelity audit found dropped source numerics (plus the
+// audit-named AAP2026_IDA#ev_002). Like the six taxonomy fields it is authored content this
+// generator cannot re-derive from the pack, so it is carried through verbatim from the committed
+// record (numericRecaptureOverlayFor below) and re-emitted between `not_captured` and `reviewFlags`,
+// exactly at its schemas/evidence.schema.json property-declaration position. It is OPTIONAL: a
+// passage with no numeric omission carries none, and the EP-3-era shape is unaffected.
+const OPTIONAL_PASSAGE_KEYS = new Set([...TAXONOMY_KEY_ORDER, 'numeric_recapture']);
 
 const SOURCE_LOCATOR_KEY_ORDER = ['raw', 'page', 'section', 'table', 'figure'];
 const APPLICABILITY_KEY_ORDER = ['age', 'sex', 'assay'];
@@ -159,6 +167,17 @@ function taxonomyOverlayFor(existingPassage) {
   const overlay = {};
   for (const key of TAXONOMY_KEY_ORDER) overlay[key] = existingPassage[key];
   return overlay;
+}
+
+// EPR3-T6 (FR-WP3-05). Reads the authored `numeric_recapture` field off the existing passage record
+// (keyed by id) so it can be carried through the regeneration unchanged — the same preserve-authored-
+// content pattern as `taxonomyOverlayFor`. Returns `{}` when the record does not carry it (the common
+// case: only numeric-omission passages do), so spreading the result is a no-op for every other record.
+// The generator authors nothing here; a byte diff on `numeric_recapture` under `--check` is therefore
+// always an out-of-band hand-edit, which is exactly what a reviewer wants to see.
+function numericRecaptureOverlayFor(existingPassage) {
+  if (!existingPassage || !Object.hasOwn(existingPassage, 'numeric_recapture')) return {};
+  return { numeric_recapture: existingPassage.numeric_recapture };
 }
 
 // Explicit codepoint comparator (EP3T5-F11): `String.prototype.localeCompare` is locale-dependent
@@ -234,6 +253,9 @@ export function buildPassageRecords(packSource, pack, fidelityIndex, existingPas
       // for a legacy source that never had it). `orderPassageKeys` slots these six between
       // passageFidelity and reviewFlags.
       ...taxonomyOverlayFor(existingPassagesById.get(passageId)),
+      // EPR3-T6: the authored numeric_recapture resolution, carried through verbatim when present
+      // (only numeric-omission passages carry it); `orderPassageKeys` slots it after not_captured.
+      ...numericRecaptureOverlayFor(existingPassagesById.get(passageId)),
       reviewFlags,
       reviewFindingIds,
       evidenceGrade: passage.evidenceGrade,

@@ -141,13 +141,18 @@
           "not_captured": [
             {
               "kind": "table_structure",
-              "rationale": "The table layout and cells are not reproduced; per-value atoms are captured under EPR3-T6, and REG-002 has cleared no verbatim reuse."
+              "rationale": "The table layout and cells are not reproduced, and no per-value atoms could be captured — the AAP source is independently unretrievable (REG-002 uncleared, HTTP 403), so numeric_recapture resolves to no_reported_value_available (EPR3-T6). No verbatim reuse is cleared."
             },
             {
               "kind": "verbatim_wording",
               "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
             }
           ],
+          "numeric_recapture": {
+            "resolution": "no_reported_value_available",
+            "reason": "The age- and sex-specific Hb, MCV, and RDW reference intervals from AAP Table 1 are absent from the retrievable in-repo provenance, and the AAP source is independently unretrievable (HTTP 403 / subscription-required per RF-EV-002 / REG-002; reviewFlag source-not-independently-retrievable). No interval value is authored or interpolated here (no invented thresholds). Per-value atoms cannot be captured without a rights-cleared, independently retrievable AAP artifact; the table structure remains recorded as not_captured.",
+            "atoms": []
+          },
           "reviewFlags": [
             "adds-claim-not-in-located-passage",
             "source-not-independently-retrievable"
@@ -603,6 +608,148 @@
               "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
             }
           ],
+          "numeric_recapture": {
+            "resolution": "per_value_atoms",
+            "reason": "Four WHO 2024 pediatric haemoglobin anaemia cutoffs (<105, <110, <115, and <120 g/L) are recorded in the retrievable in-repo provenance (EP3-T5 fidelity finding EP3T5-F04) and are each transcribed here as a per-value atom with its unit. The value-to-band mapping is not present in that provenance, so each atom leaves its table row (age/sex band) and column explicitly unresolved rather than guessing it (no invented thresholds). The cutoff table's structure is recorded as not_captured; no table is reproduced (D1, REG-002 uncleared).",
+            "atoms": [
+              {
+                "label": "A WHO 2024 haemoglobin concentration cutoff for defining anaemia, transcribed as a single reported value; the age/sex band it applies to is not resolved in the captured provenance.",
+                "value": "<105 g/L",
+                "unit": "g/L",
+                "evidence_item_type": "reference_interval_value",
+                "rights_component_class": "reference_interval_values",
+                "judgment_basis": "unassessed",
+                "judgment_basis_attestation": null,
+                "structured_locator": {
+                  "source": "WHO2024_HB",
+                  "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+                  "section": "Executive summary (p. xi)",
+                  "table": "Table 2",
+                  "row": null,
+                  "column": null,
+                  "assay_or_method": "haemoglobin concentration; 5th-percentile cutoff derivation",
+                  "population_or_scope": "children 6 mo-14 y; the specific age/sex band for this value is unresolved",
+                  "retrieved_at": "2026-07-18",
+                  "unresolved_components": [
+                    "row",
+                    "column"
+                  ]
+                },
+                "not_captured": [
+                  {
+                    "kind": "table_structure",
+                    "rationale": "Only this single cutoff value is captured as an atom; the cutoff table's rows, columns, and band-to-value layout are not reproduced (D1, REG-002 uncleared)."
+                  },
+                  {
+                    "kind": "other",
+                    "rationale": "The specific age/sex band this cutoff applies to is absent from the captured in-repo provenance and is not inferred here (no invented thresholds)."
+                  }
+                ]
+              },
+              {
+                "label": "A WHO 2024 haemoglobin concentration cutoff for defining anaemia, transcribed as a single reported value; the age/sex band it applies to is not resolved in the captured provenance.",
+                "value": "<110 g/L",
+                "unit": "g/L",
+                "evidence_item_type": "reference_interval_value",
+                "rights_component_class": "reference_interval_values",
+                "judgment_basis": "unassessed",
+                "judgment_basis_attestation": null,
+                "structured_locator": {
+                  "source": "WHO2024_HB",
+                  "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+                  "section": "Executive summary (p. xi)",
+                  "table": "Table 2",
+                  "row": null,
+                  "column": null,
+                  "assay_or_method": "haemoglobin concentration; 5th-percentile cutoff derivation",
+                  "population_or_scope": "children 6 mo-14 y; the specific age/sex band for this value is unresolved",
+                  "retrieved_at": "2026-07-18",
+                  "unresolved_components": [
+                    "row",
+                    "column"
+                  ]
+                },
+                "not_captured": [
+                  {
+                    "kind": "table_structure",
+                    "rationale": "Only this single cutoff value is captured as an atom; the cutoff table's rows, columns, and band-to-value layout are not reproduced (D1, REG-002 uncleared)."
+                  },
+                  {
+                    "kind": "other",
+                    "rationale": "The specific age/sex band this cutoff applies to is absent from the captured in-repo provenance and is not inferred here (no invented thresholds)."
+                  }
+                ]
+              },
+              {
+                "label": "A WHO 2024 haemoglobin concentration cutoff for defining anaemia, transcribed as a single reported value; the age/sex band it applies to is not resolved in the captured provenance.",
+                "value": "<115 g/L",
+                "unit": "g/L",
+                "evidence_item_type": "reference_interval_value",
+                "rights_component_class": "reference_interval_values",
+                "judgment_basis": "unassessed",
+                "judgment_basis_attestation": null,
+                "structured_locator": {
+                  "source": "WHO2024_HB",
+                  "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+                  "section": "Executive summary (p. xi)",
+                  "table": "Table 2",
+                  "row": null,
+                  "column": null,
+                  "assay_or_method": "haemoglobin concentration; 5th-percentile cutoff derivation",
+                  "population_or_scope": "children 6 mo-14 y; the specific age/sex band for this value is unresolved",
+                  "retrieved_at": "2026-07-18",
+                  "unresolved_components": [
+                    "row",
+                    "column"
+                  ]
+                },
+                "not_captured": [
+                  {
+                    "kind": "table_structure",
+                    "rationale": "Only this single cutoff value is captured as an atom; the cutoff table's rows, columns, and band-to-value layout are not reproduced (D1, REG-002 uncleared)."
+                  },
+                  {
+                    "kind": "other",
+                    "rationale": "The specific age/sex band this cutoff applies to is absent from the captured in-repo provenance and is not inferred here (no invented thresholds)."
+                  }
+                ]
+              },
+              {
+                "label": "A WHO 2024 haemoglobin concentration cutoff for defining anaemia, transcribed as a single reported value; the age/sex band it applies to is not resolved in the captured provenance.",
+                "value": "<120 g/L",
+                "unit": "g/L",
+                "evidence_item_type": "reference_interval_value",
+                "rights_component_class": "reference_interval_values",
+                "judgment_basis": "unassessed",
+                "judgment_basis_attestation": null,
+                "structured_locator": {
+                  "source": "WHO2024_HB",
+                  "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+                  "section": "Executive summary (p. xi)",
+                  "table": "Table 2",
+                  "row": null,
+                  "column": null,
+                  "assay_or_method": "haemoglobin concentration; 5th-percentile cutoff derivation",
+                  "population_or_scope": "children 6 mo-14 y; the specific age/sex band for this value is unresolved",
+                  "retrieved_at": "2026-07-18",
+                  "unresolved_components": [
+                    "row",
+                    "column"
+                  ]
+                },
+                "not_captured": [
+                  {
+                    "kind": "table_structure",
+                    "rationale": "Only this single cutoff value is captured as an atom; the cutoff table's rows, columns, and band-to-value layout are not reproduced (D1, REG-002 uncleared)."
+                  },
+                  {
+                    "kind": "other",
+                    "rationale": "The specific age/sex band this cutoff applies to is absent from the captured in-repo provenance and is not inferred here (no invented thresholds)."
+                  }
+                ]
+              }
+            ]
+          },
           "reviewFlags": [
             "omits-source-numerics"
           ],
@@ -779,13 +926,18 @@
             },
             {
               "kind": "other",
-              "rationale": "The elevation-adjustment equation and its coefficients are not carried here; each value is captured as a per-value atom under EPR3-T6."
+              "rationale": "The elevation-adjustment equation, its coefficients, and its increment-table values are not carried here: they are absent from the retrievable in-repo provenance, so numeric_recapture resolves to no_reported_value_available rather than to atoms (EPR3-T6; no invented thresholds)."
             },
             {
               "kind": "verbatim_wording",
               "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
             }
           ],
+          "numeric_recapture": {
+            "resolution": "no_reported_value_available",
+            "reason": "The elevation-of-residence adjustment's quadratic-equation coefficients and its haemoglobin-increment table values are absent from the retrievable in-repo provenance: the source is quarantined and not independently retrievable, and the EP3-T5 extraction retained no numeric value for them (finding EP3T5-F05 records only that they were dropped, not the values). No coefficient or increment is authored, adjusted, or interpolated here (no invented thresholds). The qualitative fact — that WHO specifies an elevation adjustment applied to haemoglobin, with the direction and scope recorded on the parent passage — is all that remains capturable.",
+            "atoms": []
+          },
           "reviewFlags": [
             "omits-source-numerics"
           ],
@@ -2450,9 +2602,14 @@
             },
             {
               "kind": "other",
-              "rationale": "The reported numeric values are not carried on this summary record; each is captured as a per-value atom with its own locator under EPR3-T6."
+              "rationale": "The reported numeric G6PD reference values are not carried on this summary record: they are absent from the retrievable in-repo provenance, so numeric_recapture resolves to no_reported_value_available rather than to atoms (EPR3-T6; no invented thresholds)."
             }
           ],
+          "numeric_recapture": {
+            "resolution": "no_reported_value_available",
+            "reason": "The adult G6PD-activity reference values at 30 C and 37 C (expressed per gram haemoglobin) are absent from the retrievable in-repo provenance: the source is quarantined and the EP3-T5 extraction retained no numeric value for them (finding EP3T5-F06 records only that they were dropped). No value is authored or interpolated here (no invented thresholds). The qualitative facts — adult-only applicability, temperature dependence, the 6-PGD-correction distinction, and the units — remain on the parent passage.",
+            "atoms": []
+          },
           "reviewFlags": [
             "omits-source-numerics"
           ],
