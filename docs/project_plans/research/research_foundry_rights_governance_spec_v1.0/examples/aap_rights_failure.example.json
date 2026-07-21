@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "rights_failure_id": "RF-AAP-PCO-INCORPORATION-001",
+  "source_id": "SRC-AAP-PCO-001",
+  "rights_record_id": "RR-SRC-AAP-PCO-001",
+  "reuse_assessment_id": null,
+  "failure_type": "CONTRACT_PROHIBITS_INCORPORATION",
+  "component": "AAP Pediatric Care Online tables and algorithms",
+  "intended_use": "Commercial Evidence Foundry knowledge base",
+  "finding": "The subscription terms do not grant the intended product-incorporation right and require separate written approval for adaptation or incorporation of the Materials.",
+  "source_terms_locator": "Pediatric Care Online Terms, Section 3.4",
+  "safe_residual_use": [
+    "Internal clinical research within the subscription scope",
+    "Citation metadata",
+    "Discovery of underlying primary sources"
+  ],
+  "product_impact": "Block direct ingestion of AAP tables and algorithms into the commercial runtime.",
+  "alternative_source_ids": [],
+  "permission_strategy": "Request an AAP EHR/CDS commercial license or replace with independently sourced and authored evidence logic.",
+  "next_action": "Inventory AAP-dependent components and identify primary-source alternatives.",
+  "owner": "rights-owner",
+  "retry_trigger": "Written commercial permission or approved alternative-source implementation",
+  "severity": "high",
+  "release_gate": "BLOCK",
+  "status": "open",
+  "review": {
+    "reviewed_at": "2026-07-21T12:00:00Z",
+    "reviewed_by": ["rights-governance-agent"],
+    "notes": "Operational triage; counsel review required for final commercial determination"
+  },
+  "extensions": {}
+}

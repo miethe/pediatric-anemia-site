@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0.0",
+  "rights_record_id": "RR-SRC-AAP-PCO-001",
+  "source_id": "SRC-AAP-PCO-001",
+  "source_version": "terms verified 2026-07-21",
+  "record_scope": "source_and_access_context",
+  "component_scope": ["Pediatric Care Online Materials"],
+  "jurisdictions": ["US"],
+  "access": {
+    "basis": "institutional_subscription",
+    "platform": "AAP Pediatric Care Online",
+    "account_or_agreement_id": null,
+    "terms_url": "https://publications.aap.org/pediatriccare/pages/terms",
+    "terms_snapshot_uri": "internal://rights-snapshots/aap-pco-terms-2026-07-21.html",
+    "terms_snapshot_sha256": null,
+    "terms_verified_at": "2026-07-21T12:00:00Z",
+    "authorized_users": "Authorized subscribers and users under the applicable subscription",
+    "automated_retrieval_allowed": "unknown",
+    "text_and_data_mining_allowed": "unknown",
+    "model_training_allowed": "not_assessed",
+    "termination_or_deletion_duties": [
+      "Cease use and distribution of Materials when the license terminates, subject to the agreement terms"
+    ]
+  },
+  "copyright": {
+    "status": "copyrighted",
+    "rights_holder": "American Academy of Pediatrics",
+    "publication_license": "traditional_copyright",
+    "license_version": null,
+    "license_url": null,
+    "license_applies_to": ["all_content"],
+    "third_party_components": [
+      {
+        "component": "Provider or licensor content embedded in the Materials",
+        "rights_status": "unknown",
+        "notes": "Third-party content may require separate rights review"
+      }
+    ],
+    "attribution_requirements": [],
+    "notice_requirements": ["Preserve copyright notices and proprietary legends"],
+    "change_indication_required": null,
+    "share_alike_required": null,
+    "noncommercial_only": null,
+    "no_derivatives": null
+  },
+  "contract": {
+    "incorporation_into_other_products": "restricted_without_written_approval",
+    "adaptation": "restricted_without_written_approval",
+    "commercial_use": "not_granted",
+    "redistribution": "restricted",
+    "sublicensing": "not_granted",
+    "bulk_retrieval": "unknown",
+    "model_training": "unknown",
+    "territory_limits": [],
+    "user_or_volume_limits": ["Access limited to authorized subscribed users"],
+    "term_start": null,
+    "term_end": null,
+    "clause_locators": [
+      {
+        "topic": "permitted clinical use",
+        "locator": "Section 2, Access and License",
+        "summary": "Limited access and use for providing healthcare services"
+      },
+      {
+        "topic": "incorporation and adaptation restriction",
+        "locator": "Section 3.4, License Restrictions",
+        "summary": "Separate written approval is required to adapt, create derivative works, or incorporate Materials into other materials"
+      }
+    ]
+  },
+  "component_decisions": [
+    {
+      "component_type": "bibliographic_metadata",
+      "component_locator": null,
+      "decision": "permitted",
+      "conditions": ["Use accurate citation metadata"],
+      "notes": null
+    },
+    {
+      "component_type": "atomic_facts_and_methods",
+      "component_locator": null,
+      "decision": "facts_only_subject_to_access_contract_and_legal_review",
+      "conditions": [
+        "Prefer an independently accessible primary source",
+        "Do not copy AAP expression or reconstruct a substantial proprietary compilation"
+      ],
+      "notes": "Subscription terms may restrict use of the Materials as the extraction source"
+    },
+    {
+      "component_type": "prose",
+      "component_locator": null,
+      "decision": "permission_required",
+      "conditions": [],
+      "notes": null
+    },
+    {
+      "component_type": "table",
+      "component_locator": null,
+      "decision": "permission_required",
+      "conditions": [],
+      "notes": null
+    },
+    {
+      "component_type": "figure",
+      "component_locator": null,
+      "decision": "permission_required",
+      "conditions": [],
+      "notes": null
+    },
+    {
+      "component_type": "decision_tree_or_flowchart",
+      "component_locator": null,
+      "decision": "permission_required",
+      "conditions": ["Independently authored methods may still be assessed separately"],
+      "notes": null
+    },
+    {
+      "component_type": "trademarks_and_logos",
+      "component_locator": null,
+      "decision": "prohibited_without_authorization",
+      "conditions": ["Descriptive citation only; do not imply endorsement"],
+      "notes": null
+    }
+  ],
+  "other_rights": {
+    "patent": "unknown",
+    "trademark_or_endorsement": "descriptive_use_only",
+    "database_right": "unknown",
+    "privacy_or_confidentiality": "not_applicable",
+    "data_use_agreement": "not_applicable",
+    "trade_secret": "not_applicable",
+    "notes": []
+  },
+  "permitted_uses": [
+    "internal_reading",
+    "internal_research_notes",
+    "metadata_storage",
+    "clinician_citation"
+  ],
+  "prohibited_uses": [
+    "Commercial incorporation of AAP Materials without separate approval",
+    "Unauthorized distribution of AAP figures, tables, algorithms, or handouts",
+    "Unauthorized use of AAP trademarks or endorsement claims"
+  ],
+  "safe_residual_uses": [
+    "Internal research",
+    "Citation metadata",
+    "Discovery of primary or openly licensed evidence"
+  ],
+  "overall_status": "CONTRACT_RESTRICTED",
+  "recommended_action": "Use primary or openly licensed evidence for independently authored rules; request AAP EHR/CDS permission when AAP content itself must be incorporated.",
+  "permission_record_ids": [],
+  "rights_failure_ids": ["RF-AAP-PCO-INCORPORATION-001"],
+  "review": {
+    "assessed_by_agent": "rights-governance-agent",
+    "human_reviewer": null,
+    "counsel_reviewer": null,
+    "reviewed_at": "2026-07-21T12:00:00Z",
+    "review_status": "legal_review_required_before_commercial_use",
+    "next_review_at": null,
+    "change_triggers": [
+      "AAP terms change",
+      "Commercial license obtained",
+      "Intended use changes"
+    ],
+    "notes": "Operational triage; not a legal opinion"
+  },
+  "extensions": {}
+}

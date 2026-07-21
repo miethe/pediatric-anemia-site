@@ -1,0 +1,77 @@
+{
+  "package": "Research Foundry Source Reuse and Rights Governance Pack",
+  "version": "1.0.0",
+  "validated_at": "2026-07-21T14:00:13.360091+00:00",
+  "schema_draft": "https://json-schema.org/draft/2020-12/schema",
+  "schema_validation": [
+    {
+      "schema": "schemas/rights_record.schema.json",
+      "status": "passed"
+    },
+    {
+      "schema": "schemas/content_reuse_assessment.schema.json",
+      "status": "passed"
+    },
+    {
+      "schema": "schemas/permission_record.schema.json",
+      "status": "passed"
+    },
+    {
+      "schema": "schemas/rights_extension.schema.json",
+      "status": "passed"
+    },
+    {
+      "schema": "schemas/rights_failure.schema.json",
+      "status": "passed"
+    }
+  ],
+  "example_validation": [
+    {
+      "example": "examples/aap_subscription_rights_record.example.json",
+      "schema": "schemas/rights_record.schema.json",
+      "status": "passed"
+    },
+    {
+      "example": "examples/cc_by_rights_record.example.json",
+      "schema": "schemas/rights_record.schema.json",
+      "status": "passed"
+    },
+    {
+      "example": "examples/us_federal_public_domain_rights_record.example.json",
+      "schema": "schemas/rights_record.schema.json",
+      "status": "passed"
+    },
+    {
+      "example": "examples/facts_only_reuse_assessment.example.json",
+      "schema": "schemas/content_reuse_assessment.schema.json",
+      "status": "passed"
+    },
+    {
+      "example": "examples/permission_record.example.json",
+      "schema": "schemas/permission_record.schema.json",
+      "status": "passed"
+    },
+    {
+      "example": "examples/aap_rights_failure.example.json",
+      "schema": "schemas/rights_failure.schema.json",
+      "status": "passed"
+    }
+  ],
+  "document_qa": {
+    "docx_path": "Research_Foundry_Source_Reuse_and_Rights_Governance_Spec_v1.0.docx",
+    "docx_package_integrity": {
+      "status": "passed"
+    },
+    "rendered_page_count": 26,
+    "visual_inspection": "passed",
+    "visual_inspection_scope": "All 26 pages inspected via rendered PNG contact sheets; no clipping, overflow, broken tables, or unreadable content observed."
+  },
+  "template_validation": [
+    {
+      "template": "templates/rights_clearance_manifest_template.json",
+      "status": "passed",
+      "check": "valid_json"
+    }
+  ],
+  "overall_status": "passed"
+}

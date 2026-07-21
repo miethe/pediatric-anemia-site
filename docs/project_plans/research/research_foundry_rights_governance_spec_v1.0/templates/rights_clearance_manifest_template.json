@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "release_id": "RELEASE-ID",
+  "product": "PRODUCT-NAME",
+  "product_version": "0.0.0",
+  "generated_at": "2026-07-21T12:00:00Z",
+  "territories": ["US"],
+  "channels": ["web_saas"],
+  "source_ids": [],
+  "rights_record_ids": [],
+  "reuse_assessment_ids": [],
+  "permission_record_ids": [],
+  "rights_failure_ids": [],
+  "attribution_artifacts": [],
+  "license_notices": [],
+  "open_blockers": [],
+  "expiring_permissions": [],
+  "validation": {
+    "all_shipped_components_assessed": false,
+    "no_blocking_statuses": false,
+    "required_notices_present": false,
+    "permissions_active": false,
+    "territory_and_channel_covered": false,
+    "release_gate": "BLOCK"
+  },
+  "approvals": {
+    "evidence_owner": null,
+    "clinical_owner": null,
+    "rights_owner": null,
+    "counsel": null,
+    "release_manager": null
+  }
+}

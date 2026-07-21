@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0.0",
+  "reuse_assessment_id": "CRA-EA-0042-RUNTIME",
+  "source_id": "SRC-PRIMARY-ARTICLE-001",
+  "rights_record_ids": ["RR-SRC-PRIMARY-ARTICLE-001"],
+  "evidence_atom_ids": ["EA-CBC-0042"],
+  "candidate_rule_ids": ["RULE-CBC-IRON-017"],
+  "component": {
+    "component_type": "atomic_fact",
+    "description": "A reported pediatric threshold and diagnostic-performance result",
+    "source_locator": "Table 3",
+    "quantity_or_scope": "One threshold with its population, analyzer, and performance context"
+  },
+  "intended_use": {
+    "product": "PedsLab Pathways",
+    "product_version": "1.0.0",
+    "use_type": "commercial_runtime_logic",
+    "commercial": true,
+    "audience": ["licensed clinicians"],
+    "channels": ["web_saas", "ehr_embedded"],
+    "territories": ["US"],
+    "term_start": "2026-10-01",
+    "term_end": null
+  },
+  "analysis": {
+    "independently_authored": true,
+    "copies_source_wording": false,
+    "copies_source_arrangement": false,
+    "amount_and_substantiality": "minimal",
+    "compilation_similarity": "none",
+    "market_substitution_risk": "low",
+    "alternative_sources_available": true,
+    "alternative_source_ids": ["SRC-VALIDATION-ARTICLE-002"],
+    "facts_methods_basis": "The product encodes the reported numeric finding in original logic and does not display the source table or prose.",
+    "contract_impact": "No blocking access terms identified for this source path.",
+    "patent_impact": "No patent identified; periodic review required for branded or vendor-specific use.",
+    "trademark_impact": "Source cited descriptively; no endorsement claim.",
+    "database_right_impact": "No substantial database extraction.",
+    "privacy_confidentiality_impact": "Not applicable to published aggregate findings.",
+    "regulatory_transparency_need": "Display citation, population, analyzer scope, limitations, and rule basis.",
+    "attribution_plan": "Standard scientific citation with DOI.",
+    "license_notice_plan": null
+  },
+  "decision": {
+    "status": "CLEARED_FACTS_ONLY",
+    "release_gate": "PASS_WITH_CONDITIONS",
+    "rationale": "Independent implementation of a limited factual finding without protected expression or substantial compilation extraction.",
+    "conditions": [
+      "Do not display the source table or verbatim prose",
+      "Apply only to the validated pediatric population and analyzer profile",
+      "Retain citation and limitations"
+    ],
+    "required_permission_record_ids": [],
+    "rights_failure_ids": [],
+    "expires_at": null
+  },
+  "review": {
+    "agent_assessor": "rights-governance-agent",
+    "human_rights_reviewer": "rights-owner",
+    "clinical_reviewer": "pediatric-hematology-reviewer",
+    "counsel_reviewer": null,
+    "reviewed_at": "2026-07-21T12:00:00Z",
+    "review_status": "human_reviewed",
+    "next_review_at": "2027-07-21T12:00:00Z"
+  },
+  "extensions": {}
+}

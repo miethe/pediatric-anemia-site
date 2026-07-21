@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0.0",
+  "permission_record_id": "PR-SOCIETY-TABLE-001",
+  "rights_holder": "Example Professional Society",
+  "rights_holder_contact": "permissions@example.org",
+  "license_or_permission_identifier": "LICENSE-2026-001",
+  "covered_source_ids": ["SRC-SOCIETY-GUIDELINE-001"],
+  "covered_components": ["Table 2", "Figure 1", "machine-readable threshold values"],
+  "covered_products": ["PedsLab Pathways"],
+  "covered_affiliates": ["Example Company, Inc."],
+  "grant": {
+    "commercial_use": true,
+    "adaptation": true,
+    "redistribution": true,
+    "sublicensing": false,
+    "hosting": true,
+    "api_use": true,
+    "updates_included": false,
+    "text_and_data_mining": false,
+    "model_training": false,
+    "channels": ["web_saas", "ehr_embedded"],
+    "audiences": ["licensed clinicians"],
+    "territories": ["US", "CA"],
+    "user_or_volume_limits": ["Up to 25,000 named users"]
+  },
+  "obligations": {
+    "attribution": ["Display the agreed source citation in the product evidence panel"],
+    "notices": ["Display the agreed copyright notice"],
+    "change_indication": true,
+    "fees": ["Annual license fee under executed agreement"],
+    "reporting": ["Annual active-user report"],
+    "audit": ["Rights holder may audit usage once annually with notice"],
+    "deletion_or_return": ["Remove licensed components within 30 days after termination"],
+    "other": ["No use in consumer-facing patient advice without written amendment"]
+  },
+  "term": {
+    "start_date": "2026-10-01",
+    "end_date": "2027-09-30",
+    "renewal": "manual",
+    "termination_conditions": ["Material breach", "Nonpayment", "Unauthorized redistribution"]
+  },
+  "agreement_evidence": {
+    "document_uri": "internal://contracts/LICENSE-2026-001.pdf",
+    "checksum_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "executed_at": "2026-09-15T14:00:00Z",
+    "signatories": ["Example Company, Inc.", "Example Professional Society"]
+  },
+  "status": "active",
+  "review": {
+    "reviewed_at": "2026-09-16T12:00:00Z",
+    "approved_by": ["product-counsel", "rights-owner"],
+    "next_review_at": "2027-06-30T12:00:00Z",
+    "notes": "Hypothetical example only"
+  },
+  "extensions": {}
+}

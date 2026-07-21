@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://research-foundry.example/schemas/rights_record.schema.json",
+  "title": "Research Foundry Rights Record",
+  "description": "Source-level and access-context rights baseline. A separate content_reuse_assessment is required for each externally shipped use.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "rights_record_id",
+    "source_id",
+    "record_scope",
+    "jurisdictions",
+    "access",
+    "copyright",
+    "component_decisions",
+    "overall_status",
+    "review"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "rights_record_id": {"type": "string", "minLength": 5},
+    "source_id": {"type": "string", "minLength": 3},
+    "source_version": {"type": ["string", "null"]},
+    "record_scope": {
+      "enum": [
+        "source",
+        "source_and_access_context",
+        "edition",
+        "dataset_release",
+        "software_release",
+        "source_component"
+      ]
+    },
+    "component_scope": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "jurisdictions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string"}
+    },
+    "access": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["basis", "terms_verified_at"],
+      "properties": {
+        "basis": {
+          "enum": [
+            "public_web",
+            "open_repository",
+            "personal_subscription",
+            "institutional_subscription",
+            "purchased_copy",
+            "licensed_api",
+            "direct_permission",
+            "author_provided_copy",
+            "government_source",
+            "partner_confidential",
+            "data_use_agreement",
+            "other"
+          ]
+        },
+        "platform": {"type": ["string", "null"]},
+        "account_or_agreement_id": {"type": ["string", "null"]},
+        "terms_url": {"type": ["string", "null"], "format": "uri"},
+        "terms_snapshot_uri": {"type": ["string", "null"]},
+        "terms_snapshot_sha256": {"type": ["string", "null"]},
+        "terms_verified_at": {"type": "string", "format": "date-time"},
+        "authorized_users": {"type": ["string", "null"]},
+        "automated_retrieval_allowed": {
+          "enum": ["yes", "yes_with_conditions", "no", "unknown"]
+        },
+        "text_and_data_mining_allowed": {
+          "enum": ["yes", "yes_with_conditions", "no", "unknown"]
+        },
+        "model_training_allowed": {
+          "enum": ["yes", "yes_with_conditions", "no", "unknown", "not_assessed"]
+        },
+        "termination_or_deletion_duties": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "copyright": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "enum": [
+            "copyrighted",
+            "open_license",
+            "public_domain",
+            "us_federal_government_work",
+            "mixed_or_third_party",
+            "unknown"
+          ]
+        },
+        "rights_holder": {"type": ["string", "null"]},
+        "publication_license": {"type": ["string", "null"]},
+        "license_version": {"type": ["string", "null"]},
+        "license_url": {"type": ["string", "null"], "format": "uri"},
+        "license_applies_to": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "text",
+              "abstract",
+              "figures",
+              "tables",
+              "supplements",
+              "data",
+              "code",
+              "questionnaires",
+              "all_content",
+              "unknown"
+            ]
+          }
+        },
+        "third_party_components": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["component", "rights_status"],
+            "properties": {
+              "component": {"type": "string"},
+              "rights_status": {
+                "enum": ["cleared", "permission_required", "excluded", "unknown"]
+              },
+              "notes": {"type": ["string", "null"]}
+            }
+          }
+        },
+        "attribution_requirements": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "notice_requirements": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "change_indication_required": {"type": ["boolean", "null"]},
+        "share_alike_required": {"type": ["boolean", "null"]},
+        "noncommercial_only": {"type": ["boolean", "null"]},
+        "no_derivatives": {"type": ["boolean", "null"]}
+      }
+    },
+    "contract": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "incorporation_into_other_products": {
+          "enum": ["allowed", "allowed_with_conditions", "restricted_without_written_approval", "prohibited", "not_addressed", "unknown"]
+        },
+        "adaptation": {
+          "enum": ["allowed", "allowed_with_conditions", "restricted_without_written_approval", "prohibited", "not_addressed", "unknown"]
+        },
+        "commercial_use": {
+          "enum": ["allowed", "allowed_with_conditions", "not_granted", "prohibited", "not_addressed", "unknown"]
+        },
+        "redistribution": {
+          "enum": ["allowed", "allowed_with_conditions", "restricted", "prohibited", "not_addressed", "unknown"]
+        },
+        "sublicensing": {
+          "enum": ["allowed", "allowed_with_conditions", "not_granted", "prohibited", "not_addressed", "unknown"]
+        },
+        "bulk_retrieval": {
+          "enum": ["allowed", "allowed_with_conditions", "prohibited", "not_addressed", "unknown"]
+        },
+        "model_training": {
+          "enum": ["allowed", "allowed_with_conditions", "prohibited", "not_addressed", "unknown"]
+        },
+        "territory_limits": {"type": "array", "items": {"type": "string"}},
+        "user_or_volume_limits": {"type": "array", "items": {"type": "string"}},
+        "term_start": {"type": ["string", "null"], "format": "date"},
+        "term_end": {"type": ["string", "null"], "format": "date"},
+        "clause_locators": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["topic", "locator", "summary"],
+            "properties": {
+              "topic": {"type": "string"},
+              "locator": {"type": "string"},
+              "summary": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "component_decisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["component_type", "decision"],
+        "properties": {
+          "component_type": {
+            "enum": [
+              "bibliographic_metadata",
+              "atomic_facts_and_methods",
+              "equation",
+              "guideline_recommendation",
+              "reference_interval_values",
+              "prose",
+              "abstract",
+              "table",
+              "figure",
+              "chart",
+              "nomogram",
+              "decision_tree_or_flowchart",
+              "questionnaire_or_instrument",
+              "patient_handout",
+              "dataset",
+              "software_or_code",
+              "image_or_media",
+              "trademarks_and_logos",
+              "supplementary_material",
+              "other"
+            ]
+          },
+          "component_locator": {"type": ["string", "null"]},
+          "decision": {
+            "enum": [
+              "permitted",
+              "permitted_with_conditions",
+              "facts_only_subject_to_access_contract_and_legal_review",
+              "permission_required",
+              "prohibited_without_authorization",
+              "prohibited",
+              "unknown"
+            ]
+          },
+          "conditions": {"type": "array", "items": {"type": "string"}},
+          "notes": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "other_rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "patent": {"enum": ["none_identified", "review_required", "licensed", "blocked", "unknown"]},
+        "trademark_or_endorsement": {"enum": ["none_identified", "descriptive_use_only", "permission_required", "blocked", "unknown"]},
+        "database_right": {"enum": ["not_applicable", "none_identified", "review_required", "licensed", "blocked", "unknown"]},
+        "privacy_or_confidentiality": {"enum": ["not_applicable", "cleared", "restricted", "blocked", "unknown"]},
+        "data_use_agreement": {"enum": ["not_applicable", "active", "expired", "restricted", "unknown"]},
+        "trade_secret": {"enum": ["not_applicable", "none_identified", "restricted", "blocked", "unknown"]},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "permitted_uses": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "internal_reading",
+          "internal_research_notes",
+          "controlled_source_vault",
+          "metadata_storage",
+          "evidence_atom_extraction",
+          "independent_rule_implementation",
+          "internal_validation",
+          "commercial_runtime_logic",
+          "commercial_user_facing_explanation",
+          "clinician_citation",
+          "patient_facing_content",
+          "documentation",
+          "marketing",
+          "training",
+          "bulk_retrieval",
+          "text_and_data_mining",
+          "model_training",
+          "partner_distribution"
+        ]
+      }
+    },
+    "prohibited_uses": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "safe_residual_uses": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "overall_status": {
+      "enum": [
+        "CLEARED_OPEN_LICENSE",
+        "CLEARED_PUBLIC_DOMAIN",
+        "CLEARED_FACTS_ONLY",
+        "CLEARED_PERMISSION",
+        "INTERNAL_ONLY",
+        "LOCAL_VALIDATION_ONLY",
+        "LEGAL_REVIEW_REQUIRED",
+        "PERMISSION_REQUIRED",
+        "CONTRACT_RESTRICTED",
+        "PROHIBITED",
+        "UNKNOWN"
+      ]
+    },
+    "recommended_action": {"type": ["string", "null"]},
+    "permission_record_ids": {"type": "array", "items": {"type": "string"}},
+    "rights_failure_ids": {"type": "array", "items": {"type": "string"}},
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewed_at", "review_status"],
+      "properties": {
+        "assessed_by_agent": {"type": ["string", "null"]},
+        "human_reviewer": {"type": ["string", "null"]},
+        "counsel_reviewer": {"type": ["string", "null"]},
+        "reviewed_at": {"type": "string", "format": "date-time"},
+        "review_status": {
+          "enum": [
+            "agent_triage_only",
+            "human_reviewed",
+            "legal_review_required_before_commercial_use",
+            "counsel_approved",
+            "counsel_rejected",
+            "expired"
+          ]
+        },
+        "next_review_at": {"type": ["string", "null"], "format": "date-time"},
+        "change_triggers": {"type": "array", "items": {"type": "string"}},
+        "notes": {"type": ["string", "null"]}
+      }
+    },
+    "extensions": {"type": "object"}
+  }
+}

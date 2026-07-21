@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0.0",
+  "rights_record_id": "RR-SRC-USGOV-001",
+  "source_id": "SRC-USGOV-GUIDANCE-001",
+  "source_version": "verified 2026-07-21",
+  "record_scope": "source",
+  "component_scope": ["federal-agency-authored text and data"],
+  "jurisdictions": ["US"],
+  "access": {
+    "basis": "government_source",
+    "platform": "Official U.S. federal agency website",
+    "account_or_agreement_id": null,
+    "terms_url": null,
+    "terms_snapshot_uri": null,
+    "terms_snapshot_sha256": null,
+    "terms_verified_at": "2026-07-21T12:00:00Z",
+    "authorized_users": "Public",
+    "automated_retrieval_allowed": "unknown",
+    "text_and_data_mining_allowed": "unknown",
+    "model_training_allowed": "not_assessed",
+    "termination_or_deletion_duties": []
+  },
+  "copyright": {
+    "status": "us_federal_government_work",
+    "rights_holder": null,
+    "publication_license": "17 U.S.C. 105",
+    "license_version": null,
+    "license_url": "https://www.copyright.gov/title17/92chap1.html",
+    "license_applies_to": ["text", "data"],
+    "third_party_components": [
+      {
+        "component": "Separately credited figures, photographs, instruments, or contractor content",
+        "rights_status": "unknown",
+        "notes": "Government hosting does not establish federal authorship"
+      }
+    ],
+    "attribution_requirements": [],
+    "notice_requirements": [],
+    "change_indication_required": null,
+    "share_alike_required": null,
+    "noncommercial_only": false,
+    "no_derivatives": false
+  },
+  "contract": null,
+  "component_decisions": [
+    {
+      "component_type": "bibliographic_metadata",
+      "component_locator": null,
+      "decision": "permitted",
+      "conditions": [],
+      "notes": null
+    },
+    {
+      "component_type": "atomic_facts_and_methods",
+      "component_locator": null,
+      "decision": "permitted",
+      "conditions": ["Preserve accuracy and current-version status"],
+      "notes": null
+    },
+    {
+      "component_type": "prose",
+      "component_locator": null,
+      "decision": "permitted_with_conditions",
+      "conditions": ["Verify federal authorship and exclude credited third-party material"],
+      "notes": null
+    },
+    {
+      "component_type": "trademarks_and_logos",
+      "component_locator": null,
+      "decision": "prohibited_without_authorization",
+      "conditions": ["Do not imply agency endorsement"],
+      "notes": null
+    }
+  ],
+  "other_rights": {
+    "patent": "none_identified",
+    "trademark_or_endorsement": "descriptive_use_only",
+    "database_right": "not_applicable",
+    "privacy_or_confidentiality": "not_applicable",
+    "data_use_agreement": "not_applicable",
+    "trade_secret": "not_applicable",
+    "notes": []
+  },
+  "permitted_uses": [
+    "internal_reading",
+    "internal_research_notes",
+    "metadata_storage",
+    "evidence_atom_extraction",
+    "independent_rule_implementation",
+    "commercial_runtime_logic",
+    "commercial_user_facing_explanation",
+    "clinician_citation",
+    "documentation",
+    "training"
+  ],
+  "prohibited_uses": ["Reuse of third-party components without separate clearance", "Deceptive use of agency seals or endorsement"],
+  "safe_residual_uses": [],
+  "overall_status": "CLEARED_PUBLIC_DOMAIN",
+  "recommended_action": "Use after verifying federal authorship, current status, and third-party exclusions; provide attribution as a scientific and trust practice.",
+  "permission_record_ids": [],
+  "rights_failure_ids": [],
+  "review": {
+    "assessed_by_agent": "rights-governance-agent",
+    "human_reviewer": "rights-owner",
+    "counsel_reviewer": null,
+    "reviewed_at": "2026-07-21T12:00:00Z",
+    "review_status": "human_reviewed",
+    "next_review_at": null,
+    "change_triggers": ["Source page or authorship notice changes"],
+    "notes": null
+  },
+  "extensions": {}
+}

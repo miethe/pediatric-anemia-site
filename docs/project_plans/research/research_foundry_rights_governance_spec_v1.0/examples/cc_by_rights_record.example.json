@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0.0",
+  "rights_record_id": "RR-SRC-CCBY-001",
+  "source_id": "SRC-CCBY-ARTICLE-001",
+  "source_version": "publisher version of record",
+  "record_scope": "source",
+  "component_scope": ["article text", "article-authored tables and figures"],
+  "jurisdictions": ["WORLDWIDE"],
+  "access": {
+    "basis": "open_repository",
+    "platform": "Publisher and PMC Open Access Subset",
+    "account_or_agreement_id": null,
+    "terms_url": "https://creativecommons.org/licenses/by/4.0/",
+    "terms_snapshot_uri": null,
+    "terms_snapshot_sha256": null,
+    "terms_verified_at": "2026-07-21T12:00:00Z",
+    "authorized_users": "Public",
+    "automated_retrieval_allowed": "yes_with_conditions",
+    "text_and_data_mining_allowed": "yes_with_conditions",
+    "model_training_allowed": "yes_with_conditions",
+    "termination_or_deletion_duties": []
+  },
+  "copyright": {
+    "status": "open_license",
+    "rights_holder": "Article authors or stated rights holder",
+    "publication_license": "CC BY",
+    "license_version": "4.0 International",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "license_applies_to": ["text", "figures", "tables", "supplements"],
+    "third_party_components": [
+      {
+        "component": "Any separately credited third-party material",
+        "rights_status": "excluded",
+        "notes": "Assess the source credit for each reused component"
+      }
+    ],
+    "attribution_requirements": [
+      "Credit the creator and source",
+      "Link to the license",
+      "Indicate changes"
+    ],
+    "notice_requirements": [],
+    "change_indication_required": true,
+    "share_alike_required": false,
+    "noncommercial_only": false,
+    "no_derivatives": false
+  },
+  "contract": null,
+  "component_decisions": [
+    {
+      "component_type": "bibliographic_metadata",
+      "component_locator": null,
+      "decision": "permitted",
+      "conditions": [],
+      "notes": null
+    },
+    {
+      "component_type": "atomic_facts_and_methods",
+      "component_locator": null,
+      "decision": "permitted_with_conditions",
+      "conditions": ["Preserve clinical provenance and applicability"],
+      "notes": null
+    },
+    {
+      "component_type": "prose",
+      "component_locator": null,
+      "decision": "permitted_with_conditions",
+      "conditions": ["Provide CC BY attribution and indicate modifications"],
+      "notes": null
+    },
+    {
+      "component_type": "table",
+      "component_locator": null,
+      "decision": "permitted_with_conditions",
+      "conditions": ["Verify the table is not credited to a third party"],
+      "notes": null
+    },
+    {
+      "component_type": "figure",
+      "component_locator": null,
+      "decision": "permitted_with_conditions",
+      "conditions": ["Verify the figure is not credited to a third party"],
+      "notes": null
+    }
+  ],
+  "other_rights": {
+    "patent": "unknown",
+    "trademark_or_endorsement": "descriptive_use_only",
+    "database_right": "none_identified",
+    "privacy_or_confidentiality": "not_applicable",
+    "data_use_agreement": "not_applicable",
+    "trade_secret": "not_applicable",
+    "notes": ["CC license does not grant patent, trademark, privacy, publicity, or endorsement rights"]
+  },
+  "permitted_uses": [
+    "internal_reading",
+    "internal_research_notes",
+    "controlled_source_vault",
+    "metadata_storage",
+    "evidence_atom_extraction",
+    "independent_rule_implementation",
+    "internal_validation",
+    "commercial_runtime_logic",
+    "commercial_user_facing_explanation",
+    "clinician_citation",
+    "documentation",
+    "training",
+    "text_and_data_mining",
+    "model_training"
+  ],
+  "prohibited_uses": ["Use that implies author endorsement"],
+  "safe_residual_uses": [],
+  "overall_status": "CLEARED_OPEN_LICENSE",
+  "recommended_action": "Use subject to article-level license verification, attribution, change indication, and third-party component review.",
+  "permission_record_ids": [],
+  "rights_failure_ids": [],
+  "review": {
+    "assessed_by_agent": "rights-governance-agent",
+    "human_reviewer": "rights-owner",
+    "counsel_reviewer": null,
+    "reviewed_at": "2026-07-21T12:00:00Z",
+    "review_status": "human_reviewed",
+    "next_review_at": null,
+    "change_triggers": ["License or article credit line changes"],
+    "notes": null
+  },
+  "extensions": {}
+}
