@@ -75,6 +75,15 @@ function baseSource(overrides = {}) {
       license_url: null,
       noncommercial_only: null,
       no_derivatives: null,
+      // EPR2-T4 (FR-WP2-04): government_basis became a required sibling of the other license
+      // members after this fixture was authored. Kept in sync here so this file's own "fully
+      // unassessed source validates clean" case stays representative of the current
+      // required-fields shape; see tests/evidence-source-government-basis.test.mjs for the
+      // dedicated government_basis coverage.
+      government_basis: {
+        government_work: null,
+        government_funded: null,
+      },
     },
     terms: {
       incorporation_into_other_products: 'unknown',
@@ -189,11 +198,15 @@ test('EPR2-T3 (FR-WP2-03) forward-compat: terms.commercial_use accepts the spec-
   assert.deepEqual(errors, [], `unexpected errors:\n${JSON.stringify(errors, null, 2)}`);
 });
 
-test('EPR2-T4 (FR-WP2-04) forward-compat: license.status distinguishes us_federal_government_work from public_domain (distinct enum members, never inferred)', () => {
-  const okGovWork = baseSource({ license: { ...baseSource().license, status: 'us_federal_government_work' } });
+test('EPR2-T4 (FR-WP2-04): license.status distinguishes us_federal_government_work from public_domain (distinct enum members, never inferred) — see tests/evidence-source-government-basis.test.mjs for the dedicated government_basis invariant coverage', () => {
+  const okGovWork = baseSource({
+    license: { ...baseSource().license, status: 'us_federal_government_work', government_basis: { government_work: true, government_funded: null } },
+  });
   assert.deepEqual(validate(schema.$defs.source, okGovWork, { rootSchema: schema }), []);
 
-  const okPublicDomain = baseSource({ license: { ...baseSource().license, status: 'public_domain' } });
+  const okPublicDomain = baseSource({
+    license: { ...baseSource().license, status: 'public_domain', government_basis: { government_work: null, government_funded: null } },
+  });
   assert.deepEqual(validate(schema.$defs.source, okPublicDomain, { rootSchema: schema }), []);
 
   assert.notEqual(

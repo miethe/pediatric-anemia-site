@@ -110,10 +110,10 @@ test('AAP2026_IDA: terms_snapshot records no terms document was independently ca
   }
 });
 
-test('the 5 non-AAP sources stay in the explicit "genuinely unassessed" unknown shape — CDC2025_LEAD included, since its government-work distinction is EPR2-T4, not this task', () => {
-  const nonAap = evidenceDoc.sources.filter((s) => s.id !== 'AAP2026_IDA');
-  assert.equal(nonAap.length, 5);
-  for (const source of nonAap) {
+test('the 4 non-AAP, non-CDC sources stay in the explicit "genuinely unassessed" unknown shape — CDC2025_LEAD is now excluded here because EPR2-T4 (FR-WP2-04) has landed its government-work encoding; see tests/evidence-source-government-basis.test.mjs for that source\'s dedicated coverage', () => {
+  const stillUnknown = evidenceDoc.sources.filter((s) => s.id !== 'AAP2026_IDA' && s.id !== 'CDC2025_LEAD');
+  assert.equal(stillUnknown.length, 4);
+  for (const source of stillUnknown) {
     assert.equal(source.access_basis, 'unknown', `${source.id}: access_basis`);
     assert.equal(source.license.status, 'unknown', `${source.id}: license.status`);
     for (const [key, value] of Object.entries(source.terms)) {

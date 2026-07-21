@@ -12,7 +12,7 @@
         "scenarioId": "SCN-DM-CBC-001",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-CBC-001.json",
-        "fixtureDigest": "sha256:04e06a3177cac19577791cd6e3e9f44d79fe17bc5d0f0c0c50f8d15ea2bda320"
+        "fixtureDigest": "sha256:0ad36d3a4f1638f69edd35dc7b271b04ec3b4672c0a0e841cc51c8034ad51d05"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -33,7 +33,7 @@
           "knowledgeBaseVersion": "0.1.0-2026-07-15",
           "rulesFileDigest": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
           "candidatesFileDigest": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
-          "moduleFileDigest": "sha256:610a2881459e5444ffb66e4fca17c81e1d4058a169cdf527697ba74e399d6cfd"
+          "moduleFileDigest": "sha256:cdd568249d74efb82fea3cbfdd733a89cf18e2c891e7ffec52ab44ed6a7ac759"
         },
         "profileBinding": null
       },
@@ -89,7 +89,7 @@
         "scenarioId": "SCN-DM-HEME-002",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-HEME-002.json",
-        "fixtureDigest": "sha256:045b45f028181f42b033cf430e16191fdf9befeb586e86a45d6eff9c4e1c07cf"
+        "fixtureDigest": "sha256:094e1fe462bbf09d4d35e58fc7d2549c3f8ce06ceaaf2eeb19a93ae676e8d28d"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -105,7 +105,7 @@
           "knowledgeBaseVersion": "0.1.0-2026-07-15",
           "rulesFileDigest": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
           "candidatesFileDigest": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
-          "moduleFileDigest": "sha256:610a2881459e5444ffb66e4fca17c81e1d4058a169cdf527697ba74e399d6cfd"
+          "moduleFileDigest": "sha256:cdd568249d74efb82fea3cbfdd733a89cf18e2c891e7ffec52ab44ed6a7ac759"
         },
         "profileBinding": null
       },
@@ -170,7 +170,7 @@
         "scenarioId": "SCN-DM-AGE-003",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-AGE-003.json",
-        "fixtureDigest": "sha256:07a448b94ac2fcc7032aca71b758850f4132b1e625f26874906837fd0c59463b"
+        "fixtureDigest": "sha256:9b975bc2d385a0fcf606f724cc901a0ab2eea751d1b0be3123195b4e71258cc3"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -186,7 +186,7 @@
           "knowledgeBaseVersion": "0.1.0-2026-07-15",
           "rulesFileDigest": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
           "candidatesFileDigest": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
-          "moduleFileDigest": "sha256:610a2881459e5444ffb66e4fca17c81e1d4058a169cdf527697ba74e399d6cfd"
+          "moduleFileDigest": "sha256:cdd568249d74efb82fea3cbfdd733a89cf18e2c891e7ffec52ab44ed6a7ac759"
         },
         "profileBinding": null
       },
@@ -242,7 +242,7 @@
         "scenarioId": "SCN-DM-URGENT-004",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-URGENT-004.json",
-        "fixtureDigest": "sha256:6bbb955def27a20a15fecd11c9ce8f929b037c48ff1c48bc92a49c2834e248ca"
+        "fixtureDigest": "sha256:457025505880c50c80228ffc07f5015c3671af4079c848585f52ae96f5424ed5"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -259,7 +259,7 @@
           "knowledgeBaseVersion": "0.1.0-2026-07-15",
           "rulesFileDigest": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
           "candidatesFileDigest": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
-          "moduleFileDigest": "sha256:610a2881459e5444ffb66e4fca17c81e1d4058a169cdf527697ba74e399d6cfd"
+          "moduleFileDigest": "sha256:cdd568249d74efb82fea3cbfdd733a89cf18e2c891e7ffec52ab44ed6a7ac759"
         },
         "profileBinding": null
       },
@@ -315,7 +315,7 @@
         "scenarioId": "SCN-DM-IRON-006",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-IRON-006.json",
-        "fixtureDigest": "sha256:4da688b6ba249be99c02144c1ac7014724733dbf380030d0cfa00e12e0c4d9a1"
+        "fixtureDigest": "sha256:ae07eefd5f5f98ba7001d669e58f52de6456f20f00903a38acf5ae3c9bf48744"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -332,7 +332,7 @@
           "knowledgeBaseVersion": "0.1.0-2026-07-15",
           "rulesFileDigest": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
           "candidatesFileDigest": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
-          "moduleFileDigest": "sha256:610a2881459e5444ffb66e4fca17c81e1d4058a169cdf527697ba74e399d6cfd"
+          "moduleFileDigest": "sha256:cdd568249d74efb82fea3cbfdd733a89cf18e2c891e7ffec52ab44ed6a7ac759"
         },
         "profileBinding": null
       },
@@ -388,7 +388,7 @@
         "scenarioId": "SCN-DM-LAB-005",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-LAB-005.json",
-        "fixtureDigest": "sha256:439c4aa22d3fff126a8dc53ebb64b7a716ab84d4014f3d78d3aa4c2b289bcd19"
+        "fixtureDigest": "sha256:60b47d6cc676678ae9fa5ebb47f5956a193018a4e764ab70bacd053130dfe099"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -467,7 +467,7 @@
         "scenarioId": "SCN-DM-RESULT-007",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-RESULT-007.json",
-        "fixtureDigest": "sha256:0a4ec24f228aca95198e600b128c665389886d169d37b1229f91eac72734e4e1"
+        "fixtureDigest": "sha256:0e258f1ff5c40e0926932826a1ebdcebfece6fa3562b11227ca6b3d2d754ee63"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -544,7 +544,7 @@
         "scenarioId": "SCN-DM-FHIR-008",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-FHIR-008.json",
-        "fixtureDigest": "sha256:373551dd2c250b391020937295351628038d920f0fc864fac4bfedd49d75a933"
+        "fixtureDigest": "sha256:5e15276e0a17eb0ec2ed1f713f8e6d55802f317dfb16df1019b558c26d6f9a26"
       },
       "controlBinding": {
         "status": "control_bound",
@@ -620,7 +620,7 @@
         "scenarioId": "SCN-DM-EQUITY-009",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-EQUITY-009.json",
-        "fixtureDigest": "sha256:393cf36854f386dd5cdce8e85d40913a305aa96bcfc66f44c67e6059bc6ec9a2"
+        "fixtureDigest": "sha256:88d04055e36a1695889d6d6c2d079656c95926ad047806508892ea9fb07a393a"
       },
       "controlBinding": {
         "status": "no_control_exists",
@@ -693,7 +693,7 @@
         "scenarioId": "SCN-DM-WORKFLOW-010",
         "scenarioVersion": "1.0.0",
         "fixturePath": "tests/fixtures/dangerous-miss/SYNTHETIC-DM-WORKFLOW-010.json",
-        "fixtureDigest": "sha256:8ee381ae7f4bc68ab8109c3c3b48b1cca1bae561069da614028e34e27e3af872"
+        "fixtureDigest": "sha256:adb4eee8c0b78213fbe44c0b5e839fc3dae11fa17eb7982765779eea7bf614c4"
       },
       "controlBinding": {
         "status": "no_control_exists",

@@ -82,11 +82,11 @@
     "license": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["status", "rights_holder", "license_url", "noncommercial_only", "no_derivatives"],
+      "required": ["status", "rights_holder", "license_url", "noncommercial_only", "no_derivatives", "government_basis"],
       "description": "EPR2-T1 (FR-WP2-01/05). Source-level copyright/licence posture. Every member is required; use the typed unknown/null member rather than omitting the key when genuinely unassessed (D2). Field names and enum vocabulary are drawn one-for-one from schemas/rights/rights_record.schema.json's `copyright` object so this lightweight summary and the source's joined rights_record (rights/rights-ledger.json, D4) never disagree on a name for the same concept — this object is not a duplicate of the full rights_record and carries no clearance authority of its own.",
       "properties": {
         "status": {
-          "description": "Matches schemas/rights/rights_record.schema.json's `copyright.status` enum exactly. `us_federal_government_work` is a distinct member from `public_domain` by design — it names the 17 U.S.C. §105 basis, never a public-domain claim resting on funding source alone (see EPR2-T4, FR-WP2-04, which extends this object to record that distinction explicitly).",
+          "description": "Matches schemas/rights/rights_record.schema.json's `copyright.status` enum exactly. `us_federal_government_work` is a distinct member from `public_domain` by design — it names the 17 U.S.C. §105 basis, never a public-domain claim resting on funding source alone. EPR2-T4 (FR-WP2-04) extends this object with `government_basis` (below) to record that distinction explicitly, enforced structurally by the allOf invariants below: `status: \"us_federal_government_work\"` requires `government_basis.government_work: true`. `status: \"public_domain\"` remains valid on its own non-government basis (e.g. genuinely expired copyright) — but a record that also asserts `government_basis.government_funded: true` may reach `public_domain` only alongside `government_basis.government_work: true`; funding alone can never be the stated basis for a public-domain claim.",
           "enum": ["copyrighted", "open_license", "public_domain", "us_federal_government_work", "mixed_or_third_party", "unknown"]
         },
         "rights_holder": {
@@ -106,6 +106,73 @@
         "no_derivatives": {
           "type": ["boolean", "null"],
           "description": "Null when unassessed. True/false only once actually determined from the licence/terms."
+        },
+        "government_basis": {
+          "$ref": "#/$defs/governmentBasis",
+          "description": "EPR2-T4 (FR-WP2-04). REQUIRED — omission fails validation; both members below are themselves required, with explicit typed null for genuinely unassessed (D2). Records, as two independent facts, the government-work / government-funded distinction the reviewed vendored spec's §3.7 conflates (.claude/findings/rights-governance-spec-v1.0-review-findings.md §2.B) — this task transcribes a statutory basis already recorded in those findings; it makes no new legal determination."
+        }
+      },
+      "allOf": [
+        {
+          "description": "EPR2-T4 (FR-WP2-04), clause A: `us_federal_government_work` names the 17 U.S.C. §105 basis, so a record cannot claim that status without also asserting the underlying fact that grounds it.",
+          "if": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "us_federal_government_work" } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["government_basis"],
+            "properties": {
+              "government_basis": {
+                "type": "object",
+                "required": ["government_work"],
+                "properties": { "government_work": { "const": true } }
+              }
+            }
+          }
+        },
+        {
+          "description": "EPR2-T4 (FR-WP2-04), clause B — the acceptance test named in the phase file: a fixture marking a source `public_domain` on funding grounds alone fails validation. `public_domain` remains reachable on its own non-government basis (e.g. genuinely expired copyright, `government_funded` left `null`/`false`); the moment a record also asserts `government_funded: true`, it must additionally assert `government_work: true` to keep that status — `government_funded: true` can never be the sole stated basis for `public_domain`.",
+          "if": {
+            "type": "object",
+            "required": ["status", "government_basis"],
+            "properties": {
+              "status": { "const": "public_domain" },
+              "government_basis": {
+                "type": "object",
+                "required": ["government_funded"],
+                "properties": { "government_funded": { "const": true } }
+              }
+            }
+          },
+          "then": {
+            "type": "object",
+            "required": ["government_basis"],
+            "properties": {
+              "government_basis": {
+                "type": "object",
+                "required": ["government_work"],
+                "properties": { "government_work": { "const": true } }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "governmentBasis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["government_work", "government_funded"],
+      "description": "EPR2-T4 (FR-WP2-04). Two independent facts about a source's relationship to the U.S. federal government, never one field inferred from the other: a U.S. federal government WORK is uncopyrightable under 17 U.S.C. §105 regardless of who funded the underlying research; a government-FUNDED work (e.g. an NIH grant supporting a university author's article — abundant in the PMC corpus this project searches) carries no such exemption and remains fully copyrighted unless it is separately also a government work. A source can be funded without being a government work (the common PMC case), a government work without being extramurally funded (e.g. CDC2025_LEAD, staff-authored agency guidance), both, or neither. See the allOf invariants on `#/$defs/license`: `license.status: \"us_federal_government_work\"` requires `government_work: true`, and `license.status: \"public_domain\"` combined with `government_funded: true` also requires `government_work: true` — `government_funded: true` alone can never justify either status.",
+      "properties": {
+        "government_work": {
+          "type": ["boolean", "null"],
+          "description": "True when this source is itself a work of the U.S. federal government within the meaning of 17 U.S.C. §105 (e.g. authored by federal employees as part of their official duties, as with CDC2025_LEAD's CDC-authored clinical guidance) — the sole basis on which `license.status: \"us_federal_government_work\"` or a funding-adjacent `\"public_domain\"` claim may rest. Null when unassessed."
+        },
+        "government_funded": {
+          "type": ["boolean", "null"],
+          "description": "True when this source's underlying research or authorship was funded, in whole or part, by a U.S. government grant or contract (e.g. an NIH-funded study), independent of who holds copyright in the resulting work. A government-funded work by a non-federal author remains fully copyrighted — this field alone can never justify `license.status: \"us_federal_government_work\"` or `\"public_domain\"`. Null when unassessed."
         }
       }
     },

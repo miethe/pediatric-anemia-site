@@ -82,6 +82,13 @@ function baseSource(overrides = {}) {
       license_url: null,
       noncommercial_only: null,
       no_derivatives: null,
+      // EPR2-T4 (FR-WP2-04): government_basis became a required sibling of the other license
+      // members after this fixture was authored. Kept in sync here for the same reason as
+      // tests/evidence-source-rights-metadata.test.mjs's baseSource().
+      government_basis: {
+        government_work: null,
+        government_funded: null,
+      },
     },
     terms: {
       incorporation_into_other_products: 'unknown',

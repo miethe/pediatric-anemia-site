@@ -26,7 +26,11 @@
         "rights_holder": "American Academy of Pediatrics",
         "license_url": null,
         "noncommercial_only": null,
-        "no_derivatives": null
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
       },
       "terms": {
         "incorporation_into_other_products": "restricted_without_written_approval",
@@ -339,7 +343,11 @@
         "rights_holder": "World Health Organization",
         "license_url": null,
         "noncommercial_only": null,
-        "no_derivatives": null
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
       },
       "terms": {
         "incorporation_into_other_products": "unknown",
@@ -601,7 +609,11 @@
         "rights_holder": "American Society of Hematology",
         "license_url": null,
         "noncommercial_only": null,
-        "no_derivatives": null
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
       },
       "terms": {
         "incorporation_into_other_products": "unknown",
@@ -815,11 +827,15 @@
       ],
       "access_basis": "unknown",
       "license": {
-        "status": "unknown",
+        "status": "us_federal_government_work",
         "rights_holder": "US Centers for Disease Control and Prevention",
         "license_url": null,
         "noncommercial_only": null,
-        "no_derivatives": null
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": true,
+          "government_funded": null
+        }
       },
       "terms": {
         "incorporation_into_other_products": "unknown",
@@ -1048,7 +1064,11 @@
         "rights_holder": "US Food and Drug Administration",
         "license_url": null,
         "noncommercial_only": null,
-        "no_derivatives": null
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
       },
       "terms": {
         "incorporation_into_other_products": "unknown",
@@ -1282,7 +1302,11 @@
         "rights_holder": "British Society for Haematology",
         "license_url": null,
         "noncommercial_only": null,
-        "no_derivatives": null
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
       },
       "terms": {
         "incorporation_into_other_products": "unknown",
