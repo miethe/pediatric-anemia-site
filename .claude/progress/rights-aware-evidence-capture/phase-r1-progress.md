@@ -18,7 +18,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 5
-completed_tasks: 3
+completed_tasks: 4
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -93,7 +93,7 @@ tasks:
     in reference-ranges.json and does not alter deriveFacts() behaviour. Verify by
     golden-fixture equivalence across all 6 examples plus npm run coverage:rules (still
     91).'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -102,6 +102,10 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T00:00:00Z'
+  completed: '2026-07-21T00:00:00Z'
+  evidence:
+  - commit: 4012f7d
 - id: EPR1-T5
   description: 'Standalone degradation mode (FR-WP1-05, Should): the gate must be
     independently exercisable against a fixture directory containing only the reference-ranges.json
@@ -177,7 +181,7 @@ files_modified:
 - scripts/validate-kb.mjs
 - scripts/validate-rights.mjs
 - tests/rights-coverage.test.mjs
-progress: 60
+progress: 80
 updated: '2026-07-21'
 ---
 
