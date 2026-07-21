@@ -1,0 +1,27 @@
+{
+  "_comment": [
+    "THE ATTESTATION LEDGER — the single, committed record of every human clinical attestation that",
+    "permits a rule or candidate to claim source-supported grounding via `sourcePassageId`.",
+    "",
+    "WHY THIS FILE EXISTS (reviewer gate, third pass, 2026-07-21): the attestation records used to",
+    "live as constants INSIDE the backfill scripts. That made the gate generator-side only — a",
+    "direct hand-edit of modules/anemia/rules.json could point a rule at a clean source-supported",
+    "passage and `npm run validate` exited 0, because the validator never consulted any attestation",
+    "record. The reviewer demonstrated exactly that. Moving the ledger here lets BOTH the generator",
+    "and scripts/validate-kb.mjs read the same source of truth, so the committed data is checked,",
+    "not merely the code path that usually produces it.",
+    "",
+    "Both lists ship EMPTY, and that is the honest state: no credentialed human clinician has",
+    "attested any rule-to-passage or candidate-to-passage mapping in this knowledge base. While they",
+    "are empty, ANY source-supported binding found in rules.json or candidates.json is a validation",
+    "ERROR, regardless of how it got there.",
+    "",
+    "Entry shape: { ruleId | candidateId, passageId, attestedBy, credential, attestedOn,",
+    "attestationRef }. Every field is a required non-empty string. `attestedBy` must name a real",
+    "human reviewer and is rejected if it looks like a model, agent, council, or pipeline",
+    "identifier. `passageId` must resolve to a passage that is currently bindable (not quarantined",
+    "by the EP3-T5 fidelity audit), and must belong to a source the entity actually cites."
+  ],
+  "rules": [],
+  "candidates": []
+}

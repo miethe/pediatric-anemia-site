@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { evaluateCondition } from '../src/ruleEngine.js';
 import { MODULE_IDS } from '../src/modules/registry.js';
 import { isBindableAsSourceSupported } from '../src/evidence.js';
+import { loadAttestationLedger, validateBindingsAgainstLedger } from './evidence/lib/attested-passage-map.mjs';
 import { validate } from './lib/json-schema-lite.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -454,6 +455,23 @@ export async function validateModule(moduleId, rootDir) {
       }
     }
   }
+
+  // Reviewer gate, third pass (2026-07-21): the attestation gate used to live only inside the
+  // backfill scripts, so a hand-edited rules.json could point a rule at a clean source-supported
+  // passage and pass validation with exit 0 — the reviewer demonstrated exactly that, including a
+  // CROSS-SOURCE binding (a rule citing WHO grounded to a BLOOD passage). Both holes are closed
+  // here, against the committed data rather than against the generator's code path.
+  const ledger = loadAttestationLedger();
+  errors.push(...validateBindingsAgainstLedger({
+    moduleId, entities: rules, idField: 'ruleId', attestations: ledger.rules,
+    passageIndex, isBindableAsSourceSupported,
+  }));
+  errors.push(...validateBindingsAgainstLedger({
+    moduleId,
+    entities: Object.entries(candidates).map(([id, c]) => ({ ...c, id })),
+    idField: 'candidateId', attestations: ledger.candidates,
+    passageIndex, isBindableAsSourceSupported,
+  }));
   if (!REQUIRE_RULE_SOURCE_PASSAGE_ID && rulesMissingSourcePassageId > 0) {
     warnings.push(`${moduleId}: ${rulesMissingSourcePassageId}/${rules.length} rule(s) lack sourcePassageId (tolerated pending EP-4; expect 0 once EP4-T2 lands)`);
   }

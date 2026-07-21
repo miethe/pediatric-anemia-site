@@ -84,3 +84,78 @@ export function validateAttestationEntries(entries, idField, { passagesFor, isBi
     );
   }
 }
+
+// --- the committed ledger -------------------------------------------------------------------
+//
+// Reviewer gate, third pass (2026-07-21): the attestation records previously lived as constants
+// inside the two backfill scripts, which made the gate GENERATOR-SIDE ONLY. A direct hand-edit of
+// modules/anemia/rules.json pointing a rule at a clean source-supported passage passed
+// `npm run validate` with exit 0. The ledger now lives in a committed data file that
+// scripts/validate-kb.mjs also reads, so the DATA is checked rather than only the code path that
+// usually produces it.
+
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const LEDGER_PATH = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'evidence-packs', 'passage-attestations.json',
+);
+
+export function loadAttestationLedger() {
+  const raw = JSON.parse(readFileSync(LEDGER_PATH, 'utf8'));
+  const rules = Array.isArray(raw.rules) ? raw.rules : null;
+  const candidates = Array.isArray(raw.candidates) ? raw.candidates : null;
+  if (!rules || !candidates) {
+    throw new Error(`${LEDGER_PATH}: attestation ledger must define array "rules" and array "candidates"`);
+  }
+  return { rules, candidates };
+}
+
+/**
+ * The validator-side gate. Given the entities actually present in the committed KB, reject any
+ * that claim source-supported grounding without a matching ledger attestation, and reject any
+ * whose bound passage belongs to a source the entity does not itself cite.
+ *
+ * This is deliberately independent of how the data was produced. It is the check that makes a
+ * hand-edit as hard as a generated change.
+ *
+ * @returns {string[]} error strings; empty when every binding is legitimate.
+ */
+export function validateBindingsAgainstLedger({
+  moduleId, entities, idField, attestations, passageIndex, isBindableAsSourceSupported,
+}) {
+  const errors = [];
+  const attestedFor = new Map(attestations.map((entry) => [entry[idField], entry.passageId]));
+
+  for (const entity of entities) {
+    const pointer = entity?.sourcePassageId;
+    if (pointer == null) continue;
+    const passage = passageIndex.get(pointer);
+    if (!passage) continue; // "does not resolve" is reported by the caller's own check
+
+    // (1) cross-source binding: the passage must belong to a source this entity actually cites.
+    const cited = Array.isArray(entity.evidence) ? entity.evidence : [];
+    if (passage.sourceId && cited.length > 0 && !cited.includes(passage.sourceId)) {
+      errors.push(
+        `${moduleId}/${entity.id}: sourcePassageId "${pointer}" belongs to source "${passage.sourceId}", `
+        + `which this entity does not cite (evidence: ${JSON.stringify(cited)}). A rule may only be `
+        + 'grounded by a passage from a source it actually cites.',
+      );
+    }
+
+    // (2) a source-supported binding requires a human attestation in the committed ledger.
+    if (passage.status !== 'implementation-proposal' && isBindableAsSourceSupported(passage)) {
+      const attested = attestedFor.get(entity.id);
+      if (attested !== pointer) {
+        errors.push(
+          `${moduleId}/${entity.id}: sourcePassageId "${pointer}" claims SOURCE-SUPPORTED grounding with `
+          + 'no matching attestation in evidence-packs/passage-attestations.json. A source-supported '
+          + 'binding requires a named human clinical attestation; the ledger is currently empty, so no '
+          + 'such binding is legitimate today. Fall back to the source\'s implementation-proposal sentinel.',
+        );
+      }
+    }
+  }
+  return errors;
+}
