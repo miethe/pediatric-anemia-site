@@ -5,8 +5,11 @@
 //   1. "Loader resolves every artifact listed in the P1-T6 fixture's evidence_bundle.yaml
 //      .artifacts" — asserted below against the real, committed `tests/fixtures/rf-cbc-001`.
 //   2. "A missing authoring-decisions.yaml produces the specific fail-closed error, not a stack
-//      trace" — asserted against the real `modules/cbc_suite_v1/module.json` (whose sibling
-//      `authoring-decisions.yaml` legitimately does not exist until P3-T1 lands).
+//      trace" — asserted against a synthetic temp module directory that has a `module.json` but
+//      no `authoring-decisions.yaml` sibling (P3-T1 landed the real
+//      `modules/cbc_suite_v1/authoring-decisions.yaml`, so this test can no longer rely on that
+//      real path being absent; the synthetic fixture below preserves the same fail-closed
+//      assertion without depending on repo state a later phase legitimately changes).
 //   3. "A test asserts the run directory's file mtimes/permissions are unchanged after a full
 //      loader pass" — asserted via an mtimeMs/mode snapshot of every file under a temp copy of the
 //      fixture, before and after `loadBundle`.
@@ -37,7 +40,6 @@ import { UsageError, SchemaError, EXIT_USAGE, EXIT_SCHEMA } from '../tools/rf-bu
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FIXTURE_DIR = path.join(REPO_ROOT, 'tests', 'fixtures', 'rf-cbc-001');
-const REAL_MODULE_PATH = path.join(REPO_ROOT, 'modules', 'cbc_suite_v1', 'module.json');
 
 async function makeTempRunDir() {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'ef-loader-test-rundir-'));
@@ -55,6 +57,17 @@ async function makeTempModuleWithDecisions() {
   const modulePath = path.join(dir, 'module.json');
   await writeFile(modulePath, JSON.stringify({ id: 'test_stub_module', title: 'Test Stub Module' }), 'utf8');
   await writeFile(path.join(dir, 'authoring-decisions.yaml'), 'notes: temp stub for P2-T2 loader tests\n', 'utf8');
+  return { dir, modulePath };
+}
+
+// A synthetic module directory with a `module.json` but deliberately NO `authoring-decisions.yaml`
+// sibling — used only to exercise the missing-decisions-file fail-closed path in isolation from
+// the real `modules/cbc_suite_v1/authoring-decisions.yaml` (P3-T1's committed deliverable, which
+// now legitimately exists).
+async function makeTempModuleWithoutDecisions() {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'ef-loader-test-module-nodecisions-'));
+  const modulePath = path.join(dir, 'module.json');
+  await writeFile(modulePath, JSON.stringify({ id: 'test_stub_module_no_decisions', title: 'Test Stub Module (no decisions)' }), 'utf8');
   return { dir, modulePath };
 }
 
@@ -127,9 +140,12 @@ test('P2-T2: loadBundle resolves every artifact declared in evidence_bundle.yaml
 
 // ----- 2. Missing authoring-decisions.yaml fails closed with a specific, named error -----------
 
-test('P2-T2: a missing authoring-decisions.yaml fails closed with DecisionsNotFoundError, not a generic crash', async () => {
+test('P2-T2: a missing authoring-decisions.yaml fails closed with DecisionsNotFoundError, not a generic crash', async (t) => {
+  const { dir: moduleDir, modulePath } = await makeTempModuleWithoutDecisions();
+  t.after(() => rm(moduleDir, { recursive: true, force: true }));
+
   await assert.rejects(
-    () => loadBundle({ runDir: FIXTURE_DIR, modulePath: REAL_MODULE_PATH }),
+    () => loadBundle({ runDir: FIXTURE_DIR, modulePath }),
     (err) => {
       assert.ok(err instanceof DecisionsNotFoundError, `expected DecisionsNotFoundError, got ${err.constructor.name}`);
       assert.ok(err instanceof UsageError);
@@ -208,7 +224,10 @@ test('P2-T2: a missing single-file artifact is rejected with MissingArtifactErro
 
 test('P2-T2: a nonexistent runDir is rejected with MissingArtifactError', async () => {
   await assert.rejects(
-    () => loadBundle({ runDir: path.join(os.tmpdir(), 'ef-loader-test-does-not-exist'), modulePath: REAL_MODULE_PATH }),
+    () => loadBundle({
+      runDir: path.join(os.tmpdir(), 'ef-loader-test-does-not-exist'),
+      modulePath: path.join(os.tmpdir(), 'ef-loader-test-does-not-exist-module', 'module.json'),
+    }),
     (err) => {
       assert.ok(err instanceof MissingArtifactError);
       assert.equal(err.exitCode, EXIT_USAGE);

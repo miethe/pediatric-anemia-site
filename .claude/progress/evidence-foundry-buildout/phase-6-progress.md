@@ -2,150 +2,204 @@
 type: progress
 schema_version: 2
 doc_type: progress
-prd: "evidence-foundry-buildout"
-feature_slug: "evidence-foundry-buildout"
+prd: evidence-foundry-buildout
+feature_slug: evidence-foundry-buildout
 prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md
 execution_model: batch-parallel
 phase: 6
-title: "Evidence Foundry Buildout — Phase 6: Pre-E1 ADRs"
-status: "planning"
+title: 'Evidence Foundry Buildout — Phase 6: Pre-E1 ADRs'
+status: completed
 started: null
 completed: null
 commit_refs: []
 pr_refs: []
-
 overall_progress: 0
-completion_estimate: "on-track"
-
+completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 0
+completed_tasks: 9
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
-
-owners: ["documentation-writer"]
-contributors: ["task-completion-validator"]
-
+owners:
+- documentation-writer
+contributors:
+- task-completion-validator
 model_usage:
-  primary: "sonnet"
+  primary: sonnet
   external: []
-
 tasks:
-  - id: "P6-T1"
-    description: "ADR-1: canonical CDS authoring model / rule-schema v2 migration (02 §8.5 item 1, 02 §8.1): draft docs/adr/0001-canonical-authoring-model-rule-schema-v2.md, status: proposed. >=2 options (extend v1 in place vs. sidecar-only vs. deliberate v2 migration) with a stated recommended default. Names DF-E1-07 explicitly."
-    status: "pending"
-    assigned_to: ["documentation-writer"]
-    dependencies: ["P2-GATE1"]
-    estimated_effort: "0.6 pts"
-    priority: "medium"
-    assigned_model: "sonnet"
-    model_effort: "adaptive"
-
-  - id: "P6-T2"
-    description: "ADR-2: exact-passage storage, licensing, reviewer access (02 §8.5 item 2, 02 §8.1): draft docs/adr/0002-exact-passage-storage-licensing.md. Directly informed by P1-T6's OQ-2 fixture rights disposition and P3-T3's rights-restricted fallback behavior. Names DF-E1-05."
-    status: "pending"
-    assigned_to: ["documentation-writer"]
-    dependencies: ["P2-GATE1"]
-    estimated_effort: "0.6 pts"
-    priority: "medium"
-    assigned_model: "sonnet"
-    model_effort: "adaptive"
-
-  - id: "P6-T3"
-    description: "ADR-3: terminology and local-lab-profile ownership (02 §8.5 item 3, 02 §8.1): draft docs/adr/0003-terminology-local-lab-profile-ownership.md. Addresses both LOINC/UCUM/SNOMED mapping ownership and local-range-profile-vs-claim questions. Names DF-E1-05."
-    status: "pending"
-    assigned_to: ["documentation-writer"]
-    dependencies: ["P2-GATE1"]
-    estimated_effort: "0.6 pts"
-    priority: "medium"
-    assigned_model: "sonnet"
-    model_effort: "adaptive"
-
-  - id: "P6-T4"
-    description: "ADR-4: clinical approval identity, signature, and adjudication workflow (02 §8.5 item 4, 02 §5.3): draft docs/adr/0004-clinical-approval-identity-adjudication.md. Options per 02 §8.1 (git-signed files vs. portal vs. issue tracker); notes E0 shipped zero clinical review UI. Names DF-E1-01 and DF-E1-04."
-    status: "pending"
-    assigned_to: ["documentation-writer"]
-    dependencies: ["P2-GATE1"]
-    estimated_effort: "0.6 pts"
-    priority: "medium"
-    assigned_model: "sonnet"
-    model_effort: "adaptive"
-
-  - id: "P6-T5"
-    description: "ADR-5: KB canonical serialization, signing algorithm, key custody, registry (02 §8.5 item 5, 02 §4.18): draft docs/adr/0005-kb-serialization-signing-key-custody.md, informed by P5-T5's determinism-proof work. Names DF-E1-06 and DF-E2-01."
-    status: "pending"
-    assigned_to: ["documentation-writer"]
-    dependencies: ["P2-GATE1"]
-    estimated_effort: "0.6 pts"
-    priority: "medium"
-    assigned_model: "sonnet"
-    model_effort: "adaptive"
-
-  - id: "P6-T6"
-    description: "ADR-6: validation data boundary, de-identification, retention, and audit (02 §8.5 item 6, 02 §8.4): draft docs/adr/0006-validation-data-boundary-deidentification.md. Explicitly restates the CLAUDE.md 'No PHI in the public microsite' guardrail as a binding constraint. Names DF-E1-04."
-    status: "pending"
-    assigned_to: ["documentation-writer"]
-    dependencies: ["P2-GATE1"]
-    estimated_effort: "0.6 pts"
-    priority: "medium"
-    assigned_model: "sonnet"
-    model_effort: "adaptive"
-
-  - id: "P6-T7"
-    description: "ADR-7: surveillance cadence, materiality classes, emergency withdrawal (02 §8.5 item 7, 02 §7.4): draft docs/adr/0007-surveillance-cadence-materiality-classes.md. Names DF-E2-01, DF-E2-02, and DF-E2-03 (all depend on this ADR's materiality-class taxonomy)."
-    status: "pending"
-    assigned_to: ["documentation-writer"]
-    dependencies: ["P2-GATE1"]
-    estimated_effort: "0.6 pts"
-    priority: "medium"
-    assigned_model: "sonnet"
-    model_effort: "adaptive"
-
-  - id: "P6-T8"
-    description: "ADR-8: Path-B workflow hardening vs. native adapter installation (02 §8.5 item 8, 02 §6.2): draft docs/adr/0008-pathb-hardening-vs-native-adapter.md. Reconciles 02 §3.4's discovery-lane table with the real gap register (hard-coded RF/repo/TMP/stamp paths; 0/6 adapters installed) into a concrete recommendation with stated migration cost per option. Names DF-E1-02."
-    status: "pending"
-    assigned_to: ["documentation-writer"]
-    dependencies: ["P2-GATE1"]
-    estimated_effort: "0.8 pts"
-    priority: "medium"
-    assigned_model: "sonnet"
-    model_effort: "adaptive"
-
-  - id: "P6-GATE"
-    description: "task-completion-validator gate: verify Phase 6 exit gate — all 8 ADRs exist at status: proposed; each names its E1/E2 unblock target; zero marked accepted."
-    status: "pending"
-    assigned_to: ["task-completion-validator"]
-    dependencies: ["P6-T1", "P6-T2", "P6-T3", "P6-T4", "P6-T5", "P6-T6", "P6-T7", "P6-T8"]
-    estimated_effort: "—"
-    priority: "critical"
-    assigned_model: "sonnet"
-    model_effort: "adaptive"
-
+- id: P6-T1
+  description: 'ADR-1: canonical CDS authoring model / rule-schema v2 migration (02
+    §8.5 item 1, 02 §8.1): draft docs/adr/0001-canonical-authoring-model-rule-schema-v2.md,
+    status: proposed. >=2 options (extend v1 in place vs. sidecar-only vs. deliberate
+    v2 migration) with a stated recommended default. Names DF-E1-07 explicitly.'
+  status: completed
+  assigned_to:
+  - documentation-writer
+  dependencies:
+  - P2-GATE1
+  estimated_effort: 0.6 pts
+  priority: medium
+  assigned_model: sonnet
+  model_effort: adaptive
+- id: P6-T2
+  description: 'ADR-2: exact-passage storage, licensing, reviewer access (02 §8.5
+    item 2, 02 §8.1): draft docs/adr/0002-exact-passage-storage-licensing.md. Directly
+    informed by P1-T6''s OQ-2 fixture rights disposition and P3-T3''s rights-restricted
+    fallback behavior. Names DF-E1-05.'
+  status: completed
+  assigned_to:
+  - documentation-writer
+  dependencies:
+  - P2-GATE1
+  estimated_effort: 0.6 pts
+  priority: medium
+  assigned_model: sonnet
+  model_effort: adaptive
+- id: P6-T3
+  description: 'ADR-3: terminology and local-lab-profile ownership (02 §8.5 item 3,
+    02 §8.1): draft docs/adr/0003-terminology-local-lab-profile-ownership.md. Addresses
+    both LOINC/UCUM/SNOMED mapping ownership and local-range-profile-vs-claim questions.
+    Names DF-E1-05.'
+  status: completed
+  assigned_to:
+  - documentation-writer
+  dependencies:
+  - P2-GATE1
+  estimated_effort: 0.6 pts
+  priority: medium
+  assigned_model: sonnet
+  model_effort: adaptive
+- id: P6-T4
+  description: 'ADR-4: clinical approval identity, signature, and adjudication workflow
+    (02 §8.5 item 4, 02 §5.3): draft docs/adr/0004-clinical-approval-identity-adjudication.md.
+    Options per 02 §8.1 (git-signed files vs. portal vs. issue tracker); notes E0
+    shipped zero clinical review UI. Names DF-E1-01 and DF-E1-04.'
+  status: completed
+  assigned_to:
+  - documentation-writer
+  dependencies:
+  - P2-GATE1
+  estimated_effort: 0.6 pts
+  priority: medium
+  assigned_model: sonnet
+  model_effort: adaptive
+- id: P6-T5
+  description: 'ADR-5: KB canonical serialization, signing algorithm, key custody,
+    registry (02 §8.5 item 5, 02 §4.18): draft docs/adr/0005-kb-serialization-signing-key-custody.md,
+    informed by P5-T5''s determinism-proof work. Names DF-E1-06 and DF-E2-01.'
+  status: completed
+  assigned_to:
+  - documentation-writer
+  dependencies:
+  - P2-GATE1
+  estimated_effort: 0.6 pts
+  priority: medium
+  assigned_model: sonnet
+  model_effort: adaptive
+- id: P6-T6
+  description: 'ADR-6: validation data boundary, de-identification, retention, and
+    audit (02 §8.5 item 6, 02 §8.4): draft docs/adr/0006-validation-data-boundary-deidentification.md.
+    Explicitly restates the CLAUDE.md ''No PHI in the public microsite'' guardrail
+    as a binding constraint. Names DF-E1-04.'
+  status: completed
+  assigned_to:
+  - documentation-writer
+  dependencies:
+  - P2-GATE1
+  estimated_effort: 0.6 pts
+  priority: medium
+  assigned_model: sonnet
+  model_effort: adaptive
+- id: P6-T7
+  description: 'ADR-7: surveillance cadence, materiality classes, emergency withdrawal
+    (02 §8.5 item 7, 02 §7.4): draft docs/adr/0007-surveillance-cadence-materiality-classes.md.
+    Names DF-E2-01, DF-E2-02, and DF-E2-03 (all depend on this ADR''s materiality-class
+    taxonomy).'
+  status: completed
+  assigned_to:
+  - documentation-writer
+  dependencies:
+  - P2-GATE1
+  estimated_effort: 0.6 pts
+  priority: medium
+  assigned_model: sonnet
+  model_effort: adaptive
+- id: P6-T8
+  description: 'ADR-8: Path-B workflow hardening vs. native adapter installation (02
+    §8.5 item 8, 02 §6.2): draft docs/adr/0008-pathb-hardening-vs-native-adapter.md.
+    Reconciles 02 §3.4''s discovery-lane table with the real gap register (hard-coded
+    RF/repo/TMP/stamp paths; 0/6 adapters installed) into a concrete recommendation
+    with stated migration cost per option. Names DF-E1-02.'
+  status: completed
+  assigned_to:
+  - documentation-writer
+  dependencies:
+  - P2-GATE1
+  estimated_effort: 0.8 pts
+  priority: medium
+  assigned_model: sonnet
+  model_effort: adaptive
+- id: P6-GATE
+  description: 'task-completion-validator gate: verify Phase 6 exit gate — all 8 ADRs
+    exist at status: proposed; each names its E1/E2 unblock target; zero marked accepted.'
+  status: completed
+  assigned_to:
+  - task-completion-validator
+  dependencies:
+  - P6-T1
+  - P6-T2
+  - P6-T3
+  - P6-T4
+  - P6-T5
+  - P6-T6
+  - P6-T7
+  - P6-T8
+  estimated_effort: —
+  priority: critical
+  assigned_model: sonnet
+  model_effort: adaptive
 parallelization:
-  batch_1: ["P6-T1", "P6-T2", "P6-T3", "P6-T4", "P6-T5", "P6-T6", "P6-T7", "P6-T8"]
-  batch_2: ["P6-GATE"]
-  critical_path: ["P6-T8", "P6-GATE"]
-  estimated_total_time: "0.8 pts critical path (all 8 ADRs parallelizable); 5.0 pts total phase"
-
+  batch_1:
+  - P6-T1
+  - P6-T2
+  - P6-T3
+  - P6-T4
+  - P6-T5
+  - P6-T6
+  - P6-T7
+  - P6-T8
+  batch_2:
+  - P6-GATE
+  critical_path:
+  - P6-T8
+  - P6-GATE
+  estimated_total_time: 0.8 pts critical path (all 8 ADRs parallelizable); 5.0 pts
+    total phase
 blockers: []
-
-success_criteria: [
-  { id: "SC-1", description: "8 ADRs exist under docs/adr/, each at status: proposed", status: "pending" },
-  { id: "SC-2", description: "Each ADR names its decision, >=2 options, a recommended default, and the specific deferred-item ID(s) it unblocks", status: "pending" },
-  { id: "SC-3", description: "Zero ADRs are marked accepted", status: "pending" }
-]
-
-files_modified: [
-  "docs/adr/0001-canonical-authoring-model-rule-schema-v2.md",
-  "docs/adr/0002-exact-passage-storage-licensing.md",
-  "docs/adr/0003-terminology-local-lab-profile-ownership.md",
-  "docs/adr/0004-clinical-approval-identity-adjudication.md",
-  "docs/adr/0005-kb-serialization-signing-key-custody.md",
-  "docs/adr/0006-validation-data-boundary-deidentification.md",
-  "docs/adr/0007-surveillance-cadence-materiality-classes.md",
-  "docs/adr/0008-pathb-hardening-vs-native-adapter.md"
-]
+success_criteria:
+- id: SC-1
+  description: '8 ADRs exist under docs/adr/, each at status: proposed'
+  status: pending
+- id: SC-2
+  description: Each ADR names its decision, >=2 options, a recommended default, and
+    the specific deferred-item ID(s) it unblocks
+  status: pending
+- id: SC-3
+  description: Zero ADRs are marked accepted
+  status: pending
+files_modified:
+- docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
+- docs/adr/0002-exact-passage-storage-licensing.md
+- docs/adr/0003-terminology-local-lab-profile-ownership.md
+- docs/adr/0004-clinical-approval-identity-adjudication.md
+- docs/adr/0005-kb-serialization-signing-key-custody.md
+- docs/adr/0006-validation-data-boundary-deidentification.md
+- docs/adr/0007-surveillance-cadence-materiality-classes.md
+- docs/adr/0008-pathb-hardening-vs-native-adapter.md
+progress: 100
+updated: '2026-07-21'
 ---
 
 # evidence-foundry-buildout - Phase 6: Pre-E1 ADRs
