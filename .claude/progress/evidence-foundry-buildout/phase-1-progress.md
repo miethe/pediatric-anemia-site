@@ -93,6 +93,22 @@ tasks:
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
+  note: Verified pre-existing implementation (Direction 1 of docs/project_plans/design-specs/evidence-dual-source-unification.md,
+    landed in commit 306af3a) — src/evidence.js now imports modules/anemia/evidence.json
+    via the `with { type: 'json' }` attribute (same pattern as modules/anemia/ranges.js)
+    and reshapes evidenceData.sources into the EVIDENCE id-keyed object; no hand-authored
+    evidence content remains in src/evidence.js. scripts/validate-kb.mjs's old drift check
+    (comparing module.json version fields to src/evidence.js's exported consts) was removed
+    as no-longer-needed rather than left vacuously passing. src/app.js received zero edits;
+    scripts/validate-kb.mjs and server.mjs changes present in the same commit range are
+    attributable to P1-T2/P1-T3, not this unification.
+  evidence:
+  - test: 'node --test tests/evidence-registry.test.mjs tests/evidence-resilience.test.mjs
+      tests/evidence-fidelity-flags.test.mjs tests/attested-passage-map.test.mjs tests/attestation-ledger-gate.test.mjs
+      tests/server-manifest-failclosed.test.mjs (67/67 pass)'
+  - test: 'npm run validate (green: anemia 6 evidence records/41 passages, cbc_suite_v1
+      0 evidence records; build-evidence-pack --check matches regenerated output)'
+  - test: 'npm test (852/852 pass)'
 - id: P1-T5
   description: 'Real JSON-Schema validation in scripts/validate-kb.mjs (FR-3): add
     actual JSON Schema (draft 2020-12) validation of every module''s rules.json against
