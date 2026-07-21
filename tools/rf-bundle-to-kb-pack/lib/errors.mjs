@@ -55,7 +55,17 @@ export class ConverterError extends Error {
   constructor(message, exitCode, options) {
     super(message, options);
     this.name = new.target.name;
-    this.exitCode = exitCode;
+    // P2-T5 hardening: `exitCode` is a non-writable own property, not a plain assignment. Every
+    // module in this repo runs as native ESM (always strict mode), so a catch site that attempts
+    // `err.exitCode = <other code>` throws a TypeError instead of silently diluting a
+    // GOVERNANCE/HUMAN_REVIEW code into something the generic handler would treat as ordinary.
+    // This turns the "MUST NOT be mutated" rule above from a comment into an enforced invariant.
+    Object.defineProperty(this, 'exitCode', {
+      value: exitCode,
+      writable: false,
+      enumerable: true,
+      configurable: false,
+    });
   }
 }
 
@@ -113,6 +123,34 @@ export class HumanReviewError extends ConverterError {
   constructor(message, options) {
     super(message, EXIT_HUMAN_REVIEW, options);
   }
+}
+
+/**
+ * P2-T5: registry proving each non-OK exit code (02 §5.2) has exactly one, distinctly-named
+ * `ConverterError` subclass — this is the "distinct, named error path" this task's acceptance
+ * criteria requires, expressed as data a test can walk rather than asserted only in prose. Exit 0
+ * has no entry: success is a numeric verb-handler return, never a thrown error (see cli.mjs).
+ */
+export const ERROR_CLASSES_BY_EXIT_CODE = Object.freeze({
+  [EXIT_USAGE]: UsageError,
+  [EXIT_SCHEMA]: SchemaError,
+  [EXIT_GOVERNANCE]: GovernanceError,
+  [EXIT_UNSUPPORTED]: UnsupportedError,
+  [EXIT_BUDGET]: BudgetError,
+  [EXIT_ADAPTER]: AdapterError,
+  [EXIT_HUMAN_REVIEW]: HumanReviewError,
+});
+
+/**
+ * The two exit codes that 02 §5.2 requires to "halt and surface distinctly" rather than ever be
+ * treated as an ordinary/retryable failure. Exported so call sites (and this task's tests) have a
+ * single canonical check instead of each re-deriving `code === 3 || code === 7`.
+ *
+ * @param {number} exitCode
+ * @returns {boolean}
+ */
+export function isHaltingExitCode(exitCode) {
+  return exitCode === EXIT_GOVERNANCE || exitCode === EXIT_HUMAN_REVIEW;
 }
 
 /**

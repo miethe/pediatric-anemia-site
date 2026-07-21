@@ -84,6 +84,42 @@ export function parseFlags(argv) {
 }
 
 /**
+ * Runs a single verb handler and maps its outcome to a process exit code (P2-T5, FR-11, 02 §5.2).
+ * This is the converter's ONLY generic-error handler — no other catch site in this tool may
+ * re-map a thrown `ConverterError`'s `exitCode`. A `ConverterError` (or subclass, e.g.
+ * `GovernanceError`/`HumanReviewError`) always forwards its own fixed code verbatim; any other
+ * thrown value (a genuine bug, not a taxonomy-mapped failure state) falls back to `EXIT_USAGE`
+ * since none of the 8 taxonomy states is a natural fit for an unclassified crash.
+ *
+ * Exported (rather than inlined in `main`) specifically so P2-T5's error-taxonomy tests can drive
+ * it with a synthetic handler and assert that GOVERNANCE (3) and HUMAN_REVIEW (7) reach this
+ * function's `ConverterError` branch — never the generic `EXIT_USAGE` fallback below it — without
+ * needing Phase 3's real verb logic to exist yet.
+ *
+ * @param {(options: object) => Promise<number | void>} handler a verb's `run` function
+ * @param {object} options parsed CLI flags for the verb
+ * @returns {Promise<number>} the process exit code
+ */
+export async function dispatchVerb(handler, options) {
+  try {
+    const result = await handler(options);
+    return typeof result === 'number' ? result : EXIT_OK;
+  } catch (err) {
+    // ConverterError subclasses (lib/errors.mjs) carry their own fixed exit code — forwarded
+    // verbatim. GOVERNANCE (3) and HUMAN_REVIEW (7) MUST reach this point unaltered and MUST NOT
+    // be remapped here; P2-T5 owns the tests proving that.
+    if (err instanceof ConverterError) {
+      process.stderr.write(`${err.name}: ${err.message}\n`);
+      return err.exitCode;
+    }
+    // Unclassified/programmer error: no natural fit among the 8 taxonomy states, so this falls
+    // back to USAGE (1) rather than inventing a 9th code.
+    process.stderr.write(`internal error: ${err.stack || err.message}\n`);
+    return EXIT_USAGE;
+  }
+}
+
+/**
  * @param {string[]} argv `process.argv.slice(2)`
  * @returns {Promise<number>} the process exit code
  */
@@ -110,22 +146,7 @@ export async function main(argv) {
     return err instanceof ConverterError ? err.exitCode : EXIT_USAGE;
   }
 
-  try {
-    const result = await handler(options);
-    return typeof result === 'number' ? result : EXIT_OK;
-  } catch (err) {
-    // ConverterError subclasses (lib/errors.mjs) carry their own fixed exit code — forwarded
-    // verbatim. GOVERNANCE (3) and HUMAN_REVIEW (7) MUST reach this point unaltered and MUST NOT
-    // be remapped here; P2-T5 owns the tests proving that.
-    if (err instanceof ConverterError) {
-      process.stderr.write(`${err.name}: ${err.message}\n`);
-      return err.exitCode;
-    }
-    // Unclassified/programmer error: no natural fit among the 8 taxonomy states, so this falls
-    // back to USAGE (1) rather than inventing a 9th code. P2-T5 may refine this fallback further.
-    process.stderr.write(`internal error: ${err.stack || err.message}\n`);
-    return EXIT_USAGE;
-  }
+  return dispatchVerb(handler, options);
 }
 
 // Only run when invoked directly (`node cli.mjs ...`), not when imported (e.g. by tests).
