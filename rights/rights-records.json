@@ -1,5 +1,450 @@
 {
   "schema_version": "1.0.0",
-  "description": "Top-level rights/ tree (D4): join container for rights_record entries — the vendored schemas/rights/rights_record.schema.json (EPR0-T2) plus its declared local amendment layer (EPR0-T3) is the shape authority for each entry in `records`. No `rights_record` may be inlined into any clinical KB JSON file (rules.json, candidates.json, evidence.json, reference-ranges.json); the only cross-reference between a clinical identifier and a record here is rights/rights-ledger.json. EPR0-T1 creates this container empty; EPR0-T4 seeds it with 6 triage-only records (one per KB-cited source from RF-EV-003), each at review.review_status: agent_triage_only and overall_status: UNKNOWN. No CLEARED_* value may ever appear in this file.",
-  "records": []
+  "description": "Top-level rights/ tree (D4): join container for rights_record entries — the vendored schemas/rights/rights_record.schema.json (EPR0-T2) plus its declared local amendment layer (EPR0-T3) is the shape authority for each entry in `records`. No `rights_record` may be inlined into any clinical KB JSON file (rules.json, candidates.json, evidence.json, reference-ranges.json); the only cross-reference between a clinical identifier and a record here is rights/rights-ledger.json. EPR0-T1 creates this container empty; EPR0-T4 seeds it with 6 triage-only records (one per KB-cited source from RF-EV-003), each at review.review_status: agent_triage_only and overall_status: UNKNOWN. No agent-authored clearance status value may ever appear in this file (see schemas/rights/rights_record.schema.json's overall_status enum members prefixed with the forbidden clearance token for the exact list — that token string is intentionally not reproduced here).",
+  "records": [
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-AAP2026_IDA",
+      "source_id": "AAP2026_IDA",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": ["US"],
+      "access": {
+        "basis": "unknown",
+        "platform": "American Academy of Pediatrics — publications.aap.org",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": "American Academy of Pediatrics",
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (EPR0-T4)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": ["RF-REG-002-CONTENT-RIGHTS-001", "RF-EP3T5-F01-NEAR-VERBATIM-001", "RF-EP3T5-F02-SOURCE-UNRETRIEVABLE-001"],
+      "review": {
+        "assessed_by_agent": "epr0-t4-triage-seed",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": ["REG-002 content-rights review completes", "an independently retrievable AAP artifact is located"],
+        "notes": "Triage-only seed (EPR0-T4, FR-WP0-04). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2 source-rights metadata work. Known, already-tracked context (not an assessed determination made by this record): RF-EV-002/REG-002 recorded HTTP 403/subscription-required for this source (see docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md and evidence-packs/rf-ev-001/fidelity-findings.json finding EP3T5-F02); RF-EV-003 separately evaluated open-access substitutes for this source without altering this record's status (docs/project_plans/expansion/rf-handoff/rf-ev-003-oa-substitute-discovery.md)."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-WHO2024_HB",
+      "source_id": "WHO2024_HB",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": ["international"],
+      "access": {
+        "basis": "unknown",
+        "platform": "World Health Organization — who.int",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": "World Health Organization",
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (EPR0-T4)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "epr0-t4-triage-seed",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": ["a formal source-rights assessment is run for this source"],
+        "notes": "Triage-only seed (EPR0-T4, FR-WP0-04). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2 source-rights metadata work. RF-EV-003's discovery synthesis separately observed a WHO 2024 haemoglobin guideline in the open-access substitute landscape as CC BY-NC-SA 3.0 IGO (docs/project_plans/expansion/rf-handoff/rf-ev-003-oa-substitute-discovery.md §4b) — that observation has not been verified against this specific KB source record and is recorded here only as unassessed context, not a determination."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-BLOOD2022_PED_ANEMIA",
+      "source_id": "BLOOD2022_PED_ANEMIA",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": ["US"],
+      "access": {
+        "basis": "unknown",
+        "platform": "American Society of Hematology — Blood (doi.org/10.1182)",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": "American Society of Hematology",
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (EPR0-T4)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "epr0-t4-triage-seed",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": ["a formal source-rights assessment is run for this source"],
+        "notes": "Triage-only seed (EPR0-T4, FR-WP0-04). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2 source-rights metadata work."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-CDC2025_LEAD",
+      "source_id": "CDC2025_LEAD",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": ["US"],
+      "access": {
+        "basis": "unknown",
+        "platform": "US Centers for Disease Control and Prevention — cdc.gov",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": "US Centers for Disease Control and Prevention",
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (EPR0-T4)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": ["RF-EP3T5-F01-NEAR-VERBATIM-001"],
+      "review": {
+        "assessed_by_agent": "epr0-t4-triage-seed",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": ["a formal source-rights assessment is run for this source"],
+        "notes": "Triage-only seed (EPR0-T4, FR-WP0-04). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2 source-rights metadata work. evidence-packs/rf-ev-001/fidelity-findings.json finding EP3T5-F01 flags a near-verbatim span in a passage citing this source; that finding is an unresolved fidelity-audit flag, not a rights determination."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-FDA2026_CDS",
+      "source_id": "FDA2026_CDS",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": ["US"],
+      "access": {
+        "basis": "unknown",
+        "platform": "US Food and Drug Administration — fda.gov",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": "US Food and Drug Administration",
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (EPR0-T4)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": ["RF-EP3T5-F01-NEAR-VERBATIM-001"],
+      "review": {
+        "assessed_by_agent": "epr0-t4-triage-seed",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": ["a formal source-rights assessment is run for this source"],
+        "notes": "Triage-only seed (EPR0-T4, FR-WP0-04). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2 source-rights metadata work. evidence-packs/rf-ev-001/fidelity-findings.json finding EP3T5-F01 flags near-verbatim spans in passages citing this source; that finding is an unresolved fidelity-audit flag, not a rights determination."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-BSH2020_G6PD",
+      "source_id": "BSH2020_G6PD",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": ["UK"],
+      "access": {
+        "basis": "unknown",
+        "platform": "British Society for Haematology — pubmed.ncbi.nlm.nih.gov",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": "British Society for Haematology",
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (EPR0-T4). The evidence.json citation URL is a PubMed search query, not a direct article locator — a known open item for a future source-rights assessment pass, not resolved here."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": ["RF-EP3T5-F01-NEAR-VERBATIM-001"],
+      "review": {
+        "assessed_by_agent": "epr0-t4-triage-seed",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": ["a formal source-rights assessment is run for this source"],
+        "notes": "Triage-only seed (EPR0-T4, FR-WP0-04). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2 source-rights metadata work. evidence-packs/rf-ev-001/fidelity-findings.json finding EP3T5-F01 flags near-verbatim spans in passages citing this source; that finding is an unresolved fidelity-audit flag, not a rights determination."
+      },
+      "extensions": {}
+    }
+  ]
 }

@@ -1,5 +1,90 @@
 {
   "schema_version": "1.0.0",
   "description": "Top-level rights/ tree (D4): join container for rights_failure entries — the vendored schemas/rights/rights_failure.schema.json (EPR0-T2) plus its declared local amendment layer (EPR0-T3) is the shape authority for each entry in `failures`. A rights_failure records a blocking or open rights problem (e.g. an unresolved access-basis, an unaddressed contract restriction) and cross-links to an existing project identifier — never a new, agent-invented finding ID. EPR0-T1 creates this container empty; EPR0-T4 populates it, cross-linking known open failures (REG-002, EP3T5-F01, EP3T5-F02) to their existing identifiers. Every rights_failure.review.reviewed_by stays maxItems: 0 (D6) — no reviewer is ever recorded by an agent.",
-  "failures": []
+  "failures": [
+    {
+      "schema_version": "1.0.0",
+      "rights_failure_id": "RF-REG-002-CONTENT-RIGHTS-001",
+      "source_id": "AAP2026_IDA",
+      "rights_record_id": "RR-AAP2026_IDA",
+      "reuse_assessment_id": null,
+      "failure_type": "FAIR_USE_COUNSEL_REVIEW_REQUIRED",
+      "component": "exactPassage verbatim guideline-text reuse",
+      "intended_use": "Verbatim quoting of AAP/guideline-body text in modules/anemia/evidence.json exactPassage fields",
+      "finding": "REG-002 (content-rights/licensing review) is an already-tracked, pre-existing review that has not yet been run — it is cross-linked here, not newly invented by this record. It decides whether exactPassage may quote verbatim guideline text or must remain paraphrase-with-locator-only. Until REG-002 clears, every exactPassage sourced from a rights-restricted guideline is withheld with the fixed placeholder \"[withheld pending REG-002 content-rights clearance]\" (see modules/anemia/evidence.json and schemas/evidence.schema.json). REG-002 is referenced across docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md (its origin), modules/anemia/evidence.json (its withholding placeholder), and .claude/findings/wave0-ep3-ep4-evidence-governance-findings.md (open-gap R-2).",
+      "source_terms_locator": null,
+      "safe_residual_use": ["paraphrase-with-locator-only exactPassage entries", "bibliographic metadata and citation"],
+      "product_impact": "All exactPassage fields sourced from rights-restricted guideline text stay paraphrase-only or withheld; no verbatim guideline quoting ships until REG-002 clears.",
+      "alternative_source_ids": [],
+      "permission_strategy": null,
+      "next_action": "Run REG-002 (content-rights/licensing review) via Research Foundry; see docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md for scope.",
+      "owner": null,
+      "retry_trigger": "REG-002 review completes and records a licensing determination",
+      "severity": "high",
+      "release_gate": "BLOCK",
+      "status": "open",
+      "review": {
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "reviewed_by": [],
+        "notes": "Triage cross-link only (EPR0-T4, FR-WP0-05). No new finding is invented here — REG-002 is a pre-existing, already-tracked open review referenced by multiple prior artifacts in this repository."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_failure_id": "RF-EP3T5-F01-NEAR-VERBATIM-001",
+      "source_id": "FDA2026_CDS",
+      "rights_record_id": "RR-FDA2026_CDS",
+      "reuse_assessment_id": null,
+      "failure_type": "PERMISSION_REQUIRED_NOT_OBTAINED",
+      "component": "exactPassage text sharing a contiguous span with restricted source text",
+      "intended_use": "Binding affected passages as source-supported grounding for a rule",
+      "finding": "Cross-link to the existing EP3-T5 passage-fidelity audit finding EP3T5-F01 (evidence-packs/rf-ev-001/fidelity-findings.json, flag \"near-verbatim-span-pending-rights\", severity high): passage text reproduces 8-13 contiguous words of restricted source text despite passageFidelity: paraphrase, originating in the RF bundle's own summary field. Affects passages across four KB-cited sources: FDA2026_CDS#ev_002-ev_005, BSH2020_G6PD#ev_002/ev_003/ev_005/ev_007, AAP2026_IDA#ev_005, and CDC2025_LEAD#ev_001/ev_003 — each of those four sources' rights_record in rights/rights-records.json also carries this rights_failure_id. This record does not invent a new finding; it cross-links the pre-existing audit finding into the rights substrate.",
+      "source_terms_locator": "evidence-packs/rf-ev-001/fidelity-findings.json#findings[id=EP3T5-F01]; docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md",
+      "safe_residual_use": ["passage bound only as implementation-proposal, never source-supported, per bindingRule in fidelity-findings.json"],
+      "product_impact": "Affected passages fall back to the implementation-proposal sentinel and must not bind as source-supported grounding for any rule while this finding is open.",
+      "alternative_source_ids": [],
+      "permission_strategy": null,
+      "next_action": "Resolve pending REG-002 content-rights clearance, or re-author the affected passage text to remove the near-verbatim span.",
+      "owner": null,
+      "retry_trigger": "REG-002 clears for the affected source, or the passage is re-authored and re-audited",
+      "severity": "high",
+      "release_gate": "BLOCK",
+      "status": "open",
+      "review": {
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "reviewed_by": [],
+        "notes": "Triage cross-link only (EPR0-T4, FR-WP0-05). No new finding is invented here — EP3T5-F01 already exists in evidence-packs/rf-ev-001/fidelity-findings.json."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_failure_id": "RF-EP3T5-F02-SOURCE-UNRETRIEVABLE-001",
+      "source_id": "AAP2026_IDA",
+      "rights_record_id": "RR-AAP2026_IDA",
+      "reuse_assessment_id": null,
+      "failure_type": "ARTICLE_LEVEL_LICENSE_UNVERIFIED",
+      "component": "source card retrievability for AAP2026_IDA",
+      "intended_use": "Binding AAP2026_IDA-cited passages as source-supported grounding for a rule",
+      "finding": "Cross-link to the existing EP3-T5 passage-fidelity audit finding EP3T5-F02 (evidence-packs/rf-ev-001/fidelity-findings.json, flag \"source-not-independently-retrievable\", severity high): the AAP source card provides only a publisher URL with file_path: null plus a self-attestation of full-text access, not a retrievable artifact. RF-EV-002 and REG-002 independently recorded HTTP 403 / subscription-required for this source. Affects AAP2026_IDA#ev_001 through #ev_007. This record does not invent a new finding; it cross-links the pre-existing audit finding into the rights substrate.",
+      "source_terms_locator": "evidence-packs/rf-ev-001/fidelity-findings.json#findings[id=EP3T5-F02]; docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md",
+      "safe_residual_use": ["bibliographic metadata and citation only"],
+      "product_impact": "All 7 AAP2026_IDA passages fall back to the implementation-proposal sentinel; AAP2026_IDA contributes zero bindable source-supported passages while this finding is open.",
+      "alternative_source_ids": [],
+      "permission_strategy": null,
+      "next_action": "Obtain an independently retrievable, rights-cleared AAP artifact and reproducible locators, or re-anchor the affected claims to a rights-clear substitute per RF-EV-003.",
+      "owner": null,
+      "retry_trigger": "An independently retrievable AAP artifact is located and its rights basis is verified",
+      "severity": "high",
+      "release_gate": "BLOCK",
+      "status": "open",
+      "review": {
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "reviewed_by": [],
+        "notes": "Triage cross-link only (EPR0-T4, FR-WP0-05). No new finding is invented here — EP3T5-F02 already exists in evidence-packs/rf-ev-001/fidelity-findings.json."
+      },
+      "extensions": {}
+    }
+  ]
 }

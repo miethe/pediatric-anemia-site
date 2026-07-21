@@ -1,5 +1,42 @@
 {
   "schema_version": "1.0.0",
-  "description": "Top-level rights/ tree (D4): the join ledger. This is the ONLY link between a clinical KB identifier (an evidence.json source id, a rule id, a candidate id, a reference-ranges.json entry) and a rights/ record id (rights-records.json / rights-failures.json). No clinical JSON file (rules.json, candidates.json, evidence.json, reference-ranges.json) may carry an inline rights key of any kind, including under an `extensions.rights` path — that inline shape is explicitly rejected by D4 and is asserted against in tests/rights-substrate.test.mjs. EPR0-T1 creates this ledger empty; EPR0-T4 populates it while seeding the 6 triage-only rights records, joining each KB-cited source id to its rights_record_id.",
-  "entries": []
+  "description": "Top-level rights/ tree (D4): the join ledger. This is the ONLY link between a clinical KB identifier (an evidence.json source id, a rule id, a candidate id, a reference-ranges.json entry) and a rights/ record id (rights-records.json / rights-failures.json). No clinical JSON file (rules.json, candidates.json, evidence.json, reference-ranges.json) may carry an inline rights key of any kind, including under an `extensions.rights` path — that inline shape is explicitly rejected by D4 and is asserted against in tests/rights-substrate.test.mjs. EPR0-T1 creates this ledger empty; EPR0-T4 populates it while seeding the 6 triage-only rights records, joining each KB-cited source id to its rights_record_id. Entry shape: `clinical_identifier_type` names the kind of clinical identifier being joined (this task uses only `evidence_source_id`; a later phase may add other identifier types, e.g. a KB JSON file path, without changing this shape), `clinical_identifier` is the identifier value as it appears in the clinical KB JSON, and `rights_record_id` is the joined entry's id in rights/rights-records.json.",
+  "entries": [
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "AAP2026_IDA",
+      "rights_record_id": "RR-AAP2026_IDA",
+      "notes": "modules/anemia/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "WHO2024_HB",
+      "rights_record_id": "RR-WHO2024_HB",
+      "notes": "modules/anemia/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "BLOOD2022_PED_ANEMIA",
+      "rights_record_id": "RR-BLOOD2022_PED_ANEMIA",
+      "notes": "modules/anemia/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "CDC2025_LEAD",
+      "rights_record_id": "RR-CDC2025_LEAD",
+      "notes": "modules/anemia/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "FDA2026_CDS",
+      "rights_record_id": "RR-FDA2026_CDS",
+      "notes": "modules/anemia/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "BSH2020_G6PD",
+      "rights_record_id": "RR-BSH2020_G6PD",
+      "notes": "modules/anemia/evidence.json sources[].id"
+    }
+  ]
 }
