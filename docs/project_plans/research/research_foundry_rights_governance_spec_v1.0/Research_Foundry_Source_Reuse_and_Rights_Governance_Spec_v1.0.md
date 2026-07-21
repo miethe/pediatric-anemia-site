@@ -103,7 +103,7 @@ Operational consequence:
 - A complete table, nomogram, taxonomy, or curated set may create compilation risk even when individual values are factual — a coding taxonomy of numbering plus short descriptions was held copyrightable in *ADA v. Delta Dental Plans Ass'n*, 126 F.3d 977 (7th Cir. 1997) [S18], and a compiled set of values reflecting professional judgment, not bare measurement, was held protected expression in *CCC Information Services v. Maclean Hunter Market Reports*, 44 F.3d 61 (2d Cir. 1994) [S17]. [Amendment 2026-07-21, EPR5-T2, per FR-WP5-02]
 - The risk increases when the shipped product preserves the source’s same scope, selection, sequence, labels, categories, and arrangement and can substitute for the source product.
 
-Outside the United States, additional rights may exist. European Union law, for example, recognizes a sui generis database right protecting substantial investment in obtaining, verifying, or presenting database contents. [S13]
+Outside the United States, additional rights may exist. European Union law, for example, recognizes a sui generis database right protecting substantial investment in obtaining, verifying, or presenting database contents. [S13] Two qualifications scope that statement for this project. **Territorial scoping:** Directive 96/9/EC is EU/EEA law; it does not attach to a US-only product's US operations on its own terms, though it can still matter if a database is sourced from an EU-based publisher or the product is distributed into the EU/EEA. **The creation-vs-obtaining carve-out:** the Court of Justice of the European Union held, in a line of judgments including *The British Horseracing Board Ltd and Others v William Hill Organization Ltd*, Case C-203/02, [2004] ECR I-10415 (9 November 2004), and *Fixtures Marketing Ltd v Organismos Prognostikon Agonon Podosfairou AE (OPAP)*, Case C-444/02 (9 November 2004), that the sui generis right protects investment in **obtaining** (collecting from existing sources), verifying, and presenting data — not investment in **creating** it. An organization that generates its own measurements — a laboratory establishing its own reference intervals from its own patient population, for example — is plausibly on the creating side of that line, and the sui generis right is correspondingly less likely to reach that data. [Amendment 2026-07-21, EPR5-T3, per FR-WP5-05]
 
 ### 3.3 Access agreements and contracts
 
@@ -154,13 +154,26 @@ Operational policy:
 
 ### 3.7 Government works and public domain
 
-Copyright protection is generally unavailable for works of the United States Government under 17 U.S.C. § 105, subject to statutory nuances and third-party content. [S14]
+Copyright protection is generally unavailable for **works of the United States Government** — a work
+prepared by an officer or employee of the federal government as part of that person's official duties
+— under 17 U.S.C. § 105, subject to statutory nuances and third-party content. [S14] That rule does
+**not** extend to **government-*funded*** works: federal grant or contract funding does not itself
+divest the authoring university, researcher, or publisher of copyright in the resulting article. §105
+turns on federal *authorship*, not on federal *funding*. [Amendment 2026-07-21, EPR5-T3, per
+FR-WP5-03]
 
 Operational consequence:
 
-- U.S. federal guidance and datasets are often excellent reuse candidates.
+- U.S. federal guidance and datasets **authored by a federal officer or employee as part of official
+  duties** are often excellent reuse candidates.
 - Confirm authorship and ownership; a government-hosted page may include copyrighted third-party content.
 - Government agency names, seals, and logos may have separate restrictions.
+- **The PMC trap.** NIH-funded articles by university-affiliated authors are copyrighted, not §105
+  government works, and they are abundant in exactly the PubMed Central corpus this project searches
+  (§3.5). A grant acknowledgment, an `.gov`-adjacent funder, or PMC hosting is not evidence of federal
+  authorship. Confirm the byline is a federal officer or employee writing in that official capacity
+  before treating an article as a §105 government work; absent that, treat it under §3.5 (article-level
+  license controls) instead. [Amendment 2026-07-21, EPR5-T3, per FR-WP5-03]
 
 ### 3.8 Patents
 
@@ -872,6 +885,17 @@ Subject to source and legal review, the product may often:
 - build original explanations and safety logic;
 - independently validate the implementation.
 
+**Contract caveat, carried inline from §16.1.** Every item above answers a *copyright* question; none
+of them, by itself, answers the separate *contract* question §16.1 raises. The AAP Pediatric Care
+Online subscription bars, absent separate written approval, incorporating the licensed Materials into
+other materials. Re-wording a clinical fact or recommendation does not defeat that contractual
+prohibition when the item was extracted from the AAP-licensed Materials, or when its selection and
+organization tracks them — copyright and contract are separate questions, as §3.3 already states, and
+this list's facts-only framing answers only the copyright question. Before treating any item above as
+cleared, confirm the access basis is not the AAP subscription itself: an independently accessible
+primary source, a compatible open-license source, a separately licensed feed, or direct permission,
+per §3.3's operational consequence. [Amendment 2026-07-21, EPR5-T3, per FR-WP5-04]
+
 ### 16.3 What should not be assumed usable
 
 Do not assume the right to:
@@ -1483,3 +1507,59 @@ states none.
   **EPR5-T3**'s scope (FR-WP5-03/04/05), sequenced after this task. The six citation-hygiene items
   ([S7], [S1]/[S14] overload, [S11] pin-cite, [S13] permalink, [S5]/[S6]/[S7] 403 annotation, [S15]
   date pin) are **EPR5-T4**'s scope (FR-WP5-06), also not addressed here.
+
+- **2026-07-21 — EPR5-T3 (FR-WP5-03/04/05), §3.7, §16.2, §3.2 corrections.** Three independent
+  corrections, each drawn from review findings §2.B–§2.D:
+
+  - **§3.7 (FR-WP5-03) — government works vs. government-*funded* works.** The published §3.7 stated
+    that "works of the United States Government" are generally uncopyrightable under 17 U.S.C. § 105
+    and moved directly to operational consequences, without distinguishing a work *authored* by a
+    federal officer or employee (§105 — uncopyrightable) from a work merely *funded* by federal money
+    (ordinary copyright applies to the authoring institution). Added a sentence drawing that line
+    explicitly and a new operational-consequence bullet naming **the PMC trap**: NIH-funded articles by
+    university-affiliated authors are copyrighted, not §105 government works, and are abundant in
+    exactly the PubMed Central corpus this project searches (§3.5) — a live risk, not a hypothetical
+    one, for a research agent that treats "government-funded" or "found via a `.gov`-adjacent portal"
+    as a proxy for "public domain."
+  - **§16.2 (FR-WP5-04) — re-attach §16.1's contract caveat inline.** §16.1 correctly states the AAP
+    subscription bars incorporating the licensed Materials into other materials absent separate written
+    approval. The published §16.2 then listed "state independently worded clinical facts or
+    recommendations" and similar items as often usable, without re-stating that caveat — inviting a
+    reader to treat re-wording as sufficient on its own. Added an inline "Contract caveat" paragraph
+    stating that re-wording does not defeat a contractual incorporation prohibition when the item was
+    extracted from, or tracks the selection/organization of, the AAP-licensed Materials, and that
+    copyright and contract are separate questions (§3.3). The caveat is now inline in §16.2, not reached
+    only by a reader who separately visits §16.1 or §3.3.
+  - **§3.2 (FR-WP5-05) — scope the EU sui generis database-right discussion.** The published §3.2 stated
+    the EU sui generis database right (Directive 96/9/EC Art. 7(1)) without territorial scoping or the
+    creation-vs-obtaining carve-out, which read as an unconditional discouragement of a viable path (a
+    laboratory generating its own reference intervals). Added two qualifications: **territorial
+    scoping** (an EU/EEA instrument that does not attach to a US-only product's US operations on its own
+    terms), and the **creation-vs-obtaining carve-out** established by the Court of Justice of the
+    European Union in *The British Horseracing Board Ltd and Others v William Hill Organization Ltd*,
+    Case C-203/02, [2004] ECR I-10415 (9 November 2004), and *Fixtures Marketing Ltd v Organismos
+    Prognostikon Agonon Podosfairou AE (OPAP)*, Case C-444/02 (9 November 2004) — both part of the same
+    Grand Chamber judgment day restricting sui generis protection to investment in *obtaining*,
+    verifying, and presenting data, excluding investment in *creating* it.
+
+  **Rationale.** All three items are identified in the review findings
+  (`.claude/findings/rights-governance-spec-v1.0-review-findings.md` §2.B "§3.7 conflates government
+  *works* with government-*funded* works", §2.C "EU sui generis database right is overstated as
+  applied", §2.D "§16.2 drops its own contract caveat") as material or moderate defects in the
+  originally published spec's operational guidance. The two CJEU case citations (Case numbers, court,
+  and judgment date) were independently verified against public case-reporting sources during this
+  amendment because the findings document names the cases but does not carry their case numbers; no
+  other fact in this entry required verification, since every other figure and citation is transcribed
+  from the findings document or the phase task table
+  (`docs/project_plans/implementation_plans/infrastructure/rights-aware-evidence-capture-v1/phase-r5-spec-amendments.md`,
+  EPR5-T3 row).
+
+  **Scope of this amendment — what it does *not* do.** This amendment corrects the three named passages
+  only. It draws no legal conclusion about any specific source, article, laboratory dataset, or AAP-
+  derived item in this project's knowledge base — it states the applicable legal *frameworks* (the
+  works/funded-works line, the contract/copyright separation, the EU creation/obtaining line), not a
+  determination of which side of any line a specific item falls on. No PMC article, no AAP-derived
+  content item, and no locally generated reference-interval dataset is reclassified, cleared, or
+  assigned a rights disposition by this entry. The six citation-hygiene items ([S7], [S1]/[S14]
+  overload, [S11] pin-cite, [S13] permalink, [S5]/[S6]/[S7] 403 annotation, [S15] date pin) remain
+  **EPR5-T4**'s scope (FR-WP5-06), not addressed here.
