@@ -638,6 +638,72 @@ array, so `{"contract": {}}` validates and reads as "no restrictions assessed" i
 restrictions exist." Requested: make the restriction fields required-with-`unknown`-default, or make
 `null` the only way to express "not assessed" and forbid the empty object.
 
+### 9.7 `review.review_status` is a different enum in the two schemas that both use the name
+
+`rights_record.review.review_status` has **six** members — `agent_triage_only`, `human_reviewed`,
+`legal_review_required_before_commercial_use`, `counsel_approved`, `counsel_rejected`, `expired`.
+`content_reuse_assessment.review.review_status` has **five**: the same list minus
+`legal_review_required_before_commercial_use`. Same field name, same nesting position, different
+domain. So a record legitimately sitting at `legal_review_required_before_commercial_use` has no way
+to carry that state forward onto the reuse assessment derived from it — the downstream document must
+either downgrade it to `human_reviewed` (losing the commercial-use constraint, a fail-open) or fail
+validation. Any shared "review status" validator, dashboard, or expiry sweeper written once and
+pointed at both documents will diverge silently on exactly the member that encodes a legal
+constraint. Requested: one enum, defined once and `$ref`'d by both — or, if the divergence is
+deliberate, an explicit statement of how a `legal_review_required_before_commercial_use` record
+projects onto a reuse assessment.
+
+### 9.8 `component_type` is a second enum-vs-enum divergence, distinct from §9.2
+
+§9.2 records the prose-table-vs-enum mismatch *within* `rights_record`. This is a different problem:
+`rights_record.component_decisions[].component_type` and
+`content_reuse_assessment.component.component_type` are two closed enums under the same field name
+that do not agree with each other. The record uses plurals and aggregates — `atomic_facts_and_methods`,
+`reference_interval_values`, `trademarks_and_logos` — while the reuse assessment splits them into
+singulars — `atomic_fact`, `method`, `reference_interval_value`, `trademark_or_logo`. The reuse
+assessment also lacks `abstract` and `supplementary_material` entirely, both of which are valid on the
+record. Consequence: a `component_decisions` entry with `component_type: "atomic_facts_and_methods"`
+(or `abstract`, or `supplementary_material`) cannot be carried onto the downstream reuse assessment
+without a lossy hand-written mapping — and the aggregate→singular direction is genuinely ambiguous
+(`atomic_facts_and_methods` splits into two members, so the mapping is one-to-many and cannot be
+mechanical). A value valid on the upstream document is invalid on the document that consumes it.
+Requested: one component vocabulary shared by both schemas, or a published, tested mapping table with
+a stated resolution for the aggregate members.
+
+### 9.9 Two more vendored examples put a role string in a human-reviewer field
+
+§7.F asks that human-reviewer fields be constrained so an agent or role identifier cannot occupy a
+human slot. Two of the six vendored examples would fail that constraint as written:
+`examples/cc_by_rights_record.example.json` and
+`examples/us_federal_public_domain_rights_record.example.json` both set
+`review.human_reviewer: "rights-owner"` — a *role*, not a named human. (The third instance,
+`examples/facts_only_reuse_assessment.example.json`, sets `review.human_rights_reviewer:
+"rights-owner"` alongside `clinical_reviewer: "pediatric-hematology-reviewer"`, the same pattern under
+the reuse assessment's differently-named field — see §9.7's naming divergence.) By contrast
+`aap_subscription_rights_record.example.json` correctly carries `human_reviewer: null`. This matters
+because the vendored examples are the de facto specification for implementers: an agent copying them
+learns that a role string is an acceptable reviewer identity, which is precisely the failure mode
+§7.F exists to prevent. It also means the amendment cannot be silent — a `human_reviewer: null`-unless-
+attested constraint invalidates two shipped examples and the shipped `validation_report.json` /
+`checksums.sha256` alongside them. Requested: the amendment layer states explicitly that these two
+examples (and the reuse-assessment example) are being corrected, with the corrected values and
+regenerated checksums, rather than leaving implementers to reconcile the examples against the rule.
+
+### 9.10 The `CLEARED_*` prohibition has two enum paths, and only one is named
+
+`rights_record.overall_status` and `content_reuse_assessment.decision.status` are **the same
+eleven-member enum** — `CLEARED_OPEN_LICENSE`, `CLEARED_PUBLIC_DOMAIN`, `CLEARED_FACTS_ONLY`,
+`CLEARED_PERMISSION`, `INTERNAL_ONLY`, `LOCAL_VALIDATION_ONLY`, `LEGAL_REVIEW_REQUIRED`,
+`PERMISSION_REQUIRED`, `CONTRACT_RESTRICTED`, `PROHIBITED`, `UNKNOWN` — duplicated inline in both
+schemas rather than shared by reference. §6.3's non-goal ("no agent may assign a `CLEARED_*` status")
+and §8's global acceptance criterion are therefore under-specified: a gate that only inspects
+`rights_record.overall_status` leaves `content_reuse_assessment.decision.status` wide open, and the
+reuse assessment is the document that actually carries `release_gate: PASS`. An agent blocked from
+writing `CLEARED_FACTS_ONLY` on the record can write it on the assessment and reach the same
+downstream effect. Requested: (a) the enum defined once and `$ref`'d, so it cannot drift; and (b) the
+no-`CLEARED_*` test asserted over **both** write paths — plus `decision.release_gate` — with the
+acceptance criterion in §8 naming both explicitly.
+
 ## 10. Open questions for the Research Foundry team
 
 - **OQ-RF-1 (the gating question; consuming project's OQ-4).** Does Research Foundry **accept this

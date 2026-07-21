@@ -9,7 +9,7 @@ phase_title: "Source Rights Metadata"
 prd_ref: docs/project_plans/PRDs/infrastructure/rights-aware-evidence-capture-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/rights-aware-evidence-capture-v1.md
 feature_slug: rights-aware-evidence-capture
-entry_criteria: "EP-R0 merged (rights/ tree, amended vendored schemas, gates wired). EP-R1's scripts/validate-kb.mjs ledger-resolution helper available or landing in the same wave."
+entry_criteria: "EP-R0 merged (rights/ tree, amended vendored schemas, gates wired). Intra-wave ordered dependency: EPR2-T5 may not start until EPR1-T2 has landed the exported ledger-resolution helper in scripts/validate-kb.mjs — EPR2-T1..T4 are unblocked and proceed in parallel meanwhile. If EPR1-T2 is not available when EPR2-T5 is reached, EPR2-T5 blocks and escalates; it never writes its own resolver."
 exit_criteria: "schemas/evidence.schema.json $defs/source carries required license/access_basis/terms and a locator-only terms_snapshot; all 6 sources validate in one commit; AAP2026_IDA and CDC2025_LEAD encoded machine-readably; every source resolves to a rights record; consumers do not throw on legacy records and render unassessed as unassessed; npm run check green."
 planning_maturity: ready
 ---
@@ -22,7 +22,9 @@ The largest single safety gain on offer: `schemas/evidence.schema.json`'s `$defs
 **no licence, access basis, or terms at all**. That `AAP2026_IDA` is unusable for reuse exists only as
 prose in `.claude/findings/` and as one hardcoded boolean.
 
-**Dependencies**: EP-R0. Shares `scripts/validate-kb.mjs` with EP-R1 (EP-R1 owns it).
+**Dependencies**: EP-R0. Shares `scripts/validate-kb.mjs` with EP-R1 (EP-R1 owns it) and
+`scripts/validate-rights.mjs` with EP-R0/EP-R1/EP-R3 (EP-R0 owns it — append gates, never
+restructure). **Intra-wave ordered dependency: EPR2-T5 ← EPR1-T2** (see entry criteria).
 **Assigned Subagent(s)**: `general-purpose` (primary), model `sonnet`, effort `high` — atomic schema
 migration under `additionalProperties: false`.
 **Entry / exit criteria**: as frontmatter.

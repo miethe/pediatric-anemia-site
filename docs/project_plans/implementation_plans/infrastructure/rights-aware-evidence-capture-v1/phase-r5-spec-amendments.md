@@ -9,7 +9,7 @@ phase_title: "Spec Amendments & Doc Truth"
 prd_ref: docs/project_plans/PRDs/infrastructure/rights-aware-evidence-capture-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/rights-aware-evidence-capture-v1.md
 feature_slug: rights-aware-evidence-capture
-entry_criteria: "main at npm run check green; the reviewed spec bundle present; the review findings (cd15b4a) available as the source of every number quoted."
+entry_criteria: "main at npm run check green; the reviewed spec bundle present; the review findings (cd15b4a) available as the source of every number quoted. This phase has no phase-level dependency — it may start in parallel with EP-R0; only EPR5-T7 is blocked, and only until EP-R0 merges."
 exit_criteria: "Spec §15 splits measured from judged; Feist/CCC/ADA added to Appendix B and cited from the body; §3.7, §16.2 and §3.2 corrected; citation hygiene resolved or annotated; CLAUDE.md's npm run check string is byte-identical to package.json's; the 60/31/13 picture and residual gap R-1 are recorded; NOTICE.md and docs/architecture.md §7 describe the shipped artifacts without implying any clearance; npm run check green."
 planning_maturity: ready
 ---
@@ -19,7 +19,11 @@ planning_maturity: ready
 **Maps to PRD WP5.** **3 pts.** Wave 1, parallel with EP-R0 — no code dependency, and the
 measured-vs-judged framing needs correcting in the reference spec *before* EP-R3 builds an axis on it.
 
-**Dependencies**: none.
+**Dependencies**: **none at phase level** (`EP-R5: depends_on: []`). The phase may start in parallel
+with EP-R0 — EPR5-T1..T6 have no dependency and start immediately. **Only EPR5-T7 blocks on EP-R0
+merging**, because it documents the `rights/` substrate *as shipped*. That single constraint is
+declared as a wave-1 `intra_wave_ordering` entry (`EPR5-T7 ← EP-R0`), not as a phase-level
+`depends_on`, so the scheduler keeps the EP-R0 ∥ EP-R5 parallelism the wave plan exists to express.
 **Assigned Subagent(s)**: `general-purpose` (primary), model `sonnet`, effort `medium` — doc edits,
 with legal-citation care.
 **Entry / exit criteria**: as frontmatter.
@@ -50,7 +54,7 @@ describes the substrate as shipped rather than as planned.
 | EPR5-T4 | Citation hygiene | Per FR-WP5-06 (findings §2.E): cite or remove `[S7]`; de-overload `[S1]`/`[S14]`; correct `[S11]`'s pin-cite; use the ELI permalink for `[S13]`; annotate that `[S5]`/`[S6]`/`[S7]` AAP URLs return 403 to automated clients so the "Verified" stamps are not machine-reproducible; pin `[S15]` FDA CDS guidance to **January 29, 2026** if an exact date is given. | Each of the six items is resolved or explicitly annotated as an accepted limitation with a stated reason. No citation is removed silently. The review found **no fabricated citations** — this task is refinement, and the amendment record says so, so a future reader does not infer a fabrication problem. | 0.5 pts | general-purpose | sonnet | medium | EPR5-T3 |
 | EPR5-T5 | Fix `CLAUDE.md`'s stale `npm run check` composition | Per FR-WP5-07: `CLAUDE.md` currently states `npm test + npm run validate + npm run build + npm run check:imports + npm run smoke`. The authoritative composition in `package.json` is `test && validate && coverage:rules && build && verify:d4 && check:imports && smoke:browser && smoke`. Correct `CLAUDE.md` and add a doc-truth check comparing the two strings. | `CLAUDE.md`'s composition string matches `package.json`'s `check` script exactly. A doc-truth check (test or reviewer step) compares the two and fails on drift. `package.json` is **not** edited by this task — the doc moves to the code, never the reverse (EP-R0 barrier). | 0.25 pts | general-purpose | sonnet | medium | — |
 | EPR5-T6 | Record the corrected blocking picture | Per FR-WP5-08: record in `CLAUDE.md` / project memory that the 0/91 gap is ~2/3 attestation-shaped (**60** rules) and ~1/3 licensing-shaped (**31** rules) — not wholly licensing-shaped — and that **13** bindable passages exist today, a fact currently recorded nowhere. | Both statements appear with their counts and cite `.claude/findings/rights-governance-spec-v1.0-review-findings.md`. No number is invented; every figure is transcribed from the findings. The text does not imply any of the 13 has been bound — 0 of 91 rules remain grounded. | 0.25 pts | general-purpose | sonnet | medium | EPR5-T5 |
-| EPR5-T7 | `NOTICE.md`, `docs/architecture.md` §7, residual gap, deferred-item specs | Per FR-WP5-09 and FR-WP5-10: update `NOTICE.md` and `docs/architecture.md` §7 to describe the `rights/` tree, the release context, and the **coverage-only** gate posture; record residual gap R-1 (prohibited-excerpt detection is not deterministic) explicitly. Also create the four deferred-item design-spec stubs (DEF-R1..DEF-R4) and populate `deferred_items_spec_refs` in the plan frontmatter. | Both documents describe the shipped artifacts and **neither implies any clearance exists** — a reviewer check confirms the words "cleared", "licensed", or "approved" appear only in explicitly-negated form. R-1 is named in `docs/architecture.md` §7 as open. All four deferred items have a spec path and appear in `deferred_items_spec_refs`. Sequenced after EP-R0 merges so it describes the substrate as shipped. | 0.25 pts | general-purpose | sonnet | medium | EPR5-T6, EP-R0 |
+| EPR5-T7 | `NOTICE.md`, `docs/architecture.md` §7, residual gap, deferred-item specs | Per FR-WP5-09 and FR-WP5-10: update `NOTICE.md` and `docs/architecture.md` §7 to describe the `rights/` tree, the release context, and the **coverage-only** gate posture; record residual gap R-1 (prohibited-excerpt detection is not deterministic) explicitly. Also create the five deferred-item design-spec stubs (DEF-R1..DEF-R5) and populate `deferred_items_spec_refs` in the plan frontmatter. | Both documents describe the shipped artifacts and **neither implies any clearance exists** — a reviewer check confirms the words "cleared", "licensed", or "approved" appear only in explicitly-negated form. R-1 is named in `docs/architecture.md` §7 as open. All five deferred items have a spec path and appear in `deferred_items_spec_refs`. Sequenced after EP-R0 merges so it describes the substrate as shipped. | 0.25 pts | general-purpose | sonnet | medium | EPR5-T6, EP-R0 |
 
 **Phase total: 3 pts.**
 
@@ -64,7 +68,7 @@ describes the substrate as shipped rather than as planned.
 - [ ] 60 attestation-shaped / 31 licensing-shaped / 13 bindable recorded with citations (EPR5-T6)
 - [ ] `NOTICE.md` + `docs/architecture.md` §7 describe the substrate; neither implies a clearance (EPR5-T7)
 - [ ] Residual gap R-1 recorded as open (EPR5-T7)
-- [ ] All four deferred items (DEF-R1..DEF-R4) have spec paths in `deferred_items_spec_refs` (EPR5-T7)
+- [ ] All five deferred items (DEF-R1..DEF-R5) have spec paths in `deferred_items_spec_refs` (EPR5-T7)
 - [ ] No legal conclusion drawn; no threshold classified as measured or judged (OQ-1 stays open)
 - [ ] `package.json` untouched (EP-R0 barrier); `CLAUDE.md` edited by this phase only
 - [ ] `npm run check` green

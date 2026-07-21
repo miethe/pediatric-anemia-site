@@ -93,15 +93,27 @@ wave_plan:
   serialization_barriers:
     - schemas/evidence.schema.json   # EP-R2 then EP-R3, strictly ordered; EP-R3 branches from EP-R2's merge
     - scripts/validate-kb.mjs        # EP-R1 and EP-R2; same wave, disjoint hunks, integration_owner = EP-R1
+    - scripts/validate-rights.mjs    # EP-R0, EP-R1, EP-R2, EP-R3 all add gates here; EP-R1 and EP-R2 share a wave. integration_owner = EP-R0 (creates the module and its exported-gate contract); later phases append gates and never restructure the module or re-signature an existing gate
     - package.json                   # EP-R0 only — all gate wiring lands once
     - CLAUDE.md                      # EP-R5 only
+  intra_wave_ordering:
+    # Ordered dependencies between phases that share a wave. The wave may still run
+    # concurrently, but the named task pairs are strictly sequenced.
+    - wave: 2
+      before: EPR1-T2   # lands the exported ledger-resolution helper in scripts/validate-kb.mjs
+      after: EPR2-T5    # adds a call site to that helper; must not start before it exists
+      reason: "EPR2-T5 consumes EPR1-T2's helper unchanged (R-P3). If EP-R2 reaches T5 before EPR1-T2 has merged, it blocks rather than writing its own resolver."
+    - wave: 1
+      before: EP-R0     # the phase; EPR5-T7 documents the rights/ substrate *as shipped*
+      after: EPR5-T7    # single task, not the phase; EPR5-T1..T6 are independent of EP-R0
+      reason: "Only EPR5-T7 depends on EP-R0. Declaring the dependency at phase level would serialize wave 1 and destroy the EP-R0 ∥ EP-R5 parallelism; the constraint is task-scoped — EP-R5 starts immediately and holds T7 until EP-R0 merges."
   phases:
     - id: EP-R0
       depends_on: []
       isolation: shared
       parallelizable: true
     - id: EP-R5
-      depends_on: []
+      depends_on: []   # no phase-level dependency — EPR5-T1..T6 are independent of EP-R0. The single real constraint (EPR5-T7 ← EP-R0) is declared in intra_wave_ordering so wave 1 stays parallel.
       isolation: shared
       parallelizable: true
     - id: EP-R1
@@ -240,12 +252,12 @@ re-capture (decisions block §5).
 | Constraint | Statement | Verifying task(s) |
 |---|---|---|
 | **D1** | The archive is provenance, not text. Maximal capture = maximal addressable provenance; never retained third-party expression. What was deliberately not stored is recorded explicitly. | EPR3-T1 (negative invariant, lands first), EPR3-T4 (`not_captured[]`), EPR3-T6 |
-| **D2** | Three axes, three fields. `evidence_item_type` (measured vs. judged) × `rights_component_class` × epistemic `status` vs. legal `clearance_status`. Guidelines are captured, not avoided. | EPR3-T2, EPR3-T3 (axis-separation test), EPR3-T8 |
+| **D2** | Three axes, three fields. `evidence_item_type` (measured vs. judged) × `rights_component_class` × epistemic `status` vs. legal `overall_status`. Guidelines are captured, not avoided. | EPR3-T2, EPR3-T3 (axis-separation test), EPR3-T8 |
 | **D3** | `derived_synthesis` ships now, as a first-class type with attribution-to-inputs modelled from day one, in a `candidate` state only. | EPR3-T7 |
 | **D4** | Rights records live in a top-level `rights/` tree with a join ledger. Inline `extensions.rights` is explicitly rejected. Generic → Research Foundry, specific → here. | EPR0-T1, EPR0-T4, EPR4-T4 |
 | **D5** | Clinician time is the binding constraint. The brief summarises source guidance; it never quotes it into the implementation record. | EPR4-T2, EPR4-T3 (contamination guard), EPR4-T6 |
 | **D6** | The wave-0 D-4 discipline extends to every new object type: no agent-authored `CLEARED_*`, `clinicalApprovers[]`, `approvedBy[]`, `counsel_approved`, or authoritative `derived_synthesis`. | EPR0-T3 (null constraints in vendored copies), EPR0-T4, EPR3-T7, EPR4-T5 |
-| **D7** | Coverage and consistency gates only, never clearance gates. A record at `clearance_status: UNKNOWN` must pass the build. | EPR0-T5, EPR0-T6, EPR1-T3 |
+| **D7** | Coverage and consistency gates only, never clearance gates. A record at `overall_status: UNKNOWN` must pass the build. | EPR0-T5, EPR0-T6, EPR1-T3 |
 
 ### Vendored-schema amendment posture (handoff §9) — plan-level ruling
 
@@ -277,9 +289,17 @@ Every amendment is an **annotated, declared divergence** from the spec bundle's 
   has a companion resilience task — EPR2-T6 (consumers do not throw on legacy records; absent rights
   fields render "unassessed", never "unrestricted") and EPR3-T5 (partial locator capture is
   representable and visible, never silently complete).
-- **R-P3** (overlapping-owner phases ⇒ `integration_owner` + seam task): EP-R1 ∥ EP-R2 overlap at
-  `scripts/validate-kb.mjs`. `integration_owner = EP-R1`. Seam tasks: EPR1-T2 (owner, lands the
-  ledger-resolution helper), EPR2-T5 (consumer, adds a call site, does not restructure).
+- **R-P3** (overlapping-owner phases ⇒ `integration_owner` + seam task): two overlaps exist.
+  (i) EP-R1 ∥ EP-R2 overlap at `scripts/validate-kb.mjs`. `integration_owner = EP-R1`. Seam tasks:
+  EPR1-T2 (owner, lands the ledger-resolution helper), EPR2-T5 (consumer, adds a call site, does not
+  restructure) — recorded as an **intra-wave ordered dependency** (`EPR2-T5 ← EPR1-T2`) in
+  `wave_plan.intra_wave_ordering`, because both sit in wave 2.
+  (ii) **`scripts/validate-rights.mjs` is edited by EP-R0, EP-R1, EP-R2 and EP-R3**, two of which
+  (EP-R1, EP-R2) share a wave. `integration_owner = EP-R0`: it creates the module and fixes the
+  exported-gate contract (one pure function per gate, registered in a single exported gate list).
+  Later phases **append** a gate and its unit test; none may restructure the module, rename a gate,
+  or change an existing gate's signature. A shape change is an escalation to the plan owner, exactly
+  as with the `validate-kb.mjs` helper.
 - **R-P4** (UI-touching phase ⇒ runtime smoke task): EP-R2 is the only phase whose fields reach a
   browser consumer (`src/app.js` renders evidence source metadata). EPR2-T6 carries the runtime smoke
   obligation via `npm run smoke:browser` plus `check:imports`. No other phase touches a UI surface.
@@ -299,7 +319,7 @@ npm test && npm run validate && npm run coverage:rules && npm run build \
 | Every `KB_JSON_FILES` entry resolves to a rights record, bidirectionally | EP-R1 | Closeable |
 | Every KB-cited source carries structured licence / access basis / terms | EP-R2 | Closeable |
 | All 41 passage records carry three separate axis fields; no axis derived from another | EP-R3 | Closeable |
-| No third-party full text, table, figure, or brand asset in the tree | EP-R3 (EPR3-T1, lands first) | Closeable, with residual gap R-1 recorded open |
+| No third-party full text, table, figure, or brand asset in the tree; **no new** near-verbatim span | EP-R3 (EPR3-T1, lands first) | Closeable as a **no-regression** gate, with residual gap R-1 recorded open and the 11 pre-existing spans allowlisted as DEF-R5 |
 | Every new gate has a fails-closed resilience test | EP-R0, EP-R1, EP-R2, EP-R3 | Closeable |
 | Determinism: two runs at different wall-clock times, unchanged input, byte-identical output | EP-R0 (`--as-of`), EP-R4 (brief generator) | Closeable |
 | Zero clearances, zero attestations, zero grounded rules | every phase; asserted by test | **Closeable and must stay closed at zero** |
@@ -316,6 +336,7 @@ npm test && npm run validate && npm run coverage:rules && npm run build \
 | DEF-R2 | blocked-external | Spec §20.2 hard release gate (clearance-shaped). | DEF-R1 resolved **and** a non-trivial number of records carry a real clearance status. | `docs/project_plans/design-specs/rights-release-gate.md` |
 | DEF-R3 | research-needed | Re-anchoring the 44 rules resting on one *Blood* review article onto primary studies (OQ-3). | Product-strategy decision; real re-synthesis cost. | `docs/project_plans/design-specs/single-source-rule-reanchoring.md` |
 | DEF-R4 | blocked-external | Re-homing `derived_synthesis` onto a first-party rights record (handoff §9.5). | Research Foundry answers OQ-4 with a first-party record scope. | `docs/project_plans/design-specs/first-party-rights-record.md` |
+| DEF-R5 | scope-cut | Re-authoring the **11 pre-existing near-verbatim spans** enumerated in `docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md` (`FDA2026_CDS#ev_002`–`#ev_005`; `BSH2020_G6PD#ev_003`, `#ev_005`, `#ev_007`; the ~7-word spans in `AAP2026_IDA#ev_005`, `CDC2025_LEAD#ev_001`, `#ev_003`, `BSH2020_G6PD#ev_002`). No task in this feature re-words them, so EPR3-T1's invariant allowlists them as a **no-regression** baseline rather than failing on day one. | Either (a) a re-authoring pass is scheduled — the natural home is the EP-R3 re-capture seam, since re-wording touches the same passages — or (b) EPR3-T1's allowlist is observed to be non-shrinking across two consecutive phases, which promotes it from "known debt" to "accumulating debt". Each entry removed from the allowlist closes that fraction of DEF-R5; DEF-R5 closes when the allowlist is empty. | `docs/project_plans/design-specs/near-verbatim-span-reauthoring.md` |
 
 Each item gets a spec-refresh task in EP-R5 (EPR5-T7). `deferred_items_spec_refs` populates as
 EPR5-T7 lands.
@@ -328,7 +349,7 @@ append to `related_documents`, and add a doc-refresh row in EP-R5.
 
 ### Quality Gate
 
-EP-R5 cannot be sealed until all 4 deferred items have a design-spec path in
+EP-R5 cannot be sealed until all 5 deferred items have a design-spec path in
 `deferred_items_spec_refs` and, if `findings_doc_ref` is populated, the findings doc is finalized.
 
 ## Risk Summary
@@ -337,7 +358,7 @@ Condensed from decisions block §4; each row names the owning phase.
 
 | Risk | Severity | Owning Phase | Mitigation |
 |---|:-:|---|---|
-| An agent writes a `CLEARED_*`, `clinicalApprovers[]`, `approvedBy[]`, `counsel_approved`, or an authoritative `derived_synthesis` | **Critical** | EP-R0, EP-R3, EP-R4 | D6; null-constraints / `maxItems: 0` in the vendored copies (the spec's own examples put `rights-governance-agent` in reviewer fields); a fails-closed test per phase; the authoritative `derived_synthesis` state is structurally unrepresentable. |
+| An agent writes a `CLEARED_*`, `clinicalApprovers[]`, `approvedBy[]`, `counsel_approved`, or an authoritative `derived_synthesis` | **Critical** | EP-R0, EP-R3, EP-R4 | D6; null-constraints / `maxItems: 0` in the vendored copies, on the paths EPR0-T3 enumerates (the bundle's `examples/aap_rights_failure.example.json` sets `review.reviewed_by: ["rights-governance-agent"]` and `examples/facts_only_reuse_assessment.example.json` sets `review.clinical_reviewer: "pediatric-hematology-reviewer"` — the two examples that land an identifier in a human-reviewer field; the `rights_record` examples correctly use `assessed_by_agent`); a fails-closed test per phase; the authoritative `derived_synthesis` state is structurally unrepresentable. |
 | Restricted source text enters the repo "for the archive" | **Critical** | EP-R3 | D1; EPR3-T1 negative-invariant test lands **before** any capture task; no Zone 1 vault here; git history is unrecoverable, so prevention is the only control. |
 | Numerics re-capture reintroduces verbatim table structure | High | EP-R3 | Per-value atoms with locators, never a reproduced table; `not_captured[]` records the omitted structure; `REG_002_CLEARED` stays `false`. |
 | Adopting §20.2 clearance gating bricks the build | High | EP-R0 | D7 — coverage/consistency gates only; a test asserts a record at `UNKNOWN` still passes `npm run validate`. |

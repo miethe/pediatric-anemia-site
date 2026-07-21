@@ -13,6 +13,7 @@ related_documents:
   - .claude/worknotes/rights-aware-evidence-capture/decisions-block.md
   - .claude/findings/rights-governance-spec-v1.0-review-findings.md
   - .claude/findings/rf-ev-003-oa-substitute-findings.md
+  - docs/project_plans/research/research-foundry-rights-entity-model-handoff-v1.md
   - docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/Research_Foundry_Source_Reuse_and_Rights_Governance_Spec_v1.0.md
   - docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
   - docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md
@@ -245,7 +246,7 @@ without reducing legal exposure.
 - No rights record exists for `modules/anemia/reference-ranges.json`, and no gate asserts one must
   (`scripts/sign-kb.mjs:41`, `KB_JSON_FILES`).
 - Passage records carry `passageFidelity` and epistemic `status`, but no `evidence_item_type`, no
-  `rights_component_class`, and no `clearance_status` — three axes with two fields, which is a
+  `rights_component_class`, and no `overall_status` — three axes with two fields, which is a
   fail-open (findings §6).
 - Numerics were removed from threshold-bearing passages (`omits-source-numerics` quarantine) with no
   structured locator retained in their place.
@@ -273,7 +274,7 @@ without reducing legal exposure.
 
 **Goal 3: Keep three governance axes separate, permanently and structurally.**
 - Success criterion: a build in which `evidence_item_type`, `rights_component_class`, passage `status`
-  and `clearance_status` are conflated or derived from one another fails a dedicated test.
+  and `overall_status` are conflated or derived from one another fails a dedicated test.
 
 **Goal 4: Prevent a future agent from assuming commercial clearance.**
 - `rights/release-context.json` declares `commercial: false`, `use_type: internal_research` — "the
@@ -319,6 +320,24 @@ triage, alternative-source discovery) belongs upstream, as a spec, not as code w
 These seven decisions from `.claude/worknotes/rights-aware-evidence-capture/decisions-block.md` §1 are
 not open for re-litigation. Each carries a testable acceptance criterion. They subsume `CLAUDE.md`'s
 hard guardrails, which are restated here as they apply to this feature:
+
+> **D-numbering map (read before citing a D-number).** The PRD's D-numbers diverge from the binding
+> decisions block's for D-4 onward, because the PRD folds the block's two-repo split into its D-4 and
+> renumbers the rest. Cite the block by *its* number and the PRD by *its* number; never assume they
+> agree.
+>
+> | Decisions block | PRD | Subject |
+> |---|---|---|
+> | D1 | D-1 | The archive is provenance, not text |
+> | D2 | D-2 | New item types on a measured-vs-judged axis |
+> | D3 | D-3 | `derived_synthesis` is the strategic exit |
+> | D4 | D-4 | Rights records live in a top-level `rights/` tree with a join ledger |
+> | **D5** | **D-4** (second half) | Two-repo split: generic → Research Foundry, specific → here |
+> | **D6** | **D-5** | Clinician time is the binding constraint |
+> | D7 | D-7 | Do not turn on the hard release gate |
+> | *(none — inherited)* | **D-6** | The wave-0 PRD's own **"D-4 discipline"** name, carried here as D-6 |
+>
+> The implementation plan and phase files use the **decisions-block** numbering (`D1..D7`).
 
 > **Restated `CLAUDE.md` guardrails.** No generative model in the clinical decision path — nothing in
 > this feature places one there. No autonomous diagnosis/treatment/dosing. **No invented thresholds** —
@@ -382,11 +401,26 @@ defence is lost.
     - `modules/anemia/evidence.json` (`derived_synthesis` items)
     - `evidence-packs/passage-attestations.json`
 - propagation_contract: no artifact produced by this feature may contain a populated
-  `clinicalApprovers[]`, a populated `approvedBy[]`, any `CLEARED_*` clearance status, a populated
-  `counsel_approved`, a populated `approvals.clinical_owner` / `review.clinical_reviewer`, or a
-  `derived_synthesis` item marked authoritative. The vendored spec schemas constrain
-  `approvals.clinical_owner` and `review.clinical_reviewer` to `null` (findings §6, hazard 1 — the
-  spec's own examples put `rights-governance-agent` in reviewer fields, actively inviting the mistake).
+  `clinicalApprovers[]`, a populated `approvedBy[]`, any `CLEARED_*` clearance status, a
+  `review_status` of `counsel_approved`, a populated human/counsel/clinical reviewer field, or a
+  `derived_synthesis` item marked authoritative. **The constraints are applied to the field paths
+  that actually exist in the vendored v1.0 schemas** (verified against the schema files, not against
+  the spec's prose templates):
+    - `rights_record.review.human_reviewer` — constrained to `null`
+    - `rights_record.review.counsel_reviewer` — constrained to `null`
+    - `rights_record.review.review_status` — must not be `counsel_approved`
+    - `rights_record.overall_status` — must not be any `CLEARED_*` value
+    - `content_reuse_assessment.review.clinical_reviewer` — constrained to `null`
+    - `rights_failure.review.reviewed_by` — `maxItems: 0`
+
+  There is **no** `approvals.clinical_owner` field and **no** approver array in `rights_record`;
+  `approvals.clinical_owner` appears only in the bundle's non-vendored markdown template, and
+  `review.clinical_reviewer` exists only on `content_reuse_assessment`. Naming a non-existent path in
+  a constraint is a silent no-op, which is why each path above is enumerated explicitly. (findings §6,
+  hazard 1 — the bundle's own examples put the agent identifier `rights-governance-agent` in
+  `examples/aap_rights_failure.example.json`'s `review.reviewed_by[]`, and a reviewer identifier in
+  `examples/facts_only_reuse_assessment.example.json`'s `review.clinical_reviewer`, actively inviting
+  the mistake. The `rights_record` examples are correct — they use `assessed_by_agent`.)
 - resilience: `derived_synthesis` items may exist only in a `candidate` state; the authoritative state
   is unreachable without a human attestation record that this feature does not create. Absence of an
   attestation is never read as approval.
@@ -398,20 +432,22 @@ defence is lost.
 anywhere to record answers bricks the build for no safety gain. **Every gate this feature ships is
 coverage- and consistency-shaped** — *does every shipped artifact have a rights record? do the axes
 agree?* — never clearance-shaped — *is this cleared?*
-- AC: no gate introduced by this feature reads a `clearance_status` value and fails on its *value*;
+- AC: no gate introduced by this feature reads an `overall_status` value and fails on its *value*;
   gates may fail on the *absence* of the field. A dedicated test asserts a record whose
-  `clearance_status` is `UNKNOWN` still passes `npm run validate`.
+  `overall_status` is `UNKNOWN` still passes `npm run validate`.
 
 ---
 
 ## 7. Requirements by Work Package
 
 Point estimates are the decisions-block §2 anchors (EP-R0..EP-R5 map 1:1 onto WP0..WP5).
-Waves: **W1** = [WP0, WP5, RF-HANDOFF] · **W2** = [WP1, WP2] · **W3** = [WP3] · **W4** = [WP4].
+Waves: **W1** = [WP0, WP5] · **W2** = [WP1, WP2] · **W3** = [WP3] · **W4** = [WP4].
+RF-HANDOFF is **not in any wave** — it is already delivered (see the RF-HANDOFF block below).
 
 Serialization barriers (files two work packages would both edit): `schemas/evidence.schema.json` —
-WP2 **then** WP3, strictly ordered; `scripts/validate-kb.mjs` — WP1, WP2; `package.json` — WP0 only
-(all gate wiring lands once); `CLAUDE.md` — WP5 only.
+WP2 **then** WP3, strictly ordered; `scripts/validate-kb.mjs` — WP1, WP2; `scripts/validate-rights.mjs`
+— WP0, WP1, WP2, WP3 (WP0 owns the module and its exported-gate contract; later WPs append gates
+only); `package.json` — WP0 only (all gate wiring lands once); `CLAUDE.md` — WP5 only.
 
 ### WP0 — Rights substrate (5 pts)
 
@@ -420,7 +456,7 @@ WP2 **then** WP3, strictly ordered; `scripts/validate-kb.mjs` — WP1, WP2; `pac
 | FR-WP0-01 | Create the top-level `rights/` tree (D-4): `release-context.json`, `rights-records.json`, `rights-failures.json`, `rights-ledger.json`. No rights data is written inline into any clinical JSON file. | Must | A test asserts no `extensions.rights` (or equivalent inline rights key) exists in `rules.json`, `candidates.json`, `evidence.json`, or `reference-ranges.json`. |
 | FR-WP0-02 | `rights/release-context.json` declares at minimum `commercial: false`, `use_type: internal_research`, plus territory and channel scope, using spec §5.2 intended-use vocabulary. | Must | File validates against the vendored context/manifest shape; a build asserting commercial use against this context fails. |
 | FR-WP0-03 | Vendor the 5 spec schemas verbatim under `schemas/rights/` as an interop contract (precedent: `openapi.yaml`) — `rights_record`, `content_reuse_assessment`, `permission_record`, `rights_failure`, `rights_extension`. Vendored copies are byte-traceable to the spec bundle's `checksums.sha256` except for the D-6 null-constraint edits, which are individually annotated. | Must | A test recomputes each vendored file's provenance and fails on an undeclared divergence from the spec bundle. |
-| FR-WP0-04 | Seed 6 `rights_records` from RF-EV-003 at status `agent_triage_only` — one per KB-cited source. No `CLEARED_*` status is written. | Must | 6 records exist; a test asserts every `clearance_status` is `UNKNOWN` or an explicitly non-cleared triage value. |
+| FR-WP0-04 | Seed 6 `rights_records` from RF-EV-003 — one per KB-cited source. `agent_triage_only` is a **`review.review_status`** value, not an `overall_status` value; the two fields are set independently. Each record therefore carries `review.review_status: agent_triage_only` **and** `overall_status: UNKNOWN`. No `CLEARED_*` status is written. | Must | 6 records exist; a test asserts **both** (a) every record's `review.review_status === 'agent_triage_only'` and (b) every record's `overall_status === 'UNKNOWN'`. Asserting only one of the two leaves the other field unchecked and is not sufficient. |
 | FR-WP0-05 | `rights/rights-failures.json` cross-links the known open failures to their existing identifiers (REG-002, EP3T5-F01, EP3T5-F02). | Must | Every referenced identifier resolves to an existing record/audit; a dangling reference fails validation. |
 | FR-WP0-06 | New `scripts/validate-rights.mjs` — pure exported functions plus a thin CLI, wired into `npm run validate`. Ships ≥ 4 deterministic **coverage/consistency** gates (D-7): (a) bidirectional missing-assessment coverage, (b) blocking-status enum membership (membership, not value-judgement), (c) open-critical-failure presence check, (d) use/territory/channel set-containment against `release-context.json`. | Must | Each gate has a fails-closed resilience test; `npm run validate` exits non-zero when any gate's precondition is unmet. |
 | FR-WP0-07 | Any date-sensitive check (e.g. permission expiry) takes `--as-of` or an env value, **never `Date.now()`** — byte-identical determinism, per AC EP3-T2. | Must | Two runs at different wall-clock times against unchanged input produce identical output. |
@@ -469,11 +505,11 @@ previously stripped. Depends on WP2's schema landing first.
 | FR-WP3-02 | Add a required `judgment_basis` field per item, defaulting to `unassessed` (OQ-1). It records whether the value is measured/observed or committee-judged. **No agent may set it to anything other than `unassessed`** — the determination is legal and routes to counsel. | Must | A test asserts every item this feature produces carries `judgment_basis: unassessed`; a non-`unassessed` value without a human-attested reference fails. |
 | FR-WP3-03 | Add a required `rights_component_class` field per item, valued from spec §5.1's component classes. It is **orthogonal** to `evidence_item_type` and must not be derived from it. | Must | See AC-WP3-AXES. |
 | FR-WP3-04 | Locator enrichment: every item carries a structured locator with each applicable component individually addressable — source, edition/version, section, table, row, column, assay/method, population/scope — plus retrieval date. Free-text locators are not acceptable where a structured component applies. | Must | A locator that collapses table/row/column into one prose string fails validation for a `reference_interval_value` or table-derived item. |
-| FR-WP3-05 | Re-capture numerics: for every passage flagged `omits-source-numerics` in `docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md`, capture the reported values as **per-value typed atoms** with full locators — never as a reproduced table (risk hotspot). Each atom is independently worded; the value is the source's *reported* value, transcribed, never authored, adjusted, or interpolated. | Must | See AC-WP3-NUMERICS. |
+| FR-WP3-05 | Re-capture numerics. **Scope is the union of two partially overlapping sets** (matching EPR3-T6): (a) the passages carrying an `omits-source-numerics` entry in `reviewFlags` in **`modules/anemia/evidence.json`** — today `WHO2024_HB#ev_001`, `WHO2024_HB#ev_004`, `BSH2020_G6PD#ev_006` — and (b) the HIGH numeric-omission findings in **`docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md`**, which additionally names `AAP2026_IDA#ev_002`. The flag lives in the evidence file; the audit names an overlapping but not identical set, so neither artifact alone is the authoritative scope. For every in-scope passage, capture the reported values as **per-value typed atoms** with full locators — never as a reproduced table (risk hotspot). Each atom is independently worded; the value is the source's *reported* value, transcribed, never authored, adjusted, or interpolated. | Must | See AC-WP3-NUMERICS. |
 | FR-WP3-06 | Every item carries a `not_captured[]` record naming what was deliberately not stored (prose, table structure, figures, visual layout) and why. Absence of capture is never left implicit. | Must | An item derived from a table with an empty `not_captured[]` and no rationale fails review; the gap is visible, not inferred. |
 | FR-WP3-07 | `derived_synthesis` ships as a first-class item type with attribution-to-inputs modelled from day one: an ordered list of contributing item IDs, the synthesis rationale, and an authorship record. It exists only in a `candidate` state (D-3, D-6). | Must | See AC-D6. A `derived_synthesis` item with no input attribution fails validation; an authoritative-state item is unrepresentable. |
 | FR-WP3-08 | `guideline_recommendation` items capture **the fact of the recommendation** — named body, recommendation restated independently, scope/population, locator — and never the recommendation's prose (D-2: "captured, not avoided"). | Must | A `guideline_recommendation` item containing a verbatim span from the source fails FR-WP3-09's invariant. |
-| FR-WP3-09 | **Negative invariant (critical risk):** no third-party full text may enter the repository. A dedicated test asserts no captured field contains a verbatim span from a restricted source beyond the length/fidelity policy already enforced by `passageFidelity`, and that no new asset directory holds source documents, tables, figures, or images. | Must | See AC-WP3-NEGATIVE. |
+| FR-WP3-09 | **Negative invariant (critical risk):** no third-party full text may enter the repository. A dedicated test asserts no captured field contains a verbatim span from a restricted source beyond the length/fidelity policy already enforced by `passageFidelity`, and that no new asset directory holds source documents, tables, figures, or images. **It is a no-regression gate:** the 11 pre-existing near-verbatim spans the audit already records are carried on a named allowlist that may only shrink (deferred as `DEF-R5`, §9); any *new* span fails. | Must | See AC-WP3-NEGATIVE. |
 | FR-WP3-10 | `REG_002_CLEARED` stays `false`, and `passageFidelity` stays constrained to `paraphrase`/`withheld`. Numerics re-capture does not touch this constant. | Must | A test asserts `scripts/validate-kb.mjs`'s `REG_002_CLEARED === false` after this WP. |
 | FR-WP3-11 | Do not hard-couple the taxonomy to Research Foundry's entity model until OQ-4 is answered — the field names and shapes are defined here and mapped to RF's model through the handoff spec, not by importing it. | Must | No WP3 artifact imports or `$ref`s an RF-owned schema at runtime. |
 | FR-WP3-12 | This WP changes no rule, no candidate, and no clinical threshold used by the engine. | Must | Golden-fixture equivalence across all 6 examples shows zero output diff; `npm run check` green. |
@@ -485,10 +521,16 @@ previously stripped. Depends on WP2's schema landing first.
     - `rights/rights-records.json`
     - `tests/rights-axis-separation.test.mjs`
 - propagation_contract: `evidence_item_type` (epistemic kind) × `rights_component_class` (spec §5.1,
-  kind of protected thing) × passage `status` (epistemic) vs `clearance_status` (legal) are four
+  kind of protected thing) × passage `status` (epistemic) vs `overall_status` (legal) are four
   distinct fields on three orthogonal axes. No field may be computed from, defaulted from, or
   validated as a function of another. A passage may be `source-supported` **and**
   `CONTRACT_RESTRICTED` simultaneously — that is exactly the AAP case (findings §6).
+  **Where each axis physically lives:** the three *item-level* axes are `evidence_item_type`,
+  `judgment_basis`, and `rights_component_class`, carried on the evidence item in
+  `schemas/evidence.schema.json`. The **legal** axis is **not** a field on the item at all — it is
+  `overall_status` on the **rights record** (`rights_record.schema.json`), joined to the evidence
+  item through `rights/rights-ledger.json`. Any test or gate reading the legal axis resolves it
+  through the ledger; an item-level clearance field must never be introduced.
 - resilience: `passageFidelity` is **not** duplicated by a `verbatim_excerpt_allowed`-style field;
   two fields that can disagree is a fail-open (findings §6).
 - visual_evidence_required: false.
@@ -497,9 +539,12 @@ previously stripped. Depends on WP2's schema landing first.
 
 #### AC-WP3-NUMERICS: Stripped values return as atoms, not as tables
 - target_surfaces:
-    - `modules/anemia/evidence.json` (passages flagged `omits-source-numerics`)
-    - `docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md` (the enumeration of flagged passages)
-- propagation_contract: each flagged passage is resolved to one of exactly two states — (a) a set of
+    - `modules/anemia/evidence.json` (passages whose `reviewFlags` carry `omits-source-numerics` —
+      today 3: `WHO2024_HB#ev_001`, `WHO2024_HB#ev_004`, `BSH2020_G6PD#ev_006`)
+    - `docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md` (HIGH numeric-omission findings —
+      the same three plus `AAP2026_IDA#ev_002`)
+    - scope is the **union** of the two; neither artifact alone is authoritative
+- propagation_contract: each in-scope passage is resolved to one of exactly two states — (a) a set of
   per-value typed atoms, each with an independently-worded statement, a complete structured locator,
   an `evidence_item_type`, a `rights_component_class`, and `judgment_basis: unassessed`; or (b) an
   explicit not-captured record stating why the values were not re-captured.
@@ -519,7 +564,10 @@ previously stripped. Depends on WP2's schema landing first.
 - resilience: the test is a *positive* structural check over the tree, not a reviewer's assurance.
   Prohibited-excerpt detection is not fully deterministic (residual gap R-1, findings §5) — the
   substitute is the `passageFidelity !== 'verbatim'` check plus a negative asset check, and the
-  residual gap is recorded rather than claimed closed.
+  residual gap is recorded rather than claimed closed. The span check is **no-regression, not
+  clean-slate**: the 11 spans the audit already records are on a frozen allowlist (`DEF-R5`) that may
+  only shrink; a test asserts every allowlist entry still resolves to a live passage, so a
+  re-authored span must be deleted from the list rather than left stale.
 - visual_evidence_required: false.
 - verified_by: `tests/rights-negative-invariant.test.mjs`; git history is unrecoverable, so this test
   must land before any capture work in FR-WP3-05.
@@ -555,32 +603,36 @@ Parallelizable throughout (W1). **`CLAUDE.md` is edited only by this WP** (seria
 | FR-WP5-09 | Update `NOTICE.md` and `docs/architecture.md` §7 to describe the `rights/` tree, the release context, and the coverage-only gate posture. | Must | Both documents describe the shipped artifacts; neither implies any clearance exists. |
 | FR-WP5-10 | Record the residual gap R-1 (prohibited-excerpt detection is not deterministic) explicitly, rather than implying the negative invariant is complete. | Must | The gap is named in `docs/architecture.md` §7 and in the closeout record. |
 
-### RF-HANDOFF — Research Foundry spec handoff (separate deliverable, no repo code)
+### RF-HANDOFF — Research Foundry spec handoff (**delivered**; no repo code)
 
-Parallel with everything (W1). Not point-estimated: it produces a spec document for an upstream repo,
-not code here (decisions-block §2). **Judgment call:** given IDs `FR-RFH-*` since the decisions block
-names it a deliverable rather than a numbered phase.
+> **Status: already authored and committed** —
+> `docs/project_plans/research/research-foundry-rights-entity-model-handoff-v1.md`. It is **not**
+> scheduled work, not a phase, and not point-estimated: it produced a spec document for an upstream
+> repo, not code here (decisions-block §2). The `FR-RFH-*` requirements below are therefore recorded
+> **retrospectively**, as the acceptance criteria the delivered document is measured against — not as
+> work W1 will perform. The implementation plan reflects this: EP-R0's vendoring and EP-R3's taxonomy
+> both cite the delivered document's §9 conflict list; neither waits on it.
 
 | ID | Requirement | Priority | Acceptance Criterion |
 |:-:|---|:-:|---|
-| FR-RFH-01 | Author a handoff spec proposing, for Research Foundry: licence / access-basis / terms fields on source and evidence entities; the `evidence_item_type` taxonomy and the measured-vs-judged axis; capture-time rights triage and terms snapshotting; alternative-source discovery when a source is restricted (D-4's generic half). | Must | Spec covers all four areas and is delivered as a spec, not as code written into `research-foundry`. |
-| FR-RFH-02 | Apply the boundary rule explicitly: **if the CBC module would need it too, it is Research Foundry's.** The spec states, per item, why it is generic. | Must | Each proposed field/behaviour carries a one-line genericity rationale. |
-| FR-RFH-03 | Authored in W1, before WP3 begins, so the two-repo line is drawn before the taxonomy is built. | Must | Handoff spec is complete at WP3 kickoff; WP3's plan cites it. |
-| FR-RFH-04 | Record OQ-4 as open: RF may counter-propose a different entity model. The spec must not assume acceptance. | Must | The spec contains an explicit "subject to RF counter-proposal" scoping note; FR-WP3-11 keeps this repo decoupled meanwhile. |
+| FR-RFH-01 | The handoff spec proposed, for Research Foundry, the generic half of this model (D-4): licence / access-basis / terms fields on source and evidence entities; the `evidence_item_type` taxonomy and the measured-vs-judged axis; **`derived_synthesis` as a first-class item type with attribution-to-inputs and an agent-unwritable attestation state**; capture-time rights triage and terms snapshotting; alternative-source discovery when a source is restricted. | Must | **Met.** The delivered spec covers all five capability areas (its §2–§5 plus §7's spec amendments) and is a spec, not code written into `research-foundry`. |
+| FR-RFH-02 | Apply the boundary rule explicitly: **if the CBC module would need it too, it is Research Foundry's.** The spec states why the requested scope is generic. | Must | **Met.** Genericity is argued **per capability**, not per field — the delivered §1.2 states the boundary test and applies it to each capability area. A per-field rationale was neither delivered nor required; per-capability is the criterion. |
+| FR-RFH-03 | Delivered before WP3 begins, so the two-repo line is drawn before the taxonomy is built. | Must | **Met.** The document is authored and committed ahead of every phase in this plan; EP-R3's phase file cites it (handoff §9.1, §9.5). |
+| FR-RFH-04 | Record OQ-4 as open: RF may counter-propose a different entity model. The spec must not assume acceptance. | Must | **Met.** The delivered §9 lists six conflicts explicitly "for RF to adjudicate", and §10 carries the open questions; FR-WP3-11 keeps this repo decoupled meanwhile. |
 
 ---
 
 ## 8. Non-Functional Requirements
 
 **Axis separation (structural, not documentary).** `evidence_item_type` (epistemic kind) ×
-`rights_component_class` (spec §5.1) × passage `status` (epistemic) vs `clearance_status` (legal) are
+`rights_component_class` (spec §5.1) × passage `status` (epistemic) vs `overall_status` (legal) are
 three orthogonal axes carried in four separate fields. None may be derived from, defaulted from, or
 validated as a function of another. Conflation is a fail-open and was flagged as such by the findings
 (§6). Enforced by AC-WP3-AXES.
 
 **Coverage gates only, never clearance gates (D-7).** Every gate this feature ships answers "does
 every shipped artifact have a rights record / do the axes agree?" It never answers "is this cleared?"
-A record whose `clearance_status` is `UNKNOWN` must pass the build.
+A record whose `overall_status` is `UNKNOWN` must pass the build.
 
 **No new clinical claims.** No rule, candidate, threshold, or reference-range value changes in
 clinical meaning. WP3 transcribes values *reported by sources at recorded locators*; it authors none.
@@ -614,7 +666,8 @@ publishes nothing.
 
 ### In Scope
 
-- WP0–WP5 as specified in §7, plus the RF-HANDOFF spec deliverable.
+- WP0–WP5 as specified in §7. The RF-HANDOFF spec deliverable is **already delivered**, so it is
+  recorded in §7 for traceability rather than scheduled as in-scope work.
 - The anemia module only; `rights/` is source-scoped and will serve future modules without
   duplication, but no other module is registered in this feature.
 - Amendments to the reviewed rights spec (WP5) and the doc-truth corrections it carries.
@@ -632,6 +685,17 @@ publishes nothing.
 - **Per-component reuse assessments, permission records, counsel review, Zone 0–5 enforcement,
   surveillance** — findings §5 "Deferred (do not attempt)".
 - **Zone 1 controlled source vault** — must never live in this repo (findings §5).
+- **Re-authoring the 11 pre-existing near-verbatim spans (deferred as `DEF-R5`).** The audit
+  (`docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md`) records ~11 spans of 7–13 words sitting
+  under `passageFidelity: paraphrase` — `FDA2026_CDS#ev_002`–`#ev_005`; `BSH2020_G6PD#ev_003`,
+  `#ev_005`, `#ev_007`; and the shorter spans in `AAP2026_IDA#ev_005`, `CDC2025_LEAD#ev_001`,
+  `#ev_003`, `BSH2020_G6PD#ev_002`. No requirement in this feature re-words them, so **FR-WP3-09's
+  invariant is a no-regression gate**: it allowlists exactly those spans, the allowlist may only
+  shrink, and any *new* near-verbatim span fails the build. **Promotion trigger:** either a
+  re-authoring pass is scheduled (naturally at the EP-R3 re-capture seam, which touches the same
+  passages), or the allowlist is observed non-shrinking across two consecutive phases — at which
+  point the debt is accumulating and DEF-R5 promotes to scheduled work. DEF-R5 closes when the
+  allowlist is empty. Tracked in the implementation plan's Deferred Items triage table.
 - **`rightsHash` / `KB_JSON_FILES` membership changes** — normative under SPIKE-006 Amendment 1.
 - **Re-anchoring the 44 single-review-article rules onto primary studies** (OQ-3) — real re-synthesis
   cost, not decided in this feature.
@@ -703,7 +767,7 @@ None. `REG_002_CLEARED` is an existing constant this feature does not flip.
 
 | Risk | Severity | Mitigation |
 |---|:-:|---|
-| An agent writes a `CLEARED_*` status, `clinicalApprovers[]`, `approvedBy[]`, `counsel_approved`, or an authoritative `derived_synthesis`. | **Critical** | D-6 / AC-D6. Schema-level `maxItems: 0` / null-constraints in the vendored copies (the spec's own examples put `rights-governance-agent` in reviewer fields, actively inviting this); a fails-closed test per the D-4 precedent; the authoritative `derived_synthesis` state is structurally unrepresentable. |
+| An agent writes a `CLEARED_*` status, `clinicalApprovers[]`, `approvedBy[]`, `counsel_approved`, or an authoritative `derived_synthesis`. | **Critical** | D-6 / AC-D6. Schema-level `maxItems: 0` / null-constraints in the vendored copies, on the real field paths enumerated in AC-D6 (the bundle's `examples/aap_rights_failure.example.json` sets `review.reviewed_by: ["rights-governance-agent"]`, and `examples/facts_only_reuse_assessment.example.json` sets `review.clinical_reviewer: "pediatric-hematology-reviewer"` — the two places an identifier lands in a human-reviewer field, actively inviting this; the `rights_record` examples themselves correctly use `assessed_by_agent`); a fails-closed test per the D-4 precedent; the authoritative `derived_synthesis` state is structurally unrepresentable. |
 | Restricted source text enters the repo "for the archive". | **Critical** | D-1 boundary; FR-WP3-09 negative-invariant test landed **before** any capture work; no Zone 1 vault in this repo; git history is unrecoverable, so prevention is the only control. |
 | Numerics re-capture (WP3) reintroduces verbatim table structure. | High | Per-value atoms with locators, never a reproduced table (FR-WP3-05); `not_captured[]` records the structure deliberately omitted; `REG_002_CLEARED` stays `false`. |
 | Adopting spec §20.2's clearance gate bricks the build. | High | D-7 — coverage and consistency gates only; a test asserts an `UNKNOWN` clearance still passes `npm run validate`. |
@@ -759,8 +823,8 @@ ledger is still empty and the test still asserts it. `REG_002_CLEARED` is still 
 ## 13. Overall Acceptance Criteria (Definition of Done)
 
 ### Functional
-- [ ] FR-WP0-01 through FR-WP5-10 and FR-RFH-01 through FR-RFH-04 implemented; each stated acceptance
-      criterion passes.
+- [ ] FR-WP0-01 through FR-WP5-10 implemented; each stated acceptance criterion passes.
+      (FR-RFH-01..04 are already met by the delivered handoff spec — verify, do not re-author.)
 - [ ] AC-D1, AC-D6, AC-WP3-AXES, AC-WP3-NUMERICS, AC-WP3-NEGATIVE all pass as tests, not as review
       assertions.
 - [ ] All 4 `KB_JSON_FILES` entries and all 6 KB-cited sources resolve to rights records, verified
@@ -787,13 +851,14 @@ ledger is still empty and the test still asserts it. `REG_002_CLEARED` is still 
 - [ ] **This feature grounds zero rules.** 0 of 91 before, 0 of 91 after; no rule's binding strength
       changes.
 - [ ] No artifact produced by this feature populates `clinicalApprovers[]`, `approvedBy[]`,
-      `counsel_approved`, `approvals.clinical_owner`, or `review.clinical_reviewer` from any source —
-      including agent, ARC, or council output.
+      `rights_record.review.review_status: counsel_approved`, `rights_record.review.human_reviewer`,
+      `rights_record.review.counsel_reviewer`, `content_reuse_assessment.review.clinical_reviewer`, or
+      `rights_failure.review.reviewed_by[]` from any source — including agent, ARC, or council output.
 - [ ] Every `derived_synthesis` item is a candidate; no authoritative one exists, and the authoritative
       state is structurally unreachable without a human attestation this feature does not create.
 - [ ] Every item ships `judgment_basis: unassessed`; the measured-vs-judged determination (OQ-1) is
       recorded as open and routed to counsel, never inferred by an agent.
-- [ ] No gate introduced by this feature fails on the *value* of a `clearance_status` (D-7); a record
+- [ ] No gate introduced by this feature fails on the *value* of an `overall_status` (D-7); a record
       at `UNKNOWN` passes the build, and a test proves it.
 - [ ] The closeout record states plainly that the rights position is now **measured, not improved** —
       that this feature unblocked no source, and that the two named bottlenecks (a credentialed
