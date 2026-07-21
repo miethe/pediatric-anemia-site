@@ -114,7 +114,15 @@ function collectKeysDeep(value, found = new Set()) {
 // record, e.g. a `rights` or `extensions.rights` key); it is a narrow, intentional false positive of
 // the substring scan below. Exempted by exact key name only — every other "rights"-containing key
 // (including the literal "rights" key and any "extensions.rights"-shaped path) still fails.
-const ALLOWLISTED_RIGHTS_SUBSTRING_KEYS = new Set(['rights_holder']);
+//
+// EPR3-T5 adds a second narrow false positive: `rights_component_class` is EPR3-T2's first-class
+// evidence-item taxonomy axis naming WHICH rights component of the source an item draws on (a
+// `table`, `prose`, `figure`, ...). RF handoff §9.1 established it as a first-class passage field
+// precisely because it must NOT ride `extensions.rights`; the axis-separation suite proves it is
+// orthogonal to any legal disposition and carries no clearance authority. It is a taxonomy label,
+// not an inlined governance record — so, like `rights_holder`, it is exempted by exact key name,
+// while a literal `rights`/`extensions.rights` inline record still fails.
+const ALLOWLISTED_RIGHTS_SUBSTRING_KEYS = new Set(['rights_holder', 'rights_component_class']);
 
 for (const relPath of CLINICAL_JSON_FILES) {
   test(`D4: ${relPath} carries no inline rights key (no "rights", no "extensions.rights")`, async () => {

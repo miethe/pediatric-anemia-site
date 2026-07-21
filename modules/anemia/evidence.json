@@ -59,6 +59,32 @@
           },
           "exactPassage": "AAP names the CBC (Hb, MCV, RDW) plus serum ferritin as the two core laboratory tests for identifying iron deficiency and IDA, with both performed together.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": "Screening — Laboratory Screening",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "CBC (Hb, MCV, RDW) and serum ferritin immunoassay",
+            "population_or_scope": "infants, children, and adolescents screened for ID/IDA",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [
             "source-not-independently-retrievable"
           ],
@@ -93,6 +119,35 @@
           },
           "exactPassage": "Table 1 provides age- and sex-specific normal Hb (g/dL), MCV (fL), and RDW (%) intervals spanning 6–24 months through 12–<18 years, used as the KB fallback CBC reference intervals.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "reference_interval_value",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "reference_interval_values",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": null,
+            "table": "Table 1",
+            "row": null,
+            "column": null,
+            "assay_or_method": "automated CBC analyzer",
+            "population_or_scope": "age and sex bands 6–24 mo through 12–<18 y",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": [
+              "row",
+              "column"
+            ]
+          },
+          "not_captured": [
+            {
+              "kind": "table_structure",
+              "rationale": "The table layout and cells are not reproduced; per-value atoms are captured under EPR3-T6, and REG-002 has cleared no verbatim reuse."
+            },
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            }
+          ],
           "reviewFlags": [
             "adds-claim-not-in-located-passage",
             "source-not-independently-retrievable"
@@ -129,6 +184,32 @@
           },
           "exactPassage": "AAP sets serum ferritin ≤20 ng/mL as indicating ID for young and school-aged children and ≤30 ng/mL for adolescents and all menstruating individuals.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": "Diagnosis — Iron Studies",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "serum ferritin immunoassay",
+            "population_or_scope": "young and school-aged children; adolescents and menstruating individuals",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [
             "source-not-independently-retrievable"
           ],
@@ -163,6 +244,32 @@
           },
           "exactPassage": "Ferritin is an acute-phase reactant; an elevated CRP in an ill or inflamed child means SF cannot be treated as a reliable ID marker, while CRP is unnecessary in a clinically well child.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": "Diagnosis — Iron Studies",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "serum ferritin interpreted with C-reactive protein",
+            "population_or_scope": "children with acute or chronic inflammation or illness",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [
             "adds-claim-not-in-located-passage",
             "source-not-independently-retrievable"
@@ -199,6 +306,28 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "equation_or_method",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": "Diagnosis — Iron Studies (soluble transferrin receptor)",
+            "table": "Table 4",
+            "row": null,
+            "column": null,
+            "assay_or_method": "soluble transferrin receptor assay; index = sTfR / log10(ferritin)",
+            "population_or_scope": "children with chronic inflammation and ID risk",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights",
             "source-not-independently-retrievable"
@@ -235,6 +364,32 @@
           },
           "exactPassage": "Microcytic anemia with reduced MCV and elevated RDW is most consistent with IDA, but thalassemia trait and chronic inflammation can also cause microcytic anemia and must be differentiated (Table 3).",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": "Laboratory Diagnosis of IDA — Complete Blood Cell Count",
+            "table": "Table 3",
+            "row": null,
+            "column": null,
+            "assay_or_method": "CBC (MCV, RDW) with iron studies; Hb A2 on hemoglobin analysis",
+            "population_or_scope": "children with microcytic anemia",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [
             "source-not-independently-retrievable"
           ],
@@ -269,6 +424,32 @@
           },
           "exactPassage": "AAP defines severe IDA as confirmed IDA with Hb <7 g/dL, and notes some such children are minimally symptomatic — transfusion is reserved for clinical instability, not triggered by the Hb value alone.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": "Treatment of Severe or Refractory IDA — Severe IDA",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "hemoglobin from CBC",
+            "population_or_scope": "children and adolescents with confirmed IDA",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [
             "adds-claim-not-in-located-passage",
             "source-not-independently-retrievable"
@@ -305,6 +486,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -376,6 +574,35 @@
           },
           "exactPassage": "WHO 2024 defines anaemia with age/population-specific haemoglobin cutoffs, including four distinct pediatric bands from 6 months to 14 years.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "reference_interval_value",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "reference_interval_values",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+            "section": "Executive summary (p. xi)",
+            "table": "Table 2",
+            "row": null,
+            "column": null,
+            "assay_or_method": "haemoglobin concentration; 5th-percentile cutoff derivation",
+            "population_or_scope": "children 6 mo–14 y, age and sex bands",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": [
+              "row",
+              "column"
+            ]
+          },
+          "not_captured": [
+            {
+              "kind": "table_structure",
+              "rationale": "The table layout and cells are not reproduced; per-value atoms are captured under EPR3-T6, and REG-002 has cleared no verbatim reuse."
+            },
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            }
+          ],
           "reviewFlags": [
             "omits-source-numerics"
           ],
@@ -410,6 +637,32 @@
           },
           "exactPassage": "The 2024 revision modified the haemoglobin cutoff for exactly one pediatric group -- children 6-23 months -- rather than applying a single universal pediatric threshold.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+            "section": "Executive summary (p. xi), Normative statement 1.a",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "haemoglobin concentration; 5th-percentile cutoff",
+            "population_or_scope": "children 6–23 months",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -440,6 +693,32 @@
           },
           "exactPassage": "WHO states physiological, environmental, and genetic factors and lifecycle variation must be considered when defining haemoglobin cutoffs -- supporting contextual, non-universal interpretation.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+            "section": "Section 1 (what should be the haemoglobin cutoffs)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": "all age and lifecycle groups including children",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [
             "overclaims-source-modality"
           ],
@@ -474,6 +753,39 @@
           },
           "exactPassage": "WHO recommends adjusting haemoglobin to define anaemia for elevation of residence, via a stated increment table and quadratic equation -- a contextual/physiologic modifier of interpretation.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "equation_or_method",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "table",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+            "section": "Executive summary (p. xii–xiii), Normative statement 2.a.1",
+            "table": "Table 4",
+            "row": null,
+            "column": null,
+            "assay_or_method": "elevation-of-residence adjustment applied to haemoglobin",
+            "population_or_scope": "all groups including children, especially below 2500 m",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": [
+              "row",
+              "column"
+            ]
+          },
+          "not_captured": [
+            {
+              "kind": "table_structure",
+              "rationale": "The table layout and cells are not reproduced; per-value atoms are captured under EPR3-T6, and REG-002 has cleared no verbatim reuse."
+            },
+            {
+              "kind": "other",
+              "rationale": "The elevation-adjustment equation and its coefficients are not carried here; each value is captured as a per-value atom under EPR3-T6."
+            },
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            }
+          ],
           "reviewFlags": [
             "omits-source-numerics"
           ],
@@ -508,6 +820,32 @@
           },
           "exactPassage": "WHO explicitly recommends that haemoglobin NOT be adjusted for infection/inflammation -- a contextual caveat distinguishing haemoglobin interpretation from inflammation-adjusted iron markers.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+            "section": "Executive summary (p. xiv), Normative statement 2.b",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "haemoglobin, not inflammation-adjusted",
+            "population_or_scope": "all groups including children in infection or inflammation settings",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -538,6 +876,32 @@
           },
           "exactPassage": "WHO documents that the 2024 cutoffs update and consolidate a traceable lineage of prior WHO guidance (1968-2005), giving transparent provenance for the thresholds.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+            "section": "Introduction / methods narrative",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -568,6 +932,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -642,6 +1023,32 @@
           },
           "exactPassage": "The review's core framework classifies pediatric anemia first by MCV (microcytic/normocytic/macrocytic) then refines by reticulocyte count — the morphology-first, reticulocyte-response approach the KB relies on.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BLOOD2022_PED_ANEMIA",
+            "edition_or_version": "2022; Blood 2022;140(6):571-593",
+            "section": "Classification of anemia (Figure 2)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "automated analyzer MCV with reticulocyte count",
+            "population_or_scope": "infants and children with anemia",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "figure",
+              "rationale": "The figure itself is not reproduced; the finding is restated in independent prose."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -672,6 +1079,32 @@
           },
           "exactPassage": "The review anchors the normocytic band at MCV 80-100 fL, the only explicit numeric MCV range stated in the source.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BLOOD2022_PED_ANEMIA",
+            "edition_or_version": "2022; Blood 2022;140(6):571-593",
+            "section": "Normocytic anemia",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "automated analyzer MCV",
+            "population_or_scope": "pediatric patients, age band not sub-specified",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -702,6 +1135,32 @@
           },
           "exactPassage": "Reticulocyte count direction (elevated vs low relative to anemia severity) distinguishes an adequate erythropoietic response to blood loss/hemolysis from inadequate marrow production.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BLOOD2022_PED_ANEMIA",
+            "edition_or_version": "2022; Blood 2022;140(6):571-593",
+            "section": "Laboratory investigation",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "reticulocyte count",
+            "population_or_scope": "infants and children with anemia",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -732,6 +1191,32 @@
           },
           "exactPassage": "Peripheral smear morphology (spherocytes, elliptocytes, schistocytes/helmet cells) points to specific hemolytic mechanisms — supporting the KB's smear-interpretation use of this source.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BLOOD2022_PED_ANEMIA",
+            "edition_or_version": "2022; Blood 2022;140(6):571-593",
+            "section": "Laboratory investigation (peripheral blood smear)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "peripheral blood smear microscopy",
+            "population_or_scope": "infants and children with anemia",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -762,6 +1247,32 @@
           },
           "exactPassage": "Multilineage cytopenia — pancytopenia with relative reticulocytopenia, teardrop RBCs, giant platelets, and immature leukocytes — signals marrow replacement, backing the KB's multi-lineage-cytopenia escalation.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BLOOD2022_PED_ANEMIA",
+            "edition_or_version": "2022; Blood 2022;140(6):571-593",
+            "section": "BM replacement syndromes",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "CBC differential with peripheral blood smear",
+            "population_or_scope": "infants and children with anemia plus another cytopenia",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -792,6 +1303,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "BLOOD2022_PED_ANEMIA",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -864,6 +1392,28 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "CDC2025_LEAD",
+            "edition_or_version": "clinical guidance updated 2025-08-21",
+            "section": "Initial screening blood lead level",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "blood lead level, capillary or venous",
+            "population_or_scope": "children screened for lead",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -898,6 +1448,32 @@
           },
           "exactPassage": "A capillary screening result at or above the BLRV must be confirmed with a venous sample before further action.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "CDC2025_LEAD",
+            "edition_or_version": "clinical guidance updated 2025-08-21",
+            "section": "Initial screening blood lead level",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "capillary screen with venous confirmation",
+            "population_or_scope": "children undergoing initial lead screening",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [
             "overclaims-source-modality"
           ],
@@ -932,6 +1508,35 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "table",
+          "structured_locator": {
+            "source": "CDC2025_LEAD",
+            "edition_or_version": "clinical guidance updated 2025-08-21",
+            "section": null,
+            "table": "Table 1",
+            "row": null,
+            "column": null,
+            "assay_or_method": "confirmatory venous sampling schedule keyed to initial capillary BLL",
+            "population_or_scope": "children with an elevated initial capillary BLL",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": [
+              "row",
+              "column"
+            ]
+          },
+          "not_captured": [
+            {
+              "kind": "table_structure",
+              "rationale": "The table layout and cells are not reproduced; per-value atoms are captured under EPR3-T6, and REG-002 has cleared no verbatim reuse."
+            },
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -966,6 +1571,32 @@
           },
           "exactPassage": "For a confirmed BLL of 3.5-19 µg/dL, CDC directs providers to test for and treat iron deficiency per AAP guidelines.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "CDC2025_LEAD",
+            "edition_or_version": "clinical guidance updated 2025-08-21",
+            "section": "BLL 3.5–19 micrograms per deciliter, iron-deficiency bullet",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "iron-deficiency testing deferred to AAP guidance",
+            "population_or_scope": "children with confirmed BLL 3.5–19 µg/dL",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -996,6 +1627,32 @@
           },
           "exactPassage": "CDC defines escalating action tiers at 20-44 µg/dL (history/physical, environmental investigation, PEHSU/Poison Control contact) and ≥45 µg/dL (highest tier: detailed neuro exam, possible hospital admission, toxicologist consult for chelation).",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "CDC2025_LEAD",
+            "edition_or_version": "clinical guidance updated 2025-08-21",
+            "section": "BLL 20–44 and ≥45 micrograms per deciliter action tiers",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "action tiers keyed to confirmed venous BLL",
+            "population_or_scope": "children with confirmed BLL 20–44 or ≥45 µg/dL",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -1026,6 +1683,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "CDC2025_LEAD",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1097,6 +1771,32 @@
           },
           "exactPassage": "FDA states a CDS software function is excluded from the device definition under section 520(o)(1)(E) only if it meets all four listed non-device CDS criteria.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "FDA2026_CDS",
+            "edition_or_version": "final guidance, January 2026",
+            "section": "II (Background), four-criteria enumeration (pp. 5–6)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -1127,6 +1827,28 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "FDA2026_CDS",
+            "edition_or_version": "final guidance, January 2026",
+            "section": "II (Background), Criterion 4 (p. 6); IV(4) (pp. 14–15)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1161,6 +1883,28 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "FDA2026_CDS",
+            "edition_or_version": "final guidance, January 2026",
+            "section": "IV(3) Interpretation of Criterion 3 (pp. 10–11)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1195,6 +1939,28 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "FDA2026_CDS",
+            "edition_or_version": "final guidance, January 2026",
+            "section": "IV(4)(a) Interpretation of Criterion 4 (p. 14)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1229,6 +1995,28 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "FDA2026_CDS",
+            "edition_or_version": "final guidance, January 2026",
+            "section": "IV(4) Interpretation of Criterion 4 (p. 15)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1263,6 +2051,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "FDA2026_CDS",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1335,6 +2140,32 @@
           },
           "exactPassage": "G6PD deficiency should be diagnosed by measuring enzyme activity directly with a quantitative spectrophotometric assay, and a quantitative assay must follow any abnormal or borderline screening test.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": "Recommendations: Laboratory diagnosis (p. 5)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "quantitative spectrophotometric G6PD activity assay",
+            "population_or_scope": "patients suspected of G6PD deficiency, all ages",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -1365,6 +2196,28 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": "Factors affecting clinical interpretation (p. 6)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "quantitative G6PD assay read with the reticulocyte count",
+            "population_or_scope": "patients tested during or after acute hemolysis, all ages",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1399,6 +2252,28 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": "Factors affecting clinical interpretation (p. 6); Recommendations: Laboratory diagnosis (p. 5)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "repeat quantitative G6PD assay after reticulocytosis resolves",
+            "population_or_scope": "patients with normal or equivocal initial assay, all ages",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1433,6 +2308,32 @@
           },
           "exactPassage": "In a recently transfused patient a G6PD deficiency may be masked, so molecular analysis should be considered when a precise diagnosis is needed.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": "Molecular diagnosis (p. 7)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "molecular or DNA analysis where enzyme assay is unreliable",
+            "population_or_scope": "recently transfused patients or heterozygous females, all ages",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -1463,6 +2364,35 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "reference_interval_value",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "table",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": null,
+            "table": "Table I",
+            "row": null,
+            "column": null,
+            "assay_or_method": "residual G6PD activity as percentage of normal, quantitative assay",
+            "population_or_scope": "hemizygous males",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": [
+              "row",
+              "column"
+            ]
+          },
+          "not_captured": [
+            {
+              "kind": "table_structure",
+              "rationale": "The table layout and cells are not reproduced; per-value atoms are captured under EPR3-T6, and REG-002 has cleared no verbatim reuse."
+            },
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1497,6 +2427,32 @@
           },
           "exactPassage": "The guideline gives adult normal-range G6PD activity reference values in international units per gram of haemoglobin at 30 C and 37 C.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": "Normal values, adult reference values (p. 6)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "quantitative spectrophotometric assay at 30 °C and 37 °C, per gram haemoglobin",
+            "population_or_scope": "adults",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "The reported numeric values are not carried on this summary record; each is captured as a per-value atom with its own locator under EPR3-T6."
+            }
+          ],
           "reviewFlags": [
             "omits-source-numerics"
           ],
@@ -1531,6 +2487,28 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": "Normal values, newborn and premature (p. 6)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "quantitative G6PD assay; adult ranges do not apply to neonates",
+            "population_or_scope": "newborns and premature infants 29–32 weeks gestation",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1565,6 +2543,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
