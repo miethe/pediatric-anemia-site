@@ -9,13 +9,13 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-fo
 execution_model: sequential
 phase: 3
 title: 'EP-3: Evidence Provenance (Exact-Passage Evidence Records)'
-status: completed
+status: deviated
 started: '2026-07-20T20:00Z'
 completed: '2026-07-21T03:00Z'
 commit_refs: [a34ccc4, 6565c32, dd983c6, 8a6ddc7, aabc24e]
 pr_refs: []
 overall_progress: 100
-completion_estimate: on-track
+completion_estimate: at-risk
 total_tasks: 6
 completed_tasks: 6
 in_progress_tasks: 0
@@ -180,8 +180,8 @@ success_criteria:
   note: "npm run check green at 626 tests."
 - id: SC-5
   description: task-completion-validator sign-off
-  status: completed
-  note: "Adversarial reviewer gate run 2026-07-21 (gpt-5.6-sol): CHANGES REQUIRED; all findings remediated in 8a6ddc7 and aabc24e. See docs/audits/ep3-ep4-reviewer-gate-2026-07-21.md."
+  status: pending
+  note: "NOT signed off. Two adversarial reviewer-gate passes (gpt-5.6-sol, 2026-07-21) BOTH returned CHANGES REQUIRED. Remediation landed in 8a6ddc7, aabc24e, 7b62a90 and later commits, but no gate pass has yet returned APPROVE. An earlier revision of this file recorded this criterion as completed while citing a CHANGES REQUIRED report — that was wrong and is corrected here. Sign-off requires a passing gate, not a run that happened."
 files_modified:
 - schemas/evidence.schema.json
 - src/evidence.js

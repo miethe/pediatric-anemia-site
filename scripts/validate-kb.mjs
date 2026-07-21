@@ -306,12 +306,65 @@ export function validateFidelityFindings(evidenceData, findingsData, moduleId) {
   return errors;
 }
 
+/**
+ * FIX-C (EP3-T4): validates modules/<moduleId>/candidates.json against candidate.schema.json
+ * (including the required `sourcePassageId` key it now carries) and resolves each candidate's
+ * ACTUAL sourcePassageId pointer against `passageIndex` — not merely "the cited source has some
+ * passage record," which is all the pre-existing evidence[]-reference check below proves. Pure
+ * function over in-memory data (mirrors validateEvidenceDocument/validateFidelityFindings above),
+ * so it is independently unit-testable against a tampered candidate without touching disk.
+ *
+ * Returns `{ errors, candidatePassageStatusCounts }` — candidatePassageStatusCounts mirrors
+ * validateModule's rulePassageStatusCounts shape exactly.
+ */
+export function validateCandidates(candidates, moduleId, { candidateSchema, evidenceIds, sourcesWithPassages, passageIndex }) {
+  const errors = [];
+  const candidatePassageStatusCounts = { 'source-supported': 0, quarantined: 0, 'implementation-proposal': 0, unresolved: 0 };
+
+  for (const [id, candidate] of Object.entries(candidates)) {
+    if (candidate.id !== id) errors.push(`${moduleId}/: Candidate key/id mismatch: ${id}`);
+    for (const schemaError of validate(candidateSchema, candidate)) {
+      errors.push(`${moduleId}/${id}: candidate.schema.json ${schemaError.path}: ${schemaError.message}`);
+    }
+    for (const evidenceId of candidate.evidence ?? []) {
+      if (!evidenceIds.has(evidenceId)) {
+        errors.push(`${moduleId}/${id}: unknown evidence ${evidenceId}`);
+      } else if (!sourcesWithPassages.has(evidenceId)) {
+        errors.push(`${moduleId}/${id}: evidence ${evidenceId} carries no passage records`);
+      }
+    }
+
+    // Validate the ACTUAL candidate pointer — not "the cited source has some passage" (the gap
+    // this fix closes). Mirrors the rule-level sourcePassageId resolution check in validateModule
+    // exactly, including the same D-EP3-6 fallback-is-not-an-error treatment for
+    // implementation-proposal.
+    if (Object.hasOwn(candidate, 'sourcePassageId') && candidate.sourcePassageId != null) {
+      const boundPassage = passageIndex.get(candidate.sourcePassageId);
+      if (!boundPassage) {
+        errors.push(`${moduleId}/${id}: sourcePassageId "${candidate.sourcePassageId}" does not resolve to a known passage`);
+        candidatePassageStatusCounts.unresolved += 1;
+      } else if (boundPassage.status !== 'implementation-proposal' && !isBindableAsSourceSupported(boundPassage)) {
+        errors.push(`${moduleId}/${id}: sourcePassageId "${candidate.sourcePassageId}" resolves to a passage with status "${boundPassage.status}" (reviewFlags: ${JSON.stringify(boundPassage.reviewFlags ?? [])}) and cannot be bound as source-supported grounding (EP3-T5 binding rule)`);
+        candidatePassageStatusCounts[boundPassage.status] = (candidatePassageStatusCounts[boundPassage.status] ?? 0) + 1;
+      } else {
+        candidatePassageStatusCounts[boundPassage.status] = (candidatePassageStatusCounts[boundPassage.status] ?? 0) + 1;
+      }
+    } else {
+      errors.push(`${moduleId}/${id}: missing sourcePassageId (required per EP3-T4)`);
+      candidatePassageStatusCounts.unresolved += 1;
+    }
+  }
+
+  return { errors, candidatePassageStatusCounts };
+}
+
 export async function validateModule(moduleId, rootDir) {
   const moduleDir = path.join(rootDir, 'modules', moduleId);
   const errors = [];
   const warnings = [];
 
   const ruleSchema = await readJson(path.join(rootDir, 'schemas', 'rule.schema.json'));
+  const candidateSchema = await readJson(path.join(rootDir, 'schemas', 'candidate.schema.json'));
   const evidenceSchema = await readJson(path.join(rootDir, 'schemas', 'evidence.schema.json'));
   const rules = await readJson(path.join(moduleDir, 'rules.json'));
   const candidates = await readJson(path.join(moduleDir, 'candidates.json'));
@@ -405,16 +458,16 @@ export async function validateModule(moduleId, rootDir) {
     warnings.push(`${moduleId}: ${rulesMissingSourcePassageId}/${rules.length} rule(s) lack sourcePassageId (tolerated pending EP-4; expect 0 once EP4-T2 lands)`);
   }
 
-  for (const [id, candidate] of Object.entries(candidates)) {
-    if (candidate.id !== id) errors.push(`${moduleId}/: Candidate key/id mismatch: ${id}`);
-    for (const evidenceId of candidate.evidence ?? []) {
-      if (!evidenceIds.has(evidenceId)) {
-        errors.push(`${moduleId}/${id}: unknown evidence ${evidenceId}`);
-      } else if (!sourcesWithPassages.has(evidenceId)) {
-        errors.push(`${moduleId}/${id}: evidence ${evidenceId} carries no passage records`);
-      }
-    }
-  }
+  // FIX-C (EP3-T4): candidates now carry the same passage-level pointer rules got in EP-4 — a
+  // rule's evidence[] citing a source with SOME passage record is not the same claim as "this
+  // candidate's evidence resolves to a specific passage/proposal." validateCandidates is a pure
+  // function (mirrors validateEvidenceDocument/validateFidelityFindings above) precisely so it is
+  // unit-testable against a tampered in-memory candidate without touching disk.
+  const candidateValidation = validateCandidates(candidates, moduleId, {
+    candidateSchema, evidenceIds, sourcesWithPassages, passageIndex,
+  });
+  errors.push(...candidateValidation.errors);
+  const { candidatePassageStatusCounts } = candidateValidation;
 
   // module.json (manifest) is a required per-module file as of Phase 6 (P6-T1). It is read
   // directly here so this check catches an unparsable/missing manifest as a validation error
@@ -449,6 +502,7 @@ export async function validateModule(moduleId, rootDir) {
     evidenceCount: evidenceIds.size,
     passageCount,
     rulePassageStatusCounts,
+    candidatePassageStatusCounts,
   };
 }
 
@@ -486,6 +540,14 @@ if (isMain) {
         `${result.moduleId}: rule sourcePassageId status split — ${c['source-supported']} source-supported, `
         + `${c.quarantined} quarantined, ${c['implementation-proposal']} implementation-proposal`
         + `${c.unresolved ? `, ${c.unresolved} unresolved` : ''}.`,
+      );
+      // FIX-C: the same resolved-status split, for candidates — proves the actual candidate
+      // pointer was validated, not merely "the cited source has some passage."
+      const cc = result.candidatePassageStatusCounts;
+      console.log(
+        `${result.moduleId}: candidate sourcePassageId status split — ${cc['source-supported']} source-supported, `
+        + `${cc.quarantined} quarantined, ${cc['implementation-proposal']} implementation-proposal`
+        + `${cc.unresolved ? `, ${cc.unresolved} unresolved` : ''}.`,
       );
     }
   }

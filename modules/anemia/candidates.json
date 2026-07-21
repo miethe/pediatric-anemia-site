@@ -12,7 +12,8 @@
     "evidence": [
       "AAP2026_IDA",
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal"
   },
   "iron-deficiency-without-anemia": {
     "id": "iron-deficiency-without-anemia",
@@ -25,7 +26,8 @@
     ],
     "evidence": [
       "AAP2026_IDA"
-    ]
+    ],
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal"
   },
   "anemia-of-inflammation": {
     "id": "anemia-of-inflammation",
@@ -39,7 +41,8 @@
     "evidence": [
       "AAP2026_IDA",
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal"
   },
   "thalassemia-pattern": {
     "id": "thalassemia-pattern",
@@ -55,7 +58,8 @@
     "evidence": [
       "AAP2026_IDA",
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal"
   },
   "beta-thalassemia-pattern": {
     "id": "beta-thalassemia-pattern",
@@ -68,20 +72,22 @@
     ],
     "evidence": [
       "AAP2026_IDA"
-    ]
+    ],
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal"
   },
   "alpha-thalassemia-pattern": {
     "id": "alpha-thalassemia-pattern",
     "label": "Alpha-thalassemia pattern",
     "category": "microcytic inherited anemia",
-    "summary": "Hemoglobin Bart\u2019s on the newborn screen or alpha-globin testing supports alpha thalassemia.",
+    "summary": "Hemoglobin Bart’s on the newborn screen or alpha-globin testing supports alpha thalassemia.",
     "defaultNextSteps": [
       "Review the newborn screen and consider alpha-globin molecular testing when persistent microcytosis remains unexplained.",
       "Do not rely on a normal routine electrophoresis outside the newborn period to exclude alpha thalassemia."
     ],
     "evidence": [
       "AAP2026_IDA"
-    ]
+    ],
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal"
   },
   "lead-exposure-associated-anemia": {
     "id": "lead-exposure-associated-anemia",
@@ -96,7 +102,8 @@
     "evidence": [
       "CDC2025_LEAD",
       "AAP2026_IDA"
-    ]
+    ],
+    "sourcePassageId": "CDC2025_LEAD#implementation-proposal"
   },
   "sideroblastic-iron-loading-microcytosis": {
     "id": "sideroblastic-iron-loading-microcytosis",
@@ -109,7 +116,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "blood-loss": {
     "id": "blood-loss",
@@ -123,11 +131,12 @@
     "evidence": [
       "AAP2026_IDA",
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal"
   },
   "hemolysis-unspecified": {
     "id": "hemolysis-unspecified",
-    "label": "Hemolytic anemia pattern\u2014etiology not yet specified",
+    "label": "Hemolytic anemia pattern—etiology not yet specified",
     "category": "high-destruction anemia",
     "summary": "Anemia with elevated reticulocyte response and biochemical or clinical evidence of red-cell destruction.",
     "defaultNextSteps": [
@@ -136,7 +145,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "autoimmune-hemolytic-anemia": {
     "id": "autoimmune-hemolytic-anemia",
@@ -149,7 +159,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "hereditary-spherocytosis": {
     "id": "hereditary-spherocytosis",
@@ -162,7 +173,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "g6pd-deficiency": {
     "id": "g6pd-deficiency",
@@ -176,7 +188,8 @@
     "evidence": [
       "BLOOD2022_PED_ANEMIA",
       "BSH2020_G6PD"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "microangiopathic-hemolysis": {
     "id": "microangiopathic-hemolysis",
@@ -188,7 +201,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "sickling-hemoglobinopathy": {
     "id": "sickling-hemoglobinopathy",
@@ -201,7 +215,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "malaria-or-parasitic-hemolysis": {
     "id": "malaria-or-parasitic-hemolysis",
@@ -213,7 +228,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "renal-anemia": {
     "id": "renal-anemia",
@@ -225,7 +241,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "transient-erythroblastopenia": {
     "id": "transient-erythroblastopenia",
@@ -237,7 +254,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "parvovirus-aplastic-crisis": {
     "id": "parvovirus-aplastic-crisis",
@@ -249,7 +267,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "marrow-failure-infiltration": {
     "id": "marrow-failure-infiltration",
@@ -262,7 +281,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "b12-folate-deficiency": {
     "id": "b12-folate-deficiency",
@@ -275,7 +295,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "copper-deficiency": {
     "id": "copper-deficiency",
@@ -287,7 +308,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "thyroid-liver-medication-macrocytosis": {
     "id": "thyroid-liver-medication-macrocytosis",
@@ -299,7 +321,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "inherited-marrow-failure": {
     "id": "inherited-marrow-failure",
@@ -312,7 +335,8 @@
     ],
     "evidence": [
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal"
   },
   "mixed-anemia-or-transfusion-effect": {
     "id": "mixed-anemia-or-transfusion-effect",
@@ -325,7 +349,8 @@
     "evidence": [
       "AAP2026_IDA",
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal"
   },
   "iron-refractory-iron-deficiency-anemia": {
     "id": "iron-refractory-iron-deficiency-anemia",
@@ -339,6 +364,7 @@
     "evidence": [
       "AAP2026_IDA",
       "BLOOD2022_PED_ANEMIA"
-    ]
+    ],
+    "sourcePassageId": "AAP2026_IDA#implementation-proposal"
   }
 }

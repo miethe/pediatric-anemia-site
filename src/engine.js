@@ -1,7 +1,8 @@
 import { runRules } from './ruleEngine.js';
 import { getModule } from './modules/registry.js';
 import { prepareUnitValidatedInput } from './units.js';
-import { passageById } from './evidence.js';
+import { passageByIdForModule } from './evidence/registry.js';
+import { hasCredentialedClinicalApproval, isActive } from './governance.js';
 
 const CORE_LIMITATIONS = [
   'This output is a deterministic clinical decision-support reference, not a diagnosis, treatment order, or substitute for examination and specialist judgment.',
@@ -44,6 +45,7 @@ export function assess(input, moduleId, rules, candidates) {
   const { input: snapshot, unitValidation } = prepareUnitValidatedInput(moduleId, input);
   const facts = module.deriveFacts(snapshot);
   const ruleOutput = runRules(facts, rules, candidates);
+  const ruleById = new Map(rules.map((rule) => [rule.id, rule]));
   const unitsAssumed = unitValidation.fields
     .filter((field) => field.unitAssumed)
     .map((field) => field.field);
@@ -77,10 +79,25 @@ export function assess(input, moduleId, rules, candidates) {
       // grounding claim it is, without a second lookup. Out of scope for this fix: candidate-level
       // passage pointers and SPA/algorithm-explorer rendering of this field (see the reviewer-gate
       // fix note) — those remain follow-up work.
-      ruleAudit: ruleOutput.audit.map((entry) => ({
-        ...entry,
-        sourcePassageStatus: passageById(entry.sourcePassageId)?.status ?? null,
-      })),
+      //
+      // FIX-E (reviewer re-review, finding E): resolved through src/evidence/registry.js's
+      // moduleId-scoped accessor rather than src/evidence.js's anemia-only singleton — this
+      // `moduleId` (the one passed into assess(), not a hardcoded default) selects which module's
+      // evidence to search, and an unregistered moduleId throws instead of silently resolving
+      // against anemia's data.
+      //
+      // FIX-F (reviewer re-review, finding F): src/governance.js's honest, non-throwing boolean
+      // predicates are wired into this real output path (previously unused production code, only
+      // exercised by its own isolated test) — additive to the existing entry shape.
+      ruleAudit: ruleOutput.audit.map((entry) => {
+        const rule = ruleById.get(entry.ruleId);
+        return {
+          ...entry,
+          sourcePassageStatus: passageByIdForModule(moduleId, entry.sourcePassageId)?.status ?? null,
+          hasCredentialedClinicalApproval: rule ? hasCredentialedClinicalApproval(rule) : false,
+          isActive: rule ? isActive(rule) : false,
+        };
+      }),
       unitsAssumed,
     },
   };

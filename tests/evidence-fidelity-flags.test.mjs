@@ -101,6 +101,17 @@ test('no passage is simultaneously status "source-supported" and carrying a non-
   }
 });
 
+test('schema REJECTS a quarantined record with empty reviewFlags (the biconditional\'s missing half, reviewer re-review finding B)', () => {
+  // Before this fix, schemas/evidence.schema.json only enforced "non-empty reviewFlags => status
+  // quarantined" — not the converse. {status: "quarantined", reviewFlags: []} validated cleanly,
+  // so a record could claim the defect status while carrying none of the flags that justify it.
+  const clean = allPassages.find((p) => p.status === 'source-supported' && p.reviewFlags.length === 0);
+  assert.ok(clean, 'fixture must contain a clean source-supported passage to mutate');
+  const tampered = { ...clean, status: 'quarantined', reviewFlags: [] };
+  const errors = validate(schema.$defs.passage, tampered, { rootSchema: schema });
+  assert.ok(errors.length > 0, 'a quarantined passage with empty reviewFlags must be rejected by the schema');
+});
+
 test('isBindableAsSourceSupported fails CLOSED (never throws) on a legacy-shape, malformed, or proposal-sentinel passage', () => {
   // Reviewer-gate fix-3: the earlier version of this test was misnamed — it asserted `true` for
   // `{status: 'source-supported'}` with no `reviewFlags` key at all, i.e. it asserted the OPPOSITE

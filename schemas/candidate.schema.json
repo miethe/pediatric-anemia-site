@@ -2,8 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/pediatric-anemia/schemas/candidate.schema.json",
   "title": "Pediatric Anemia CDSS Diagnostic Pattern",
+  "description": "EP3-T4/FIX-C adds `sourcePassageId`, a REQUIRED key mirroring rule.schema.json's field of the same name and shape — candidate evidence must resolve to a passage-level record (or an explicit implementation-proposal sentinel), not merely to 'the cited source has some passage'. See rule.schema.json's `sourcePassageId` description for the full binding-rule cross-reference; the same pattern, nullability, and fail-safe-fallback semantics apply here.",
   "type": "object",
-  "required": ["id", "label", "category", "summary", "defaultNextSteps", "evidence"],
+  "required": ["id", "label", "category", "summary", "defaultNextSteps", "evidence", "sourcePassageId"],
   "additionalProperties": false,
   "properties": {
     "id": { "type": "string" },
@@ -11,6 +12,11 @@
     "category": { "type": "string" },
     "summary": { "type": "string" },
     "defaultNextSteps": { "type": "array", "items": { "type": "string" } },
-    "evidence": { "type": "array", "uniqueItems": true, "items": { "type": "string" } }
+    "evidence": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+    "sourcePassageId": {
+      "type": ["string", "null"],
+      "pattern": "^[A-Z0-9_]+#(ev_[0-9]{3}|implementation-proposal)$",
+      "description": "REQUIRED key. Nullable (legitimate absence for a not-yet-backfilled candidate), though scripts/validate-kb.mjs rejects null for the shipped KB once the candidate backfill has run. Names exactly one passage record in modules/anemia/evidence.json#sources[].passages[], resolved against this candidate's first-cited source (evidence[0]). Bound to a source-supported passage only via an independently reviewed, human-attested mapping (see scripts/evidence/backfill-candidate-governance.mjs's REVIEWED_CANDIDATE_PASSAGE_MAP — the same fail-safe mechanism rule.schema.json's field uses); otherwise falls back to that source's `<SOURCE_ID>#implementation-proposal` sentinel."
+    }
   }
 }

@@ -104,6 +104,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { REVIEWED_THROUGH, passagesFor, isBindableAsSourceSupported } from '../../src/evidence.js';
 import { computeCoverage } from '../rule-coverage.mjs';
+import { validateAttestationEntries } from './lib/attested-passage-map.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const RULES_PATH = path.join(REPO_ROOT, 'modules', 'anemia', 'rules.json');
@@ -128,8 +129,8 @@ const SAFETY_CLASS_BY_CATEGORY = {
   'adaptive-question': 'informational',
 };
 
-// Reviewer-gate fix-1 (finding 1): the ONLY permitted source of a source-supported
-// `sourcePassageId` binding. Keyed by rule id -> passage id. SHIPS EMPTY.
+// Reviewer-gate fix-1 (finding 1), hardened by reviewer re-review (finding A): the ONLY permitted
+// source of a source-supported `sourcePassageId` binding. SHIPS EMPTY.
 //
 // An entry may be added here ONLY when all of the following hold:
 //   1. A named human with clinical review authority has read the rule's complete `when`/`output`
@@ -142,12 +143,36 @@ const SAFETY_CLASS_BY_CATEGORY = {
 //   3. The entry is added by hand, in a commit whose message names the reviewer and the review
 //      artifact. It is NEVER derived by this script, by a keyword/substring match, by ARC/
 //      council-review output, or by any other mechanical process.
+//
+// Finding A: map membership alone used to mint the binding — a bare `ruleId -> passageId` pair
+// carried no record of who reviewed it or what credential they held, so nothing in this file
+// distinguished a genuine human attestation from any other edit. Every entry is now a structured
+// attestation record, and validateAttestationEntries() (called immediately below, at module load
+// time) fails loudly — naming the offending entry, non-zero exit — if any entry is missing a
+// field, if `attestedBy` looks like a model/agent/automated identifier, or if `passageId` does not
+// resolve to a passage that is currently `isBindableAsSourceSupported` (EP3-T5 quarantine included).
+//
 // A rule with no entry here — which, as of this writing, is all 91 — falls back to its primary
 // source's `<sourceId>#implementation-proposal` sentinel (D-EP3-6). That is the honest, conservative
 // default, not a defect: "we do not claim this rule is source-backed" until a human says otherwise.
-const REVIEWED_RULE_PASSAGE_MAP = new Map([
-  // ruleId -> passageId. Empty pending independent clinical review (see the block comment above).
-]);
+const REVIEWED_RULE_PASSAGE_ATTESTATIONS = [
+  // Each entry: { ruleId, passageId, attestedBy, credential, attestedOn, attestationRef }.
+  // attestedBy names a real human reviewer (never a model/agent/council/pipeline identifier);
+  // credential states their clinical review authority; attestedOn is the review date (ISO date
+  // string); attestationRef points at the out-of-file review artifact this commit's message also
+  // names. Empty pending independent clinical review (see the block comment above).
+];
+
+validateAttestationEntries(
+  REVIEWED_RULE_PASSAGE_ATTESTATIONS,
+  'ruleId',
+  { passagesFor, isBindableAsSourceSupported },
+  'REVIEWED_RULE_PASSAGE_ATTESTATIONS',
+);
+
+const REVIEWED_RULE_PASSAGE_MAP = new Map(
+  REVIEWED_RULE_PASSAGE_ATTESTATIONS.map((entry) => [entry.ruleId, entry.passageId]),
+);
 
 const GOVERNED_KEY_ORDER = [
   'id', 'category', 'when', 'evidence', 'output',

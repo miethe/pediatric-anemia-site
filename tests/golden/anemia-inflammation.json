@@ -36,6 +36,7 @@
         "AAP2026_IDA",
         "BLOOD2022_PED_ANEMIA"
       ],
+      "sourcePassageId": "AAP2026_IDA#implementation-proposal",
       "level": "strongly-supported",
       "score": 285,
       "matchedRules": [
@@ -90,547 +91,729 @@
         "ruleId": "SCOPE-001",
         "matched": false,
         "sourcePassageId": "WHO2024_HB#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "SCOPE-002",
         "matched": false,
         "sourcePassageId": "WHO2024_HB#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "SCOPE-003",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ALERT-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ALERT-002",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ALERT-003",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ALERT-004",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ALERT-005",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ALERT-006",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ALERT-007",
         "matched": false,
         "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ALERT-008",
         "matched": false,
         "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ALERT-009",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "NOTE-001",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "NOTE-002",
         "matched": true,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "NOTE-003",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "NOTE-004",
         "matched": false,
         "sourcePassageId": "BSH2020_G6PD#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "NOTE-005",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "NOTE-006",
         "matched": false,
         "sourcePassageId": "WHO2024_HB#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ID-001",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ID-002",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ID-003",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ID-004",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ID-005",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ID-006",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "AINF-001",
         "matched": true,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "AINF-002",
         "matched": true,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "AINF-003",
         "matched": true,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "AINF-004",
         "matched": true,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "THAL-001",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "THAL-002",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "THAL-BETA-001",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "THAL-BETA-002",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "THAL-ALPHA-001",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "THAL-ALPHA-002",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "LEAD-001",
         "matched": false,
         "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "LEAD-002",
         "matched": false,
         "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "LEAD-003",
         "matched": false,
         "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "SID-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "SID-002",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "LOSS-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "LOSS-002",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "LOSS-003",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "HEM-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "HEM-002",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "HEM-003",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "AIHA-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "HS-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "HS-002",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "G6PD-001",
         "matched": false,
         "sourcePassageId": "BSH2020_G6PD#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "G6PD-002",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "G6PD-003",
         "matched": false,
         "sourcePassageId": "BSH2020_G6PD#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "TMA-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "SICKLE-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "MAL-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "REN-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "TEC-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "PARVO-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "MARROW-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "MARROW-002",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "MARROW-003",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "MEG-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "MEG-002",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "COPPER-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "MACRO-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "MACRO-002",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "MACRO-003",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "MACRO-004",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "IMF-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "IMF-DBA-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "IMF-FANCONI-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "MIX-001",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "MIX-002",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "IRIDA-001",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-001",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-002",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-003",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-004",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-005",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-MICRO-001",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-MICRO-002",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-MICRO-003",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-MICRO-004",
         "matched": false,
         "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-MICRO-005",
         "matched": false,
         "sourcePassageId": "AAP2026_IDA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-NORMO-HIGH-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-NORMO-HIGH-002",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-NORMO-LOW-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-MACRO-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-MACRO-002",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-SMEAR-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "Q-CYT-001",
         "matched": false,
         "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       },
       {
         "ruleId": "ALERT-LEAD-CAPILLARY",
         "matched": false,
         "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
-        "sourcePassageStatus": "implementation-proposal"
+        "sourcePassageStatus": "implementation-proposal",
+        "hasCredentialedClinicalApproval": false,
+        "isActive": true
       }
     ],
     "unitsAssumed": [

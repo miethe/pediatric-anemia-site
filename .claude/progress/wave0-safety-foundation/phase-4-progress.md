@@ -9,13 +9,13 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-fo
 execution_model: sequential
 phase: 4
 title: 'EP-4: Rule Metadata for Governance'
-status: completed
+status: deviated
 started: '2026-07-20T20:00Z'
 completed: '2026-07-21T03:00Z'
 commit_refs: [545e666, 8a6ddc7, aabc24e]
 pr_refs: []
 overall_progress: 100
-completion_estimate: on-track
+completion_estimate: at-risk
 total_tasks: 4
 completed_tasks: 4
 in_progress_tasks: 0
@@ -119,21 +119,26 @@ success_criteria:
 - id: SC-1
   description: All 91 rules validate against the extended rule.schema.json in one
     commit (EP4-T1/T2)
-  status: pending
+  status: completed
+  note: "All 91 rules validate against the extended schema; verified 0 behavioral diffs vs main after stripping the 9 governance fields, so the dangerous-miss/hazard-matrix digest rebinds are safe."
 - id: SC-2
   description: 'AC-D4 structural test passes: clinicalApprovers[] is [] on all 91
     rules, and the test fails on any non-owner-attested population (EP4-T3)'
-  status: pending
+  status: completed
+  note: "Hardened after the reviewer gate demonstrated three live bypasses. Now enforced at four layers: schema maxItems: 0, source+built-artifact tests across all MODULE_IDS (derived from REGISTRY), a post-build verify:d4 gate wired AFTER npm run build, and a runtime refusal in src/engine.js assess(). 11 D-4 tests including non-vacuity and baseline cases."
 - id: SC-3
   description: 'AC-WP4-RESIL: absent governance fields never misread as errors or
     as exemptions (EP4-T4)'
-  status: pending
+  status: partial
+  note: "Semantics implemented and unit-tested in src/governance.js, and the false anti-truthiness claim was retracted. Production wiring was flagged by the reviewer as absent and is being addressed; until it lands, the semantics are asserted in isolation rather than exercised on a real evaluation path."
 - id: SC-4
   description: npm run check green
-  status: pending
+  status: completed
+  note: "npm run check green at 629 tests, including the new post-build verify:d4 gate."
 - id: SC-5
   description: task-completion-validator sign-off
   status: pending
+  note: "NOT signed off. Two adversarial reviewer-gate passes (gpt-5.6-sol, 2026-07-21) both returned CHANGES REQUIRED. Sign-off requires a passing gate."
 files_modified:
 - schemas/rule.schema.json
 - modules/anemia/rules.json
