@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "description": "Top-level rights/ tree (D4): the join ledger. This is the ONLY link between a clinical KB identifier (an evidence.json source id, a rule id, a candidate id, a reference-ranges.json entry) and a rights/ record id (rights-records.json / rights-failures.json). No clinical JSON file (rules.json, candidates.json, evidence.json, reference-ranges.json) may carry an inline rights key of any kind, including under an `extensions.rights` path — that inline shape is explicitly rejected by D4 and is asserted against in tests/rights-substrate.test.mjs. EPR0-T1 creates this ledger empty; EPR0-T4 populates it while seeding the 6 triage-only rights records, joining each KB-cited source id to its rights_record_id. Entry shape: `clinical_identifier_type` names the kind of clinical identifier being joined (this task uses only `evidence_source_id`; a later phase may add other identifier types, e.g. a KB JSON file path, without changing this shape), `clinical_identifier` is the identifier value as it appears in the clinical KB JSON, and `rights_record_id` is the joined entry's id in rights/rights-records.json. EPR1-T1 (FR-WP1-01) adds a second entry against the existing `evidence_source_id`/`AAP2026_IDA` identifier, joining it to a new component-scoped record for modules/anemia/reference-ranges.json (the derived-fact channel) — a deliberate second join against the same identifier, not a duplicate; scripts/validate-rights.mjs's coverage gate treats every ledger entry's rights_record_id independently, so both the source-level and component-level records stay reachable. EPR1-T2 (FR-WP1-02/03) is expected to additionally introduce a dedicated `kb_json_file_path`-shaped identifier type for direct, file-path-level KB_JSON_FILES coverage; this entry does not substitute for that.",
+  "description": "Top-level rights/ tree (D4): the join ledger. This is the ONLY link between a clinical KB identifier (an evidence.json source id, a rule id, a candidate id, a reference-ranges.json entry) and a rights/ record id (rights-records.json / rights-failures.json). No clinical JSON file (rules.json, candidates.json, evidence.json, reference-ranges.json) may carry an inline rights key of any kind, including under an `extensions.rights` path — that inline shape is explicitly rejected by D4 and is asserted against in tests/rights-substrate.test.mjs. EPR0-T1 creates this ledger empty; EPR0-T4 populates it while seeding the 6 triage-only rights records, joining each KB-cited source id to its rights_record_id. Entry shape: `clinical_identifier_type` names the kind of clinical identifier being joined (`evidence_source_id` per EPR0-T4; `kb_json_file_path` per EPR1-T2, below), `clinical_identifier` is the identifier value as it appears in the clinical KB JSON (a source id, or — for `kb_json_file_path` — the `modules/<id>/<filename>` artifact path itself), and `rights_record_id` is the joined entry's id in rights/rights-records.json. EPR1-T1 (FR-WP1-01) adds a second entry against the existing `evidence_source_id`/`AAP2026_IDA` identifier, joining it to a new component-scoped record for modules/anemia/reference-ranges.json (the derived-fact channel) — a deliberate second join against the same identifier, not a duplicate; scripts/validate-rights.mjs's coverage gate treats every ledger entry's rights_record_id independently, so both the source-level and component-level records stay reachable. EPR1-T2 (FR-WP1-02/03) adds the anticipated `kb_json_file_path`-shaped entries below: one per `scripts/sign-kb.mjs` `KB_JSON_FILES` artifact path (`rules.json`, `candidates.json`, `evidence.json`, `reference-ranges.json`), resolved bidirectionally by scripts/validate-rights.mjs gate (e) `checkKbJsonFileCoverage` via scripts/validate-kb.mjs's exported `resolveRightsRecordsForIdentifier`. `reference-ranges.json` joins 1:1 to its dedicated component-scoped record (RR-AAP2026_IDA-REFERENCE-RANGES, EPR1-T1); `rules.json`/`candidates.json`/`evidence.json` each join to all 6 EPR0-T4 source-level records — the fixed, already-covered set every rule/candidate evidence citation and every evidence.json source is a validated subset or member of (scripts/validate-kb.mjs's own `unknown evidence` / `sources[].id` checks) — as a structural coverage envelope, not a per-citation precision claim about which of the 6 sources each rule or candidate happens to cite today.",
   "entries": [
     {
       "clinical_identifier_type": "evidence_source_id",
@@ -43,6 +43,120 @@
       "clinical_identifier": "BSH2020_G6PD",
       "rights_record_id": "RR-BSH2020_G6PD",
       "notes": "modules/anemia/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/reference-ranges.json",
+      "rights_record_id": "RR-AAP2026_IDA-REFERENCE-RANGES",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. 1:1 join to the component-scoped record EPR1-T1 authored specifically for this artifact — the derived-fact channel (reference-ranges.json -> deriveFacts() -> all 91 rules) that sat outside passage-level gating before this phase."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/evidence.json",
+      "rights_record_id": "RR-AAP2026_IDA",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. evidence.json's sources[] enumerates AAP2026_IDA as one of the module's 6 sources; this entry joins the artifact itself, not merely its constituent source id (already separately covered via the evidence_source_id entry above)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/evidence.json",
+      "rights_record_id": "RR-WHO2024_HB",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. evidence.json's sources[] enumerates WHO2024_HB as one of the module's 6 sources."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/evidence.json",
+      "rights_record_id": "RR-BLOOD2022_PED_ANEMIA",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. evidence.json's sources[] enumerates BLOOD2022_PED_ANEMIA as one of the module's 6 sources."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/evidence.json",
+      "rights_record_id": "RR-CDC2025_LEAD",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. evidence.json's sources[] enumerates CDC2025_LEAD as one of the module's 6 sources."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/evidence.json",
+      "rights_record_id": "RR-FDA2026_CDS",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. evidence.json's sources[] enumerates FDA2026_CDS as one of the module's 6 sources."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/evidence.json",
+      "rights_record_id": "RR-BSH2020_G6PD",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. evidence.json's sources[] enumerates BSH2020_G6PD as one of the module's 6 sources."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/rules.json",
+      "rights_record_id": "RR-AAP2026_IDA",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. rules.json's rule.evidence[] citations are validated (scripts/validate-kb.mjs's `unknown evidence` check) to be a subset of evidence.json's 6-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, not a claim that every rule cites AAP2026_IDA specifically."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/rules.json",
+      "rights_record_id": "RR-WHO2024_HB",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/rules.json",
+      "rights_record_id": "RR-BLOOD2022_PED_ANEMIA",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/rules.json",
+      "rights_record_id": "RR-CDC2025_LEAD",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/rules.json",
+      "rights_record_id": "RR-FDA2026_CDS",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration); no rule currently cites FDA2026_CDS, so this join is deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/rules.json",
+      "rights_record_id": "RR-BSH2020_G6PD",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/candidates.json",
+      "rights_record_id": "RR-AAP2026_IDA",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. candidates.json's candidate.evidence[] citations are validated (scripts/validate-kb.mjs's `unknown evidence` check) to be a subset of evidence.json's 6-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, not a claim that every candidate cites AAP2026_IDA specifically."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/candidates.json",
+      "rights_record_id": "RR-WHO2024_HB",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration); no candidate currently cites WHO2024_HB, so this join is deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/candidates.json",
+      "rights_record_id": "RR-BLOOD2022_PED_ANEMIA",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/candidates.json",
+      "rights_record_id": "RR-CDC2025_LEAD",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/candidates.json",
+      "rights_record_id": "RR-FDA2026_CDS",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration); no candidate currently cites FDA2026_CDS, so this join is deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/candidates.json",
+      "rights_record_id": "RR-BSH2020_G6PD",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
     }
   ]
 }

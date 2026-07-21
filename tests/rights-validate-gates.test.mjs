@@ -11,6 +11,10 @@
 //     gates against unchanged input is byte-identical.
 //   - `GATES` is a single exported list of `{ id, description, run }` entries a later phase appends
 //     to; `runAllGates` fails closed on a malformed gate result.
+//
+// tests/rights-validate-gates.test.mjs also covers EPR1-T2's (FR-WP1-02/03) 5th gate,
+// `checkKbJsonFileCoverage`, plus scripts/validate-kb.mjs's exported `resolveRightsRecordsForIdentifier`
+// — the R-P3 seam helper EP-R2's EPR2-T5 reuses unmodified.
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -25,9 +29,11 @@ import {
   checkOpenFailurePresence,
   checkReleaseContextContainment,
   runReleaseContextContainmentGate,
+  checkKbJsonFileCoverage,
   GATES,
   runAllGates,
 } from '../scripts/validate-rights.mjs';
+import { resolveRightsRecordsForIdentifier } from '../scripts/validate-kb.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -289,6 +295,151 @@ test('gate (d) CLI wrapper: runReleaseContextContainmentGate self-check passes a
   assert.deepEqual(runReleaseContextContainmentGate(context).errors, []);
 });
 
+// --- scripts/validate-kb.mjs: resolveRightsRecordsForIdentifier (EPR1-T2, R-P3 seam helper) -------
+
+test('resolveRightsRecordsForIdentifier: resolves a matching ledger entry to its rights_record_id', () => {
+  const rightsLedger = { entries: [{ clinical_identifier_type: 'kb_json_file_path', clinical_identifier: 'modules/anemia/reference-ranges.json', rights_record_id: 'RR-A' }] };
+  const rightsRecords = { records: [{ rights_record_id: 'RR-A' }] };
+  const { recordIds, errors } = resolveRightsRecordsForIdentifier('kb_json_file_path', 'modules/anemia/reference-ranges.json', { rightsLedger, rightsRecords });
+  assert.deepEqual(recordIds, ['RR-A']);
+  assert.deepEqual(errors, []);
+});
+
+test('resolveRightsRecordsForIdentifier: returns multiple recordIds when the ledger legitimately double-joins the same identifier', () => {
+  const rightsLedger = {
+    entries: [
+      { clinical_identifier_type: 'evidence_source_id', clinical_identifier: 'AAP2026_IDA', rights_record_id: 'RR-A' },
+      { clinical_identifier_type: 'evidence_source_id', clinical_identifier: 'AAP2026_IDA', rights_record_id: 'RR-A-COMPONENT' },
+    ],
+  };
+  const rightsRecords = { records: [{ rights_record_id: 'RR-A' }, { rights_record_id: 'RR-A-COMPONENT' }] };
+  const { recordIds, errors } = resolveRightsRecordsForIdentifier('evidence_source_id', 'AAP2026_IDA', { rightsLedger, rightsRecords });
+  assert.deepEqual(recordIds.sort(), ['RR-A', 'RR-A-COMPONENT']);
+  assert.deepEqual(errors, []);
+});
+
+test('resolveRightsRecordsForIdentifier: ignores entries for a different identifier type or id', () => {
+  const rightsLedger = {
+    entries: [
+      { clinical_identifier_type: 'evidence_source_id', clinical_identifier: 'modules/anemia/rules.json', rights_record_id: 'RR-WRONG-TYPE' },
+      { clinical_identifier_type: 'kb_json_file_path', clinical_identifier: 'modules/anemia/candidates.json', rights_record_id: 'RR-WRONG-ID' },
+    ],
+  };
+  const rightsRecords = { records: [{ rights_record_id: 'RR-WRONG-TYPE' }, { rights_record_id: 'RR-WRONG-ID' }] };
+  const { recordIds, errors } = resolveRightsRecordsForIdentifier('kb_json_file_path', 'modules/anemia/rules.json', { rightsLedger, rightsRecords });
+  assert.deepEqual(recordIds, []);
+  assert.deepEqual(errors, []);
+});
+
+test('resolveRightsRecordsForIdentifier: FAILS CLOSED — a matching entry whose rights_record_id is dangling', () => {
+  const rightsLedger = { entries: [{ clinical_identifier_type: 'kb_json_file_path', clinical_identifier: 'modules/anemia/rules.json', rights_record_id: 'RR-MISSING' }] };
+  const rightsRecords = { records: [] };
+  const { recordIds, errors } = resolveRightsRecordsForIdentifier('kb_json_file_path', 'modules/anemia/rules.json', { rightsLedger, rightsRecords });
+  assert.deepEqual(recordIds, []);
+  assert.ok(errors.some((e) => e.includes('references unknown rights_record_id "RR-MISSING"')), errors.join('\n'));
+});
+
+test('resolveRightsRecordsForIdentifier: a dangling entry is reported even alongside another entry for the same identifier that DOES resolve', () => {
+  const rightsLedger = {
+    entries: [
+      { clinical_identifier_type: 'kb_json_file_path', clinical_identifier: 'modules/anemia/evidence.json', rights_record_id: 'RR-OK' },
+      { clinical_identifier_type: 'kb_json_file_path', clinical_identifier: 'modules/anemia/evidence.json', rights_record_id: 'RR-MISSING' },
+    ],
+  };
+  const rightsRecords = { records: [{ rights_record_id: 'RR-OK' }] };
+  const { recordIds, errors } = resolveRightsRecordsForIdentifier('kb_json_file_path', 'modules/anemia/evidence.json', { rightsLedger, rightsRecords });
+  assert.deepEqual(recordIds, ['RR-OK']);
+  assert.ok(errors.some((e) => e.includes('RR-MISSING')), 'a partially-covered identifier must not swallow its own dangling entry');
+});
+
+// --- gate (e): checkKbJsonFileCoverage (EPR1-T2, FR-WP1-02/03) -------------------------------------
+
+test('gate (e): every KB_JSON_FILES artifact bidirectionally resolving to a real record passes', () => {
+  const context = {
+    kbJsonFileArtifacts: ['modules/anemia/rules.json', 'modules/anemia/reference-ranges.json'],
+    rightsLedger: {
+      entries: [
+        { clinical_identifier_type: 'kb_json_file_path', clinical_identifier: 'modules/anemia/rules.json', rights_record_id: 'RR-A' },
+        { clinical_identifier_type: 'kb_json_file_path', clinical_identifier: 'modules/anemia/reference-ranges.json', rights_record_id: 'RR-B' },
+      ],
+    },
+    rightsRecords: { records: [{ rights_record_id: 'RR-A' }, { rights_record_id: 'RR-B' }] },
+  };
+  assert.deepEqual(checkKbJsonFileCoverage(context).errors, []);
+});
+
+test('gate (e): the real substrate resolves all 4 modules/anemia KB_JSON_FILES paths bidirectionally', async () => {
+  const context = await loadRightsContext(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), { argv: [], env: {} });
+  assert.ok(context.kbJsonFileArtifacts.includes('modules/anemia/rules.json'));
+  assert.ok(context.kbJsonFileArtifacts.includes('modules/anemia/candidates.json'));
+  assert.ok(context.kbJsonFileArtifacts.includes('modules/anemia/evidence.json'));
+  assert.ok(context.kbJsonFileArtifacts.includes('modules/anemia/reference-ranges.json'));
+  assert.deepEqual(checkKbJsonFileCoverage(context).errors, []);
+});
+
+test('gate (e): FAILS CLOSED — a KB_JSON_FILES artifact with no kb_json_file_path ledger entry (breakage b)', () => {
+  const context = {
+    kbJsonFileArtifacts: ['modules/anemia/rules.json', 'modules/anemia/a-fifth-file.json'],
+    rightsLedger: {
+      entries: [{ clinical_identifier_type: 'kb_json_file_path', clinical_identifier: 'modules/anemia/rules.json', rights_record_id: 'RR-A' }],
+    },
+    rightsRecords: { records: [{ rights_record_id: 'RR-A' }] },
+  };
+  const { errors } = checkKbJsonFileCoverage(context);
+  assert.ok(
+    errors.some((e) => e.includes('KB_JSON_FILES artifact "modules/anemia/a-fifth-file.json" has no rights/rights-ledger.json entry')),
+    errors.join('\n'),
+  );
+});
+
+test('gate (e): FAILS CLOSED — a kb_json_file_path ledger entry pointing at a deleted rights_record (breakage a)', () => {
+  const context = {
+    kbJsonFileArtifacts: ['modules/anemia/rules.json'],
+    rightsLedger: {
+      entries: [{ clinical_identifier_type: 'kb_json_file_path', clinical_identifier: 'modules/anemia/rules.json', rights_record_id: 'RR-DELETED' }],
+    },
+    rightsRecords: { records: [] },
+  };
+  const { errors } = checkKbJsonFileCoverage(context);
+  assert.ok(errors.some((e) => e.includes('references unknown rights_record_id "RR-DELETED"')), errors.join('\n'));
+  assert.ok(errors.some((e) => e.includes('KB_JSON_FILES artifact "modules/anemia/rules.json" has no rights/rights-ledger.json entry')), errors.join('\n'));
+});
+
+test('gate (e): FAILS CLOSED — a stale kb_json_file_path ledger entry pointing at a path that is no longer a KB_JSON_FILES artifact (breakage c, reverse direction)', () => {
+  const context = {
+    kbJsonFileArtifacts: ['modules/anemia/rules.json'],
+    rightsLedger: {
+      entries: [
+        { clinical_identifier_type: 'kb_json_file_path', clinical_identifier: 'modules/anemia/rules.json', rights_record_id: 'RR-A' },
+        { clinical_identifier_type: 'kb_json_file_path', clinical_identifier: 'modules/anemia/deleted-artifact.json', rights_record_id: 'RR-A' },
+      ],
+    },
+    rightsRecords: { records: [{ rights_record_id: 'RR-A' }] },
+  };
+  const { errors } = checkKbJsonFileCoverage(context);
+  assert.ok(
+    errors.some((e) => e.includes('kb_json_file_path entry "modules/anemia/deleted-artifact.json" does not resolve to any current KB_JSON_FILES artifact')),
+    errors.join('\n'),
+  );
+});
+
+test('gate (e): D7 — a resolving record at overall_status "UNKNOWN" (never read by this gate) still passes', () => {
+  const context = {
+    kbJsonFileArtifacts: ['modules/anemia/rules.json'],
+    rightsLedger: {
+      entries: [{ clinical_identifier_type: 'kb_json_file_path', clinical_identifier: 'modules/anemia/rules.json', rights_record_id: 'RR-A' }],
+    },
+    rightsRecords: { records: [{ rights_record_id: 'RR-A', overall_status: 'UNKNOWN' }] },
+  };
+  assert.deepEqual(checkKbJsonFileCoverage(context).errors, []);
+});
+
+test('GATES includes the EPR1-T2 kb-json-file-coverage gate exactly once', () => {
+  const matches = GATES.filter((gate) => gate.id === 'kb-json-file-coverage');
+  assert.equal(matches.length, 1);
+  assert.equal(matches[0].run, checkKbJsonFileCoverage);
+});
+
 // --- FR-WP0-07: --as-of / RIGHTS_VALIDATE_AS_OF, no Date.now() -------------------------------------
 
 test('resolveAsOf: returns null when neither --as-of nor the env var is set', () => {
@@ -334,6 +485,7 @@ test('loadRightsContext: two loads of the unchanged real substrate produce deep-
   assert.deepEqual(first.rightsLedger, second.rightsLedger);
   assert.deepEqual(first.releaseContext, second.releaseContext);
   assert.deepEqual(first.clinicalIdentifiers, second.clinicalIdentifiers);
+  assert.deepEqual(first.kbJsonFileArtifacts, second.kbJsonFileArtifacts);
   assert.equal(first.asOf, null);
   assert.equal(second.asOf, null);
 });

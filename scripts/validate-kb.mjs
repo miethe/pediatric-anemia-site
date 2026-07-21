@@ -126,6 +126,60 @@ async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, 'utf8'));
 }
 
+// --- EPR1-T2 (R-P3 integration_owner = EP-R1; FR-WP1-02/03) --------------------------------------
+//
+// This is the seam: `scripts/validate-kb.mjs` is the R-P3-designated owner of the shared
+// ledger-resolution helper. `scripts/validate-rights.mjs`'s EPR1-T2 gate calls it below to resolve
+// KB_JSON_FILES artifact paths; EP-R2's EPR2-T5 is the intra-wave-ordered CONSUMER — it adds a call
+// site for `evidence_source_id` resolution and MUST NOT restructure, rename, or re-signature this
+// function (docs/project_plans/implementation_plans/infrastructure/rights-aware-evidence-capture-v1/
+// phase-r1-derived-fact-coverage.md, "Integration Ownership (R-P3)"; phase-r2's mirror section). A
+// needed shape change is an escalation to the plan owner, never a unilateral edit.
+
+/**
+ * Resolves every rights/rights-ledger.json entry that joins a given clinical identifier
+ * (`identifierType`/`identifierId` — e.g. `('evidence_source_id', 'AAP2026_IDA')` or
+ * `('kb_json_file_path', 'modules/anemia/reference-ranges.json')`) to its rights_record_id(s),
+ * verifying each resolves to a real record in `rights/rights-records.json`.
+ *
+ * Pure and call-site-agnostic: takes the already-loaded ledger/records data via `{ rightsLedger,
+ * rightsRecords }` rather than reading disk itself, so it can be called identically from
+ * `scripts/validate-rights.mjs`'s gate context (built by `loadRightsContext`) and from a future
+ * `scripts/validate-kb.mjs` call site (EPR2-T5) that loads `rights/` data on its own.
+ *
+ * Returns `{ recordIds: string[], errors: string[] }`:
+ *   - `recordIds` — the `rights_record_id` of every matching ledger entry that resolves to a real
+ *     record (order-preserving; may legitimately contain more than one entry for the same
+ *     identifier — see `rights/rights-ledger.json`'s own description of the AAP2026_IDA double-join
+ *     between its source-level and component-scoped records).
+ *   - `errors` — one message per matching ledger entry whose `rights_record_id` does NOT resolve to
+ *     any record (a dangling reference), reported even when other entries for the same identifier
+ *     DO resolve, so a coverage gap is never silently swallowed by unrelated valid coverage.
+ *
+ * An identifier with zero matching ledger entries returns `{ recordIds: [], errors: [] }` — that is
+ * a coverage GAP, but this function does not itself judge that a gap is a failure; callers combine
+ * an empty `recordIds` with their own presence check to raise a message naming the specific artifact
+ * or identifier at fault (never a generic "coverage failed"). D7: this function never reads
+ * `overall_status`, `review.review_status`, or any other rights-authority field — only that the join
+ * exists and resolves to a record, never what that record concludes.
+ */
+export function resolveRightsRecordsForIdentifier(identifierType, identifierId, { rightsLedger, rightsRecords }) {
+  const recordsById = new Map((rightsRecords?.records ?? []).map((record) => [record.rights_record_id, record]));
+  const recordIds = [];
+  const errors = [];
+
+  for (const entry of rightsLedger?.entries ?? []) {
+    if (entry.clinical_identifier_type !== identifierType || entry.clinical_identifier !== identifierId) continue;
+    if (!recordsById.has(entry.rights_record_id)) {
+      errors.push(`rights-ledger entry for ${identifierType}:${identifierId} references unknown rights_record_id "${entry.rights_record_id}"`);
+      continue;
+    }
+    recordIds.push(entry.rights_record_id);
+  }
+
+  return { recordIds, errors };
+}
+
 function collectBooleanFactPaths(condition, paths = new Set()) {
   if (Array.isArray(condition)) {
     for (const child of condition) collectBooleanFactPaths(child, paths);

@@ -54,12 +54,24 @@
 //                                            over release-context.json's own declared scope; EP-R2's
 //                                            gate calls the same exported primitive against a real
 //                                            requested-use record instead of writing a second one.
+//
+// EPR1-T2 (FR-WP1-02/03) appends a fifth gate, per this file's own module contract above:
+//   (e) checkKbJsonFileCoverage           — bidirectional coverage between scripts/sign-kb.mjs's
+//                                            KB_JSON_FILES artifact paths and rights_record entries,
+//                                            via a dedicated `kb_json_file_path`-shaped
+//                                            rights/rights-ledger.json identifier. Resolution is
+//                                            delegated to scripts/validate-kb.mjs's exported
+//                                            `resolveRightsRecordsForIdentifier` (R-P3 seam:
+//                                            EP-R1 owns and lands it; EP-R2's EPR2-T5 reuses it
+//                                            unmodified for evidence_source_id resolution).
 
 import { readFile } from 'node:fs/promises';
 import { realpathSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MODULE_IDS } from '../src/modules/registry.js';
+import { KB_JSON_FILES } from './sign-kb.mjs';
+import { resolveRightsRecordsForIdentifier } from './validate-kb.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -110,6 +122,23 @@ export function resolveAsOf(argv = [], env = {}) {
  * EPR0-T4 seeds only `evidence_source_id` entries (one per modules/<id>/evidence.json source), and
  * rights/rights-ledger.json's own description records that a later phase may add other identifier
  * types without changing this shape — `{ type, id }` already accommodates that.
+ *
+ * `kbJsonFileArtifacts` (EPR1-T2, FR-WP1-02/03) is a NEW field — additive growth, per this file's
+ * own module contract, never touching the four gates already reading `clinicalIdentifiers` etc. It
+ * enumerates every `modules/<id>/<filename>` artifact path drawn from `scripts/sign-kb.mjs`'s own
+ * `KB_JSON_FILES` list x `MODULE_IDS` — never re-typed as a second literal that could drift from it
+ * — feeding gate (e), `checkKbJsonFileCoverage`, below.
+ *
+ * The SAME `kb_json_file_path`/artifact-path pairs are also appended into `clinicalIdentifiers`
+ * itself (not just the new `kbJsonFileArtifacts` field). This is required, not merely convenient:
+ * gate (a) (`checkMissingAssessmentCoverage`, frozen — EP-R0 owns it, its body is never edited)
+ * walks EVERY entry in `rights/rights-ledger.json` in its reverse-direction check regardless of
+ * `clinical_identifier_type`, so a `kb_json_file_path` entry with no matching `clinicalIdentifiers`
+ * key would make gate (a) itself fail closed on an entry it has no way to recognize. Extending
+ * `clinicalIdentifiers`' contents (still the same field, same shape, same four gates reading it
+ * unmodified) is additive growth over gate (a)'s existing generic-over-type logic, not a rewrite of
+ * it — gate (a) transparently gains the same bidirectional proof over the file-path identifier space
+ * that gate (e) below re-asserts with KB_JSON_FILES-specific messaging.
  */
 export async function loadRightsContext(rootDir = root, { argv = [], env = {} } = {}) {
   const [releaseContext, rightsRecords, rightsFailures, rightsLedger, rightsRecordSchema, rightsFailureSchema] = await Promise.all([
@@ -122,10 +151,16 @@ export async function loadRightsContext(rootDir = root, { argv = [], env = {} } 
   ]);
 
   const clinicalIdentifiers = [];
+  const kbJsonFileArtifacts = [];
   for (const moduleId of MODULE_IDS) {
     const evidenceData = await readJson(path.join(rootDir, 'modules', moduleId, 'evidence.json'));
     for (const source of evidenceData.sources ?? []) {
       if (source?.id) clinicalIdentifiers.push({ type: 'evidence_source_id', id: source.id });
+    }
+    for (const filename of KB_JSON_FILES) {
+      const artifactPath = `modules/${moduleId}/${filename}`;
+      kbJsonFileArtifacts.push(artifactPath);
+      clinicalIdentifiers.push({ type: 'kb_json_file_path', id: artifactPath });
     }
   }
 
@@ -137,6 +172,7 @@ export async function loadRightsContext(rootDir = root, { argv = [], env = {} } 
     rightsRecordSchema,
     rightsFailureSchema,
     clinicalIdentifiers,
+    kbJsonFileArtifacts,
     asOf: resolveAsOf(argv, env),
   };
 }
@@ -374,6 +410,66 @@ export function runReleaseContextContainmentGate(context) {
   return checkReleaseContextContainment(releaseContext, selfRequest);
 }
 
+// --- gate (e): bidirectional KB_JSON_FILES artifact-path coverage (EPR1-T2, FR-WP1-02/03) ----------
+
+/**
+ * Closes the derived-fact blind spot this phase exists for: proves every `scripts/sign-kb.mjs`
+ * `KB_JSON_FILES` artifact path (`rules.json`, `candidates.json`, `evidence.json`,
+ * `reference-ranges.json`, per module) resolves to a rights record through a dedicated
+ * `kb_json_file_path`-shaped `rights/rights-ledger.json` identifier — the identifier type that
+ * ledger's own description anticipates ("EPR1-T2 ... is expected to additionally introduce a
+ * dedicated kb_json_file_path-shaped identifier type for direct, file-path-level KB_JSON_FILES
+ * coverage"). Resolution itself is delegated to `scripts/validate-kb.mjs`'s exported
+ * `resolveRightsRecordsForIdentifier` — the R-P3 seam EP-R2's EPR2-T5 reuses unmodified.
+ *
+ * Bidirectional, exactly like gate (a) is for `evidence_source_id`, but over the file-path
+ * identifier space instead:
+ *   1. forward — every artifact path in `context.kbJsonFileArtifacts` has >=1 `kb_json_file_path`
+ *      ledger entry that resolves to a real rights_record (a covered-in-name-only dangling entry is
+ *      surfaced too, via the helper's own `errors`).
+ *   2. reverse — every `kb_json_file_path` ledger entry's `clinical_identifier` names a path that is
+ *      STILL a real KB_JSON_FILES artifact, so a stale/renamed entry cannot silently outlive its
+ *      artifact (the "bidirectionality is the point" invariant from phase-r1's Implementation
+ *      Notes).
+ *
+ * D7: never reads `overall_status`, `review.review_status`, or any other rights-authority field — a
+ * record's clearance posture (including `UNKNOWN`, the seeded state of every record this gate can
+ * currently reach) is irrelevant to whether the join exists and resolves. Every failure message
+ * names the specific artifact path or ledger entry at fault, never a generic "coverage failed".
+ */
+export function checkKbJsonFileCoverage(context) {
+  const { kbJsonFileArtifacts, rightsLedger, rightsRecords } = context;
+  const errors = [];
+  const knownArtifactPaths = new Set(kbJsonFileArtifacts ?? []);
+
+  for (const artifactPath of kbJsonFileArtifacts ?? []) {
+    const { recordIds, errors: resolutionErrors } = resolveRightsRecordsForIdentifier(
+      'kb_json_file_path',
+      artifactPath,
+      { rightsLedger, rightsRecords },
+    );
+    errors.push(...resolutionErrors.map((message) => `kb-json-file-coverage: ${message}`));
+    if (recordIds.length === 0) {
+      errors.push(
+        `kb-json-file-coverage: KB_JSON_FILES artifact "${artifactPath}" has no rights/rights-ledger.json `
+          + 'entry (clinical_identifier_type: "kb_json_file_path") resolving to an existing rights record',
+      );
+    }
+  }
+
+  for (const entry of rightsLedger?.entries ?? []) {
+    if (entry.clinical_identifier_type !== 'kb_json_file_path') continue;
+    if (!knownArtifactPaths.has(entry.clinical_identifier)) {
+      errors.push(
+        `kb-json-file-coverage: rights/rights-ledger.json kb_json_file_path entry "${entry.clinical_identifier}" `
+          + 'does not resolve to any current KB_JSON_FILES artifact',
+      );
+    }
+  }
+
+  return { errors };
+}
+
 // --- the single exported gate list -------------------------------------------------------------------
 
 export const GATES = [
@@ -397,7 +493,12 @@ export const GATES = [
     description: 'use/territory/channel/commercial set-containment against rights/release-context.json.',
     run: runReleaseContextContainmentGate,
   },
-  // EP-R1 / EP-R2 / EP-R3: append your gate here as a new `{ id, description, run }` entry, with
+  {
+    id: 'kb-json-file-coverage',
+    description: 'Bidirectional coverage between scripts/sign-kb.mjs KB_JSON_FILES artifact paths and rights_record entries via a kb_json_file_path-shaped rights/rights-ledger.json identifier (EPR1-T2).',
+    run: checkKbJsonFileCoverage,
+  },
+  // EP-R2 / EP-R3: append your gate here as a new `{ id, description, run }` entry, with
   // its own `export function checkX(context) {...}` defined above (per this file's module
   // contract, in the header comment). Do not rename, reorder-and-renumber, or edit the body or
   // signature of an existing entry — that is an escalation to the plan owner, not a local edit.
