@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0",
+  "moduleId": "cbc_suite_v1",
+  "rfProvenance": {
+    "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+    "rfBundleId": "bundle_20260718_intent_research_20260717_rf_cbc_001",
+    "fixturePath": "tests/fixtures/rf-cbc-001/"
+  },
+  "decisions": [
+    {
+      "decision_id": "dec_cbc_synthetic_seeded_bad_001",
+      "module_id": "cbc_suite_v1",
+      "status": "approved_for_rule_draft",
+      "basis": {
+        "kind": "implementation_proposal",
+        "rf_claim_ids": ["clm_018"],
+        "exact_assertion_ids": ["evas_cbc_young_infant_anc_001"]
+      },
+      "conflicts": {
+        "visible": true,
+        "representation": "abstain_below_supported_age"
+      },
+      "clinical_effect": {
+        "intended_output": "scope_exit_alert",
+        "prohibited_effects": ["interpret_result_below_supported_age"]
+      },
+      "review": {
+        "evidence_methodologist": "pending",
+        "clinician_1": "pending",
+        "clinician_2": "pending",
+        "laboratory_medicine": "pending"
+      }
+    }
+  ]
+}

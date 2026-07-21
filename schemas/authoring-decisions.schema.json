@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/authoring-decisions.schema.json",
+  "title": "Evidence Foundry Authoring Decision Record",
+  "description": "Validates modules/<moduleId>/authoring-decisions.yaml, parsed to a plain JS object via tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs's parseYamlDocument (evidence-foundry-buildout P3-T4, FR-13/FR-14, `02 §4.11`/`02 §4.12`). This is the explicit, hand-authored, human-reviewable bridge between an `rf` claim_ledger.yaml and a drafted rule/candidate proposal (FR-14: the converter MUST NOT infer clinical Boolean logic from prose without a matching decision record here). Structural validity here never implies clinical validity, safety, or that a named human clinician actually reviewed anything — every `review.*` field legally stays \"pending\" through E0; `status: approved_for_rule_draft` means the DECISION is ready to inform a drafted rule proposal, not that the underlying clinical content is signed or release-ready. scripts/validate-kb.mjs wires this schema in as an EXISTENCE-GATED check: not every module carries this file (e.g. modules/anemia/ predates it), so its absence is not itself an error.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "moduleId", "rfProvenance", "decisions"],
+  "properties": {
+    "schemaVersion": { "type": "string", "minLength": 1 },
+    "moduleId": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "rfProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rfRunId", "rfBundleId", "fixturePath"],
+      "description": "The single upstream rf run/bundle every decision record in this file traces back to (mirrors modules/<id>/evidence-assertions.json's own `rfProvenance` block, P3-T3) — kept once at the document level rather than repeated per decision.",
+      "properties": {
+        "rfRunId": { "type": "string", "minLength": 1 },
+        "rfBundleId": { "type": "string", "minLength": 1 },
+        "fixturePath": { "type": "string", "minLength": 1 }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "minItems": 0,
+      "items": { "$ref": "#/$defs/decision" },
+      "description": "`minItems: 0` (mirrors schemas/evidence-assertions.schema.json's own P3-T3 relaxation): a brand-new module package scaffold legitimately has zero decision records until a human author drafts one per slice rule."
+    }
+  },
+  "$defs": {
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision_id", "module_id", "status", "basis", "conflicts", "clinical_effect", "review"],
+      "description": "One hand-authored decision record (`02 §4.12`'s worked example), one per drafted rule or candidate. Every numeric threshold or age boundary a rule later derives from this decision must trace through `basis.exact_assertion_ids[]` to a real modules/<id>/evidence-assertions.json record — this schema cannot itself verify that cross-file resolution (a validateAuthoringDecisions()/traceability-index concern, P5-T4), but requires the field to be present and non-empty here.",
+      "properties": {
+        "decision_id": {
+          "type": "string",
+          "pattern": "^dec_[a-z0-9_]+$",
+          "description": "Stable identity (`02 §4.12`). Referenced by a drafted rule/candidate's own decision join key (rule-proposals.json's `decisionId`, P3-T5)."
+        },
+        "module_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Must equal the enclosing document's `moduleId` — this schema validates the decision in isolation and cannot cross-check the parent; that equality is enforced by scripts/validate-kb.mjs's validateAuthoringDecisions()."
+        },
+        "status": {
+          "enum": ["approved_for_rule_draft", "rejected", "withdrawn"],
+          "description": "REQUIRED, non-null, closed enum (mirrors schemas/module-manifest.schema.json's own SPIKE-006 RQ4 pattern of a closed lifecycle-status set). `approved_for_rule_draft` = this decision is ready to inform a drafted rule/candidate proposal — NOT clinical sign-off (that is what every `review.*` field, independently, still tracks as `pending`). `rejected`/`withdrawn` = a decision a human author explicitly declined or later retracted; retained for traceability, never eligible to ground a drafted rule."
+        },
+        "basis": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "rf_claim_ids", "exact_assertion_ids", "reasoning"],
+          "description": "The `02 §4.11` claim-ledger mapping table's authoring/evidence target, made explicit and reviewable for this one decision.",
+          "properties": {
+            "kind": {
+              "enum": ["source_supported_fact", "conflicting_source_facts", "contradicted_source_fact", "implementation_proposal"],
+              "description": "Exactly the 4 `basis.kind` values `02 §4.11`'s routing table names for `status=supported|mixed|contradicted|inference` respectively. `speculation`/`unsupported` claims have no legal `basis.kind` at all (FR-13) — they cannot ground a decision record and so never appear as this field's value."
+            },
+            "rf_claim_ids": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^clm_[a-z0-9]+$" },
+              "minItems": 1,
+              "description": "REQUIRED, non-empty (P3-T1's own acceptance criteria: 'each cites >=1 real claim ID from the fixture's claim_ledger.yaml'). Every entry must resolve to a real `claim_id` in the upstream bundle's claims/claim_ledger.yaml — this schema cannot verify that cross-file resolution itself."
+            },
+            "exact_assertion_ids": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^evas_[a-z0-9_]+$" },
+              "minItems": 1,
+              "description": "REQUIRED, non-empty. Every entry must resolve to a real `assertionId` in modules/<id>/evidence-assertions.json (P3-T3) — the exact-passage locator that keeps this decision's downstream rule from carrying an invented threshold. This schema cannot verify that cross-file resolution itself; tests/evidence-assertions-schema.test.mjs already proves it for the committed cbc_suite_v1 pair."
+            },
+            "reasoning": {
+              "type": "string",
+              "minLength": 1,
+              "description": "REQUIRED (R-P2 analog, this task's binding acceptance criteria: 'a record missing basis.reasoning fails schema validation'). Free-text human explanation of why the cited claims/assertions support this decision — never itself parsed as executable logic; it exists so an independent reviewer can inspect the reasoning, not so the converter can infer Boolean logic from it (FR-14)."
+            }
+          }
+        },
+        "conflicts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["visible", "representation"],
+          "description": "`02 §2.3` invariant 8: a conflict must stay visible, never silently resolved away.",
+          "properties": {
+            "visible": {
+              "type": "boolean",
+              "description": "Whether this decision's downstream rule/candidate must keep any competing evidence/interpretation visible rather than silently resolving it. Not itself a claim about whether a conflict currently exists — see `basis.kind` for that."
+            },
+            "representation": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "minLength": 1,
+              "description": "Snake_case label naming HOW the conflict/abstention/pattern is represented downstream (e.g. `abstain_below_supported_age`, `local_profile_or_abstain`, `pattern_with_referral_features_visible`, `alert_dominates_cooccurring_candidate_ranking`). Deliberately an open string, not a closed enum: this is the one field of the record most likely to need a genuinely new label per decision, and a closed enum here would either block a legitimate new decision or force reuse of an ill-fitting existing label."
+            }
+          }
+        },
+        "clinical_effect": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["intended_output", "prohibited_effects"],
+          "description": "What this decision authorizes the drafted rule to DO, and what it explicitly forbids — the guardrail-adjacent half of the record.",
+          "properties": {
+            "intended_output": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "minLength": 1,
+              "description": "Snake_case label naming the rule output class this decision authorizes (e.g. `scope_exit_alert`, `interpretive_note`, `reviewable_pattern`, `safety_caution`). Open string for the same reason as `conflicts.representation`."
+            },
+            "prohibited_effects": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+              "minItems": 1,
+              "description": "REQUIRED, non-empty: at least one explicitly named behavior the drafted rule must never exhibit (e.g. `infer_normal_from_missing_range`, `silent_unit_conversion`, `suppress_alert_for_cooccurring_benign_candidate`). A decision authorizing a clinical rule with zero named prohibited effects has not actually bounded what the rule may do."
+            }
+          }
+        },
+        "review": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["evidence_methodologist", "clinician_1", "clinician_2", "laboratory_medicine"],
+          "description": "REQUIRED, all 4 named reviewer roles present (`02 §4.12`'s worked example). Every field legally stays `pending` through E0 — no named credentialed human review occurs in this build (CLAUDE.md: 'No AI-published rule changes... require independent clinical review'). This object's presence proves the review gate is modeled and tracked, not that it has been passed.",
+          "properties": {
+            "evidence_methodologist": { "enum": ["pending", "approved", "rejected"] },
+            "clinician_1": { "enum": ["pending", "approved", "rejected"] },
+            "clinician_2": { "enum": ["pending", "approved", "rejected"] },
+            "laboratory_medicine": { "enum": ["pending", "approved", "rejected"] }
+          }
+        }
+      }
+    }
+  }
+}

@@ -6,6 +6,11 @@ import { MODULE_IDS } from '../src/modules/registry.js';
 import { isBindableAsSourceSupported } from '../src/evidence.js';
 import { loadAttestationLedger, validateBindingsAgainstLedger } from './evidence/lib/attested-passage-map.mjs';
 import { validate } from './lib/json-schema-lite.mjs';
+// P3-T4: modules/<id>/authoring-decisions.yaml is YAML, not JSON — reuse the converter's own
+// dependency-free YAML-subset parser (tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs, P2-T2) rather
+// than adding a `yaml` dependency just for this validator. tests/authoring-decisions-schema.test.mjs
+// already establishes this same cross-import for the equivalent test-side check.
+import { parseYamlDocument } from '../tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -331,6 +336,46 @@ export function validateEvidenceAssertions(assertionsData, moduleId, assertionsS
   return { errors, assertionCount: assertions.length };
 }
 
+/**
+ * P3-T4 (FR-13/FR-14, `02 §4.11`/`02 §4.12`): validate modules/<moduleId>/authoring-decisions.yaml
+ * (already parsed to a plain JS object, per parseYamlDocument) against
+ * schemas/authoring-decisions.schema.json, plus the one cross-record invariant the schema cannot
+ * express on its own: decision_id uniqueness across the array, and each decision's own `module_id`
+ * agreeing with the document's own top-level `moduleId` (the schema validates each decision in
+ * isolation and cannot see its siblings or the parent — same shape of gap
+ * validateEvidenceAssertions closes for evidence-assertions.json above). Pure function over
+ * in-memory data, so it is independently unit-testable against a tampered/seeded-bad fixture
+ * without touching disk.
+ */
+export function validateAuthoringDecisions(decisionsData, moduleId, decisionsSchema) {
+  const errors = [];
+
+  for (const schemaError of validate(decisionsSchema, decisionsData)) {
+    errors.push(`${moduleId}/authoring-decisions.yaml: authoring-decisions.schema.json ${schemaError.path}: ${schemaError.message}`);
+  }
+
+  const decisions = Array.isArray(decisionsData?.decisions) ? decisionsData.decisions : [];
+  const documentModuleId = decisionsData?.moduleId;
+  const seenDecisionIds = new Set();
+
+  for (const decision of decisions) {
+    const label = decision?.decision_id ?? '<missing-decision_id>';
+
+    if (decision?.decision_id !== undefined) {
+      if (seenDecisionIds.has(decision.decision_id)) {
+        errors.push(`${moduleId}/authoring-decisions.yaml#${label}: duplicate decision_id`);
+      }
+      seenDecisionIds.add(decision.decision_id);
+    }
+
+    if (documentModuleId !== undefined && decision?.module_id !== undefined && decision.module_id !== documentModuleId) {
+      errors.push(`${moduleId}/authoring-decisions.yaml#${label}: module_id "${decision.module_id}" does not match the document's top-level moduleId "${documentModuleId}"`);
+    }
+  }
+
+  return { errors, decisionCount: decisions.length };
+}
+
 function setsEqual(a, b) {
   if (a.size !== b.size) return false;
   for (const item of a) {
@@ -508,6 +553,21 @@ export async function validateModule(moduleId, rootDir) {
     evidenceAssertionsCount = assertionValidation.assertionCount;
   }
 
+  // P3-T4: existence-gated, same rationale as evidence-assertions.json above — modules/anemia/
+  // predates authoring-decisions.yaml and has no such file; its absence there is not an error.
+  // Any module directory that DOES carry the file (modules/cbc_suite_v1/ onward) gets full
+  // schema + cross-record validation, parsed via the converter's own yaml-lite parser.
+  let authoringDecisionsCount = 0;
+  const authoringDecisionsPath = path.join(moduleDir, 'authoring-decisions.yaml');
+  if (await fileExists(authoringDecisionsPath)) {
+    const authoringDecisionsSchema = await readJson(path.join(rootDir, 'schemas', 'authoring-decisions.schema.json'));
+    const authoringDecisionsRaw = await readFile(authoringDecisionsPath, 'utf8');
+    const authoringDecisionsData = parseYamlDocument(authoringDecisionsRaw);
+    const decisionsValidation = validateAuthoringDecisions(authoringDecisionsData, moduleId, authoringDecisionsSchema);
+    errors.push(...decisionsValidation.errors);
+    authoringDecisionsCount = decisionsValidation.decisionCount;
+  }
+
   errors.push(...validateBooleanFactPathAllowList(rules, moduleId));
 
   const ruleIds = new Set();
@@ -658,6 +718,7 @@ export async function validateModule(moduleId, rootDir) {
     rulePassageStatusCounts,
     candidatePassageStatusCounts,
     evidenceAssertionsCount,
+    authoringDecisionsCount,
   };
 }
 
@@ -682,7 +743,8 @@ if (isMain) {
       .map(
         (result) =>
           `${result.moduleId} (${result.ruleCount} rules, ${result.candidateCount} candidates, ${result.evidenceCount} evidence records, ${result.passageCount} passage records`
-          + `${result.evidenceAssertionsCount ? `, ${result.evidenceAssertionsCount} evidence-assertions` : ''})`,
+          + `${result.evidenceAssertionsCount ? `, ${result.evidenceAssertionsCount} evidence-assertions` : ''}`
+          + `${result.authoringDecisionsCount ? `, ${result.authoringDecisionsCount} authoring-decisions` : ''})`,
       )
       .join(', ');
     console.log(`Validated modules: ${summary}.`);
