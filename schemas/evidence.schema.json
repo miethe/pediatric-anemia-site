@@ -247,9 +247,13 @@
         "reviewDate",
         "supersedes",
         "surveillanceQuery",
-        "provenance"
+        "provenance",
+        "evidence_item_type",
+        "judgment_basis",
+        "judgment_basis_attestation",
+        "rights_component_class"
       ],
-      "description": "A single exact-passage evidence record (D-EP3-3). Every member below except `applicability` is REQUIRED as a key — legitimate absence is expressed as an explicit typed null (`evidenceGrade`, `supersedes`, and every member of `sourceLocator`/`applicability`), never by omitting the key. `applicability` is conditionally required by the allOf below (AC-WP3-RESIL, EP3-T6): required on every `source-supported` record (an unrestricted-by-default clinical applicability claim on a supposedly source-backed record is a safety defect), optional only on the `implementation-proposal` sentinel, where absence means \"unrestricted\" because there is no clinical claim being made at all. The one content invariant (AC EP3-T1) is enforced by the first allOf member below: a record is valid only when `exactPassage` is non-empty OR `status` is `implementation-proposal` — the proposal sentinel is the only way to have an empty passage.",
+      "description": "A single exact-passage evidence record (D-EP3-3). Every member below except `applicability` is REQUIRED as a key — legitimate absence is expressed as an explicit typed null (`evidenceGrade`, `supersedes`, and every member of `sourceLocator`/`applicability`), never by omitting the key. `applicability` is conditionally required by the allOf below (AC-WP3-RESIL, EP3-T6): required on every `source-supported` record (an unrestricted-by-default clinical applicability claim on a supposedly source-backed record is a safety defect), optional only on the `implementation-proposal` sentinel, where absence means \"unrestricted\" because there is no clinical claim being made at all. The one content invariant (AC EP3-T1) is enforced by the first allOf member below: a record is valid only when `exactPassage` is non-empty OR `status` is `implementation-proposal` — the proposal sentinel is the only way to have an empty passage. EPR3-T2 (FR-WP3-01/02/03, D2) adds three orthogonal REQUIRED axis fields — `evidence_item_type` (what kind of thing), `rights_component_class` (which rights component of the source), `judgment_basis` (measured vs. judged, always `unassessed` today) — plus the forced-null `judgment_basis_attestation` that gates the third. They sit here as first-class members, NOT under `extensions.rights` (RF handoff §9.1), and they are separate from the two axes this record already carried: the epistemic `status` and the reuse-posture `passageFidelity`. Five axes now coexist on one record and none is derived from another (AC-WP3-AXES): a passage can be `source-supported` (epistemically sound) and still sit against a contract-restricted `rights/` record, or be `quarantined` while its rights are unrestricted.",
       "properties": {
         "id": {
           "type": "string",
@@ -273,6 +277,22 @@
         "passageFidelity": {
           "enum": ["verbatim", "paraphrase", "withheld"],
           "description": "States what kind of text `exactPassage` holds. REG-002 has not cleared verbatim reuse of guideline text, so every record minted by this codebase's converter is `paraphrase` unless withheld; `verbatim` is schema-representable for a future cleared source but is asserted by nobody today. `withheld` (EP3T5-F01) means the independent EP3-T5 fidelity audit found the located span shared a rights-restricted contiguous span with source text; vendor-rf-bundle.mjs replaced `exactPassage` with the fixed placeholder before this record was ever minted, and `reviewFlags` carries `near-verbatim-span-pending-rights`."
+        },
+        "evidence_item_type": {
+          "$ref": "#/$defs/evidenceItemType",
+          "description": "EPR3-T2 (FR-WP3-01, decisions-block D2), axis 1 of 3. WHAT KIND OF THING this item is, epistemically. First-class here rather than under `extensions.rights` — RF handoff §9.1: `rights_extension` is `additionalProperties: false` and requires a `clearance_status`/`release_gate` pair no capture-time record can carry, so the taxonomy does not ride it. Orthogonal to `rights_component_class` and to `status`/`passageFidelity`: no code path may infer any one of these from another (AC-WP3-AXES, EPR3-T3)."
+        },
+        "judgment_basis": {
+          "$ref": "#/$defs/judgmentBasis",
+          "description": "EPR3-T2 (FR-WP3-02, OQ-1), axis 2 of 3. Whether the item's value is measured/observed or committee-judged. This determination is a legal/clinical one that routes to counsel and is UNANSWERED for every threshold family in this knowledge base, so every record this codebase mints carries `unassessed`. Leaving `unassessed` requires a non-null `judgment_basis_attestation` (allOf below), which this schema version forces to `null` — so no agent can move this axis. `unassessed` is a typed value, never an omission (D2: missingness is never treated as normal)."
+        },
+        "judgment_basis_attestation": {
+          "const": null,
+          "description": "EPR3-T2 (FR-WP3-02, D6). REQUIRED key, and under this schema version it MUST be exactly `null` — the human attestation that would justify a non-`unassessed` `judgment_basis` does not exist in this project and MUST NOT be agent-authored. The element shape for a future real attestation process is already specified at `$defs/judgmentBasisAttestation` and is applied by the pairing rule in `allOf` below, so the constraint is written once and stays correct when a real process exists. Relaxing this `const` is the deliberate, reviewable act by which this project would first claim a measured-vs-judged determination; it must never be done to make a build pass. Carries no clearance authority and is not a clearance surface (D7)."
+        },
+        "rights_component_class": {
+          "$ref": "#/$defs/rightsComponentClass",
+          "description": "EPR3-T2 (FR-WP3-03, D2), axis 3 of 3. WHICH RIGHTS COMPONENT of the source this item draws on. Deliberately orthogonal to `evidence_item_type`: an `observed_finding` may be drawn from a `table`, a `figure`, or `prose`, and a `reference_interval_value` is very often a `table` — the two axes carry different vocabularies for different purposes and neither is derivable from the other (AC-WP3-AXES). Legal disposition of that component lives on the joined `rights/` record's `overall_status`, never here: this field names the component, it does not clear it (D7)."
         },
         "reviewFlags": {
           "type": "array",
@@ -398,8 +418,86 @@
             "required": ["reviewFlags"],
             "properties": { "reviewFlags": { "minItems": 1 } }
           }
+        },
+        {
+          "description": "EPR3-T2 (FR-WP3-02, OQ-1, D6): `judgment_basis` may leave `unassessed` ONLY against a human attestation record. A record claiming `measured_or_observed` or `committee_judged` with a null `judgment_basis_attestation` is invalid — an unattested determination is exactly the fail-open this feature exists to prevent. Combined with the `const: null` on `judgment_basis_attestation` itself, this makes every non-`unassessed` value structurally unreachable in this schema version: no enum value, flag, or field combination reaches a measured-vs-judged determination without a human attestation record this feature does not create. This clause is written against the attestation SHAPE (`$defs/judgmentBasisAttestation`), not against the `const`, so it remains the operative constraint on the day a real attestation process relaxes that `const`. Note the direction: this is a coverage/consistency constraint on an unassessed record, not a clearance gate — an item at `judgment_basis: unassessed` validates cleanly and always will (D7).",
+          "if": {
+            "type": "object",
+            "required": ["judgment_basis"],
+            "properties": { "judgment_basis": { "not": { "const": "unassessed" } } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["judgment_basis_attestation"],
+            "properties": { "judgment_basis_attestation": { "$ref": "#/$defs/judgmentBasisAttestation" } }
+          }
         }
       ]
+    },
+    "evidenceItemType": {
+      "enum": [
+        "observed_finding",
+        "reference_interval_value",
+        "equation_or_method",
+        "guideline_recommendation",
+        "instrument_or_questionnaire",
+        "bibliographic_metadata",
+        "derived_synthesis"
+      ],
+      "description": "EPR3-T2 (FR-WP3-01, D2). CLOSED enumeration — an unrecognised value is a hard schema violation, not a warning, because an unclassifiable item is one whose rights and epistemic posture nobody has actually looked at. Members are epistemic kinds, not rights components (that is `rights_component_class`) and not confidence (there is none). `derived_synthesis` is this project's own first-party synthesis and exists only in a `candidate` state; EPR3-T7 owns its attribution model and the RF handoff §9.5 gap (DEF-R4) that leaves it without a `rights_record`. Adding a member is a reviewable schema change — never a convenience to make a record fit."
+    },
+    "judgmentBasis": {
+      "enum": ["unassessed", "measured_or_observed", "committee_judged"],
+      "default": "unassessed",
+      "description": "EPR3-T2 (FR-WP3-02, OQ-1). `unassessed` is the ONLY value any artifact in this repository carries today, and the only value an agent may write: whether a threshold family is measured/observed or committee-judged is a determination that routes to counsel (OQ-1, open), and it materially changes the downstream rights analysis. The other two members exist so the answer is representable when a human gives it — their reachability is gated by the `judgment_basis_attestation` pairing rule on `$defs/passage`, not by their absence from this enum. `default` here is a JSON Schema annotation only (`scripts/lib/json-schema-lite.mjs` treats it as inert); the field is REQUIRED, so no record ever relies on a default being applied."
+    },
+    "judgmentBasisAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attested_by", "attestation_ref", "attested_on"],
+      "description": "EPR3-T2 (FR-WP3-02, D6). The shape a human attestation would take if one existed. NOTHING IN THIS REPOSITORY VALIDATES AGAINST THIS DEFINITION TODAY and nothing may be authored against it by an agent: `$defs/passage`'s `judgment_basis_attestation` is `const: null`, so this shape is reachable only after a deliberate, reviewable schema change made alongside a real attestation process. Specified now so that the pairing rule above constrains something real rather than being written as a bare `false`, and so the element shape is already agreed when that process exists — the same posture `schemas/rule.schema.json` takes toward `clinicalApprovers[]`'s `items` under `maxItems: 0`.",
+      "properties": {
+        "attested_by": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The named human who made the determination. Never an agent, an ARC/council run, a Research Foundry run id, or a role name standing in for a person."
+        },
+        "attestation_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Addressable reference to the attestation record itself (the record, not a summary of it). No attestation ledger with a resolvable id space exists for this axis today; establishing one is out of scope for this feature."
+        },
+        "attested_on": {
+          "type": "string",
+          "format": "date",
+          "description": "The date the determination was made — supplied by the attesting human, never by wall-clock time inside a generator (the feature's determinism rule)."
+        }
+      }
+    },
+    "rightsComponentClass": {
+      "enum": [
+        "bibliographic_metadata",
+        "atomic_facts_and_methods",
+        "equation",
+        "guideline_recommendation",
+        "reference_interval_values",
+        "prose",
+        "abstract",
+        "table",
+        "figure",
+        "chart",
+        "nomogram",
+        "decision_tree_or_flowchart",
+        "questionnaire_or_instrument",
+        "patient_handout",
+        "dataset",
+        "software_or_code",
+        "image_or_media",
+        "trademarks_and_logos",
+        "supplementary_material",
+        "other"
+      ],
+      "description": "EPR3-T2 (FR-WP3-03, RF handoff §9.2). Copied ONE-FOR-ONE from `schemas/rights/rights_record.schema.json`'s `component_decisions[].component_type` enum — the SCHEMA enum, which EPR0-T3's declared local amendment establishes as authoritative over the spec's §5.1 prose table (the two diverge: the prose table's single \"Prose or abstract\" and \"Figure or chart\" rows each map to two enum members here). See `schemas/rights/VENDORING.md`. The copy is deliberate and is NOT a `$ref`: FR-WP3-11 forbids any runtime `$ref` or import reaching outside `schemas/` into an RF-owned schema while OQ-4 (does RF accept this entity model?) is open. `tests/rights-evidence-item-axes.test.mjs` asserts the two enums stay identical, so the copy cannot silently drift; a drift is a reviewable diff in one file, not a runtime coupling."
     },
     "sourceLocator": {
       "type": "object",

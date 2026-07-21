@@ -117,6 +117,21 @@ their "Vendored checksum" (`rights_extension.schema.json`'s §9.1 conflict is EP
 - 2026-07-21 — `schemas/rights/rights_failure.schema.json` (D6): `review.reviewed_by` gained
   `"maxItems": 0` — forced empty in this feature. No human reviewer identity may be agent-authored.
 
+**EPR3-T2 (FR-WP3-01/02/03, handoff §9.1) — resolved by NOT using the vendored schema.** §9.1 is the
+one conflict EP-R0 did not own. `rights_extension.schema.json` is `additionalProperties: false` and
+`required`s a `clearance_status` / `release_gate` pair, so it cannot carry a capture-time taxonomy: an
+evidence item classified at capture has no clearance and no release gate, and inventing either to
+satisfy the schema would manufacture exactly the authority D6 forbids. The resolution is therefore an
+**absence of an amendment**: `schemas/rights/rights_extension.schema.json` stays byte-identical to its
+"Vendored checksum" above, and the three taxonomy axes — `evidence_item_type`, `judgment_basis`,
+`rights_component_class` — are **first-class fields on `schemas/evidence.schema.json`'s
+`$defs/passage`**, per the handoff's own stated preference (b). Nothing in `evidence.schema.json`
+`$ref`s or imports an RF-owned schema (FR-WP3-11, OQ-4 open); `rights_component_class`'s vocabulary is
+a declared **copy** of `rights_record.schema.json`'s `component_decisions[].component_type` enum (the
+§9.2 amendment above), kept identical by an assertion in
+`tests/rights-evidence-item-axes.test.mjs` rather than by a runtime reference. Consequence: the
+taxonomy does not ride `extensions.rights` in any form, which is also what D4 independently requires.
+
 **Not amended, and not silently left as-is: `permission_record.schema.json`'s `review.approved_by`**
 (`required`, `minItems: 1`) carries the same class of reviewer-authority risk as the six D6 paths
 above, but this feature seeds zero `permission_record`s and the plan's EPR0-T3 acceptance criteria do

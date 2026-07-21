@@ -50,6 +50,13 @@ function basePassage(overrides = {}) {
     supersedes: null,
     surveillanceQuery: 'q',
     provenance: { runId: 'r', sourceCardId: 's', evidenceId: 'ev_001' },
+    // EPR3-T2 (FR-WP3-01/02/03): the three axis fields are REQUIRED on every passage record.
+    // Structurally-legal fixture values on a synthetic record — not a classification of any real
+    // source content (the KB backfill is EPR3-T5's).
+    evidence_item_type: 'observed_finding',
+    judgment_basis: 'unassessed',
+    judgment_basis_attestation: null,
+    rights_component_class: 'atomic_facts_and_methods',
     ...overrides,
   };
 }

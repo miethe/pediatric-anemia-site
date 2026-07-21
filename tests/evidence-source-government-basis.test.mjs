@@ -73,6 +73,13 @@ function baseSource(overrides = {}) {
         supersedes: null,
         surveillanceQuery: 'q',
         provenance: { runId: 'r', sourceCardId: 's', evidenceId: 'implementation-proposal' },
+        // EPR3-T2 (FR-WP3-01/02/03): the three axis fields are REQUIRED on every passage record.
+        // These are structurally-legal fixture values on a synthetic sentinel, not a
+        // classification of any real source content (that backfill is EPR3-T5's).
+        evidence_item_type: 'bibliographic_metadata',
+        judgment_basis: 'unassessed',
+        judgment_basis_attestation: null,
+        rights_component_class: 'bibliographic_metadata',
       },
     ],
     access_basis: 'unknown',

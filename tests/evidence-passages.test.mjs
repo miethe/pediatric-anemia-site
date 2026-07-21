@@ -145,6 +145,13 @@ test('EP3-T1 invariant: the same record with status implementation-proposal is a
     supersedes: null,
     surveillanceQuery: 'q',
     provenance: { runId: 'r', sourceCardId: 's', evidenceId: 'implementation-proposal' },
+    // EPR3-T2 (FR-WP3-01/02/03): the three axis fields are REQUIRED on every passage record.
+    // Structurally-legal fixture values on a synthetic sentinel — not a classification of any
+    // real source content (the KB backfill is EPR3-T5's).
+    evidence_item_type: 'bibliographic_metadata',
+    judgment_basis: 'unassessed',
+    judgment_basis_attestation: null,
+    rights_component_class: 'bibliographic_metadata',
   };
   const errors = validate(schema.$defs.passage, ok, { rootSchema: schema });
   assert.deepEqual(errors, [], `sentinel with empty passage must validate, got errors:\n${JSON.stringify(errors, null, 2)}`);

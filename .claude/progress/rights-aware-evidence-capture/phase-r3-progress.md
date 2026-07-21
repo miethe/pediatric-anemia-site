@@ -15,10 +15,10 @@ started: '2026-07-21'
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 11
+overall_progress: 25
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 1
+completed_tasks: 2
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -55,7 +55,7 @@ tasks:
     from the spec''s component_decisions.component_type enum, authoritative over the §5.1 prose
     table per handoff §9.2). Per handoff §9.1 these are first-class fields in schemas/evidence.schema.json,
     NOT extensions.rights properties. No $ref or import of an RF-owned schema (FR-WP3-11).'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
