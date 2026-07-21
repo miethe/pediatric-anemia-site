@@ -9,6 +9,17 @@ project: pediatric-cds-platform
 
 # Research Foundry handoff — Pediatric CDS evidence runs
 
+> **Later addition (2026-07-21) — RF-EV-003 is NOT one of the 7 and is NOT rf-verified.**
+> [`rf-ev-003-oa-substitute-discovery.md`](rf-ev-003-oa-substitute-discovery.md) records a discovery
+> run asking whether the 7 claim areas anchored to the paywalled `AAP2026_IDA` can be re-anchored to
+> open-access, **rights-clear** sources. Run `rf_run_20260721_rf_ev_003_pediatric_cds_identify` is
+> registered on the node but remains `status: planned` — `POST /api/runs` scaffolds only, and the
+> discovery swarm was driven **out-of-band by Claude Code agents**, so the node's run directory does
+> not hold these results and nothing here has passed `rf verify`. Headline finding: **paywalled ≠
+> unlicensed — buying AAP access would not create a reuse grant**, and "free to read" was the largest
+> failure class among 69 candidates. Findings register:
+> [`.claude/findings/rf-ev-003-oa-substitute-findings.md`](../../../../.claude/findings/rf-ev-003-oa-substitute-findings.md).
+
 > **Current status (2026-07-18, supersedes the §2 heading below): all 7 runs are `verified`, not
 > merely `planned`.** See [`RESULTS.md`](RESULTS.md) for the authoritative completion record,
 > verification numbers, and cross-model audit. The §2 table's *columns* (run IDs, IntentTree nodes,
