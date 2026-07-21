@@ -1,0 +1,1523 @@
+id: claims_20260718_rf_run_20260717_rf_cbc_001
+intent_id: intent_research_20260717_rf_cbc_001_pediatric_cds_establish
+report_ref: reports/report_draft.md
+verification_status: passed
+claims:
+- claim_id: clm_001
+  text: Severe chronic neutropenia (SCN) is defined as blood neutrophils below 0.5 x 10^9/L persisting
+    for more than 3 months.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_08
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract (opening sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_002
+  text: SCNIR operational enrollment criterion required ANC below 0.5 x 10^9/L on at least 3 occasions
+    over at least 3 months.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_08
+    evidence_id: ev_002
+    relation: supports
+    locator: Methods > Enrollment criteria > Neutropenia
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_003
+  text: Cyclic neutropenia required 2 ANC cycles with nadir below 0.2 x 10^9/L rising usually above 1.0
+    x 10^9/L at roughly 3-week intervals.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_08
+    evidence_id: ev_003
+    relation: supports
+    locator: Methods > Enrollment criteria (cyclic neutropenia definition)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_004
+  text: Congenital neutropenia was defined by early-childhood onset and/or genetic results with ANC remaining
+    below 0.5 x 10^9/L beyond age 0.25 to 1.0 years.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_08
+    evidence_id: ev_004
+    relation: supports
+    locator: Methods > Enrollment criteria (congenital neutropenia definition)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_005
+  text: MDS/AML occurred in 4.4% of all SCNIR patients (77/1752) but in 11.3% of the 670 congenital-neutropenia
+    patients, concentrating myeloid risk in the congenital etiology.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_08
+    evidence_id: ev_005
+    relation: supports
+    locator: 'Results > Outcomes: myeloid malignancies; and Table 6'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_006
+  text: No autoimmune/idiopathic-group patient (0 of 816) evolved to a myeloid malignancy, supporting
+    a favorable myeloid prognosis for that etiology.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_08
+    evidence_id: ev_006
+    relation: supports
+    locator: 'Results > Outcomes: lymphoid malignancies (closing sentence)'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_007
+  text: Lymphoid malignancies developed in 1.5% (12/816) of autoimmune/idiopathic patients, at a median
+    age of 46.9 years (adult-predominant, T-cell primary).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_08
+    evidence_id: ev_007
+    relation: supports
+    locator: 'Results > Outcomes: lymphoid malignancies'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_008
+  text: Reference standards were derived from 566 healthy children and adolescents spanning birth to under
+    21 years.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_01
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract — Methods
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_009
+  text: Age-specific reference-interval differences were statistically significant for 39 of the 47 hematologic
+    parameters examined, confirming pediatric intervals cannot rely on adult cutoffs.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_01
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract — Results
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_010
+  text: Sex-specific reference-interval differences were observed for eight hematologic parameters, occurring
+    primarily during and after puberty.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_01
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract — Results
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_011
+  text: The study establishes a database of pediatric reference standards for 47 hematologic parameters
+    calculated per CLSI guidelines on the Beckman Coulter DxH 900.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_01
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract — Methods / Conclusions
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_012
+  text: 'The study classifies neutropenia by absolute neutrophil count into four severity bands: mild,
+    moderate, severe, and very severe.'
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_06
+    evidence_id: ev_001
+    relation: supports
+    locator: Methods (Abstract + Materials and Methods) — neutropenia severity classification
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_013
+  text: Within the 180-patient cohort, moderate neutropenia was most common and very severe least common.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_06
+    evidence_id: ev_002
+    relation: supports
+    locator: Results — severity distribution of the cohort
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_014
+  text: Congenital neutropenia patients presented with a low median ANC of 200/mm3 on admission.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_06
+    evidence_id: ev_003
+    relation: supports
+    locator: Results — congenital neutropenia subgroup (n=12)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_015
+  text: Congenital neutropenia presented at a younger median age than post-infectious neutropenia (12
+    vs 47 months).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_06
+    evidence_id: ev_004
+    relation: supports
+    locator: Results — age at presentation by etiology
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_016
+  text: Post-infectious causes dominated the etiology of pediatric neutropenia, with congenital cases
+    a small minority.
+  materiality: background
+  claim_type: causal
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_06
+    evidence_id: ev_005
+    relation: supports
+    locator: Results — etiological distribution
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_017
+  text: Most patients recovered a normal ANC by last follow-up, supporting a predominantly benign/transient
+    course.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_06
+    evidence_id: ev_006
+    relation: supports
+    locator: Results — outcome at last follow-up
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_018
+  text: 'Neutropenia is defined by age- and race-specific ANC cutoffs: <2500 x10^9/L in neonates/infants,
+    <1500 x10^9/L in toddlers/older children/adults, and 1000-1500 x10^9/L lower limit in African American
+    children.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_09
+    evidence_id: ev_001
+    relation: supports
+    locator: Section 1 (Introduction), neutropenia-definition paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_019
+  text: By ANC, neutropenia severity is graded mild (1000-1500 x10^9/L), moderate (500-999 x10^9/L), and
+    severe (<500 x10^9/L).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_09
+    evidence_id: ev_002
+    relation: supports
+    locator: Section 1 (Introduction), severity-classification paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_020
+  text: Cyclic neutropenia typically shows 21-day periodicity with the neutropenic nadir falling below
+    200 x10^9/L for 3-5 days, then recovering to about 2000 x10^9/L.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_09
+    evidence_id: ev_003
+    relation: supports
+    locator: Section 2.1 (Cyclic Neutropenia)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_021
+  text: Severe congenital neutropenia (Kostmann) is characterized by arrested neutrophil maturation at
+    the promyelocyte stage with severe neutropenia below 500 x10^9/L.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_09
+    evidence_id: ev_004
+    relation: supports
+    locator: Section 2.3 (Kostmann Syndrome / Severe Congenital Neutropenia)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_022
+  text: 'Proposed diagnostic workflow: repeat CBC in 2-4 weeks (no further workup if resolved), and if
+    neutropenia persists repeat CBC 2-3 times per week for 6 weeks to differentiate cyclic from severe
+    chronic neutropenia.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_09
+    evidence_id: ev_005
+    relation: supports
+    locator: Section 5 (Diagnostic Approach to Neutropenia)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_023
+  text: More than 24 genes are implicated in congenital neutropenia syndromes, with ~60% of published
+    cases attributed to ELANE, and the authors recommend ELANE testing in all unexplained/idiopathic congenital
+    cases.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_09
+    evidence_id: ev_006
+    relation: supports
+    locator: Section 5 + Section 6 (Conclusions), congenital-neutropenia genetics
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_024
+  text: Infection severity/frequency is inversely correlated with ANC and directly with neutropenia duration,
+    and risk is higher when neutropenia results from reduced marrow production rather than peripheral
+    destruction.
+  materiality: background
+  claim_type: comparative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_09
+    evidence_id: ev_007
+    relation: supports
+    locator: Section 1 (Introduction), infection-risk paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_025
+  text: CALIPER hematology reference standards were derived from 566 healthy children and adolescents
+    spanning birth to under 21 years.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_10
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract — Methods
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_026
+  text: All 47 hematologic parameters were measured on the Beckman Coulter DxH 900, making the reference
+    standards analyzer/method-specific.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_10
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract — Methods; Table 1 caption
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_027
+  text: Significant age-specific differences were observed for 39 of the 47 hematologic parameters, motivating
+    age-partitioned reference intervals.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_10
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract — Results
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_028
+  text: Sex-specific differences were observed for eight hematologic parameters, primarily during and
+    after puberty.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_10
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract — Results
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_029
+  text: Reference standards were computed per CLSI guidelines, and the study concludes pediatric-specific
+    (not adult) reference standards are needed for hematology interpretation.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_10
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract — Methods & Conclusions
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_030
+  text: CALIPER age- and sex-partitioned hemoglobin reference intervals (g/L) on the DxH 900, including
+    a sex split in the 14-<21 y band.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_10
+    evidence_id: ev_006
+    relation: supports
+    locator: Table 1 — Hemoglobin (HGB) row
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_031
+  text: CALIPER age-partitioned platelet count reference intervals (10^9/L) on the DxH 900, declining
+    from infancy to adolescence.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_10
+    evidence_id: ev_007
+    relation: supports
+    locator: Table 1 — Platelet (PLT) row
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_032
+  text: CALIPER age-partitioned white blood cell count reference intervals (10^9/L) on the DxH 900, declining
+    across early childhood.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_10
+    evidence_id: ev_008
+    relation: supports
+    locator: Table 1 — WBC (leukocyte) count row
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_033
+  text: Severe congenital neutropenia is diagnosed clinically by absolute neutrophil counts persistently
+    below 0.5 ×10^9/L with marrow maturation arrest of neutrophil precursors.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_04
+    evidence_id: ev_001
+    relation: supports
+    locator: Introduction, para 1 (diagnostic definition of SCN)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_034
+  text: After 10 years on G-CSF the estimated annual hazard of MDS/AML reached a stable plateau of 2.3%/year
+    (95% CI 1.7–2.9%).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_04
+    evidence_id: ev_002
+    relation: supports
+    locator: Results and Discussion, para 2 (updated hazard estimate)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_035
+  text: The estimated annual hazard of death from sepsis on long-term G-CSF was stable at 0.81%/year (95%
+    CI 0.56–1.16%).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_04
+    evidence_id: ev_003
+    relation: supports
+    locator: Results and Discussion, para 2 (sepsis-death hazard)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_036
+  text: After 15 years on G-CSF the cumulative incidence was 10% for sepsis death and 22% for MDS/AML.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_04
+    evidence_id: ev_004
+    relation: supports
+    locator: Results and Discussion, para 3 (cumulative incidence at 15 years)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_037
+  text: Patients failing to reach the cohort-median ANC of 2.188 ×10^9/L despite G-CSF at or above the
+    median dose of 8 μg/kg/day were the high-risk subgroup for both sepsis death and MDS/AML.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_04
+    evidence_id: ev_005
+    relation: supports
+    locator: Results and Discussion, para 5 (risk-stratification medians)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_038
+  text: The relative hazard of MDS/AML increased 1.24-fold per doubling of the month-6 G-CSF dose (P=0.003).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_04
+    evidence_id: ev_006
+    relation: supports
+    locator: Results and Discussion, para 4 (dose-response for MDS/AML)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_039
+  text: Duffy-null phenotype-associated neutropenia accounted for 77.7% of leukopenia/neutropenia referrals
+    at a Detroit tertiary children's hospital.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_11
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract (first sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_040
+  text: Among Yemeni pediatric referrals, Duffy-null phenotype-associated neutropenia prevalence was 96.6%.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_11
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract (first sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_041
+  text: Among African American pediatric referrals, Duffy-null phenotype-associated neutropenia prevalence
+    was 91%.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_11
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract (first sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_042
+  text: Among non-Yemeni Middle Eastern pediatric referrals, Duffy-null phenotype-associated neutropenia
+    prevalence was 52.9%.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_11
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract (first sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_043
+  text: The authors propose that wider Duffy typing in neutropenia WITHOUT recurrent/frequent/serious
+    infections could reduce unnecessary consultations and investigations — framing absence of such infection
+    as the discriminator between benign and pathologic neutropenia.
+  materiality: background
+  claim_type: causal
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_11
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract (second sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_044
+  text: The study derived pediatric chemistry reference intervals from a large single-institution US outpatient
+    dataset of children under 19 years over a two-year window.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_00
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract, Methods paragraph (PubMed record, PMID 41565092)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_045
+  text: RefineR-derived reference intervals aligned with CALIPER in 86 of 88 age- and gender-specific
+    analyte groups.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_00
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract, Results paragraph (PubMed record, PMID 41565092)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_046
+  text: CLSI EP28-A3c-derived reference intervals aligned with CALIPER in 79 of 88 groups, fewer than
+    the RefineR approach (RefineR superior).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_00
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract, Results paragraph (PubMed record, PMID 41565092)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_047
+  text: Discrepancies with CALIPER were concentrated in ALT, AST, ALP, and BUN and were attributed to
+    preanalytical and physiological variables (sample type, BMI, hydration status).
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_00
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract, Results paragraph (PubMed record, PMID 41565092)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_048
+  text: The authors conclude CALIPER is a validated external reference-interval source for US pediatric
+    outpatient populations and that RefineR is the more practical/accurate derivation method for this
+    setting.
+  materiality: background
+  claim_type: comparative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_00
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract, Conclusion paragraph (PubMed record, PMID 41565092)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_049
+  text: The study motivation is that accurate pediatric reference intervals are hard to establish because
+    of age-related physiological variation, small sample sizes, and preanalytical variability.
+  materiality: background
+  claim_type: causal
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_00
+    evidence_id: ev_006
+    relation: supports
+    locator: Abstract, Background paragraph (PubMed record, PMID 41565092)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_050
+  text: Cyclic neutropenia is characterized by severe neutropenia at an ANC below 0.2 x10^9/L with infections
+    recurring at ~21-day intervals.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_03
+    evidence_id: ev_001
+    relation: supports
+    locator: INTRODUCTION, para 1 (CyN definition)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_051
+  text: Severe congenital neutropenia patients usually have an ANC below 0.5 x10^9/L without regular cyclic
+    fluctuations and a bone marrow showing myeloid maturation arrest.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_03
+    evidence_id: ev_002
+    relation: supports
+    locator: INTRODUCTION para 1 + METHODS 'SCNIR patients' para (SCN definition)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_052
+  text: CyN diagnosis in the SCNIR was based on serial counts fluctuating from near 2.0 x10^9/L down to
+    below 0.2 x10^9/L at ~21-day intervals.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_03
+    evidence_id: ev_003
+    relation: supports
+    locator: METHODS 'SCNIR patients' para (CyN diagnostic criteria)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_053
+  text: Thirty of 187 SCN patients (16%) developed MDS/AML while no CyN patient did (p<0.0001); all 19
+    frame-shift ELANE mutations occurred in SCN.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_03
+    evidence_id: ev_004
+    relation: supports
+    locator: OBSERVATIONS 'Mutations and myelodysplasia/acute myeloid leukemia' para 1-2
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_054
+  text: After 20 years on G-CSF, 100% of G214R (8/8) and 100% of C151Y (4/4) SCN patients experienced
+    a severe event, versus 0% for P139L/IVS4+5 G>A and 10% for S126L.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_03
+    evidence_id: ev_005
+    relation: supports
+    locator: OBSERVATIONS 'G-CSF, mutations, and outcomes' para 2 (20-year severe-event outcomes)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_055
+  text: The estimated 20-year cumulative incidence of a severe event was 46% (95% CI 35-55%) in SCN versus
+    7% (95% CI 0-17%) in CyN.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_03
+    evidence_id: ev_006
+    relation: supports
+    locator: OBSERVATIONS 'G-CSF, mutations, and outcomes' para 2 (cumulative incidence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_056
+  text: The SCNIR cohort comprised 307 patients carrying 104 distinct ELANE mutations followed longitudinally
+    up to 27 years; sequencing was concluded useful for predicting outcomes.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_03
+    evidence_id: ev_007
+    relation: supports
+    locator: ABSTRACT 'Recent findings' + OBSERVATIONS 'Mutations and clinical diagnoses'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_057
+  text: The study enrolled 687 healthy children and adolescents spanning 30 days to 18 years of age to
+    derive pediatric hematology reference intervals.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_02
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract — Methods sentence 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_058
+  text: Age- and sex-specific reference intervals were established following the CLSI EP28-A3c guideline.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_02
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract — Methods final sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_059
+  text: Age partitioning of reference intervals was required for 52 of the 79 hematology parameters, with
+    changes concentrated in infancy and puberty.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_02
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract — Results sentence 2
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_060
+  text: Sex partitioning was required for 11 erythrocyte parameters, including RBC, hemoglobin, hematocrit,
+    MCV, and MCHC.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_02
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract — Results sentence 3
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_061
+  text: A few parameters had undetectable levels in the healthy cohort, specifically nucleated RBC count
+    and immature granulocyte count.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_02
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract — Results sentence 4
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_062
+  text: Whole blood was assayed for 79 hematology parameters on the Mindray BC-6800Plus system, making
+    the derived intervals analyzer-specific.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_02
+    evidence_id: ev_006
+    relation: supports
+    locator: Abstract — Methods sentence 2 / Title
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_063
+  text: No established consensus guidelines exist for the diagnosis and management of isolated, asymptomatic,
+    incidentally discovered pediatric neutropenia.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_07
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract — Background/Introduction sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_064
+  text: Most commonly ordered diagnostic tests for this population were CBC (98%), peripheral smear (75%),
+    antineutrophil antibody (29%), and immunoglobulins (24%).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_07
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract — Results, tests ordered sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_065
+  text: Providers were more likely to order antineutrophil antibody testing in toddlers and ANA panels
+    in adolescents, both statistically significant.
+  materiality: background
+  claim_type: comparative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_07
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract — Results, age-stratified ordering sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_066
+  text: Half of providers did not request additional CBCs before consultation, and most (51%) suggested
+    referring mild neutropenia only after confirming a declining ANC rather than on a single value.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_07
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract — Results, referral/CBC sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_067
+  text: The three factors most driving ongoing follow-up were history of recurrent/severe infections (98%),
+    family history of blood disorders (98%), and more severe/progressively worsening neutropenia (97%).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_07
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract — Results, follow-up factors sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_068
+  text: 70% of respondents had diagnosed 'benign ethnic neutropenia,' and 75% supported renaming it to
+    'typical neutrophil count with Fy(a-/b-) status' confirmed by red-cell phenotyping.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_07
+    evidence_id: ev_006
+    relation: supports
+    locator: Abstract — Results, terminology sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_069
+  text: 'This study operationally categorized isolated neutropenia into four ANC severity bands: mild,
+    moderate, severe, and very severe.'
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_05
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract — Methods (severity categorization sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_070
+  text: Isolated neutropenia in children is defined in this source by an absolute neutrophil count below
+    1500/μL.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_05
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract — Background/Introduction (first sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_071
+  text: Among 155 referred children, most presented with mild or moderate neutropenia at referral.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_05
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract — Results (severity distribution at referral)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_072
+  text: At a median 12-month follow-up most children had resolved and few remained in higher-severity
+    bands, indicating limited progression.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_05
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract — Results (follow-up outcomes)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_073
+  text: Only a small minority of referred children required granulocyte colony-stimulating factor therapy.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_05
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract — Results (G-CSF utilization)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_074
+  text: Black children had higher odds of persistent mild neutropenia, consistent with a benign ethnic
+    neutropenia consideration.
+  materiality: background
+  claim_type: comparative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc001_05
+    evidence_id: ev_006
+    relation: supports
+    locator: Abstract — Results (race-associated persistence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf01
+  text: 'The severe-neutropenia boundary is numerically identical across sources despite divergent unit
+    rendering: source 09 states severe as ANC <500 (rendered x10^9/L) while sources 08/03 state SCN/Kostmann
+    as ANC <0.5 x10^9/L, and 500 cells/uL equals 0.5 x10^9/L, so the CDS converter must normalize unit
+    conventions before any threshold comparison.'
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_001
+    - clm_019
+    - clm_033
+    - clm_051
+    reasoning_summary: clm_019 grades severe as <500 in a units string (x10^9/L) whose magnitude is actually
+      cells/uL, while clm_001/clm_033/clm_051 give the identical clinical count as <0.5 x10^9/L; 500/uL
+      = 0.5 x10^9/L, so the numbers agree once units are reconciled and a naive numeric compare would
+      be off by 1000x.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf02
+  text: Neonates/infants carry a higher neutropenia cutoff (ANC <2500, source 09) than toddlers/older
+    children (ANC <1500), so applying the older-child 1500 cutoff to a neonate would under-flag; age-partitioned
+    ANC cutoffs are required and adult cutoffs must not be reused for young children.
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_018
+    - clm_009
+    - clm_027
+    reasoning_summary: clm_018 gives distinct age-band cutoffs (<2500 neonates/infants vs <1500 toddlers/older
+      children); clm_009 and clm_027 independently show age-specific reference-interval differences for
+      39/47 hematologic parameters, so a single age-agnostic ANC cutoff is unsafe.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf03
+  text: Four independent sources converge on ANC <0.5 x10^9/L (=<500/uL) as the severe-neutropenia boundary
+    (SCN definition, the severe grading band, Kostmann/SCN, and the clinical SCN diagnostic cutoff), giving
+    high confidence this is the module's severe-neutropenia red-flag threshold.
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_001
+    - clm_019
+    - clm_021
+    - clm_033
+    reasoning_summary: clm_001 (SCN <0.5), clm_019 (severe <500), clm_021 (Kostmann <500), and clm_033
+      (SCN <0.5 clinically) all mark the same absolute count as the severe boundary across a registry,
+      a review, and a clinical definition, so agreement is cross-source not single-source.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf04
+  text: Myeloid-malignancy (MDS/AML) risk concentrates in congenital neutropenia (11.3% of SCNIR congenital
+    patients; 16% in a second SCNIR cohort) and was never observed in autoimmune/idiopathic neutropenia
+    (0 of 816), so a persistent congenital pattern (ANC <0.5 x10^9/L beyond infancy) is a hematology/oncology
+    referral trigger whereas the autoimmune/idiopathic pattern carries a favorable myeloid prognosis.
+  materiality: material
+  claim_type: causal
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_004
+    - clm_005
+    - clm_006
+    - clm_053
+    reasoning_summary: clm_005 (11.3% congenital) and clm_053 (16%, p<0.0001, all frame-shift ELANE in
+      SCN) locate myeloid risk in the congenital etiology defined by clm_004, while clm_006 (0/816 autoimmune/idiopathic)
+      shows the risk is etiology-specific, supporting etiology-based referral triage.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf05
+  text: Duffy-null / benign-ethnic neutropenia is the dominant benign etiology of pediatric neutropenia
+    referrals (77.7% overall, up to 96.6% in Yemeni and 91% in African American referrals), and absence
+    of recurrent/frequent/serious infection discriminates benign from pathologic, so mild neutropenia
+    in an ancestrally-relevant child without infection history has high pretest probability of being benign
+    and does not by itself warrant escalation.
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_039
+    - clm_040
+    - clm_041
+    - clm_043
+    - clm_074
+    reasoning_summary: clm_039-041 establish Duffy-null neutropenia as the most common referral etiology
+      in ancestrally-relevant subgroups, clm_074 links Black children to persistent mild neutropenia,
+      and clm_043 names absence of recurrent/serious infection as the benign-vs-pathologic discriminator.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf06
+  text: Cyclic neutropenia is defined by a temporal pattern (nadir <0.2 x10^9/L at ~21-day periodicity),
+    not a single value, so a single low ANC cannot distinguish cyclic from severe chronic neutropenia
+    and the module cannot classify etiology from one measurement; serial counts (repeat CBC 2-3x/week
+    over 6 weeks) are required to differentiate.
+  materiality: material
+  claim_type: causal
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_003
+    - clm_020
+    - clm_022
+    - clm_050
+    reasoning_summary: clm_003/clm_020/clm_050 define cyclic neutropenia by ~21-day periodicity and nadir
+      <0.2 x10^9/L (a temporal signature), and clm_022 states serial CBCs over 6 weeks are needed to separate
+      cyclic from chronic, so a single value is diagnostically insufficient.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf07
+  text: Pediatric hematology reference intervals are analyzer-specific — derived variously on the Beckman
+    Coulter DxH 900 (CALIPER) and the Mindray BC-6800Plus — so ANC/neutrophil reference intervals cannot
+    be ported across analyzers without local verification, and the module must record the assay platform
+    alongside any interval-based cutoff.
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_026
+    - clm_062
+    - clm_011
+    reasoning_summary: clm_026/clm_011 tie CALIPER intervals to the DxH 900 and clm_062 ties a separate
+      79-parameter interval set to the Mindray BC-6800Plus; both cards flag the intervals as analyzer-specific,
+      so cross-analyzer transfer is not assumption-safe.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf08
+  text: 'GAP: none of the loaded reference-interval sources provides a located age-partitioned NEUTROPHIL/ANC
+    reference interval — the only CALIPER DxH 900 rows located are hemoglobin, platelet, and WBC — so
+    the module''s numeric ANC cutoffs rest on disease-definition thresholds (sources 08/09), not on a
+    primary age-partitioned ANC reference interval.'
+  materiality: material
+  claim_type: factual
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_030
+    - clm_031
+    - clm_032
+    reasoning_summary: The located CALIPER table rows are HGB (clm_030), PLT (clm_031), and WBC (clm_032)
+      only; no neutrophil/ANC age-partitioned interval was extracted from any reference-interval source,
+      so the neutropenia cutoffs derive from disease definitions rather than a primary ANC RI.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec01
+  text: 'SCOPE-EXIT (proposal): fever accompanying severe neutropenia (ANC <0.5 x10^9/L) should be treated
+    as an out-of-scope emergency red-flag that the module refers rather than interprets, because infection
+    risk rises as ANC falls and severe neutropenia with fever is framed as a medical emergency.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_019
+    - clm_024
+    reasoning_summary: clm_019 sets the severe band <500 and clm_024 states infection severity/frequency
+      is inversely correlated with ANC; combined with source 09's framing of fever+severe neutropenia
+      as an emergency, this is proposed as an implementation scope-exit boundary, not a source-stated
+      directive.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec02
+  text: 'SCOPE-EXIT (proposal): a history of recurrent/frequent/serious infection, a family history of
+    blood disorders, or a progressively worsening ANC should each be a referral trigger that removes a
+    case from the benign-interpretation path, per the top clinician-weighted follow-up factors.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_067
+    - clm_043
+    - clm_024
+    reasoning_summary: clm_067 names recurrent/severe infection (98%), family history of blood disorders
+      (98%), and worsening neutropenia (97%) as the top follow-up drivers, clm_043 uses infection presence
+      as the pathologic discriminator, and clm_024 links duration/severity to risk; encoded here as proposed
+      referral triggers.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec03
+  text: 'SCOPE BOUNDARY (proposal): the module must not interpret a single isolated low ANC as established
+    neutropenia — it should propose a confirmatory/serial CBC (repeat at 2-4 weeks; refer only after a
+    declining ANC is confirmed) rather than issue a standalone interpretation.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_022
+    - clm_066
+    reasoning_summary: clm_022 prescribes repeat CBC at 2-4 weeks before further workup and clm_066 reports
+      clinicians refer mild neutropenia only after confirming a declining ANC; this supports a proposed
+      scope boundary against single-value interpretation.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec04
+  text: 'SCOPE BOUNDARY (proposal): persistent ANC <0.5 x10^9/L beyond infancy and/or a bone-marrow maturation-arrest
+    pattern (Kostmann / severe congenital neutropenia) is a specialist-referral flag warranting ELANE/genetic
+    workup, and is a finding the module refers rather than interprets.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_021
+    - clm_023
+    - clm_033
+    - clm_051
+    reasoning_summary: clm_021/clm_033/clm_051 define SCN by persistent ANC <0.5 with marrow maturation
+      arrest and clm_023 recommends ELANE testing in unexplained congenital cases; proposed as a referral
+      scope-exit rather than an interpretation the module performs.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec05
+  text: 'SCOPE BOUNDARY (proposal): the module must issue no diagnosis, treatment, or dosing output —
+    G-CSF outcome and dose figures (e.g., MDS/AML hazard plateaus and per-doubling dose-response) are
+    prognostic context only and must remain non-executable prognostic background, never a directive.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_034
+    - clm_038
+    reasoning_summary: clm_034 (2.3%/year MDS/AML hazard) and clm_038 (1.24-fold hazard per dose doubling)
+      are registry prognostic observations tied to G-CSF; the run output contract forbids diagnosis/treatment/dosing
+      directives, so these are retained as non-executable context, a proposed boundary not a source directive.
+  report_locations: []
+  reviewer_notes: ''
+unresolved_questions: []

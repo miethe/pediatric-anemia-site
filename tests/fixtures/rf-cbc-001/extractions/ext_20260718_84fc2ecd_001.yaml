@@ -1,0 +1,105 @@
+id: ext_20260718_84fc2ecd_001
+source_card_id: src_20260718_rfcbc001_10
+created_at: '2026-07-18T15:17:45-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: CALIPER hematology reference standards were derived from 566 healthy children and adolescents
+    spanning birth to under 21 years.
+  locator: Abstract — Methods
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: All 47 hematologic parameters were measured on the Beckman Coulter DxH 900, making the reference
+    standards analyzer/method-specific.
+  locator: Abstract — Methods; Table 1 caption
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: Significant age-specific differences were observed for 39 of the 47 hematologic parameters, motivating
+    age-partitioned reference intervals.
+  locator: Abstract — Results
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Sex-specific differences were observed for eight hematologic parameters, primarily during and
+    after puberty.
+  locator: Abstract — Results
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: Reference standards were computed per CLSI guidelines, and the study concludes pediatric-specific
+    (not adult) reference standards are needed for hematology interpretation.
+  locator: Abstract — Methods & Conclusions
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: CALIPER age- and sex-partitioned hemoglobin reference intervals (g/L) on the DxH 900, including
+    a sex split in the 14-<21 y band.
+  locator: Table 1 — Hemoglobin (HGB) row
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: CALIPER age-partitioned platelet count reference intervals (10^9/L) on the DxH 900, declining
+    from infancy to adolescence.
+  locator: Table 1 — Platelet (PLT) row
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_008
+  text: CALIPER age-partitioned white blood cell count reference intervals (10^9/L) on the DxH 900, declining
+    across early childhood.
+  locator: Table 1 — WBC (leukocyte) count row
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract — Methods
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Abstract — Methods; Table 1 caption
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Abstract — Results
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Table 1 — Hemoglobin (HGB) row
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: Table 1 — Platelet (PLT) row
+- metric_name: evidence_point
+  value: ev_008
+  unit: null
+  date_context: null
+  locator: Table 1 — WBC (leukocyte) count row
+contradictions_or_cautions:
+- text: Intervals measured only on the Beckman Coulter DxH 900 — not portable to other analyzers/methods
+    without transference/verification
+  locator: card/trust
+- text: Canadian (CALIPER) cohort — geographic/ethnic generalizability not established here
+  locator: card/trust
+- text: Neonatal (first days of life) dynamics not resolved beyond the 0-<1 y partition
+  locator: card/trust
+- text: Per-parameter numeric intervals for 47 parameters live in Table 1 / supplemental data; only a
+    subset transcribed in this card
+  locator: card/trust

@@ -1,0 +1,949 @@
+{
+  "schemaVersion": "1.0",
+  "moduleId": "cbc_suite_v1",
+  "description": "source -> passage -> claim -> decision -> rule -> test -> output traceability index (evidence-foundry-buildout P5-T4, 02 doc section 4.16). Generated deterministically from already-committed module content; carries no clinical validity, safety, or sign-off claim of its own. Regenerate via scripts/evidence/build-cbc-traceability-index.mjs.",
+  "rules": {
+    "CBC-MARROW-REDFLAG-001": {
+      "ruleId": "CBC-MARROW-REDFLAG-001",
+      "outputId": "CBC-MARROW-REDFLAG-001",
+      "outputType": "alert",
+      "category": "safety",
+      "safetyClass": "safety-critical",
+      "decisionId": "dec_cbc_marrow_red_flag_001",
+      "reviewStatus": "draft",
+      "reviewBy": "2027-07-21",
+      "claimIds": [
+        "clm_004",
+        "clm_005",
+        "clm_053",
+        "clm_inf04"
+      ],
+      "leafClaimIds": [
+        "clm_004",
+        "clm_005",
+        "clm_006",
+        "clm_053"
+      ],
+      "evidenceAssertionIds": [
+        "evas_cbc_marrow_malignancy_risk_001",
+        "evas_cbc_marrow_malignancy_risk_002",
+        "evas_cbc_marrow_malignancy_risk_003",
+        "evas_cbc_marrow_malignancy_risk_004"
+      ],
+      "passages": [
+        {
+          "assertionId": "evas_cbc_marrow_malignancy_risk_001",
+          "rfClaimId": "clm_005",
+          "passageId": "psg_63ac429aebb102e07036be7845a73bef614770d0ba2eec04024d21823b9d69bb",
+          "exactPassageSha256": "sha256:63ac429aebb102e07036be7845a73bef614770d0ba2eec04024d21823b9d69bb",
+          "sourceId": "SCNIR2022_GCSF_OUTCOMES"
+        },
+        {
+          "assertionId": "evas_cbc_marrow_malignancy_risk_002",
+          "rfClaimId": "clm_053",
+          "passageId": "psg_2e5a11b769788a66726b6291b11638d1bac6d88552a44eb491bc9b2eacc3984b",
+          "exactPassageSha256": "sha256:2e5a11b769788a66726b6291b11638d1bac6d88552a44eb491bc9b2eacc3984b",
+          "sourceId": "COH2015_ELANE_MUTATIONS"
+        },
+        {
+          "assertionId": "evas_cbc_marrow_malignancy_risk_003",
+          "rfClaimId": "clm_004",
+          "passageId": "psg_ff2928acf51095774b2b11c1dd3dd26296b7aed50074c54ff3087d3304b1c9a4",
+          "exactPassageSha256": "sha256:ff2928acf51095774b2b11c1dd3dd26296b7aed50074c54ff3087d3304b1c9a4",
+          "sourceId": "SCNIR2022_GCSF_OUTCOMES"
+        },
+        {
+          "assertionId": "evas_cbc_marrow_malignancy_risk_004",
+          "rfClaimId": "clm_006",
+          "passageId": "psg_c98dbc0ff8a7f342f1fecc85f8e50c148c3f5feda65a1c98c06453e96c87daa5",
+          "exactPassageSha256": "sha256:c98dbc0ff8a7f342f1fecc85f8e50c148c3f5feda65a1c98c06453e96c87daa5",
+          "sourceId": "SCNIR2022_GCSF_OUTCOMES"
+        }
+      ],
+      "sourceIds": [
+        "COH2015_ELANE_MUTATIONS",
+        "SCNIR2022_GCSF_OUTCOMES"
+      ],
+      "testRefs": [
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (d) boundary: anemia + zero co-occurring cytopenias does not fire the marrow-red-flag alert"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (d) boundary: the SAME anemia with exactly ONE co-occurring cytopenia (ANC) fires the marrow-red-flag alert"
+        },
+        {
+          "file": "ef-cbc_suite_v1-dangerous-miss.test.mjs",
+          "testName": "dangerous-miss: marrow-red-flag alert activates and is not suppressed by a co-occurring benign neutropenia-differential candidate match"
+        },
+        {
+          "file": "ef-cbc_suite_v1-dangerous-miss.test.mjs",
+          "testName": "dangerous-miss: the forbidden failure mode — an alert-only or candidate-only reading of this input would itself be wrong"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (b) missingness: a low ANC with no local profile abstains (fires the note) instead of falling back to a universal cutoff"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (d) missingness: anemia present but every other lineage unresolved (no local profile) does not fire the marrow-red-flag alert (documented gap, not a safety claim)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential does NOT fire when cbc.neutropenia resolves false"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (d) marrow-red-flag alert does NOT fire for isolated anemia with no co-occurring cytopenia"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (d) marrow-red-flag alert fires when anemia co-occurs with another cytopenia (multilineage cytopenia)"
+        }
+      ]
+    },
+    "CBC-NEUT-BENIGNDIFF-001": {
+      "ruleId": "CBC-NEUT-BENIGNDIFF-001",
+      "outputId": "benign-ethnic-neutropenia-differential-pattern",
+      "outputType": "candidate",
+      "category": "differential",
+      "safetyClass": "diagnostic",
+      "decisionId": "dec_cbc_benign_neutropenia_differential_pattern_001",
+      "reviewStatus": "draft",
+      "reviewBy": "2027-07-21",
+      "claimIds": [
+        "clm_039",
+        "clm_040",
+        "clm_041",
+        "clm_043",
+        "clm_074",
+        "clm_inf05"
+      ],
+      "leafClaimIds": [
+        "clm_039",
+        "clm_040",
+        "clm_041",
+        "clm_043",
+        "clm_074"
+      ],
+      "evidenceAssertionIds": [
+        "evas_cbc_benign_neutropenia_differential_001",
+        "evas_cbc_benign_neutropenia_differential_002",
+        "evas_cbc_benign_neutropenia_differential_003",
+        "evas_cbc_benign_neutropenia_differential_004",
+        "evas_cbc_benign_neutropenia_differential_005"
+      ],
+      "passages": [
+        {
+          "assertionId": "evas_cbc_benign_neutropenia_differential_001",
+          "rfClaimId": "clm_039",
+          "passageId": "psg_4c3f13fb9c3f701f2fc5e91eb83f1dba9f90b2c55b39f0e8673246f2bf876699",
+          "exactPassageSha256": "sha256:4c3f13fb9c3f701f2fc5e91eb83f1dba9f90b2c55b39f0e8673246f2bf876699",
+          "sourceId": "JPEDS2023_DUFFY_NULL_NEUTROPENIA"
+        },
+        {
+          "assertionId": "evas_cbc_benign_neutropenia_differential_002",
+          "rfClaimId": "clm_043",
+          "passageId": "psg_98bcac91cca14bc0ff9d601b26ac09358b42ff4c80c0caa661a421815804f7f4",
+          "exactPassageSha256": "sha256:98bcac91cca14bc0ff9d601b26ac09358b42ff4c80c0caa661a421815804f7f4",
+          "sourceId": "JPEDS2023_DUFFY_NULL_NEUTROPENIA"
+        },
+        {
+          "assertionId": "evas_cbc_benign_neutropenia_differential_003",
+          "rfClaimId": "clm_040",
+          "passageId": "psg_da64b3368c0e927d170e5fd10b666cb8a2aec6d83bd8f2136eb1b2ba4d4d93a4",
+          "exactPassageSha256": "sha256:da64b3368c0e927d170e5fd10b666cb8a2aec6d83bd8f2136eb1b2ba4d4d93a4",
+          "sourceId": "JPEDS2023_DUFFY_NULL_NEUTROPENIA"
+        },
+        {
+          "assertionId": "evas_cbc_benign_neutropenia_differential_004",
+          "rfClaimId": "clm_041",
+          "passageId": "psg_da64b3368c0e927d170e5fd10b666cb8a2aec6d83bd8f2136eb1b2ba4d4d93a4",
+          "exactPassageSha256": "sha256:da64b3368c0e927d170e5fd10b666cb8a2aec6d83bd8f2136eb1b2ba4d4d93a4",
+          "sourceId": "JPEDS2023_DUFFY_NULL_NEUTROPENIA"
+        },
+        {
+          "assertionId": "evas_cbc_benign_neutropenia_differential_005",
+          "rfClaimId": "clm_074",
+          "passageId": "psg_e88b86bd01df9bef70f1025960f613a1aba5d1deafa5ad12c634774de1d8f734",
+          "exactPassageSha256": "sha256:e88b86bd01df9bef70f1025960f613a1aba5d1deafa5ad12c634774de1d8f734",
+          "sourceId": "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES"
+        }
+      ],
+      "sourceIds": [
+        "JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+        "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES"
+      ],
+      "testRefs": [
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (c) boundary: an ANC value AT the local lower limit resolves neutropenia false — candidate does not fire"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (c) boundary: an ANC value strictly below the local lower limit resolves neutropenia true — candidate fires"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (d) boundary: the SAME anemia with exactly ONE co-occurring cytopenia (ANC) fires the marrow-red-flag alert"
+        },
+        {
+          "file": "ef-cbc_suite_v1-dangerous-miss.test.mjs",
+          "testName": "dangerous-miss: marrow-red-flag alert activates and is not suppressed by a co-occurring benign neutropenia-differential candidate match"
+        },
+        {
+          "file": "ef-cbc_suite_v1-dangerous-miss.test.mjs",
+          "testName": "dangerous-miss: the forbidden failure mode — an alert-only or candidate-only reading of this input would itself be wrong"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (a) missingness: an absent age does not throw, and does not fire the young-infant alert (documented gap, not a safety claim)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (b) missingness: a low ANC with no local profile abstains (fires the note) instead of falling back to a universal cutoff"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (c) missingness: an unknown neutropenia state (absent ANC and no local flag) does not fire the candidate"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (d) missingness: anemia present but every other lineage unresolved (no local profile) does not fire the marrow-red-flag alert (documented gap, not a safety claim)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (b) local-range-precedence does NOT fire when a local-lab flag already resolves neutropenia status"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential does NOT fire when cbc.neutropenia resolves false"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential fires when cbc.neutropenia resolves true"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (d) marrow-red-flag alert fires when anemia co-occurs with another cytopenia (multilineage cytopenia)"
+        }
+      ]
+    },
+    "CBC-NEUT-LOCALRANGE-001": {
+      "ruleId": "CBC-NEUT-LOCALRANGE-001",
+      "outputId": "CBC-NEUT-LOCALRANGE-001",
+      "outputType": "note",
+      "category": "interpretive-note",
+      "safetyClass": "informational",
+      "decisionId": "dec_cbc_local_range_precedence_001",
+      "reviewStatus": "draft",
+      "reviewBy": "2027-07-21",
+      "claimIds": [
+        "clm_009",
+        "clm_027",
+        "clm_inf01",
+        "clm_inf07"
+      ],
+      "leafClaimIds": [
+        "clm_001",
+        "clm_009",
+        "clm_011",
+        "clm_019",
+        "clm_026",
+        "clm_027",
+        "clm_033",
+        "clm_051",
+        "clm_062"
+      ],
+      "evidenceAssertionIds": [
+        "evas_cbc_age_interval_001",
+        "evas_cbc_analyzer_specificity_001",
+        "evas_cbc_analyzer_specificity_002",
+        "evas_cbc_caliper_dxh900_intervals_001",
+        "evas_cbc_unit_normalization_001",
+        "evas_cbc_unit_normalization_002",
+        "evas_cbc_unit_normalization_003",
+        "evas_cbc_unit_normalization_004",
+        "evas_cbc_young_infant_anc_002"
+      ],
+      "passages": [
+        {
+          "assertionId": "evas_cbc_age_interval_001",
+          "rfClaimId": "clm_009",
+          "passageId": "psg_f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+          "exactPassageSha256": "sha256:f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+          "sourceId": "CALIPER2020_HEMATOLOGY_I"
+        },
+        {
+          "assertionId": "evas_cbc_analyzer_specificity_001",
+          "rfClaimId": "clm_026",
+          "passageId": "psg_6a7d1311f9abd40d23b88db00c36c982b5f5d66a7ac997cd49c3ebe47fa51894",
+          "exactPassageSha256": "sha256:6a7d1311f9abd40d23b88db00c36c982b5f5d66a7ac997cd49c3ebe47fa51894",
+          "sourceId": "CALIPER2020_HEMATOLOGY_I"
+        },
+        {
+          "assertionId": "evas_cbc_analyzer_specificity_002",
+          "rfClaimId": "clm_062",
+          "passageId": "psg_f9741aa6b4c6846b929ef80c5fa56c897152f181865f82c52d78b5cd16b02f40",
+          "exactPassageSha256": "sha256:f9741aa6b4c6846b929ef80c5fa56c897152f181865f82c52d78b5cd16b02f40",
+          "sourceId": "CALIPER2023_MINDRAY_79PARAM"
+        },
+        {
+          "assertionId": "evas_cbc_caliper_dxh900_intervals_001",
+          "rfClaimId": "clm_011",
+          "passageId": "psg_de59d84d0b09e9e7863bc79e0823cc75ce240d58e1d2dd876a25a886d768b09a",
+          "exactPassageSha256": "sha256:de59d84d0b09e9e7863bc79e0823cc75ce240d58e1d2dd876a25a886d768b09a",
+          "sourceId": "CALIPER2020_HEMATOLOGY_I"
+        },
+        {
+          "assertionId": "evas_cbc_unit_normalization_001",
+          "rfClaimId": "clm_019",
+          "passageId": "psg_f14c0a62dfe6af11bdb8d5eb7fdd71dca14376475ffd34589bf99f830e71dc59",
+          "exactPassageSha256": "sha256:f14c0a62dfe6af11bdb8d5eb7fdd71dca14376475ffd34589bf99f830e71dc59",
+          "sourceId": "HEMATOLREP2024_NEUTROPENIA_REVIEW"
+        },
+        {
+          "assertionId": "evas_cbc_unit_normalization_002",
+          "rfClaimId": "clm_001",
+          "passageId": "psg_7fb82392dd4f00e8727805747bbb9609fc5431d9a8f74f88e0275792ba2bf310",
+          "exactPassageSha256": "sha256:7fb82392dd4f00e8727805747bbb9609fc5431d9a8f74f88e0275792ba2bf310",
+          "sourceId": "SCNIR2022_GCSF_OUTCOMES"
+        },
+        {
+          "assertionId": "evas_cbc_unit_normalization_003",
+          "rfClaimId": "clm_033",
+          "passageId": "psg_d5c5540e5107f1fe10febaacd5c2ceb3aa3b54fc07d22f0c402a8f2566e36747",
+          "exactPassageSha256": "sha256:d5c5540e5107f1fe10febaacd5c2ceb3aa3b54fc07d22f0c402a8f2566e36747",
+          "sourceId": "BJHAEM2010_SCNIR_LEUKEMIA_RISK"
+        },
+        {
+          "assertionId": "evas_cbc_unit_normalization_004",
+          "rfClaimId": "clm_051",
+          "passageId": "psg_4912f006897886e736c25d5892a8ea37f14a721b9dc7a21354f47bb3bb2048e6",
+          "exactPassageSha256": "sha256:4912f006897886e736c25d5892a8ea37f14a721b9dc7a21354f47bb3bb2048e6",
+          "sourceId": "COH2015_ELANE_MUTATIONS"
+        },
+        {
+          "assertionId": "evas_cbc_young_infant_anc_002",
+          "rfClaimId": "clm_027",
+          "passageId": "psg_f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+          "exactPassageSha256": "sha256:f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+          "sourceId": "CALIPER2020_HEMATOLOGY_I"
+        }
+      ],
+      "sourceIds": [
+        "BJHAEM2010_SCNIR_LEUKEMIA_RISK",
+        "CALIPER2020_HEMATOLOGY_I",
+        "CALIPER2023_MINDRAY_79PARAM",
+        "COH2015_ELANE_MUTATIONS",
+        "HEMATOLREP2024_NEUTROPENIA_REVIEW",
+        "SCNIR2022_GCSF_OUTCOMES"
+      ],
+      "testRefs": [
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: an ANC value WITH a compatible local range does not fire the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: the SAME ANC value WITHOUT a compatible local range fires the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (b) missingness: a low ANC with no local profile abstains (fires the note) instead of falling back to a universal cutoff"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (a) young-infant scope-abstention does NOT fire at 24 months (well above the floor)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (b) local-range-precedence does NOT fire when a local-lab flag already resolves neutropenia status"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (b) local-range-precedence fires when an ANC value has no compatible local profile"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential fires when cbc.neutropenia resolves true"
+        }
+      ]
+    },
+    "CBC-NEUT-YOUNGINF-001": {
+      "ruleId": "CBC-NEUT-YOUNGINF-001",
+      "outputId": "CBC-NEUT-YOUNGINF-001",
+      "outputType": "alert",
+      "category": "safety",
+      "safetyClass": "safety-critical",
+      "decisionId": "dec_cbc_young_infant_scope_abstention_001",
+      "reviewStatus": "draft",
+      "reviewBy": "2027-07-21",
+      "claimIds": [
+        "clm_018",
+        "clm_inf02"
+      ],
+      "leafClaimIds": [
+        "clm_009",
+        "clm_018",
+        "clm_027"
+      ],
+      "evidenceAssertionIds": [
+        "evas_cbc_age_interval_001",
+        "evas_cbc_young_infant_anc_001",
+        "evas_cbc_young_infant_anc_002"
+      ],
+      "passages": [
+        {
+          "assertionId": "evas_cbc_age_interval_001",
+          "rfClaimId": "clm_009",
+          "passageId": "psg_f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+          "exactPassageSha256": "sha256:f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+          "sourceId": "CALIPER2020_HEMATOLOGY_I"
+        },
+        {
+          "assertionId": "evas_cbc_young_infant_anc_001",
+          "rfClaimId": "clm_018",
+          "passageId": "psg_d58b5d6e7b4a805ac0492d8860472938a8ed51b3eb8b450ce51a4905377d5667",
+          "exactPassageSha256": "sha256:d58b5d6e7b4a805ac0492d8860472938a8ed51b3eb8b450ce51a4905377d5667",
+          "sourceId": "HEMATOLREP2024_NEUTROPENIA_REVIEW"
+        },
+        {
+          "assertionId": "evas_cbc_young_infant_anc_002",
+          "rfClaimId": "clm_027",
+          "passageId": "psg_f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+          "exactPassageSha256": "sha256:f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+          "sourceId": "CALIPER2020_HEMATOLOGY_I"
+        }
+      ],
+      "sourceIds": [
+        "CALIPER2020_HEMATOLOGY_I",
+        "HEMATOLREP2024_NEUTROPENIA_REVIEW"
+      ],
+      "testRefs": [
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (a) boundary: a fraction of a month below 6 is out-of-scope — alert fires"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (a) boundary: exactly 6 months is in-scope (the floor is inclusive) — alert does not fire"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (a) missingness: an absent age does not throw, and does not fire the young-infant alert (documented gap, not a safety claim)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (a) young-infant scope-abstention does NOT fire at 24 months (well above the floor)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (a) young-infant scope-abstention fires below the 6-month supported-age floor"
+        }
+      ]
+    }
+  },
+  "sources": {
+    "BJHAEM2010_SCNIR_LEUKEMIA_RISK": {
+      "sourceId": "BJHAEM2010_SCNIR_LEUKEMIA_RISK",
+      "claimIds": [
+        "clm_033"
+      ],
+      "ruleIds": [
+        "CBC-NEUT-LOCALRANGE-001"
+      ],
+      "outputIds": [
+        "CBC-NEUT-LOCALRANGE-001"
+      ],
+      "testRefs": [
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: an ANC value WITH a compatible local range does not fire the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: the SAME ANC value WITHOUT a compatible local range fires the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (b) missingness: a low ANC with no local profile abstains (fires the note) instead of falling back to a universal cutoff"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (a) young-infant scope-abstention does NOT fire at 24 months (well above the floor)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (b) local-range-precedence does NOT fire when a local-lab flag already resolves neutropenia status"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (b) local-range-precedence fires when an ANC value has no compatible local profile"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential fires when cbc.neutropenia resolves true"
+        }
+      ]
+    },
+    "CALIPER2020_HEMATOLOGY_I": {
+      "sourceId": "CALIPER2020_HEMATOLOGY_I",
+      "claimIds": [
+        "clm_009",
+        "clm_011",
+        "clm_026",
+        "clm_027"
+      ],
+      "ruleIds": [
+        "CBC-NEUT-LOCALRANGE-001",
+        "CBC-NEUT-YOUNGINF-001"
+      ],
+      "outputIds": [
+        "CBC-NEUT-LOCALRANGE-001",
+        "CBC-NEUT-YOUNGINF-001"
+      ],
+      "testRefs": [
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (a) boundary: a fraction of a month below 6 is out-of-scope — alert fires"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (a) boundary: exactly 6 months is in-scope (the floor is inclusive) — alert does not fire"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: an ANC value WITH a compatible local range does not fire the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: the SAME ANC value WITHOUT a compatible local range fires the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (a) missingness: an absent age does not throw, and does not fire the young-infant alert (documented gap, not a safety claim)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (b) missingness: a low ANC with no local profile abstains (fires the note) instead of falling back to a universal cutoff"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (a) young-infant scope-abstention does NOT fire at 24 months (well above the floor)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (b) local-range-precedence does NOT fire when a local-lab flag already resolves neutropenia status"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (a) young-infant scope-abstention fires below the 6-month supported-age floor"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (b) local-range-precedence fires when an ANC value has no compatible local profile"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential fires when cbc.neutropenia resolves true"
+        }
+      ]
+    },
+    "CALIPER2023_MINDRAY_79PARAM": {
+      "sourceId": "CALIPER2023_MINDRAY_79PARAM",
+      "claimIds": [
+        "clm_062"
+      ],
+      "ruleIds": [
+        "CBC-NEUT-LOCALRANGE-001"
+      ],
+      "outputIds": [
+        "CBC-NEUT-LOCALRANGE-001"
+      ],
+      "testRefs": [
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: an ANC value WITH a compatible local range does not fire the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: the SAME ANC value WITHOUT a compatible local range fires the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (b) missingness: a low ANC with no local profile abstains (fires the note) instead of falling back to a universal cutoff"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (a) young-infant scope-abstention does NOT fire at 24 months (well above the floor)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (b) local-range-precedence does NOT fire when a local-lab flag already resolves neutropenia status"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (b) local-range-precedence fires when an ANC value has no compatible local profile"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential fires when cbc.neutropenia resolves true"
+        }
+      ]
+    },
+    "COH2015_ELANE_MUTATIONS": {
+      "sourceId": "COH2015_ELANE_MUTATIONS",
+      "claimIds": [
+        "clm_051",
+        "clm_053"
+      ],
+      "ruleIds": [
+        "CBC-MARROW-REDFLAG-001",
+        "CBC-NEUT-LOCALRANGE-001"
+      ],
+      "outputIds": [
+        "CBC-MARROW-REDFLAG-001",
+        "CBC-NEUT-LOCALRANGE-001"
+      ],
+      "testRefs": [
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: an ANC value WITH a compatible local range does not fire the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: the SAME ANC value WITHOUT a compatible local range fires the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (d) boundary: anemia + zero co-occurring cytopenias does not fire the marrow-red-flag alert"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (d) boundary: the SAME anemia with exactly ONE co-occurring cytopenia (ANC) fires the marrow-red-flag alert"
+        },
+        {
+          "file": "ef-cbc_suite_v1-dangerous-miss.test.mjs",
+          "testName": "dangerous-miss: marrow-red-flag alert activates and is not suppressed by a co-occurring benign neutropenia-differential candidate match"
+        },
+        {
+          "file": "ef-cbc_suite_v1-dangerous-miss.test.mjs",
+          "testName": "dangerous-miss: the forbidden failure mode — an alert-only or candidate-only reading of this input would itself be wrong"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (b) missingness: a low ANC with no local profile abstains (fires the note) instead of falling back to a universal cutoff"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (d) missingness: anemia present but every other lineage unresolved (no local profile) does not fire the marrow-red-flag alert (documented gap, not a safety claim)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (a) young-infant scope-abstention does NOT fire at 24 months (well above the floor)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (b) local-range-precedence does NOT fire when a local-lab flag already resolves neutropenia status"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential does NOT fire when cbc.neutropenia resolves false"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (d) marrow-red-flag alert does NOT fire for isolated anemia with no co-occurring cytopenia"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (b) local-range-precedence fires when an ANC value has no compatible local profile"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential fires when cbc.neutropenia resolves true"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (d) marrow-red-flag alert fires when anemia co-occurs with another cytopenia (multilineage cytopenia)"
+        }
+      ]
+    },
+    "HEMATOLREP2024_NEUTROPENIA_REVIEW": {
+      "sourceId": "HEMATOLREP2024_NEUTROPENIA_REVIEW",
+      "claimIds": [
+        "clm_018",
+        "clm_019"
+      ],
+      "ruleIds": [
+        "CBC-NEUT-LOCALRANGE-001",
+        "CBC-NEUT-YOUNGINF-001"
+      ],
+      "outputIds": [
+        "CBC-NEUT-LOCALRANGE-001",
+        "CBC-NEUT-YOUNGINF-001"
+      ],
+      "testRefs": [
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (a) boundary: a fraction of a month below 6 is out-of-scope — alert fires"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (a) boundary: exactly 6 months is in-scope (the floor is inclusive) — alert does not fire"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: an ANC value WITH a compatible local range does not fire the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: the SAME ANC value WITHOUT a compatible local range fires the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (a) missingness: an absent age does not throw, and does not fire the young-infant alert (documented gap, not a safety claim)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (b) missingness: a low ANC with no local profile abstains (fires the note) instead of falling back to a universal cutoff"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (a) young-infant scope-abstention does NOT fire at 24 months (well above the floor)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (b) local-range-precedence does NOT fire when a local-lab flag already resolves neutropenia status"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (a) young-infant scope-abstention fires below the 6-month supported-age floor"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (b) local-range-precedence fires when an ANC value has no compatible local profile"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential fires when cbc.neutropenia resolves true"
+        }
+      ]
+    },
+    "JPEDS2023_DUFFY_NULL_NEUTROPENIA": {
+      "sourceId": "JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "claimIds": [
+        "clm_039",
+        "clm_040",
+        "clm_041",
+        "clm_043"
+      ],
+      "ruleIds": [
+        "CBC-NEUT-BENIGNDIFF-001"
+      ],
+      "outputIds": [
+        "benign-ethnic-neutropenia-differential-pattern"
+      ],
+      "testRefs": [
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (c) boundary: an ANC value AT the local lower limit resolves neutropenia false — candidate does not fire"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (c) boundary: an ANC value strictly below the local lower limit resolves neutropenia true — candidate fires"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (d) boundary: the SAME anemia with exactly ONE co-occurring cytopenia (ANC) fires the marrow-red-flag alert"
+        },
+        {
+          "file": "ef-cbc_suite_v1-dangerous-miss.test.mjs",
+          "testName": "dangerous-miss: marrow-red-flag alert activates and is not suppressed by a co-occurring benign neutropenia-differential candidate match"
+        },
+        {
+          "file": "ef-cbc_suite_v1-dangerous-miss.test.mjs",
+          "testName": "dangerous-miss: the forbidden failure mode — an alert-only or candidate-only reading of this input would itself be wrong"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (a) missingness: an absent age does not throw, and does not fire the young-infant alert (documented gap, not a safety claim)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (b) missingness: a low ANC with no local profile abstains (fires the note) instead of falling back to a universal cutoff"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (c) missingness: an unknown neutropenia state (absent ANC and no local flag) does not fire the candidate"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (d) missingness: anemia present but every other lineage unresolved (no local profile) does not fire the marrow-red-flag alert (documented gap, not a safety claim)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (b) local-range-precedence does NOT fire when a local-lab flag already resolves neutropenia status"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential does NOT fire when cbc.neutropenia resolves false"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential fires when cbc.neutropenia resolves true"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (d) marrow-red-flag alert fires when anemia co-occurs with another cytopenia (multilineage cytopenia)"
+        }
+      ]
+    },
+    "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES": {
+      "sourceId": "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES",
+      "claimIds": [
+        "clm_074"
+      ],
+      "ruleIds": [
+        "CBC-NEUT-BENIGNDIFF-001"
+      ],
+      "outputIds": [
+        "benign-ethnic-neutropenia-differential-pattern"
+      ],
+      "testRefs": [
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (c) boundary: an ANC value AT the local lower limit resolves neutropenia false — candidate does not fire"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (c) boundary: an ANC value strictly below the local lower limit resolves neutropenia true — candidate fires"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (d) boundary: the SAME anemia with exactly ONE co-occurring cytopenia (ANC) fires the marrow-red-flag alert"
+        },
+        {
+          "file": "ef-cbc_suite_v1-dangerous-miss.test.mjs",
+          "testName": "dangerous-miss: marrow-red-flag alert activates and is not suppressed by a co-occurring benign neutropenia-differential candidate match"
+        },
+        {
+          "file": "ef-cbc_suite_v1-dangerous-miss.test.mjs",
+          "testName": "dangerous-miss: the forbidden failure mode — an alert-only or candidate-only reading of this input would itself be wrong"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (a) missingness: an absent age does not throw, and does not fire the young-infant alert (documented gap, not a safety claim)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (b) missingness: a low ANC with no local profile abstains (fires the note) instead of falling back to a universal cutoff"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (c) missingness: an unknown neutropenia state (absent ANC and no local flag) does not fire the candidate"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (d) missingness: anemia present but every other lineage unresolved (no local profile) does not fire the marrow-red-flag alert (documented gap, not a safety claim)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (b) local-range-precedence does NOT fire when a local-lab flag already resolves neutropenia status"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential does NOT fire when cbc.neutropenia resolves false"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential fires when cbc.neutropenia resolves true"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (d) marrow-red-flag alert fires when anemia co-occurs with another cytopenia (multilineage cytopenia)"
+        }
+      ]
+    },
+    "SCNIR2022_GCSF_OUTCOMES": {
+      "sourceId": "SCNIR2022_GCSF_OUTCOMES",
+      "claimIds": [
+        "clm_001",
+        "clm_004",
+        "clm_005",
+        "clm_006"
+      ],
+      "ruleIds": [
+        "CBC-MARROW-REDFLAG-001",
+        "CBC-NEUT-LOCALRANGE-001"
+      ],
+      "outputIds": [
+        "CBC-MARROW-REDFLAG-001",
+        "CBC-NEUT-LOCALRANGE-001"
+      ],
+      "testRefs": [
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: an ANC value WITH a compatible local range does not fire the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (b) boundary: the SAME ANC value WITHOUT a compatible local range fires the local-range-required note"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (d) boundary: anemia + zero co-occurring cytopenias does not fire the marrow-red-flag alert"
+        },
+        {
+          "file": "ef-cbc_suite_v1-boundary.test.mjs",
+          "testName": "rule (d) boundary: the SAME anemia with exactly ONE co-occurring cytopenia (ANC) fires the marrow-red-flag alert"
+        },
+        {
+          "file": "ef-cbc_suite_v1-dangerous-miss.test.mjs",
+          "testName": "dangerous-miss: marrow-red-flag alert activates and is not suppressed by a co-occurring benign neutropenia-differential candidate match"
+        },
+        {
+          "file": "ef-cbc_suite_v1-dangerous-miss.test.mjs",
+          "testName": "dangerous-miss: the forbidden failure mode — an alert-only or candidate-only reading of this input would itself be wrong"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (b) missingness: a low ANC with no local profile abstains (fires the note) instead of falling back to a universal cutoff"
+        },
+        {
+          "file": "ef-cbc_suite_v1-missingness.test.mjs",
+          "testName": "rule (d) missingness: anemia present but every other lineage unresolved (no local profile) does not fire the marrow-red-flag alert (documented gap, not a safety claim)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (a) young-infant scope-abstention does NOT fire at 24 months (well above the floor)"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (b) local-range-precedence does NOT fire when a local-lab flag already resolves neutropenia status"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential does NOT fire when cbc.neutropenia resolves false"
+        },
+        {
+          "file": "ef-cbc_suite_v1-negative.test.mjs",
+          "testName": "rule (d) marrow-red-flag alert does NOT fire for isolated anemia with no co-occurring cytopenia"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (b) local-range-precedence fires when an ANC value has no compatible local profile"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (c) benign-ethnic/Duffy-null neutropenia differential fires when cbc.neutropenia resolves true"
+        },
+        {
+          "file": "ef-cbc_suite_v1-positive.test.mjs",
+          "testName": "rule (d) marrow-red-flag alert fires when anemia co-occurs with another cytopenia (multilineage cytopenia)"
+        }
+      ]
+    }
+  }
+}

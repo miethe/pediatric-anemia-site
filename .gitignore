@@ -3,6 +3,10 @@ dist/
 *.zip
 .DS_Store
 
+# Evidence Foundry converter output (tools/rf-bundle-to-kb-pack/); generated, never committed.
+# Committed golden/fixture outputs for converter tests live under tests/fixtures/ instead (OQ-6).
+build/
+
 # AOS local state (deploy tracking + writeback markers + operator run records); keep committed
 # workflow artifacts under .claude/, ignore local/runtime state. Run IDs are referenced in the docs.
 .claude/.aos-writeback-state

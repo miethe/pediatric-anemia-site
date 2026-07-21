@@ -1,0 +1,76 @@
+id: ext_20260718_a47ba6a1_001
+source_card_id: src_20260718_rfcbc001_00
+created_at: '2026-07-18T15:17:45-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: The study derived pediatric chemistry reference intervals from a large single-institution US outpatient
+    dataset of children under 19 years over a two-year window.
+  locator: Abstract, Methods paragraph (PubMed record, PMID 41565092)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: RefineR-derived reference intervals aligned with CALIPER in 86 of 88 age- and gender-specific
+    analyte groups.
+  locator: Abstract, Results paragraph (PubMed record, PMID 41565092)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: CLSI EP28-A3c-derived reference intervals aligned with CALIPER in 79 of 88 groups, fewer than
+    the RefineR approach (RefineR superior).
+  locator: Abstract, Results paragraph (PubMed record, PMID 41565092)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Discrepancies with CALIPER were concentrated in ALT, AST, ALP, and BUN and were attributed to
+    preanalytical and physiological variables (sample type, BMI, hydration status).
+  locator: Abstract, Results paragraph (PubMed record, PMID 41565092)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: The authors conclude CALIPER is a validated external reference-interval source for US pediatric
+    outpatient populations and that RefineR is the more practical/accurate derivation method for this
+    setting.
+  locator: Abstract, Conclusion paragraph (PubMed record, PMID 41565092)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: The study motivation is that accurate pediatric reference intervals are hard to establish because
+    of age-related physiological variation, small sample sizes, and preanalytical variability.
+  locator: Abstract, Background paragraph (PubMed record, PMID 41565092)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract, Methods paragraph (PubMed record, PMID 41565092)
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Abstract, Results paragraph (PubMed record, PMID 41565092)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Abstract, Results paragraph (PubMed record, PMID 41565092)
+contradictions_or_cautions:
+- text: Single US institution — external validity to other populations/regions unestablished
+  locator: card/trust
+- text: Retrospective outpatient data (indirect / mixed-population method), not a healthy-reference-sample
+    direct RI study
+  locator: card/trust
+- text: Per-analyte numeric reference-interval cutoffs not present in accessible abstract (paywalled tables)
+  locator: card/trust
+- text: Analyzer/instrument platform not stated in the accessible abstract
+  locator: card/trust

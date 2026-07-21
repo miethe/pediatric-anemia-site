@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/pediatric-anemia/schemas/evidence.schema.json",
-  "title": "Pediatric Anemia Evidence Document",
-  "description": "Validates modules/anemia/evidence.json: the single evidence source (DEF-1) — a knowledge-base-version-stamped list of cited sources, each carrying its existing prose (`supports`) and, per EP-3, an array of exact-passage-level `passages[]` records. Structural validity never implies clinical validity: a passage validating here only means the record is shaped correctly, not that its content is accurate or locally applicable.",
+  "title": "Pediatric CDS Module Evidence Document",
+  "description": "Validates modules/<moduleId>/evidence.json for any registered module (originally authored against modules/anemia/evidence.json, DEF-1, and now applied module-agnostically by scripts/validate-kb.mjs's per-module loop) — a knowledge-base-version-stamped list of cited sources, each carrying its existing prose (`supports`) and, per EP-3, an array of exact-passage-level `passages[]` records. Structural validity never implies clinical validity: a passage validating here only means the record is shaped correctly, not that its content is accurate or locally applicable.",
   "type": "object",
   "additionalProperties": false,
   "required": ["knowledgeBaseVersion", "reviewedThrough", "sources"],
@@ -11,9 +11,10 @@
     "reviewedThrough": { "type": "string", "format": "date" },
     "sources": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 0,
       "uniqueItems": false,
-      "items": { "$ref": "#/$defs/source" }
+      "items": { "$ref": "#/$defs/source" },
+      "description": "`minItems: 0` (relaxed from the original anemia-only `1`, evidence-foundry-buildout P1-T3): a brand-new module package scaffold — e.g. modules/cbc_suite_v1/evidence.json at E0 — legitimately has zero sources until its evidence is converted (Phase 3+). Every EXISTING populated module's evidence.json is unaffected: none has ever had fewer than 1 source, so this only widens what is legal, it narrows nothing."
     }
   },
   "$defs": {
@@ -41,11 +42,73 @@
         },
         "pmcid": { "type": "string", "minLength": 1, "description": "Optional; present only when the source has a PubMed Central id." },
         "recencyNote": { "type": "string", "minLength": 1, "description": "Optional free-text note explaining why an older source is still retained." },
+        "rfSourceCardId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "evidence-foundry-buildout P3-T2 addition (02 §4.9's source-card field-mapping table): the native `rf` `source_card_id` this record was projected from, preserved verbatim (02 §4.7's stable-identity rule for Source). Optional — pre-existing hand-maintained sources (e.g. every current `modules/anemia/evidence.json` entry) legitimately predate any `rf` bundle and have no source card to cite; this only widens what is legal, it narrows nothing."
+        },
+        "duplicateRfSourceCardIds": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "evidence-foundry-buildout P3-T2 addition. Optional; populated only for the rare case where the `rf` swarm carded the identical publication twice under distinct `source_card_id`s (observed for RF-CBC-001's CALIPER Hematology Reference Standards (I) paper, carded as both src_..._01 and src_..._10 with different `trust.source_rank` values). `rfSourceCardId` names the canonical card; this array names every other card that is the same real-world source, so claim-to-source traceability resolves regardless of which duplicate card a claim happens to cite — the discrepancy between the duplicate cards is preserved in `limitations`, never silently resolved or averaged."
+        },
+        "publicationDate": {
+          "type": "string",
+          "minLength": 1,
+          "description": "evidence-foundry-buildout P3-T2 addition (02 §4.9: `source.published_at` -> `sources[].publicationDate` and derived `year`, 'preserve full date when known'). Optional free-form date string (e.g. \"2026-01\" or \"2020-08\") carried verbatim from the `rf` source card; `year` remains the required, schema-typed field every consumer can rely on."
+        },
+        "authors": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "evidence-foundry-buildout P3-T2 addition (02 §4.9: `source.authors` -> `sources[].authors`, 'preserve ordered list'). Optional; order is significant and must not be re-sorted."
+        },
+        "limitations": {
+          "type": "array",
+          "minItems": 0,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "evidence-foundry-buildout P3-T2 addition (02 §4.9: `trust.known_limitations` -> `sources[].limitations`, 'copy, never hide'). Optional; verbatim from the `rf` source card, never paraphrased into something more favorable."
+        },
+        "conflictsWith": {
+          "type": "array",
+          "minItems": 0,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "evidence-foundry-buildout P3-T2 addition (02 §4.9: `trust.conflicts_with` -> `sources[].conflictsWith`). Optional; free-text conflict descriptions preserved verbatim from the `rf` source card's own `trust.conflicts_with` — this codebase does not resolve them to other sources' `id` aliases when the source card itself only names a conflicting external standard or method, not another carded source, because inventing such a resolution would fabricate a reference the evidence does not support."
+        },
+        "contentRights": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["allowedForPublicOutput", "allowedForWorkOutput", "allowedForPersonalMeatywiki", "citationRequired", "quoteLimitNotes"],
+          "description": "evidence-foundry-buildout P3-T2 addition (02 §4.9: `usage` -> `sources[].contentRights`, 'preserve quote/reuse constraints'). Optional; mirrors the `rf` source card's `usage` block field-for-field so a downstream renderer never has to guess reuse rights.",
+          "properties": {
+            "allowedForPublicOutput": { "type": "boolean" },
+            "allowedForWorkOutput": { "type": "boolean" },
+            "allowedForPersonalMeatywiki": { "type": "boolean" },
+            "citationRequired": { "type": "boolean" },
+            "quoteLimitNotes": { "type": ["string", "null"], "minLength": 1 }
+          }
+        },
+        "reviewBy": {
+          "type": "string",
+          "format": "date",
+          "description": "evidence-foundry-buildout P3-T2 addition (02 §4.9: pediatric lifecycle -> `sources[].reviewBy`, 'required for clinical content'). Optional at the schema level (existing hand-maintained sources predate this field), but mechanically derived — never invented — for every source this task projects: `module.json.evidenceReviewedThrough` plus that module's own `evidence_policy.recent_window_days`, never a clinician-asserted surveillance date."
+        },
+        "surveillanceQuery": {
+          "type": "string",
+          "minLength": 1,
+          "description": "evidence-foundry-buildout P3-T2 addition (02 §4.9: pediatric lifecycle -> `sources[].surveillanceQuery`). Optional; a standing search-query string for detecting whether this source has been updated — search-string authoring, not a clinical claim."
+        },
+        "supersessionStatus": {
+          "type": "string",
+          "minLength": 1,
+          "description": "evidence-foundry-buildout P3-T2 addition (02 §4.9: pediatric lifecycle -> `sources[].supersessionStatus`). Optional free-text status (e.g. \"not_superseded\") reflecting only what the source card itself states about being superseded; never inferred beyond that."
+        },
         "passages": {
           "type": "array",
           "minItems": 1,
           "items": { "$ref": "#/$defs/passage" },
-          "description": "Exact-passage-level evidence records for this source (EP-3, D-EP3-2/D-EP3-3). Every source has at least one: the minted `<id>#implementation-proposal` sentinel, plus one per source-supported passage backfilled from the RF-EV-001 bundle."
+          "description": "Exact-passage-level evidence records for this source (EP-3, D-EP3-2/D-EP3-3). Every source has at least one: the minted `<id>#implementation-proposal` sentinel, plus one per source-supported passage backfilled from the RF-EV-001 bundle. `modules/cbc_suite_v1/evidence.json` (evidence-foundry-buildout P3-T2) carries only the sentinel per source at this stage — real exact-passage traceability for that module's slice rules is recorded in the new, separate `modules/cbc_suite_v1/evidence-assertions.json` (02 §4.10, P3-T3), not duplicated into this nested array."
         }
       }
     },

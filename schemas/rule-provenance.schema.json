@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/rule-provenance.schema.json",
+  "title": "Evidence Foundry Rule-Provenance Sidecar",
+  "description": "Validates modules/<moduleId>/rule-provenance.json (evidence-foundry-buildout P3-T6, FR-15, `02 §4.13`). `schemas/rule.schema.json` permits exactly the 14 governance-hardened fields it already requires (`id`/`category`/`when`/`evidence`/`output` plus the EP-4 governance fields) and rejects everything else via `additionalProperties: false` — so a drafted rule's rich authoring metadata (the decision it was drafted from, the rf claim/assertion ids it traces to, missingness handling, local-profile requirements, planned test-case ids, review status, and any field the strict schema has no slot for at all, e.g. `supersedes`) is never silently discarded; it lives here instead, joined back to the strict rule record by `ruleId`. Structural validity here never implies clinical validity, safety, or that a named human clinician reviewed anything — `reviewStatus` legally stays `draft` through E0. scripts/validate-kb.mjs wires this schema in as an EXISTENCE-GATED check: not every module carries this file yet (Phase 3 stages it only under build/kb-pack/; Phase 4 migrates it into modules/cbc_suite_v1/), so its absence is not itself an error.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "moduleId", "rfProvenance", "entries"],
+  "properties": {
+    "schemaVersion": { "type": "string", "minLength": 1 },
+    "moduleId": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "rfProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rfRunId", "rfBundleId", "fixturePath"],
+      "description": "The single upstream rf run/bundle every entry in this file traces back to (mirrors modules/<id>/evidence-assertions.json's and modules/<id>/authoring-decisions.yaml's own `rfProvenance` blocks, P3-T3/P3-T1) — kept once at the document level rather than repeated per entry.",
+      "properties": {
+        "rfRunId": { "type": "string", "minLength": 1 },
+        "rfBundleId": { "type": "string", "minLength": 1 },
+        "fixturePath": { "type": "string", "minLength": 1 }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 0,
+      "items": { "$ref": "#/$defs/entry" },
+      "description": "`minItems: 0` (mirrors schemas/evidence-assertions.schema.json's and schemas/authoring-decisions.schema.json's own P3-T3/P3-T4 relaxation): a brand-new module package scaffold legitimately has zero provenance entries until a rule is drafted."
+    }
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ruleId",
+        "moduleId",
+        "basis",
+        "missingness",
+        "localProfileRequirement",
+        "testIds",
+        "reviewStatus",
+        "reviewBy",
+        "supersedes"
+      ],
+      "description": "One rule's provenance sidecar record (`02 §4.13`'s worked-example shape, extended with the `reviewBy`/`supersedes` fields the strict `rules.json` projection also has no slot for). Every numeric threshold or age boundary the joined strict rule contains must trace, via `basis.evidenceAssertionIds[]`, to a real modules/<id>/evidence-assertions.json record — this schema cannot itself verify that cross-file resolution (a traceability-index concern, P5-T4), but requires the field to be present and non-empty here.",
+      "properties": {
+        "ruleId": {
+          "type": "string",
+          "pattern": "^[A-Z0-9-]+$",
+          "description": "Join key back to the strict runtime `rules.json` record's own `id` (same pattern as schemas/rule.schema.json's `id` field) — proven by a cross-file test, not merely schema-shape-legal in isolation."
+        },
+        "moduleId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Must equal the enclosing document's `moduleId` — this schema validates the entry in isolation and cannot cross-check the parent; that equality is enforced by scripts/validate-kb.mjs's validateRuleProvenance()."
+        },
+        "basis": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "decisionId", "rfClaimIds", "evidenceAssertionIds"],
+          "description": "`02 §4.13`'s companion-provenance `basis` object. `decisionId` is REQUIRED (R-P2 analog, this task's binding acceptance criteria: 'a rule-provenance.json entry missing basis.decisionId fails schema validation') — a drafted rule with no named authoring decision has no reviewable basis for its Boolean logic (FR-14) at all.",
+          "properties": {
+            "kind": {
+              "enum": ["source_supported_fact", "conflicting_source_facts", "contradicted_source_fact", "implementation_proposal"],
+              "description": "Exactly the 4 `basis.kind` values `02 §4.11`'s routing table names (mirrors schemas/authoring-decisions.schema.json's own `basis.kind` enum)."
+            },
+            "decisionId": {
+              "type": "string",
+              "pattern": "^dec_[a-z0-9_]+$",
+              "description": "Must resolve to a real `decision_id` in modules/<id>/authoring-decisions.yaml (P3-T1) — this schema cannot verify that cross-file resolution itself."
+            },
+            "rfClaimIds": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^clm_[a-z0-9]+$" },
+              "minItems": 1,
+              "description": "REQUIRED, non-empty. Every entry must resolve to a real `claim_id` in the upstream bundle's claims/claim_ledger.yaml."
+            },
+            "evidenceAssertionIds": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^evas_[a-z0-9_]+$" },
+              "minItems": 1,
+              "description": "REQUIRED, non-empty. Every entry must resolve to a real `assertionId` in modules/<id>/evidence-assertions.json (P3-T3) — the exact-passage locator that keeps the joined rule from carrying an invented threshold."
+            }
+          }
+        },
+        "missingness": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Honest, code-grounded statement of what happens when this rule's `when`-clause fact(s) are absent/unknown at runtime (per the module's actual deriveFacts behavior, never invented) — e.g. whether the rule silently fails to match, or a separate missing-data question rule exists. `02 §4.13`'s own worked example: `no_match_and_emit_required-data-question`."
+        },
+        "localProfileRequirement": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The local/analyzer-specific reference-range or lab-context profile this rule's interpretation depends on, or `null` when the rule's logic does not depend on one (e.g. a fixed universal threshold or an age-only scope check). `02 §4.13`'s own worked example: `ferritin_assay_and_inflammation_context`."
+        },
+        "testIds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Planned/linked engine-test-case ids for this rule (`02 §4.13`'s own worked example lists 4: positive/negative/boundary/missingness). Legitimately empty at this drafting stage — the test corpus is a Phase 4 deliverable (P4-T5..T8), not fabricated here."
+        },
+        "reviewStatus": {
+          "enum": ["draft", "in_review", "approved"],
+          "description": "REQUIRED, non-null, closed enum. `draft` is the only legal value while this rule is still a staged proposal (E0) — never `approved` absent a real, named clinical review process, which does not exist in this build (CLAUDE.md: 'No AI-published rule changes')."
+        },
+        "reviewBy": {
+          "type": ["string", "null"],
+          "format": "date",
+          "description": "Governance housekeeping due-date for the next currency check on this rule's evidence basis (mirrors the authoring `rule-proposals.json` record's own `reviewBy` field, which `schemas/rule.schema.json` has no slot for). `null` legal when not yet set."
+        },
+        "supersedes": {
+          "type": ["string", "null"],
+          "description": "Rule id this rule supersedes/replaces, or `null`. `schemas/rule.schema.json` has no slot for supersession at all (`02 §4.13`'s field-mapping table sends it here unconditionally) — this field exists so that fact is never silently dropped rather than merely deferred."
+        },
+        "authoringNotes": {
+          "type": ["string", "null"],
+          "description": "Optional. Carries forward the drafted rule-proposal's own `authoringNotes` (P3-T5, tools/rf-bundle-to-kb-pack/lib/rule-candidate-drafts.mjs) — known limitations/proxy-fact caveats the strict `rules.json` projection has no slot for and must not silently drop. Not required: a future non-drafted (e.g. directly authored) rule may legitimately have none."
+        }
+      }
+    }
+  }
+}

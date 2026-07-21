@@ -1,0 +1,31 @@
+{
+  "id": "SYNTHETIC-INVALID-EXTRA-PROP-001",
+  "category": "test-fixture",
+  "when": {
+    "fact": "test.syntheticFixtureFlag",
+    "op": "eq",
+    "value": true
+  },
+  "evidence": [
+    "SYNTHETIC_SOURCE"
+  ],
+  "output": {
+    "type": "alert",
+    "severity": "informational",
+    "title": "Synthetic fixture — never a real clinical rule",
+    "detail": "P1-T5 seeded-bad-KB fixture: exercises schemas/rule.schema.json's additionalProperties: false constraint. Must never be merged into a real module's rules.json.",
+    "actions": [
+      "This is a test fixture only."
+    ]
+  },
+  "version": "1.0.0",
+  "effectiveDate": "2026-07-21",
+  "retireDate": null,
+  "owner": "team:pediatric-cds-kb-maintainers",
+  "safetyClass": "informational",
+  "requiredTestCaseIds": [],
+  "changeRationale": "P1-T5 (evidence-foundry-buildout Phase 1): seeded-invalid rule fixture proving scripts/validate-kb.mjs's JSON Schema validation of rules.json against schemas/rule.schema.json actually fails closed on a schema violation, not just on the script's own hand-rolled structural checks.",
+  "sourcePassageId": null,
+  "clinicalApprovers": [],
+  "notAllowedExtraField": "This property does not exist in schemas/rule.schema.json's `properties` and the schema declares `additionalProperties: false` — this single field is the entire seeded defect."
+}

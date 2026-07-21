@@ -1,0 +1,134 @@
+[
+  {
+    "id": "CBC-NEUT-YOUNGINF-001",
+    "category": "safety",
+    "when": {
+      "fact": "scope.neonatalOrYoungInfant",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "HEMATOLREP2024_NEUTROPENIA_REVIEW",
+      "CALIPER2020_HEMATOLOGY_I"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "important",
+      "title": "Neutropenia/CBC interpretation out of scope below 6 months",
+      "detail": "Neutropenia is defined by distinct age-banded ANC cutoffs (<2500x10^9/L in neonates/infants vs <1500x10^9/L in toddlers/older children); applying the older-child cutoff to a neonate or young infant would under-flag neutropenia. This module's supported age range begins at 6 months.",
+      "actions": [
+        "Do not interpret this patient's CBC/ANC result against this module's thresholds — the age-appropriate infant reference range and clinical pathway are out of scope here.",
+        "Route to an age-appropriate neonatal/young-infant hematology pathway."
+      ]
+    },
+    "version": "0.1.0",
+    "effectiveDate": "2026-07-21",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [],
+    "changeRationale": "Drafted proposal (P3-T5) joined to dec_cbc_young_infant_scope_abstention_001 — no clinical re-review has occurred; no credentialed clinician has approved this proposal.",
+    "sourcePassageId": "HEMATOLREP2024_NEUTROPENIA_REVIEW#implementation-proposal",
+    "clinicalApprovers": []
+  },
+  {
+    "id": "CBC-NEUT-LOCALRANGE-001",
+    "category": "interpretive-note",
+    "when": {
+      "all": [
+        { "fact": "cbc.anc", "op": "exists" },
+        { "fact": "cbc.neutropenia", "op": "is-unknown" }
+      ]
+    },
+    "evidence": [
+      "CALIPER2020_HEMATOLOGY_I",
+      "CALIPER2023_MINDRAY_79PARAM",
+      "HEMATOLREP2024_NEUTROPENIA_REVIEW"
+    ],
+    "output": {
+      "type": "note",
+      "title": "Local ANC reference range required before neutropenia interpretation",
+      "detail": "Pediatric CBC reference intervals are age-banded and analyzer-specific — independently reported CALIPER cohorts found statistically significant age-specific differences for 39 of 47 hematologic parameters, and intervals are not portable across analyzers (e.g. Beckman Coulter DxH 900 vs Mindray BC-6800Plus) without local verification. An ANC value was supplied, but no local/analyzer-specific ANC reference range or local-lab neutropenia flag was provided, so this module cannot resolve neutropenia status and does not fall back to a universal ANC cutoff. Supply a local, analyzer-specific ANC lower reference limit (cbc.localRanges.ancLower) or a local-lab neutropenia flag (cbc.localFlags.neutropenia) before interpreting this ANC result, and confirm the supplied ANC value and any local range use consistent units (x10^9/L vs cells/microliter) — unit mismatches have been documented to distort apparent severity. Do not apply a generic or universal ANC cutoff to this result in place of a verified local range."
+    },
+    "version": "0.1.0",
+    "effectiveDate": "2026-07-21",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "informational",
+    "requiredTestCaseIds": [],
+    "changeRationale": "Drafted proposal (P4-T2) joined to dec_cbc_local_range_precedence_001 — no clinical re-review has occurred; no credentialed clinician has approved this proposal.",
+    "sourcePassageId": "CALIPER2020_HEMATOLOGY_I#implementation-proposal",
+    "clinicalApprovers": []
+  },
+  {
+    "id": "CBC-MARROW-REDFLAG-001",
+    "category": "safety",
+    "when": {
+      "fact": "cbc.multilineageCytopenia",
+      "op": "is-present"
+    },
+    "evidence": [
+      "SCNIR2022_GCSF_OUTCOMES",
+      "COH2015_ELANE_MUTATIONS"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "urgent",
+      "title": "Multilineage cytopenia — possible marrow failure or infiltrative process",
+      "detail": "Anemia occurring together with another cytopenia (leukopenia, neutropenia, or thrombocytopenia) signals concern for a marrow failure or infiltrative process rather than isolated nutritional anemia. In two independent SCNIR/registry cohorts, persistent congenital neutropenia (ANC persistently below 0.5x10^9/L beyond infancy) carried concentrated myeloid-malignancy (MDS/AML) risk relative to cyclic or autoimmune/idiopathic etiologies — 11.3% versus 4.4% overall in one cohort, and 16% versus 0% (p<0.0001) in a second, independent cohort. This is a referral trigger, not a diagnosis, treatment, or dosing directive.",
+      "actions": [
+        "Obtain prompt pediatric hematology/oncology evaluation for a possible marrow failure or infiltrative process rather than managing as isolated nutritional anemia.",
+        "Do not let a co-occurring benign neutropenia differential pattern (e.g. benign-ethnic/Duffy-null neutropenia) suppress or delay this referral."
+      ]
+    },
+    "version": "0.1.0",
+    "effectiveDate": "2026-07-21",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [],
+    "changeRationale": "Drafted proposal (P3-T5) joined to dec_cbc_marrow_red_flag_001 — no clinical re-review has occurred; no credentialed clinician has approved this proposal.",
+    "sourcePassageId": "SCNIR2022_GCSF_OUTCOMES#implementation-proposal",
+    "clinicalApprovers": []
+  },
+  {
+    "id": "CBC-NEUT-BENIGNDIFF-001",
+    "category": "differential",
+    "when": {
+      "fact": "cbc.neutropenia",
+      "op": "is-present"
+    },
+    "evidence": [
+      "JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES"
+    ],
+    "output": {
+      "type": "candidate",
+      "candidateId": "benign-ethnic-neutropenia-differential-pattern",
+      "level": "possible",
+      "points": 40,
+      "support": [
+        "Duffy-null phenotype-associated (benign ethnic) neutropenia is the dominant etiology of pediatric neutropenia referrals in this evidence base (77.7% overall; up to 96.6% and 91% in ancestrally relevant referral subgroups).",
+        "Absence of recurrent, frequent, or serious infection is the clinician-usable discriminator this evidence names between benign and pathologic neutropenia."
+      ],
+      "cautions": [
+        "This is a reviewable pattern, not a confirmed diagnosis — Duffy phenotype/genotype testing and infection history are not yet represented as discrete facts in this module (E1 item).",
+        "Never suppress or downrank a co-occurring marrow-red-flag alert (CBC-MARROW-REDFLAG-001 / dec_cbc_marrow_red_flag_001) because this pattern also matched — the red-flag rule must always dominate ranking when both are present."
+      ],
+      "nextSteps": [
+        "Confirm absence of recurrent, frequent, or serious infection history.",
+        "Consider Duffy-null phenotype/ancestrally relevant context where clinically available.",
+        "If any marrow-red-flag feature is present, treat this pattern as non-reassuring and pursue the red-flag referral pathway instead."
+      ]
+    },
+    "version": "0.1.0",
+    "effectiveDate": "2026-07-21",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "diagnostic",
+    "requiredTestCaseIds": [],
+    "changeRationale": "Drafted proposal (P3-T5) joined to dec_cbc_benign_neutropenia_differential_pattern_001 — no clinical re-review has occurred; no credentialed clinician has approved this proposal.",
+    "sourcePassageId": "JPEDS2023_DUFFY_NULL_NEUTROPENIA#implementation-proposal",
+    "clinicalApprovers": []
+  }
+]

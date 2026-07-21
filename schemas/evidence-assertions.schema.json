@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/evidence-assertions.schema.json",
+  "title": "Evidence Foundry Exact-Passage Assertion Document",
+  "description": "Validates modules/<moduleId>/evidence-assertions.json (evidence-foundry-buildout P3-T3, FR-12 second half, `02 §4.10`, OQ-3/OQ-7). This is a new, module-package-scoped artifact type distinct from schemas/evidence.schema.json's source-level `evidence.json`: each record here binds one rf claim to one exact source passage (or, when rights are restricted, to that passage's immutable hash + precise selector only). Structural validity here never implies clinical validity, safety, or that a named human clinician reviewed anything — `reviewBy`/`claimStatus` are traceability metadata, not sign-off. scripts/validate-kb.mjs wires this schema in as an EXISTENCE-GATED check: not every module carries this file (e.g. modules/anemia/ predates it), so its absence is not itself an error.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "moduleId", "rfProvenance", "assertions"],
+  "properties": {
+    "schemaVersion": { "type": "string", "minLength": 1 },
+    "moduleId": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "rfProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rfRunId", "rfBundleId", "fixturePath"],
+      "description": "The single upstream rf run/bundle every assertion in this file traces back to (mirrors modules/<id>/authoring-decisions.yaml's own `rfProvenance` block, P3-T1) — kept once at the document level rather than repeated per assertion.",
+      "properties": {
+        "rfRunId": { "type": "string", "minLength": 1 },
+        "rfBundleId": { "type": "string", "minLength": 1 },
+        "fixturePath": { "type": "string", "minLength": 1 }
+      }
+    },
+    "assertions": {
+      "type": "array",
+      "minItems": 0,
+      "items": { "$ref": "#/$defs/assertion" },
+      "description": "`minItems: 0` (mirrors schemas/evidence.schema.json's own P1-T3 relaxation): a brand-new module package scaffold legitimately has zero assertions until Phase 3 projection populates it."
+    }
+  },
+  "$defs": {
+    "assertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assertionId",
+        "rfRunId",
+        "rfSourceCardId",
+        "sourceId",
+        "rfEvidenceId",
+        "rfClaimId",
+        "passageId",
+        "locator",
+        "exactPassage",
+        "displayPolicy",
+        "claimStatus",
+        "applicability",
+        "laboratory",
+        "reviewBy"
+      ],
+      "description": "One exact-passage assertion (`02 §4.10`'s worked example), binding an `rf` claim to a specific source passage. `exactPassage` is an always-present key: the licensed short passage text when display is permitted, or the explicit JSON `null` when this plan's OQ-2 rights-restricted fallback applies (never an omitted key). `exactPassageSha256` is NOT unconditionally required at this top level — the allOf clause below is the sole authority requiring it, and requires it precisely when `exactPassage` is `null`, so a fixture record missing the hash in exactly that case (R-P2 analog) fails closed with one specific error, not a redundant pair.",
+      "properties": {
+        "assertionId": {
+          "type": "string",
+          "pattern": "^evas_[a-z0-9_]+$",
+          "description": "Stable identity (FR-7/`02 §4.7`). Referenced by modules/<id>/authoring-decisions.yaml's `basis.exact_assertion_ids[]`."
+        },
+        "rfRunId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Must equal the enclosing document's `rfProvenance.rfRunId` — this schema validates the assertion in isolation and cannot cross-check the parent; that equality is enforced by scripts/validate-kb.mjs."
+        },
+        "rfSourceCardId": { "type": "string", "pattern": "^src_[A-Za-z0-9_]+$", "description": "Preserve native rf source-card id verbatim (mirrors `02 §4.9`'s `rfSourceCardId` mapping rule)." },
+        "sourceId": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]+$",
+          "description": "Compatibility alias matching schemas/evidence.schema.json's `$defs/source.id` pattern — the same alias modules/<id>/evidence.json's `sources[].id` uses for this source, once P3-T2 lands. This schema cannot cross-check that file; a cross-file join is a validate-kb.mjs / traceability-index concern (P5-T4), not this schema's."
+        },
+        "rfEvidenceId": { "type": "string", "pattern": "^ev_[0-9]{3}$", "description": "The rf source card's `extracted_points[].evidence_id` this assertion resolves to." },
+        "rfClaimId": { "type": "string", "pattern": "^clm_[a-z0-9]+$", "description": "The rf `claim_ledger.yaml` claim id this assertion grounds. For an inference-status claim (no `sources[]` of its own), this resolves instead to one of that claim's `inference_basis.from_claims[]` supported claims — an inference has no located passage to assert directly (`02 §4.11`)." },
+        "passageId": {
+          "type": "string",
+          "pattern": "^psg_[0-9a-f]{64}$",
+          "description": "`psg_<sha256>` (`02 §4.10`) — minted from the same digest as `exactPassageSha256` (with the `sha256:` prefix stripped), so the two fields are always in agreement by construction."
+        },
+        "locator": { "$ref": "#/$defs/locator" },
+        "exactPassage": {
+          "type": ["string", "null"],
+          "description": "The licensed short passage text, or explicit `null` when OQ-2's rights-restricted fallback applies (this fixture: every one of `RF-CBC-001`'s 12 source cards carries `usage.allowed_for_public_output: false` with no passage positively confirmed rights-clear per tests/fixtures/rf-cbc-001/HASH-PROVENANCE.md, so every assertion projected from it is `null` here)."
+        },
+        "exactPassageSha256": {
+          "type": ["string", "null"],
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "Immutable SHA-256 digest of the original verbatim excerpt. REQUIRED (non-null) whenever `exactPassage` is `null` — enforced by the allOf conditional below, not merely by this type declaration (R-P2 analog: a record missing this field when the text is withheld must fail closed, not silently pass)."
+        },
+        "displayPolicy": {
+          "enum": ["hash_and_selector_only", "clinician_authenticated_short_excerpt", "public_short_excerpt"],
+          "description": "`hash_and_selector_only` is the only legal value while `exactPassage` is `null` (enforced below). The other two values are schema-representable for a future positively-rights-cleared source; nobody asserts them today."
+        },
+        "claimStatus": {
+          "enum": ["supported", "mixed", "contradicted", "inference", "speculation", "unsupported"],
+          "description": "Copied from `claim_ledger.yaml.claims[].status` (`02 §4.11`'s routing table). Never mapped to a probability, confidence score, or patient-risk metric by this schema or any downstream consumer."
+        },
+        "applicability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ageRange", "sex"],
+          "description": "Population applicability of the passage. Both members independently nullable — `sex` is null whenever the source does not name a single sex (the common case), matching schemas/evidence.schema.json's existing `$defs/applicability` convention.",
+          "properties": {
+            "ageRange": { "type": ["string", "null"], "minLength": 1 },
+            "sex": { "type": ["string", "null"], "minLength": 1 }
+          }
+        },
+        "laboratory": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["analyzer", "assayMethod"],
+          "description": "Analyzer/assay context for the passage. Both members independently nullable: several passages in this bundle are outcome/registry findings with no analyzer-dependent numeric threshold at all (e.g. a referral-cohort proportion), and null here means exactly that, not an omission.",
+          "properties": {
+            "analyzer": { "type": ["string", "null"], "minLength": 1 },
+            "assayMethod": { "type": ["string", "null"], "minLength": 1 }
+          }
+        },
+        "reviewBy": {
+          "type": "string",
+          "format": "date",
+          "description": "A governance housekeeping due-date for the next currency check on this assertion (mirrors `02 §4.9`'s `sources[].reviewBy` field). Not itself a clinical claim, threshold, or sign-off date."
+        }
+      },
+      "allOf": [
+        {
+          "description": "OQ-2 rights-restricted fallback (`02 §4.10`): a null exactPassage must retain its immutable hash. Missing exactPassageSha256 here is exactly the seeded-invalid case this schema exists to reject (R-P2 analog).",
+          "if": {
+            "type": "object",
+            "required": ["exactPassage"],
+            "properties": { "exactPassage": { "type": "null" } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["exactPassageSha256"],
+            "properties": { "exactPassageSha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" } }
+          }
+        },
+        {
+          "description": "A record whose text is withheld cannot simultaneously claim an excerpt-bearing display policy.",
+          "if": {
+            "type": "object",
+            "required": ["exactPassage"],
+            "properties": { "exactPassage": { "type": "null" } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["displayPolicy"],
+            "properties": { "displayPolicy": { "const": "hash_and_selector_only" } }
+          }
+        }
+      ]
+    },
+    "locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw", "page", "section", "table", "paragraph"],
+      "description": "Mirrors schemas/evidence.schema.json's `$defs/sourceLocator` shape (raw always present; the four parsed members independently nullable) plus the `02 §4.10` worked example's page/section/table/paragraph field names.",
+      "properties": {
+        "raw": { "type": "string", "minLength": 1 },
+        "page": { "type": ["string", "null"], "minLength": 1 },
+        "section": { "type": ["string", "null"], "minLength": 1 },
+        "table": { "type": ["string", "null"], "minLength": 1 },
+        "paragraph": { "type": ["string", "null"], "minLength": 1 }
+      }
+    }
+  }
+}

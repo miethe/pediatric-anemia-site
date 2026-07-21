@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0",
+  "moduleId": "cbc_suite_v1",
+  "rfProvenance": {
+    "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+    "rfBundleId": "bundle_20260718_intent_research_20260717_rf_cbc_001",
+    "fixturePath": "tests/fixtures/rf-cbc-001/"
+  },
+  "assertions": [
+    {
+      "assertionId": "evas_cbc_age_interval_001",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_01",
+      "sourceId": "CALIPER2020_HEMATOLOGY_I",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_009",
+      "passageId": "psg_f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+      "locator": {
+        "raw": "Abstract — Results",
+        "page": null,
+        "section": "Abstract — Results",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "birth to <21 years",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": "Beckman Coulter DxH 900",
+        "assayMethod": "CLSI EP28-A3c age-partitioning"
+      },
+      "reviewBy": "2027-07-21"
+    }
+  ]
+}

@@ -1,0 +1,562 @@
+{
+  "schemaVersion": "1.0",
+  "moduleId": "cbc_suite_v1",
+  "rfProvenance": {
+    "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+    "rfBundleId": "bundle_20260718_intent_research_20260717_rf_cbc_001",
+    "fixturePath": "tests/fixtures/rf-cbc-001/"
+  },
+  "assertions": [
+    {
+      "assertionId": "evas_cbc_age_interval_001",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_01",
+      "sourceId": "CALIPER2020_HEMATOLOGY_I",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_009",
+      "passageId": "psg_f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+      "locator": {
+        "raw": "Abstract — Results",
+        "page": null,
+        "section": "Abstract — Results",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "birth to <21 years",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": "Beckman Coulter DxH 900",
+        "assayMethod": "CLSI EP28-A3c age-partitioning"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_analyzer_specificity_001",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_10",
+      "sourceId": "CALIPER2020_HEMATOLOGY_I",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_026",
+      "passageId": "psg_6a7d1311f9abd40d23b88db00c36c982b5f5d66a7ac997cd49c3ebe47fa51894",
+      "locator": {
+        "raw": "Abstract — Methods; Table 1 caption",
+        "page": null,
+        "section": "Abstract — Methods; Table 1 caption",
+        "table": "Table 1",
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:6a7d1311f9abd40d23b88db00c36c982b5f5d66a7ac997cd49c3ebe47fa51894",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "birth to <21 years",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": "Beckman Coulter DxH 900",
+        "assayMethod": "Not portable to other analyzers without transference/verification"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_analyzer_specificity_002",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_02",
+      "sourceId": "CALIPER2023_MINDRAY_79PARAM",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_062",
+      "passageId": "psg_f9741aa6b4c6846b929ef80c5fa56c897152f181865f82c52d78b5cd16b02f40",
+      "locator": {
+        "raw": "Abstract — Methods sentence 2 / Title",
+        "page": null,
+        "section": "Abstract — Methods sentence 2 / Title",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:f9741aa6b4c6846b929ef80c5fa56c897152f181865f82c52d78b5cd16b02f40",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": null,
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": "Mindray BC-6800Plus",
+        "assayMethod": "79-parameter hematology panel; instrument-dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_benign_neutropenia_differential_001",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_11",
+      "sourceId": "JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_039",
+      "passageId": "psg_4c3f13fb9c3f701f2fc5e91eb83f1dba9f90b2c55b39f0e8673246f2bf876699",
+      "locator": {
+        "raw": "Abstract (first sentence)",
+        "page": null,
+        "section": "Abstract (first sentence)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:4c3f13fb9c3f701f2fc5e91eb83f1dba9f90b2c55b39f0e8673246f2bf876699",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "pediatric referral cohort",
+        "sex": "mixed sex"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Referral-cohort proportion; Duffy phenotype/genotype ascertainment"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_benign_neutropenia_differential_002",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_11",
+      "sourceId": "JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_043",
+      "passageId": "psg_98bcac91cca14bc0ff9d601b26ac09358b42ff4c80c0caa661a421815804f7f4",
+      "locator": {
+        "raw": "Abstract (second sentence)",
+        "page": null,
+        "section": "Abstract (second sentence)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:98bcac91cca14bc0ff9d601b26ac09358b42ff4c80c0caa661a421815804f7f4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "pediatric, no recurrent/frequent/serious infection",
+        "sex": "any sex"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Clinical discriminator + Duffy typing availability; not a numeric assay threshold"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_benign_neutropenia_differential_003",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_11",
+      "sourceId": "JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_040",
+      "passageId": "psg_da64b3368c0e927d170e5fd10b666cb8a2aec6d83bd8f2136eb1b2ba4d4d93a4",
+      "locator": {
+        "raw": "Abstract (first sentence)",
+        "page": null,
+        "section": "Abstract (first sentence)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:da64b3368c0e927d170e5fd10b666cb8a2aec6d83bd8f2136eb1b2ba4d4d93a4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "pediatric referral subgroup (Yemeni)",
+        "sex": "mixed sex"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Subgroup proportion of Duffy-null-associated neutropenia"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_benign_neutropenia_differential_004",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_11",
+      "sourceId": "JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_041",
+      "passageId": "psg_da64b3368c0e927d170e5fd10b666cb8a2aec6d83bd8f2136eb1b2ba4d4d93a4",
+      "locator": {
+        "raw": "Abstract (first sentence)",
+        "page": null,
+        "section": "Abstract (first sentence)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:da64b3368c0e927d170e5fd10b666cb8a2aec6d83bd8f2136eb1b2ba4d4d93a4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "pediatric referral subgroup (African American)",
+        "sex": "mixed sex"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Subgroup proportion"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_benign_neutropenia_differential_005",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_05",
+      "sourceId": "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_074",
+      "passageId": "psg_e88b86bd01df9bef70f1025960f613a1aba5d1deafa5ad12c634774de1d8f734",
+      "locator": {
+        "raw": "Abstract — Results (race-associated persistence)",
+        "page": null,
+        "section": "Abstract — Results (race-associated persistence)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:e88b86bd01df9bef70f1025960f613a1aba5d1deafa5ad12c634774de1d8f734",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "newborn through adolescent",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Odds ratio on persistence, not an assay threshold"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_caliper_dxh900_intervals_001",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_01",
+      "sourceId": "CALIPER2020_HEMATOLOGY_I",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_011",
+      "passageId": "psg_de59d84d0b09e9e7863bc79e0823cc75ce240d58e1d2dd876a25a886d768b09a",
+      "locator": {
+        "raw": "Abstract — Methods / Conclusions",
+        "page": null,
+        "section": "Abstract — Methods / Conclusions",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:de59d84d0b09e9e7863bc79e0823cc75ce240d58e1d2dd876a25a886d768b09a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "birth to <21 years",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": "Beckman Coulter DxH 900",
+        "assayMethod": "CLSI guideline reference-standard derivation"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_marrow_malignancy_risk_001",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_08",
+      "sourceId": "SCNIR2022_GCSF_OUTCOMES",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_005",
+      "passageId": "psg_63ac429aebb102e07036be7845a73bef614770d0ba2eec04024d21823b9d69bb",
+      "locator": {
+        "raw": "Results > Outcomes: myeloid malignancies; and Table 6",
+        "page": null,
+        "section": "Results > Outcomes: myeloid malignancies; and Table 6",
+        "table": "Table 6",
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:63ac429aebb102e07036be7845a73bef614770d0ba2eec04024d21823b9d69bb",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "children and adults, congenital SCN",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Annual registry follow-up + BM/marrow reports; not a lab cutoff"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_marrow_malignancy_risk_002",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_03",
+      "sourceId": "COH2015_ELANE_MUTATIONS",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_053",
+      "passageId": "psg_2e5a11b769788a66726b6291b11638d1bac6d88552a44eb491bc9b2eacc3984b",
+      "locator": {
+        "raw": "OBSERVATIONS 'Mutations and myelodysplasia/acute myeloid leukemia' para 1-2",
+        "page": null,
+        "section": "OBSERVATIONS 'Mutations and myelodysplasia/acute myeloid leukemia' para 1-2",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2e5a11b769788a66726b6291b11638d1bac6d88552a44eb491bc9b2eacc3984b",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "pediatric-onset SCN vs CyN",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Outcome from clinical/registry records; ELANE genotype by DNA sequencing"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_marrow_malignancy_risk_003",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_08",
+      "sourceId": "SCNIR2022_GCSF_OUTCOMES",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_004",
+      "passageId": "psg_ff2928acf51095774b2b11c1dd3dd26296b7aed50074c54ff3087d3304b1c9a4",
+      "locator": {
+        "raw": "Methods > Enrollment criteria (congenital neutropenia definition)",
+        "page": null,
+        "section": "Methods > Enrollment criteria (congenital neutropenia definition)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:ff2928acf51095774b2b11c1dd3dd26296b7aed50074c54ff3087d3304b1c9a4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "infants/young children, persistence beyond 0.25-1.0 years",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "ANC persistence + genetic testing (multiple labs)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_marrow_malignancy_risk_004",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_08",
+      "sourceId": "SCNIR2022_GCSF_OUTCOMES",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_006",
+      "passageId": "psg_c98dbc0ff8a7f342f1fecc85f8e50c148c3f5feda65a1c98c06453e96c87daa5",
+      "locator": {
+        "raw": "Results > Outcomes: lymphoid malignancies (closing sentence)",
+        "page": null,
+        "section": "Results > Outcomes: lymphoid malignancies (closing sentence)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:c98dbc0ff8a7f342f1fecc85f8e50c148c3f5feda65a1c98c06453e96c87daa5",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "816 total; pediatric and adult",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Outcome ascertainment via registry follow-up; not a lab cutoff"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_unit_normalization_001",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_09",
+      "sourceId": "HEMATOLREP2024_NEUTROPENIA_REVIEW",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_019",
+      "passageId": "psg_f14c0a62dfe6af11bdb8d5eb7fdd71dca14376475ffd34589bf99f830e71dc59",
+      "locator": {
+        "raw": "Section 1 (Introduction), severity-classification paragraph",
+        "page": null,
+        "section": "Section 1 (Introduction), severity-classification paragraph",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:f14c0a62dfe6af11bdb8d5eb7fdd71dca14376475ffd34589bf99f830e71dc59",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "childhood (all pediatric age bands)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "ANC from complete blood count"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_unit_normalization_002",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_08",
+      "sourceId": "SCNIR2022_GCSF_OUTCOMES",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_001",
+      "passageId": "psg_7fb82392dd4f00e8727805747bbb9609fc5431d9a8f74f88e0275792ba2bf310",
+      "locator": {
+        "raw": "Abstract (opening sentence)",
+        "page": null,
+        "section": "Abstract (opening sentence)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:7fb82392dd4f00e8727805747bbb9609fc5431d9a8f74f88e0275792ba2bf310",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "children and adults",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "ANC from CBC differential; analyzer not stated"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_unit_normalization_003",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_04",
+      "sourceId": "BJHAEM2010_SCNIR_LEUKEMIA_RISK",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_033",
+      "passageId": "psg_d5c5540e5107f1fe10febaacd5c2ceb3aa3b54fc07d22f0c402a8f2566e36747",
+      "locator": {
+        "raw": "Introduction, para 1 (diagnostic definition of SCN)",
+        "page": null,
+        "section": "Introduction, para 1 (diagnostic definition of SCN)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d5c5540e5107f1fe10febaacd5c2ceb3aa3b54fc07d22f0c402a8f2566e36747",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "not age-stratified in this report",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "ANC from CBC with differential; analyzer not specified"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_unit_normalization_004",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_03",
+      "sourceId": "COH2015_ELANE_MUTATIONS",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_051",
+      "passageId": "psg_4912f006897886e736c25d5892a8ea37f14a721b9dc7a21354f47bb3bb2048e6",
+      "locator": {
+        "raw": "INTRODUCTION para 1 + METHODS 'SCNIR patients' para (SCN definition)",
+        "page": null,
+        "section": "INTRODUCTION para 1 + METHODS 'SCNIR patients' para (SCN definition)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:4912f006897886e736c25d5892a8ea37f14a721b9dc7a21354f47bb3bb2048e6",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "pediatric-onset",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Automated CBC with differential; marrow maturation arrest also required"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_young_infant_anc_001",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_09",
+      "sourceId": "HEMATOLREP2024_NEUTROPENIA_REVIEW",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_018",
+      "passageId": "psg_d58b5d6e7b4a805ac0492d8860472938a8ed51b3eb8b450ce51a4905377d5667",
+      "locator": {
+        "raw": "Section 1 (Introduction), neutropenia-definition paragraph",
+        "page": null,
+        "section": "Section 1 (Introduction), neutropenia-definition paragraph",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d58b5d6e7b4a805ac0492d8860472938a8ed51b3eb8b450ce51a4905377d5667",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "neonates/infants vs toddlers/older children/adults (race-adjusted lower limit for African American children)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Automated analyzer ANC correlated with peripheral blood smear gold standard"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc_young_infant_anc_002",
+      "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc001_10",
+      "sourceId": "CALIPER2020_HEMATOLOGY_I",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_027",
+      "passageId": "psg_f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+      "locator": {
+        "raw": "Abstract — Results",
+        "page": null,
+        "section": "Abstract — Results",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "birth to <21 years",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": "Beckman Coulter DxH 900",
+        "assayMethod": null
+      },
+      "reviewBy": "2027-07-21"
+    }
+  ]
+}

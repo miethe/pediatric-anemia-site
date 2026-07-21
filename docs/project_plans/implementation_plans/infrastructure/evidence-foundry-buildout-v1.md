@@ -1,190 +1,229 @@
 ---
-title: "Implementation Plan: Evidence Foundry Buildout (E0 + Pre-E1 ADRs)"
+title: 'Implementation Plan: Evidence Foundry Buildout (E0 + Pre-E1 ADRs)'
 schema_version: 2
 doc_type: implementation_plan
-status: draft
+status: completed
 created: 2026-07-19
-updated: 2026-07-19
-feature_slug: "evidence-foundry-buildout"
-feature_version: "v1"
+updated: '2026-07-21'
+feature_slug: evidence-foundry-buildout
+feature_version: v1
 prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
 plan_ref: null
-scope: "Build the deterministic rf-bundle-to-kb-pack converter, migrate a 4-rule vertical slice through it into a new cbc_suite_v1 module package, and draft the 8 pre-E1 ADRs — nothing signed, nothing clinically released."
-effort_estimate: "42 pts"
-architecture_summary: "tools/rf-bundle-to-kb-pack/ (new Node ESM CLI) reads a read-only, verified rf run + modules/cbc_suite_v1/authoring-decisions.yaml and stages a proposal kb-pack under build/kb-pack/ (gitignored); Phase 4 commits exactly 4 named rules from that proposal into a new modules/cbc_suite_v1/ package (module.json, index.js delegating deriveFacts/summarize/limitations to modules/anemia/facts.anemia.js, rules.json, candidates.json, evidence.json, evidence-assertions.json, rule-provenance.json) registered alongside modules/anemia/ in all three registries; modules/anemia/ itself is untouched except evidence-registry unification (src/evidence.js)."
+scope: "Build the deterministic rf-bundle-to-kb-pack converter, migrate a 4-rule vertical\
+  \ slice through it into a new cbc_suite_v1 module package, and draft the 8 pre-E1\
+  \ ADRs \u2014 nothing signed, nothing clinically released."
+effort_estimate: 42 pts
+architecture_summary: tools/rf-bundle-to-kb-pack/ (new Node ESM CLI) reads a read-only,
+  verified rf run + modules/cbc_suite_v1/authoring-decisions.yaml and stages a proposal
+  kb-pack under build/kb-pack/ (gitignored); Phase 4 commits exactly 4 named rules
+  from that proposal into a new modules/cbc_suite_v1/ package (module.json, index.js
+  delegating deriveFacts/summarize/limitations to modules/anemia/facts.anemia.js,
+  rules.json, candidates.json, evidence.json, evidence-assertions.json, rule-provenance.json)
+  registered alongside modules/anemia/ in all three registries; modules/anemia/ itself
+  is untouched except evidence-registry unification (src/evidence.js).
 related_documents:
-  - docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md
-  - docs/project_plans/expansion/rf-handoff/RESULTS.md
-  - docs/project_plans/expansion/rf-handoff/README.md
-  - docs/project_plans/expansion/00-expansion-plan.md
-  - .claude/worknotes/evidence-foundry-buildout/decisions-block.md
-  - .claude/worknotes/evidence-foundry-buildout/estimation-sanity.md
-  - docs/project_plans/human-briefs/evidence-foundry-buildout.md
+- docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md
+- docs/project_plans/expansion/rf-handoff/RESULTS.md
+- docs/project_plans/expansion/rf-handoff/README.md
+- docs/project_plans/expansion/00-expansion-plan.md
+- .claude/worknotes/evidence-foundry-buildout/decisions-block.md
+- .claude/worknotes/evidence-foundry-buildout/estimation-sanity.md
+- docs/project_plans/human-briefs/evidence-foundry-buildout.md
+- .claude/findings/evidence-foundry-buildout-findings.md
 references:
   user_docs: []
   context: []
   specs:
-    - schemas/rule.schema.json
-    - schemas/candidate.schema.json
+  - schemas/rule.schema.json
+  - schemas/candidate.schema.json
   related_prds:
-    - docs/project_plans/PRDs/refactors/platform-foundation-p0-v1.md
+  - docs/project_plans/PRDs/refactors/platform-foundation-p0-v1.md
 spike_ref: null
 adr_refs: []
-deferred_items_spec_refs: []
-findings_doc_ref: null
+deferred_items_spec_refs:
+- docs/project_plans/design-specs/fhir-terminology-emitters.md
+- docs/project_plans/design-specs/clinical-review-portal-workflow.md
+- docs/project_plans/design-specs/cbc-12-angle-research-operation.md
+- docs/project_plans/design-specs/surveillance-update-registry-engine.md
+- docs/project_plans/design-specs/retrospective-validation-harness.md
+- docs/project_plans/design-specs/signed-release-key-custody.md
+- docs/project_plans/design-specs/upstream-rf-validators-pediatric.md
+- docs/project_plans/design-specs/property-mutation-semantic-diff-ci.md
+- docs/project_plans/design-specs/production-monitoring-telemetry.md
+- docs/project_plans/design-specs/withdraw-rollback-machinery.md
+findings_doc_ref: .claude/findings/evidence-foundry-buildout-findings.md
 charter_ref: null
-changelog_ref: null
+changelog_ref: CHANGELOG.md
 changelog_required: true
 test_plan_ref: null
 plan_structure: independent
 progress_init: auto
-owner: "Nick Miethe"
-contributors: [Opus orchestrator, implementation-planner]
+owner: Nick Miethe
+contributors:
+- Opus orchestrator
+- implementation-planner
 priority: high
 risk_level: high
 category: infrastructure
-tags: [implementation, evidence-foundry, research-foundry, kb-pipeline, converter, infrastructure]
+tags:
+- implementation
+- evidence-foundry
+- research-foundry
+- kb-pipeline
+- converter
+- infrastructure
 milestone: null
-commit_refs: []
-pr_refs: []
+commit_refs:
+- debff5989577f89d1055ed0d0352e7419a5d11cc
+- 5dfa0053736a115cfe863019d891a89833b04f48
+pr_refs: ["#17"]
 files_affected:
-  - tools/rf-bundle-to-kb-pack/**
-  - modules/cbc_suite_v1/module.json
-  - modules/cbc_suite_v1/index.js
-  - modules/cbc_suite_v1/authoring-decisions.yaml
-  - modules/cbc_suite_v1/evidence.json
-  - modules/cbc_suite_v1/evidence-assertions.json
-  - modules/cbc_suite_v1/candidates.json
-  - modules/cbc_suite_v1/rules.json
-  - modules/cbc_suite_v1/rule-provenance.json
-  - modules/cbc_suite_v1/reference-ranges.json
-  - modules/anemia/evidence.json
-  - src/evidence.js
-  - src/modules/registry.js
-  - src/facts/registry.js
-  - scripts/validate-kb.mjs
-  - schemas/rule.schema.json
-  - schemas/evidence-assertions.schema.json
-  - schemas/rule-provenance.schema.json
-  - schemas/authoring-decisions.schema.json
-  - schemas/release-manifest.schema.json
-  - tests/*.test.mjs
-  - tests/fixtures/**
-  - .gitignore
-  - docs/architecture.md
-  - docs/adr/*.md
-  - docs/project_plans/design-specs/*.md
-  - CHANGELOG.md
+- tools/rf-bundle-to-kb-pack/**
+- modules/cbc_suite_v1/module.json
+- modules/cbc_suite_v1/index.js
+- modules/cbc_suite_v1/authoring-decisions.yaml
+- modules/cbc_suite_v1/evidence.json
+- modules/cbc_suite_v1/evidence-assertions.json
+- modules/cbc_suite_v1/candidates.json
+- modules/cbc_suite_v1/rules.json
+- modules/cbc_suite_v1/rule-provenance.json
+- modules/cbc_suite_v1/reference-ranges.json
+- modules/anemia/evidence.json
+- src/evidence.js
+- src/modules/registry.js
+- src/facts/registry.js
+- scripts/validate-kb.mjs
+- schemas/rule.schema.json
+- schemas/evidence-assertions.schema.json
+- schemas/rule-provenance.schema.json
+- schemas/authoring-decisions.schema.json
+- schemas/release-manifest.schema.json
+- tests/*.test.mjs
+- tests/fixtures/**
+- .gitignore
+- docs/architecture.md
+- docs/adr/*.md
+- docs/project_plans/design-specs/*.md
+- CHANGELOG.md
 wave_plan:
   serialization_barriers: []
   phases:
-    - id: P1
-      depends_on: []
-      isolation: shared
-      parallelizable: false
-      provider: claude
-      model: sonnet
-      effort: adaptive
-      files_affected:
-        - modules/cbc_suite_v1/module.json
-        - modules/cbc_suite_v1/index.js
-        - modules/cbc_suite_v1/rules.json
-        - modules/cbc_suite_v1/candidates.json
-        - modules/cbc_suite_v1/evidence.json
-        - modules/cbc_suite_v1/reference-ranges.json
-        - src/modules/registry.js
-        - src/facts/registry.js
-        - src/evidence.js
-        - scripts/validate-kb.mjs
-        - tests/fixtures/**
-        - .gitignore
-        - .claude/worknotes/evidence-foundry-buildout/path-mapping.md
-    - id: P2
-      depends_on: [P1]
-      isolation: shared
-      provider: claude
-      model: sonnet
-      effort: adaptive
-      owner_skills: []
-      files_affected:
-        - tools/rf-bundle-to-kb-pack/**
-        - tests/ef-converter-invariants.test.mjs
-    - id: P3
-      depends_on: [P2]
-      isolation: shared
-      provider: claude
-      model: sonnet
-      effort: adaptive
-      files_affected:
-        - tools/rf-bundle-to-kb-pack/**
-        - modules/cbc_suite_v1/authoring-decisions.yaml
-        - schemas/evidence-assertions.schema.json
-        - schemas/rule-provenance.schema.json
-        - schemas/authoring-decisions.schema.json
-        - tests/ef-converter-propose.test.mjs
-    - id: P4
-      depends_on: [P3]
-      isolation: shared
-      provider: claude
-      model: sonnet
-      effort: adaptive
-      files_affected:
-        - modules/cbc_suite_v1/rules.json
-        - modules/cbc_suite_v1/candidates.json
-        - modules/cbc_suite_v1/evidence.json
-        - modules/cbc_suite_v1/evidence-assertions.json
-        - modules/cbc_suite_v1/rule-provenance.json
-        - tests/ef-cbc_suite_v1-positive.test.mjs
-        - tests/ef-cbc_suite_v1-negative.test.mjs
-        - tests/ef-cbc_suite_v1-boundary.test.mjs
-        - tests/ef-cbc_suite_v1-missingness.test.mjs
-        - tests/ef-cbc_suite_v1-dangerous-miss.test.mjs
-    - id: P5
-      depends_on: [P4]
-      isolation: shared
-      provider: claude
-      model: sonnet
-      effort: adaptive
-      files_affected:
-        - tools/rf-bundle-to-kb-pack/**
-        - schemas/release-manifest.schema.json
-        - scripts/validate-kb.mjs
-        - tests/ef-converter-determinism.test.mjs
-        - tests/ef-converter-manifest.test.mjs
-    - id: P6
-      depends_on: [P2]
-      isolation: shared
-      provider: claude
-      model: sonnet
-      effort: adaptive
-      owner_skills: [create-adr]
-      files_affected:
-        - docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
-        - docs/adr/0002-exact-passage-storage-licensing.md
-        - docs/adr/0003-terminology-local-lab-profile-ownership.md
-        - docs/adr/0004-clinical-approval-identity-adjudication.md
-        - docs/adr/0005-kb-serialization-signing-key-custody.md
-        - docs/adr/0006-validation-data-boundary-deidentification.md
-        - docs/adr/0007-surveillance-cadence-materiality-classes.md
-        - docs/adr/0008-pathb-hardening-vs-native-adapter.md
-    - id: P7
-      depends_on: [P5, P6]
-      isolation: shared
-      provider: claude
-      model: haiku
-      effort: adaptive
-      files_affected:
-        - CHANGELOG.md
-        - docs/architecture.md
-        - docs/project_plans/design-specs/*.md
-        - .claude/worknotes/evidence-foundry-buildout/rfup-external-routing-note.md
+  - id: P1
+    depends_on: []
+    isolation: shared
+    parallelizable: false
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - modules/cbc_suite_v1/module.json
+    - modules/cbc_suite_v1/index.js
+    - modules/cbc_suite_v1/rules.json
+    - modules/cbc_suite_v1/candidates.json
+    - modules/cbc_suite_v1/evidence.json
+    - modules/cbc_suite_v1/reference-ranges.json
+    - src/modules/registry.js
+    - src/facts/registry.js
+    - src/evidence.js
+    - scripts/validate-kb.mjs
+    - tests/fixtures/**
+    - .gitignore
+    - .claude/worknotes/evidence-foundry-buildout/path-mapping.md
+  - id: P2
+    depends_on:
+    - P1
+    isolation: shared
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    owner_skills: []
+    files_affected:
+    - tools/rf-bundle-to-kb-pack/**
+    - tests/ef-converter-invariants.test.mjs
+  - id: P3
+    depends_on:
+    - P2
+    isolation: shared
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - tools/rf-bundle-to-kb-pack/**
+    - modules/cbc_suite_v1/authoring-decisions.yaml
+    - schemas/evidence-assertions.schema.json
+    - schemas/rule-provenance.schema.json
+    - schemas/authoring-decisions.schema.json
+    - tests/ef-converter-propose.test.mjs
+  - id: P4
+    depends_on:
+    - P3
+    isolation: shared
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - modules/cbc_suite_v1/rules.json
+    - modules/cbc_suite_v1/candidates.json
+    - modules/cbc_suite_v1/evidence.json
+    - modules/cbc_suite_v1/evidence-assertions.json
+    - modules/cbc_suite_v1/rule-provenance.json
+    - tests/ef-cbc_suite_v1-positive.test.mjs
+    - tests/ef-cbc_suite_v1-negative.test.mjs
+    - tests/ef-cbc_suite_v1-boundary.test.mjs
+    - tests/ef-cbc_suite_v1-missingness.test.mjs
+    - tests/ef-cbc_suite_v1-dangerous-miss.test.mjs
+  - id: P5
+    depends_on:
+    - P4
+    isolation: shared
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - tools/rf-bundle-to-kb-pack/**
+    - schemas/release-manifest.schema.json
+    - scripts/validate-kb.mjs
+    - tests/ef-converter-determinism.test.mjs
+    - tests/ef-converter-manifest.test.mjs
+  - id: P6
+    depends_on:
+    - P2
+    isolation: shared
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    owner_skills:
+    - create-adr
+    files_affected:
+    - docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
+    - docs/adr/0002-exact-passage-storage-licensing.md
+    - docs/adr/0003-terminology-local-lab-profile-ownership.md
+    - docs/adr/0004-clinical-approval-identity-adjudication.md
+    - docs/adr/0005-kb-serialization-signing-key-custody.md
+    - docs/adr/0006-validation-data-boundary-deidentification.md
+    - docs/adr/0007-surveillance-cadence-materiality-classes.md
+    - docs/adr/0008-pathb-hardening-vs-native-adapter.md
+  - id: P7
+    depends_on:
+    - P5
+    - P6
+    isolation: shared
+    provider: claude
+    model: haiku
+    effort: adaptive
+    files_affected:
+    - CHANGELOG.md
+    - docs/architecture.md
+    - docs/project_plans/design-specs/*.md
+    - .claude/worknotes/evidence-foundry-buildout/rfup-external-routing-note.md
   waves:
-    - [P1]
-    - [P2]
-    - [P3, P6]
-    - [P4]
-    - [P5]
-    - [P7]
+  - - P1
+  - - P2
+  - - P3
+    - P6
+  - - P4
+  - - P5
+  - - P7
 ---
 
 # Implementation Plan: Evidence Foundry Buildout (E0 + Pre-E1 ADRs)
@@ -340,6 +379,26 @@ comparable), not a materially interesting diff — E1 is where a second proposal
 *existing* `cbc_suite_v1/rules.json` would produce a non-trivial result. This boundary is confirmed
 sufficient for FR-19's conversion-report enumeration; if Phase 5 execution finds it insufficient, escalate
 rather than silently expanding scope (per the PRD's own OQ-4 instruction).
+
+**FR-16(c) candidate identity — re-scope (P3-GATE remediation, binding).** RF-CBC-001 (the OQ-2-bound
+fixture) is scoped to the neutropenia/marrow-failure-risk evidence base and contains zero ferritin/iron
+claims (confirmed directly against `tests/fixtures/rf-cbc-001/claims/claim_ledger.yaml`'s 87 entries). No
+"iron-deficiency-anemia candidate pattern" can be honestly authored from it — every `basis.rf_claim_ids`
+entry in `modules/cbc_suite_v1/authoring-decisions.yaml` must cite a real fixture claim (P3-T1's own
+binding AC), and inventing an iron-deficiency threshold or pattern from prose the converter never read
+would itself violate FR-14/the CLAUDE.md "no invented thresholds" guardrail. Sourcing a second `rf` run
+to genuinely ground an iron-deficiency candidate is out of scope for this vertical slice (it would add an
+unplanned research dependency mid-Phase-3/4 and is exactly the kind of scope creep the decisions block
+instructs against). **Resolution: FR-16(c) is re-scoped** from "iron-deficiency-anemia candidate pattern
+rule" to the **benign-ethnic/Duffy-null neutropenia differential candidate pattern rule** — the candidate
+identity P3-T1 and P3-T5 already authored honestly under `dec_cbc_benign_neutropenia_differential_pattern_001`
+/ `benign-ethnic-neutropenia-differential-pattern`, grounded in real `clm_039`/`clm_040`/`clm_041`/
+`clm_074`/`clm_043`/`clm_inf05` claims. This satisfies FR-16(c)'s structural role (a "pattern," not
+diagnostic-certainty, differential candidate, conflict-visible against the FR-16(d) marrow-red-flag rule)
+without relabeling neutropenia evidence as iron-deficiency evidence. P4-T3 migrates a candidate under
+**this** identity only; no iron-deficiency candidate is authored, migrated, or referenced anywhere in the
+E0 vertical slice. The PRD's FR-16 row and the Phase 3-5 manifest's P3-T1/P3-T5/P4-T3/P4-T7/P4-T8 rows are
+updated to match this resolution and must not be reopened without a new decisions-block entry.
 
 **OQ-5, OQ-6, OQ-7 (decisions block §11, binding — encoded as tasks, not re-decided here)**: generated
 tests land flat under `tests/` as `ef-<module>-<category>.test.mjs` (Phase 4) and `ef-converter-<aspect>.test.mjs`
