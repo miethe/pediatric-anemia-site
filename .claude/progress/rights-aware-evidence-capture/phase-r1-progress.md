@@ -18,7 +18,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 5
-completed_tasks: 1
+completed_tasks: 2
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -56,7 +56,7 @@ tasks:
     AND that every ledger entry resolves to an existing artifact path. Land the shared
     resolution helper in scripts/validate-kb.mjs (R-P3 owner side); gate logic lives
     in validate-rights.mjs.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -65,6 +65,10 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T00:00:00Z'
+  completed: '2026-07-21T00:00:00Z'
+  evidence:
+  - commit: 3949f9c
 - id: EPR1-T3
   description: 'Fails-closed resilience tests (FR-WP0-06 discipline): tests/rights-coverage.test.mjs
     proves the gate fails on three seeded breakages — (a) delete any one of the 4
@@ -169,7 +173,7 @@ files_modified:
 - scripts/validate-kb.mjs
 - scripts/validate-rights.mjs
 - tests/rights-coverage.test.mjs
-progress: 20
+progress: 40
 updated: '2026-07-21'
 ---
 
