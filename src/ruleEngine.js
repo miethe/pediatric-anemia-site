@@ -115,7 +115,11 @@ export function runRules(facts, rules, catalog = {}) {
 
   for (const rule of rules) {
     const matched = evaluateCondition(rule.when, facts);
-    audit.push({ ruleId: rule.id, matched });
+    // Reviewer-gate fix-5 (finding 3, scope-bounded): carry the rule's sourcePassageId through to
+    // the audit trail instead of discarding it — this is the raw pointer only; src/engine.js
+    // resolves it to the passage's status (it has evidence.js loaded, this module deliberately
+    // does not) and attaches that alongside in provenance.ruleAudit.
+    audit.push({ ruleId: rule.id, matched, sourcePassageId: rule.sourcePassageId ?? null });
     if (!matched) continue;
 
     const output = rule.output ?? {};

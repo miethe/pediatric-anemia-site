@@ -450,6 +450,16 @@ async function loadWithholdSpec(findingsPath) {
 
 // ----- IO helpers ---------------------------------------------------------------------------
 
+// Explicit codepoint comparator (mirrors scripts/evidence/build-evidence-pack.mjs's own):
+// `String.prototype.localeCompare` is locale-dependent, so it cannot back a determinism
+// guarantee. `<`/`>` on strings compares UTF-16 code units, fixed and environment-independent
+// for the ASCII paths this file sorts.
+function compareCodepoints(a, b) {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+}
+
 async function sha256Hex(filePath) {
   const buf = await readFile(filePath);
   return `sha256:${createHash('sha256').update(buf).digest('hex')}`;
@@ -468,12 +478,16 @@ const REPO_ROOT_OR_BUNDLE = { bundle: null };
 // ----- Main --------------------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const out = { bundle: DEFAULT_BUNDLE };
+  const out = { bundle: DEFAULT_BUNDLE, check: false };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--bundle') {
       out.bundle = argv[++i];
     } else if (argv[i].startsWith('--bundle=')) {
       out.bundle = argv[i].slice('--bundle='.length);
+    } else if (argv[i] === '--check') {
+      out.check = true;
+    } else if (argv[i] === '--write') {
+      out.check = false;
     } else {
       throw new Error(`unknown argument: ${argv[i]}`);
     }
@@ -482,8 +496,38 @@ function parseArgs(argv) {
   return out;
 }
 
-async function main() {
-  const { bundle } = parseArgs(process.argv.slice(2));
+function firstDiffLines(a, b, contextLines = 3, maxHunks = 5) {
+  const aLines = a.split('\n');
+  const bLines = b.split('\n');
+  const diffs = [];
+  const max = Math.max(aLines.length, bLines.length);
+  let i = 0;
+  while (i < max && diffs.length < maxHunks) {
+    if (aLines[i] === bLines[i]) { i += 1; continue; }
+    let j = i;
+    while (j < max && aLines[j] !== bLines[j]) j += 1;
+    const start = Math.max(0, i - contextLines);
+    const end = Math.min(max, j + contextLines);
+    const chunk = [];
+    for (let k = start; k < end; k += 1) {
+      const a1 = aLines[k];
+      const b1 = bLines[k];
+      if (a1 === b1) chunk.push(`  ${k + 1}: ${a1 ?? ''}`);
+      else {
+        if (a1 !== undefined) chunk.push(`- ${k + 1}: ${a1}`);
+        if (b1 !== undefined) chunk.push(`+ ${k + 1}: ${b1}`);
+      }
+    }
+    diffs.push(chunk.join('\n'));
+    i = j;
+  }
+  return diffs.join('\n---\n');
+}
+
+// Reads the live RF bundle and returns the deterministic { pack, manifest } pair this script
+// would write. Pulled out of main() so --check can regenerate in memory and diff against the
+// committed files without writing anything (reviewer-gate fix-4).
+async function buildVendoredPack(bundle) {
   REPO_ROOT_OR_BUNDLE.bundle = bundle;
   const upstreamFiles = [];
   const { withholdPlaceholder, withheldPassageIds } = await loadWithholdSpec(FIDELITY_FINDINGS_PATH);
@@ -655,27 +699,65 @@ async function main() {
     })),
   };
 
+  // Reviewer-gate fix-4: the manifest used to embed the operator's absolute local filesystem
+  // path (`bundlePath: bundle`), which makes the committed output machine-specific — a different
+  // operator vendoring the same RF run from a different checkout path would produce a byte-
+  // different MANIFEST.json despite the content being identical. `runId` (already present, read
+  // from the bundle's own run.json, never guessed from the directory name) is the stable
+  // identifier this manifest needs; every upstreamFiles entry is already bundle-relative
+  // (path.relative(bundle, filePath) in readTrackedFile above), so nothing else here is
+  // path-dependent.
   const manifest = {
     schemaVersion: '1',
     runId,
-    bundlePath: bundle,
     upstreamFiles: upstreamFiles
       .slice()
-      .sort((a, b) => a.path.localeCompare(b.path))
+      .sort((a, b) => compareCodepoints(a.path, b.path))
       .map((entry) => ({ path: entry.path, sha256: entry.sha256 })),
   };
 
+  return { pack, manifest };
+}
+
+function serialize(value) {
+  return JSON.stringify(value, null, 2) + '\n';
+}
+
+async function main() {
+  const { bundle, check } = parseArgs(process.argv.slice(2));
+  const { pack, manifest } = await buildVendoredPack(bundle);
+  const packPath = path.join(PACK_DIR, 'pack.json');
+  const manifestPath = path.join(PACK_DIR, 'MANIFEST.json');
+  const nextPack = serialize(pack);
+  const nextManifest = serialize(manifest);
+
+  if (check) {
+    // Non-writing mode (reviewer-gate fix-4): re-vendors the live bundle in memory and fails if
+    // either committed file differs, covering pack.json AND MANIFEST.json — mirroring
+    // scripts/evidence/build-evidence-pack.mjs's own --check convention.
+    const targets = [
+      { path: packPath, label: 'pack.json', next: nextPack },
+      { path: manifestPath, label: 'MANIFEST.json', next: nextManifest },
+    ];
+    let allMatch = true;
+    for (const target of targets) {
+      const current = await readFile(target.path, 'utf8');
+      if (current === target.next) {
+        console.log(`vendor-rf-bundle --check: ${path.relative(REPO_ROOT, target.path)} matches regenerated output.`);
+        continue;
+      }
+      allMatch = false;
+      const diff = firstDiffLines(current, target.next);
+      console.error(`vendor-rf-bundle --check: ${path.relative(REPO_ROOT, target.path)} differs from regenerated output.`);
+      console.error(diff ? `First differing hunks:\n${diff}` : '(no line-level diff produced; check byte lengths)');
+    }
+    if (!allMatch) process.exit(1);
+    return;
+  }
+
   await mkdir(PACK_DIR, { recursive: true });
-  await writeFile(
-    path.join(PACK_DIR, 'pack.json'),
-    JSON.stringify(pack, null, 2) + '\n',
-    'utf8',
-  );
-  await writeFile(
-    path.join(PACK_DIR, 'MANIFEST.json'),
-    JSON.stringify(manifest, null, 2) + '\n',
-    'utf8',
-  );
+  await writeFile(packPath, nextPack, 'utf8');
+  await writeFile(manifestPath, nextManifest, 'utf8');
 
   const totalPoints = pack.sources.reduce((n, s) => n + s.passages.length, 0);
   console.log(`Vendored RF-EV-001 pack: ${pack.sources.length} sources, ${totalPoints} extracted points → ${path.relative(REPO_ROOT, PACK_DIR)}/`);

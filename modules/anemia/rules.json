@@ -252,7 +252,7 @@
       "tests/witness/corpus/microangiopathic-hemolysis-tma.json"
     ],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -337,7 +337,7 @@
       "tests/witness/corpus/microangiopathic-hemolysis-tma.json"
     ],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_004",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -370,7 +370,7 @@
       "tests/witness/alerts/lead-45plus-alert.json"
     ],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "CDC2025_LEAD#ev_005",
+    "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -402,7 +402,7 @@
       "tests/witness/alerts/lead-20to44-alert.json"
     ],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "CDC2025_LEAD#ev_005",
+    "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -591,7 +591,7 @@
       "tests/witness/corpus/g6pd-oxidant-hemolysis-tested-during-acute-episode.json"
     ],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "BSH2020_G6PD#ev_004",
+    "sourcePassageId": "BSH2020_G6PD#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -1936,7 +1936,7 @@
     "safetyClass": "diagnostic",
     "requiredTestCaseIds": [],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_004",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -1982,7 +1982,7 @@
     "safetyClass": "diagnostic",
     "requiredTestCaseIds": [],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_004",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -2121,7 +2121,7 @@
       "tests/witness/corpus/g6pd-oxidant-hemolysis-tested-during-acute-episode.json"
     ],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "BSH2020_G6PD#ev_004",
+    "sourcePassageId": "BSH2020_G6PD#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -2174,7 +2174,7 @@
       "tests/witness/corpus/microangiopathic-hemolysis-tma.json"
     ],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_004",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -2501,7 +2501,7 @@
       "tests/witness/corpus/fanconi-anemia-phenotype.json"
     ],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -2970,7 +2970,7 @@
       "tests/witness/corpus/fanconi-anemia-phenotype.json"
     ],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -3086,7 +3086,7 @@
       "tests/witness/corpus/fanconi-anemia-phenotype.json"
     ],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -3884,7 +3884,7 @@
       "tests/witness/corpus/transient-erythroblastopenia-childhood.json"
     ],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -4039,7 +4039,7 @@
       "tests/witness/corpus/possible-hemolysis-malaria-incomplete-workup.json"
     ],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
     "clinicalApprovers": []
   },
   {
@@ -4071,7 +4071,7 @@
       "tests/witness/corpus/microangiopathic-hemolysis-tma.json"
     ],
     "changeRationale": "EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): mechanically populates required rule-governance metadata across all 91 rules in one deterministic, re-runnable codemod. This is a structural/administrative backfill only — no clinical re-review of this rule's threshold, logic, or evidence occurred as part of this change. clinicalApprovers stays empty pending real credentialed clinician sign-off.",
-    "sourcePassageId": "BLOOD2022_PED_ANEMIA#ev_005",
+    "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
     "clinicalApprovers": []
   },
   {

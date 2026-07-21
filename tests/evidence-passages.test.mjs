@@ -21,9 +21,16 @@ const SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'evidence.schema.json');
 const PACK_PATH = path.join(REPO_ROOT, 'evidence-packs', 'rf-ev-001', 'pack.json');
 const BUILD_SCRIPT = path.join(REPO_ROOT, 'scripts', 'evidence', 'build-evidence-pack.mjs');
 
-// The design record pins these exact counts (docs/project_plans/implementation_plans/
-// infrastructure/wave0-safety-foundation-v1/ep3-passage-design.md, Source-card→KB-source mapping
-// table). 35 source-supported + 6 proposal sentinels = 41.
+// The design record pins these exact per-source LOCATED counts (docs/project_plans/
+// implementation_plans/infrastructure/wave0-safety-foundation-v1/ep3-passage-design.md,
+// Source-card→KB-source mapping table). 35 located (source-supported OR quarantined,
+// reviewer-gate fix-2) + 6 proposal sentinels = 41.
+//
+// Reviewer-gate fix-2 split the 35 located passages into 13 clean "source-supported" and 22
+// "quarantined" (a passage a fidelity audit flagged as defective, per
+// scripts/evidence/build-evidence-pack.mjs's status-derivation rule) — the two together must still
+// equal the design record's per-source located counts, but the split between them is a fact about
+// the EP3-T5 audit's findings, not something this design table pins.
 const EXPECTED_POINTS_PER_SOURCE = {
   AAP2026_IDA: 7,
   WHO2024_HB: 6,
@@ -32,8 +39,10 @@ const EXPECTED_POINTS_PER_SOURCE = {
   FDA2026_CDS: 5,
   BSH2020_G6PD: 7,
 };
-const EXPECTED_SOURCE_SUPPORTED = Object.values(EXPECTED_POINTS_PER_SOURCE).reduce((a, b) => a + b, 0); // 35
-const EXPECTED_TOTAL = EXPECTED_SOURCE_SUPPORTED + Object.keys(EXPECTED_POINTS_PER_SOURCE).length; // 41
+const EXPECTED_LOCATED = Object.values(EXPECTED_POINTS_PER_SOURCE).reduce((a, b) => a + b, 0); // 35
+const EXPECTED_TOTAL = EXPECTED_LOCATED + Object.keys(EXPECTED_POINTS_PER_SOURCE).length; // 41
+const EXPECTED_SOURCE_SUPPORTED = 13;
+const EXPECTED_QUARANTINED = 22;
 
 async function loadJson(filePath) {
   return JSON.parse(await readFile(filePath, 'utf8'));
@@ -50,28 +59,34 @@ test('evidence.json fixtures load', async () => {
   assert.ok(evidenceDoc.sources.length > 0, 'evidence.json must have at least one source');
 });
 
-test('every source has at least one passage and the expected count of source-supported passages', () => {
-  const totals = { total: 0, supported: 0, proposal: 0 };
+test('every source has at least one passage and the expected count of located (source-supported + quarantined) passages', () => {
+  const totals = { total: 0, supported: 0, quarantined: 0, proposal: 0 };
   const covered = new Set();
   for (const source of evidenceDoc.sources) {
     assert.ok(Array.isArray(source.passages) && source.passages.length > 0,
       `source ${source.id} must carry at least one passage record`);
     covered.add(source.id);
     const supported = source.passages.filter((p) => p.status === 'source-supported').length;
+    const quarantined = source.passages.filter((p) => p.status === 'quarantined').length;
     const proposal = source.passages.filter((p) => p.status === 'implementation-proposal').length;
     assert.equal(proposal, 1, `source ${source.id} must have exactly one implementation-proposal sentinel`);
-    assert.equal(supported, EXPECTED_POINTS_PER_SOURCE[source.id],
-      `source ${source.id}: expected ${EXPECTED_POINTS_PER_SOURCE[source.id]} source-supported passages, got ${supported}`);
+    assert.equal(supported + quarantined, EXPECTED_POINTS_PER_SOURCE[source.id],
+      `source ${source.id}: expected ${EXPECTED_POINTS_PER_SOURCE[source.id]} located (source-supported + quarantined) passages, got ${supported + quarantined}`);
     totals.total += source.passages.length;
     totals.supported += supported;
+    totals.quarantined += quarantined;
     totals.proposal += proposal;
   }
   for (const kbId of Object.keys(EXPECTED_POINTS_PER_SOURCE)) {
     assert.ok(covered.has(kbId), `expected KB source ${kbId} covered by a source record`);
   }
   assert.equal(totals.total, EXPECTED_TOTAL, `expected ${EXPECTED_TOTAL} total passage records, got ${totals.total}`);
+  assert.equal(totals.supported + totals.quarantined, EXPECTED_LOCATED,
+    `expected ${EXPECTED_LOCATED} located passages, got ${totals.supported + totals.quarantined}`);
   assert.equal(totals.supported, EXPECTED_SOURCE_SUPPORTED,
     `expected ${EXPECTED_SOURCE_SUPPORTED} source-supported passages, got ${totals.supported}`);
+  assert.equal(totals.quarantined, EXPECTED_QUARANTINED,
+    `expected ${EXPECTED_QUARANTINED} quarantined passages, got ${totals.quarantined}`);
   assert.equal(totals.proposal, Object.keys(EXPECTED_POINTS_PER_SOURCE).length,
     `expected ${Object.keys(EXPECTED_POINTS_PER_SOURCE).length} sentinels, got ${totals.proposal}`);
 });
@@ -195,16 +210,16 @@ test('D-EP3-4: no passage.exactPassage equals a verbatim RF quote (skipped when 
   }
 });
 
-test('every source-supported passage traces to an ev_NNN evidence id in the pack', () => {
+test('every located (source-supported or quarantined) passage traces to an ev_NNN evidence id in the pack', () => {
   const packByKb = new Map(pack.sources.map((s) => [s.kbSourceId, s]));
   for (const source of evidenceDoc.sources) {
     const packSource = packByKb.get(source.id);
     assert.ok(packSource, `pack must contain KB source "${source.id}"`);
     const packEvidenceIds = new Set(packSource.passages.map((p) => p.evidenceId));
     for (const passage of source.passages) {
-      if (passage.status !== 'source-supported') continue;
+      if (passage.status === 'implementation-proposal') continue;
       assert.ok(/#ev_\d{3}$/.test(passage.id),
-        `passage ${passage.id}: source-supported records must use the "<sourceId>#ev_NNN" id pattern`);
+        `passage ${passage.id}: a located (${passage.status}) record must use the "<sourceId>#ev_NNN" id pattern`);
       const evId = passage.provenance.evidenceId;
       assert.ok(packEvidenceIds.has(evId),
         `passage ${passage.id}: provenance.evidenceId "${evId}" is not present in the pack for source "${source.id}"`);

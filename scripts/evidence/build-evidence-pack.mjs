@@ -118,10 +118,16 @@ function buildPassageRecords(packSource, pack, fidelityIndex) {
     // placeholder for these passages before writing pack.json — this script only has to record
     // that fact in passageFidelity, never author or move any text itself.
     const passageFidelity = reviewFlags.includes(WITHHOLDING_FLAG) ? 'withheld' : 'paraphrase';
+    // Reviewer-gate fix-2: a passage the pack marks `source-supported` but the independent
+    // EP3-T5 audit flagged is a defective source claim, not a clean one — `status` is downgraded
+    // to `quarantined` here, at generation time, so the committed evidence.json and this script's
+    // own --check regeneration can never drift apart. A minted `implementation-proposal` sentinel
+    // never carries flags (see the loop appending it below), so it is untouched by this rule.
+    const status = passage.status === 'source-supported' && reviewFlags.length > 0 ? 'quarantined' : passage.status;
     records.push(orderKeys({
       id: passageId,
       sourceId: packSource.kbSourceId,
-      status: passage.status,
+      status,
       sourceLocator: orderKeys(passage.sourceLocator, SOURCE_LOCATOR_KEY_ORDER),
       // D-EP3-4: exactPassage is the paraphrase from RF's `summary`, never `quote`. This build
       // script depends on the vendor step having already stripped `quote`; the passageFidelity

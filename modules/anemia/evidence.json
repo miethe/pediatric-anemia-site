@@ -24,7 +24,7 @@
         {
           "id": "AAP2026_IDA#ev_001",
           "sourceId": "AAP2026_IDA",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Screening > Laboratory Screening (paragraph beginning 'Screening to identify children and adolescents with ID and IDA includes')",
             "page": null,
@@ -58,7 +58,7 @@
         {
           "id": "AAP2026_IDA#ev_002",
           "sourceId": "AAP2026_IDA",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Table 1 — 'Normal Hematologic Parameters in Infants, Children, and Adolescents by Age and Sex, From Age 9 Months to 18 Years' (ref 42), Hemoglobin / MCV / RDW rows; columns 6–24 mo, 2–6 y, 6–12 y, 12–<18 y (Females, Males)",
             "page": null,
@@ -94,7 +94,7 @@
         {
           "id": "AAP2026_IDA#ev_003",
           "sourceId": "AAP2026_IDA",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Diagnosis > Iron Studies (final sentence of paragraph reviewing SF thresholds, following WHO and ASH threshold discussion)",
             "page": null,
@@ -128,7 +128,7 @@
         {
           "id": "AAP2026_IDA#ev_004",
           "sourceId": "AAP2026_IDA",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Diagnosis > Iron Studies (paragraph beginning 'In most otherwise healthy children without evidence of acute infection or chronic disease')",
             "page": null,
@@ -164,7 +164,7 @@
         {
           "id": "AAP2026_IDA#ev_005",
           "sourceId": "AAP2026_IDA",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Diagnosis > Iron Studies (paragraph on soluble transferrin receptor); corroborated by Table 4 (sTfR1) row",
             "page": null,
@@ -200,7 +200,7 @@
         {
           "id": "AAP2026_IDA#ev_006",
           "sourceId": "AAP2026_IDA",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Laboratory Diagnosis of IDA > Complete Blood Cell Count (paragraph beginning 'The most valuable laboratory test'); Table 3 'Differential Diagnosis of Children With Microcytic Anemia'",
             "page": null,
@@ -234,7 +234,7 @@
         {
           "id": "AAP2026_IDA#ev_007",
           "sourceId": "AAP2026_IDA",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Treatment of Severe or Refractory IDA > Severe IDA (opening sentences)",
             "page": null,
@@ -316,7 +316,7 @@
         {
           "id": "WHO2024_HB#ev_001",
           "sourceId": "WHO2024_HB",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Executive summary, p.xi, Table 2 (Haemoglobin cutoffs to define anaemia in individuals and populations)",
             "page": "xi",
@@ -380,7 +380,7 @@
         {
           "id": "WHO2024_HB#ev_003",
           "sourceId": "WHO2024_HB",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Section 1 (What should be the haemoglobin cutoffs...), scope/definitions narrative, para 'Physiological, environmental, and genetic factors...'",
             "page": null,
@@ -414,7 +414,7 @@
         {
           "id": "WHO2024_HB#ev_004",
           "sourceId": "WHO2024_HB",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Executive summary, p.xii-xiii, Normative statement 2.a.1 (Elevation of residence) + Table 4 and equation footnote b",
             "page": "xii-xiii",
@@ -754,7 +754,7 @@
         {
           "id": "CDC2025_LEAD#ev_001",
           "sourceId": "CDC2025_LEAD",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Section 'Initial screening blood lead level' / heading 'If the patient's BLL is ≥ 3.5 micrograms per deciliter'",
             "page": null,
@@ -788,7 +788,7 @@
         {
           "id": "CDC2025_LEAD#ev_002",
           "sourceId": "CDC2025_LEAD",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Section 'Initial screening blood lead level', first paragraph",
             "page": null,
@@ -822,7 +822,7 @@
         {
           "id": "CDC2025_LEAD#ev_003",
           "sourceId": "CDC2025_LEAD",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Table 1 — 'Recommended schedule for obtaining a confirmatory venous sample'",
             "page": null,
@@ -992,7 +992,7 @@
         {
           "id": "FDA2026_CDS#ev_002",
           "sourceId": "FDA2026_CDS",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Section II (Background), Criterion (4) verbatim (p. 6); also Section IV(4), pp. 14-15",
             "page": "6",
@@ -1026,7 +1026,7 @@
         {
           "id": "FDA2026_CDS#ev_003",
           "sourceId": "FDA2026_CDS",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Section IV(3) (Interpretation of Criterion 3), pp. 10-11",
             "page": "10-11",
@@ -1060,7 +1060,7 @@
         {
           "id": "FDA2026_CDS#ev_004",
           "sourceId": "FDA2026_CDS",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Section IV(4)(a) (Interpretation of Criterion 4), p. 14",
             "page": "14",
@@ -1094,7 +1094,7 @@
         {
           "id": "FDA2026_CDS#ev_005",
           "sourceId": "FDA2026_CDS",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Section IV(4) (Interpretation of Criterion 4), p. 15",
             "page": "15",
@@ -1205,7 +1205,7 @@
         {
           "id": "BSH2020_G6PD#ev_002",
           "sourceId": "BSH2020_G6PD",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Page 6, 'Factors affecting clinical interpretation' (opening paragraph)",
             "page": "6",
@@ -1239,7 +1239,7 @@
         {
           "id": "BSH2020_G6PD#ev_003",
           "sourceId": "BSH2020_G6PD",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Page 6, 'Factors affecting clinical interpretation'; corroborated by Page 5, 'Recommendations: Laboratory diagnosis' (third bullet)",
             "page": "6",
@@ -1303,7 +1303,7 @@
         {
           "id": "BSH2020_G6PD#ev_005",
           "sourceId": "BSH2020_G6PD",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Page 3, Table I 'Classification of G6PD variants' (Class / Residual G6PD activity (% of normal))",
             "page": "3",
@@ -1337,7 +1337,7 @@
         {
           "id": "BSH2020_G6PD#ev_006",
           "sourceId": "BSH2020_G6PD",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Page 6, 'Normal values' (adult reference values paragraph)",
             "page": "6",
@@ -1371,7 +1371,7 @@
         {
           "id": "BSH2020_G6PD#ev_007",
           "sourceId": "BSH2020_G6PD",
-          "status": "source-supported",
+          "status": "quarantined",
           "sourceLocator": {
             "raw": "Page 6, 'Normal values' (newborn/premature paragraph)",
             "page": "6",

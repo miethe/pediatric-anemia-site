@@ -344,6 +344,13 @@ export async function validateModule(moduleId, rootDir) {
 
   const ruleIds = new Set();
   let rulesMissingSourcePassageId = 0;
+  // Reviewer-gate fix-5 (finding 3, scope-bounded): "a rule's sourcePassageId must resolve to a
+  // real passage record, and its status must be reported" — not just "the cited source has SOME
+  // passage." rulePassageStatusCounts tallies the RESOLVED passage's own `status` (not the rule's
+  // evidence[] citation) across all 91 rules, surfaced in validateModule's return value and in the
+  // console summary below, so a reviewer can see the actual source-supported/quarantined/
+  // implementation-proposal split this validator proved, at a glance.
+  const rulePassageStatusCounts = { 'source-supported': 0, quarantined: 0, 'implementation-proposal': 0, unresolved: 0 };
   for (const rule of rules) {
     const ruleLabel = rule.id ?? '<missing-id>';
     for (const schemaError of validate(ruleSchema, rule)) {
@@ -380,8 +387,12 @@ export async function validateModule(moduleId, rootDir) {
       const boundPassage = passageIndex.get(rule.sourcePassageId);
       if (!boundPassage) {
         errors.push(`${moduleId}/${rule.id}: sourcePassageId "${rule.sourcePassageId}" does not resolve to a known passage`);
+        rulePassageStatusCounts.unresolved += 1;
       } else if (boundPassage.status !== 'implementation-proposal' && !isBindableAsSourceSupported(boundPassage)) {
-        errors.push(`${moduleId}/${rule.id}: sourcePassageId "${rule.sourcePassageId}" is flagged (reviewFlags: ${JSON.stringify(boundPassage.reviewFlags ?? [])}) and cannot be bound as source-supported grounding (EP3-T5 binding rule)`);
+        errors.push(`${moduleId}/${rule.id}: sourcePassageId "${rule.sourcePassageId}" resolves to a passage with status "${boundPassage.status}" (reviewFlags: ${JSON.stringify(boundPassage.reviewFlags ?? [])}) and cannot be bound as source-supported grounding (EP3-T5 binding rule)`);
+        rulePassageStatusCounts[boundPassage.status] = (rulePassageStatusCounts[boundPassage.status] ?? 0) + 1;
+      } else {
+        rulePassageStatusCounts[boundPassage.status] = (rulePassageStatusCounts[boundPassage.status] ?? 0) + 1;
       }
     } else {
       rulesMissingSourcePassageId += 1;
@@ -437,6 +448,7 @@ export async function validateModule(moduleId, rootDir) {
     candidateCount: Object.keys(candidates).length,
     evidenceCount: evidenceIds.size,
     passageCount,
+    rulePassageStatusCounts,
   };
 }
 
@@ -464,5 +476,17 @@ if (isMain) {
       )
       .join(', ');
     console.log(`Validated modules: ${summary}.`);
+
+    // Reviewer-gate fix-5: report the RESOLVED sourcePassageId status split (not just "resolves to
+    // some passage") so a reviewer can see at a glance how many rules actually claim source-supported
+    // grounding versus falling back to a proposal sentinel.
+    for (const result of results) {
+      const c = result.rulePassageStatusCounts;
+      console.log(
+        `${result.moduleId}: rule sourcePassageId status split — ${c['source-supported']} source-supported, `
+        + `${c.quarantined} quarantined, ${c['implementation-proposal']} implementation-proposal`
+        + `${c.unresolved ? `, ${c.unresolved} unresolved` : ''}.`,
+      );
+    }
   }
 }

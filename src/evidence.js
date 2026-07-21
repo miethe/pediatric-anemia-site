@@ -84,16 +84,22 @@ export function passageApplicability(passage) {
  * EP3-T5 binding rule (safety-critical, fail-safe by construction): the SOLE predicate for
  * whether a passage may be used as source-supported grounding for a rule. A passage carrying ANY
  * `reviewFlags` entry — from the independent fidelity audit in
- * evidence-packs/rf-ev-001/fidelity-findings.json — must never be treated as source-backed; a
- * rule that would bind to it falls back to that source's `<sourceId>#implementation-proposal`
- * sentinel instead. Both EP-4's rule->passage binder and scripts/validate-kb.mjs call this one
- * definition rather than re-deriving the rule, so the two can never drift apart. A legacy-shape
- * passage missing `status`/`reviewFlags` entirely degrades to "not bindable" (never throws, never
- * defaults to permissive) — consistent with this module's other accessors' degrade-not-crash
- * posture (AC-WP3-RESIL).
+ * evidence-packs/rf-ev-001/fidelity-findings.json — is stamped `status: "quarantined"` by
+ * scripts/evidence/build-evidence-pack.mjs (reviewer-gate fix-2) and therefore already fails the
+ * `status !== 'source-supported'` check below; a rule that would bind to it falls back to that
+ * source's `<sourceId>#implementation-proposal` sentinel instead. Both EP-4's rule->passage binder
+ * and scripts/validate-kb.mjs call this one definition rather than re-deriving the rule, so the
+ * two can never drift apart.
+ *
+ * Fails CLOSED (reviewer-gate fix-3): `reviewFlags` must be an explicit array. A legacy-shape
+ * passage missing `status`/`reviewFlags` entirely, or carrying a non-array `reviewFlags`, is
+ * "not bindable" — never throws, and never defaults to permissive by treating "absent" the same
+ * as "explicitly empty." An un-audited `{status: "source-supported"}` record with no `reviewFlags`
+ * key at all must NOT be bindable just because it also isn't flagged; the fidelity audit having
+ * run at all is itself part of the claim.
  */
 export function isBindableAsSourceSupported(passage) {
   if (!passage || passage.status !== 'source-supported') return false;
-  const flags = Array.isArray(passage.reviewFlags) ? passage.reviewFlags : [];
-  return flags.length === 0;
+  if (!Array.isArray(passage.reviewFlags)) return false;
+  return passage.reviewFlags.length === 0;
 }

@@ -1,7 +1,6 @@
 {
   "schemaVersion": "1",
   "runId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
-  "bundlePath": "/Users/miethe/dev/homelab/development/research-foundry/runs/rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
   "upstreamFiles": [
     {
       "path": "run.json",

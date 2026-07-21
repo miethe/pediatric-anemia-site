@@ -64,28 +64,34 @@
 //
 //   sourcePassageId — D-EP3-6's fail-safe, non-optimistic binder. For each rule:
 //     1. primarySourceId = rule.evidence[0] ("the rule's first cited source").
-//     2. bindablePassages = passagesFor(primarySourceId).filter(isBindableAsSourceSupported) — the
-//        one shared predicate (src/evidence.js) that excludes every passage the EP3-T5 fidelity
-//        audit flagged. AAP2026_IDA is 7/7 flagged, so it contributes zero bindable passages: every
-//        one of the 32 rules citing it as evidence[0] falls to its proposal sentinel below,
-//        regardless of any keyword match — this is the correct, honest outcome (see EP3-T5).
-//     3. KEYWORD_MATCH_TABLE (below) is consulted: every entry whose `sourceId` equals
-//        primarySourceId AND whose `factSubstring` is a literal substring of
-//        JSON.stringify(rule.when) is a candidate match, restricted to passages actually in
-//        `bindablePassages` right now (so a passage that becomes flagged in a future audit
-//        silently stops being a candidate rather than needing this table edited).
-//     4. If the candidate matches name EXACTLY ONE DISTINCT passage id, sourcePassageId is that
-//        id (a source-supported binding). If they name zero or more than one, OR bindablePassages
-//        is empty, sourcePassageId falls back to `${primarySourceId}#implementation-proposal` —
-//        ambiguity and absence are treated identically: fail toward "not source-backed."
-//   KEYWORD_MATCH_TABLE is a small, hand-authored-once, mechanically-applied table — each entry's
-//   comment quotes the exact passage language that motivated it. It is deliberately conservative:
-//   generic/broad topic passages (e.g. BLOOD2022_PED_ANEMIA#ev_001's "morphology-first,
-//   reticulocyte-response" framework statement, or ev_003's reticulocyte-direction statement, both
-//   of which are thematically touched by dozens of unrelated rules) are NOT added, because binding
-//   them would overclaim rule-specific grounding for what is actually a source-level framework
-//   claim. "Expect a lot of fallbacks" (per the phase design record) is the intended outcome, not a
-//   defect in this table.
+//     2. REVIEWED_RULE_PASSAGE_MAP (below) is consulted, keyed by rule.id. It is the ONLY source
+//        of a source-supported binding this script is permitted to mint, and it is empty today.
+//     3. Every rule for which REVIEWED_RULE_PASSAGE_MAP has no entry falls back to
+//        `${primarySourceId}#implementation-proposal`. That is every one of the 91 rules as of
+//        this writing.
+//
+//   Reviewer-gate fix-1 (finding 1, HIGH) removed this script's earlier keyword/substring matcher
+//   entirely — it does not survive as a disabled code path, a commented-out table, or a "stricter"
+//   variant. That matcher bound `sourcePassageId` by testing whether a hand-picked fact-name
+//   substring appeared anywhere in `JSON.stringify(rule.when)`, with no polarity awareness (a fact
+//   inside a `not` condition matched identically to a fact the rule requires present) and no
+//   claim-level check that the passage's language actually supports the rule's specific threshold
+//   and output. `Q-NORMO-LOW-001` was bound to a marrow-replacement/multilineage-cytopenia passage
+//   solely because that fact name occurred inside a NEGATED branch of its `when` — the rule fires
+//   when multilineage cytopenia is ABSENT. A keyword hit is not the "unambiguous documented match"
+//   D-EP3-6 requires; inventing a rule-to-passage clinical-grounding claim mechanically is exactly
+//   what this codebase's guardrails forbid. There is no in-repo mechanism today that can verify a
+//   passage's prose actually supports a rule's complete condition and output — that is a human
+//   clinical-review task, not a string-matching one.
+//
+//   REVIEWED_RULE_PASSAGE_MAP is therefore the ONLY path to a source-supported binding, and it
+//   ships empty. Entries may be added later, but ONLY by hand, ONLY from an independently reviewed,
+//   human-attested rule->passage mapping (a named clinical reviewer confirming the passage's prose
+//   supports this rule's complete `when`/`output`) — never derived mechanically, never regenerated
+//   by re-running this script, and never populated from ARC/council-review or any other non-human-
+//   attested source (same posture as `clinicalApprovers`, D-4/AC-D4). Even an entry present in this
+//   map is bound only when `isBindableAsSourceSupported(passage)` also passes — a passage the
+//   EP3-T5 fidelity audit later quarantines stops being usable without editing this table.
 //
 // Usage:
 //   node scripts/evidence/backfill-rule-governance.mjs             writes rules.json + the mapping doc
@@ -122,15 +128,26 @@ const SAFETY_CLASS_BY_CATEGORY = {
   'adaptive-question': 'informational',
 };
 
-// See the header block above for the exact passage quotes motivating each entry.
-const KEYWORD_MATCH_TABLE = [
-  { sourceId: 'BLOOD2022_PED_ANEMIA', passageId: 'BLOOD2022_PED_ANEMIA#ev_005', factSubstring: 'multilineageCytopenia' },
-  { sourceId: 'BLOOD2022_PED_ANEMIA', passageId: 'BLOOD2022_PED_ANEMIA#ev_004', factSubstring: 'schistocytes' },
-  { sourceId: 'BLOOD2022_PED_ANEMIA', passageId: 'BLOOD2022_PED_ANEMIA#ev_004', factSubstring: 'spherocytes' },
-  { sourceId: 'CDC2025_LEAD', passageId: 'CDC2025_LEAD#ev_005', factSubstring: 'level45Plus' },
-  { sourceId: 'CDC2025_LEAD', passageId: 'CDC2025_LEAD#ev_005', factSubstring: 'level20to44' },
-  { sourceId: 'BSH2020_G6PD', passageId: 'BSH2020_G6PD#ev_004', factSubstring: 'Transfusion' },
-];
+// Reviewer-gate fix-1 (finding 1): the ONLY permitted source of a source-supported
+// `sourcePassageId` binding. Keyed by rule id -> passage id. SHIPS EMPTY.
+//
+// An entry may be added here ONLY when all of the following hold:
+//   1. A named human with clinical review authority has read the rule's complete `when`/`output`
+//      AND the passage's `exactPassage`, and confirmed the passage's language unambiguously
+//      supports the rule's specific threshold/logic/output — not merely a shared topic or fact
+//      name.
+//   2. That review is attested outside this file (this codebase has no clinical reviewer role
+//      today — see CLAUDE.md's hard guardrails and D-4/AC-D4) and the attestation is referenced
+//      in the commit that adds the entry.
+//   3. The entry is added by hand, in a commit whose message names the reviewer and the review
+//      artifact. It is NEVER derived by this script, by a keyword/substring match, by ARC/
+//      council-review output, or by any other mechanical process.
+// A rule with no entry here — which, as of this writing, is all 91 — falls back to its primary
+// source's `<sourceId>#implementation-proposal` sentinel (D-EP3-6). That is the honest, conservative
+// default, not a defect: "we do not claim this rule is source-backed" until a human says otherwise.
+const REVIEWED_RULE_PASSAGE_MAP = new Map([
+  // ruleId -> passageId. Empty pending independent clinical review (see the block comment above).
+]);
 
 const GOVERNED_KEY_ORDER = [
   'id', 'category', 'when', 'evidence', 'output',
@@ -140,6 +157,16 @@ const GOVERNED_KEY_ORDER = [
 
 async function loadJson(filePath) {
   return JSON.parse(await readFile(filePath, 'utf8'));
+}
+
+// Explicit codepoint comparator (mirrors scripts/evidence/build-evidence-pack.mjs's own):
+// `String.prototype.localeCompare` is locale-dependent, so it cannot back the byte-identical
+// determinism guarantee `--check` proves. `<`/`>` on strings compares UTF-16 code units, fixed
+// and environment-independent for the ASCII ids this file sorts.
+function compareCodepoints(a, b) {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
 }
 
 function computeSafetyClass(rule) {
@@ -156,41 +183,28 @@ function computeSafetyClass(rule) {
 /** Returns { sourcePassageId, reason } — see the D-EP3-6 binder walk-through in the header. */
 function computeSourcePassageId(rule) {
   const primarySourceId = rule.evidence[0];
-  const bindablePassages = passagesFor(primarySourceId).filter(isBindableAsSourceSupported);
   const fallback = `${primarySourceId}#implementation-proposal`;
 
-  if (bindablePassages.length === 0) {
+  const reviewedPassageId = REVIEWED_RULE_PASSAGE_MAP.get(rule.id);
+  if (reviewedPassageId === undefined) {
     return {
       sourcePassageId: fallback,
-      reason: `fallback: "${primarySourceId}" has zero bindable (unflagged source-supported) passages after the EP3-T5 fidelity audit`,
+      reason: 'fallback: no entry in REVIEWED_RULE_PASSAGE_MAP — no independently reviewed, human-attested rule->passage mapping exists for this rule (D-EP3-6 default)',
     };
   }
 
-  const whenText = JSON.stringify(rule.when);
-  const matched = new Map(); // passageId -> factSubstring that matched (for the reason column)
-  for (const entry of KEYWORD_MATCH_TABLE) {
-    if (entry.sourceId !== primarySourceId) continue;
-    if (!whenText.includes(entry.factSubstring)) continue;
-    if (!bindablePassages.some((passage) => passage.id === entry.passageId)) continue;
-    matched.set(entry.passageId, entry.factSubstring);
-  }
-
-  if (matched.size === 1) {
-    const [[passageId, factSubstring]] = matched;
-    return {
-      sourcePassageId: passageId,
-      reason: `source-supported: deterministic keyword match — rule's "when" condition references "${factSubstring}" (KEYWORD_MATCH_TABLE)`,
-    };
-  }
-  if (matched.size > 1) {
+  const bindablePassages = passagesFor(primarySourceId).filter(isBindableAsSourceSupported);
+  const reviewedPassage = bindablePassages.find((passage) => passage.id === reviewedPassageId);
+  if (!reviewedPassage) {
     return {
       sourcePassageId: fallback,
-      reason: `fallback: ambiguous keyword match against ${[...matched.keys()].join(', ')} — falling back per D-EP3-6`,
+      reason: `fallback: REVIEWED_RULE_PASSAGE_MAP names "${reviewedPassageId}", but it is not (or is no longer) a bindable source-supported passage for "${primarySourceId}" (EP3-T5 quarantine, unknown id, or wrong source) — falling back per D-EP3-6`,
     };
   }
+
   return {
-    sourcePassageId: fallback,
-    reason: `fallback: no KEYWORD_MATCH_TABLE entry for "${primarySourceId}" matched this rule's "when" condition`,
+    sourcePassageId: reviewedPassageId,
+    reason: `source-supported: independently reviewed, human-attested mapping (REVIEWED_RULE_PASSAGE_MAP)`,
   };
 }
 
@@ -263,10 +277,24 @@ function buildMappingDoc(mappingRows) {
   lines.push('');
   lines.push('Generated by `scripts/evidence/backfill-rule-governance.mjs` — do not hand-edit; re-run the');
   lines.push('script to regenerate. Shows, for every rule, which `sourcePassageId` it was bound to and why');
-  lines.push('(D-EP3-6 fail-safe binder). "source-supported" means the passage traces to a located passage');
-  lines.push('in the cited source and is unflagged by the EP3-T5 fidelity audit; "implementation-proposal"');
-  lines.push('means the rule fell back to its cited source\'s minted sentinel — the honest, conservative');
-  lines.push('default whenever the mapping is not mechanically unambiguous.');
+  lines.push('(D-EP3-6 fail-safe binder).');
+  lines.push('');
+  lines.push('**Reviewer-gate fix-1 (finding 1, HIGH):** this script no longer contains a keyword/substring');
+  lines.push('matcher. The earlier version bound `sourcePassageId` by testing whether a hand-picked fact-name');
+  lines.push('substring appeared anywhere in `JSON.stringify(rule.when)` — with no polarity awareness (a fact');
+  lines.push('inside a negated branch matched identically to one the rule requires present) and no check that');
+  lines.push('the passage\'s actual language supports the rule\'s specific threshold and output. That produced');
+  lines.push('provably wrong bindings (`Q-NORMO-LOW-001` bound to a marrow-replacement passage because that');
+  lines.push('fact name appeared inside a `not` condition). A correct rule->passage mapping requires human');
+  lines.push('clinical review that has not happened; inventing one mechanically is exactly what this');
+  lines.push('codebase\'s guardrails forbid — so that authority was removed, not "fixed."');
+  lines.push('');
+  lines.push('The ONLY path to "source-supported" now is `REVIEWED_RULE_PASSAGE_MAP`, a hand-maintained,');
+  lines.push('currently-EMPTY table in the script itself. An entry may be added only from an independently');
+  lines.push('reviewed, human-attested mapping — never derived mechanically. Every rule without an entry');
+  lines.push('falls back to its cited source\'s minted `implementation-proposal` sentinel: the honest,');
+  lines.push('conservative default meaning "no source-supported clinical-grounding claim is made for this');
+  lines.push('rule." As of this writing that is all 91 rules.');
   lines.push('');
   lines.push(`**Split: ${supportedCount} source-supported / ${proposalCount} implementation-proposal (of ${mappingRows.length} rules).**`);
   lines.push('');
@@ -274,7 +302,7 @@ function buildMappingDoc(mappingRows) {
   lines.push('');
   lines.push('| Source | source-supported | implementation-proposal |');
   lines.push('|---|---|---|');
-  for (const [sourceId, counts] of [...bySource.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+  for (const [sourceId, counts] of [...bySource.entries()].sort(([a], [b]) => compareCodepoints(a, b))) {
     lines.push(`| ${sourceId} | ${counts.supported} | ${counts.proposal} |`);
   }
   lines.push('');
@@ -330,21 +358,34 @@ async function main() {
   const rules = await loadJson(RULES_PATH);
   const { governed, mappingRows } = await buildGovernedRules(rules);
   const nextSerialised = serializeRules(governed);
+  const nextMappingDoc = buildMappingDoc(mappingRows);
 
   if (check) {
-    const current = await readFile(RULES_PATH, 'utf8');
-    if (current === nextSerialised) {
-      console.log(`backfill-rule-governance --check: ${path.relative(REPO_ROOT, RULES_PATH)} matches regenerated output (${governed.length} rules).`);
-      return;
+    // Reviewer-gate fix-4: --check must cover the generated mapping document too, not only
+    // rules.json — a hand-edited or stale ep4-rule-passage-map.md would otherwise silently drift
+    // from the actual bindings without failing this gate.
+    const targets = [
+      { path: RULES_PATH, label: 'rules.json', next: nextSerialised, count: `${governed.length} rules` },
+      { path: MAPPING_DOC_PATH, label: 'ep4-rule-passage-map.md', next: nextMappingDoc, count: `${mappingRows.length} mapping rows` },
+    ];
+    let allMatch = true;
+    for (const target of targets) {
+      const current = await readFile(target.path, 'utf8');
+      if (current === target.next) {
+        console.log(`backfill-rule-governance --check: ${path.relative(REPO_ROOT, target.path)} matches regenerated output (${target.count}).`);
+        continue;
+      }
+      allMatch = false;
+      const diff = firstDiffLines(current, target.next);
+      console.error(`backfill-rule-governance --check: ${path.relative(REPO_ROOT, target.path)} differs from regenerated output.`);
+      console.error(diff ? `First differing hunks:\n${diff}` : '(no line-level diff produced; check byte lengths)');
     }
-    const diff = firstDiffLines(current, nextSerialised);
-    console.error(`backfill-rule-governance --check: ${path.relative(REPO_ROOT, RULES_PATH)} differs from regenerated output.`);
-    console.error(diff ? `First differing hunks:\n${diff}` : '(no line-level diff produced; check byte lengths)');
-    process.exit(1);
+    if (!allMatch) process.exit(1);
+    return;
   }
 
   await writeFile(RULES_PATH, nextSerialised, 'utf8');
-  await writeFile(MAPPING_DOC_PATH, buildMappingDoc(mappingRows), 'utf8');
+  await writeFile(MAPPING_DOC_PATH, nextMappingDoc, 'utf8');
 
   const supportedCount = mappingRows.filter((row) => row.status === 'source-supported').length;
   console.log(

@@ -38,7 +38,18 @@
           "items": {
             "type": "object",
             "required": ["ruleId", "matched"],
-            "properties": { "ruleId": { "type": "string" }, "matched": { "type": "boolean" } }
+            "properties": {
+              "ruleId": { "type": "string" },
+              "matched": { "type": "boolean" },
+              "sourcePassageId": {
+                "type": ["string", "null"],
+                "description": "Reviewer-gate fix-5: the rule's raw sourcePassageId pointer, carried through unresolved by src/ruleEngine.js. Null on a rule with no pointer."
+              },
+              "sourcePassageStatus": {
+                "type": ["string", "null"],
+                "description": "Reviewer-gate fix-5: src/engine.js's resolution of sourcePassageId against modules/anemia/evidence.json — 'source-supported' | 'quarantined' | 'implementation-proposal', or null if the pointer does not resolve."
+              }
+            }
           }
         }
       }

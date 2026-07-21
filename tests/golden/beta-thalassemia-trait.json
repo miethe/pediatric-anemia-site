@@ -118,367 +118,549 @@
     "ruleAudit": [
       {
         "ruleId": "SCOPE-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "WHO2024_HB#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "SCOPE-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "WHO2024_HB#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "SCOPE-003",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ALERT-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ALERT-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ALERT-003",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ALERT-004",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ALERT-005",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ALERT-006",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ALERT-007",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ALERT-008",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ALERT-009",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "NOTE-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "NOTE-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "NOTE-003",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "NOTE-004",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BSH2020_G6PD#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "NOTE-005",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "NOTE-006",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "WHO2024_HB#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ID-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ID-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ID-003",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ID-004",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ID-005",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ID-006",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "AINF-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "AINF-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "AINF-003",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "AINF-004",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "THAL-001",
-        "matched": true
+        "matched": true,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "THAL-002",
-        "matched": true
+        "matched": true,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "THAL-BETA-001",
-        "matched": true
+        "matched": true,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "THAL-BETA-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "THAL-ALPHA-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "THAL-ALPHA-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "LEAD-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "LEAD-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "LEAD-003",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "SID-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "SID-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "LOSS-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "LOSS-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "LOSS-003",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "HEM-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "HEM-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "HEM-003",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "AIHA-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "HS-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "HS-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "G6PD-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BSH2020_G6PD#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "G6PD-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "G6PD-003",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BSH2020_G6PD#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "TMA-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "SICKLE-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "MAL-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "REN-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "TEC-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "PARVO-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "MARROW-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "MARROW-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "MARROW-003",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "MEG-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "MEG-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "COPPER-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "MACRO-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "MACRO-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "MACRO-003",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "MACRO-004",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "IMF-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "IMF-DBA-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "IMF-FANCONI-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "MIX-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "MIX-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "IRIDA-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-003",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-004",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-005",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-MICRO-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-MICRO-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-MICRO-003",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-MICRO-004",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-MICRO-005",
-        "matched": true
+        "matched": true,
+        "sourcePassageId": "AAP2026_IDA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-NORMO-HIGH-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-NORMO-HIGH-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-NORMO-LOW-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-MACRO-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-MACRO-002",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-SMEAR-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "Q-CYT-001",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "BLOOD2022_PED_ANEMIA#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       },
       {
         "ruleId": "ALERT-LEAD-CAPILLARY",
-        "matched": false
+        "matched": false,
+        "sourcePassageId": "CDC2025_LEAD#implementation-proposal",
+        "sourcePassageStatus": "implementation-proposal"
       }
     ],
     "unitsAssumed": [

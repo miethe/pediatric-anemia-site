@@ -48,6 +48,15 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const OUTPUT_TYPES = ['alert', 'candidate', 'note', 'question'];
 
+// Explicit codepoint comparator (reviewer-gate fix-4: `String.prototype.localeCompare` is
+// locale-dependent, so it cannot back a deterministic report — see
+// scripts/evidence/build-evidence-pack.mjs's own comment on the same point).
+function compareCodepoints(a, b) {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+}
+
 // Per decision D1 (.claude/progress/wave0-safety-foundation/phase-0.5-progress.md):
 // the coverage target is every reachable rule in modules/anemia/rules.json
 // (91), not a reconstructed "49-rule migration subset" from SPIKE-003 — that
@@ -272,7 +281,7 @@ function formatHuman(coverage) {
 
   for (const [type, rulesOfType] of byType) {
     if (rulesOfType.length === 0) continue;
-    rulesOfType.sort((a, b) => a.id.localeCompare(b.id));
+    rulesOfType.sort((a, b) => compareCodepoints(a.id, b.id));
     const witnessedCount = rulesOfType.filter((rule) => rule.witnessedBy.length > 0).length;
     lines.push(`\n${type.toUpperCase()} rules: ${witnessedCount}/${rulesOfType.length} witnessed`);
     for (const rule of rulesOfType) {

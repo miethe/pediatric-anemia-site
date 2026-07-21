@@ -1,6 +1,7 @@
 import { runRules } from './ruleEngine.js';
 import { getModule } from './modules/registry.js';
 import { prepareUnitValidatedInput } from './units.js';
+import { passageById } from './evidence.js';
 
 const CORE_LIMITATIONS = [
   'This output is a deterministic clinical decision-support reference, not a diagnosis, treatment order, or substitute for examination and specialist judgment.',
@@ -40,7 +41,18 @@ export function assess(input, moduleId, rules, candidates) {
     provenance: {
       evaluatedRuleCount: ruleOutput.audit.length,
       matchedRuleIds: ruleOutput.audit.filter((entry) => entry.matched).map((entry) => entry.ruleId),
-      ruleAudit: ruleOutput.audit,
+      // Reviewer-gate fix-5 (finding 3, scope-bounded): additive per-rule passage provenance.
+      // ruleEngine.js only carries the raw `sourcePassageId` pointer through (it does not load
+      // src/evidence.js); this is where that pointer gets resolved to the passage's own `status`
+      // (source-supported / quarantined / implementation-proposal / null if unresolved), so a
+      // consumer of this audit trail can see not just THAT a rule cites a passage but WHAT KIND of
+      // grounding claim it is, without a second lookup. Out of scope for this fix: candidate-level
+      // passage pointers and SPA/algorithm-explorer rendering of this field (see the reviewer-gate
+      // fix note) — those remain follow-up work.
+      ruleAudit: ruleOutput.audit.map((entry) => ({
+        ...entry,
+        sourcePassageStatus: passageById(entry.sourcePassageId)?.status ?? null,
+      })),
       unitsAssumed,
     },
   };

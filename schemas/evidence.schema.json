@@ -80,8 +80,8 @@
           "description": "Must equal the `id` of the enclosing source record. (This schema validates the passage in isolation and cannot cross-check the parent; that equality is enforced by scripts/evidence/build-evidence-pack.mjs and tests/evidence-passages.test.mjs.)"
         },
         "status": {
-          "enum": ["source-supported", "implementation-proposal"],
-          "description": "`source-supported` traces to a located passage in the cited source. `implementation-proposal` is the explicit minted sentinel (D-EP3-3) — exactly one per source."
+          "enum": ["source-supported", "quarantined", "implementation-proposal"],
+          "description": "`source-supported` means located AND carrying zero `reviewFlags` (reviewer-gate fix-2). `quarantined` means a passage was located, but the independent EP3-T5 fidelity audit found a defect (a non-empty `reviewFlags`) that prevents it from grounding a clinical claim — it is a defective source claim, not an implementation proposal, and the two must not be conflated: a proposal never claimed a located passage, a quarantined record did and that claim did not hold up. `implementation-proposal` is the explicit minted sentinel (D-EP3-3) — exactly one per source."
         },
         "sourceLocator": { "$ref": "#/$defs/sourceLocator" },
         "exactPassage": {
@@ -103,7 +103,7 @@
               "near-verbatim-span-pending-rights"
             ]
           },
-          "description": "EP3-T5: zero or more independent-audit fidelity flags naming a specific way this passage over- or under-claims relative to its located source passage. Closed enum matching evidence-packs/rf-ev-001/fidelity-findings.json's `flagSemantics` keys — nothing outside that file may add a flag here. Empty array on a clean record. ANY non-empty value here blocks source-supported binding — see src/evidence.js#isBindableAsSourceSupported, the single shared predicate EP-4's rule->passage binder and scripts/validate-kb.mjs both call. Flags only suppress a claim; they never add or strengthen one."
+          "description": "EP3-T5: zero or more independent-audit fidelity flags naming a specific way this passage over- or under-claims relative to its located source passage. Closed enum matching evidence-packs/rf-ev-001/fidelity-findings.json's `flagSemantics` keys — nothing outside that file may add a flag here. Empty array on a clean record. ANY non-empty value here means `status` MUST be `quarantined` (reviewer-gate fix-2, enforced by the allOf below) and blocks source-supported binding — see src/evidence.js#isBindableAsSourceSupported, the single shared predicate EP-4's rule->passage binder and scripts/validate-kb.mjs both call. Flags only suppress a claim; they never add or strengthen one."
         },
         "reviewFindingIds": {
           "type": "array",
@@ -176,6 +176,32 @@
             "type": "object",
             "required": ["reviewFlags"],
             "properties": { "reviewFlags": { "contains": { "const": "near-verbatim-span-pending-rights" } } }
+          }
+        },
+        {
+          "description": "Reviewer-gate fix-2: `source-supported` now strictly means located AND unflagged — a record cannot declare itself source-supported while carrying an audit flag.",
+          "if": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "source-supported" } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["reviewFlags"],
+            "properties": { "reviewFlags": { "maxItems": 0 } }
+          }
+        },
+        {
+          "description": "Reviewer-gate fix-2: the converse — any non-empty reviewFlags forces status to quarantined, so a flagged record can never still read as source-supported or as an implementation-proposal.",
+          "if": {
+            "type": "object",
+            "required": ["reviewFlags"],
+            "properties": { "reviewFlags": { "minItems": 1 } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "quarantined" } }
           }
         }
       ]

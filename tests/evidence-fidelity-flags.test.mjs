@@ -77,21 +77,51 @@ test('validateFidelityFindings catches a passage carrying reviewFlags not named 
     `expected a hand-editing-drift error naming ${clean.id}`);
 });
 
-test('a flagged passage fails isBindableAsSourceSupported; a clean one passes', () => {
-  const flagged = allPassages.find((p) => p.reviewFlags.length > 0 && p.status === 'source-supported');
+test('a flagged (quarantined) passage fails isBindableAsSourceSupported; a clean source-supported one passes', () => {
+  // Reviewer-gate fix-2: a passage with non-empty reviewFlags is stamped status "quarantined" by
+  // scripts/evidence/build-evidence-pack.mjs, never "source-supported" — so the fixture no longer
+  // contains a flagged record claiming source-supported at all; that self-contradiction is exactly
+  // what fix-2 removed.
+  const quarantined = allPassages.find((p) => p.reviewFlags.length > 0 && p.status === 'quarantined');
   const clean = allPassages.find((p) => p.reviewFlags.length === 0 && p.status === 'source-supported');
-  assert.ok(flagged, 'fixture must contain at least one flagged source-supported passage');
+  assert.ok(quarantined, 'fixture must contain at least one quarantined passage');
   assert.ok(clean, 'fixture must contain at least one clean source-supported passage');
-  assert.equal(isBindableAsSourceSupported(flagged), false, `flagged passage ${flagged.id} must not be bindable`);
+  assert.equal(isBindableAsSourceSupported(quarantined), false, `quarantined passage ${quarantined.id} must not be bindable`);
   assert.equal(isBindableAsSourceSupported(clean), true, `clean passage ${clean.id} must be bindable`);
 });
 
-test('isBindableAsSourceSupported degrades to false (never throws) on a legacy-shape or proposal-sentinel passage', () => {
+test('no passage is simultaneously status "source-supported" and carrying a non-empty reviewFlags (the fix-2 invariant)', () => {
+  for (const passage of allPassages) {
+    if (passage.status === 'source-supported') {
+      assert.equal(passage.reviewFlags.length, 0, `${passage.id}: a source-supported record must never carry reviewFlags`);
+    }
+    if (passage.reviewFlags.length > 0) {
+      assert.equal(passage.status, 'quarantined', `${passage.id}: any flagged record must be quarantined, not source-supported or implementation-proposal`);
+    }
+  }
+});
+
+test('isBindableAsSourceSupported fails CLOSED (never throws) on a legacy-shape, malformed, or proposal-sentinel passage', () => {
+  // Reviewer-gate fix-3: the earlier version of this test was misnamed — it asserted `true` for
+  // `{status: 'source-supported'}` with no `reviewFlags` key at all, i.e. it asserted the OPPOSITE
+  // of "degrades to false." An un-audited record must not be bindable just because it also isn't
+  // flagged; the fidelity audit having actually run is itself part of the claim. This test now
+  // asserts the real fail-closed behavior and adds a genuinely negative case for a malformed
+  // (non-array) `reviewFlags`.
   assert.equal(isBindableAsSourceSupported(null), false);
   assert.equal(isBindableAsSourceSupported(undefined), false);
-  assert.equal(isBindableAsSourceSupported({ status: 'source-supported' }), true, 'missing reviewFlags degrades to "no flags", not "unbindable" -- but status alone is not enough to fabricate a bind decision beyond that');
+  assert.equal(isBindableAsSourceSupported({ status: 'source-supported' }), false,
+    'a record missing reviewFlags entirely must NOT be bindable — absence of the audit is not evidence of a clean audit');
+  assert.equal(isBindableAsSourceSupported({ status: 'source-supported', reviewFlags: null }), false,
+    'a null reviewFlags must fail closed, not be coerced to "empty"');
+  assert.equal(isBindableAsSourceSupported({ status: 'source-supported', reviewFlags: 'none' }), false,
+    'a non-array reviewFlags must fail closed, not be coerced to "empty"');
   assert.equal(isBindableAsSourceSupported({ status: 'implementation-proposal', reviewFlags: [] }), false,
     'a sentinel is never itself "source-supported grounding"');
+  assert.equal(isBindableAsSourceSupported({ status: 'quarantined', reviewFlags: [] }), false,
+    'quarantined status alone disqualifies a passage, independent of reviewFlags');
+  assert.equal(isBindableAsSourceSupported({ status: 'source-supported', reviewFlags: [] }), true,
+    'the predicate must still report true for a genuinely clean, explicitly-audited record, or it would be vacuous');
 });
 
 test('every near-verbatim-span-pending-rights record has passageFidelity "withheld" and exactPassage equal to the placeholder', () => {
