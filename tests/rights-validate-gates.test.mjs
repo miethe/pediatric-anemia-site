@@ -14,7 +14,9 @@
 //
 // tests/rights-validate-gates.test.mjs also covers EPR1-T2's (FR-WP1-02/03) 5th gate,
 // `checkKbJsonFileCoverage`, plus scripts/validate-kb.mjs's exported `resolveRightsRecordsForIdentifier`
-// — the R-P3 seam helper EP-R2's EPR2-T5 reuses unmodified.
+// — the R-P3 seam helper EP-R2's EPR2-T5 reuses unmodified — and EPR2-T5's own call site,
+// `validateSourceRightsCoverage` (FR-WP2-06): every evidence.json source must resolve to >=1 real
+// rights record via that same unmodified helper.
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -33,7 +35,7 @@ import {
   GATES,
   runAllGates,
 } from '../scripts/validate-rights.mjs';
-import { resolveRightsRecordsForIdentifier } from '../scripts/validate-kb.mjs';
+import { resolveRightsRecordsForIdentifier, validateSourceRightsCoverage } from '../scripts/validate-kb.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -488,4 +490,57 @@ test('loadRightsContext: two loads of the unchanged real substrate produce deep-
   assert.deepEqual(first.kbJsonFileArtifacts, second.kbJsonFileArtifacts);
   assert.equal(first.asOf, null);
   assert.equal(second.asOf, null);
+});
+
+// --- scripts/validate-kb.mjs: validateSourceRightsCoverage (EPR2-T5, R-P3 seam CONSUMER, FR-WP2-06) --
+
+test('validateSourceRightsCoverage: a source with a resolving evidence_source_id ledger entry passes', () => {
+  const evidenceData = { sources: [{ id: 'AAP2026_IDA' }] };
+  const rightsLedger = { entries: [{ clinical_identifier_type: 'evidence_source_id', clinical_identifier: 'AAP2026_IDA', rights_record_id: 'RR-A' }] };
+  const rightsRecords = { records: [{ rights_record_id: 'RR-A' }] };
+  const errors = validateSourceRightsCoverage(evidenceData, 'anemia', { rightsLedger, rightsRecords });
+  assert.deepEqual(errors, []);
+});
+
+test('validateSourceRightsCoverage: FAILS CLOSED — a source with no ledger entry at all, naming the source id', () => {
+  const evidenceData = { sources: [{ id: 'AAP2026_IDA' }, { id: 'UNCOVERED_SOURCE' }] };
+  const rightsLedger = { entries: [{ clinical_identifier_type: 'evidence_source_id', clinical_identifier: 'AAP2026_IDA', rights_record_id: 'RR-A' }] };
+  const rightsRecords = { records: [{ rights_record_id: 'RR-A' }] };
+  const errors = validateSourceRightsCoverage(evidenceData, 'anemia', { rightsLedger, rightsRecords });
+  assert.ok(
+    errors.some((e) => e.includes('UNCOVERED_SOURCE') && e.includes('no rights/rights-ledger.json entry resolves')),
+    errors.join('\n'),
+  );
+});
+
+test('validateSourceRightsCoverage: FAILS CLOSED — a ledger entry present but its rights_record_id is dangling', () => {
+  const evidenceData = { sources: [{ id: 'AAP2026_IDA' }] };
+  const rightsLedger = { entries: [{ clinical_identifier_type: 'evidence_source_id', clinical_identifier: 'AAP2026_IDA', rights_record_id: 'RR-MISSING' }] };
+  const rightsRecords = { records: [] };
+  const errors = validateSourceRightsCoverage(evidenceData, 'anemia', { rightsLedger, rightsRecords });
+  assert.ok(errors.some((e) => e.includes('references unknown rights_record_id "RR-MISSING"')), errors.join('\n'));
+  assert.ok(errors.some((e) => e.includes('AAP2026_IDA') && e.includes('no rights/rights-ledger.json entry resolves')), errors.join('\n'));
+});
+
+test('validateSourceRightsCoverage: a source with no id is skipped (already reported by the schema check)', () => {
+  const evidenceData = { sources: [{}] };
+  const errors = validateSourceRightsCoverage(evidenceData, 'anemia', { rightsLedger: { entries: [] }, rightsRecords: { records: [] } });
+  assert.deepEqual(errors, []);
+});
+
+test('validateSourceRightsCoverage: D7 — a resolving record at overall_status "UNKNOWN" (never read by this gate) still passes', () => {
+  const evidenceData = { sources: [{ id: 'AAP2026_IDA' }] };
+  const rightsLedger = { entries: [{ clinical_identifier_type: 'evidence_source_id', clinical_identifier: 'AAP2026_IDA', rights_record_id: 'RR-A' }] };
+  const rightsRecords = { records: [{ rights_record_id: 'RR-A', overall_status: 'UNKNOWN' }] };
+  const errors = validateSourceRightsCoverage(evidenceData, 'anemia', { rightsLedger, rightsRecords });
+  assert.deepEqual(errors, []);
+});
+
+test('validateSourceRightsCoverage: the real substrate resolves all 6 modules/anemia evidence.json sources', async () => {
+  const evidenceData = JSON.parse(await readFile(path.join(REPO_ROOT, 'modules', 'anemia', 'evidence.json'), 'utf8'));
+  const rightsLedger = JSON.parse(await readFile(path.join(REPO_ROOT, 'rights', 'rights-ledger.json'), 'utf8'));
+  const rightsRecords = JSON.parse(await readFile(path.join(REPO_ROOT, 'rights', 'rights-records.json'), 'utf8'));
+  assert.equal(evidenceData.sources.length, 6, 'expected 6 sources in the real modules/anemia/evidence.json');
+  const errors = validateSourceRightsCoverage(evidenceData, 'anemia', { rightsLedger, rightsRecords });
+  assert.deepEqual(errors, [], errors.join('\n'));
 });
