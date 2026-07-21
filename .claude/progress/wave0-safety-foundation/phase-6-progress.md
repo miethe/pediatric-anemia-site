@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 5
-completed_tasks: 3
+completed_tasks: 4
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -90,7 +90,7 @@ tasks:
     as executable fixtures against the real engine. This phase owns the conversion;
     arc-clinical-council-adoption-v1.md P4-T1 consumes these fixtures rather than
     re-deriving them.
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -100,6 +100,12 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: medium
+  started: '2026-07-21T15:30:00Z'
+  completed: '2026-07-21T15:55:00Z'
+  evidence:
+  - test: tests/hazard-control-matrix.test.mjs
+  - note: gap-fill not re-derivation; DM-HEME-002 regression pinned in testMarkers;
+      zero-production-callers check made recursive + server.mjs
 - id: EP6-T5
   description: 'Dangerous-miss adversarial review: ''what would this engine miss that
     harms a child?'' Independent adversarial review of EP6-T4''s fixtures plus the
@@ -162,7 +168,7 @@ files_modified:
 - scripts/mutation-run.mjs
 - tests/dangerous-miss.test.mjs
 updated: '2026-07-21'
-progress: 60
+progress: 80
 ---
 
 # wave0-safety-foundation - Phase 6: Adversarial Validation Corpus

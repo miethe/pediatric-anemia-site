@@ -1,5 +1,5 @@
 {
-  "measuredAt": "2026-07-21T15:22:45.470Z",
+  "measuredAt": "2026-07-21T15:35:13.905Z",
   "kbVersion": "0.1.0-2026-07-15",
   "scopeNote": "Mutation score = killed / viable mutants from this runner's finite hand-enumerated operator set over rules.json, facts.anemia.js and ranges.js. It measures TEST-SUITE KILL COVERAGE ONLY. It is not evidence of clinical validity, diagnostic performance, KB correctness, or regulatory status, and defect classes outside operatorInventory are unmeasured by construction.",
   "victimTestCommand": "node --test tests/witness/corpus.test.mjs tests/witness/alerts.test.mjs tests/engine.test.mjs tests/dangerous-miss-scenarios.test.mjs tests/hazard-control-matrix.test.mjs tests/tristate-safety-invariant.test.mjs tests/rule-coverage.test.mjs tests/candidate-governance.test.mjs tests/boundary.test.mjs tests/property.test.mjs",

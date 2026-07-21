@@ -65,7 +65,12 @@ const BASELINE_PATH = path.join(REPO_ROOT, 'tests/mutation-baseline.json');
 // docs/safety/hazard-control-matrix.json. An incomplete sandbox would have made EVERY mutant look
 // "killed" for the wrong reason (the unmutated baseline itself fails) -- the single most dangerous
 // false-positive this runner could produce, and exactly why the self-check below exists.
-const SANDBOX_ENTRIES = ['src', 'modules', 'scripts', 'tests', 'schemas', 'examples', 'docs', 'evidence-packs', 'package.json'];
+// EP6-T4: 'server.mjs' added because tests/hazard-control-matrix.test.mjs (a VICTIM_TEST_FILES
+// entry below) now reads it directly (R1 re-verification of the local-applicability
+// zero-production-callers claim, extended to cover the REST API entrypoint alongside src/). Without
+// it here, that read ENOENTs inside every sandbox copy and the fidelity self-check below fails for
+// the wrong reason (a missing sandboxed file, not a real mutant).
+const SANDBOX_ENTRIES = ['src', 'modules', 'scripts', 'tests', 'schemas', 'examples', 'docs', 'evidence-packs', 'package.json', 'server.mjs'];
 
 // Targeted victim-test subset (NOT the whole suite -- see the runtime-budget note in the task
 // brief). Chosen to cover, between them, every layer a rules.json/facts.anemia.js/ranges.js defect
