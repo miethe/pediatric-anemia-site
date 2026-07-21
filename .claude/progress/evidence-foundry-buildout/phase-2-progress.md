@@ -113,7 +113,7 @@ tasks:
     model_effort: "extended"
 
   - id: "P2-GATE1"
-    description: "task-completion-validator gate: verify Phase 2 exit gate — 15/15 invariant tests pass; non-'verified' bundle refused; inspect/verify execute against the fixture."
+    description: "task-completion-validator gate: verify Phase 2 exit gate — 15/15 invariant tests pass; non-'verified' bundle refused; inspect/verify execute against the fixture. Scope note: validates P2-T1..T8 build output only; karen milestone sign-off (P2-GATE2) is a separate, subsequent gate and is out of P2-GATE1's own acceptance scope — its absence at P2-GATE1 time is expected, not a P2-GATE1 finding."
     status: "pending"
     assigned_to: ["task-completion-validator"]
     dependencies: ["P2-T1", "P2-T2", "P2-T3", "P2-T4", "P2-T5", "P2-T6", "P2-T7", "P2-T8"]
@@ -151,7 +151,7 @@ success_criteria: [
   { id: "SC-2", description: "A seeded non-'verified' bundle produces a non-zero exit and zero output files", status: "pending" },
   { id: "SC-3", description: "Zero network calls and zero generative-model calls occur in any verb (test-enforced)", status: "pending" },
   { id: "SC-4", description: "runs/<RUN>/ is never mutated by any verb (test-enforced)", status: "pending" },
-  { id: "SC-5", description: "karen milestone sign-off recorded", status: "pending" }
+  { id: "SC-5", description: "karen milestone sign-off recorded (P2-GATE2 deliverable, validated after P2-GATE1 passes — not part of P2-GATE1's own acceptance scope)", status: "pending" }
 ]
 
 files_modified: [
