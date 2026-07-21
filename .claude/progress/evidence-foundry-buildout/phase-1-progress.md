@@ -9,7 +9,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundr
 execution_model: batch-parallel
 phase: 1
 title: 'Evidence Foundry Buildout — Phase 1: Foundation & Fixtures'
-status: in_progress
+status: completed
 started: 2026-07-21
 completed: null
 commit_refs: []
@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 8
-completed_tasks: 7
+completed_tasks: 8
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -93,22 +93,22 @@ tasks:
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
-  note: Verified pre-existing implementation (Direction 1 of docs/project_plans/design-specs/evidence-dual-source-unification.md,
+  note: 'Verified pre-existing implementation (Direction 1 of docs/project_plans/design-specs/evidence-dual-source-unification.md,
     landed in commit 306af3a) — src/evidence.js now imports modules/anemia/evidence.json
-    via the `with { type: 'json' }` attribute (same pattern as modules/anemia/ranges.js)
+    via the `with { type: "json" }` attribute (same pattern as modules/anemia/ranges.js)
     and reshapes evidenceData.sources into the EVIDENCE id-keyed object; no hand-authored
-    evidence content remains in src/evidence.js. scripts/validate-kb.mjs's old drift check
-    (comparing module.json version fields to src/evidence.js's exported consts) was removed
-    as no-longer-needed rather than left vacuously passing. src/app.js received zero edits;
-    scripts/validate-kb.mjs and server.mjs changes present in the same commit range are
-    attributable to P1-T2/P1-T3, not this unification.
+    evidence content remains in src/evidence.js. scripts/validate-kb.mjs''s old drift
+    check (comparing module.json version fields to src/evidence.js''s exported consts)
+    was removed as no-longer-needed rather than left vacuously passing. src/app.js
+    received zero edits; scripts/validate-kb.mjs and server.mjs changes present in
+    the same commit range are attributable to P1-T2/P1-T3, not this unification.'
   evidence:
-  - test: 'node --test tests/evidence-registry.test.mjs tests/evidence-resilience.test.mjs
+  - test: node --test tests/evidence-registry.test.mjs tests/evidence-resilience.test.mjs
       tests/evidence-fidelity-flags.test.mjs tests/attested-passage-map.test.mjs tests/attestation-ledger-gate.test.mjs
-      tests/server-manifest-failclosed.test.mjs (67/67 pass)'
+      tests/server-manifest-failclosed.test.mjs (67/67 pass)
   - test: 'npm run validate (green: anemia 6 evidence records/41 passages, cbc_suite_v1
       0 evidence records; build-evidence-pack --check matches regenerated output)'
-  - test: 'npm test (852/852 pass)'
+  - test: npm test (852/852 pass)
 - id: P1-T5
   description: 'Real JSON-Schema validation in scripts/validate-kb.mjs (FR-3): add
     actual JSON Schema (draft 2020-12) validation of every module''s rules.json against
@@ -130,11 +130,10 @@ tasks:
     proof. Added tests/fixtures/invalid-rule/SYNTHETIC-INVALID-EXTRA-PROP-001.json.txt
     (one illegal additionalProperties violation; named .json.txt so backfill-rule-governance.mjs's
     tests/fixtures *.json coverage sweep skips it, same mitigation as P1-T6's ledger)
-    and tests/rule-schema-seeded-invalid.test.mjs,
-    which asserts both the standalone schema check and validateModule() (the exact
-    function npm run validate's CLI entrypoint calls per module) fail closed on it
-    with a specific '$.notAllowedExtraField ... additional property is not permitted'
-    message.
+    and tests/rule-schema-seeded-invalid.test.mjs, which asserts both the standalone
+    schema check and validateModule() (the exact function npm run validate's CLI entrypoint
+    calls per module) fail closed on it with a specific '$.notAllowedExtraField ...
+    additional property is not permitted' message.
   evidence:
   - test: tests/rule-schema-seeded-invalid.test.mjs (4/4 pass)
   - test: 'npm run validate (green: anemia 91 rules, cbc_suite_v1 0 rules)'
@@ -171,7 +170,7 @@ tasks:
     check green; getModule(''cbc_suite_v1'') resolves; seeded-bad-KB fixture fails
     npm run validate; fixture bundle loads. All 4 exit-gate criteria pass, recorded
     in phase progress note.'
-  status: pending
+  status: completed
   assigned_to:
   - task-completion-validator
   dependencies:
@@ -241,7 +240,7 @@ files_modified:
 - tests/fixtures/**
 - .gitignore
 - .claude/worknotes/evidence-foundry-buildout/path-mapping.md
-progress: 87
+progress: 100
 updated: '2026-07-21'
 ---
 
