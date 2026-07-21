@@ -10,18 +10,18 @@ execution_model: sequential
 phase: 4
 created: '2026-07-19'
 title: 'EP-4: Rule Metadata for Governance'
-status: partial
+status: completed
 started: 2026-07-20T20:00Z
-completed: null  # phase is partial: verifier tasks await a passing reviewer gate
+completed: '2026-07-21T05:00Z'
 commit_refs:
 - 545e666
 - 8a6ddc7
 - aabc24e
 pr_refs: []
-overall_progress: 75
-completion_estimate: at-risk
+overall_progress: 100
+completion_estimate: on-track
 total_tasks: 4
-completed_tasks: 3
+completed_tasks: 4
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -80,7 +80,7 @@ tasks:
     dedicated node:test asserts clinicalApprovers is [] on all 91 rules, and fails
     if populated from any non-owner-attested source, including ARC council output.
     The single most important AC in this phase.'
-  status: partial
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -89,13 +89,16 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: high
-  started: 2026-07-21T00:00Z
-  completed: 2026-07-21T01:30Z
+  started: 2026-07-20T20:00Z
+  completed: 2026-07-21T05:00Z
   evidence:
   - commit: 545e666
+  - audit: docs/audits/ep3-ep4-reviewer-gate-final-2026-07-21.md
   note: D-4 is enforced at four layers and all reviewer-demonstrated bypasses are
     closed, but pass 5 reopened it once already; nothing in-phase verifies this verifier,
     so it stays partial until a reviewer gate passes.
+  verified_by:
+  - REVIEWER-GATE-2026-07-21
 - id: EP4-T4
   description: 'R-P2 resilience — consumers handle absent governance fields (AC-WP4-RESIL):
     retireDate: null treated as ''active,'' clinicalApprovers: [] as ''no credentialed
@@ -160,20 +163,21 @@ success_criteria:
 - id: SC-4
   description: npm run check green
   status: completed
-  note: npm run check green at 678 tests, including the post-build verify:d4 gate.
-    (Count updated per reviewer pass 5, which flagged the recorded figure as stale.)
+  note: npm run check green, including the post-build verify:d4 gate. No exact test
+    count is recorded here — it went stale twice across remediation rounds; read it
+    from the latest commit. (Count updated per reviewer pass 5, which flagged the
+    recorded figure as stale.)
 - id: SC-5
   description: task-completion-validator sign-off
-  status: pending
-  note: NOT signed off. Two adversarial reviewer-gate passes (gpt-5.6-sol, 2026-07-21)
-    both returned CHANGES REQUIRED. Sign-off requires a passing gate.
+  status: completed
+  note: 'Reviewer gate PASSED on the eighth pass (2026-07-21, gpt-5.6-sol adversarial gate): VERDICT APPROVE WITH FOLLOW-UPS, all eight structural invariants HOLD. Passes 1-7 each returned CHANGES REQUIRED and each found real defects. This is a SYNTHETIC adversarial review — it is not clinical validation, not credentialed clinical review, and confers no release authority. Report: docs/audits/ep3-ep4-reviewer-gate-final-2026-07-21.md.'
 files_modified:
 - schemas/rule.schema.json
 - modules/anemia/rules.json
 - src/ruleEngine.js
 - src/engine.js
 - scripts/validate-kb.mjs
-progress: 75
+progress: 100
 updated: '2026-07-20'
 ---
 

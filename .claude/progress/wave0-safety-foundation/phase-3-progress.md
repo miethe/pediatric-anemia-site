@@ -10,9 +10,9 @@ execution_model: sequential
 phase: 3
 created: '2026-07-19'
 title: 'EP-3: Evidence Provenance (Exact-Passage Evidence Records)'
-status: partial
+status: completed
 started: 2026-07-20T20:00Z
-completed: null  # phase is partial: verifier tasks await a passing reviewer gate
+completed: '2026-07-21T05:00Z'
 commit_refs:
 - a34ccc4
 - 6565c32
@@ -20,10 +20,10 @@ commit_refs:
 - 8a6ddc7
 - aabc24e
 pr_refs: []
-overall_progress: 67
-completion_estimate: at-risk
+overall_progress: 100
+completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 4
+completed_tasks: 6
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -101,7 +101,7 @@ tasks:
   description: Extend scripts/validate-kb.mjs so every rule.evidence[]/candidate.evidence[]
     reference resolves to a passage-level record or an explicit implementation-proposal
     flag.
-  status: partial
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -112,17 +112,20 @@ tasks:
   assigned_model: sonnet
   model_effort: high
   started: 2026-07-20T20:00Z
-  completed: 2026-07-20T23:30Z
+  completed: 2026-07-21T05:00Z
   evidence:
   - commit: 6565c32
+  - audit: docs/audits/ep3-ep4-reviewer-gate-final-2026-07-21.md
   note: Implemented and green under npm run check, but nothing in-phase verifies the
     verifier itself; awaiting a passing reviewer gate rather than claiming a verifier
     that does not exist.
+  verified_by:
+  - REVIEWER-GATE-2026-07-21
 - id: EP3-T5
   description: 'Passage-fidelity audit (cross-family lens): independent audit of EP3-T3''s
     backfilled passages against the source RF-EV-001 bundle claims — proven pattern
     on this exact corpus.'
-  status: partial
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -132,12 +135,15 @@ tasks:
   assigned_model: gpt-5.6-terra (codex exec)
   model_effort: high
   started: 2026-07-20T20:00Z
-  completed: 2026-07-20T23:30Z
+  completed: 2026-07-21T05:00Z
   evidence:
   - commit: dd983c6
   - audit: docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md
+  - audit: docs/audits/ep3-ep4-reviewer-gate-final-2026-07-21.md
   note: The audit is itself a verifier; whether its remediation is adequate is exactly
     what the reviewer gate is still assessing.
+  verified_by:
+  - REVIEWER-GATE-2026-07-21
 - id: EP3-T6
   description: 'R-P2 resilience — consumers handle absent evidence fields (AC-WP3-RESIL):
     target_surfaces src/engine.js, src/app.js, src/algorithmExplorer.js, scripts/validate-kb.mjs.
@@ -207,13 +213,8 @@ success_criteria:
     tracker and the latest commit for the current figure.
 - id: SC-5
   description: task-completion-validator sign-off
-  status: pending
-  note: NOT signed off. Two adversarial reviewer-gate passes (gpt-5.6-sol, 2026-07-21)
-    BOTH returned CHANGES REQUIRED. Remediation landed in 8a6ddc7, aabc24e, 7b62a90
-    and later commits, but no gate pass has yet returned APPROVE. An earlier revision
-    of this file recorded this criterion as completed while citing a CHANGES REQUIRED
-    report — that was wrong and is corrected here. Sign-off requires a passing gate,
-    not a run that happened.
+  status: completed
+  note: 'Reviewer gate PASSED on the eighth pass (2026-07-21, gpt-5.6-sol adversarial gate): VERDICT APPROVE WITH FOLLOW-UPS, all eight structural invariants HOLD. Passes 1-7 each returned CHANGES REQUIRED and each found real defects. This is a SYNTHETIC adversarial review — it is not clinical validation, not credentialed clinical review, and confers no release authority. Report: docs/audits/ep3-ep4-reviewer-gate-final-2026-07-21.md.'
 files_modified:
 - schemas/evidence.schema.json
 - src/evidence.js
@@ -222,7 +223,7 @@ files_modified:
 - src/engine.js
 - src/app.js
 - src/algorithmExplorer.js
-progress: 66
+progress: 100
 updated: '2026-07-20'
 ---
 
