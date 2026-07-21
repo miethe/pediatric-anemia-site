@@ -42,7 +42,12 @@ references:
     - docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
 spike_ref: []
 adr_refs: []
-deferred_items_spec_refs: []
+deferred_items_spec_refs:
+  - docs/project_plans/design-specs/rights-clearance-workflow.md
+  - docs/project_plans/design-specs/rights-release-gate.md
+  - docs/project_plans/design-specs/single-source-rule-reanchoring.md
+  - docs/project_plans/design-specs/first-party-rights-record.md
+  - docs/project_plans/design-specs/near-verbatim-span-reauthoring.md
 findings_doc_ref: null
 charter_ref: null
 changelog_ref: null

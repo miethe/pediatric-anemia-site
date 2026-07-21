@@ -18,7 +18,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 7
-completed_tasks: 4
+completed_tasks: 6
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -152,10 +152,10 @@ tasks:
     (FR-WP5-09, FR-WP5-10): update NOTICE.md and docs/architecture.md §7 to describe
     the rights/ tree, the release context, and the COVERAGE-ONLY gate posture; record
     residual gap R-1 (prohibited-excerpt detection is not deterministic) explicitly
-    as open. Create the four deferred-item design-spec stubs (DEF-R1..DEF-R4) and
+    as open. Create the five deferred-item design-spec stubs (DEF-R1..DEF-R5) and
     populate deferred_items_spec_refs in the plan frontmatter. Neither document may
     imply any clearance exists. Sequenced LAST so it describes the substrate as shipped.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -165,6 +165,10 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: medium
+  started: '2026-07-21T16:15:00Z'
+  completed: '2026-07-21T17:00:00Z'
+  evidence:
+  - commit: PENDING
 parallelization:
   batch_1:
   - EPR5-T1
@@ -218,9 +222,9 @@ success_criteria:
   description: Residual gap R-1 recorded as open (EPR5-T7)
   status: not_started
 - id: SC-9
-  description: All four deferred items (DEF-R1..DEF-R4) have spec paths in deferred_items_spec_refs
+  description: All five deferred items (DEF-R1..DEF-R5) have spec paths in deferred_items_spec_refs
     (EPR5-T7)
-  status: not_started
+  status: completed
 - id: SC-10
   description: No legal conclusion drawn; no threshold classified as measured or judged
     (OQ-1 stays open)
@@ -244,7 +248,10 @@ files_modified:
 - docs/project_plans/design-specs/rights-release-gate.md
 - docs/project_plans/design-specs/single-source-rule-reanchoring.md
 - docs/project_plans/design-specs/first-party-rights-record.md
-progress: 57
+- docs/project_plans/design-specs/near-verbatim-span-reauthoring.md
+- tests/notice-architecture-no-clearance.test.mjs
+- docs/project_plans/implementation_plans/infrastructure/rights-aware-evidence-capture-v1.md
+progress: 85
 updated: '2026-07-21'
 ---
 
@@ -320,7 +327,7 @@ wave-1 `intra_wave_ordering` entry (`EPR5-T7 ← EP-R0`) in the plan.
   remain grounded.
 - A reviewer check on `NOTICE.md` and `docs/architecture.md` §7 must confirm the words "cleared",
   "licensed", or "approved" appear only in explicitly-negated form.
-- EP-R5 cannot be sealed until all four deferred items (DEF-R1..DEF-R4) have a design-spec path in
+- EP-R5 cannot be sealed until all five deferred items (DEF-R1..DEF-R5) have a design-spec path in
   `deferred_items_spec_refs`, and, if `findings_doc_ref` is populated, the findings doc is finalized.
 
 ### Development Setup
@@ -332,6 +339,22 @@ inside the existing test suite, not as a new npm script.
 
 ## Completion Notes
 
-_(Fill in when phase is complete: the amendment entries as recorded, the citation-hygiene disposition
-for all six items, proof the `CLAUDE.md`/`package.json` strings match, and the four deferred-item spec
-paths.)_
+**EPR5-T7 (final task).** `NOTICE.md` gained a "Rights and evidence provenance" section describing
+the shipped `rights/` tree, `rights/release-context.json`'s declared internal-research scope, and
+the coverage-only posture of `scripts/validate-rights.mjs`. `docs/architecture.md` §7 gained a
+matching "Rights and evidence provenance (Phase EP-R0)" subsection (inserted before §8, so it stays
+inside §7 as the acceptance criteria require) that documents the four `rights/` files, the vendored
++amended schemas, the four `validate-rights.mjs` gates, and residual gap R-1 (prohibited-excerpt
+detection is not fully deterministic — recorded explicitly as open, not closed, per findings §5).
+A new mechanical test, `tests/notice-architecture-no-clearance.test.mjs`, asserts every occurrence
+of "cleared"/"licensed"/"approved" in either document sits in a sentence carrying a negation marker,
+and that §7 names R-1 and records it as open. All five deferred items (DEF-R1..DEF-R5) got a
+design-spec stub under `docs/project_plans/design-specs/`, and `deferred_items_spec_refs` in the
+plan's frontmatter now lists all five paths, satisfying the plan's EP-R5 Quality Gate.
+
+**Note for the phase owner:** this progress file's `files_modified`/success-criteria previously said
+"four deferred items (DEF-R1..DEF-R4)" while the plan root's Deferred Items Triage Table and the
+phase file both specify five (DEF-R1..DEF-R5); this task followed the plan (authoritative per the
+execution brief) and corrected the stale "four" references in this file's own text. Separately,
+EPR5-T5's task entry above still reads `status: not_started` despite `git log` showing it landed at
+commit `efc9b13` — out of scope for this task to fix, flagged here for the phase owner.

@@ -186,6 +186,53 @@ today, §6) and a distinct impact-analysis field beyond `changeRationale`.
 
 Avoid executable code inside clinical rules. Calculated facts should be a small, reviewed, unit-tested library.
 
+### Rights and evidence provenance (Phase EP-R0)
+
+**Shipped (Phase EP-R0).** The repository's rights position is machine-checkable via a dedicated,
+top-level `rights/` tree — a rights record is never inlined into any clinical KB JSON file
+(`rules.json`, `candidates.json`, `evidence.json`, `reference-ranges.json`); the only link between a
+clinical identifier and a rights record is the join ledger below (D4 of this feature's decisions
+block). The tree holds addressable provenance and structured locators only — never third-party full
+text, tables, figures, or brand assets (D1).
+
+- `rights/release-context.json` — the single declared scope of what this platform currently claims
+  for itself: `commercial: false`, `use_type: internal_research`, US-only, internal-engineering-
+  channel-only. Every future requested use is checked for *containment* within this declared scope;
+  the file is never widened to fit a request.
+- `rights/rights-records.json` — one `rights_record` per cited source (today: 6, one per
+  `modules/anemia/evidence.json` source), each seeded at `overall_status: UNKNOWN` and
+  `review.review_status: agent_triage_only`. No source in this knowledge base has been cleared,
+  licensed, or approved for any use; no agent-writable path may ever assign a `CLEARED_*` status,
+  and `review.human_reviewer`/`review.counsel_reviewer` are schema-forced `null` (D6 — no clinical
+  or rights sign-off exists in this project and none may be manufactured).
+- `rights/rights-failures.json` — cross-linked, pre-existing open rights problems (the REG-002
+  content-rights review, and the EP3-T5 passage-fidelity audit's near-verbatim-span and
+  source-unretrievable findings), never a newly agent-invented finding; every `review.reviewed_by`
+  stays schema-forced empty.
+- `rights/rights-ledger.json` — the sole bidirectional join between a clinical KB identifier and a
+  `rights/` record.
+- `schemas/rights/*.schema.json` — the five Research Foundry Rights Governance Spec v1.0 schemas,
+  vendored byte-for-byte, with every subsequent divergence recorded as a **declared amendment**
+  (`schemas/rights/VENDORING.md`) rather than a silent edit.
+
+`scripts/validate-rights.mjs` (wired into `npm run validate`) ships four gates: bidirectional
+clinical-identifier ↔ rights-record coverage, closed-enum membership on the fields that govern
+release-blocking behaviour, open-failure cross-link presence, and release-context set-containment.
+Every gate is **coverage- or consistency-shaped only** (D7) — none of them reads *which* legitimate
+value a clearance-relevant field holds and fails because of it; a record sitting at
+`overall_status: UNKNOWN` passes every gate exactly as a record at `PROHIBITED` would. No gate in
+this repository ever approves, licenses, or clears a source — that determination has no automated
+path here and requires a named human rights owner who does not yet exist (open question OQ-2).
+
+**Residual gap R-1 (open, not closed).** Prohibited-excerpt detection — proving no restricted
+source text has entered the repository — is **not fully deterministic**: a sound comparison would
+require holding the restricted source text in-repo, which the no-third-party-text rule (D1) forbids
+doing in the first place. The interim substitute is the existing `passageFidelity !== 'verbatim'`
+policy check plus a structural negative-asset check over the working tree (no reproduced table,
+figure, image, or brand asset). That substitute is a *positive* structural proof, not a guarantee
+that every possible verbatim reuse is caught, and is recorded here as an open gap, not a closed one
+(`.claude/findings/rights-governance-spec-v1.0-review-findings.md` §5).
+
 ## 8. FHIR integration proposal
 
 Potential read resources:
