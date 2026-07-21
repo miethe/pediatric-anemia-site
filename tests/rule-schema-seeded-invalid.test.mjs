@@ -4,8 +4,8 @@
 // module's rules.json against schemas/rule.schema.json (see validateModule's `for (const
 // schemaError of validate(ruleSchema, rule))` loop) — that machinery predates this task. What
 // this task adds is the missing proof: a committed, intentionally-invalid rule fixture
-// (tests/fixtures/invalid-rule/SYNTHETIC-INVALID-EXTRA-PROP-001.json, an otherwise schema-legal
-// rule with one illegal extra top-level property) and an executable assertion that
+// (tests/fixtures/invalid-rule/SYNTHETIC-INVALID-EXTRA-PROP-001.json.txt, an otherwise
+// schema-legal rule with one illegal extra top-level property) and an executable assertion that
 // `npm run validate`'s own code path — `validateModule`, imported directly rather than shelled
 // out to, exactly as tests/candidate-governance.test.mjs and tests/module-manifest-schema.test.mjs
 // already do for their own schemas — actually fails closed on it, with a specific
@@ -35,8 +35,15 @@ import { validateModule } from '../scripts/validate-kb.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const RULE_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'rule.schema.json');
+// Deliberately `.json.txt`, not `.json`: scripts/evidence/backfill-rule-governance.mjs sweeps
+// every `*.json` under tests/fixtures/ (via scripts/rule-coverage.mjs computeCoverage,
+// fixtureDirs: ['tests/witness', 'tests/fixtures']) when regenerating rules' witnessFixtures
+// coverage, and a plain-.json seeded-invalid fixture here made that regeneration diverge from
+// the committed modules/anemia/rules.json (tests/rule-governance.test.mjs's --check subtest
+// failed). Same mitigation P1-T6 applied to its passage-hash-ledger.json.txt. Loaded via
+// readFile + JSON.parse below, so the extension is invisible to these tests.
 const FIXTURE_PATH = path.join(
-  REPO_ROOT, 'tests', 'fixtures', 'invalid-rule', 'SYNTHETIC-INVALID-EXTRA-PROP-001.json',
+  REPO_ROOT, 'tests', 'fixtures', 'invalid-rule', 'SYNTHETIC-INVALID-EXTRA-PROP-001.json.txt',
 );
 
 async function loadJson(p) {

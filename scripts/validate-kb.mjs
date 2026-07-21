@@ -126,6 +126,49 @@ async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, 'utf8'));
 }
 
+// P1-T2 (evidence-foundry-buildout Phase 1): the 8 module-variable-envelope fields every
+// module manifest must declare — the scoping contract (who the module is for, which patients,
+// what it outputs, what it explicitly refuses to do, where it applies, what surfaces it
+// targets, and its evidence-recency policy). Per the OQ-7 ruling (binding), this is a
+// field-presence + non-empty check ONLY — deliberately NOT a new JSON Schema file; shape/type
+// governance of these fields is deferred until the envelope design stabilizes.
+const MODULE_VARIABLE_ENVELOPE_FIELDS = [
+  'module_topic',
+  'intended_hcp_users',
+  'patient_population',
+  'intended_output',
+  'explicit_exclusions',
+  'jurisdictions',
+  'integration_targets',
+  'evidence_policy',
+];
+
+/**
+ * P1-T2: checks that `manifest` carries every module-variable-envelope field, present and
+ * non-empty (non-empty string / non-empty array / object with at least one key). Pure function
+ * over the in-memory manifest (mirrors validateEvidenceDocument/validateCandidates above) so it
+ * is independently unit-testable against a mutated manifest without touching disk. Returns one
+ * specific error per missing/empty field, naming the field.
+ */
+export function validateModuleVariableEnvelope(manifest, moduleId) {
+  const errors = [];
+  for (const field of MODULE_VARIABLE_ENVELOPE_FIELDS) {
+    const value = manifest?.[field];
+    const missingOrEmpty =
+      value === undefined
+      || value === null
+      || (typeof value === 'string' && value.trim() === '')
+      || (Array.isArray(value) && value.length === 0)
+      || (typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === 0);
+    if (missingOrEmpty) {
+      errors.push(
+        `${moduleId}/module.json: module-variable-envelope field "${field}" is missing or empty (all 8 envelope fields are required, P1-T2)`,
+      );
+    }
+  }
+  return errors;
+}
+
 function collectBooleanFactPaths(condition, paths = new Set()) {
   if (Array.isArray(condition)) {
     for (const child of condition) collectBooleanFactPaths(child, paths);
@@ -506,6 +549,16 @@ export async function validateModule(moduleId, rootDir) {
   }
   if (manifest.id !== moduleId) {
     errors.push(`${moduleId}/module.json: id "${manifest.id}" does not match directory name "${moduleId}"`);
+  }
+
+  // P1-T2 (evidence-foundry-buildout Phase 1): every module manifest must carry the 8
+  // module-variable-envelope fields — EXCEPT modules/anemia, whose module.json predates the
+  // envelope (legacy pre-envelope shape, explicitly exempt and must remain valid as-is). Every
+  // FUTURE module (cbc_suite_v1 onward) must declare the full envelope; a missing/empty field is
+  // a hard validation error naming that field. Field-presence + non-empty only, per the OQ-7
+  // ruling (binding) — no new schema file governs these fields yet.
+  if (moduleId !== 'anemia') {
+    errors.push(...validateModuleVariableEnvelope(manifest, moduleId));
   }
 
   // DEF-1 resolved (docs/project_plans/design-specs/evidence-dual-source-unification.md): the

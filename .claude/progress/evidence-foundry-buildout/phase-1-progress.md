@@ -10,14 +10,14 @@ execution_model: batch-parallel
 phase: 1
 title: 'Evidence Foundry Buildout — Phase 1: Foundation & Fixtures'
 status: pending
-started: null
+started: 2026-07-21
 completed: null
 commit_refs: []
 pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 8
-completed_tasks: 2
+completed_tasks: 7
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -35,7 +35,7 @@ tasks:
     data/evidence.json, data/candidates.json, src/evidence.js) to its current-tree
     equivalent (modules/anemia/{rules,candidates,evidence}.json). Confirm npm test''s
     tests/*.test.mjs glob is unaffected (OQ-5). Hard blocker for every Phase 2+ task.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies: []
@@ -69,7 +69,7 @@ tasks:
     Register cbc_suite_v1 in src/modules/registry.js and src/facts/registry.js (not
     src/ranges/registry.js). DEFAULT_MODULE_ID stays ''anemia''; update the tripwire
     comment to record why.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -84,7 +84,7 @@ tasks:
     src/evidence.js''s exports from modules/anemia/evidence.json (or replacing both
     with a single injected immutable registry). Existing callers (scripts/validate-kb.mjs,
     src/app.js, server.mjs) need zero edits.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -111,8 +111,10 @@ tasks:
   note: Real JSON Schema (draft 2020-12) validation of rule.schema.json already existed
     in scripts/validate-kb.mjs (validateModule's per-rule validate() loop, landed
     by prior EP-3/EP-4 waves) — this task's remaining gap was the missing seeded-bad-KB
-    proof. Added tests/fixtures/invalid-rule/SYNTHETIC-INVALID-EXTRA-PROP-001.json
-    (one illegal additionalProperties violation) and tests/rule-schema-seeded-invalid.test.mjs,
+    proof. Added tests/fixtures/invalid-rule/SYNTHETIC-INVALID-EXTRA-PROP-001.json.txt
+    (one illegal additionalProperties violation; named .json.txt so backfill-rule-governance.mjs's
+    tests/fixtures *.json coverage sweep skips it, same mitigation as P1-T6's ledger)
+    and tests/rule-schema-seeded-invalid.test.mjs,
     which asserts both the standalone schema check and validateModule() (the exact
     function npm run validate's CLI entrypoint calls per module) fail closed on it
     with a specific '$.notAllowedExtraField ... additional property is not permitted'
@@ -127,7 +129,7 @@ tasks:
     hash + selector, not full text, unless positively confirmed rights-clear. Write
     a hash-provenance note under tests/fixtures/ naming RF-CBC-001 and the rights
     disposition per passage.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -140,7 +142,7 @@ tasks:
   description: '.gitignore — build/ (OQ-6): add build/ to .gitignore. build/kb-pack/
     converter output is generated, never committed; committed golden/fixture outputs
     for converter tests live under tests/fixtures/ instead.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies: []
@@ -223,7 +225,7 @@ files_modified:
 - tests/fixtures/**
 - .gitignore
 - .claude/worknotes/evidence-foundry-buildout/path-mapping.md
-progress: 25
+progress: 87
 updated: '2026-07-21'
 ---
 
