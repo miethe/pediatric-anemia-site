@@ -50,9 +50,9 @@ tasks:
   assigned_model: haiku
   model_effort: adaptive
   evidence:
-  - 'CHANGELOG.md [Unreleased] entry present describing tools/rf-bundle-to-kb-pack/ and cbc_suite_v1;
-      plan frontmatter changelog_ref: CHANGELOG.md set (re-confirmed 2026-07-21 during Phase 7
-      feature-end sign-off)'
+  - 'CHANGELOG.md [Unreleased] entry present describing tools/rf-bundle-to-kb-pack/
+    and cbc_suite_v1; plan frontmatter changelog_ref: CHANGELOG.md set (re-confirmed
+    2026-07-21 during Phase 7 feature-end sign-off)'
 - id: P7-T2
   description: 'docs/architecture.md Converter subsection (FR-25): document the rf-bundle-to-kb-pack
     seam (input contract, verb sequence, output staging under build/kb-pack/, the
@@ -68,9 +68,9 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   evidence:
-  - 'docs/architecture.md "## 2b. Converter" subsection present, documents input contract,
-      inspect->verify->propose verb sequence, build/kb-pack/ staging, and the OQ-1/OQ-3
-      module-package-vs-staging distinction (re-confirmed 2026-07-21)'
+  - docs/architecture.md "## 2b. Converter" subsection present, documents input contract,
+    inspect->verify->propose verb sequence, build/kb-pack/ staging, and the OQ-1/OQ-3
+    module-package-vs-staging distinction (re-confirmed 2026-07-21)
 - id: P7-T3
   description: 'Design spec — DF-E1-01 clinical review portal/workflow: author docs/project_plans/design-specs/clinical-review-portal-workflow.md
     per deferred-items-and-findings.md''s required frontmatter (maturity: shaping,
@@ -86,8 +86,8 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   evidence:
-  - 'Authored docs/project_plans/design-specs/clinical-review-portal-workflow.md (DF-E1-01, maturity
-      shaping, seeded from ADR-4''s options); path present in deferred_items_spec_refs'
+  - Authored docs/project_plans/design-specs/clinical-review-portal-workflow.md (DF-E1-01,
+    maturity shaping, seeded from ADR-4's options); path present in deferred_items_spec_refs
 - id: P7-T4
   description: 'Design spec — DF-E1-02 full CBC 12-angle research operation: author
     docs/project_plans/design-specs/cbc-12-angle-research-operation.md, maturity:
@@ -102,8 +102,8 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   evidence:
-  - 'Authored docs/project_plans/design-specs/cbc-12-angle-research-operation.md (DF-E1-02, maturity
-      shaping, references ADR-8); path present in deferred_items_spec_refs'
+  - Authored docs/project_plans/design-specs/cbc-12-angle-research-operation.md (DF-E1-02,
+    maturity shaping, references ADR-8); path present in deferred_items_spec_refs
 - id: P7-T5
   description: 'Design spec — DF-E1-03 upstream rf validators: author docs/project_plans/design-specs/upstream-rf-validators-pediatric.md,
     maturity: shaping, noting this item''s implementation target is the research-foundry
@@ -118,9 +118,9 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   evidence:
-  - 'Authored docs/project_plans/design-specs/upstream-rf-validators-pediatric.md (DF-E1-03, maturity
-      shaping, states implementation target is out of repository); path present in
-      deferred_items_spec_refs'
+  - Authored docs/project_plans/design-specs/upstream-rf-validators-pediatric.md (DF-E1-03,
+    maturity shaping, states implementation target is out of repository); path present
+    in deferred_items_spec_refs
 - id: P7-T6
   description: 'Design spec — DF-E1-04 retrospective validation harness: author docs/project_plans/design-specs/retrospective-validation-harness.md,
     maturity: shaping (still needs a data-source SPIKE per PRD §12 — mark open_questions
@@ -135,9 +135,9 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   evidence:
-  - 'Authored docs/project_plans/design-specs/retrospective-validation-harness.md (DF-E1-04, maturity
-      shaping, open_questions names the data-source SPIKE explicitly); path present in
-      deferred_items_spec_refs'
+  - Authored docs/project_plans/design-specs/retrospective-validation-harness.md (DF-E1-04,
+    maturity shaping, open_questions names the data-source SPIKE explicitly); path
+    present in deferred_items_spec_refs
 - id: P7-T7
   description: 'Design spec — DF-E1-05 FHIR/terminology emitters: author docs/project_plans/design-specs/fhir-terminology-emitters.md,
     maturity: shaping, seeded from ADR-3''s terminology-ownership recommendation.
@@ -152,8 +152,8 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   evidence:
-  - 'Authored docs/project_plans/design-specs/fhir-terminology-emitters.md (DF-E1-05, maturity
-      shaping, references ADR-3); path present in deferred_items_spec_refs'
+  - Authored docs/project_plans/design-specs/fhir-terminology-emitters.md (DF-E1-05,
+    maturity shaping, references ADR-3); path present in deferred_items_spec_refs
 - id: P7-T8
   description: 'Design spec — DF-E1-06 signed release + key custody: author docs/project_plans/design-specs/signed-release-key-custody.md,
     maturity: shaping, seeded from ADR-5. Append path to deferred_items_spec_refs.'
@@ -167,8 +167,8 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   evidence:
-  - 'Authored docs/project_plans/design-specs/signed-release-key-custody.md (DF-E1-06, maturity
-      shaping, references ADR-5); path present in deferred_items_spec_refs'
+  - Authored docs/project_plans/design-specs/signed-release-key-custody.md (DF-E1-06,
+    maturity shaping, references ADR-5); path present in deferred_items_spec_refs
 - id: P7-T9
   description: 'Design spec — DF-E1-07 property/mutation/semantic-diff CI expansion:
     author docs/project_plans/design-specs/property-mutation-semantic-diff-ci.md,
@@ -185,9 +185,9 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   evidence:
-  - 'Authored docs/project_plans/design-specs/property-mutation-semantic-diff-ci.md (DF-E1-07,
-      maturity shaping, scopes "expansion" against E0-delivered P2-T8/P5-T3/P5-T5 coverage
-      explicitly); path present in deferred_items_spec_refs'
+  - Authored docs/project_plans/design-specs/property-mutation-semantic-diff-ci.md
+    (DF-E1-07, maturity shaping, scopes "expansion" against E0-delivered P2-T8/P5-T3/P5-T5
+    coverage explicitly); path present in deferred_items_spec_refs
 - id: P7-T10
   description: 'Design spec — DF-E2-01 surveillance/update/registry engine: author
     docs/project_plans/design-specs/surveillance-update-registry-engine.md, maturity:
@@ -202,8 +202,8 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   evidence:
-  - 'Authored docs/project_plans/design-specs/surveillance-update-registry-engine.md (DF-E2-01,
-      maturity shaping, references ADR-7); path present in deferred_items_spec_refs'
+  - Authored docs/project_plans/design-specs/surveillance-update-registry-engine.md
+    (DF-E2-01, maturity shaping, references ADR-7); path present in deferred_items_spec_refs
 - id: P7-T11
   description: 'Design spec — DF-E2-02 production monitoring: author docs/project_plans/design-specs/production-monitoring-telemetry.md,
     maturity: shaping. Append path to deferred_items_spec_refs.'
@@ -217,8 +217,9 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   evidence:
-  - 'Authored docs/project_plans/design-specs/production-monitoring-telemetry.md (DF-E2-02, maturity
-      shaping, seeded from ADR-7); appended path to deferred_items_spec_refs in evidence-foundry-buildout-v1.md'
+  - Authored docs/project_plans/design-specs/production-monitoring-telemetry.md (DF-E2-02,
+    maturity shaping, seeded from ADR-7); appended path to deferred_items_spec_refs
+    in evidence-foundry-buildout-v1.md
 - id: P7-T12
   description: 'Design spec — DF-E2-03 withdraw/rollback machinery: author docs/project_plans/design-specs/withdraw-rollback-machinery.md,
     maturity: shaping, seeded from ADR-5/ADR-7. Append path to deferred_items_spec_refs.'
@@ -251,9 +252,10 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   evidence:
-  - 'Authored .claude/worknotes/evidence-foundry-buildout/rfup-external-routing-note.md listing all
-      7 RFUP enhancements by name, stating each is routed via op story and never implemented in this
-      repository; not appended to deferred_items_spec_refs (confirmed)'
+  - Authored .claude/worknotes/evidence-foundry-buildout/rfup-external-routing-note.md
+    listing all 7 RFUP enhancements by name, stating each is routed via op story and
+    never implemented in this repository; not appended to deferred_items_spec_refs
+    (confirmed)
 - id: P7-T14
   description: 'Findings doc — N/A unless populated: if findings_doc_ref is null (expected),
     record ''N/A — no findings captured'' in the phase progress note and leave frontmatter
@@ -279,10 +281,11 @@ tasks:
   assigned_model: haiku
   model_effort: adaptive
   evidence:
-  - 'findings_doc_ref populated (not left null — a real in-flight finding was captured during
-      Phases 1/3): .claude/findings/evidence-foundry-buildout-findings.md status: accepted,
-      promoted_to: /docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md
-      (per deferred-items-and-findings.md §2 Step 4); recorded in this progress doc''s Findings section'
+  - 'findings_doc_ref populated (not left null — a real in-flight finding was captured
+    during Phases 1/3): .claude/findings/evidence-foundry-buildout-findings.md status:
+    accepted, promoted_to: /docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md
+    (per deferred-items-and-findings.md §2 Step 4); recorded in this progress doc''s
+    Findings section'
 - id: P7-T15
   description: 'Update plan frontmatter: set status: completed, populate commit_refs,
     confirm files_affected matches the actual diff, set updated to the close-out date,
@@ -300,9 +303,9 @@ tasks:
   assigned_model: haiku
   model_effort: adaptive
   evidence:
-  - 'Plan frontmatter (evidence-foundry-buildout-v1.md): status: completed, commit_refs populated,
-      updated: 2026-07-21, deferred_items_spec_refs has exactly 10 entries (re-counted, matches
-      P7-T3..T12 paths, excludes P7-T13''s RFUP note)'
+  - 'Plan frontmatter (evidence-foundry-buildout-v1.md): status: completed, commit_refs
+    populated, updated: 2026-07-21, deferred_items_spec_refs has exactly 10 entries
+    (re-counted, matches P7-T3..T12 paths, excludes P7-T13''s RFUP note)'
 - id: P7-T16
   description: 'Full gate re-run + guardrail/non-goal cross-check: re-run npm run
     check end to end against the final diff; independently re-verify every CLAUDE.md
@@ -352,9 +355,10 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   evidence:
-  - All 18 Phase 7 tasks/gates verified against real repository state at HEAD; 10/10 design specs
-      exist and match the deferred-items triage table's ref column 1:1; RFUP note correctly excluded
-      from deferred_items_spec_refs; npm run check green (re-run 2026-07-21)
+  - All 18 Phase 7 tasks/gates verified against real repository state at HEAD; 10/10
+    design specs exist and match the deferred-items triage table's ref column 1:1;
+    RFUP note correctly excluded from deferred_items_spec_refs; npm run check green
+    (re-run 2026-07-21)
 - id: P7-GATE2
   description: 'karen milestone review — feature end (decisions block §4, final of
     3 named milestones): independently check every hard guardrail and non-goal from
@@ -372,13 +376,13 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   evidence:
-  - 'karen sign-off: PASS. Recorded at
-      .claude/worknotes/evidence-foundry-buildout/karen-sign-off-phase-7-feature-end.md (3rd of 3
-      named karen milestones — feature end). All 6 CLAUDE.md hard guardrails and all 7 PRD §7
-      non-goals independently re-verified MET; nothing produced by this feature is described anywhere
-      as clinically validated or release-ready; all 11 deferred-items triage rows closed 1:1 against
-      existing spec/note artifacts; npm run check green. Plan status: completed is now correctly
-      gated by this passing sign-off.'
+  - 'karen sign-off: PASS. Recorded at .claude/worknotes/evidence-foundry-buildout/karen-sign-off-phase-7-feature-end.md
+    (3rd of 3 named karen milestones — feature end). All 6 CLAUDE.md hard guardrails
+    and all 7 PRD §7 non-goals independently re-verified MET; nothing produced by
+    this feature is described anywhere as clinically validated or release-ready; all
+    11 deferred-items triage rows closed 1:1 against existing spec/note artifacts;
+    npm run check green. Plan status: completed is now correctly gated by this passing
+    sign-off.'
 parallelization:
   batch_1:
   - P7-T1
