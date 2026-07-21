@@ -71,7 +71,7 @@ tasks:
     one axis from another. Includes the AAP case explicitly — a passage may be source-supported
     AND contract-restricted simultaneously. src/evidence.js''s isBindableAsSourceSupported is
     asserted to read only the epistemic axis.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
