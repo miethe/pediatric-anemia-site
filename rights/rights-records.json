@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "description": "Top-level rights/ tree (D4): join container for rights_record entries — the vendored schemas/rights/rights_record.schema.json (EPR0-T2) plus its declared local amendment layer (EPR0-T3) is the shape authority for each entry in `records`. No `rights_record` may be inlined into any clinical KB JSON file (rules.json, candidates.json, evidence.json, reference-ranges.json); the only cross-reference between a clinical identifier and a record here is rights/rights-ledger.json. EPR0-T1 creates this container empty; EPR0-T4 seeds it with 6 triage-only records (one per KB-cited source from RF-EV-003), each at review.review_status: agent_triage_only and overall_status: UNKNOWN. No agent-authored clearance status value may ever appear in this file (see schemas/rights/rights_record.schema.json's overall_status enum members prefixed with the forbidden clearance token for the exact list — that token string is intentionally not reproduced here).",
+  "description": "Top-level rights/ tree (D4): join container for rights_record entries — the vendored schemas/rights/rights_record.schema.json (EPR0-T2) plus its declared local amendment layer (EPR0-T3) is the shape authority for each entry in `records`. No `rights_record` may be inlined into any clinical KB JSON file (rules.json, candidates.json, evidence.json, reference-ranges.json); the only cross-reference between a clinical identifier and a record here is rights/rights-ledger.json. EPR0-T1 creates this container empty; EPR0-T4 seeds it with 6 triage-only records (one per KB-cited source from RF-EV-003), each at review.review_status: agent_triage_only and overall_status: UNKNOWN. EPR1-T1 (FR-WP1-01) adds a 7th, component-scoped triage-only record for modules/anemia/reference-ranges.json (the derived-fact channel that feeds deriveFacts() and all 91 rules, previously outside passage-level rights coverage), at the same review.review_status: agent_triage_only / overall_status: UNKNOWN posture. No agent-authored clearance status value may ever appear in this file (see schemas/rights/rights_record.schema.json's overall_status enum members prefixed with the forbidden clearance token for the exact list — that token string is intentionally not reproduced here).",
   "records": [
     {
       "schema_version": "1.0.0",
@@ -443,6 +443,91 @@
         "next_review_at": null,
         "change_triggers": ["a formal source-rights assessment is run for this source"],
         "notes": "Triage-only seed (EPR0-T4, FR-WP0-04). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2 source-rights metadata work. evidence-packs/rf-ev-001/fidelity-findings.json finding EP3T5-F01 flags near-verbatim spans in passages citing this source; that finding is an unresolved fidelity-audit flag, not a rights determination."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-AAP2026_IDA-REFERENCE-RANGES",
+      "source_id": "AAP2026_IDA",
+      "source_version": null,
+      "record_scope": "source_component",
+      "component_scope": ["modules/anemia/reference-ranges.json"],
+      "jurisdictions": ["US"],
+      "access": {
+        "basis": "unknown",
+        "platform": "American Academy of Pediatrics — publications.aap.org",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": "American Academy of Pediatrics",
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [
+          {
+            "component": "Table 1 (\"Normal Hematologic Parameters in Infants, Children, and Adolescents by Age and Sex, From Age 9 Months to 18 Years\") underlying reference-interval data, credited by AAP itself to \"(ref 42)\" per the table title footnote (modules/anemia/evidence.json AAP2026_IDA#ev_002 sourceLocator.raw)",
+            "rights_status": "unknown",
+            "notes": "AAP is a redistributor of this table's underlying data, not the originating rightsholder: AAP's own Table 1 title attributes the data to a numbered external reference (\"ref 42\") within the clinical report's bibliography. That reference has not been retrieved or independently identified, so it is recorded here as a distinct, currently-unassessed third-party rightsholder in addition to the American Academy of Pediatrics."
+          }
+        ],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "reference_interval_values",
+          "component_locator": "modules/anemia/reference-ranges.json .ranges[] — 4 age bands (\"6 to <24 months\", \"2 to <6 years\", \"6 to <12 years\", \"12 to <18 years\") x 2 sexes (female/male) x 4 fields (hbLower, mcvLower, mcvUpper, rdwUpper) = 32 numeric values, re-expressed from AAP2026_IDA Table 1 (Pediatrics 2026;158(1):e2026077414); see modules/anemia/evidence.json AAP2026_IDA#ev_002 for the table-level source locator",
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Triage-only (EPR1-T1, FR-WP1-01). No rights assessment of these 32 values has been performed; a formal component-level decision awaits EP-R2 source-rights metadata work and OQ-1 (decisions-block.md — whether reference-interval thresholds are measured/facts-strong or committee-judged)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "epr1-t1-reference-ranges-rights-record",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "EP-R2 source-rights metadata work formally assesses AAP2026_IDA access basis and copyright status",
+          "the AAP Table 1 \"(ref 42)\" third-party source is identified and independently assessed",
+          "OQ-1 (decisions-block.md) resolves whether reference-interval thresholds are measured/facts-strong or committee-judged"
+        ],
+        "notes": "Triage-only record (EPR1-T1, FR-WP1-01). Names the derived-fact channel explicitly: modules/anemia/reference-ranges.json -> deriveFacts() (modules/anemia/facts.anemia.js) -> all 91 rules in modules/anemia/rules.json. This channel sits outside the passage-level gating that covers the 32 AAP-citing rules gated via modules/anemia/evidence.json (findings §4, .claude/findings/rights-governance-spec-v1.0-review-findings.md — \"the single most actionable technical finding in this review\"). modules/anemia/reference-ranges.json also ships byte-identical to the browser SPA build (dist/modules/anemia/reference-ranges.json) — same content, two distribution surfaces (findings §4). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2. This record changes no value in reference-ranges.json and does not alter deriveFacts() behaviour (FR-WP1-04). record_scope: source_component — this record assesses reference-ranges.json as a component derived from the AAP2026_IDA source already tracked by RR-AAP2026_IDA; it does not replace or restate that source-level record."
       },
       "extensions": {}
     }
