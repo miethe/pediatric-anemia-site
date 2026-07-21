@@ -205,7 +205,7 @@
           }
         },
         {
-          "description": "Reviewer-gate re-review fix (finding B): the other half of the source-supported<=>empty-reviewFlags biconditional. Without this, {status: \"quarantined\", reviewFlags: []} validated — a record could claim the defect-flag status while carrying none of the flags that justify it. `status: \"quarantined\"` now requires at least one reviewFlags entry, so `quarantined` and `reviewFlags: []` can never coexist (mirrors the source-supported=>empty-flags rule above, in the opposite direction).",
+          "description": "Reviewer-gate re-review fix (finding B). SCOPE, stated precisely (corrected in the fourth pass, which flagged the earlier wording as overstated): the equivalence holds only over LOCATED records — source-supported means empty reviewFlags, and quarantined means non-empty reviewFlags. It is NOT a global property of every passage: the six implementation-proposal sentinels legitimately carry empty reviewFlags without being source-supported, because they assert no located passage at all. This clause is the quarantined-implies-non-empty half. Without this, {status: \"quarantined\", reviewFlags: []} validated — a record could claim the defect-flag status while carrying none of the flags that justify it. `status: \"quarantined\"` now requires at least one reviewFlags entry, so `quarantined` and `reviewFlags: []` can never coexist (mirrors the source-supported=>empty-flags rule above, in the opposite direction).",
           "if": {
             "type": "object",
             "required": ["status"],

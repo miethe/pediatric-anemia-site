@@ -12,7 +12,7 @@
     "category": { "type": "string" },
     "summary": { "type": "string" },
     "defaultNextSteps": { "type": "array", "items": { "type": "string" } },
-    "evidence": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+    "evidence": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" }, "description": "At least one cited source. `minItems: 1` added per reviewer gate (fourth pass): an empty array made the cross-source grounding check unenforceable, since there was no cited source for a bound passage to belong to." },
     "sourcePassageId": {
       "type": ["string", "null"],
       "pattern": "^[A-Z0-9_]+#(ev_[0-9]{3}|implementation-proposal)$",

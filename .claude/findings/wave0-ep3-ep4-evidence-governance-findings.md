@@ -71,8 +71,10 @@ introduced by this phase — the phase merely made it visible and machine-checka
 
 ## Reviewer-gate findings (2026-07-21, `gpt-5.6-sol`, verdict: CHANGES REQUIRED)
 
-Report: `docs/audits/ep3-ep4-reviewer-gate-2026-07-21.md`. All eight were remediated in `8a6ddc7`
-and `aabc24e`.
+Report: `docs/audits/ep3-ep4-reviewer-gate-2026-07-21.md`. The gate ran **four passes**; the first
+three returned CHANGES REQUIRED and each found real defects in the previous round's remediation.
+Remediation landed across `8a6ddc7`, `aabc24e`, `7b62a90`, `7cf036c`, `34ebb4e` and the final
+fourth-pass fixes.
 
 | ID | Sev | Finding | Disposition |
 |---|---|---|---|
@@ -90,11 +92,29 @@ a safety claim written into this phase's own code and test, asserting a protecti
 exist. It passed 622 tests and two prior self-reviews. Only the adversarial cross-family gate caught
 it, which is the argument for keeping that gate mandatory rather than advisory.
 
+### Later passes (the remediation kept being wrong)
+
+| ID | Sev | Finding | Disposition |
+|---|---|---|---|
+| RG-9 | high | The attestation gate lived only in the generator scripts, so a hand-edited `rules.json` pointing at a clean source-supported passage passed `validate-kb` with exit 0 — and could bind cross-source | Ledger moved to committed `evidence-packs/passage-attestations.json`, read by the validator; cross-source bindings rejected |
+| RG-10 | high | The validator matched ledger ids **without validating entry shape**, so `{ruleId, passageId}` with no attester — or one attested by `GPT-5 review agent` — authorised a binding | Ledger shape validated in the validator path; a malformed ledger authorises nothing |
+| RG-11 | high | Cross-source enforcement **failed open** on `evidence: []` — the case with the least provenance was the one skipped | Fails closed; `candidate.schema.json` now requires `minItems: 1` |
+| RG-12 | medium | `runRules()` is exported and evaluated poisoned rules without throwing, so "every evaluation path crosses the D-4 guard" was false | Guard moved to `runRules`, the lowest exported evaluation entry point |
+| RG-13 | low | The `source-supported ⇔ empty reviewFlags` claim was overstated globally — the 6 sentinels carry empty flags without being source-supported | Claim scoped to *located* records in the schema and pinned by a test |
+
+**The pattern across passes is the finding.** Three consecutive rounds of remediation each introduced
+or left a fail-open path, and every one shared a shape: a guarantee asserted at the place data is
+*produced*, or over the *happy path*, rather than over the data and entry points that actually
+exist. Each was caught only by an adversarial reviewer that executed the bypass instead of reading
+the code. For a repository whose core discipline is not over-claiming, "we enforce X" written in a
+comment above a check that does not enforce X is the highest-frequency defect observed in this
+phase — including several written by the orchestrator rather than by a delegate.
+
 ## Residual gaps added by the reviewer gate
 
 | ID | Gap |
 |---|---|
-| R-6 | Candidate (`candidate.evidence[]`) still resolves only to a passage-bearing *source*, not an exact passage; the SPA and algorithm explorer still render source-ID chips with no passage/status awareness. Deliberately out of scope, not half-done. |
+| R-6 | **Candidate exact pointers are now CLOSED** (all 26 candidates carry a real `sourcePassageId`, validated against the actual pointer — reviewer pass 2, FIX-C). What remains open is UI only: the SPA and algorithm explorer still render source-ID chips with no passage/status awareness. Deliberately out of scope, not half-done. |
 | R-7 | **0 of 91 rules have source-supported grounding.** Every rule binds to an implementation-proposal sentinel. Closing this needs a human-attested rule to passage mapping — it cannot be produced mechanically, which is precisely what RG-1 demonstrated. |
 
 ## Related

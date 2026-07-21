@@ -233,3 +233,24 @@ test('every passage validates against the schema with reviewFlags/reviewFindingI
     assert.ok(Array.isArray(passage.reviewFindingIds), `passage ${passage.id} must carry a reviewFindingIds array`);
   }
 });
+
+// Reviewer gate, fourth pass: the earlier wording claimed a GLOBAL source-supported <=> empty-flags
+// equivalence. That is overstated — the six implementation-proposal sentinels carry empty flags
+// without being source-supported. This test pins the accurate, scoped invariant so the claim and
+// the code agree.
+test('the reviewFlags equivalence is scoped to LOCATED records, and sentinels are the explicit exception', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const evidence = JSON.parse(await readFile(new URL('../modules/anemia/evidence.json', import.meta.url), 'utf8'));
+  const passages = evidence.sources.flatMap((s) => s.passages ?? []);
+
+  const located = passages.filter((p) => p.status !== 'implementation-proposal');
+  for (const p of located) {
+    if (p.status === 'source-supported') assert.equal(p.reviewFlags.length, 0, `${p.id}`);
+    if (p.status === 'quarantined') assert.ok(p.reviewFlags.length > 0, `${p.id}`);
+  }
+
+  const sentinels = passages.filter((p) => p.status === 'implementation-proposal');
+  assert.ok(sentinels.length > 0);
+  assert.ok(sentinels.every((p) => p.reviewFlags.length === 0),
+    'sentinels carry empty flags and are NOT source-supported — this is why the equivalence is scoped');
+});

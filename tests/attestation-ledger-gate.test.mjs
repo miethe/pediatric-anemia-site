@@ -143,3 +143,51 @@ test('the automated-identifier pattern rejects the identifiers that would actual
     assert.doesNotMatch(name, AUTOMATED_IDENTIFIER_PATTERN, `${name} is a plausible human name and must be allowed`);
   }
 });
+
+// --- reviewer gate, FOURTH pass -------------------------------------------------------------
+// Two ways the gate still failed open, both found by the reviewer and both mine:
+//   (a) the validator matched ledger ids without ever validating the ledger ENTRY SHAPE, so
+//       `{ruleId, passageId}` with no attester, or one attested by "GPT-5 review agent", authorized
+//       a binding. Checking equality against an unvalidated record is not an attestation gate.
+//   (b) the cross-source check skipped entities whose `evidence` array was empty — i.e. it failed
+//       open on exactly the case with the least provenance.
+
+test('a ledger entry with no attester authorises NOTHING', async () => {
+  const index = await passageIndex();
+  const passage = firstBindable(index);
+  const errors = gate(
+    [{ id: 'SCOPE-001', evidence: [passage.sourceId], sourcePassageId: passage.id }],
+    index,
+    [{ ruleId: 'SCOPE-001', passageId: passage.id }], // shape-invalid: no attestedBy/credential/date/ref
+  );
+  assert.ok(errors.length > 0, 'a malformed ledger entry must not authorise a source-supported binding');
+  assert.ok(errors.some((e) => /ledger is invalid|no matching attestation/.test(e)));
+});
+
+test('a ledger entry attested by an automated identifier authorises NOTHING', async () => {
+  const index = await passageIndex();
+  const passage = firstBindable(index);
+  const errors = gate(
+    [{ id: 'SCOPE-001', evidence: [passage.sourceId], sourcePassageId: passage.id }],
+    index,
+    [{
+      ruleId: 'SCOPE-001', passageId: passage.id,
+      attestedBy: 'GPT-5 review agent', credential: 'automated', attestedOn: '2026-07-21',
+      attestationRef: 'docs/x.md',
+    }],
+  );
+  assert.ok(errors.length > 0, 'a model/agent attester must not authorise a clinical grounding claim');
+});
+
+test('cross-source enforcement FAILS CLOSED when the entity cites no sources at all', async () => {
+  const index = await passageIndex();
+  const passage = firstBindable(index);
+  const attestations = [{
+    ruleId: 'C-1', passageId: passage.id, attestedBy: 'J. Okonkwo',
+    credential: 'MD', attestedOn: '2026-07-21', attestationRef: 'docs/x.md',
+  }];
+  const errors = gate([{ id: 'C-1', evidence: [], sourcePassageId: passage.id }], index, attestations);
+  assert.ok(errors.some((e) => /cites no evidence sources/.test(e)),
+    'an entity citing nothing must not be groundable by any passage — the previous guard skipped '
+    + 'exactly the case with the least provenance');
+});

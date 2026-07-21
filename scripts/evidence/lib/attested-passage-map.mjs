@@ -123,9 +123,29 @@ export function loadAttestationLedger() {
  * @returns {string[]} error strings; empty when every binding is legitimate.
  */
 export function validateBindingsAgainstLedger({
-  moduleId, entities, idField, attestations, passageIndex, isBindableAsSourceSupported,
+  moduleId, entities, idField, attestations: rawAttestations, passageIndex, isBindableAsSourceSupported,
 }) {
+  let attestations = rawAttestations;
   const errors = [];
+
+  // The committed ledger's own SHAPE must be validated here, not only in the generators (reviewer
+  // gate, fourth pass). Previously this function matched ids and passage ids directly, so a ledger
+  // entry of `{ruleId, passageId}` with no attester at all — or one attested by an automated
+  // identifier like "GPT-5 review agent" — authorized a source-supported binding. Checking equality
+  // against an unvalidated record is not an attestation gate.
+  try {
+    validateAttestationEntries(
+      attestations, idField,
+      { passagesFor: (sourceId) => [...passageIndex.values()].filter((p) => p.sourceId === sourceId), isBindableAsSourceSupported },
+      `evidence-packs/passage-attestations.json#${idField === 'ruleId' ? 'rules' : 'candidates'}`,
+    );
+  } catch (error) {
+    errors.push(`${moduleId}: attestation ledger is invalid — ${error.message}`);
+    // A malformed ledger authorizes NOTHING: fall through with an empty attestation set so every
+    // source-supported binding below is rejected for lack of a (valid) attestation.
+    attestations = [];
+  }
+
   const attestedFor = new Map(attestations.map((entry) => [entry[idField], entry.passageId]));
 
   for (const entity of entities) {
@@ -135,8 +155,16 @@ export function validateBindingsAgainstLedger({
     if (!passage) continue; // "does not resolve" is reported by the caller's own check
 
     // (1) cross-source binding: the passage must belong to a source this entity actually cites.
+    // FAILS CLOSED on an absent/empty `evidence` array (reviewer gate, fourth pass): the previous
+    // `cited.length > 0` guard meant an entity citing NOTHING could be grounded by any passage at
+    // all — the check silently skipped exactly the case with the least provenance.
     const cited = Array.isArray(entity.evidence) ? entity.evidence : [];
-    if (passage.sourceId && cited.length > 0 && !cited.includes(passage.sourceId)) {
+    if (cited.length === 0) {
+      errors.push(
+        `${moduleId}/${entity.id}: has sourcePassageId "${pointer}" but cites no evidence sources at `
+        + 'all, so no passage can legitimately ground it.',
+      );
+    } else if (passage.sourceId && !cited.includes(passage.sourceId)) {
       errors.push(
         `${moduleId}/${entity.id}: sourcePassageId "${pointer}" belongs to source "${passage.sourceId}", `
         + `which this entity does not cite (evidence: ${JSON.stringify(cited)}). A rule may only be `

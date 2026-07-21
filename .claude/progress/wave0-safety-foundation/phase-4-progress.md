@@ -129,8 +129,8 @@ success_criteria:
 - id: SC-3
   description: 'AC-WP4-RESIL: absent governance fields never misread as errors or
     as exemptions (EP4-T4)'
-  status: partial
-  note: "Semantics implemented and unit-tested in src/governance.js, and the false anti-truthiness claim was retracted. Production wiring was flagged by the reviewer as absent and is being addressed; until it lands, the semantics are asserted in isolation rather than exercised on a real evaluation path."
+  status: completed
+  note: "Semantics implemented in src/governance.js and now WIRED into a real path — engine.js attaches hasCredentialedClinicalApproval/isActive to provenance.ruleAudit (reviewer pass 2, FIX-F). The false anti-truthiness claim was retracted at both sites."
 - id: SC-4
   description: npm run check green
   status: completed

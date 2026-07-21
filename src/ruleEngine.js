@@ -106,7 +106,34 @@ function mergeCandidate(store, rule, facts, catalog) {
   store.set(id, current);
 }
 
+/**
+ * D-4 RUNTIME GUARANTEE (reviewer gate, fourth pass, 2026-07-21).
+ *
+ * This lived in src/engine.js `assess()`. The reviewer showed that `runRules()` is itself exported
+ * and evaluated the same poisoned rules without complaint, so "every evaluation path crosses the
+ * guard" was false. The guard belongs at the LOWEST exported evaluation entry point, which is here:
+ * every caller — assess(), and any direct consumer of runRules() — now crosses it.
+ *
+ * No credentialed human clinician has approved any rule in this knowledge base. A rule arriving
+ * here with a non-empty `clinicalApprovers` is a false claim of clinical sign-off, and evaluation
+ * refuses rather than emitting output that carries it.
+ */
+export function assertNoClaimedClinicalApproval(rules) {
+  const offenders = (Array.isArray(rules) ? rules : [])
+    .filter((rule) => Array.isArray(rule?.clinicalApprovers) && rule.clinicalApprovers.length > 0)
+    .map((rule) => rule.id);
+  if (offenders.length > 0) {
+    throw new Error(
+      `D-4 VIOLATION — refusing to evaluate: ${offenders.length} rule(s) claim credentialed clinical `
+      + `approval that does not exist (${offenders.slice(0, 5).join(', ')}${offenders.length > 5 ? ', …' : ''}). `
+      + 'clinicalApprovers[] must be empty; no synthetic review (ARC council, council-review, rf '
+      + 'verification, or model self-attestation) may populate it.',
+    );
+  }
+}
+
 export function runRules(facts, rules, catalog = {}) {
+  assertNoClaimedClinicalApproval(rules);
   const candidates = new Map();
   const alerts = [];
   const questions = [];
