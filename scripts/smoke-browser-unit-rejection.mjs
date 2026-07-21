@@ -160,20 +160,37 @@ assert.match(rejectionBody, /currentAudit\s*=\s*null/);
 assert.match(rejectionBody, /\$\('#results'\)\.hidden\s*=\s*true/);
 assert.match(rejectionBody, /\$\('#results-placeholder'\)\.hidden\s*=\s*false/);
 assert.match(rejectionBody, /escapeHtml\(error\.message\)/);
-assert.match(rejectionBody, /detail\.expectedUnit/);
+// EP5-T6 refactored per-field rendering out of showInputRejection() into formatRejectionDetail(),
+// so the two rejection kinds (UNIT_REJECTED and AGE_OUT_OF_SUPPORTED_RANGE) share one renderer.
+// The substantive requirement is unchanged and is asserted through the delegation chain rather
+// than relaxed: the rejection path must still render a per-field expected unit.
+assert.match(rejectionBody, /formatRejectionDetail\(/, 'showInputRejection() must delegate per-field rendering');
+const rejectionDetailBody = functionBody(appSource, 'formatRejectionDetail');
+assert.match(rejectionDetailBody, /detail\.expectedUnit/, 'the per-field rejection renderer must still surface the expected unit');
+// ARCH §10 condition 2 in browser mode: an out-of-supported-range age must present a clear
+// "no assessment produced" state, not a partial result.
+assert.match(rejectionBody, /AGE_OUT_OF_SUPPORTED_RANGE/, 'the rejection UI must handle the age-scope refusal');
+assert.match(rejectionBody, /No assessment produced/, 'the age-scope refusal must render an explicit no-assessment-produced state');
 assert.doesNotMatch(rejectionBody, /form\.reset\s*\(/, 'the rejection UI must not clear clinician-entered form values');
 assert.match(fatalBody, /Application error/);
 assert.match(rejectionBody, /Check the entered units/);
 
 const loadExampleBody = functionBody(appSource, 'loadExample');
 assert.match(loadExampleBody, /assessPediatricAnemia\(input, rules, candidates\)/);
-assert.match(loadExampleBody, /error\.code\s*===\s*['"]UNIT_REJECTED['"]/);
+// EP5-T6 generalized the two rejection codes into a shared INPUT_REJECTION_CODES set, so the
+// dispatch is set-membership rather than a literal ===. Both codes must still be covered, and the
+// set itself is asserted below, so this is a follow-the-refactor change, not a relaxation.
+assert.match(loadExampleBody, /INPUT_REJECTION_CODES\.has\(error\.code\)/);
 assert.match(loadExampleBody, /showInputRejection\(error\)/);
 
 const submitBody = eventHandlerBody(appSource, 'submit');
 assert.match(submitBody, /const\s+input\s*=\s*buildInput\(\)/);
 assert.match(submitBody, /assessPediatricAnemia\(input, rules, candidates\)/);
-assert.match(submitBody, /error\.code\s*===\s*['"]UNIT_REJECTED['"]/);
+assert.match(submitBody, /INPUT_REJECTION_CODES\.has\(error\.code\)/);
+// The set must genuinely contain both rejection codes; without this the membership assertions above
+// would be satisfied by a set that dropped UNIT_REJECTED entirely.
+assert.match(appSource, /INPUT_REJECTION_CODES\s*=\s*new Set\(\[[^\]]*'UNIT_REJECTED'[^\]]*\]\)/);
+assert.match(appSource, /INPUT_REJECTION_CODES\s*=\s*new Set\(\[[^\]]*'AGE_OUT_OF_SUPPORTED_RANGE'[^\]]*\]\)/);
 assert.match(submitBody, /showInputRejection\(error\)/);
 assert.doesNotMatch(submitBody, /form\.reset\s*\(/, 'the submit rejection path must retain clinician-entered input');
 

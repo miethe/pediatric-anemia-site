@@ -20,9 +20,9 @@
   },
   "candidateBinding": {
     "knowledgeBaseVersion": "0.1.0-2026-07-15",
-    "rulesFileDigest": "sha256:d6df348b15c6a391afb51a7f9945d50cea89b26c2f4a1a7fd629de035cb62793",
+    "rulesFileDigest": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
     "candidatesFileDigest": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
-    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+    "moduleFileDigest": "sha256:57280d0461fcd3a8f1597805ccc11b93b7ff5b6ff6fb695c288da67f5cd6ba73"
   },
   "executionBinding": {
     "engine": "local-applicability-terminology",
@@ -36,13 +36,19 @@
     "terminologyObservation": {
       "id": "urn:synthetic:observation-dm-fhir-008",
       "resourceType": "Observation",
-      "candidate": { "candidateDigest": "sha256:a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4" },
+      "candidate": {
+        "candidateDigest": "sha256:a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4"
+      },
       "localCode": "SYN-LOCAL-UNMAPPED-9999",
       "localSystem": "https://example.org/synthetic-local-system",
       "status": "final",
       "statusLineage": {
         "complete": true,
-        "states": ["registered", "preliminary", "final"],
+        "states": [
+          "registered",
+          "preliminary",
+          "final"
+        ],
         "supersedingObservationRef": null
       },
       "effectiveDateTime": "2026-07-10T08:00:00Z",
@@ -61,7 +67,9 @@
     "requiredSignal": "FHIR status, code, units, effective time, specimen, or local mapping is incomplete. No clinical interpretation until required mapping/profile is verified.",
     "expectedAlerts": [],
     "expectedAbstention": null,
-    "expectedBlockers": ["UNMAPPED_LOCAL_CODE"],
+    "expectedBlockers": [
+      "UNMAPPED_LOCAL_CODE"
+    ],
     "forbiddenSignals": [
       "interpreting an unmapped local code as if it matched an approved standard code",
       "passing an unmapped observation through to the reference-interval layer uninterpreted"

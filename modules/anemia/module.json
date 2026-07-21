@@ -2,14 +2,18 @@
   "id": "anemia",
   "title": "Pediatric Anemia",
   "schemaVersion": 1,
-  "status": "unsigned-stub",
+  "status": "integrity-recorded",
   "knowledgeBaseVersion": "0.1.0-2026-07-15",
   "evidenceReviewedThrough": "2026-07-15",
   "engineLabel": "Pediatric Anemia Deterministic CDSS",
-  "supportedAgeMonths": { "min": 6, "max": 216 },
-  "clinicalContentHash": null,
+  "supportedAgeMonths": {
+    "min": 6,
+    "max": 216
+  },
+  "clinicalContentHash": "sha256:6b01b0ed7c8eabb0f54487445df5a0ecf8dde29d1116110f2e4ff044e194f922",
+  "governanceHash": "sha256:31db1196ca3231a43b12565e1512a4efd182d60e4db2f524f6cef6391728eff9",
   "approvedBy": [],
-  "validationRunId": null,
+  "validationRunId": "local-dev:unattested",
   "supersedes": null,
   "releasedAt": null
 }

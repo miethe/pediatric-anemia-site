@@ -12,6 +12,13 @@ let candidates = {};
 let currentAudit = null;
 let suppressResetHandler = false;
 
+// Fail-closed rejection codes handled by showInputRejection() below — docs/architecture.md §10
+// conditions 1 (UNIT_REJECTED, src/units.js/src/ranges/registry.js) and 2
+// (AGE_OUT_OF_SUPPORTED_RANGE, modules/anemia/facts.anemia.js). Both share the same thrown-error
+// shape (name/code/statusCode/details) so the browser path handles them identically: a clear "no
+// assessment produced" placeholder state, never a partial/stale result.
+const INPUT_REJECTION_CODES = new Set(['UNIT_REJECTED', 'AGE_OUT_OF_SUPPORTED_RANGE']);
+
 function escapeHtml(value) {
   return String(value ?? '')
     .replaceAll('&', '&amp;')
@@ -518,7 +525,7 @@ async function loadExample() {
     renderResult(result);
     refreshAuditView();
   } catch (error) {
-    if (error.code === 'UNIT_REJECTED') {
+    if (INPUT_REJECTION_CODES.has(error.code)) {
       showInputRejection(error);
       return;
     }
@@ -614,7 +621,7 @@ async function initialize() {
       renderResult(result);
       refreshAuditView();
     } catch (error) {
-      if (error.code === 'UNIT_REJECTED') showInputRejection(error);
+      if (INPUT_REJECTION_CODES.has(error.code)) showInputRejection(error);
       else throw error;
     }
   });
@@ -657,15 +664,31 @@ function showFatalError(error) {
   $('#results-placeholder').innerHTML = `<h2>Application error</h2><p>${escapeHtml(error.message)}</p>`;
 }
 
+// Renders one <li> per rejection detail. Unit rejections (docs/architecture.md §10 condition 1)
+// and age-scope rejections (condition 2) carry differently-shaped detail records, so each is
+// formatted on its own terms rather than forcing one generic shape.
+function formatRejectionDetail(error, detail) {
+  if (error.code === 'AGE_OUT_OF_SUPPORTED_RANGE') {
+    const supported = detail.supportedAgeMonths;
+    const range = supported ? `${escapeHtml(String(supported.min))}–${escapeHtml(String(supported.max))}` : 'unknown';
+    return `<li>Age <strong>${escapeHtml(String(detail.ageMonths))} months</strong> is outside the supported `
+      + `${range} month range, and no local CBC reference limits (hemoglobin/MCV) were supplied to cover it.</li>`;
+  }
+  return `<li><strong>${escapeHtml(detail.field)}</strong>: entered "${escapeHtml(detail.providedUnit)}", expected ${escapeHtml(detail.expectedUnit)}</li>`;
+}
+
 function showInputRejection(error) {
   currentAudit = null;
   $('#results').hidden = true;
   $('#results-placeholder').hidden = false;
   const details = Array.isArray(error.details) ? error.details : [];
+  const heading = error.code === 'AGE_OUT_OF_SUPPORTED_RANGE'
+    ? 'No assessment produced — age outside supported range'
+    : 'Check the entered units';
   $('#results-placeholder').innerHTML = `
-    <h2>Check the entered units</h2>
+    <h2>${heading}</h2>
     <p>${escapeHtml(error.message)}</p>
-    <ul>${details.map((detail) => `<li><strong>${escapeHtml(detail.field)}</strong>: entered "${escapeHtml(detail.providedUnit)}", expected ${escapeHtml(detail.expectedUnit)}</li>`).join('')}</ul>`;
+    <ul>${details.map((detail) => formatRejectionDetail(error, detail)).join('')}</ul>`;
   refreshAuditView();
 }
 

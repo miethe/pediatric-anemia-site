@@ -112,9 +112,14 @@ insufficient, because a paragraph is exactly what let this defect live outside A
 | `evidence` | The concrete grep/read evidence the status was verified against |
 | `finding` | Non-null, owned, blocking exactly when `status: repository_only_not_reachable_by_deployed_app` (schema `if/then`, same pattern as §1) |
 
-Result: `DM-CBC-001`, `DM-HEME-002`, `DM-AGE-003`, `DM-URGENT-004`, and `DM-IRON-006` (the five
-`engine_rule` rows) are `reachable_in_shipped_product` — `src/app.js` really does call
-`assessPediatricAnemia`, and every field those rows' rule(s) key off is on the shipped input schema.
+Result: `DM-CBC-001`, `DM-HEME-002`, `DM-AGE-003`, `DM-URGENT-004`, and `DM-IRON-006` are
+`reachable_in_shipped_product` — `src/app.js` really does call `assessPediatricAnemia`, and every
+field those rows' control(s) key off is on the shipped input schema. Four of the five
+(`DM-CBC-001`, `DM-HEME-002`, `DM-URGENT-004`, `DM-IRON-006`) are `engine_rule` rows; `DM-AGE-003`
+was `engine_rule` until EP5-T6 (2026-07-21, `docs/architecture.md` ARCH §10 condition 2) rebound it
+to `applicability_blocker` — its control is now `src/engine.js#assess()`'s own age-scope refusal
+(`AgeOutOfSupportedRangeError`), which runs BEFORE rule evaluation, not a rule that fires. See that
+row's `controlBinding.rationale` for the full account, including the taxonomy caveat.
 `DM-LAB-005`, `DM-RESULT-007`, and `DM-FHIR-008` are now `repository_only_not_reachable_by_deployed_app`,
 each carrying a new critical, owned finding (`PAC-P4T2-003`/`004`/`005`, `local-laboratory-director` /
 `clinical-informatics-and-privacy-owner`). **Wiring the evaluator into the product is explicitly OUT OF
@@ -184,7 +189,7 @@ actually protects the deployed app today. See §1a.
 |---|---|---|---|---|---|---|---|
 | `DM-CBC-001` | engine rule | `ALERT-004`, `ALERT-005`, `ALERT-009`, `MARROW-001/002/003` | `reachable_in_shipped_product` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `pediatric-safety-human-factors-reviewer` | `pediatric-safety-owner` |
 | `DM-HEME-002` | engine rule | `HEM-003` | `reachable_in_shipped_product` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `pediatric-hematology-reviewer` | `pediatric-safety-owner` |
-| `DM-AGE-003` | engine rule | `SCOPE-001`, `SCOPE-003` | `reachable_in_shipped_product` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `general-pediatrics-reviewer` | `pediatric-safety-owner` |
+| `DM-AGE-003` | applicability blocker (engine-native, not P3 -- see row rationale) | `AGE_OUT_OF_SUPPORTED_RANGE` | `reachable_in_shipped_product` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `general-pediatrics-reviewer` | `pediatric-safety-owner` |
 | `DM-URGENT-004` | engine rule | `ALERT-001`, `ALERT-009` | `reachable_in_shipped_product` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `pediatric-safety-human-factors-reviewer` | `pediatric-safety-owner` |
 | `DM-IRON-006` | engine rule | `Q-MICRO-001`, `Q-MICRO-005` | `reachable_in_shipped_product` | positive + negative | `modules/anemia/{rules,candidates,module}.json` | `pediatric-hematology-reviewer` | `pediatric-safety-owner` |
 | `DM-LAB-005` | applicability blocker | `SPECIMEN_MISMATCH`, `ANALYZER_MISMATCH`, `METHOD_MISMATCH`, `UNIT_MISMATCH` | **`repository_only_not_reachable_by_deployed_app`** | positive + negative | `SYNTHETIC-reference-interval-profile` | `pediatric-laboratory-medicine-reviewer` | `local-laboratory-director` |
@@ -326,3 +331,33 @@ explicit UNSCHEDULED/owner-held marker rather than an invented task id; `PAC-P4T
 are correctly scoped (equity and alert-lifecycle respectively are both named in P4-T4's own description)
 — no other `blockedOnTask` in the matrix was found misrouted. No clinical content was authored or
 modified.
+
+**1.2.0 — `DM-AGE-003` control rebinding: EP5-T6 hardens the young-infant scope exit from a soft
+alert-based abstention to a genuine engine-level refusal (`docs/architecture.md` ARCH §10 condition
+2, wave0-safety-foundation-v1 Phase EP-5).** Before this revision, `assessPediatricAnemia` returned
+a normally-shaped result for an age outside `modules/anemia/module.json`'s `supportedAgeMonths`
+with no local reference limits supplied — `classification.anemiaStatus: "indeterminate"`, an empty
+`rankedDifferential`, and `SCOPE-001`/`SCOPE-003` alerts. ARCH §10 requires the stronger "refuse to
+assess (not merely narrow limitations text)" / "clear 'no assessment produced' state" behavior;
+`src/engine.js#assess()` now calls the anemia module's `assertInScope` hook
+(`modules/anemia/facts.anemia.js#assertAgeWithinSupportedScope`), which throws
+`AgeOutOfSupportedRangeError` (code `AGE_OUT_OF_SUPPORTED_RANGE`) before any rule ever evaluates,
+whenever age is outside the supported range and `cbc.localRanges.{hbLower,mcvLower,mcvUpper}` do
+not cover it. `DM-AGE-003`'s fixture (no local ranges) now falls into this refusal, so its row's
+`controlBinding` is rebound from `engine_rule` (`SCOPE-001`, `SCOPE-003`) to `applicability_blocker`
+(`AGE_OUT_OF_SUPPORTED_RANGE`) — see the row's own `rationale` for the honest taxonomy caveat (the
+mechanism is `src/engine.js`'s own age-scope refusal, not the P3 `scripts/lib/local-applicability.mjs`
+subsystem the other `applicability_blocker` rows actually use; a dedicated `controlType` enum value
+would describe it more precisely and is flagged here for a future schema amendment rather than
+invented unilaterally in this pass). `scenarioRef.fixtureDigest`, `expectedBehavior`, and
+`expectedTrace` in the P4-T1 fixture were all updated to match (type `fail_closed`, no expected
+alerts, `expectedBlockers: ["AGE_OUT_OF_SUPPORTED_RANGE"]`); `tests/dangerous-miss-scenarios.test.mjs`'s
+`DM-AGE-003` positive test now asserts the throw directly, and its `requiredTests.testMarkers` entry
+was updated to the new test title. `productIntegration.status` is unchanged
+(`reachable_in_shipped_product` — if anything, the new mechanism is MORE directly in `src/engine.js`'s
+own boundary than a rule match was). `SCOPE-001`/`SCOPE-003` are still real, tested rules: they now
+fire only when a caller supplies local ranges for an out-of-range age (the refusal's documented
+carve-out), witnessed by `tests/witness/alerts/scope-neonatal-young-infant.json`/
+`scope-outside-pediatric-range.json` (both updated to supply synthetic local ranges so they still
+reach the rules through the hardened `assess()` boundary) and `tests/witness/alerts.test.mjs`. No
+other row's `controlBinding`, clinical content, rule, or threshold was authored or modified.

@@ -86,10 +86,29 @@ test('elevated capillary lead triggers confirmation alert and lead pathway', asy
   assert.equal(lead.level, 'meets-defined-pattern');
 });
 
-test('young infant is not forced through built-in thresholds', () => {
-  const result = assess({ patient: { ageMonths: 2, sexAtBirth: 'female' }, cbc: { hemoglobin: 9, mcv: 90 } });
-  assert.equal(result.classification.anemiaStatus, 'indeterminate');
-  assert.ok(result.alerts.some((entry) => entry.id === 'SCOPE-001'));
+// EP5-T6 (ARCH §10 condition 2) hardened this from a soft abstention to a refusal. The original
+// intent — a young infant must never be forced through the built-in 6-24-month thresholds — is
+// preserved and strengthened: the engine now refuses before any rule evaluates, so there is no
+// result object to carry a fallback threshold at all. The pre-EP5-T6 behavior returned a normal
+// result with anemiaStatus 'indeterminate' plus SCOPE-001; the plan required "refuse to assess
+// (not merely narrow limitations text)", which that did not meet.
+test('young infant outside the supported age range is refused, not forced through built-in thresholds', () => {
+  assert.throws(
+    () => assess({ patient: { ageMonths: 2, sexAtBirth: 'female' }, cbc: { hemoglobin: 9, mcv: 90 } }),
+    (error) => error.code === 'AGE_OUT_OF_SUPPORTED_RANGE',
+    'an age below supportedAgeMonths.min with no local limits must refuse to produce an assessment',
+  );
+});
+
+// The documented carve-out: supplying local reference limits that cover the age means the module is
+// no longer relying on out-of-scope built-in intervals, so it proceeds normally.
+test('young infant WITH local reference limits supplied is assessed normally (the carve-out)', () => {
+  const result = assess({
+    patient: { ageMonths: 2, sexAtBirth: 'female' },
+    cbc: { hemoglobin: 9, mcv: 90, localRanges: { hbLower: 9.5, mcvLower: 75, mcvUpper: 95 } },
+  });
+  assert.ok(result, 'a result must be produced when local limits cover the out-of-range age');
+  assert.ok(result.classification, 'the carve-out path must still produce a classification');
 });
 
 test('rule execution is deterministic for identical input', async () => {

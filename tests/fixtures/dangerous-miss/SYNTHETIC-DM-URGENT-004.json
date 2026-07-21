@@ -20,9 +20,9 @@
   },
   "candidateBinding": {
     "knowledgeBaseVersion": "0.1.0-2026-07-15",
-    "rulesFileDigest": "sha256:d6df348b15c6a391afb51a7f9945d50cea89b26c2f4a1a7fd629de035cb62793",
+    "rulesFileDigest": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
     "candidatesFileDigest": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
-    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+    "moduleFileDigest": "sha256:57280d0461fcd3a8f1597805ccc11b93b7ff5b6ff6fb695c288da67f5cd6ba73"
   },
   "executionBinding": {
     "engine": "anemia-assessment-engine",
@@ -32,16 +32,31 @@
   "input": {
     "kind": "patientInput",
     "patientInput": {
-      "patient": { "ageMonths": 48, "sexAtBirth": "female", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
+      "patient": {
+        "ageMonths": 48,
+        "sexAtBirth": "female",
+        "menstruating": false,
+        "recentTransfusion": false,
+        "highAltitude": false
+      },
       "cbc": {
         "hemoglobin": 5.2,
         "mcv": 82,
         "anc": 0.3,
-        "localRanges": { "ancLower": 1.5 },
-        "localFlags": { "neutropenia": true }
+        "localRanges": {
+          "ancLower": 1.5
+        },
+        "localFlags": {
+          "neutropenia": true
+        }
       },
-      "reticulocytes": { "response": "low" },
-      "symptoms": { "fever": true, "hemodynamicInstability": true },
+      "reticulocytes": {
+        "response": "low"
+      },
+      "symptoms": {
+        "fever": true,
+        "hemodynamicInstability": true
+      },
       "history": {},
       "exam": {},
       "labs": {},
@@ -55,10 +70,22 @@
     "type": "alert_dominance",
     "requiredSignal": "An urgent instability/critical-result condition must outrank explanatory pathway content. Urgent-alert dominance and clinician escalation wording, without treatment instruction.",
     "expectedAlerts": [
-      { "id": "ALERT-009", "severity": "emergency" },
-      { "id": "ALERT-001", "severity": "emergency" },
-      { "id": "ALERT-004", "severity": "urgent" },
-      { "id": "ALERT-003", "severity": "urgent" }
+      {
+        "id": "ALERT-009",
+        "severity": "emergency"
+      },
+      {
+        "id": "ALERT-001",
+        "severity": "emergency"
+      },
+      {
+        "id": "ALERT-004",
+        "severity": "urgent"
+      },
+      {
+        "id": "ALERT-003",
+        "severity": "urgent"
+      }
     ],
     "expectedAbstention": null,
     "expectedBlockers": [],
@@ -69,7 +96,10 @@
   },
   "expectedTrace": {
     "mechanism": "rule_audit",
-    "matchedRuleIdsMustInclude": ["ALERT-001", "ALERT-009"],
+    "matchedRuleIdsMustInclude": [
+      "ALERT-001",
+      "ALERT-009"
+    ],
     "note": "Verified by direct execution on 2026-07-19. Both ALERT-001 (instability) and ALERT-009 (fever+neutropenia) fire at emergency severity; all alert action strings direct escalation/pathway use (e.g. 'Use the local febrile-neutropenia/emergency pathway immediately.') and none specify a drug, dose, or transfusion volume."
   },
   "rollbackSignal": "Re-verify by execution if modules/anemia/rules.json, candidates.json, or module.json digests change, or if ALERT-001/003/004/009 conditions or action text are edited.",

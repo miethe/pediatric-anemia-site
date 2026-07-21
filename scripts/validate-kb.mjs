@@ -367,6 +367,7 @@ export async function validateModule(moduleId, rootDir) {
   const ruleSchema = await readJson(path.join(rootDir, 'schemas', 'rule.schema.json'));
   const candidateSchema = await readJson(path.join(rootDir, 'schemas', 'candidate.schema.json'));
   const evidenceSchema = await readJson(path.join(rootDir, 'schemas', 'evidence.schema.json'));
+  const manifestSchema = await readJson(path.join(rootDir, 'schemas', 'module-manifest.schema.json'));
   const rules = await readJson(path.join(moduleDir, 'rules.json'));
   const candidates = await readJson(path.join(moduleDir, 'candidates.json'));
   // Read the module's evidence.json directly. This is the only evidence source now (DEF-1,
@@ -490,7 +491,19 @@ export async function validateModule(moduleId, rootDir) {
   // module.json (manifest) is a required per-module file as of Phase 6 (P6-T1). It is read
   // directly here so this check catches an unparsable/missing manifest as a validation error
   // rather than a silent gap.
+  //
+  // EP5-T2 (DEF-5): the manifest's shape — field presence/types, the SPIKE-006 RQ4 `status`
+  // enum, the two-part digest pattern, and the AC-WP5-RESIL must-not-be-empty-vs-legitimately-
+  // empty distinction (via schemas/module-manifest.schema.json's `allOf`/`if`/`then`/`else`) — is
+  // now governed by that schema, superseding the ad-hoc field-presence checks that used to live
+  // only here. What the schema genuinely cannot express is kept here instead: `id` matching the
+  // module's own directory name (the schema has no filesystem access) and cross-file version
+  // agreement with src/evidence.js (DEF-1's drift check, already removed above — see the comment
+  // a few lines down).
   const manifest = await readJson(path.join(moduleDir, 'module.json'));
+  for (const schemaError of validate(manifestSchema, manifest)) {
+    errors.push(`${moduleId}/module.json: module-manifest.schema.json ${schemaError.path}: ${schemaError.message}`);
+  }
   if (manifest.id !== moduleId) {
     errors.push(`${moduleId}/module.json: id "${manifest.id}" does not match directory name "${moduleId}"`);
   }

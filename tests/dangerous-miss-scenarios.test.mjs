@@ -319,19 +319,29 @@ test('DM-HEME-002 REGRESSION (P4-V1 R2): hemolysis markers positive WITH retic.r
 
 // === DM-AGE-003: young-infant scope exit must not silently use a fallback interval ===
 
-test('DM-AGE-003: an age below the 6-month built-in floor abstains rather than using a fallback interval', () => {
+test('DM-AGE-003: an age below the 6-month built-in floor with no local ranges fails closed -- assess() refuses to produce an assessment', () => {
   const scenario = byHazard['DM-AGE-003'];
   const errors = validate(patientInputSchema, scenario.input.patientInput);
   assert.deepEqual(errors, [], 'patientInput must validate against patient-input.schema.json');
 
-  const result = assess(scenario.input.patientInput);
-  assert.equal(result.classification.anemiaStatus, 'indeterminate');
-  assert.equal(result.classification.morphology, 'indeterminate');
-  assert.equal(result.classification.thresholdSource, null, 'no built-in interval may be silently applied below 6 months');
-  assert.equal(result.classification.ageBand, null);
-  assert.equal(result.rankedDifferential.length, 0);
-  assertExpectedAlertsPresent(result, scenario.expectedBehavior.expectedAlerts, 'DM-AGE-003');
-  assertMatchedRuleIdsInclude(result, scenario.expectedTrace.matchedRuleIdsMustInclude, 'DM-AGE-003');
+  // EP5-T6 (ARCH §10 condition 2): "refuse to assess (not merely narrow limitations text)"
+  // supersedes this scenario's original 2026-07-19 expectation that assess() returns a normal,
+  // indeterminate-but-populated result with SCOPE-001/SCOPE-003 alerts. It now refuses outright —
+  // see expectedBehavior/expectedTrace in the fixture and their embedded rationale.
+  assert.equal(scenario.expectedBehavior.type, 'fail_closed');
+  assert.deepEqual(scenario.expectedBehavior.expectedAlerts, []);
+  assert.equal(scenario.expectedBehavior.expectedAbstention, null);
+
+  assert.throws(
+    () => assess(scenario.input.patientInput),
+    (error) => {
+      assert.equal(error.code, scenario.expectedBehavior.expectedBlockers[0], 'DM-AGE-003: unexpected rejection code');
+      assert.equal(error.statusCode, 400);
+      assert.equal(error.details?.[0]?.ageMonths, scenario.input.patientInput.patient.ageMonths);
+      return true;
+    },
+    'DM-AGE-003: an age outside the supported range with no local reference limits must refuse to produce an assessment, never return a silently-indeterminate result',
+  );
 });
 
 test('DM-AGE-003 NEGATIVE: the same CBC at a supported age resolves a real threshold (proves indeterminate was driven by age, not the CBC values)', () => {

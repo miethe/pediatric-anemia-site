@@ -20,9 +20,9 @@
   },
   "candidateBinding": {
     "knowledgeBaseVersion": "0.1.0-2026-07-15",
-    "rulesFileDigest": "sha256:d6df348b15c6a391afb51a7f9945d50cea89b26c2f4a1a7fd629de035cb62793",
+    "rulesFileDigest": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
     "candidatesFileDigest": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
-    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+    "moduleFileDigest": "sha256:57280d0461fcd3a8f1597805ccc11b93b7ff5b6ff6fb695c288da67f5cd6ba73"
   },
   "executionBinding": {
     "engine": "anemia-assessment-engine",
@@ -32,10 +32,26 @@
   "input": {
     "kind": "patientInput",
     "patientInput": {
-      "patient": { "ageMonths": 30, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
-      "cbc": { "hemoglobin": 9.8, "mcv": 74 },
-      "reticulocytes": { "response": "low" },
-      "labs": { "crpStatus": "elevated", "ferritinStatus": "unknown", "tsatStatus": "unknown", "tibcStatus": "unknown" },
+      "patient": {
+        "ageMonths": 30,
+        "sexAtBirth": "male",
+        "menstruating": false,
+        "recentTransfusion": false,
+        "highAltitude": false
+      },
+      "cbc": {
+        "hemoglobin": 9.8,
+        "mcv": 74
+      },
+      "reticulocytes": {
+        "response": "low"
+      },
+      "labs": {
+        "crpStatus": "elevated",
+        "ferritinStatus": "unknown",
+        "tsatStatus": "unknown",
+        "tibcStatus": "unknown"
+      },
       "symptoms": {},
       "history": {},
       "exam": {},
@@ -62,7 +78,10 @@
   },
   "expectedTrace": {
     "mechanism": "rule_audit",
-    "matchedRuleIdsMustInclude": ["Q-MICRO-001", "Q-MICRO-005"],
+    "matchedRuleIdsMustInclude": [
+      "Q-MICRO-001",
+      "Q-MICRO-005"
+    ],
     "note": "Verified by direct execution on 2026-07-19. Despite anemia present + microcytic morphology + CRP elevated, rankedDifferential is empty because ferritin/TSAT/TIBC are supplied only as status='unknown' (ID-001 needs a numeric ferritin value; AINF-001 needs tsatLow/tibcLowOrNormal, both false when unknown). The engine asks Q-MICRO-001/Q-MICRO-005 rather than guessing."
   },
   "rollbackSignal": "Re-verify by execution if modules/anemia/rules.json, candidates.json, or module.json digests change, or if ID-001/AINF-001/AINF-002/AINF-003 conditions are edited.",

@@ -108,10 +108,6 @@
       "tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json",
       "tests/fixtures/local-profile/negative-cases.json",
       "tests/witness/alerts/scope-needs-local-ranges-age-unknown.json",
-      "tests/witness/alerts/scope-neonatal-young-infant.json",
-      "tests/witness/alerts/scope-outside-pediatric-range.json",
-      "tests/witness/branches/ferritin-above-pediatric-range.json",
-      "tests/witness/branches/ferritin-below-supported-age.json",
       "tests/witness/branches/ranges-age-not-supplied.json",
       "tests/witness/branches/ranges-sex-not-supplied.json",
       "tests/witness/corpus/minimal-intake-no-data.json"
@@ -466,6 +462,8 @@
     "safetyClass": "informational",
     "requiredTestCaseIds": [
       "tests/witness/alerts/lead-20to44-alert.json",
+      "tests/witness/branches/ferritin-above-pediatric-range.json",
+      "tests/witness/branches/ferritin-below-supported-age.json",
       "tests/witness/corpus/administrative-interpretation-caveats.json",
       "tests/witness/corpus/iron-deficiency-without-anemia.json"
     ],
@@ -3365,10 +3363,6 @@
       "tests/fixtures/local-profile/SYNTHETIC-terminology-profile.json",
       "tests/fixtures/local-profile/negative-cases.json",
       "tests/witness/alerts/scope-needs-local-ranges-age-unknown.json",
-      "tests/witness/alerts/scope-neonatal-young-infant.json",
-      "tests/witness/alerts/scope-outside-pediatric-range.json",
-      "tests/witness/branches/ferritin-above-pediatric-range.json",
-      "tests/witness/branches/ferritin-below-supported-age.json",
       "tests/witness/branches/ranges-age-not-supplied.json",
       "tests/witness/branches/ranges-sex-not-supplied.json",
       "tests/witness/corpus/minimal-intake-no-data.json"
@@ -3460,8 +3454,6 @@
       "tests/witness/alerts/scope-needs-local-ranges-age-unknown.json",
       "tests/witness/alerts/scope-neonatal-young-infant.json",
       "tests/witness/alerts/scope-outside-pediatric-range.json",
-      "tests/witness/branches/ferritin-above-pediatric-range.json",
-      "tests/witness/branches/ferritin-below-supported-age.json",
       "tests/witness/branches/ranges-age-not-supplied.json",
       "tests/witness/branches/ranges-sex-not-supplied.json",
       "tests/witness/corpus/minimal-intake-no-data.json"

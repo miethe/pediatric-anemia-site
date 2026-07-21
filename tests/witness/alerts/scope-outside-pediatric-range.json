@@ -1,6 +1,6 @@
 {
   "patient": { "ageMonths": 220, "sexAtBirth": "female", "menstruating": true, "recentTransfusion": false, "highAltitude": false },
-  "cbc": {},
+  "cbc": { "localRanges": { "hbLower": 12, "mcvLower": 80, "mcvUpper": 100 } },
   "reticulocytes": {},
   "symptoms": {},
   "history": {},

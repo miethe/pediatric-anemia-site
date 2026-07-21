@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/module-manifest.schema.json",
+  "title": "Pediatric CDS Module Manifest",
+  "description": "EP5-T2 (DEF-5) formalizes modules/<id>/module.json's shape, superseding the ad-hoc field-presence checks that used to live entirely inside scripts/validate-kb.mjs. `status` is SPIKE-006 RQ4's closed lifecycle enum (`unsigned-stub` -> `integrity-recorded` -> `superseded`/`revoked`); `clinicalContentHash`/`governanceHash` are the SPIKE-006 Amendment 1 two-part digest (`sha256:<64 hex>`), which this schema requires to be present and well-formed for every status EXCEPT `unsigned-stub` (a freshly scaffolded, not-yet-signed module legitimately has neither yet). `approvedBy` mirrors rule.schema.json's `clinicalApprovers` field exactly: `maxItems: 0` makes a populated approver list a hard schema violation, not merely a test failure (D-4) — no credentialed human clinician has approved this knowledge base, and ARC/council-review/rf output is explicitly not a valid source for one. `supersedes: null` and `approvedBy: []` are legitimately-empty values on a first release (AC-WP5-RESIL) and are valid under every status this schema accepts; by contrast this schema also requires `validationRunId` to be a non-empty string specifically when `status` is `integrity-recorded` (SPIKE-006 Amendment 1: a manifest may be integrity-recorded at the content layer without yet being servable, but never servable without one — src/kbVerify.js#verifyManifest is the runtime enforcement of that same must-not-be-empty rule). Structural validity here never implies clinical validity, safety, or that a named human clinician reviewed anything.",
+  "type": "object",
+  "required": [
+    "id", "title", "schemaVersion", "status", "knowledgeBaseVersion", "evidenceReviewedThrough",
+    "engineLabel", "supportedAgeMonths", "clinicalContentHash", "governanceHash", "approvedBy",
+    "validationRunId", "supersedes", "releasedAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "REQUIRED, non-null. Must match the module's directory name under modules/ — that cross-check is enforced by scripts/validate-kb.mjs (this schema cannot see the filesystem), not by this pattern alone."
+    },
+    "title": { "type": "string", "minLength": 1, "description": "REQUIRED, non-null. Human-readable module display name." },
+    "schemaVersion": { "type": "integer", "minimum": 1, "description": "REQUIRED, non-null. Integer manifest-shape version, bumped only when this schema's own shape changes." },
+    "status": {
+      "enum": ["unsigned-stub", "integrity-recorded", "superseded", "revoked"],
+      "description": "REQUIRED, non-null, closed enum (SPIKE-006 RQ4) — no other value, including the earlier draft's \"signed\", is legal. `unsigned-stub` = scaffolded, no digest yet. `integrity-recorded` = the two-part digest below matches recorded content and, per src/kbVerify.js#READY_STATUS, is the only status the server/build/browser will serve. `superseded`/`revoked` = a former integrity-recorded release that has been replaced or withdrawn; it keeps its digests for audit but is no longer servable."
+    },
+    "knowledgeBaseVersion": { "type": "string", "minLength": 1, "description": "REQUIRED, non-null. Cross-checked for agreement with other KB version markers by scripts/validate-kb.mjs, not by this schema." },
+    "evidenceReviewedThrough": {
+      "type": "string",
+      "format": "date",
+      "description": "REQUIRED, non-null. The staleness anchor named in SPIKE-006 Amendment 4 — the field an eventual expiry policy will measure against. This schema validates only that it is a well-formed date; the expiry window itself is an undetermined governance decision (Amendment 4) and is out of scope here."
+    },
+    "engineLabel": { "type": "string", "minLength": 1, "description": "REQUIRED, non-null. Human-readable label for the deterministic rule engine serving this module." },
+    "supportedAgeMonths": {
+      "type": "object",
+      "required": ["min", "max"],
+      "additionalProperties": false,
+      "properties": {
+        "min": { "type": "integer", "minimum": 0 },
+        "max": { "type": "integer", "minimum": 0 }
+      },
+      "description": "REQUIRED, non-null. Both keys REQUIRED. This schema validator has no cross-field comparison keyword, so `min < max` is not checked here — see scripts/validate-kb.mjs if that invariant needs enforcing."
+    },
+    "clinicalContentHash": {
+      "type": ["string", "null"],
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "REQUIRED key. Nullable ONLY when `status` is `unsigned-stub` (enforced below by the `allOf`/`if`/`then`/`else` conditional, since a plain `type` union cannot express \"null here, never there\"). SPIKE-006 Amendment 1's SHA-256 digest over the four KB JSON files' parsed values plus raw-byte hashes of the two source files that still hardcode clinical thresholds. A hash match proves content-provenance consistency with a prior release — never clinical validity."
+    },
+    "governanceHash": {
+      "type": ["string", "null"],
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "REQUIRED key. Nullable ONLY when `status` is `unsigned-stub` (same conditional as `clinicalContentHash`). SPIKE-006 Amendment 1's second SHA-256 digest, over this manifest's own governance fields (src/kbVerify.js#GOVERNANCE_FIELD_KEYS)."
+    },
+    "approvedBy": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 0,
+      "items": { "type": "string", "minLength": 1 },
+      "description": "REQUIRED key, and under this schema version it MUST be exactly `[]` — mirrors schemas/rule.schema.json's `clinicalApprovers` field exactly. `maxItems: 0` makes a populated approver list a hard schema violation, not merely a test failure (D-4/AC-D4). `[]` means NO credentialed clinical approval yet; this is legitimately empty on every release this schema accepts, never a defect. No credentialed human clinician has approved this knowledge base, and ARC/council-review/rf output is explicitly NOT a valid source for one. Raising `maxItems` is the deliberate, reviewable act by which this project would first claim clinical sign-off; it must never be done to make a build pass."
+    },
+    "validationRunId": {
+      "type": ["string", "null"],
+      "description": "REQUIRED key. Nullable in general (a manifest can be `integrity-recorded` at the content layer before a validation run id is attached), but this schema requires it to be a non-empty string specifically when `status` is `integrity-recorded` (enforced below) — matching src/kbVerify.js#verifyManifest's must-not-be-empty treatment of this field for servability (AC-WP5-RESIL). Never invented (SPIKE-006 Amendment 1): a null here is honest, not a validation gap."
+    },
+    "supersedes": {
+      "type": ["string", "null"],
+      "description": "REQUIRED key, legitimately nullable (AC-WP5-RESIL) — `null` is the normal, valid value for a first release with no prior version, under every status this schema accepts. When non-null, points to the prior release's `knowledgeBaseVersion`."
+    },
+    "releasedAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "REQUIRED key, legitimately nullable — `null` before a release timestamp exists. When non-null, an RFC 3339 date-time."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["status"],
+        "properties": { "status": { "const": "unsigned-stub" } }
+      },
+      "else": {
+        "required": ["clinicalContentHash", "governanceHash"],
+        "properties": {
+          "clinicalContentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "governanceHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["status"],
+        "properties": { "status": { "const": "integrity-recorded" } }
+      },
+      "then": {
+        "required": ["validationRunId"],
+        "properties": {
+          "validationRunId": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  ]
+}

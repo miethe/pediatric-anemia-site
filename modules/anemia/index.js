@@ -1,4 +1,4 @@
-import { deriveFacts } from './facts.anemia.js';
+import { deriveFacts, assertAgeWithinSupportedScope } from './facts.anemia.js';
 import './units.js';
 
 function summarize(facts) {
@@ -51,6 +51,11 @@ export default {
     evidenceReviewedThrough: '2026-07-15',
   },
   deriveFacts,
+  // ARCH §10 condition 2 (EP5-T6) — optional module-descriptor hook src/engine.js#assess() calls
+  // generically after deriveFacts() returns, before rule evaluation. See
+  // modules/anemia/facts.anemia.js#assertAgeWithinSupportedScope for why this is not folded into
+  // deriveFacts itself.
+  assertInScope: assertAgeWithinSupportedScope,
   summarize,
   limitations,
 };

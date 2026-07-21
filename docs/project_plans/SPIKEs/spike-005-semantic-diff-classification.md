@@ -2,7 +2,7 @@
 schema_version: 2
 doc_type: spike
 title: "SPIKE-005: Semantic Diff Classification for KB Changes"
-status: completed-with-required-amendments
+status: amended-pending-re-review
 created: 2026-07-19
 feature_slug: wave0-safety-foundation
 research_questions:
@@ -13,7 +13,7 @@ research_questions:
   - "What is the false-negative risk of a safety-relevant change misclassifying as cosmetic, and how do we test for it?"
 complexity: XL
 estimated_research_time: "8h"
-status_note: "Findings recorded 2026-07-19 (EP0-T3). The council-review pass required by Method §5 and overall exit criterion (2) WAS performed 2026-07-19/20 (ARC run arc-run-2026-07-19-spike-005-rq2-decision-function) — OQ-7 is closed-with-caveats, not cleanly closed. VERDICT: the RQ2 decision function AS WRITTEN must NOT be implemented against. Pediatric council recommendation `rejected` for RQ2-as-written; scorecard `pause_and_validate`; 5 critical and 15 high findings accepted. The council constructed and EXECUTED a false negative entirely inside the classifier's declared JSON scope: softening ALERT-001's emergency-alert detail classifies as C10, tiers at `review`, fails no gate, produces no delta on any of the six fixtures, and cannot trigger the cross-check — both proposed checks report clean while a clinician-facing emergency explanation is rewritten. Also accepted: an undefined predicate (`sameNumericValue`) can route a rule-disabling edit into the fixed-cosmetic bucket; Family E is written against a `src/evidence.js` structure deleted in the SPIKE's own commit; `A5` and `D7` are wrongly fixed-cosmetic; the `review` tier enforces nothing. Exit criterion (2) is NOT MET — the pass happened and did not return a pass. Criterion (3) is independently confirmed MET. Nine required amendments (RA-1..RA-9) must land and the SPIKE must be re-reviewed before EP-5 implements against RQ2 — see the OQ-7 section. What SURVIVED and must not be traded away: fail-closed defaults, skeleton-before-leaf comparison, enum-grounded severity, and the mandatory blind-spot warning. The council is a SYNTHETIC ADVERSARIAL REVIEW; it is not clinical validation, not credentialed clinical review, and confers no release authority."
+status_note: "Findings recorded 2026-07-19 (EP0-T3). The council-review pass required by Method §5 and overall exit criterion (2) WAS performed 2026-07-19/20 (ARC run arc-run-2026-07-19-spike-005-rq2-decision-function) — OQ-7 is closed-with-caveats, not cleanly closed. VERDICT: the RQ2 decision function AS WRITTEN must NOT be implemented against. Pediatric council recommendation `rejected` for RQ2-as-written; scorecard `pause_and_validate`; 5 critical and 15 high findings accepted. The council constructed and EXECUTED a false negative entirely inside the classifier's declared JSON scope: softening ALERT-001's emergency-alert detail classifies as C10, tiers at `review`, fails no gate, produces no delta on any of the six fixtures, and cannot trigger the cross-check — both proposed checks report clean while a clinician-facing emergency explanation is rewritten. Also accepted: an undefined predicate (`sameNumericValue`) can route a rule-disabling edit into the fixed-cosmetic bucket; Family E is written against a `src/evidence.js` structure deleted in the SPIKE's own commit; `A5` and `D7` are wrongly fixed-cosmetic; the `review` tier enforces nothing. Exit criterion (2) is NOT MET — the pass happened and did not return a pass. Criterion (3) is independently confirmed MET. Nine required amendments (RA-1..RA-9) must land and the SPIKE must be re-reviewed before EP-5 implements against RQ2 — see the OQ-7 section. What SURVIVED and must not be traded away: fail-closed defaults, skeleton-before-leaf comparison, enum-grounded severity, and the mandatory blind-spot warning. The council is a SYNTHETIC ADVERSARIAL REVIEW; it is not clinical validation, not credentialed clinical review, and confers no release authority. UPDATE 2026-07-21: RA-1 through RA-9 (plus the corpus/scope amendments) have now landed as an additive 'Amended normative design' section at the end of this document, re-verified against this worktree's HEAD and superseding RQ2 as the implementation target for scripts/kb-diff.mjs; a formal ARC re-review of this amended digest has NOT been performed, so certification state and clinical_release_status are unchanged from above."
 related_documents:
   - docs/project_plans/expansion/01-platform-expansion-roadmap.md
   - docs/project_plans/design-specs/signed-kb-manifest.md
@@ -1238,3 +1238,708 @@ validates, and the artifacts are durable. The substantive outcome is a **rejecti
 written**, so **overall exit criterion (2) remains NOT MET**. Do not record this SPIKE as fully
 closed, and do not let EP-5 implement `scripts/kb-diff.mjs` against RQ2 until RA-1…RA-9 land and the
 amended digest is re-reviewed. An approval attached to an older digest is stale.
+
+---
+
+## Amended normative design — RA-1…RA-9 applied (2026-07-21) — THIS SUPERSEDES RQ2 AS WRITTEN
+
+**Status of this section.** Additive. Nothing above this line is edited or retracted — it remains
+the audit trail of what the council reviewed and rejected. Everything below is the **normative
+implementation target for `scripts/kb-diff.mjs`**, written by re-reading RQ2's decision function,
+RQ3's tree walk, RQ4's report schema, and Part 2's probe design against **this worktree's actual
+HEAD as of 2026-07-21** — not against the SPIKE's original prose, which predates EP-1 (tri-state
+facts), DEF-1 (evidence dual-source unification), EP-4 (rule-governance schema fields), and
+EP-0.5/EP05-T2..T4 (activation-witness corpus). Line-number citations inside this section were
+verified against HEAD at authoring time; citations inside the original findings above were **not**
+re-verified and several are now stale by construction (e.g. `IMF-001` moved from `rules.json:2192`
+to `:2917`, `ALERT-001` from `:69` to `:124` — EP-4's 9 new required governance keys per rule added
+roughly 900 lines). This amendment does not fix those citations; it does not need to, since the
+original section is preserved as history, not as an implementation source.
+
+**A material, HEAD-only correction before anything else.** CCF-3 ("61 of 91 rules have no
+activation witness, including 4 emergency and 2 urgent alerts") is now **stale, in the good
+direction**. `npm run coverage:rules` (`scripts/rule-coverage.mjs --require-all --min=91`) is wired
+into `npm run check` as of EP-0.5/EP05-T2..T4, and verified 2026-07-21:
+
+```
+$ node scripts/rule-coverage.mjs --json | … → witnessed: 91, total: 91
+```
+
+**All 91 rules, including `ALERT-001`, now carry at least one activation witness** —
+`ALERT-001.requiredTestCaseIds` lists `tests/witness/alerts/tma-schistocytes-neurologic-symptoms.json`
+and `tests/witness/alerts/unstable-major-bleeding-severe-anemia.json` (`rules.json:124-176`). The
+consequence for ARC-001 (below) is important and is called out where it applies: the *classifier*
+gap RA-1 fixes is unchanged and just as dangerous, but the claim that "the behavioral probe is
+simultaneously blind" for `ALERT-001` no longer holds at HEAD. This is recorded honestly rather than
+quietly inherited — see the ARC-001 row in item 6 and the note in item 7.
+
+### 1. `sameNumericValue` — normative definition (RA-2)
+
+```js
+// RA-2: the typeof comparison runs FIRST, unconditionally, before any numeric comparison.
+// This is the entire fix — ARC-002's critical finding was that a natural cross-type
+// implementation checks numeric closeness (or does a loose `==`) before checking type, which
+// lets `true` present as "the same numeric value" as `1`.
+function sameNumericValue(before, after) {
+  if (typeof before !== typeof after) return false;      // true→1, false→0, 2→"2" all stop HERE
+  if (typeof before !== 'number') return false;           // only numbers may be format-only-different
+  if (!Number.isFinite(before) || !Number.isFinite(after)) return before === after; // NaN/Infinity: exact only
+  return before === after;                                 // 2 and 2.0 parse to the identical JS double
+}
+```
+
+Verified against the four seeded cases RA-2 names:
+
+| Edit | `typeof` check | Result | Class (amended RQ3 Step 1, below) |
+|---|---|---|---|
+| `true` → `1` | boolean ≠ number | `false` | `B4 value-type-change` · block |
+| `false` → `0` | boolean ≠ number | `false` | `B4 value-type-change` · block |
+| `2` → `"2"` | number ≠ string | `false` | `B4 value-type-change` · block |
+| `2` → `2.0` | number = number, `2 === 2.0` | `true` | `B5 value-format-change` · note |
+
+**Amended RQ3 Step 1** (replaces the original Step 1 at `:504-510`; Steps 0 and 2-5 are unchanged
+and are preserved verbatim by ARC-028, see below):
+
+```
+for each pair matched on (addr, key):
+  if leaf.value differs:
+    if typeof(before) !== typeof(after):        emit B4 value-type-change      // checked FIRST, no exception
+    else if typeof(before) === 'number':
+      if sameNumericValue(before, after):        emit B5 value-format-change
+      else:                                       emit B1 threshold-change
+    else if typeof(before) === 'boolean':        emit B3 boolean-value-flip
+    else if Array.isArray(before):                emit B6 value-set-change
+    else:                                          emit B3 (enum/string change)
+```
+
+The original Step 1 tested `sameNumericValue` before `typeof differs` — under a natural
+cross-type implementation that inverts to exactly the ARC-002 failure. The amended ordering makes
+that inversion structurally impossible: `sameNumericValue` is never reached unless both sides are
+already confirmed to be the same JS type.
+
+### 2. Amended safety-relevance decision function (replaces RQ2's rules 1–7)
+
+**RA-6 — class-id form (decided first, because everything below depends on it).** The **full
+form is normative everywhere** — `'C3 level-change'`, never the bare `'C3'` — matching exactly what
+RQ4's `changes[].class` field emits (`:569`, `"class": "B1 threshold-change"`). Every `Set`/`===`
+comparison in this section operates on the full string. RQ2's original rule 5 tested bare ids
+(`'C9'`, `'C10'`, `'D4'`, `'D6'`) while rules 3/4/6 tested full ids — under a literal reading, rule
+5 (the protective-text branch) **never fired**, and the `containsTemplate` C11 escalation nested
+inside it never executed (ARC-011). A bare-id helper may exist for human-readable logging only and
+must never be used for matching.
+
+**RA-9 — `outputIsProtective()`, extended and hardened.** The original predicate excluded 47 of 91
+rules (verified 2026-07-21 by evaluating it over `rules.json`: 44 protective / 47 not, under the
+original `alert ∨ (candidate ∧ level≥strongly-supported) ∨ (candidate ∧ cautions.length>0)`
+definition — this reproduces ARC-009's "excludes 47 of 91" finding exactly). The amendment:
+
+```js
+// RA-9: extended to question outputs and sole-contributor candidates; note outputs are
+// deliberately NOT extended (RA-9's own text names only questions and sole-contributor
+// candidates) — this is a scoped, honest omission, not an oversight; see item 7 / OQ-12.
+//
+// SIGNATURE CHANGE from the original: the sole-contributor check needs the full rule array,
+// not just the one rule being diffed. Callers must pass `allRules`.
+function outputIsProtective(rule, allRules) {
+  const o = rule.output;
+  if (o.type === 'alert') return true;                                   // all 13 alert rules, unchanged
+  if (o.type === 'question') return true;                                // RA-9: all 17 question (missing-data) rules
+  if (o.type === 'candidate') {
+    if ((LEVEL_RANK[o.level] ?? 0) >= 4) return true;                    // meets-defined-pattern | strongly-supported
+    if ((o.cautions ?? []).length > 0) return true;
+    if (isSoleContributor(o.candidateId, rule.id, allRules)) return true; // RA-9: only path to this candidateId
+    return false;
+  }
+  return false; // note-type outputs (6 rules): NOT extended by RA-9 — open, see item 7 / OQ-12
+}
+
+function isSoleContributor(candidateId, ruleId, allRules) {
+  const contributors = allRules.filter(
+    (r) => r.output?.type === 'candidate' && r.output.candidateId === candidateId,
+  );
+  return contributors.length === 1 && contributors[0].id === ruleId;
+}
+
+// RA-9: "wrap it so a throw is treated as block." Every caller below uses THIS wrapper, never
+// the raw function.
+function outputIsProtectiveSafe(rule, allRules) {
+  try {
+    return outputIsProtective(rule, allRules);
+  } catch {
+    return true; // fail closed: an evaluation failure is treated as maximally protective
+  }
+}
+```
+
+Verified 2026-07-21 against `modules/anemia/rules.json`/`candidates.json`: 26 distinct
+`candidateId`s, 10 of them sole-contributor, 1 of those 10 not already covered by the
+level/cautions test — so RA-9's sole-contributor clause adds exactly **1** additional protective
+rule beyond the original 44, and the question-output clause adds **17** — protective rules rise
+from **44/91 to 62/91** (47 excluded → 29 excluded; 6 notes + 23 non-sole-contributor,
+sub-`strongly-supported`, no-caution candidates). **The tier calibration itself — whether every one
+of those newly-protective rules should carry the same weight as an alert — is explicitly NOT
+decided here; it is OQ-12's referral to a named credentialed reviewer, unresolved, see item 7.**
+
+**RA-1 — protective-output text change, tiered `block`.** This is the fix that closes ARC-001. It
+does not need a new taxonomy class id: `C8`/`C9`/`C10`/`C11`/`D4`/`D6` already exist and already
+detect the right edits (`C8`/`C11` were already unconditionally `block` and are unchanged). The fix
+is entirely in the *tiering* of `C9`, `C10`, `D4`, `D6` when the touched rule is protective, and it
+must apply to **any edit shape** — a whole-string replace, an in-place edit of one element inside an
+array field, or an add/remove — not only to detectable adds/removes:
+
+```js
+// RA-1 (replaces the original "rule 5" branch, :434-440). Extends RA-1's own literal field list
+// (title, detail, actions, cautions, nextSteps, support) with `prompt`/`why` — the question-output
+// equivalents of title/detail — for internal consistency with RA-9's extension of
+// outputIsProtective() to all question outputs: without this, RA-9's extension would have no
+// protective-text class to route a question rule's own text into. This is a mechanical
+// completion of RA-1's stated intent, not a new clinical judgement call.
+if (['C9 safety-string-add', 'C10 display-text-change', 'D4 candidate-summary-change',
+     'D6 default-next-step-add'].includes(c)) {
+  if (containsTemplate(before) !== containsTemplate(after)) {
+    return { safetyRelevant: true, tier: 'block' };                       // C11 escalation, unchanged
+  }
+  const protective = isCandidateFieldClass(c)
+    ? candidateIsProtective(change.candidateId, allRules)                 // D4/D6: candidate-level test, below
+    : outputIsProtectiveSafe(change.rule, allRules);                      // C9/C10: rule-level test
+  return protective
+    ? { safetyRelevant: true, tier: 'block' }                             // RA-1: was 'review' unconditionally
+    : { safetyRelevant: true, tier: 'review' };                           // unchanged: still never 'note'
+}
+```
+
+`D4`/`D6` are `candidates.json` catalog fields, not rule fields — a candidate can have several
+contributing rules, so "protective" for these two classes is evaluated at the **candidate**, using
+the same `LEVEL_RANK`/`cautions` test as `outputIsProtective`'s candidate branch, sourced from the
+*highest* level any contributing rule currently produces for that `candidateId` (a mechanical
+extension of the existing candidate-branch logic, not a new judgement call):
+
+```js
+function candidateIsProtective(candidateId, allRules) {
+  const contributors = allRules.filter(
+    (r) => r.output?.type === 'candidate' && r.output.candidateId === candidateId,
+  );
+  return contributors.some((r) => (LEVEL_RANK[r.output.level] ?? 0) >= 4)
+      || contributors.some((r) => (r.output.cautions ?? []).length > 0);
+}
+```
+
+**Detection requirement feeding the above** (the RQ3-level walker, not the RQ2-level tiering): for
+array fields (`actions`/`cautions`/`nextSteps`/`support`), compare before/after **by multiset**, not
+by length — an in-place edit that changes the string at index *i* without changing the array's
+length must emit a paired `C8 safety-string-remove` + `C9 safety-string-add` at that element, never
+"no change." For scalar fields (`title`/`detail`/`prompt`/`why`), any `before !== after` on the raw
+string (after the `{{…}}` placeholder multiset is extracted and compared independently, per `C11`)
+emits `C10 display-text-change`. This closes the exact shape ARC-001 exploited: `ALERT-001.output.
+detail` is a scalar field, trivially `before !== after`-detectable; the original defect was never
+detection, it was that `C10` on a protective rule capped out at `review`.
+
+**RA-5 — `A5`/`D7` removed from `FIXED_COSMETIC`; cosmetic test restated.** Verified against HEAD:
+`rule.category` is both rendered and searched (`src/app.js:419,425` — `haystack` search string and
+the rendered `<span class="category">`), and candidate `category` is spread onto the
+`/api/v1/assess` response (`mergeCandidate`'s `{ ...base, … }`, `src/ruleEngine.js:82`) and asserted
+in `tests/golden/ida-toddler.json:29`. Editing either **fails `npm test` today** via the golden
+fixture. Neither may be fixed-cosmetic. The cosmetic test is restated as: **not on any
+clinician-facing or API surface** — not "not read by the engine," which is the test the original
+design used and which both `A5`/`D7` satisfied while still being reviewer- and test-visible.
+
+**RA-8 — `G5` removed from `FIXED_COSMETIC`; split; new classes.** The original `G5
+metadata-only` bucketed `changeRationale`/`owner`/`requiredTestCaseIds` together as unconditionally
+cosmetic. Verified against HEAD's `schemas/rule.schema.json`: these are now three of **9** EP-4
+rule-governance fields, all schema-required, all real (not P1-WP4-hypothetical as the original
+prose framed them). They do not behave alike and must not share a tier:
+
+- **`changeRationale` is not independently classified at all.** It is structurally load-bearing for
+  RA-3's gate (item 3, below) and diffing it as its own safety event would penalize the exact
+  action RA-3 exists to require.
+- **`G5 owner-annotation-change`** (narrowed to `owner` only) · **review** — no runtime reader
+  (confirmed: not referenced in `facts.anemia.js`/`ruleEngine.js`/`engine.js`), pure
+  accountability-of-record metadata, no longer fixed-cosmetic.
+- **`G6 protective-test-binding-remove`** (new, RA-8) · **block** — `requiredTestCaseIds` shrinks to
+  `[]`, or loses its only element, on a rule whose output is protective
+  (`outputIsProtectiveSafe`, RA-9-extended). A non-empty→non-empty edit that does not empty the
+  array on a protective rule, or any edit on a non-protective rule, remains `G5`-adjacent · review.
+- **`H9 engine-output-projection-change`** (new, RA-8) — `src/engine.js`'s output assembly (e.g. the
+  `alerts`/`rankedDifferential`/`nextQuestions` fields returned by `assess()`, `src/engine.js:33-73`)
+  is edited to filter, reshape, or drop entries independent of rule evaluation, fact derivation,
+  ranges, merging, or ranking. **BLIND** by construction (Family H, JSON-diff-invisible) — named so
+  a clean structural report is never misread as "the API/engine output projection is unchanged."
+- **The resolve check on `requiredTestCaseIds` no longer vacuously passes on an empty array**:
+
+```js
+// RA-8: ∀x∈∅ is trivially true — the original design's "requiredTestCaseIds all resolve" check
+// therefore passed FOR FREE on an empty array. This closes that hole.
+function resolveRequiredTestCaseIds(rule, corpus, changesForThisRule, allRules) {
+  const ids = rule.requiredTestCaseIds ?? [];
+  const mustBeNonEmpty = outputIsProtectiveSafe(rule, allRules)
+    || changesForThisRule.some((c) => c.tier === 'block' || c.tier === 'review');
+  if (mustBeNonEmpty && ids.length === 0) {
+    return { resolved: false, reason: 'empty requiredTestCaseIds on a protective or changed rule — does not vacuously pass' };
+  }
+  return { resolved: ids.every((id) => corpus.has(id)) };
+}
+```
+
+**Corrected class count: 44 → 70 (original), 70 → 72 (amended).** The original prose said "44 leaf
+classes"; counting the RQ1 tables directly (verified by script against the document, 2026-07-21)
+gives **70** distinct class ids (`A1`–`H8`, with the `E1`/`E2` and `F3`/`F4` combined table rows
+each holding two ids). The amendment adds `G6` and `H9` (+2 → 72) and, in item 4 below, retires
+`E6` and adds `E8` (net 0 to Family E's count of 7). **Family totals, amended: A=7, B=14, C=12,
+D=9, E=7 (E1–E5, E7 redefined, E8 — `E6` retired), F=8, G=6 (`G1`–`G6`), H=9 (`H1`–`H9`) = 72.**
+
+**A notable, deliberate consequence of RA-5 + RA-8 together: exactly one class remains
+unconditionally cosmetic.** With `A5`, `D7`, and `G5` removed, `FIXED_COSMETIC` holds only `B5
+value-format-change` (re-tested under RA-2's corrected `sameNumericValue` and upheld, ARC-030).
+Every other class in the 72-class taxonomy is either fixed-dangerous or routes through the
+function to at least `review`. This is a real simplification, surfaced explicitly rather than left
+implicit: **design commitment #1 from the original RQ2 section — "no path returns cosmetic except
+the fixed-cosmetic classes; prose edits land at review, never note" — now applies almost without
+exception.**
+
+**Full amended function** (rule numbering follows the original for traceability; RA-6/RA-9's helper
+changes are structural prerequisites, not separate rules):
+
+```js
+const FIXED_DANGEROUS = new Set([
+  'A1 rule-add', 'A2 rule-remove', 'A3 rule-id-change', 'A6 rule-duplicate-id',
+  'B1 threshold-change', 'B2 operator-change', 'B3 boolean-value-flip', 'B4 value-type-change',
+  'B6 value-set-change', 'B7 fact-repoint', 'B10 combinator-swap', 'B11 negation-change',
+  'B14 empty-condition',
+  'C1 output-type-change', 'C2 candidate-target-change', 'C8 safety-string-remove',
+  'C11 template-binding-change', 'C12 output-evidence-change',
+  'D2 candidate-remove', 'D5 default-next-step-remove', 'D9 candidate-key-id-mismatch',
+  'E1 evidence-ref-add', 'E2 evidence-ref-remove', 'E3 evidence-repoint', 'E4 evidence-dangling-ref',
+  'E5 evidence-record-content-change', 'E8 sourcePassageId-repoint',
+  'F1 range-value-change', 'F2 band-boundary-change', 'F3 band-add', 'F4 band-remove',
+  'F5 sex-field-transposition', 'F6 units-change', 'F7 range-source-change',
+  'G2 version-omission', 'G3 attestation-change', 'G6 protective-test-binding-remove',
+  'H1 operator-semantics-change', 'H2 combinator-semantics-change',
+  'H3 fact-derivation-threshold-change', 'H4 fact-path-rename', 'H5 range-registry-change',
+  'H6 merge-semantics-change', 'H7 ranking-semantics-change', 'H9 engine-output-projection-change',
+]);
+
+const FIXED_COSMETIC = new Set(['B5 value-format-change']); // RA-5/RA-8: the ONLY survivor
+
+function safetyRelevance(change, allRules) {
+  const c = change.class;                                        // RA-6: always the FULL form
+
+  if (FIXED_DANGEROUS.has(c)) return { safetyRelevant: true, tier: 'block' };
+  if (FIXED_COSMETIC.has(c)) return { safetyRelevant: false, tier: 'note' };
+
+  // Rule 3 — severity/level monotonicity. Unchanged (ARC-028 preserves LEVEL_RANK/ALERT_RANK).
+  if (c === 'C3 level-change')
+    return rank(LEVEL_RANK, after) < rank(LEVEL_RANK, before)
+      ? { safetyRelevant: true, tier: 'block' } : { safetyRelevant: true, tier: 'review' };
+  if (c === 'C5 severity-change')
+    return rank(ALERT_RANK, after) < rank(ALERT_RANK, before)
+      ? { safetyRelevant: true, tier: 'block' } : { safetyRelevant: true, tier: 'review' };
+
+  // Rule 4 — condition-shape edits. Unchanged mechanics; outputIsProtective now RA-9-extended
+  // and RA-9-wrapped (outputIsProtectiveSafe), so this rule inherits the extension for free.
+  if (['B8 leaf-add', 'B9 leaf-remove', 'B12 subtree-move'].includes(c)) {
+    const dir = monotonicity(change.path, change.kind);
+    if (dir === 'unknown') return { safetyRelevant: true, tier: 'block' };
+    const suppresses = (dir === 'narrow');
+    if (suppresses && outputIsProtectiveSafe(change.rule, allRules)) return { safetyRelevant: true, tier: 'block' };
+    return { safetyRelevant: true, tier: 'review' };
+  }
+
+  // Rule 5 — RA-1, see above.
+  if (['C9 safety-string-add', 'C10 display-text-change', 'D4 candidate-summary-change',
+       'D6 default-next-step-add'].includes(c)) {
+    if (containsTemplate(before) !== containsTemplate(after)) return { safetyRelevant: true, tier: 'block' };
+    const protective = ['D4 candidate-summary-change', 'D6 default-next-step-add'].includes(c)
+      ? candidateIsProtective(change.candidateId, allRules)
+      : outputIsProtectiveSafe(change.rule, allRules);
+    return protective ? { safetyRelevant: true, tier: 'block' } : { safetyRelevant: true, tier: 'review' };
+  }
+
+  // Rule 6 — ordering/weighting/searchable-metadata edits. RA-5/RA-8 join A5, D7, G5(owner) to
+  // this bucket now that they are no longer fixed-cosmetic — none of them are dangerous enough
+  // for block, but per design commitment #1 none may be 'note' either.
+  if (['A4 rule-reorder', 'A5 rule-category-change', 'C4 points-change', 'C6 priority-change',
+       'C7 section-change', 'D3 candidate-label-change', 'D7 candidate-category-change',
+       'G1 version-bump', 'G5 owner-annotation-change'].includes(c))
+    return { safetyRelevant: true, tier: 'review' };
+
+  // Rule 7 — ARC-028 property #1, unconditional and unchanged: unknown class ⇒ block.
+  return { safetyRelevant: true, tier: 'block' };
+}
+```
+
+**ARC-028's four preserved properties, restated explicitly so this amendment cannot be read as
+licence to trade any of them away:**
+
+1. Rule 7's unconditional fail-closed to `block` — unchanged, still the final line of the function.
+2. Skeleton-before-leaf comparison (RQ3 Step 0) — untouched by this amendment; only Step 1 changed.
+3. Enum-grounded severity — `LEVEL_RANK`/`ALERT_RANK` are the same objects at `src/ruleEngine.js:3-11`,
+   re-verified against HEAD 2026-07-21, unchanged in shape since the SPIKE was written.
+4. Mandatory `scope.filesNotDiffed` + `blindSpotWarning` — regenerated, not removed; see item 5.
+
+### 3. `cosmeticOnly`, the cross-check, and `review`'s real gate (RA-3, RA-4)
+
+**RA-3 — operational meaning of `review`.** `review` does not gate the everyday `npm run check`
+path (unchanged, stays advisory). It **does** gate `npm run check:release`, via the minimum-viable
+repair: **`check:release` fails whenever `summary.clean === false`.** `clean` is defined below to
+require, for every `block`/`review` entry, that the affected rule's `changeRationale` **changed
+relative to the base revision** — not merely that it is non-null. This distinction matters because,
+verified against HEAD, `changeRationale` is schema-required non-empty on all 91 rules already, and
+**all 91 currently hold the identical EP-4 backfill string** (`rules.json` — confirmed via a direct
+scan, one distinct value across the whole file: *"EP-4 governance backfill … no clinical re-review
+of this rule's threshold, logic, or evidence occurred as part of this change …"*). A naive
+"non-null" check is therefore vacuous today — it would pass on every rule with zero effort. The
+gate must instead prove a *fresh* rationale was written for *this* change:
+
+```js
+function isClean(report, baseRules, headRules, corpus) {
+  const blockEntries = report.changes.filter((c) => c.tier === 'block');
+  const reviewEntries = report.changes.filter((c) => c.tier === 'review');
+
+  // Block-tier approval gate: UNCHANGED from the original RQ4 design, and NOT resolved by this
+  // amendment — it inherits OQ-10's circularity (recording an approval is itself a fixed-block
+  // G3 attestation-change). See item 7. `hasRecordedClinicalApproval` is a placeholder pending
+  // OQ-10's resolution, not an existing function.
+  const blockOk = blockEntries.every((c) => hasRecordedClinicalApproval(c));
+
+  // RA-3: the actual new gate. A block/review entry's rule must show a changeRationale edit
+  // ALONGSIDE the content edit — never just presence, since presence is already universal.
+  const changeRationaleOk = [...blockEntries, ...reviewEntries].every((c) => {
+    if (!c.ruleId) return true; // invariants[]-only entries carry no ruleId; N/A
+    const head = headRules.find((r) => r.id === c.ruleId);
+    const base = baseRules.find((r) => r.id === c.ruleId);
+    return head && head.changeRationale !== (base?.changeRationale ?? null);
+  });
+
+  const testBindingsOk = headRules.every((rule) => {
+    const changesForRule = report.changes.filter((c) => c.ruleId === rule.id);
+    return resolveRequiredTestCaseIds(rule, corpus, changesForRule, headRules).resolved;
+  });
+
+  const invariantsOk = report.invariants.every((inv) => inv.passed);
+
+  return blockOk && changeRationaleOk && testBindingsOk && invariantsOk;
+}
+```
+
+**RA-4 — `cosmeticOnly`, defined including for the empty changeset:**
+
+```js
+function cosmeticOnly(report) {
+  // Vacuously true when changes.length === 0 — DELIBERATE, not an oversight. This is what keeps
+  // the cross-check ARMED for a Family-H-only edit, where kb-diff has literally nothing to
+  // report in changes[] (see below — this is exactly the scenario ARC-004 flagged as almost
+  // never arming the original, undefined cosmeticOnly).
+  const contentOk = report.changes.every((c) => c.tier === 'note');
+  const invariantsOk = report.invariants.every((inv) => inv.passed);
+  return contentOk && invariantsOk;
+}
+```
+
+**RA-4 — the cross-check, re-quantified per `ruleId` (closes OQ-9 as well as ARC-004).** The
+original cross-check fired at changeset granularity: one unrelated `review`-tier edit anywhere in
+a commit made `cosmeticOnly` false for the *whole* changeset, disarming the check for every other
+rule in that same commit, even ones `kb-diff` reported clean for. The fix:
+
+```js
+function crossCheck(kbDiffReport, probeReport) {
+  const failures = [];
+  const blockTierRuleIds = new Set(
+    kbDiffReport.changes.filter((c) => c.tier === 'block' && c.ruleId).map((c) => c.ruleId),
+  );
+  // probeReport.deltas: one entry per ruleId/candidateId the probe attributes a delta to — the
+  // D1-D4 ladder's own trigger definitions are already ruleId/id-keyed (activation[r], alert.id,
+  // candidate.id), this just requires that attribution to be carried on the delta record.
+  for (const delta of probeReport.deltas) {
+    if (['D1', 'D2', 'D3', 'D4'].includes(delta.class) && !blockTierRuleIds.has(delta.ruleId)) {
+      failures.push({
+        ruleId: delta.ruleId, probeDelta: delta.class,
+        kbDiffTierForRule: kbDiffReport.changes.find((c) => c.ruleId === delta.ruleId)?.tier ?? 'none-reported',
+      });
+    }
+  }
+  // invariants[] participation (RA-4's explicit ask): these are whole-after-state properties
+  // with no ruleId (G2, the redefined E7, F2-continuity, the renamed unnamed-class-fallback
+  // counter — item 5). A failing invariant must make cosmeticOnly false unconditionally; if
+  // kb-diff nonetheless reports cosmeticOnly:true alongside a failing invariant, that is itself
+  // an unconditional cross-check failure, attributed to no single ruleId.
+  if (kbDiffReport.invariants.some((inv) => !inv.passed) && kbDiffReport.summary.cosmeticOnly === true) {
+    failures.push({ ruleId: null, reason: 'invariant failed but cosmeticOnly reported true' });
+  }
+  return failures; // non-empty ⇒ hard fail, logged as a taxonomy bug, mutation added to the seeded corpus
+}
+```
+
+A non-empty `failures[]` fails `npm run check:release` unconditionally — this is unchanged from the
+original design's "single most important line" framing; what changed is only the unit of
+quantification (per-`ruleId`, not per-changeset), which is what makes the check actually fire in
+the case that matters instead of being disarmed by an unrelated edit elsewhere in the same commit.
+
+### 4. Family E, rewritten against HEAD (RA-7)
+
+Verified 2026-07-21 by reading `src/evidence.js`, `scripts/validate-kb.mjs`, `modules/anemia/
+evidence.json`, `modules/anemia/index.js`, `modules/anemia/module.json`, and (because it surfaced
+directly while doing that) `schemas/rule.schema.json`'s `sourcePassageId` field.
+
+**DEF-1 has landed.** `src/evidence.js` is no longer a hand-maintained JS object literal — it is a
+28-line loader: `import evidenceData from '../modules/anemia/evidence.json' with { type: 'json' }`,
+then `EVIDENCE = Object.freeze(Object.fromEntries(evidenceData.sources.map(...)))`. The structure
+the original Family E was written against (a second, hand-duplicated `EVIDENCE` object) **was
+deleted in the same commit that added this SPIKE** (ARC-003's finding, confirmed). Consequences:
+
+- **`E5 evidence-record-content-change` is re-valenced from "behaviorally invisible" to
+  behaviorally LIVE.** `evidence.json` is now the sole source: it reaches `KNOWLEDGE_BASE_VERSION`/
+  `EVIDENCE`/`REVIEWED_THROUGH` (`src/evidence.js:11-24`), which reach `GET /health`, `GET
+  /api/v1/knowledge-base` (`server.mjs:136-149`), every `/api/v1/assess` citation chip, and the
+  SPA document title (`src/app.js:652`). Tier is unchanged (`E5` was already in the original
+  `FIXED_DANGEROUS` set) — only the grounding text was wrong and is corrected here.
+- **`E6 evidence-registry-membership-change` is retired.** Its edit shape — "a source is added to
+  or removed from `src/evidence.js`'s `EVIDENCE`" — no longer exists as an edit distinct from `E1`/
+  `E2` (editing `evidence.json`'s `sources[]`, already covered) or from editing the loader's own
+  `Object.fromEntries` logic, which is a **code** change and is already Family H by construction
+  once `src/evidence.js` is added to `filesNotDiffed` (item 5). No new H-class is minted for it
+  specifically — Family H's framing ("any code file in the execution path is Family H by
+  construction") already covers it without enumerating every file.
+- **`E7 evidence-dual-source-drift` is redefined against the drift that actually exists.**
+  `scripts/validate-kb.mjs`'s own comment (`:498-506`) states the old two-registry-id-set check
+  "is removed, not left passing-but-vacuous... structurally impossible" post-DEF-1, and explicitly
+  flags what remains: *"module.json's own knowledgeBaseVersion/evidenceReviewedThrough stub fields
+  can still go stale relative to evidence.json"*. Verified: there are **three** independent copies
+  of the same conceptual version pair, none cross-checked —
+
+  | Copy | Field | Feeds |
+  |---|---|---|
+  | `modules/anemia/evidence.json` | `knowledgeBaseVersion`, `reviewedThrough` | `src/evidence.js`'s exports → `GET /health`, `GET /api/v1/knowledge-base`, SPA document title |
+  | `modules/anemia/index.js` | `manifest.knowledgeBaseVersion`, `manifest.evidenceReviewedThrough` (hardcoded literal) | `src/engine.js:37-38` → `meta.knowledgeBaseVersion`/`meta.evidenceReviewedThrough` on **every** `POST /api/v1/assess` response |
+  | `modules/anemia/module.json` | `knowledgeBaseVersion`, `evidenceReviewedThrough` | the future signed-manifest attestation (DEF-4/SPIKE-006) |
+
+  A single-file version bump therefore produces a **user-visible split**: `POST /api/v1/assess`
+  reports one version while `GET /health`/`GET /api/v1/knowledge-base`/the document title report
+  another. `E7` is redefined as this three-way invariant (not a per-hunk class — it lives in
+  `invariants[]`, alongside `G2`) and tiers `block` when any two of the three disagree.
+- **`E8 sourcePassageId-repoint`** (new class, discovered verifying RA-7 against HEAD, not
+  requested by name in RA-7 but directly in its scope). EP-4 added a per-rule
+  `sourcePassageId` field (`schemas/rule.schema.json`, required, `REQUIRE_RULE_SOURCE_PASSAGE_ID
+  = true` in `validate-kb.mjs:23`) — a passage-level pointer *more specific* than the existing
+  source-level `evidence[]` array, resolved and bindability-checked by `isBindableAsSourceSupported`
+  (`src/evidence.js:101-105`) and cross-referenced against an attestation ledger
+  (`validate-kb.mjs`'s `validateBindingsAgainstLedger` calls). Repointing it to a different,
+  independently-valid passage is exactly `E3`'s risk (both sides resolve; nothing verifies the new
+  passage still supports *this rule's specific claim*) one layer more granular. `E8` · **block**.
+
+**Family E, amended: `E1`–`E5`, `E7` (redefined), `E8` — seven active classes, `E6` retired.** Net
+class count for Family E is unchanged at 7 (matching the original), only the id-to-meaning mapping
+shifted.
+
+### 5. Corpus and scope amendments
+
+**`scope.filesNotDiffed`, regenerated from the actual import graph.** ARC-013 named five omissions
+(`src/engine.js`, `modules/anemia/index.js`, `src/ranges/registry.js`, `src/facts/core.js`,
+`src/algorithmExplorer.js`); all five verified present in the live execution/presentation graph by
+tracing every `import` statement from `server.mjs` and `src/app.js` down (2026-07-21). The complete,
+correct list:
+
+```jsonc
+"filesNotDiffed": [
+  "src/ruleEngine.js",            // engine core: leaf eval, condition eval, merge, ranking (H1/H2/H6/H7)
+  "src/facts/tristate.js",        // EP-1 tri-state primitives — used by ruleEngine.js, facts.anemia.js, ranges.js, app.js
+  "src/facts/core.js",            // fact-derivation helper primitives (finite/num/statusIs/includes/countTrue)
+  "src/facts/registry.js",        // module fact-derivation dispatch
+  "src/facts.js",                 // facts entry-point shim over facts/registry.js
+  "modules/anemia/facts.anemia.js", // H3 — the real threshold surface (CCF-1)
+  "modules/anemia/ranges.js",     // module-level range composition wrapper
+  "src/ranges/registry.js",       // H5 — generic range/threshold registry (ARC-013)
+  "modules/anemia/units.js",      // unit registration
+  "modules/anemia/units.json",    // canonical units + confusable-unit warnings — DATA, but not one of the 5 diffed KB files
+  "src/units.js",                 // unit classification/validation
+  "src/engine.js",                // assess() orchestration + meta assembly (ARC-013)
+  "src/modules/registry.js",      // module dispatch (getModule/MODULE_IDS)
+  "modules/anemia/index.js",      // module manifest + summarize/limitations (ARC-013)
+  "src/evidence.js",              // evidence loader + accessors (now behaviorally live, item 4)
+  "src/evidence/registry.js",     // moduleId-scoped evidence accessor
+  "src/governance.js",            // hasCredentialedClinicalApproval / isActive → provenance.ruleAudit
+  "src/serverErrors.js",          // API error shaping
+  "src/algorithmExplorer.js",     // H8 presentation layer (ARC-013)
+  "src/app.js",                   // H8 presentation layer
+  "server.mjs"                    // API layer: assembles /health, /api/v1/knowledge-base, /api/v1/assess
+],
+"blindSpotWarning": "Family H (engine/derivation/presentation/API) changes are outside this
+  tool's scope. A clean report here does NOT mean behavior is unchanged. This additionally
+  includes scripts/lib/local-applicability.mjs and schemas/reference-range.schema.json (the local
+  laboratory reference-interval / terminology-applicability subsystem) — verified 2026-07-21 NOT
+  yet wired into the live assess() path (no import from server.mjs, src/engine.js, or
+  modules/anemia/ranges.js), so it poses no live blind spot today, but per ARC-019 the scope
+  decision for it must be made BEFORE it becomes a runtime path, not after. See behavior-probe
+  report."
+```
+
+**`unclassifiable-residue`, renamed and re-scoped (ARC-014).** Under rule 7's unconditional
+fail-closed default, this counter can **never increment** — every unresolved class already routes
+to `tier:block` before falling through to "unclassifiable," so the invariant "passes" most strongly
+for the class of edit it exists to catch, which reads as reassurance where none is warranted.
+Renamed to **`unnamed-class-fallback`** and re-scoped from a pass/fail invariant to a pure
+observability counter: `{ id: 'unnamed-class-fallback', count: N }`, no `passed` field. A non-zero
+count is not a defect (rule 7 already forced `tier:block`) — it signals that the *taxonomy* has a
+gap and should gain a named class the next time the counter moves, since a named class routes more
+precisely than a permanent default-block.
+
+**Local-range-override / site-profile subsystem named in `blindSpotWarning`** — done above (ARC-019).
+
+**No-denominator statement (ARC-016).** The seeded-mutation table in item 6 demonstrates *presence*
+of detection for each named scenario. It is not a random or representative sample of the space of
+possible edits to a 91-rule, arbitrary-depth JSON tree — that space is combinatorially unbounded and
+there is no sampling procedure behind this table. **No claim of a detection rate (e.g. "the
+classifier catches N% of dangerous edits") may be derived from this table's size or pass count.** A
+rate claim requires a different methodology (property-based/fuzz testing with a defined
+edit-generation distribution) and is out of scope here.
+
+### 6. Consolidated seeded-mutation table for EP5-T4
+
+Merges: the original corpus (M01–M52), the second-lens additions (M53–M57, retiered where RA-8
+changed their class — `M53`→`G6`, `M54`→`H9`, both already correctly anticipated those classes
+before this amendment gave them ids), RA-2's four type-coercion mutations (M58–M61), the ARC-001
+mandatory row (M62), and one row for each class this amendment independently found unexercised by
+M01–M57 (M63–M83). **M38/M39 are replaced in place** (RA-7: their original `E6`/BLIND framing no
+longer applies) rather than renumbered, to keep every existing cross-reference in this document
+valid.
+
+**M38/M39, replaced (RA-7 — three-way `E7` drift, not `E6`):**
+
+| # | Mutation | File / site | Expected class · tier | Expected Δ |
+|---|---|---|---|---|
+| M38 | Bump `evidence.json`'s `knowledgeBaseVersion` only; leave `modules/anemia/index.js` and `module.json` untouched | `modules/anemia/evidence.json:2` | **`E7 evidence-dual-source-drift`** (redefined) · invariant, block | D4 (`GET /api/v1/knowledge-base` reports the new version; `POST /api/v1/assess` reports the old one — a live, user-visible split) |
+| M39 | Bump `modules/anemia/index.js`'s hardcoded `manifest.knowledgeBaseVersion` only | `modules/anemia/index.js:50` | `E7` (redefined) · invariant, block | D4 (mirror of M38: `/api/v1/assess` reports the new version, `/health` reports the old one) |
+
+**RA-2's four type-coercion mutations (M58–M61):**
+
+| # | Mutation | File / site | Expected class · tier | Expected Δ |
+|---|---|---|---|---|
+| M58 | `IMF-001`'s `$.all[0]` leaf (`anemia.present eq true`) → `value: 1` | `rules.json:2917` region, `IMF-001` | `B4 value-type-change` (typeof checked first, RA-2) · block | D1 — `actual === true` never `=== 1`; leaf permanently unsatisfiable. `IMF-001` is witnessed (91/91), delta directly observable |
+| M59 | `NOTE-003`'s `$.all[1]` leaf (`hemoglobinAnalysis.hbA2Elevated eq false`) → `value: 0` | `rules.json:505` region, `NOTE-003` | `B4 value-type-change` · block | D1 — same mechanism as M58, opposite polarity (`false === 0` is `false` in JS) |
+| M60 | `Q-NORMO-HIGH-001`'s `hemolysis.markerCount lt 2` → `value: "2"` | `rules.json:3734` region | `B4 value-type-change` · block | D5 — **runtime-inert** on `lt` (JS coerces `"2"`→`2` for `<`); this is FN-9's mirror case, reproduced deliberately to prove `B4` must stay unconditional regardless of per-instance runtime effect — M58/M59 prove the `eq` case is *not* inert, so a "skip the type check if it looks inert" shortcut would be wrong in general |
+| M61 | Same leaf → `value: 2.0` | `rules.json:3734` region | `B5 value-format-change` (`sameNumericValue(2, 2.0)` = true) · **note** — the sole `FIXED_COSMETIC` survivor | D5 — genuinely inert, `JSON.parse("2.0") === JSON.parse("2")` |
+
+**ARC-001 mandatory row (M62) — the constructed false negative the amended classifier MUST flag
+`block`:**
+
+| # | Mutation | File / site | Expected class · tier | Expected Δ |
+|---|---|---|---|---|
+| M62 | Soften `ALERT-001.output.detail` (e.g. replace the red-flag enumeration with a vaguer, less urgent restatement) | `rules.json:124-141`, `ALERT-001` | `C10 display-text-change` on a protective rule (all alerts are protective) → **RA-1 escalation, block** — pre-amendment this was `C10 · review`, passed no gate, and is exactly ARC-001 | D4 TEXT — **no longer probe-blind at HEAD**: `ALERT-001` now carries 2 activation witnesses (`requiredTestCaseIds`: `tests/witness/alerts/tma-schistocytes-neurologic-symptoms.json`, `.../unstable-major-bleeding-severe-anemia.json`), superseding CCF-3's original zero-witness claim (verified via `node scripts/rule-coverage.mjs --json`, 2026-07-21). The amended per-ruleId cross-check (item 3) now independently catches this even without RA-1 — pre-RA-1 tiering (`review`) ≠ `block` while the probe would report D4 — but RA-1's structural fix is the primary, corpus-independent defense; the cross-check is a second-line backstop that depends on corpus coverage staying complete |
+
+**Previously-unmutated classes (M63–M83).** ARC-015 cites "19 previously-unmutated classes." An
+independent recount against the original 70-class taxonomy and M01–M57 (script-assisted,
+2026-07-21) found **21** classes with no row among M01–M57 (`A1`, `A5`, `B12`, `C7`, `C9`, `C10`,
+`C12`, `D6`, `D7`, `E1`, `E2`, `E7`-old-form, `F3`, `F4`, `F8`, `G1`, `G5`, `H2`, `H6`, `H7`, `H8`) —
+this is reported honestly as a discrepancy against ARC's cited number, not silently forced to match
+(likely explained by counting convention on the `E1`/`E2` and `F3`/`F4` combined table rows, but
+this is not confirmed). `E7`(old-form) is covered by the M38/M39 replacement above, so it is
+dropped from this list; `E8` (new class) is added. **21 rows below.**
+
+| # | Mutation | File / site | Expected class · tier | Expected Δ |
+|---|---|---|---|---|
+| M63 | Add a new note rule (copy of `NOTE-001`'s shape under a new id) | `rules.json` | `A1 rule-add` · block | D2 EMERGENCE (mirror of M10) |
+| M64 | Edit `IMF-001.category` string, meaning-preserving | `rules.json:2917`, `IMF-001` | `A5 rule-category-change` · **review** (RA-5, no longer cosmetic) | D5 on the 6 canonical `examples/*.json` fixtures — but `category` search/render is presentation-layer (`app.js`, H8), which `kb-behavior-probe.mjs` (engine-level) cannot see; RA-5 fixes the *tier*, not this pre-existing probe-blindness (OQ-4, item 7) |
+| M65 | Reorder `Q-NORMO-HIGH-001`'s `$.all[1]`/`$.all[2]` children, no content change | `rules.json:3734` region | `B12 subtree-move` (order-independent under `all`) · review | D5 — matches the original hand-simulation 2's own stated result exactly |
+| M66 | `Q-001.output.section` `"demographics"` → a different literal string | `rules.json`, `Q-001` | `C7 section-change` · review | D3 REORDER — question grouping label changes in the ordered `questions[]` fingerprint |
+| M67 | Add a new string to `TEC-001.output.cautions` (already protective: non-empty cautions) | `rules.json`, `TEC-001` | `C9 safety-string-add` on a protective rule → **RA-1, block** (was `review` pre-amendment) | D2 EMERGENCE — a deliberate, stricter posture: RA-1's literal "any change" wording blocks even additions to a protective rule's clinician-facing text |
+| M68 | Edit `NOTE-001.output.detail` prose, non-substantive rewording | `rules.json`, `NOTE-001` | `C10 display-text-change` · **review** (note outputs are NOT extended by RA-9 — deliberate, see item 7) | D4 TEXT (if witnessed) — this row exists specifically to show the review/block boundary RA-9 leaves open |
+| M69 | Add `output.evidence: ["AAP2026_IDA"]` to `Q-001` (currently no rule has `output.evidence` populated — verified) | `rules.json`, `Q-001` | `C12 output-evidence-change` · block | D4 — `output.evidence` merges into the exposed `evidence[]` in every output branch (confirmed: `unique([...(rule.evidence??[]), ...(output.evidence??[])])`, `ruleEngine.js`), so this is NOT probe-blind |
+| M70 | Add a new string to the `iron-deficiency-anemia` candidate's `defaultNextSteps[]` | `candidates.json` | `D6 default-next-step-add` on a protective candidate (`ID-001` contributes at `meets-defined-pattern`, verified) → **RA-1, block** | D2 EMERGENCE |
+| M71 | Edit the `iron-deficiency-anemia` candidate's `category` string | `candidates.json` | `D7 candidate-category-change` · **review** (RA-5, no longer cosmetic) | D4 TEXT — API-surface-visible (`category` is spread onto `/api/v1/assess`'s `rankedDifferential[]` via `mergeCandidate`'s `{...base}`) and golden-fixture-asserted, so NOT probe-blind the way `A5` is — **but a genuine gap surfaced while grounding this row: RQ4's own fingerprint shape (`differential[]`) does not list `category` among its tracked fields**, so `kb-behavior-probe.mjs` as originally specified would in fact miss it structurally even though it is API-visible; flagged as a fingerprint-shape defect, see item 7 |
+| M72 | Add a valid, existing evidence id to `NOTE-003.evidence[]` | `rules.json`, `NOTE-003` | `E1 evidence-ref-add` · block | D4 TEXT (new citation chip) |
+| M73 | Remove `ALERT-002`'s sole evidence id, leaving `evidence: []` | `rules.json`, `ALERT-002` | `E2 evidence-ref-remove` · block | D4 (citation chip lost) — **dual signal**: also an independent `rule.schema.json` `minItems:1` violation, caught by `validate-kb.mjs` regardless of `kb-diff`'s tier (same pattern as `A6`/`D9`) |
+| M74 | Add a new age-band object to `reference-ranges.json`'s `ranges[]` | `reference-ranges.json` | `F3 band-add` · block | D1†/D2† — depends on whether the new band fills a real gap or creates overlap; flagged `†` (needs hand-verification once implemented), consistent with the original table's own convention |
+| M75 | Remove an age-band object from `reference-ranges.json`'s `ranges[]` | `reference-ranges.json` | `F4 band-remove` · block | D1 — mirrors M41's mechanism (the removed band's range falls through to `null` thresholds), for a whole band rather than one boundary digit |
+| M76 | Edit `reference-ranges.json`'s top-level `scope` string | `reference-ranges.json` | `F8 range-scope-change` · review (unchanged valence) | D5 — documentation-only, no runtime reader |
+| M77 | Bump `knowledgeBaseVersion` consistently in all three copies (`module.json`, `modules/anemia/index.js`, `evidence.json`) — the CORRECT release move | `module.json` + 2 more | `G1 version-bump` · review | D5 — the clean case, contrasted deliberately with M38/M39 (which bump only one of the three and trip the redefined `E7`) |
+| M78 | Edit `ALERT-001.owner` to a different `team:`-prefixed value | `rules.json:124`, `ALERT-001` | `G5 owner-annotation-change` (narrowed, RA-8) · review | D5 — no runtime reader, confirmed |
+| M79 | Edit `evaluateCondition`'s `all` branch (`.every` → `.some`), silently turning every `all`-rooted rule into `any` | `src/ruleEngine.js:48-56` region | **BLIND** (`H2`) | D1+D2, KB-wide — 60 of 91 rules are `all`-rooted (CCF-2); the single highest-blast-radius one-line edit available, and the only `H2` row in this table |
+| M80 | Edit `mergeCandidate`'s level-max guard (`>` → `>=`, or remove it) | `src/ruleEngine.js:94-96` region | **BLIND** (`H6`) | D1 — a later-evaluated lower-level rule for the same `candidateId` can now downgrade an already-`meets-defined-pattern` candidate |
+| M81 | Edit the `rankedCandidates` sort comparator's level/score/label priority order | `src/ruleEngine.js:191-198` region | **BLIND** (`H7`) | D3 REORDER — rank-#1 identity likely changes on ties (FN-5's mechanism, generalized to the comparator itself) |
+| M82 | Edit `citeChips`'s silent-drop filter or introduce a `.slice(0, N)` truncation in `renderCandidates` | `src/app.js:~162`/`~314` region | **BLIND** (`H8`) — additionally not covered by `npm run check` at all (OQ-4, unchanged: no browser JS executes in the gate) | No instrument in this design observes it — recorded honestly rather than assigned a D-class it cannot earn |
+| M83 | Repoint `ALERT-001.sourcePassageId` to a different, independently-valid passage that does not actually ground this rule's specific claim | `rules.json:150`, `ALERT-001` | `E8 sourcePassageId-repoint` (new, RA-7) · block | D5 today — `sourcePassageId` feeds `provenance.ruleAudit[].sourcePassageStatus` (`src/engine.js`) but is **not** in RQ4 Part 2's tracked fingerprint shape, a second fingerprint-shape gap alongside M71's; detection today is `validate-kb.mjs`-only (resolves + checks bindability, never checks the new passage actually supports the same claim — the same unresolvable-by-automation problem as `E3`/FN-6, one layer deeper) |
+
+**Table size: 83 mutations, M01–M83** (57 original/second-lens + 4 RA-2 + 1 ARC-001-mandatory + 21
+previously-unmutated, with M38/M39 replaced in place rather than renumbered).
+
+### 7. What remains open — stated honestly, not papered over
+
+**Closed by this amendment:**
+
+- OQ-8 (what `review` means operationally) — closed by RA-3's minimum-viable repair.
+- OQ-9 (cross-check disarmed by one unrelated changeset-wide edit) — closed by RA-4's per-`ruleId`
+  re-quantification.
+- RA-1 through RA-9 — all nine closed as specified, with two scoped, explicitly-flagged
+  extensions beyond their literal text (prompt/why added to RA-1's field list for consistency with
+  RA-9; the D4/D6 candidate-level protective test mechanically extends RA-9's existing candidate
+  branch) and one honestly-scoped omission (note-type outputs are NOT extended by RA-9, matching
+  its literal text, not silently assumed).
+
+**Still open, carried forward unresolved:**
+
+- **OQ-10** (circular attestation: recording a `block`-tier approval is itself a fixed-block `G3`
+  change) — **not resolved by this amendment.** RA-3's `changeRationaleOk` gate does not depend on
+  resolving it, so the minimum-viable repair still works, but `blockOk`/`hasRecordedClinicalApproval`
+  in item 3's `isClean()` remains a placeholder pending a real answer.
+- **OQ-11** (retracted/superseded upstream sources, no local diff) — not addressed; no automated
+  mechanism proposed here.
+- **OQ-12** (tier calibration for the RA-9-extended protective set, and for broadening edits on
+  emergency alerts specifically) — **explicitly referred to a named credentialed pediatric
+  hematology reviewer, as instructed.** This amendment makes the *structural* fix (RA-9 extends
+  which rules count as protective; RA-1 makes protective-text edits block) but does **not** invent
+  the clinical judgement of whether every one of the 18 newly-protective rules (17 questions + 1
+  sole-contributor candidate) deserves that weight, or whether note-type outputs should join them.
+  No clinical threshold is asserted here that is not already in the repo.
+- **OQ-13** (`contentHash` computation unspecified) — not addressed, and now more consequential:
+  this amendment gives `cosmeticOnly` a precise definition (item 3), so a fixed-cosmetic reformat
+  producing `cosmeticOnly: true` alongside a changed `contentHash` is an even sharper reviewer
+  surprise than before if OQ-13 is left unresolved before DEF-4/SPIKE-006.
+- **OQ-14** (local-applicability subsystem's scope decision) — **factually updated, not resolved**:
+  verified 2026-07-21 that `scripts/lib/local-applicability.mjs` is still exercised only by tests
+  (`local-applicability`, `dangerous-miss-scenarios`, `synthetic-profile-containment`,
+  `hazard-control-matrix`), with no import from `server.mjs`/`src/engine.js`/`modules/anemia/
+  ranges.js`. It is named in `blindSpotWarning` (item 5) proactively. The actual scope decision
+  (does it join `filesDiffed` or stay `filesNotDiffed` once wired) is **not made here** — it is
+  correctly deferred until it becomes a runtime path, per ARC-019's own instruction, and is a
+  standing TODO on whoever wires it in.
+
+**New items discovered while performing this amendment, not previously tracked:**
+
+- **RQ1's "no unmapped field" claim is now stale** against `schemas/rule.schema.json`'s 9 EP-4
+  rule-governance fields. `owner`, `requiredTestCaseIds`, `sourcePassageId`, `changeRationale` are
+  now mapped (`G5`/`G6`, `E8`, RA-3's gate, respectively) by this amendment; **`version`,
+  `effectiveDate`, `retireDate`, and `safetyClass` remain genuinely unmapped.** `clinicalApprovers`
+  is not mapped either, but is independently blocked two other ways regardless of `kb-diff.mjs`
+  (schema `maxItems: 0`, and the runtime `assertNoClaimedClinicalApproval` guard,
+  `src/ruleEngine.js:121-141`, which refuses to evaluate *any* rule if it is populated) — lower
+  urgency than the other four. **Not fixed here** — inventing four new taxonomy classes for
+  safety-relevant governance fields without a bounded, reviewed mandate is exactly the kind of
+  scope creep this amendment should not commit unreviewed. Recorded as a new open item for a future
+  amendment pass, tentatively **OQ-15**.
+- **Two fingerprint-shape gaps in RQ4 Part 2's tracked fields**, surfaced while grounding M71 and
+  M83: `differential[]` does not track `category` (API-visible, golden-fixture-asserted, yet
+  currently probe-blind), and no entry shape tracks `sourcePassageId`/`sourcePassageStatus`
+  (`provenance.ruleAudit[]`-visible, yet currently probe-blind). Both are genuine, newly-found gaps
+  in the *behavioral probe's* design, not the structural classifier's — out of this amendment's
+  bounded scope (RA-1…RA-9 govern the classifier) but too concrete to leave unrecorded.
+- **CCF-3 is stale, in the good direction** (see the note before item 1): 91/91 rules now carry
+  activation witnesses per EP-0.5/EP05-T2..T4, gated in `npm run check` via `npm run
+  coverage:rules --require-all --min=91`. This was **not** re-verified row-by-row against the
+  consolidated mutation table above — the `†` markers inherited from the original table (M05, M06,
+  M09, etc.) were not individually re-checked against the current `tests/witness/` corpus, and
+  neither were the new rows' Δ estimates beyond what is stated inline. That row-by-row
+  re-verification is EP-5-T4's own job when it executes this table, not something to assert here
+  without running it.
+- **`schemas/reference-range.schema.json` exists but `reference-ranges.json` is not validated
+  against it** in `scripts/validate-kb.mjs` (confirmed by grep — no reference to that schema file
+  in the validator). A real gap adjacent to Part 3's supporting invariants, not fixed here.
+- The RQ1 problem statement's "13 enumerated operators" is stale — `schemas/rule.schema.json`'s
+  condition `op` enum now lists 17 (EP-1 added `is-present`/`is-absent`/`is-unknown`/
+  `is-not-assessed`). `B2 operator-change` already covers "an `op` changes" generically regardless
+  of which enum value, so no new class is required — this is a stale citation in the original
+  prose, not a taxonomy defect, and is left uncorrected there per this amendment's additive-only
+  constraint.
+
+**No clinical threshold, calibration, or approval is asserted anywhere in this section that is not
+already present in the repository.** `clinicalApprovers[]`/`approvedBy[]` remain untouched and
+empty. Nothing here constitutes or substitutes for the ARC re-review this section's own frontmatter
+records as not yet performed.

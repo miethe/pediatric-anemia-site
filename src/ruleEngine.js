@@ -1,6 +1,10 @@
 import { toTri } from './facts/tristate.js';
 
-const LEVEL_RANK = Object.freeze({
+// EP5-T3 (scripts/kb-diff.mjs, SPIKE-005 amended §2, ARC-028 property 3): exported so the
+// semantic-diff classifier's severity/level tiering reuses these SAME frozen objects rather than
+// hand-copying a parallel vocabulary that could silently drift from what the engine actually
+// ranks. No behavior change — these were previously module-private consts.
+export const LEVEL_RANK = Object.freeze({
   'meets-defined-pattern': 5,
   'strongly-supported': 4,
   supported: 3,
@@ -8,7 +12,7 @@ const LEVEL_RANK = Object.freeze({
   'not-excluded': 1,
 });
 
-const ALERT_RANK = Object.freeze({ emergency: 4, urgent: 3, important: 2, informational: 1 });
+export const ALERT_RANK = Object.freeze({ emergency: 4, urgent: 3, important: 2, informational: 1 });
 
 function getPath(object, path) {
   if (!path) return object;

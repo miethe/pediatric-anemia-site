@@ -20,9 +20,9 @@
   },
   "candidateBinding": {
     "knowledgeBaseVersion": "0.1.0-2026-07-15",
-    "rulesFileDigest": "sha256:d6df348b15c6a391afb51a7f9945d50cea89b26c2f4a1a7fd629de035cb62793",
+    "rulesFileDigest": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
     "candidatesFileDigest": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
-    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+    "moduleFileDigest": "sha256:57280d0461fcd3a8f1597805ccc11b93b7ff5b6ff6fb695c288da67f5cd6ba73"
   },
   "executionBinding": {
     "engine": "anemia-assessment-engine",
@@ -32,9 +32,20 @@
   "input": {
     "kind": "patientInput",
     "patientInput": {
-      "patient": { "ageMonths": 96, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
-      "cbc": { "hemoglobin": 8.5, "mcv": 90 },
-      "reticulocytes": { "response": "unknown" },
+      "patient": {
+        "ageMonths": 96,
+        "sexAtBirth": "male",
+        "menstruating": false,
+        "recentTransfusion": false,
+        "highAltitude": false
+      },
+      "cbc": {
+        "hemoglobin": 8.5,
+        "mcv": 90
+      },
+      "reticulocytes": {
+        "response": "unknown"
+      },
       "labs": {
         "indirectBilirubinStatus": "high",
         "ldhStatus": "high",
@@ -67,7 +78,9 @@
   },
   "expectedTrace": {
     "mechanism": "rule_audit",
-    "matchedRuleIdsMustInclude": ["HEM-003"],
+    "matchedRuleIdsMustInclude": [
+      "HEM-003"
+    ],
     "note": "Verified by direct execution on 2026-07-19. Top candidate is hemolysis-unspecified at 'supported' (HEM-003), never meets-defined-pattern/strongly-supported (HEM-001 requires retic.high, which retic.unknown blocks). nextQuestions include Q-004 (retic count) and Q-SMEAR-001 (smear review)."
   },
   "rollbackSignal": "Re-verify by execution if modules/anemia/rules.json, candidates.json, or module.json digests change, or if HEM-001/002/003 conditions are edited.",

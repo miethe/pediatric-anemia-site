@@ -20,9 +20,9 @@
   },
   "candidateBinding": {
     "knowledgeBaseVersion": "0.1.0-2026-07-15",
-    "rulesFileDigest": "sha256:d6df348b15c6a391afb51a7f9945d50cea89b26c2f4a1a7fd629de035cb62793",
+    "rulesFileDigest": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
     "candidatesFileDigest": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
-    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+    "moduleFileDigest": "sha256:57280d0461fcd3a8f1597805ccc11b93b7ff5b6ff6fb695c288da67f5cd6ba73"
   },
   "executionBinding": {
     "engine": "local-applicability-reference-interval",
@@ -33,17 +33,26 @@
     "kind": "referenceIntervalRequest",
     "patientInput": null,
     "referenceIntervalRequest": {
-      "candidate": { "candidateDigest": "sha256:a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4" },
+      "candidate": {
+        "candidateDigest": "sha256:a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4"
+      },
       "populationId": "SYNTHETIC-POPULATION-A",
       "ageValue": 12,
       "ageUnit": "months",
       "gestationalAgeAtBirthWeeks": 38,
       "sex": "female",
-      "specimen": { "code": "SYN-SPECIMEN-DIFFERENT" },
-      "analyzer": { "model": "SYNTHETIC-ANALYZER-MODEL-DIFFERENT", "method": "SYNTHETIC-METHOD-DIFFERENT" },
+      "specimen": {
+        "code": "SYN-SPECIMEN-DIFFERENT"
+      },
+      "analyzer": {
+        "model": "SYNTHETIC-ANALYZER-MODEL-DIFFERENT",
+        "method": "SYNTHETIC-METHOD-DIFFERENT"
+      },
       "altitudeMeters": 100,
       "unitCode": "SYN-UNIT-DIFFERENT",
-      "analyteCode": { "code": "SYN-0001" }
+      "analyteCode": {
+        "code": "SYN-0001"
+      }
     },
     "terminologyObservation": null,
     "profileRef": {
@@ -57,7 +66,12 @@
     "requiredSignal": "Unit, specimen, analyzer/method, and reference-interval mismatch. Fail closed; request local verification; no conversion or normality assumption.",
     "expectedAlerts": [],
     "expectedAbstention": null,
-    "expectedBlockers": ["SPECIMEN_MISMATCH", "ANALYZER_MISMATCH", "METHOD_MISMATCH", "UNIT_MISMATCH"],
+    "expectedBlockers": [
+      "SPECIMEN_MISMATCH",
+      "ANALYZER_MISMATCH",
+      "METHOD_MISMATCH",
+      "UNIT_MISMATCH"
+    ],
     "forbiddenSignals": [
       "a decision of 'applicable' despite mismatched specimen, analyzer, method, and unit codes",
       "any automatic unit conversion applied to reconcile the mismatch instead of failing closed"

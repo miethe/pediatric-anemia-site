@@ -3,11 +3,65 @@ import { cp, copyFile, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/p
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MODULE_IDS } from '../src/modules/registry.js';
+import { verifyManifest, SUPPORTED_SCHEMA_VERSIONS } from '../src/kbVerify.js';
+import { EVIDENCE_STALENESS_POLICY } from '../src/evidenceStalenessPolicy.js';
+import { validate as validateManifestSchema } from './lib/json-schema-lite.mjs';
+import { loadKbJsonFiles, loadKbSourceFiles } from './sign-kb.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
 const files = ['index.html', 'styles.css', 'site-overrides.css', 'robots.txt', '_headers'];
 const directories = ['assets', 'src', 'data', 'examples', 'modules'];
+
+const manifestSchema = JSON.parse(
+  await readFile(path.join(root, 'schemas', 'module-manifest.schema.json'), 'utf8'),
+);
+
+function discloseEvidenceStaleness(moduleId, verdict) {
+  if (!verdict.expiry) return;
+  if (verdict.expiry.enforced) {
+    console.log(`Module "${moduleId}": evidence-staleness expiry ENFORCED — ${verdict.expiry.reason}`);
+  } else {
+    console.warn(`Module "${moduleId}": evidence-staleness expiry NOT ENFORCED — ${verdict.expiry.reason}`);
+  }
+}
+
+// SPIKE-006 RQ4 — gate BEFORE any dist/ write: an unverifiable KB (missing/schema-invalid/
+// tampered/incompatible-schemaVersion/expired manifest) must never reach a Pages upload. Mirrors
+// server.mjs's startup verification exactly (both call the same src/kbVerify.js#verifyManifest),
+// but exits the build rather than refusing to start a server.
+const manifestsById = {};
+for (const moduleId of MODULE_IDS) {
+  const moduleDir = path.join(root, 'modules', moduleId);
+  let manifest;
+  try {
+    manifest = JSON.parse(await readFile(path.join(moduleDir, 'module.json'), 'utf8'));
+  } catch (error) {
+    console.error(`Fatal: module "${moduleId}" has no readable manifest (module.json): ${error.message}`);
+    process.exit(1);
+  }
+  const schemaErrors = validateManifestSchema(manifestSchema, manifest);
+  const kbFiles = await loadKbJsonFiles();
+  const kbSourceFiles = await loadKbSourceFiles();
+  const verdict = await verifyManifest({
+    manifest,
+    moduleId,
+    files: kbFiles,
+    sourceFiles: kbSourceFiles,
+    schemaErrors,
+    supportedSchemaVersions: SUPPORTED_SCHEMA_VERSIONS,
+    evidenceStalenessPolicy: EVIDENCE_STALENESS_POLICY,
+  });
+  discloseEvidenceStaleness(moduleId, verdict);
+  if (!verdict.servable) {
+    console.error(
+      `Fatal: module "${moduleId}" manifest failed verification — refusing to build dist/ `
+        + `(SPIKE-006 RQ4): ${verdict.reasons.join('; ')}`,
+    );
+    process.exit(1);
+  }
+  manifestsById[moduleId] = { manifest, verdict };
+}
 
 await rm(dist, { recursive: true, force: true });
 await mkdir(dist, { recursive: true });
@@ -90,26 +144,37 @@ const packageMetadata = JSON.parse(await readFile(path.join(root, 'package.json'
 
 // Per-module breakdown, additive to the flat top-level fields above (which keep echoing the
 // default module's numbers unchanged — today MODULE_IDS has exactly one entry, 'anemia').
+// `manifest`/`evidenceStalenessPolicy` reuse the SAME verified manifest and verdict computed by
+// the fail-closed gate above — never a second, independent read (which could silently drift from
+// what was actually verified) — and disclose the AC-WP5-RESIL legitimately-empty fields
+// (`approvedBy: []`, `supersedes: null`) and the expiry non-enforcement state exactly as
+// server.mjs's GET /api/v1/knowledge-base does, so the static build and the live server never
+// disagree about what "integrity-recorded" discloses.
 async function readModuleBuildInfo(moduleId) {
   const moduleDir = path.join(root, 'modules', moduleId);
   const moduleRules = JSON.parse(await readFile(path.join(moduleDir, 'rules.json'), 'utf8'));
   const moduleCandidates = JSON.parse(await readFile(path.join(moduleDir, 'candidates.json'), 'utf8'));
   const moduleEvidence = JSON.parse(await readFile(path.join(moduleDir, 'evidence.json'), 'utf8'));
-  // module.json (manifest) does not exist until Phase 6 (platform-foundation-p0-v1.md,
-  // Phase 6: Module Manifest Stub) — tolerate its absence here.
-  let manifest = null;
-  try {
-    manifest = JSON.parse(await readFile(path.join(moduleDir, 'module.json'), 'utf8'));
-  } catch (error) {
-    if (error.code !== 'ENOENT') throw error;
-  }
+  const { manifest, verdict } = manifestsById[moduleId];
   return {
     knowledgeBaseVersion: moduleEvidence.knowledgeBaseVersion,
     evidenceReviewedThrough: moduleEvidence.reviewedThrough,
     ruleCount: moduleRules.length,
     diagnosticPatternCount: Object.keys(moduleCandidates).length,
     evidenceRecordCount: moduleEvidence.sources.length,
-    manifest,
+    manifest: {
+      status: manifest.status,
+      knowledgeBaseVersion: manifest.knowledgeBaseVersion,
+      evidenceReviewedThrough: manifest.evidenceReviewedThrough,
+      validationRunId: manifest.validationRunId,
+      approvedBy: manifest.approvedBy,
+      supersedes: manifest.supersedes,
+    },
+    evidenceStalenessPolicy: verdict.expiry && {
+      maxAgeDays: verdict.expiry.maxAgeDays,
+      enforced: verdict.expiry.enforced,
+      disclosure: verdict.expiry.reason,
+    },
   };
 }
 
