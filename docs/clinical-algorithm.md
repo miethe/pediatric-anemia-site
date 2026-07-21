@@ -1,6 +1,6 @@
 # Clinical Algorithm and Adaptive Questionnaire
 
-This document describes the deterministic reasoning encoded in `data/rules.json`. It is a design specification for clinical review, not a validated standard of care.
+This document describes the deterministic reasoning encoded in `modules/anemia/rules.json`. It is a design specification for clinical review, not a validated standard of care.
 
 ## 1. Intended output
 
@@ -291,7 +291,7 @@ The point total is intentionally visible in the JSON audit only as a software so
 
 ## 9. Rule traceability
 
-Every rule in `data/rules.json` contains:
+Every rule in `modules/anemia/rules.json` contains:
 
 ```json
 {

@@ -42,10 +42,10 @@ patient JSON → deriveFacts() (src/facts.js, shim over modules/anemia/facts.ane
 
 - Knowledge base: `modules/anemia/rules.json` (91 rules), `modules/anemia/candidates.json` (26 patterns),
   `modules/anemia/evidence.json` (6 records), `modules/anemia/reference-ranges.json` (AAP fallbacks; local ranges override).
-- Rule DSL: `all`/`any`/`not`, equality/numeric/existence checks → candidate/alert/question/note outputs
-  with evidence IDs. Schemas in `schemas/`. See `docs/architecture.md` §7 for the production-hardening
-  additions (typed facts, exact-passage locators, effective/retire dates, signed manifest).
-- Module package architecture: see `docs/architecture.md` (Module package architecture subsection).
+- Rule DSL: `all`/`any`/`not`, tri-state + equality/numeric/existence checks → candidate/alert/
+  question/note outputs with evidence IDs. Wave-0 safety substrate: `docs/architecture.md` §6/§7/§10
+  (`clinicalApprovers[]`/`approvedBy[]` stay schema-forced empty; no clinical sign-off exists).
+- Module package architecture: see `docs/architecture.md` §2a.
 - API: `GET /health`, `GET /api/v1/knowledge-base`, `POST /api/v1/assess` (`server.mjs`, `openapi.yaml`).
 - **Gate before commit:** `npm run check` (= `npm test` + `npm run validate` + `npm run build` +
   `npm run check:imports` + `npm run smoke`). All must pass. Node ≥ 20.

@@ -4,12 +4,24 @@ title: "Headless-Browser Runtime Smoke Check"
 status: draft
 maturity: shaping
 created: 2026-07-18
+updated: 2026-07-21
 feature_slug: platform-foundation-p0
-prd_ref: docs/project_plans/PRDs/refactors/platform-foundation-p0-v1.md
+prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
 plan_ref: docs/project_plans/implementation_plans/refactors/platform-foundation-p0-v1.md
 ---
 
 # Headless-Browser Runtime Smoke Check (DEF-8)
+
+> **EP-7 re-confirmation note (2026-07-21).** This spec's own promotion trigger — "EP-1/EP-2
+> substantively edit `src/app.js`/`algorithmExplorer.js` beyond today's shim boundary" — **has
+> fired**. EP-2 added ~50 lines of new interactive DOM-rendering logic to `src/app.js`
+> (`renderUnitAssumptions`, `showInputRejection`), and EP-5 extended the same code with further
+> branching (`formatRejectionDetail`, `INPUT_REJECTION_CODES`) — this is not a "literal
+> path-string swap." See "Deferral re-confirmation" below for the full evidence and verdict: the
+> item stays **research-needed/deferred as a headless-browser-framework build task** (no
+> Playwright/Puppeteer dependency exists yet, and EP-7 does not add one), but it should no longer
+> be described as blocked purely on "nothing has touched `app.js` yet" — that premise is false as
+> of EP-2. Promotion to an active work item is recommended at the next phase-planning gate.
 
 ## Problem / Context
 
@@ -117,3 +129,77 @@ turn the accepted assumption into an active defect.
 - Does relocating `examples/`/`data/algorithm-explainers.json` (DEF-7) need to land before or after
   this check, since both touch `app.js`'s fetch specifiers and would otherwise require updating the
   same test twice?
+
+## Deferral re-confirmation (EP-7, 2026-07-21)
+
+**Verdict: trigger has fired — recommend reopening / promoting at the next phase-planning gate.**
+This is not a rubber stamp: re-checking this spec's own named trigger against what EP-1 through
+EP-6 actually shipped (`git log --oneline -25`; `scripts/smoke-browser-unit-rejection.mjs`;
+`src/facts.js`; `.claude/progress/wave0-safety-foundation/phase-{1,2}-progress.md`) shows the
+premise this deferral rested on is no longer accurate.
+
+**What "the Phase-0 shim boundary" meant, and whether EP-1/EP-2 stayed inside it:**
+
+- `src/facts.js` remains the pure 1-line shim this spec (and `tri-state-fact-model.md`) describes:
+  `deriveFacts(input)` calls `deriveFactsForModule(input, 'anemia')`. Fact-derivation logic itself
+  never entered `app.js`/`algorithmExplorer.js` — that boundary held.
+- **EP-1** (`e1dea8e`, tri-state facts) touched `app.js`/`algorithmExplorer.js` for only 7
+  insertions/2 deletions total (`git show e1dea8e --stat`) — genuinely inside the shim boundary,
+  no new rendering logic.
+- **EP-2** (`23e5ef8`, Units & Range Registry) did **not** stay inside that boundary: 53
+  insertions/16 deletions in `src/app.js` alone (`git show 23e5ef8 --stat`), adding two new
+  functions with real conditional rendering behavior — `renderUnitAssumptions()` (a new
+  `<aside>` notice block wired into `renderResult()`) and `showInputRejection()` (a new
+  "Check the entered units" placeholder state, replacing the results view on a caught
+  `UNIT_REJECTED` error, with per-field detail rendering). Both are genuine new
+  DOM-construction logic, not path-string swaps.
+- **EP-5** (`9a6a73a`) extended the same code further: `INPUT_REJECTION_CODES`, a second error
+  branch (`AGE_OUT_OF_SUPPORTED_RANGE`), and `formatRejectionDetail()`, which renders a
+  differently-shaped `<li>` per error code — 27 insertions in `src/app.js` on top of EP-2's.
+- **EP-3+EP-4** (`28c1487`) also touched `algorithmExplorer.js` (15 lines) for evidence-passage
+  rendering, a third substantive edit beyond path swaps.
+
+So the spec's own trigger — *"If EP-1/EP-2 substantively edit `src/app.js`/`algorithmExplorer.js`
+beyond today's shim boundary"* — is satisfied by EP-2 alone, and reinforced by EP-3/4/EP-5. This
+was not silently missed: EP-2's own progress file names it explicitly — `.claude/progress/
+wave0-safety-foundation/phase-2-progress.md` describes its runtime-smoke task as "R-P4 runtime
+smoke: browser SPA surfaces the rejection, doesn't crash," and EP-1's progress file flags the
+one pre-existing UI consumer as "DEF-8 territory if verification finds a break." The team
+recognized the boundary was being crossed and added a compensating control rather than a real
+headless-browser check:
+
+- `scripts/smoke-browser-unit-rejection.mjs` (added at EP-2, wired into `npm run check`) statically
+  parses `src/app.js`'s new function bodies (`renderUnitAssumptions`, `showInputRejection`,
+  the `submit`/`loadExample` handlers) via a hand-rolled brace-matching source scanner, and
+  asserts specific regex/structural properties — e.g. that `showInputRejection` does not call
+  `form.reset()`, that `renderUnitAssumptions` includes `role="note"` and never the words
+  `error`/`reject`. Separately, it `import()`s the **built `dist/` non-DOM module graph**
+  (`assessPediatricAnemia`, `UnitRejectionError`) under Node and exercises a real
+  valid-then-wrong-unit assessment end-to-end.
+- The script is explicit about its own limit, in its final line of output: *"BROWSER-MODE
+  BOUNDARY: this check proves static SPA wiring, dev/dist module resolution, and valid/rejected
+  assessments through the built dist module graph under Node. It does not execute DOM-dependent
+  app.js/algorithmExplorer.js in a browser, render the rejection HTML, or verify visual/
+  accessibility behavior; no browser automation dependency is available in this zero-dependency
+  repository."*
+- `scripts/check-app-imports.mjs`'s own header comment is unchanged and still accurate: *"This is
+  NOT a headless-browser test ... real browser-runtime execution stays out of scope for P0 (see
+  DEF-8)."*
+
+**Net assessment.** The concrete risk this spec named as unresolved — `modules/anemia/ranges.js`'s
+`import ... with { type: 'json' }` attribute actually parsing and executing under a real browser
+module loader (Chrome/Edge 123+, Safari 17.2+, Firefox 138+), not just under Node — remains
+**completely unverified in any browser engine**, exactly as before. What has changed is the size
+and nature of the never-DOM-tested surface: it is no longer "a shim with unchanged UI," it is now
+several hundred lines of new, safety-adjacent rejection/disclosure UI (unit mismatches, age-out-
+of-range refusals, assumed-unit notices) that has never rendered in an actual DOM. The static
+source-inspection compensating control is real and well-targeted, but it checks *that the source
+text has certain properties*, not that a browser *renders or behaves* as those properties imply.
+
+This item should stay categorized `research-needed` (no headless-browser tooling decision has
+been made or should be made unilaterally here), but it should **not** be re-filed as "still
+deferred, nothing changed" — that would be dishonest given the evidence above. The honest
+disposition is: the promotion trigger has fired; the team's interim response (stronger static/
+Node smoke coverage) is a reasonable bridge, not a substitute; and this item should be surfaced
+for an explicit reopen/promote decision at the next phase-planning gate (Phase 2 CBC kickoff, or
+sooner if `app.js`/`algorithmExplorer.js` gain more browser-only-verifiable logic before then).

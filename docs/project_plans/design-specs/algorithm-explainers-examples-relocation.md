@@ -4,8 +4,9 @@ title: "`data/algorithm-explainers.json` and `examples/` Relocation into `module
 status: draft
 maturity: shaping
 created: 2026-07-18
+updated: 2026-07-21
 feature_slug: platform-foundation-p0
-prd_ref: docs/project_plans/PRDs/refactors/platform-foundation-p0-v1.md
+prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
 plan_ref: docs/project_plans/implementation_plans/refactors/platform-foundation-p0-v1.md
 ---
 
@@ -89,3 +90,37 @@ directories with no module-scoping (per the Deferred Items Triage Table).
 - How does this interact with DEF-8 (headless-browser runtime smoke check) — should the relocation
   and the browser-smoke-check spec be sequenced together, since both touch `src/app.js`'s fetch
   specifiers and `scripts/check-app-imports.mjs`'s resolution logic?
+
+## Deferral re-confirmation (EP-7, 2026-07-21)
+
+**Verdict: still correctly deferred.** Re-checked against what Phases EP-0 through EP-6
+(`wave0-safety-foundation`) actually shipped, not the plan's aspirations.
+
+Concrete evidence, current repo state:
+
+- `ls data/` returns exactly one file — `algorithm-explainers.json` — unmoved since Phase 0.
+  `src/algorithmExplorer.js:583` still does `fetch('./data/algorithm-explainers.json')`.
+- `ls examples/` still lists the same flat, unscoped structure this spec described (now
+  `anemia-inflammation.json`, `beta-thalassemia-trait.json`, `hemolysis-hs.json`,
+  `ida-toddler.json`, `lead-capillary.json`, `marrow-red-flags.json`, plus an unrelated
+  `arc-runspecs/` directory added by the ARC-adoption track) — no `modules/anemia/examples/`
+  directory exists. `src/app.js:519` (``fetch(`./examples/${selected}.json`)``) and
+  `src/algorithmExplorer.js:616` (``fetch(`./examples/${metadata.id}.json`)``) both still resolve
+  against the top-level path.
+- `modules/anemia/README.md` still carries the same DEF-7 exclusion note quoted in this spec's
+  "Current State" section, unedited: *"`data/algorithm-explainers.json` and the top-level
+  `examples/` directory are **not** module KB content and intentionally remain outside this
+  package for now (deferred item DEF-7...)."*
+- No second module was registered or scaffolded in EP-0 through EP-6 (confirmed via
+  `src/modules/registry.js`'s single-entry `MODULE_IDS` and `src/facts/registry.js`'s
+  single-entry `REGISTRY` map — see the DEF-6 spec's identical re-confirmation). The promotion
+  trigger this spec names (Phase 2 CBC-suite UI-content collision) has not fired: there is still
+  only one module's UI content to place, so there is still no second data point to design a
+  per-module UI-content convention against.
+
+This item and DEF-8 remain coupled exactly as this spec's last open question anticipated: both
+touch `src/app.js`'s fetch specifiers and `scripts/check-app-imports.mjs`'s resolution logic.
+DEF-8's re-confirmation (this same EP-7 pass) found that EP-2/EP-5 added substantive new
+rendering logic to `src/app.js` around those same fetch-adjacent code paths — but did not move,
+rename, or restructure any of the files this spec covers. The two items' interaction is therefore
+still an open sequencing question, not a reason to promote either on its own.

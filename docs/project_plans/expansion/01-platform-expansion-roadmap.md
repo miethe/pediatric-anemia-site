@@ -29,14 +29,14 @@ The repository is a **single-module (anemia) deterministic research prototype**:
 | Ordinal ranking (5-level `LEVEL_RANK`, `ALERT_RANK`) with a full matched-rule audit trail | `ruleEngine.js` `LEVEL_RANK`/`ALERT_RANK`; `engine.js` `provenance.ruleAudit` |
 | Local reference ranges override built-in AAP fallbacks, with per-value provenance | `src/referenceRanges.js` `getEffectiveRanges` (`source: 'LOCAL_LAB'` vs `'AAP2026_IDA'`) |
 | Safety exits / abstention for out-of-scope age and missing ranges | `facts.js` `scope.*`; rules `SCOPE-001/002/003`; test "young infant is not forced through built-in thresholds" |
-| Evidence linkage from rule → source registry | `data/rules.json` `evidence[]` → `src/evidence.js` `EVIDENCE`; `scripts/validate-kb.mjs` enforces referential integrity |
+| Evidence linkage from rule → source registry | `modules/anemia/rules.json` `evidence[]` → `src/evidence.js` `EVIDENCE`; `scripts/validate-kb.mjs` enforces referential integrity |
 | A repeatable quality gate | `package.json` `check = test && validate && build && smoke` (10 tests, KB validate, static build, HTTP smoke) |
 
 **What it does NOT prove (the gap the phases close):**
 
 | Not proven / not present today | Why it blocks a second module |
 |---|---|
-| **Multi-module structure.** The domain logic is welded to anemia: `facts.js::deriveFacts()` hard-codes ~350 lines of anemia facts; `engine.js::assessPediatricAnemia()` + `classificationSummary()` + `globalLimitations()` are anemia-specific; `referenceRanges.js` hard-codes CBC/ferritin; `data/rules.json` is one flat array. | Adding neutropenia today means editing anemia files — no isolation, no per-module release, no shared runtime contract. |
+| **Multi-module structure.** The domain logic is welded to anemia: `facts.js::deriveFacts()` hard-codes ~350 lines of anemia facts; `engine.js::assessPediatricAnemia()` + `classificationSummary()` + `globalLimitations()` are anemia-specific; `referenceRanges.js` hard-codes CBC/ferritin; `modules/anemia/rules.json` is one flat array. | Adding neutropenia today means editing anemia files — no isolation, no per-module release, no shared runtime contract. |
 | **Tri-state data.** `schemas/patient-input.schema.json` models history/symptoms/exam as `booleanMap` — **absent, unknown, and not-assessed collapse to `false`**. `facts.js` treats `=== true` as present and everything else as absent. | COMM no-go and RF-PROMPT §4 both require present / absent / unknown / not-assessed. Missingness must not read as normal (RF-PROMPT §10). |
 | **Exact-passage provenance.** `evidence.js` stores a `supports[]` array of *claim summaries*, not exact passages with page/section/table locators. | DR "Evidence extraction"; COMM highest-priority #7; RF-PROMPT §2. Defensibility requires the exact passage per rule. |
 | **Signed KB manifest + semantic diff.** `KNOWLEDGE_BASE_VERSION` is a string constant in `evidence.js`; no hash, no signature, no supersession, no rule-to-rule diff. | ARCH §6 manifest and §10 fail-closed-on-invalid-signature are unmet. No governed release is possible. |
@@ -127,7 +127,7 @@ flowchart LR
 
 | WP | Change | Files |
 |---|---|---|
-| P0-WP1 | Define the **module package contract**: `modules/<id>/{rules.json, candidates.json, evidence.json, reference-ranges.json, facts.<id>.js, module.json}`. Move anemia content into `modules/anemia/` unchanged. | new `modules/anemia/*`; move `data/rules.json`, `data/candidates.json`, `data/evidence.json`, `data/reference-ranges.json` |
+| P0-WP1 | Define the **module package contract**: `modules/<id>/{rules.json, candidates.json, evidence.json, reference-ranges.json, facts.<id>.js, module.json}`. Move anemia content into `modules/anemia/` unchanged. | new `modules/anemia/*` — **shipped**; moved from the pre-P0 flat `data/` directory (`rules.json`, `candidates.json`, `evidence.json`, `reference-ranges.json`) |
 | P0-WP2 | Extract a **fact-derivation registry**: `deriveFacts(input, module)` dispatches to a per-module derivation function. Split `facts.js` into a shared numeric/tri-state helper core + `facts.anemia.js`. | `src/facts.js` → `src/facts/core.js` + `modules/anemia/facts.anemia.js` |
 | P0-WP3 | Generalize the engine: `assess(input, moduleId)` replaces `assessPediatricAnemia`. Move `classificationSummary`/`globalLimitations` into per-module hooks (`module.summarize`, `module.limitations`). Keep `ruleEngine.js` **as-is** (already generic). | `src/engine.js`; `src/ruleEngine.js` (unchanged) |
 | P0-WP4 | Generalize reference ranges into a **registry keyed by (module, analyte, age, sex)**; anemia CBC/ferritin becomes the first registered profile. | `src/referenceRanges.js` → `src/ranges/registry.js` + `modules/anemia/ranges.json` |
@@ -156,10 +156,10 @@ flowchart LR
 
 | WP | Change | Files / artifacts |
 |---|---|---|
-| P1-WP1 | **Tri-state fact model.** Replace `booleanMap` with `present / absent / unknown / not-assessed` per field. Add operators `is-present`/`is-absent`/`is-unknown`/`is-not-assessed` to `ruleEngine.js`; migrate `facts.anemia.js` `countTrue`/`=== true` logic; missingness must produce *narrowed differential + next tests*, never a clear. | `schemas/patient-input.schema.json` ($defs `booleanMap`→`triState`), `src/ruleEngine.js`, `modules/anemia/facts.anemia.js`, `data/rules.json` migration |
+| P1-WP1 | **Tri-state fact model.** Replace `booleanMap` with `present / absent / unknown / not-assessed` per field. Add operators `is-present`/`is-absent`/`is-unknown`/`is-not-assessed` to `ruleEngine.js`; migrate `facts.anemia.js` `countTrue`/`=== true` logic; missingness must produce *narrowed differential + next tests*, never a clear. | `schemas/patient-input.schema.json` ($defs `booleanMap`→`triState`), `src/ruleEngine.js`, `modules/anemia/facts.anemia.js`, `modules/anemia/rules.json` migration |
 | P1-WP2 | **Local reference-range registry + unit service.** Formalize `ranges/registry.js` (P0-WP4) into a service with UCUM units, per-analyte age/sex partitions, and a **fail-closed unit-mismatch rejection** (ARCH §8, §10). CALIPER-compatible partition shape (DR "local range engine is mandatory"). | `src/ranges/registry.js`, new `src/units.js`, `schemas/reference-range.schema.json` |
-| P1-WP3 | **Exact-passage evidence records.** Extend evidence schema: `sourceLocator` (page/section/table/figure), `exactPassage`, `evidenceGrade`, `applicability` (age/sex/assay), `reviewDate`, `supersedes`, `surveillanceQuery` (RF-PROMPT §2). Backfill anemia's 6 sources. | `src/evidence.js`→`data/*/evidence.json` + `schemas/evidence.schema.json` |
-| P1-WP4 | **Rule metadata for governance.** Extend `rule.schema.json` (ARCH §7 additions): `version`, `effectiveDate`, `retireDate`, `owner`, `clinicalApprovers[]`, `safetyClass`, `requiredTestCaseIds[]`, `changeRationale`, `sourcePassageId`. | `schemas/rule.schema.json`, `data/*/rules.json` |
+| P1-WP3 | **Exact-passage evidence records.** Extend evidence schema: `sourceLocator` (page/section/table/figure), `exactPassage`, `evidenceGrade`, `applicability` (age/sex/assay), `reviewDate`, `supersedes`, `surveillanceQuery` (RF-PROMPT §2). Backfill anemia's 6 sources. | `src/evidence.js`→`modules/anemia/evidence.json` + `schemas/evidence.schema.json` |
+| P1-WP4 | **Rule metadata for governance.** Extend `rule.schema.json` (ARCH §7 additions): `version`, `effectiveDate`, `retireDate`, `owner`, `clinicalApprovers[]`, `safetyClass`, `requiredTestCaseIds[]`, `changeRationale`, `sourcePassageId`. | `schemas/rule.schema.json`, `modules/anemia/rules.json` |
 | P1-WP5 | **Signed KB manifest + semantic diff.** Implement ARCH §6 manifest (`clinicalContentHash`, `engineCompatibility`, `evidenceReviewedThrough`, `approvedBy[]`, `validationRunId`, `supersedes`, signature). New `scripts/sign-kb.mjs` + `scripts/kb-diff.mjs` (rule-add/remove/threshold-change/evidence-change classes). Server rejects unverifiable/expired KB (ARCH §10 fail-closed). | new `scripts/sign-kb.mjs`, `scripts/kb-diff.mjs`, `server.mjs`, `schemas/kb-manifest.schema.json` |
 | P1-WP6 | **Expanded validation corpus.** Add property-based, boundary, mutation, and **dangerous-miss** test suites (DR "Execution layer": mutation/property/boundary/version-diff; RF-PROMPT §6). Dangerous-miss set for anemia = marrow failure, hemolysis, severe cytopenia (already partially in `examples/marrow-red-flags`). | `tests/property.test.mjs`, `tests/boundary.test.mjs`, `tests/mutation.test.mjs`, `tests/dangerous-miss.test.mjs`; new `scripts/mutation-run.mjs` |
 | P1-WP7 | **Clinical-review portal — concept + data contract only** (not the full app). Define the change-proposal → dual-review → conflict-resolution → approval record shape (ARCH "Clinical governance portal"). Emits `approvedBy[]` into the manifest (P1-WP5). | `docs/` design + `schemas/review-record.schema.json` |
@@ -599,8 +599,8 @@ New `ruleEngine.js` operators `is-present`/`is-absent`/`is-unknown`/`is-not-asse
 | `src/engine.js` | P0-WP3 | `assessPediatricAnemia` → generic `assess(input, moduleId)` |
 | `src/referenceRanges.js` | P0-WP4, P1-WP2 | → range registry + unit service |
 | `src/evidence.js` | P0-WP6, P1-WP3 | → per-module `evidence.json` + exact-passage schema |
-| `data/rules.json` | P0-WP1 (move), P1-WP1/WP4 (tri-state + metadata) | → `modules/anemia/rules.json` + metadata fields |
-| `data/candidates.json`, `data/evidence.json`, `data/reference-ranges.json` | P0-WP1 | → `modules/anemia/*` |
+| `modules/anemia/rules.json` (migrated from the pre-P0 `data/` layout by P0-WP1) | P1-WP1/WP4 (tri-state + metadata) — **shipped** | tri-state operators + governance metadata fields added |
+| `modules/anemia/candidates.json`, `modules/anemia/evidence.json`, `modules/anemia/reference-ranges.json` | P0-WP1 — **shipped** | moved from the pre-P0 `data/` layout unchanged |
 | `schemas/patient-input.schema.json` | P1-WP1 (`booleanMap`→`triState`), P2-WP5, P3-WP7 | Tri-state + CBC/smear fields |
 | `schemas/rule.schema.json` | P1-WP4 | Governance metadata (ARCH §7) |
 | new `schemas/{evidence,reference-range,kb-manifest,review-record,timeline,work-queue,referral-packet}.schema.json` | P1, P3 | New contracts |
