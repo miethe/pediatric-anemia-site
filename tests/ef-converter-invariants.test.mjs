@@ -57,7 +57,7 @@ import {
   CLAIM_CATEGORIES,
 } from '../tools/rf-bundle-to-kb-pack/lib/eligibility.mjs';
 import { run as runInspect, buildSummary } from '../tools/rf-bundle-to-kb-pack/lib/verbs/inspect.mjs';
-import { run as runVerify } from '../tools/rf-bundle-to-kb-pack/lib/verbs/verify.mjs';
+import { run as runVerify, ReleaseManifestValidationError } from '../tools/rf-bundle-to-kb-pack/lib/verbs/verify.mjs';
 import { run as runPropose } from '../tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs';
 import { SchemaError, UsageError, EXIT_SCHEMA } from '../tools/rf-bundle-to-kb-pack/lib/errors.mjs';
 
@@ -65,6 +65,7 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 const FIXTURE_DIR = path.join(REPO_ROOT, 'tests', 'fixtures', 'rf-cbc-001');
 const CONVERTER_ROOT = path.join(REPO_ROOT, 'tools', 'rf-bundle-to-kb-pack');
 const RULE_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'rule.schema.json');
+const RELEASE_MANIFEST_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'release-manifest.schema.json');
 
 // ---------------------------------------------------------------------------------------------
 // Shared fixtures/helpers (same conventions P2-T2..T7's own test files already use).
@@ -521,26 +522,78 @@ test('Invariant 13: identical input bytes produce byte-identical inspect output 
 // Invariant 14 — converter output is a proposal, never a released KB
 // ================================================================================================
 
-test('Invariant 14: the converter never produces a released/signed KB — propose is an inert stub and verify never validates a release manifest\'s content', async () => {
-  // `propose` (the only verb that will ever emit pack content, Phase 3) is a stub that refuses to
-  // run at all this phase — there is no code path yet that could emit a "released" artifact.
+test('Invariant 14: the converter never produces a released/signed KB — propose still requires its full argument set, and neither this converter nor its manifest schema ever accepts a `signature` block', async () => {
+  // `propose` still refuses to run without its full, explicit argument set (unchanged since
+  // Phase 2) -- there is no implicit/default-args code path that could emit anything.
   await assert.rejects(() => runPropose({}), UsageError);
 
-  // `verify`'s own release-manifest handling is a documented, permanent non-validation this
-  // phase: presence is reported, but `validated` is always false, naming P5-T1 as the closing
-  // task — i.e. this converter cannot, even accidentally, certify a pack as released/signed.
-  const dir = await mkdtemp(path.join(os.tmpdir(), 'ef-invariants-test-pack-'));
+  // P5-T1 closed `verify`'s former "never content-validate the manifest" stub, but closing that
+  // stub is a STRENGTHENING of this invariant, not a violation of it: `verify` can now certify
+  // that a manifest is *structurally a well-formed UNSIGNED proposal* (schemas/release-manifest.
+  // schema.json has no `signature` property at all, and `additionalProperties: false` rejects one
+  // outright) -- it still can never certify a pack as *released/signed*, because the schema this
+  // converter validates against literally has no slot for a signature to live in.
+  const releaseManifestSchema = JSON.parse(await readFile(RELEASE_MANIFEST_SCHEMA_PATH, 'utf8'));
+  assert.ok(
+    !Object.hasOwn(releaseManifestSchema.properties ?? {}, 'signature'),
+    'schemas/release-manifest.schema.json must have no `signature` property -- this manifest is always unsigned',
+  );
+  assert.equal(
+    releaseManifestSchema.additionalProperties, false,
+    'schemas/release-manifest.schema.json must reject additional properties -- a caller cannot smuggle a `signature` (or `approvedBy`/`releasedAt`) field past it',
+  );
+
+  const validUnsignedManifest = {
+    schemaVersion: '1.0',
+    moduleId: 'cbc_suite_v1',
+    packVersion: '0.1.0-proposal',
+    rfInputs: [{
+      runId: 'rf_run_test',
+      bundleSha256: `sha256:${'a'.repeat(64)}`,
+      claimLedgerSha256: `sha256:${'b'.repeat(64)}`,
+      verificationExitCode: 0,
+    }],
+    converter: { name: 'rf-bundle-to-kb-pack', version: '0.1.0', configSha256: `sha256:${'c'.repeat(64)}` },
+    testCorpusHash: `sha256:${'d'.repeat(64)}`,
+    traceabilityHash: `sha256:${'e'.repeat(64)}`,
+  };
+
+  // Attempting to smuggle a `signature` block onto an otherwise-valid manifest is rejected -- the
+  // converter's own `verify` verb fails closed (never silently accepts) rather than certifying a
+  // "signed" pack.
+  const dirWithSignature = await mkdtemp(path.join(os.tmpdir(), 'ef-invariants-test-pack-signed-'));
   try {
-    await writeFile(path.join(dir, 'release-manifest.unsigned.json'), '{}\n', 'utf8');
+    const signedManifest = { ...validUnsignedManifest, signature: { algorithm: 'ed25519', keyId: 'k1', value: 'x' } };
+    await writeFile(path.join(dirWithSignature, 'release-manifest.unsigned.json'), JSON.stringify(signedManifest), 'utf8');
+    await assert.rejects(
+      () => runVerify({ pack: dirWithSignature, ruleSchema: RULE_SCHEMA_PATH }),
+      ReleaseManifestValidationError,
+    );
+  } finally {
+    await rm(dirWithSignature, { recursive: true, force: true });
+  }
+
+  // A genuinely well-formed UNSIGNED manifest DOES now validate (P5-T1) -- proving `verify` can
+  // certify "structurally a well-formed staged proposal," which is exactly what an unsigned E0
+  // manifest is, and nothing more (no `knowledgeBaseVersion`/`approvedBy`/`releasedAt` field
+  // exists anywhere on the document for a reader to mistake for release/sign-off).
+  const dirUnsigned = await mkdtemp(path.join(os.tmpdir(), 'ef-invariants-test-pack-unsigned-'));
+  try {
+    await writeFile(
+      path.join(dirUnsigned, 'release-manifest.unsigned.json'),
+      JSON.stringify(validUnsignedManifest),
+      'utf8',
+    );
     const { result: exitCode, output } = await withCapturedStdout(() =>
-      runVerify({ pack: dir, ruleSchema: RULE_SCHEMA_PATH }),
+      runVerify({ pack: dirUnsigned, ruleSchema: RULE_SCHEMA_PATH }),
     );
     const summary = JSON.parse(output);
     assert.equal(exitCode, 0);
     assert.equal(summary.releaseManifest.present, true);
-    assert.equal(summary.releaseManifest.validated, false, 'verify must never certify a release manifest as validated this phase');
+    assert.equal(summary.releaseManifest.validated, true);
+    assert.ok(!Object.hasOwn(validUnsignedManifest, 'signature'), 'sanity: the manifest this test validates carries no signature');
   } finally {
-    await rm(dir, { recursive: true, force: true });
+    await rm(dirUnsigned, { recursive: true, force: true });
   }
 });
 

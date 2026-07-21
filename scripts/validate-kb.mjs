@@ -1,4 +1,4 @@
-import { readFile, access } from 'node:fs/promises';
+import { readFile, readdir, access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { evaluateCondition } from '../src/ruleEngine.js';
@@ -414,6 +414,105 @@ export function validateRuleProvenance(provenanceData, moduleId, provenanceSchem
   return { errors, entryCount: entries.length };
 }
 
+/**
+ * P5-T1 (FR-18, `02 §4.18` minus the `signature` block): validate one already-parsed
+ * `release-manifest.unsigned.json` document against `schemas/release-manifest.schema.json`, plus
+ * the two cross-record invariants the schema cannot express on its own: the document's own
+ * `moduleId`/`packVersion` must agree with the `build/kb-pack/<moduleId>/<packVersion>/` directory
+ * it was actually found under (the schema validates the document in isolation and has no
+ * filesystem access — same shape of gap `validateEvidenceAssertions`/`validateAuthoringDecisions`/
+ * `validateRuleProvenance` close for their own artifacts above). Pure function over in-memory
+ * data, so it is independently unit-testable against a tampered/seeded-bad fixture without
+ * touching disk.
+ */
+export function validateReleaseManifest(manifestData, manifestSchema, { expectedModuleId, expectedPackVersion } = {}) {
+  const errors = [];
+
+  for (const schemaError of validate(manifestSchema, manifestData)) {
+    errors.push(`release-manifest.unsigned.json: release-manifest.schema.json ${schemaError.path}: ${schemaError.message}`);
+  }
+
+  if (
+    expectedModuleId !== undefined
+    && manifestData?.moduleId !== undefined
+    && manifestData.moduleId !== expectedModuleId
+  ) {
+    errors.push(
+      `release-manifest.unsigned.json: moduleId "${manifestData.moduleId}" does not match its own ` +
+        `build/kb-pack/ directory "${expectedModuleId}"`,
+    );
+  }
+  if (
+    expectedPackVersion !== undefined
+    && manifestData?.packVersion !== undefined
+    && manifestData.packVersion !== expectedPackVersion
+  ) {
+    errors.push(
+      `release-manifest.unsigned.json: packVersion "${manifestData.packVersion}" does not match its own ` +
+        `build/kb-pack/ pack-version directory "${expectedPackVersion}"`,
+    );
+  }
+
+  return { errors };
+}
+
+/**
+ * P5-T1: existence-gated across the ENTIRE `build/kb-pack/` tree, not per registered module (unlike
+ * `evidence-assertions.json`/`authoring-decisions.yaml`/`rule-provenance.json` above) — this
+ * artifact lives at `build/kb-pack/<moduleId>/<packVersion>/`, not `modules/<moduleId>/`, because
+ * `build/kb-pack/` is gitignored/ephemeral staging output (P1-T7). In a clean checkout the whole
+ * directory usually does not exist at all, and that absence is not itself an error; when a
+ * `propose` run HAS populated it, every `release-manifest.unsigned.json` found under it is fully
+ * schema- and cross-record-validated (never silently skipped just because it postdates a clean
+ * checkout).
+ *
+ * @param {string} rootDir
+ * @returns {Promise<Array<{ manifestPath: string, errors: string[] }>>}
+ */
+export async function validateKbPackReleaseManifests(rootDir) {
+  const kbPackRoot = path.join(rootDir, 'build', 'kb-pack');
+  const results = [];
+  if (!(await fileExists(kbPackRoot))) return results;
+
+  // Lazily loaded on first ACTUAL manifest found — a build/kb-pack/ tree with directories but zero
+  // release-manifest.unsigned.json files anywhere (e.g. mid-propose, or a caller's synthetic test
+  // fixture that never populates schemas/) must not require schemas/release-manifest.schema.json
+  // to exist just to conclude "there was nothing to validate."
+  let manifestSchema;
+
+  let moduleDirEntries;
+  try {
+    moduleDirEntries = await readdir(kbPackRoot, { withFileTypes: true });
+  } catch {
+    return results;
+  }
+
+  for (const moduleDirEntry of moduleDirEntries) {
+    if (!moduleDirEntry.isDirectory()) continue;
+    const moduleId = moduleDirEntry.name;
+    const moduleDir = path.join(kbPackRoot, moduleId);
+    const packVersionEntries = await readdir(moduleDir, { withFileTypes: true });
+
+    for (const packVersionEntry of packVersionEntries) {
+      if (!packVersionEntry.isDirectory()) continue;
+      const packVersion = packVersionEntry.name;
+      const manifestPath = path.join(moduleDir, packVersion, 'release-manifest.unsigned.json');
+      if (!(await fileExists(manifestPath))) continue; // per-pack existence gate too — a
+      // legitimately-not-yet-`propose`d pack-version directory has no manifest yet.
+
+      manifestSchema ??= await readJson(path.join(rootDir, 'schemas', 'release-manifest.schema.json'));
+      const manifestData = await readJson(manifestPath);
+      const { errors } = validateReleaseManifest(manifestData, manifestSchema, {
+        expectedModuleId: moduleId,
+        expectedPackVersion: packVersion,
+      });
+      results.push({ manifestPath: path.relative(rootDir, manifestPath), errors });
+    }
+  }
+
+  return results;
+}
+
 function setsEqual(a, b) {
   if (a.size !== b.size) return false;
   for (const item of a) {
@@ -780,7 +879,14 @@ const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPat
 
 if (isMain) {
   const results = await Promise.all(MODULE_IDS.map((moduleId) => validateModule(moduleId, root)));
-  const allErrors = results.flatMap((result) => result.errors);
+  // P5-T1: existence-gated across build/kb-pack/ as a whole (see validateKbPackReleaseManifests's
+  // own doc comment) — this is NOT one of the MODULE_IDS-scoped checks above because the artifact
+  // it validates does not live under modules/<id>/ at all.
+  const kbPackManifestResults = await validateKbPackReleaseManifests(root);
+  const allErrors = [
+    ...results.flatMap((result) => result.errors),
+    ...kbPackManifestResults.flatMap((result) => result.errors),
+  ];
   const allWarnings = results.flatMap((result) => result.warnings);
 
   // Warnings never gate `npm run validate` (AC-WP3-RESIL: a legacy-shape record degrades, it does
@@ -803,6 +909,11 @@ if (isMain) {
       )
       .join(', ');
     console.log(`Validated modules: ${summary}.`);
+    if (kbPackManifestResults.length > 0) {
+      console.log(
+        `build/kb-pack/: validated ${kbPackManifestResults.length} release-manifest.unsigned.json file(s).`,
+      );
+    }
 
     // Reviewer-gate fix-5: report the RESOLVED sourcePassageId status split (not just "resolves to
     // some passage") so a reviewer can see at a glance how many rules actually claim source-supported

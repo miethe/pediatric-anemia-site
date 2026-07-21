@@ -28,24 +28,33 @@
 //     real structural defect: `verify` exits non-zero (`RulesJsonValidationError`, a `SchemaError`,
 //     exit 2) naming every violating rule's `id`/index and the specific schema violation — never a
 //     silent pass-through.
-//   - `release-manifest.unsigned.json` — the file `02 §4.4` places at the same pack root — is the
-//     explicit, clearly-marked STUB this phase leaves for **P5-T1** to complete once that file's
-//     own schema (`schemas/release-manifest.schema.json`) exists (P5-T1's AC literally reads
-//     "closing P2-T7's stub"). If the file happens to already be present at `--pack`, `verify`
-//     records its presence but performs NO content validation of it — `releaseManifest.validated`
-//     is always `false` this phase, with a `reason` naming P5-T1 explicitly, so this is a
-//     documented, inspectable gap rather than a silently incomplete check.
+//   - `release-manifest.unsigned.json` — the file `02 §4.4` places at the same pack root — now
+//     gets full content validation too (P5-T1, closing this file's former stub, `schemas/
+//     release-manifest.schema.json`). If the file is absent, `verify` records `present: false`
+//     and still exits 0 (vacuous pass — same convention as the `rules.json`-absent case above: a
+//     legitimately-not-yet-`propose`d pack has no manifest yet). If it IS present, it is parsed and
+//     validated against `schemas/release-manifest.schema.json` using the same dependency-free
+//     validator as `rules.json` above; a schema violation is a real structural defect
+//     (`ReleaseManifestValidationError`, a `SchemaError`, exit 2) — never a silent pass-through.
 //   - Zero network calls, zero LLM/generative-model invocations (same posture as every verb in this
-//     tool) — this file imports only `node:fs/promises`, `node:path`, the pure
+//     tool) — this file imports only `node:fs/promises`, `node:path`, `node:url`, the pure
 //     `scripts/lib/json-schema-lite.mjs#validate` function, and `../errors.mjs`.
 //
 // Verb-handler contract: see `lib/verbs/inspect.mjs`'s header comment (same contract applies here).
 
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { validate as validateAgainstSchema } from '../../../../scripts/lib/json-schema-lite.mjs';
 import { EXIT_OK, SchemaError, UsageError } from '../errors.mjs';
+
+// verify.mjs lives at tools/rf-bundle-to-kb-pack/lib/verbs/verify.mjs -- 4 directories below the
+// repository root. Used only to resolve schemas/release-manifest.schema.json, the same repo-root-
+// relative pattern this file's own `../../../../scripts/lib/json-schema-lite.mjs` import already
+// establishes (P5-T1).
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
+const RELEASE_MANIFEST_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'release-manifest.schema.json');
 
 /**
  * `--pack <dir>` does not exist (or is not a directory). Exit 1 (usage) — a CLI-argument mistake,
@@ -74,6 +83,28 @@ export class RuleSchemaParseError extends SchemaError {
   constructor(resolvedPath, cause) {
     super(`--rule-schema at ${resolvedPath} is not valid JSON: ${cause.message}`, { cause });
     this.resolvedPath = resolvedPath;
+  }
+}
+
+/** `<pack>/release-manifest.unsigned.json` exists but is not valid JSON. Exit 2 (schema). */
+export class ReleaseManifestParseError extends SchemaError {
+  constructor(resolvedPath, cause) {
+    super(`${resolvedPath} is not valid JSON: ${cause.message}`, { cause });
+    this.resolvedPath = resolvedPath;
+  }
+}
+
+/**
+ * `<pack>/release-manifest.unsigned.json` fails `schemas/release-manifest.schema.json` validation
+ * (P5-T1, closing this file's former stub). Exit 2 (schema) — names every violation, never a
+ * silent pass.
+ */
+export class ReleaseManifestValidationError extends SchemaError {
+  constructor(resolvedPath, violations) {
+    const detail = violations.map((v) => `${v.path} ${v.message}`).join('; ');
+    super(`${resolvedPath} fails release-manifest.schema.json validation: ${detail}`);
+    this.resolvedPath = resolvedPath;
+    this.violations = violations;
   }
 }
 
@@ -196,9 +227,25 @@ export async function run(options) {
     throw new RulesJsonValidationError(rulesJsonPath, rulesJsonReport.errors);
   }
 
-  // ----- P5-T1 stub: release-manifest.unsigned.json is NEVER content-validated this phase --------
+  // ----- release-manifest.unsigned.json content validation (P5-T1, closing this file's own -------
+  // former stub) --------------------------------------------------------------------------------
   const releaseManifestPath = path.join(packDir, 'release-manifest.unsigned.json');
   const releaseManifestInfo = await statOrNull(releaseManifestPath);
+  let releaseManifestValidated = false;
+  if (releaseManifestInfo && releaseManifestInfo.isFile()) {
+    let releaseManifestParsed;
+    try {
+      releaseManifestParsed = JSON.parse(await readFile(releaseManifestPath, 'utf8'));
+    } catch (err) {
+      throw new ReleaseManifestParseError(releaseManifestPath, err);
+    }
+    const releaseManifestSchema = JSON.parse(await readFile(RELEASE_MANIFEST_SCHEMA_PATH, 'utf8'));
+    const releaseManifestViolations = validateAgainstSchema(releaseManifestSchema, releaseManifestParsed);
+    if (releaseManifestViolations.length > 0) {
+      throw new ReleaseManifestValidationError(releaseManifestPath, releaseManifestViolations);
+    }
+    releaseManifestValidated = true;
+  }
 
   const summary = {
     verb: 'verify',
@@ -211,20 +258,10 @@ export async function run(options) {
     },
     releaseManifest: {
       present: Boolean(releaseManifestInfo && releaseManifestInfo.isFile()),
-      validated: false,
-      reason:
-        'pack-output validation of release-manifest.unsigned.json is stubbed for P5-T1 ' +
-        '(schemas/release-manifest.schema.json does not exist until Phase 5; see ' +
-        'phase-3-5-projection-slice-manifest.md row P5-T1, "closing P2-T7\'s stub").',
+      validated: releaseManifestValidated,
     },
   };
 
   process.stdout.write(`${JSON.stringify(summary, null, 2)}\n`);
   return EXIT_OK;
 }
-
-// P5-T1 stub marker: the pack-output-validation path — validating `release-manifest.unsigned.json`
-// itself once `schemas/release-manifest.schema.json` exists, and cross-checking its recorded hashes
-// against the actual staged pack artifacts — is intentionally NOT implemented anywhere in this file.
-// P5-T1 must add it here (extending `run()`'s `releaseManifest` handling above), not silently assume
-// the `rules.json` structural check above already covers it.

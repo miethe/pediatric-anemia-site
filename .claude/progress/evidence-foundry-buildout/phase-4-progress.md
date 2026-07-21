@@ -9,7 +9,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundr
 execution_model: batch-parallel
 phase: 4
 title: 'Evidence Foundry Buildout — Phase 4: Vertical Slice + Test Corpus'
-status: pending
+status: completed
 started: null
 completed: null
 commit_refs: []
@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 10
-completed_tasks: 1
+completed_tasks: 10
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -36,7 +36,7 @@ tasks:
     evidence.json, evidence-assertions.json, rule-provenance.json (module.json status
     stays ''unsigned-stub''). Verify every numeric/age-boundary literal resolves to
     an exact passage, not an invented threshold.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -50,7 +50,7 @@ tasks:
     (FR-16b): commit the local-range-precedence rule matching authoring-decisions.yaml''s
     dec_cbc_local_range_precedence-class record. Verify the rule fails closed (abstains)
     rather than applying a universal threshold when no compatible local profile exists.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -63,7 +63,7 @@ tasks:
   description: 'Migrate rule (c): iron-deficiency-anemia candidate pattern (FR-16c):
     commit the iron-deficiency candidate-pattern rule and its candidates.json entry
     (P3-T5), preserving ''pattern,'' not diagnostic-certainty, wording.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -79,7 +79,7 @@ tasks:
     slice rule the Phase 4 exit gate and dangerous-miss testing key off — verify its
     evidence resolves to 02 §5.4''s ''multilineage cytopenia and marrow failure/infiltration''
     hazard specifically.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -93,7 +93,7 @@ tasks:
     each gain >=1 case for rule (a): positive (activates below 6 months), negative
     (does not activate at 6+ months), boundary (exactly 6 months, >= vs > correctness),
     missingness (age absent -> question/abstention, never ''not young infant'').'
-  status: pending
+  status: completed
   assigned_to:
   - testing-specialist
   dependencies:
@@ -107,7 +107,7 @@ tasks:
     cases for the local-range-precedence rule — boundary covers local-profile-present-vs-absent
     (not a numeric edge); missingness proves an absent local profile abstains rather
     than defaulting to a universal threshold.'
-  status: pending
+  status: completed
   assigned_to:
   - testing-specialist
   dependencies:
@@ -120,7 +120,7 @@ tasks:
   description: 'Test corpus — rule (c) (FR-17): positive/negative/boundary (ferritin
     threshold edge)/missingness (ferritin absent) cases for the iron-deficiency candidate
     pattern.'
-  status: pending
+  status: completed
   assigned_to:
   - testing-specialist
   dependencies:
@@ -135,7 +135,7 @@ tasks:
     proving the safety alert activates and dominates ranking even when a co-occurring
     benign high-scoring candidate (e.g. mild-anemia iron-deficiency match) is present
     in the same input.'
-  status: pending
+  status: completed
   assigned_to:
   - testing-specialist
   dependencies:
@@ -174,7 +174,7 @@ tasks:
   description: 'task-completion-validator gate: verify Phase 4 exit gate — slice rules
     pass engine tests; dangerous-miss case covers the marrow-red-flag-vs-benign-candidate
     hazard; every numeric resolves to an exact passage.'
-  status: pending
+  status: completed
   assigned_to:
   - task-completion-validator
   dependencies:
@@ -246,7 +246,7 @@ files_modified:
 - tests/ef-cbc_suite_v1-boundary.test.mjs
 - tests/ef-cbc_suite_v1-missingness.test.mjs
 - tests/ef-cbc_suite_v1-dangerous-miss.test.mjs
-progress: 10
+progress: 100
 updated: '2026-07-21'
 ---
 

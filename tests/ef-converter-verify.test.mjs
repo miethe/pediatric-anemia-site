@@ -6,9 +6,11 @@
 //      `rules.json` is, respectively, schema-valid and the P1-T5 seeded-bad-rule fixture
 //      (tests/fixtures/invalid-rule/SYNTHETIC-INVALID-EXTRA-PROP-001.json.txt, an otherwise
 //      schema-legal rule with one illegal extra top-level property).
-//   2. "the pack-output-validation stub is explicitly marked (not silently incomplete) for P5 to
-//      finish" — asserted by checking `release-manifest.unsigned.json` is reported present but
-//      NEVER validated (`releaseManifest.validated === false`) with a reason naming P5-T1.
+//   2. (P5-T1 closed the former stub here — see tests/ef-converter-release-manifest.test.mjs and
+//      tests/release-manifest-schema.test.mjs for the dedicated coverage of that task) — this file
+//      keeps only the `verify`-verb-level proof: a present, schema-valid manifest is reported
+//      `validated: true`; a present, schema-INVALID manifest throws (`ReleaseManifestValidationError`,
+//      exit 2) rather than being silently accepted; and an absent manifest is still a vacuous pass.
 //
 // This suite covers the `verify` verb in isolation, the same convention `tests/ef-converter-
 // inspect.test.mjs` (P2-T6) and its siblings already document for themselves — it is deliberately
@@ -34,6 +36,8 @@ import {
   PackNotFoundError,
   RuleSchemaNotFoundError,
   RulesJsonValidationError,
+  ReleaseManifestParseError,
+  ReleaseManifestValidationError,
 } from '../tools/rf-bundle-to-kb-pack/lib/verbs/verify.mjs';
 import {
   UsageError,
@@ -220,30 +224,83 @@ test('P2-T7: verify fails closed (RuleSchemaNotFoundError) when --rule-schema do
   }
 });
 
-// ----- AC 2: pack-output-validation stub is explicit, never silently incomplete -----------------
+// ----- AC 2: release-manifest.unsigned.json content validation (P5-T1, closing the former stub) -
 
-test('P2-T7: release-manifest.unsigned.json is reported present but NEVER content-validated this phase (explicit P5-T1 stub)', async () => {
+const VALID_RELEASE_MANIFEST = {
+  schemaVersion: '1.0',
+  moduleId: 'cbc_suite_v1',
+  packVersion: '0.1.0-proposal',
+  rfInputs: [{
+    runId: 'rf_run_test',
+    bundleSha256: `sha256:${'a'.repeat(64)}`,
+    claimLedgerSha256: `sha256:${'b'.repeat(64)}`,
+    verificationExitCode: 0,
+  }],
+  converter: { name: 'rf-bundle-to-kb-pack', version: '0.1.0', configSha256: `sha256:${'c'.repeat(64)}` },
+  testCorpusHash: `sha256:${'d'.repeat(64)}`,
+  traceabilityHash: `sha256:${'e'.repeat(64)}`,
+};
+
+test('P5-T1: a present, schema-valid release-manifest.unsigned.json is reported validated: true', async () => {
   const dir = await makeTempPack([]);
   await writeFile(
     path.join(dir, 'release-manifest.unsigned.json'),
-    JSON.stringify({ this: 'is-not-schema-checked-yet' }),
+    JSON.stringify(VALID_RELEASE_MANIFEST),
     'utf8',
   );
   try {
     const { result: exitCode, output } = await withCapturedStdout(() =>
       runVerify({ pack: dir, ruleSchema: RULE_SCHEMA_PATH }),
     );
-    assert.equal(exitCode, EXIT_OK, 'an unvalidated (even nonsense) manifest must not itself fail verify this phase');
+    assert.equal(exitCode, EXIT_OK);
     const summary = JSON.parse(output);
     assert.equal(summary.releaseManifest.present, true);
-    assert.equal(summary.releaseManifest.validated, false);
-    assert.match(summary.releaseManifest.reason, /P5-T1/);
+    assert.equal(summary.releaseManifest.validated, true);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
 });
 
-test('P2-T7: release-manifest.unsigned.json absent is reported as such, not conflated with "validated"', async () => {
+test('P5-T1: a present, schema-INVALID release-manifest.unsigned.json throws (ReleaseManifestValidationError, exit 2) — never a silent pass', async () => {
+  const dir = await makeTempPack([]);
+  const badManifest = JSON.parse(JSON.stringify(VALID_RELEASE_MANIFEST));
+  delete badManifest.rfInputs[0].bundleSha256;
+  await writeFile(path.join(dir, 'release-manifest.unsigned.json'), JSON.stringify(badManifest), 'utf8');
+  try {
+    await assert.rejects(
+      () => runVerify({ pack: dir, ruleSchema: RULE_SCHEMA_PATH }),
+      (err) => {
+        assert.ok(err instanceof ReleaseManifestValidationError);
+        assert.ok(err instanceof SchemaError);
+        assert.equal(err.exitCode, EXIT_SCHEMA);
+        assert.match(err.message, /bundleSha256/);
+        return true;
+      },
+    );
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('P5-T1: a present but unparseable release-manifest.unsigned.json throws (ReleaseManifestParseError, exit 2)', async () => {
+  const dir = await makeTempPack([]);
+  await writeFile(path.join(dir, 'release-manifest.unsigned.json'), '{ this is not valid json', 'utf8');
+  try {
+    await assert.rejects(
+      () => runVerify({ pack: dir, ruleSchema: RULE_SCHEMA_PATH }),
+      (err) => {
+        assert.ok(err instanceof ReleaseManifestParseError);
+        assert.ok(err instanceof SchemaError);
+        assert.equal(err.exitCode, EXIT_SCHEMA);
+        return true;
+      },
+    );
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('P5-T1: release-manifest.unsigned.json absent is reported as such, not conflated with "validated"', async () => {
   const dir = await makeTempPack(undefined);
   try {
     const { output } = await withCapturedStdout(() => runVerify({ pack: dir, ruleSchema: RULE_SCHEMA_PATH }));

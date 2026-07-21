@@ -32,17 +32,24 @@
 //        rules.json,
 //        rule-provenance.json      -- via `scripts/evidence/govern-staged-rules.mjs`
 //                                     `#writeStagedRulesAndProvenance` (P3-T6).
+//        release-manifest.unsigned.json -- NEW this task (P5-T1, FR-18, `02 §4.18` minus the
+//                                     `signature` block): binds `rfInputs[]`, `converter`,
+//                                     `testCorpusHash`, `traceabilityHash`. See the P5-T1 block
+//                                     near the bottom of this file for the four pure builder
+//                                     functions this emission uses.
 //
 // Zero network calls, zero LLM/generative-model invocations, ever (FR-10) -- this file imports
-// only `node:fs/promises`, `node:path`, the already-vetted converter pipeline modules, and the two
-// P3-T5/P3-T6 drafting modules; none of those import `node:http`, `node:https`, `node:dgram`,
-// `fetch`, or any AI/model SDK (tests/ef-converter-inspect.test.mjs's structural scan already
-// covers every `.mjs` file under this tree, this one included).
+// only `node:fs/promises`, `node:path`, `node:crypto`, `node:url`, the already-vetted converter
+// pipeline modules, and the two P3-T5/P3-T6 drafting modules; none of those import `node:http`,
+// `node:https`, `node:dgram`, `fetch`, or any AI/model SDK (tests/ef-converter-inspect.test.mjs's
+// structural scan already covers every `.mjs` file under this tree, this one included).
 //
 // Verb-handler contract: see `./inspect.mjs`'s header comment (same contract applies here).
 
-import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 
 import { loadBundle } from '../loader.mjs';
 import { pinArtifacts } from '../hashing.mjs';
@@ -51,6 +58,14 @@ import { routeClaims } from '../claim-routing.mjs';
 import { MODULE_ID, RULE_PROPOSALS, writeDraftPack } from '../rule-candidate-drafts.mjs';
 import { writeStagedRulesAndProvenance } from '../../../../scripts/evidence/govern-staged-rules.mjs';
 import { EXIT_OK, GovernanceError, SchemaError, UsageError } from '../errors.mjs';
+
+// This file lives at tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs -- 4 directories below the
+// repository root, 2 below this converter's own root. Used only to locate (a) this module's own
+// generated test corpus (tests/ef-<moduleId>-*.test.mjs, P4-T5..T8) for `testCorpusHash`, and (b)
+// this converter's own `.mjs` source tree for `converter.configSha256` (P5-T1, FR-18) -- purely
+// local filesystem paths, never a network boundary.
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
+const CONVERTER_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 
 /** This converter build's own identity, recorded in `pack-provenance.json.converter` (`02 §4.8`
  * implies a converter identity belongs on the provenance record; nothing else in this repo names
@@ -266,6 +281,159 @@ async function readModuleProjectionFile(moduleDir, filename) {
   }
 }
 
+// =================================================================================================
+// P5-T1: release-manifest.unsigned.json (FR-18, `02 §4.18` minus the `signature` block)
+// =================================================================================================
+
+/**
+ * Recursively collects every `.mjs` file under `dir`, as an array of paths RELATIVE to `dir`,
+ * sorted lexicographically -- independent of the underlying filesystem's `readdir` ordering, so
+ * the result is deterministic run to run (seam invariant 13) regardless of traversal order.
+ *
+ * @param {string} dir
+ * @returns {Promise<string[]>}
+ */
+async function collectConverterSourceFilesRelative(dir) {
+  const collected = [];
+  async function walk(current) {
+    for (const entry of await readdir(current, { withFileTypes: true })) {
+      const full = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        await walk(full);
+      } else if (entry.isFile() && entry.name.endsWith('.mjs')) {
+        collected.push(path.relative(dir, full));
+      }
+    }
+  }
+  await walk(dir);
+  return collected.sort();
+}
+
+/**
+ * `release-manifest.unsigned.json`'s `converter.configSha256` (FR-18, `02 §4.18`): a SHA-256 over
+ * every `.mjs` source file this converter build ships (name + content, sorted, no timestamps), so
+ * two runs of the SAME converter build against the SAME inputs hash identically (FR-20 seam
+ * invariant 13), while any change to this tool's own behavior-defining code changes the hash even
+ * if `CONVERTER_VERSION` was not manually bumped. A technical integrity hash over this tool's own
+ * code -- never a clinical value; it carries no threshold, dose, or diagnostic content.
+ *
+ * @param {string} converterRoot tools/rf-bundle-to-kb-pack/ (this converter's own root)
+ * @returns {Promise<string>} lowercase hex SHA-256 digest (no "sha256:" prefix)
+ */
+export async function computeConverterConfigSha256(converterRoot) {
+  const relFiles = await collectConverterSourceFilesRelative(converterRoot);
+  const hash = createHash('sha256');
+  for (const rel of relFiles) {
+    const raw = await readFile(path.join(converterRoot, rel), 'utf8');
+    hash.update(`${rel}\n${raw}`);
+  }
+  return hash.digest('hex');
+}
+
+/**
+ * `release-manifest.unsigned.json`'s `testCorpusHash` (FR-18, FR-20): a SHA-256 over every
+ * generated engine-test file for this module (`tests/ef-<moduleId>-*.test.mjs`, P4-T5..T8 --
+ * positive/negative/boundary/missingness/dangerous-miss), name + content, sorted by filename so
+ * the digest does not depend on directory-listing order. Fails closed (`UsageError`) if the module
+ * has no generated test corpus yet -- a manifest asserting a test-corpus hash over zero files would
+ * silently misrepresent "no tests exist" as "tests were hashed."
+ *
+ * @param {string} repoRoot repository root (this repo, not the `rf` run's own directory)
+ * @param {string} moduleId e.g. "cbc_suite_v1"
+ * @returns {Promise<{ sha256: string, files: string[] }>}
+ */
+export async function computeTestCorpusHash(repoRoot, moduleId) {
+  const testsDir = path.join(repoRoot, 'tests');
+  const pattern = new RegExp(`^ef-${moduleId}-.*\\.test\\.mjs$`);
+  const entries = await readdir(testsDir, { withFileTypes: true });
+  const files = entries
+    .filter((entry) => entry.isFile() && pattern.test(entry.name))
+    .map((entry) => entry.name)
+    .sort();
+  if (files.length === 0) {
+    throw new UsageError(
+      `propose requires at least one generated test-corpus file matching tests/ef-${moduleId}-*.test.mjs ` +
+        '(P4-T5..T8) before a release manifest can be emitted -- none were found.',
+    );
+  }
+  const hash = createHash('sha256');
+  for (const file of files) {
+    const raw = await readFile(path.join(testsDir, file), 'utf8');
+    hash.update(`${file}\n${raw}`);
+  }
+  return { sha256: hash.digest('hex'), files };
+}
+
+/**
+ * `release-manifest.unsigned.json`'s `traceabilityHash` (FR-18, `02 §4.16`/`02 §4.18`): pending
+ * P5-T4's dedicated `source -> passage -> claim -> decision -> rule -> test -> output` index
+ * artifact, this is a SHA-256 over the traceability-bearing artifacts this run already has in
+ * hand -- authoring-decisions.yaml (claim -> decision), evidence-assertions.json
+ * (passage -> claim), rule-provenance.json (decision -> rule), and rules.json (the compiled rule
+ * itself) -- name + raw bytes, sorted by name so the digest is independent of call-site argument
+ * order. Pure function of its string inputs -- no I/O -- directly unit-testable.
+ *
+ * @param {{ decisionsRaw: string, evidenceAssertionsRaw: string, ruleProvenanceRaw: string, rulesRaw: string }} parts
+ * @returns {string} lowercase hex SHA-256 digest (no "sha256:" prefix)
+ */
+export function computeTraceabilityHash(parts) {
+  const entries = [
+    ['authoring-decisions.yaml', parts.decisionsRaw],
+    ['evidence-assertions.json', parts.evidenceAssertionsRaw],
+    ['rule-provenance.json', parts.ruleProvenanceRaw],
+    ['rules.json', parts.rulesRaw],
+  ].sort(([a], [b]) => a.localeCompare(b));
+  const hash = createHash('sha256');
+  for (const [label, raw] of entries) {
+    hash.update(`${label}\n${raw}`);
+  }
+  return hash.digest('hex');
+}
+
+/**
+ * Assembles `release-manifest.unsigned.json`'s full document (FR-18, `02 §4.18` MINUS the
+ * `signature` block -- this build is never signed; `modules/cbc_suite_v1/module.json`'s `status`
+ * stays `"unsigned-stub"`). Binds exactly the fields this task's own acceptance criteria names --
+ * `rfInputs[].{runId, bundleSha256, claimLedgerSha256, verificationExitCode}`,
+ * `converter.{name, version, configSha256}`, `testCorpusHash`, `traceabilityHash` -- and no others:
+ * `knowledgeBaseVersion`/`approvedBy`/`validationRunId`/`releasedAt`/`signature` etc. are E1+
+ * production-manifest fields this unsigned E0 manifest deliberately does not carry (inventing them
+ * here would misrepresent an unvalidated, unsigned staged proposal as release-ready). Pure
+ * function of its inputs -- no I/O -- directly unit-testable.
+ *
+ * @returns {object}
+ */
+export function buildReleaseManifest({
+  moduleId,
+  packVersion,
+  pinnedBundle,
+  eligibility,
+  converterConfigSha256,
+  testCorpusSha256,
+  traceabilityHashHex,
+}) {
+  return {
+    schemaVersion: '1.0',
+    moduleId,
+    packVersion,
+    rfInputs: [
+      {
+        runId: pinnedBundle.runId,
+        bundleSha256: `sha256:${pinnedBundle.hashes.bundle}`,
+        claimLedgerSha256: `sha256:${pinnedBundle.hashes.claimLedger}`,
+        verificationExitCode: eligibility.bundle.verification.exitCode,
+      },
+    ],
+    converter: {
+      name: CONVERTER_NAME,
+      version: CONVERTER_VERSION,
+      configSha256: `sha256:${converterConfigSha256}`,
+    },
+    testCorpusHash: `sha256:${testCorpusSha256}`,
+    traceabilityHash: `sha256:${traceabilityHashHex}`,
+  };
+}
+
 /**
  * @param {{ runDir?: string, module?: string, decisions?: string, out?: string }} options parsed
  *   CLI flags for this verb
@@ -360,6 +528,35 @@ export async function run(options) {
   const { ruleProposalsPath, candidatesPath } = await writeDraftPack({ outDir });
   const { rulesPath, ruleProvenancePath } = await writeStagedRulesAndProvenance({ outDir });
 
+  // ---- release-manifest.unsigned.json (P5-T1, FR-18, `02 §4.18` minus `signature`) -------------
+  // Re-reads the just-written rules.json/rule-provenance.json bytes from disk (mirrors hashing.mjs's
+  // own "hash what is actually on disk, not what memory claims" posture) rather than re-serializing
+  // the in-memory objects, so a hash mismatch would be caught rather than papered over.
+  const rulesRaw = await readFile(rulesPath, 'utf8');
+  const ruleProvenanceRaw = await readFile(ruleProvenancePath, 'utf8');
+  const decisionsRaw = pinned.decisions.raw.toString('utf8');
+
+  const converterConfigSha256 = await computeConverterConfigSha256(CONVERTER_ROOT);
+  const { sha256: testCorpusSha256 } = await computeTestCorpusHash(REPO_ROOT, pinned.moduleId);
+  const traceabilityHashHex = computeTraceabilityHash({
+    decisionsRaw,
+    evidenceAssertionsRaw: evidenceAssertionsFile.raw,
+    ruleProvenanceRaw,
+    rulesRaw,
+  });
+
+  const releaseManifest = buildReleaseManifest({
+    moduleId: pinned.moduleId,
+    packVersion: PACK_VERSION,
+    pinnedBundle: pinned,
+    eligibility,
+    converterConfigSha256,
+    testCorpusSha256,
+    traceabilityHashHex,
+  });
+  const releaseManifestPath = path.join(outDir, 'release-manifest.unsigned.json');
+  await writeFile(releaseManifestPath, `${JSON.stringify(releaseManifest, null, 2)}\n`, 'utf8');
+
   const summary = {
     verb: 'propose',
     moduleId: pinned.moduleId,
@@ -372,6 +569,7 @@ export async function run(options) {
       ruleProposalsPath,
       rulesPath,
       ruleProvenancePath,
+      releaseManifestPath,
     },
     routing: {
       eligibleForRuleEvidence: routingReport.eligibleForRuleEvidence.length,

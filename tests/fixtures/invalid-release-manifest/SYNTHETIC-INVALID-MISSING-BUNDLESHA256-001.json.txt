@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1.0",
+  "moduleId": "cbc_suite_v1",
+  "packVersion": "0.1.0-proposal",
+  "rfInputs": [
+    {
+      "runId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "claimLedgerSha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "verificationExitCode": 0
+    }
+  ],
+  "converter": {
+    "name": "rf-bundle-to-kb-pack",
+    "version": "0.1.0",
+    "configSha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "testCorpusHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "traceabilityHash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+}
