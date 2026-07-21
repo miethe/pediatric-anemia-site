@@ -40,7 +40,8 @@ node tools/rf-bundle-to-kb-pack/cli.mjs propose \
   --decisions modules/cbc_suite_v1/authoring-decisions.yaml \
   --out build/kb-pack/cbc_suite_v1/0.1.0-proposal
 # -> exit 0; writes pack-provenance.json, evidence.json, evidence-assertions.json, candidates.json,
-#    rule-proposals.json, rules.json, rule-provenance.json to --out (P3-T7).
+#    rule-proposals.json, rules.json, rule-provenance.json, release-manifest.unsigned.json (P5-T1),
+#    conversion-report.json (P5-T2), and semantic-diff.json (P5-T3) to --out (P3-T7).
 ```
 
 Note the `--module` path is `module.json`, not the 02 doc's `module.yaml` — the 02 doc predates

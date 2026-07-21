@@ -32,11 +32,23 @@
 //        rules.json,
 //        rule-provenance.json      -- via `scripts/evidence/govern-staged-rules.mjs`
 //                                     `#writeStagedRulesAndProvenance` (P3-T6).
-//        release-manifest.unsigned.json -- NEW this task (P5-T1, FR-18, `02 §4.18` minus the
-//                                     `signature` block): binds `rfInputs[]`, `converter`,
-//                                     `testCorpusHash`, `traceabilityHash`. See the P5-T1 block
-//                                     near the bottom of this file for the four pure builder
-//                                     functions this emission uses.
+//        release-manifest.unsigned.json -- NEW P5-T1 (FR-18, `02 §4.18` minus the `signature`
+//                                     block): binds `rfInputs[]`, `converter`, `testCorpusHash`,
+//                                     `traceabilityHash`. See the P5-T1 block near the bottom of
+//                                     this file for the four pure builder functions this emission
+//                                     uses.
+//        conversion-report.json    -- NEW this task (P5-T2, FR-19): enumerates every claim the
+//                                     P3-T4 `../claim-routing.mjs` routing excluded from rule
+//                                     evidence, each with its specific rejection reason, built
+//                                     directly from this same run's `routingReport` -- no schema
+//                                     exists for this file either (same OQ-7 ruling as
+//                                     pack-provenance.json above). See the P5-T2 block near the
+//                                     bottom of this file for `buildConversionReport`.
+//        semantic-diff.json        -- NEW this task (P5-T3, FR-21, OQ-4): a MINIMAL, rule-id-level
+//                                     added/removed/changed comparison between this run's staged
+//                                     head rules.json and the active modules/anemia/rules.json --
+//                                     no impact-graph traversal, no dedicated schema (same OQ-7
+//                                     posture). See `../semantic-diff.mjs`.
 //
 // Zero network calls, zero LLM/generative-model invocations, ever (FR-10) -- this file imports
 // only `node:fs/promises`, `node:path`, `node:crypto`, `node:url`, the already-vetted converter
@@ -57,6 +69,7 @@ import { checkEligibility } from '../eligibility.mjs';
 import { routeClaims } from '../claim-routing.mjs';
 import { MODULE_ID, RULE_PROPOSALS, writeDraftPack } from '../rule-candidate-drafts.mjs';
 import { writeStagedRulesAndProvenance } from '../../../../scripts/evidence/govern-staged-rules.mjs';
+import { buildSemanticDiffReport } from '../semantic-diff.mjs';
 import { EXIT_OK, GovernanceError, SchemaError, UsageError } from '../errors.mjs';
 
 // This file lives at tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs -- 4 directories below the
@@ -66,6 +79,16 @@ import { EXIT_OK, GovernanceError, SchemaError, UsageError } from '../errors.mjs
 // local filesystem paths, never a network boundary.
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const CONVERTER_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+
+/**
+ * `semantic-diff.json`'s (P5-T3, FR-21, OQ-4) fixed comparison baseline: `modules/anemia/rules.json`
+ * -- the only module that existed before this feature, per this plan's own binding OQ-4 text
+ * ("comparing the cbc_suite_v1 proposal against modules/anemia/rules.json -- exactly as FR-21
+ * already states"). Never `modules/cbc_suite_v1/rules.json` -- see `../semantic-diff.mjs`'s header
+ * comment for why.
+ */
+const SEMANTIC_DIFF_BASE_MODULE_ID = 'anemia';
+const SEMANTIC_DIFF_BASE_RULES_PATH = path.join(REPO_ROOT, 'modules', 'anemia', 'rules.json');
 
 /** This converter build's own identity, recorded in `pack-provenance.json.converter` (`02 §4.8`
  * implies a converter identity belongs on the provenance record; nothing else in this repo names
@@ -434,6 +457,69 @@ export function buildReleaseManifest({
   };
 }
 
+// =================================================================================================
+// P5-T2: conversion-report.json (FR-19, decisions block Phase 5 exit gate)
+// =================================================================================================
+
+/**
+ * `conversion-report.json`'s full document shape (FR-19, PRD §"Observability": "the audit surface
+ * for this feature ... structured JSON, not free text, enumerating every accept/reject decision
+ * with its reason"). No dedicated schema exists for this file (this plan's binding OQ-7 ruling
+ * names exactly 4 new schema files — `evidence-assertions`, `authoring-decisions`,
+ * `rule-provenance`, `release-manifest` — none of them `conversion-report`) — same "checked
+ * structurally, not schema-validated" posture as `pack-provenance.json`/`rule-proposals.json`
+ * (P3-T7).
+ *
+ * Enumerates every claim `../claim-routing.mjs`'s `routeClaims()` (P3-T4) excluded from rule
+ * evidence at all (`routingReport.rejected` — `ruleEvidenceEligible: false`), each with its
+ * specific, already-computed rejection reason(s) — never a bare pass/fail summary, and never a
+ * silently-dropped exclusion (mirrors `eligibility.mjs`/`claim-routing.mjs`'s own "retain rejected
+ * items with reason" posture). `sources`/`candidates` exclusion arrays are carried in the shape now
+ * (FR-19 names "claim, source, or candidate item" together) but are empty for this fixture/module:
+ * this converter has zero independent source- or candidate-level exclusion logic distinct from the
+ * claim-level rejection above (the fixture's only drafted candidate,
+ * `benign-ethnic-neutropenia-differential-pattern`, is used by rule (c) and is never excluded) —
+ * a future module/bundle that DOES exclude a source or candidate item on its own has a place to
+ * report it without a shape change.
+ *
+ * Pure function of its inputs — no I/O — directly unit-testable, matching `buildReleaseManifest`'s
+ * own convention (P5-T1).
+ *
+ * @param {{ moduleId: string, packVersion: string, routingReport: import('../claim-routing.mjs').RoutingReport }} args
+ * @returns {object}
+ */
+export function buildConversionReport({ moduleId, packVersion, routingReport }) {
+  const claimExclusions = routingReport.rejected
+    .map((routed) => ({
+      itemType: 'claim',
+      itemId: routed.claimId,
+      status: routed.status ?? null,
+      reasons: routed.reasons,
+    }))
+    // Sorted by itemId so the emitted file is deterministic (seam invariant 13) independent of
+    // claim_ledger.yaml's own on-disk ordering.
+    .sort((a, b) => String(a.itemId ?? '').localeCompare(String(b.itemId ?? '')));
+
+  return {
+    schemaVersion: '1.0',
+    moduleId,
+    packVersion,
+    summary: {
+      claimsTotal: routingReport.routed.length,
+      claimsEligibleForRuleEvidence: routingReport.eligibleForRuleEvidence.length,
+      claimsConflictVisible: routingReport.conflictObjects.length,
+      claimsExcluded: claimExclusions.length,
+      sourcesExcluded: 0,
+      candidatesExcluded: 0,
+    },
+    exclusions: {
+      claims: claimExclusions,
+      sources: [],
+      candidates: [],
+    },
+  };
+}
+
 /**
  * @param {{ runDir?: string, module?: string, decisions?: string, out?: string }} options parsed
  *   CLI flags for this verb
@@ -557,6 +643,35 @@ export async function run(options) {
   const releaseManifestPath = path.join(outDir, 'release-manifest.unsigned.json');
   await writeFile(releaseManifestPath, `${JSON.stringify(releaseManifest, null, 2)}\n`, 'utf8');
 
+  // ---- conversion-report.json (P5-T2, FR-19) -----------------------------------------------------
+  // Built from the SAME `routingReport` this run already computed above (P3-T4's claim-routing
+  // output) -- never a separately-recomputed or re-summarized report, so this file can never drift
+  // from the `routing.*` counts this verb has always printed in its stdout summary.
+  const conversionReport = buildConversionReport({
+    moduleId: pinned.moduleId,
+    packVersion: PACK_VERSION,
+    routingReport,
+  });
+  const conversionReportPath = path.join(outDir, 'conversion-report.json');
+  await writeFile(conversionReportPath, `${JSON.stringify(conversionReport, null, 2)}\n`, 'utf8');
+
+  // ---- semantic-diff.json (P5-T3, FR-21, OQ-4) ---------------------------------------------------
+  // Re-reads modules/anemia/rules.json fresh from disk each run (never cached across runs) so the
+  // comparison always reflects the file actually on disk, matching this file's own "hash/diff what
+  // is actually on disk" posture (see the release-manifest block above). `rulesRaw` (this run's
+  // freshly-written staged head, already read above for the release-manifest's hash) is re-parsed
+  // here rather than re-serialized from an in-memory object, for the same reason.
+  const anemiaRulesRaw = await readFile(SEMANTIC_DIFF_BASE_RULES_PATH, 'utf8');
+  const semanticDiffReport = buildSemanticDiffReport({
+    baseModuleId: SEMANTIC_DIFF_BASE_MODULE_ID,
+    baseRulesPath: path.relative(REPO_ROOT, SEMANTIC_DIFF_BASE_RULES_PATH),
+    baseRules: JSON.parse(anemiaRulesRaw),
+    headModuleId: pinned.moduleId,
+    headRules: JSON.parse(rulesRaw),
+  });
+  const semanticDiffPath = path.join(outDir, 'semantic-diff.json');
+  await writeFile(semanticDiffPath, `${JSON.stringify(semanticDiffReport, null, 2)}\n`, 'utf8');
+
   const summary = {
     verb: 'propose',
     moduleId: pinned.moduleId,
@@ -570,6 +685,8 @@ export async function run(options) {
       rulesPath,
       ruleProvenancePath,
       releaseManifestPath,
+      conversionReportPath,
+      semanticDiffPath,
     },
     routing: {
       eligibleForRuleEvidence: routingReport.eligibleForRuleEvidence.length,
