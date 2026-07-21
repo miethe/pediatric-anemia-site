@@ -18,7 +18,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 1
+completed_tasks: 2
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -86,7 +86,7 @@ tasks:
     uncopyrightable; government-funded works by university authors are not (abundant
     in the PMC corpus). Records a statutory basis already in the findings; makes no
     new legal determination.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -95,6 +95,10 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T00:00:00Z'
+  completed: '2026-07-21T00:00:00Z'
+  evidence:
+  - commit: f11530f
 - id: EPR2-T5
   description: 'Source -> rights-record gate, seam consumer (FR-WP2-06): extend scripts/validate-kb.mjs
     so every evidence source resolves to a rights record in rights/rights-ledger.json,
@@ -201,7 +205,7 @@ files_modified:
 - src/engine.js
 - src/app.js
 - scripts/evidence/build-evidence-pack.mjs
-progress: 16
+progress: 33
 updated: '2026-07-21'
 ---
 
