@@ -20,6 +20,7 @@ import {
   loadAttestationLedger,
   validateBindingsAgainstLedger,
   AUTOMATED_IDENTIFIER_PATTERN,
+  hasRecognizedCredential,
 } from '../scripts/evidence/lib/attested-passage-map.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -67,7 +68,7 @@ test('a source-supported binding IS accepted when a matching ledger attestation 
     attestedBy: 'J. Okonkwo',
     credential: 'MD, pediatric hematology',
     attestedOn: '2026-07-21',
-    attestationRef: 'docs/attestations/example.md',
+    attestationRef: 'docs/attestations/README.md',
   }];
   assert.deepEqual(
     gate([{ id: 'SCOPE-001', evidence: [passage.sourceId], sourcePassageId: passage.id }], index, attestations),
@@ -86,11 +87,11 @@ test('an attestation for a DIFFERENT passage does not authorise this binding', a
     attestedBy: 'J. Okonkwo',
     credential: 'MD',
     attestedOn: '2026-07-21',
-    attestationRef: 'docs/attestations/example.md',
+    attestationRef: 'docs/attestations/README.md',
   }];
   const errors = gate([{ id: 'SCOPE-001', evidence: [bindable[0].sourceId], sourcePassageId: bindable[0].id }], index, attestations);
-  assert.equal(errors.length, 1);
-  assert.match(errors[0], /no matching attestation/);
+  assert.ok(errors.some((e) => /no matching attestation/.test(e)),
+    `expected a no-matching-attestation error, got: ${JSON.stringify(errors)}`);
 });
 
 test('CROSS-SOURCE: a rule cannot be grounded by a passage from a source it does not cite', async () => {
@@ -173,7 +174,7 @@ test('a ledger entry attested by an automated identifier authorises NOTHING', as
     [{
       ruleId: 'SCOPE-001', passageId: passage.id,
       attestedBy: 'GPT-5 review agent', credential: 'automated', attestedOn: '2026-07-21',
-      attestationRef: 'docs/x.md',
+      attestationRef: 'docs/attestations/README.md',
     }],
   );
   assert.ok(errors.length > 0, 'a model/agent attester must not authorise a clinical grounding claim');
@@ -184,10 +185,67 @@ test('cross-source enforcement FAILS CLOSED when the entity cites no sources at 
   const passage = firstBindable(index);
   const attestations = [{
     ruleId: 'C-1', passageId: passage.id, attestedBy: 'J. Okonkwo',
-    credential: 'MD', attestedOn: '2026-07-21', attestationRef: 'docs/x.md',
+    credential: 'MD', attestedOn: '2026-07-21', attestationRef: 'docs/attestations/README.md',
   }];
   const errors = gate([{ id: 'C-1', evidence: [], sourcePassageId: passage.id }], index, attestations);
   assert.ok(errors.some((e) => /cites no evidence sources/.test(e)),
     'an entity citing nothing must not be groundable by any passage — the previous guard skipped '
     + 'exactly the case with the least provenance');
+});
+
+// --- reviewer gate, FIFTH pass ---------------------------------------------------------------
+// The deny-list was defeated with `attestedBy: "OpenAI o3"`. A deny-list of model names is
+// unbounded and permanently incomplete, so describing it as "requires a human identifier" was an
+// over-claim. The gate now leans on POSITIVE checks (a recognised clinical credential; an
+// attestation artifact that exists on disk; an ISO date) and keeps the deny-list only as a cheap
+// tripwire. It still cannot verify humanity, and the docs now say so.
+
+const bindableFixture = async () => {
+  const index = await passageIndex();
+  const passage = firstBindable(index);
+  return { index, passage, base: {
+    ruleId: 'SCOPE-001', passageId: passage.id, attestedOn: '2026-07-21',
+    attestationRef: 'docs/attestations/README.md',
+  } };
+};
+
+test('the fifth-pass evasion "OpenAI o3" no longer authorises a binding', async () => {
+  const { index, passage, base } = await bindableFixture();
+  const errors = gate(
+    [{ id: 'SCOPE-001', evidence: [passage.sourceId], sourcePassageId: passage.id }],
+    index, [{ ...base, attestedBy: 'OpenAI o3', credential: 'MD' }],
+  );
+  assert.ok(errors.length > 0, 'the exact identifier that defeated the previous deny-list must be rejected');
+});
+
+test('positive checks: unrecognised credential, missing artifact, artifact outside the dir, and bad date are each rejected', async () => {
+  const { index, passage, base } = await bindableFixture();
+  const entity = [{ id: 'SCOPE-001', evidence: [passage.sourceId], sourcePassageId: passage.id }];
+  const cases = {
+    'unrecognised credential': { ...base, attestedBy: 'J. Okonkwo', credential: 'reviewer' },
+    'nonexistent artifact': { ...base, attestedBy: 'J. Okonkwo', credential: 'MD', attestationRef: 'docs/attestations/nope.md' },
+    'artifact outside docs/attestations': { ...base, attestedBy: 'J. Okonkwo', credential: 'MD', attestationRef: 'README.md' },
+    'non-ISO date': { ...base, attestedBy: 'J. Okonkwo', credential: 'MD', attestedOn: 'July 2026' },
+  };
+  for (const [label, entry] of Object.entries(cases)) {
+    assert.ok(gate(entity, index, [entry]).length > 0, `${label} must be rejected`);
+  }
+});
+
+test('a fully genuine attestation is still accepted (the gate is not a ban)', async () => {
+  const { index, passage, base } = await bindableFixture();
+  assert.deepEqual(
+    gate([{ id: 'SCOPE-001', evidence: [passage.sourceId], sourcePassageId: passage.id }], index,
+      [{ ...base, attestedBy: 'J. Okonkwo', credential: 'MD, pediatric hematology' }]),
+    [],
+  );
+});
+
+test('hasRecognizedCredential accepts real credentials and rejects vague ones', () => {
+  for (const c of ['MD', 'DO', 'MBBS', 'PharmD', 'MD, pediatric hematology', 'RN', 'PA-C']) {
+    assert.ok(hasRecognizedCredential(c), `${c} should be recognised`);
+  }
+  for (const c of ['reviewer', 'approver', 'expert', '', null, undefined, 'senior clinician']) {
+    assert.ok(!hasRecognizedCredential(c), `${JSON.stringify(c)} should not be recognised`);
+  }
 });

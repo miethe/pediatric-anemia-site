@@ -12,8 +12,8 @@
 // FAILS LOUDLY, naming the offending entry, when any of the following holds:
 //
 //   1. any required field is missing, not a string, or empty.
-//   2. `attestedBy` matches AUTOMATED_IDENTIFIER_PATTERN — i.e. it looks like a model, agent,
-//      council, or pipeline identifier rather than a named human reviewer.
+//   2. `attestedBy` matches AUTOMATED_IDENTIFIER_PATTERN — a cheap TRIPWIRE for obvious automated
+//      identifiers. It does NOT establish that the attester is human; see the scope note below.
 //   3. `passageId` does not resolve to a passage that is currently `isBindableAsSourceSupported`
 //      (unknown id, wrong source, or a passage the EP3-T5 fidelity audit has since quarantined).
 //
@@ -21,7 +21,41 @@
 // synchronous throw during import crashes the script with a non-zero exit and a readable stack),
 // so a malformed entry can never silently produce a source-supported claim — the script simply
 // will not run at all until the entry is fixed or removed.
-export const AUTOMATED_IDENTIFIER_PATTERN = /(claude|gpt|gemini|arc|council|rf|agent|model|bot|pipeline|automat)/i;
+// WHAT THIS GATE CAN AND CANNOT DO (corrected, reviewer gate fifth pass 2026-07-21):
+//
+// It CANNOT establish that an attester is human. The previous design leaned on a deny-list of
+// model-ish substrings and the review defeated it with `attestedBy: "OpenAI o3"` — a deny-list of
+// model names is unbounded and permanently incomplete, and claiming it "requires a human
+// identifier" was itself an over-claim of exactly the kind this repository exists to avoid.
+//
+// What it CAN do, and now does, is make an attestation STRUCTURALLY EXPENSIVE and REVIEWABLE:
+//   1. a recognised clinical credential from a closed list (positive check, not a deny-list);
+//   2. an `attestationRef` that resolves to a file that actually EXISTS under docs/attestations/,
+//      so an attestation cannot be a bare string typed into a JSON file — there must be a
+//      committed, diffable artifact a reviewer can read;
+//   3. an ISO date;
+//   4. the deny-list, retained only as a cheap tripwire for the obvious cases.
+// Humanity is established by the out-of-band review artifact and the humans reviewing that commit.
+// This code enforces structure; it does not and cannot verify identity. Do not describe it as if
+// it does.
+export const AUTOMATED_IDENTIFIER_PATTERN = /(claude|gpt|gemini|arc|council|\brf\b|agent|model|bot|pipeline|automat|openai|anthropic|copilot|codex|deepseek|llama|mistral|qwen|\bai\b|\bllm\b|\bo[1-9]\b)/i;
+
+// Positive check (1): a closed list of recognised clinical credentials. Deliberately conservative —
+// extend it deliberately and reviewably rather than loosening the check.
+export const RECOGNIZED_CLINICAL_CREDENTIALS = Object.freeze([
+  'MD', 'DO', 'MBBS', 'MBChB', 'MBBCh', 'DM', 'PharmD', 'PhD',
+  'RN', 'MSN', 'DNP', 'NP', 'CNS', 'PA', 'PA-C',
+]);
+
+export function hasRecognizedCredential(credential) {
+  if (typeof credential !== 'string' || credential.trim() === '') return false;
+  const tokens = credential.split(/[^A-Za-z-]+/).filter(Boolean);
+  return tokens.some((token) => RECOGNIZED_CLINICAL_CREDENTIALS
+    .some((known) => known.toLowerCase() === token.toLowerCase()));
+}
+
+// Positive check (2): the attestation artifact must exist on disk.
+export const ATTESTATION_ARTIFACT_DIR = 'docs/attestations';
 
 const REQUIRED_ATTESTATION_FIELDS = ['passageId', 'attestedBy', 'credential', 'attestedOn', 'attestationRef'];
 
@@ -65,6 +99,37 @@ export function validateAttestationEntries(entries, idField, { passagesFor, isBi
       );
     }
 
+    // Positive check (1): a recognised clinical credential. The deny-list above is a tripwire only;
+    // this is the check that actually asks the entry to assert something specific.
+    if (!hasRecognizedCredential(entry?.credential)) {
+      problems.push(
+        `${label}: credential ${JSON.stringify(entry?.credential)} does not name a recognised clinical `
+        + `credential (${RECOGNIZED_CLINICAL_CREDENTIALS.join(', ')}). Extend the closed list deliberately `
+        + 'if a legitimate credential is missing; do not loosen the check.',
+      );
+    }
+
+    // Positive check (2): the attestation artifact must EXIST. An attestation that is only a string
+    // inside this JSON file is not reviewable; requiring a committed, diffable file means a human
+    // reviewing the commit can actually read what was attested.
+    const ref = entry?.attestationRef;
+    if (typeof ref === 'string' && ref.length > 0) {
+      if (!ref.startsWith(`${ATTESTATION_ARTIFACT_DIR}/`)) {
+        problems.push(`${label}: attestationRef "${ref}" must live under ${ATTESTATION_ARTIFACT_DIR}/`);
+      } else if (!existsSync(path.resolve(REPO_ROOT_FOR_REFS, ref))) {
+        problems.push(
+          `${label}: attestationRef "${ref}" does not exist on disk — an attestation must point at a `
+          + 'committed, reviewable artifact, not a bare string',
+        );
+      }
+    }
+
+    // Honest date check.
+    const attestedOn = entry?.attestedOn;
+    if (typeof attestedOn === 'string' && !/^\d{4}-\d{2}-\d{2}$/.test(attestedOn)) {
+      problems.push(`${label}: attestedOn "${attestedOn}" must be an ISO date (YYYY-MM-DD)`);
+    }
+
     const passageId = entry?.passageId;
     if (typeof passageId === 'string' && passageId.length > 0) {
       const sourceId = passageId.split('#')[0];
@@ -94,9 +159,15 @@ export function validateAttestationEntries(entries, idField, { passagesFor, isBi
 // scripts/validate-kb.mjs also reads, so the DATA is checked rather than only the code path that
 // usually produces it.
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+// Repo root, used to resolve attestationRef paths. Module-scope consts are initialised during
+// module evaluation, before any exported function can be called, so the ordering is safe.
+const REPO_ROOT_FOR_REFS = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..',
+);
 
 const LEDGER_PATH = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'evidence-packs', 'passage-attestations.json',

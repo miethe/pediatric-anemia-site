@@ -119,15 +119,23 @@ function mergeCandidate(store, rule, facts, catalog) {
  * refuses rather than emitting output that carries it.
  */
 export function assertNoClaimedClinicalApproval(rules) {
+  // STRICT (reviewer gate, fifth pass): the only evaluable value is an EXPLICIT EMPTY ARRAY.
+  // The previous form checked `Array.isArray(v) && v.length > 0`, so `clinicalApprovers: "approved"`
+  // — a truthy non-array — sailed through both runRules() and assess(). A malformed approval claim
+  // is not safer than a well-formed one, and absence is not the same statement as "[] = nobody has
+  // approved this". This now matches the static detector's definition exactly, so the runtime and
+  // file-level layers cannot disagree about what counts as a violation.
   const offenders = (Array.isArray(rules) ? rules : [])
-    .filter((rule) => Array.isArray(rule?.clinicalApprovers) && rule.clinicalApprovers.length > 0)
-    .map((rule) => rule.id);
+    .filter((rule) => !(Array.isArray(rule?.clinicalApprovers) && rule.clinicalApprovers.length === 0))
+    .map((rule) => `${rule?.id ?? '<no id>'} (${JSON.stringify(rule?.clinicalApprovers)})`);
   if (offenders.length > 0) {
     throw new Error(
-      `D-4 VIOLATION — refusing to evaluate: ${offenders.length} rule(s) claim credentialed clinical `
-      + `approval that does not exist (${offenders.slice(0, 5).join(', ')}${offenders.length > 5 ? ', …' : ''}). `
-      + 'clinicalApprovers[] must be empty; no synthetic review (ARC council, council-review, rf '
-      + 'verification, or model self-attestation) may populate it.',
+      `D-4 VIOLATION — refusing to evaluate: ${offenders.length} rule(s) do not carry an explicit empty `
+      + `clinicalApprovers[] (${offenders.slice(0, 5).join(', ')}${offenders.length > 5 ? ', …' : ''}). `
+      + 'Only `clinicalApprovers: []` is evaluable — a populated list claims credentialed clinical '
+      + 'approval that does not exist, a non-array value is a malformed claim, and an absent field is '
+      + 'not the same statement as "nobody has approved this". No synthetic review (ARC council, '
+      + 'council-review, rf verification, or model self-attestation) may populate it.',
     );
   }
 }

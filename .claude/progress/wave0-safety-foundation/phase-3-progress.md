@@ -177,7 +177,7 @@ success_criteria:
 - id: SC-4
   description: npm run check green
   status: completed
-  note: "npm run check green at 626 tests."
+  note: "npm run check green; test count grows each remediation round — see the phase-4 tracker and the latest commit for the current figure."
 - id: SC-5
   description: task-completion-validator sign-off
   status: pending

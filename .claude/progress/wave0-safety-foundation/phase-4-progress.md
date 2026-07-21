@@ -124,8 +124,8 @@ success_criteria:
 - id: SC-2
   description: 'AC-D4 structural test passes: clinicalApprovers[] is [] on all 91
     rules, and the test fails on any non-owner-attested population (EP4-T3)'
-  status: completed
-  note: "Hardened after the reviewer gate demonstrated three live bypasses. Now enforced at four layers: schema maxItems: 0, source+built-artifact tests across all MODULE_IDS (derived from REGISTRY), a post-build verify:d4 gate wired AFTER npm run build, and a runtime refusal in src/engine.js assess(). 11 D-4 tests including non-vacuity and baseline cases."
+  status: partial
+  note: "PARTIAL — reopened by reviewer pass 5, which showed the runtime layer still evaluated a malformed truthy clinicalApprovers ("approved"); now strict (only an explicit empty array is evaluable). Hardened after the gate demonstrated three earlier live bypasses. Now enforced at four layers: schema maxItems: 0, source+built-artifact tests across all MODULE_IDS (derived from REGISTRY), a post-build verify:d4 gate wired AFTER npm run build, and a runtime refusal in src/engine.js assess(). 11 D-4 tests including non-vacuity and baseline cases."
 - id: SC-3
   description: 'AC-WP4-RESIL: absent governance fields never misread as errors or
     as exemptions (EP4-T4)'
@@ -134,7 +134,7 @@ success_criteria:
 - id: SC-4
   description: npm run check green
   status: completed
-  note: "npm run check green at 629 tests, including the new post-build verify:d4 gate."
+  note: "npm run check green at 678 tests, including the post-build verify:d4 gate. (Count updated per reviewer pass 5, which flagged the recorded figure as stale.)"
 - id: SC-5
   description: task-completion-validator sign-off
   status: pending

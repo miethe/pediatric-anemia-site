@@ -27,7 +27,7 @@ function wellFormedEntry(overrides = {}) {
     attestedBy: 'Dr. Jane Reviewer',
     credential: 'MD, Pediatric Hematology',
     attestedOn: '2026-07-20',
-    attestationRef: 'docs/clinical-review/RULE-001-review.md',
+    attestationRef: 'docs/attestations/README.md', // must EXIST (reviewer pass 5: an attestation may not be a bare string)
     ...overrides,
   };
 }
