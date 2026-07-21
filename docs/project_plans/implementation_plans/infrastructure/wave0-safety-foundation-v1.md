@@ -39,7 +39,10 @@ spike_ref:
   - docs/project_plans/SPIKEs/spike-005-semantic-diff-classification.md
   - docs/project_plans/SPIKEs/spike-006-kb-signing-key-custody-verification.md
 adr_refs: []
-deferred_items_spec_refs: []
+deferred_items_spec_refs:
+  - docs/project_plans/design-specs/public-moduleid-api-surface.md
+  - docs/project_plans/design-specs/algorithm-explainers-examples-relocation.md
+  - docs/project_plans/design-specs/headless-browser-runtime-smoke-check.md
 findings_doc_ref: null
 charter_ref: null
 changelog_ref: null

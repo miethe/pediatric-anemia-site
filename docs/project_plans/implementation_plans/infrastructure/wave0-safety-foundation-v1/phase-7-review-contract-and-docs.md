@@ -2,8 +2,9 @@
 schema_version: 2
 doc_type: phase_plan
 title: "Phase EP-7: Review Contract & Docs"
-status: draft
+status: completed
 created: 2026-07-19
+updated: 2026-07-21
 phase: EP-7
 phase_title: "Review Contract & Docs"
 prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
@@ -11,6 +12,25 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-fo
 feature_slug: wave0-safety-foundation
 entry_criteria: "EP-0 closed (design work can start); doc-truth-up tasks wait on EP-6 sealing."
 exit_criteria: "Review-record schema emits approvedBy[] shape; all stale doc claims corrected; all 3 deferred items have a design-spec path; karen end-of-feature review passed."
+changelog_ref: CHANGELOG.md
+findings_doc_ref: .claude/findings/wave0-ep7-review-contract-and-docs-findings.md
+files_affected:
+  - schemas/review-record.schema.json
+  - schemas/examples/review-record.example.json
+  - tests/review-record-schema.test.mjs
+  - docs/project_plans/design-specs/review-portal-design.md
+  - docs/project_plans/design-specs/public-moduleid-api-surface.md
+  - docs/project_plans/design-specs/algorithm-explainers-examples-relocation.md
+  - docs/project_plans/design-specs/headless-browser-runtime-smoke-check.md
+  - docs/project_plans/implementation_plans/infrastructure/wave0-safety-foundation-v1.md
+  - docs/architecture.md
+  - docs/clinical-algorithm.md
+  - docs/project_plans/expansion/01-platform-expansion-roadmap.md
+  - README.md
+  - CLAUDE.md
+  - CHANGELOG.md
+commit_refs:
+  - 57dc6cb
 ---
 
 # Phase EP-7: Review Contract & Docs (WP7)

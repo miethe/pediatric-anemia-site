@@ -81,8 +81,8 @@ The browser interface evaluates locally and does **not** send patient data to th
 ```text
 patient JSON
   → deriveFacts()                         src/facts.js
-  → evaluate machine-readable rules       data/rules.json
-  → merge diagnostic pattern candidates   data/candidates.json
+  → evaluate machine-readable rules       modules/anemia/rules.json
+  → merge diagnostic pattern candidates   modules/anemia/candidates.json
   → deterministic ordinal ranking         src/ruleEngine.js
   → evidence-linked output + audit         src/engine.js
 ```
@@ -93,7 +93,9 @@ The knowledge base currently contains:
 - 26 diagnostic patterns
 - 6 evidence registry records
 - 6 worked clinical examples
-- 10 automated engine tests
+- 967 passing automated subtests across 45 `node --test` files (`npm test`) — this proves software
+  behavior only (determinism, schema shape, fail-closed handling); it never proves clinical validity,
+  safety, diagnostic performance, or regulatory status
 
 The ranking score is an internal deterministic sort priority. It is **not** a probability, likelihood ratio, confidence interval, sensitivity, or specificity.
 
@@ -114,9 +116,9 @@ The ranking score is an internal deterministic sort priority. It is **not** a pr
 │   ├── ruleEngine.js                  generic JSON condition evaluator
 │   ├── referenceRanges.js             AAP fallback intervals
 │   └── evidence.js                    citation/provenance registry
-├── data/
-│   ├── rules.json                     deterministic rules
-│   └── candidates.json                merged diagnostic patterns
+├── modules/
+│   └── anemia/                        module package: rules.json, candidates.json,
+│                                       evidence.json, reference-ranges.json, module.json
 ├── schemas/
 │   ├── patient-input.schema.json
 │   └── assessment-output.schema.json

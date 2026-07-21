@@ -1,0 +1,295 @@
+{
+  "measuredAt": "2026-07-21T15:35:13.905Z",
+  "kbVersion": "0.1.0-2026-07-15",
+  "scopeNote": "Mutation score = killed / viable mutants from this runner's finite hand-enumerated operator set over rules.json, facts.anemia.js and ranges.js. It measures TEST-SUITE KILL COVERAGE ONLY. It is not evidence of clinical validity, diagnostic performance, KB correctness, or regulatory status, and defect classes outside operatorInventory are unmeasured by construction.",
+  "victimTestCommand": "node --test tests/witness/corpus.test.mjs tests/witness/alerts.test.mjs tests/engine.test.mjs tests/dangerous-miss-scenarios.test.mjs tests/hazard-control-matrix.test.mjs tests/tristate-safety-invariant.test.mjs tests/rule-coverage.test.mjs tests/candidate-governance.test.mjs tests/boundary.test.mjs tests/property.test.mjs",
+  "victimTestFiles": [
+    "tests/witness/corpus.test.mjs",
+    "tests/witness/alerts.test.mjs",
+    "tests/engine.test.mjs",
+    "tests/dangerous-miss-scenarios.test.mjs",
+    "tests/hazard-control-matrix.test.mjs",
+    "tests/tristate-safety-invariant.test.mjs",
+    "tests/rule-coverage.test.mjs",
+    "tests/candidate-governance.test.mjs",
+    "tests/boundary.test.mjs",
+    "tests/property.test.mjs"
+  ],
+  "total": 457,
+  "viableTotal": 457,
+  "nonViableTotal": 0,
+  "killedTotal": 457,
+  "survivedTotal": 0,
+  "score": 1,
+  "operatorInventory": {
+    "EQ_NEGATE": 163,
+    "DROP_OUTPUT": 91,
+    "FLIP_ALERT_SEVERITY": 13,
+    "DELETE_CONDITION_FROM_ALL": 60,
+    "FLIP_ALL_ANY": 83,
+    "NOT_REMOVE": 7,
+    "GTE_TO_LT": 2,
+    "NUMERIC_PERTURB_PLUS": 3,
+    "NUMERIC_PERTURB_MINUS": 3,
+    "LT_TO_GTE": 1,
+    "FACTS_NUMERIC_PERTURB": 23,
+    "FACTS_OPERATOR_FLIP": 7,
+    "FACTS_BOOLEAN_NEGATE": 1
+  },
+  "excluded": [],
+  "survivors": [],
+  "controls": {
+    "lethal": {
+      "id": "CTRL-LETHAL-ALERT-001-DROP_OUTPUT",
+      "description": "ALERT-001 ('Potentially unstable symptomatic anemia', emergency): output dropped to {} -- must be killed by tests/witness/alerts.test.mjs's explicit result.alerts assertion",
+      "expected": "killed",
+      "viable": true,
+      "killed": true,
+      "pass": true
+    },
+    "inert": {
+      "id": "CTRL-INERT-SCOPE-001-CHANGE-RATIONALE",
+      "description": "SCOPE-001: changeRationale free-text edited -- provably never read by evaluateCondition()/runRules()/assess() (src/ruleEngine.js, src/engine.js, src/governance.js), so must be classified non-viable",
+      "expected": "non-viable",
+      "viable": false,
+      "reason": "dead-config (see CONTROL_INERT justification comment)",
+      "pass": true
+    }
+  },
+  "smokeSubset": [
+    {
+      "id": "CTRL-INERT-SCOPE-001-CHANGE-RATIONALE",
+      "file": "modules/anemia/rules.json",
+      "operator": "DEAD_CONFIG_EDIT",
+      "ruleId": "SCOPE-001",
+      "control": "inert",
+      "viable": false,
+      "killed": null
+    },
+    {
+      "id": "CTRL-LETHAL-ALERT-001-DROP_OUTPUT",
+      "file": "modules/anemia/rules.json",
+      "operator": "DROP_OUTPUT",
+      "ruleId": "ALERT-001",
+      "control": "lethal",
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "FACTS-01",
+      "file": "modules/anemia/facts.anemia.js",
+      "operator": "FACTS_NUMERIC_PERTURB",
+      "ruleId": null,
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "FACTS-02",
+      "file": "modules/anemia/facts.anemia.js",
+      "operator": "FACTS_OPERATOR_FLIP",
+      "ruleId": null,
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "FACTS-03",
+      "file": "modules/anemia/facts.anemia.js",
+      "operator": "FACTS_NUMERIC_PERTURB",
+      "ruleId": null,
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "FACTS-04",
+      "file": "modules/anemia/facts.anemia.js",
+      "operator": "FACTS_OPERATOR_FLIP",
+      "ruleId": null,
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-AIHA-001-DELETE_CONDITION_FROM_ALL-root",
+      "file": "modules/anemia/rules.json",
+      "operator": "DELETE_CONDITION_FROM_ALL",
+      "ruleId": "AIHA-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-AIHA-001-DROP_OUTPUT",
+      "file": "modules/anemia/rules.json",
+      "operator": "DROP_OUTPUT",
+      "ruleId": "AIHA-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-AIHA-001-EQ_NEGATE-all.0",
+      "file": "modules/anemia/rules.json",
+      "operator": "EQ_NEGATE",
+      "ruleId": "AIHA-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-AIHA-001-EQ_NEGATE-all.1",
+      "file": "modules/anemia/rules.json",
+      "operator": "EQ_NEGATE",
+      "ruleId": "AIHA-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-AIHA-001-FLIP_ALL_ANY-root",
+      "file": "modules/anemia/rules.json",
+      "operator": "FLIP_ALL_ANY",
+      "ruleId": "AIHA-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-AINF-001-DROP_OUTPUT",
+      "file": "modules/anemia/rules.json",
+      "operator": "DROP_OUTPUT",
+      "ruleId": "AINF-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-AINF-002-DELETE_CONDITION_FROM_ALL-root",
+      "file": "modules/anemia/rules.json",
+      "operator": "DELETE_CONDITION_FROM_ALL",
+      "ruleId": "AINF-002",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-AINF-002-FLIP_ALL_ANY-root",
+      "file": "modules/anemia/rules.json",
+      "operator": "FLIP_ALL_ANY",
+      "ruleId": "AINF-002",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-ALERT-001-FLIP_ALERT_SEVERITY",
+      "file": "modules/anemia/rules.json",
+      "operator": "FLIP_ALERT_SEVERITY",
+      "ruleId": "ALERT-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-ALERT-002-FLIP_ALERT_SEVERITY",
+      "file": "modules/anemia/rules.json",
+      "operator": "FLIP_ALERT_SEVERITY",
+      "ruleId": "ALERT-002",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-IMF-001-GTE_TO_LT-all.2",
+      "file": "modules/anemia/rules.json",
+      "operator": "GTE_TO_LT",
+      "ruleId": "IMF-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-IMF-001-NUMERIC_PERTURB_MINUS-all.2",
+      "file": "modules/anemia/rules.json",
+      "operator": "NUMERIC_PERTURB_MINUS",
+      "ruleId": "IMF-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-IMF-001-NUMERIC_PERTURB_PLUS-all.2",
+      "file": "modules/anemia/rules.json",
+      "operator": "NUMERIC_PERTURB_PLUS",
+      "ruleId": "IMF-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-IMF-DBA-001-GTE_TO_LT-all.5",
+      "file": "modules/anemia/rules.json",
+      "operator": "GTE_TO_LT",
+      "ruleId": "IMF-DBA-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-IMF-DBA-001-NUMERIC_PERTURB_MINUS-all.5",
+      "file": "modules/anemia/rules.json",
+      "operator": "NUMERIC_PERTURB_MINUS",
+      "ruleId": "IMF-DBA-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-IMF-DBA-001-NUMERIC_PERTURB_PLUS-all.5",
+      "file": "modules/anemia/rules.json",
+      "operator": "NUMERIC_PERTURB_PLUS",
+      "ruleId": "IMF-DBA-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-IRIDA-001-NOT_REMOVE-all.4",
+      "file": "modules/anemia/rules.json",
+      "operator": "NOT_REMOVE",
+      "ruleId": "IRIDA-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-Q-MACRO-002-NOT_REMOVE-all.1",
+      "file": "modules/anemia/rules.json",
+      "operator": "NOT_REMOVE",
+      "ruleId": "Q-MACRO-002",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "M-Q-NORMO-HIGH-001-LT_TO_GTE-all.2",
+      "file": "modules/anemia/rules.json",
+      "operator": "LT_TO_GTE",
+      "ruleId": "Q-NORMO-HIGH-001",
+      "control": null,
+      "viable": true,
+      "killed": true
+    },
+    {
+      "id": "RANGES-01",
+      "file": "modules/anemia/ranges.js",
+      "operator": "FACTS_BOOLEAN_NEGATE",
+      "ruleId": null,
+      "control": null,
+      "viable": true,
+      "killed": true
+    }
+  ]
+}

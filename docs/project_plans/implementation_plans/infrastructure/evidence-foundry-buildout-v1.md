@@ -76,7 +76,7 @@ milestone: null
 commit_refs:
 - debff5989577f89d1055ed0d0352e7419a5d11cc
 - 5dfa0053736a115cfe863019d891a89833b04f48
-pr_refs: []
+pr_refs: ["#17"]
 files_affected:
 - tools/rf-bundle-to-kb-pack/**
 - modules/cbc_suite_v1/module.json

@@ -31,7 +31,7 @@ Each module (e.g., `modules/anemia/`) is a self-contained package holding rules.
 
 Three registries dispatch module behavior: `src/facts/registry.js` (fact-derivation by moduleId), `src/ranges/registry.js` (reference-range bands and threshold rules), and `src/modules/registry.js` (getModule/listModules; MODULE_IDS and loadModuleCode enumeration). A shim strategy ensures zero-edit backwards compatibility: `src/facts.js`, `src/referenceRanges.js`, and assessPediatricAnemia() in `src/engine.js` are thin re-export/wrapper shims bound to the 'anemia' module so existing callers need no updates.
 
-The unsigned module.json stub (modules/anemia/module.json) holds metadata that the eventual production signed manifest (§6) will supersede with approval chains and validation run IDs.
+`modules/anemia/module.json` is no longer a stub: Wave-0 (EP-5) shipped the two-part signed-manifest scheme described in §6, and the anemia module's manifest is currently `status: "integrity-recorded"` — its `clinicalContentHash`/`governanceHash` are populated and verified at server startup. Its `approvedBy` is still schema-forced to `[]`: no credentialed clinical approver has signed off on this content.
 
 ## 2b. Converter (`rf-bundle-to-kb-pack`)
 
@@ -144,24 +144,48 @@ The server should reject a requested KB version it cannot execute. Responses mus
 
 ## 6. Knowledge-base release manifest
 
-A production release should add a signed manifest:
+**Shipped (Wave-0, EP-5).** Every module carries a `module.json` manifest validated against
+`schemas/module-manifest.schema.json` and verified by `src/kbVerify.js#verifyManifest`, which
+`server.mjs` calls at startup — an unverifiable manifest makes the server refuse to start (§10).
+`scripts/sign-kb.mjs` computes and writes the manifest at release time; `--check` mode verifies
+without writing (CI). `scripts/kb-diff.mjs` classifies rule/candidate/evidence changes between two
+KB snapshots into a severity tier, failing closed (`block`) on any unresolved change class.
+
+The manifest is a **two-part SHA-256 digest**, not a cryptographic signature over a private key:
+
+- `clinicalContentHash` — over the four KB JSON files' parsed values plus raw-byte hashes of the
+  two source files that still hard-code clinical thresholds (`ranges.js`, `facts.anemia.js`).
+- `governanceHash` — over the manifest's own governance fields (`status`, `knowledgeBaseVersion`,
+  `evidenceReviewedThrough`, `approvedBy`, `validationRunId`, `supersedes`, `supportedAgeMonths`).
+
+`status` is a closed lifecycle enum: `unsigned-stub` → `integrity-recorded` → `superseded`/
+`revoked`. Only `integrity-recorded` is servable (`src/kbVerify.js#READY_STATUS`); a matching hash
+proves content-provenance consistency with a prior release, never clinical validity.
 
 ```json
 {
-  "knowledgeBaseVersion": "1.0.0-2027-01-15",
+  "id": "anemia",
+  "schemaVersion": 1,
+  "status": "integrity-recorded",
+  "knowledgeBaseVersion": "0.1.0-2026-07-15",
+  "evidenceReviewedThrough": "2026-07-15",
+  "engineLabel": "Pediatric Anemia Deterministic CDSS",
   "clinicalContentHash": "sha256:...",
-  "engineCompatibility": ">=1.0.0 <2.0.0",
-  "evidenceReviewedThrough": "2027-01-15",
-  "approvedBy": [
-    { "role": "pediatric hematologist", "approvalId": "..." },
-    { "role": "general pediatrician", "approvalId": "..." },
-    { "role": "laboratory medicine", "approvalId": "..." }
-  ],
-  "validationRunId": "...",
-  "supersedes": "0.9.4-2026-11-01",
-  "releasedAt": "2027-01-15T18:00:00Z"
+  "governanceHash": "sha256:...",
+  "approvedBy": [],
+  "validationRunId": "local-dev:unattested",
+  "supersedes": null,
+  "releasedAt": null
 }
 ```
+
+`approvedBy` is schema-forced to `[]` (`maxItems: 0`, mirroring `clinicalApprovers` in §7) — no
+credentialed clinical approver has signed off on this knowledge base, and ARC/council-review/`rf`
+output is explicitly not an eligible source for one. Raising that cap is the deliberate, reviewable
+act by which this project would first claim clinical sign-off; it must never be done to make a
+build pass. Evidence staleness has a disclosed but **not yet enforced** expiry policy
+(`src/evidenceStalenessPolicy.js`): `maxAgeDays` is `null` until a human makes that governance
+decision, and every consumer must disclose non-enforcement rather than imply the check passed.
 
 ## 7. Rule-authoring model
 
@@ -170,20 +194,37 @@ The current JSON DSL supports:
 - `all`, `any`, and `not` groups;
 - equality and numeric comparisons;
 - existence/missing checks;
+- **tri-state checks** (`is-present`/`is-absent`/`is-unknown`/`is-not-assessed`, `src/ruleEngine.js`
+  via `src/facts/tristate.js#toTri` — Wave-0/EP-1, SPIKE-003): a missing path, `null`, and `''` all
+  resolve to `unknown` the same way an explicit `unknown` value does, so missingness can never be
+  read as normal;
 - candidate, alert, question, and note outputs;
 - evidence IDs and fixed explanatory text.
 
-Production additions should include:
+**Shipped (Wave-0, EP-3/EP-4).** Every rule is validated against `schemas/rule.schema.json`, which
+requires (with `additionalProperties: false`, so nothing can be silently omitted):
 
-- JSON Schema validation for every rule;
-- typed facts registry with units and allowed values;
-- exact source passage/section locator per rule;
-- effective and retirement dates;
-- supersession links;
-- rule owner and clinical approvers;
-- safety classification;
-- required test-case IDs;
-- change rationale and impact analysis.
+- `version`, `effectiveDate` — semver-shaped rule version and the date its content took effect;
+- `retireDate` — `null` while active, populated on retirement (never repurposed as "unknown");
+- `owner` — a `role:`/`team:` string, schema-pattern-enforced so a person's name cannot be
+  substituted for an accountable role;
+- `safetyClass` — closed enum `safety-critical`/`diagnostic`/`informational`, derived
+  deterministically from the rule's `category`;
+- `requiredTestCaseIds` — mechanically populated fixture-path linkage from
+  `scripts/rule-coverage.mjs`'s activation-witness mapping; legitimately `[]` (no linkage yet),
+  never "exempt from testing";
+- `sourcePassageId` — names one exact passage record in `modules/anemia/evidence.json#sources[].passages[]`
+  (nullable only for a not-yet-backfilled rule; `scripts/validate-kb.mjs` is the stricter policy
+  layer for the shipped KB);
+- `changeRationale` — required, non-empty; for the EP-4 backfill this is a uniform string that
+  explicitly disclaims any clinical re-review, never an invented per-rule rationale;
+- `clinicalApprovers` — schema-forced to `[]` (`maxItems: 0`). **No credentialed clinical
+  approver has approved any rule in this knowledge base**, and ARC/council-review/`rf` output is
+  explicitly not an eligible source for one; raising the cap is a deliberate governance act, never
+  a build-passing shortcut (D-4).
+
+**Not yet shipped:** rule-level supersession links (only the module manifest's `supersedes` exists
+today, §6) and a distinct impact-analysis field beyond `changeRationale`.
 
 Avoid executable code inside clinical rules. Calculated facts should be a small, reviewed, unit-tested library.
 
@@ -219,12 +260,24 @@ FHIR mapping requires local code-system governance (LOINC/SNOMED CT/UCUM) and sh
 
 ## 10. Availability and failure modes
 
-The application must fail closed when:
+**Shipped (Wave-0).** The application fails closed today when:
 
-- reference units are absent or incompatible;
-- age is outside a supported range and local limits are missing;
-- the KB package signature/hash is invalid;
-- the UI and engine versions are incompatible;
-- evidence version is expired under governance policy.
+- a supplied analyte unit is unrecognized or incompatible with the registered canonical unit
+  (`src/units.js#validateUnits`/`classifyUnit`) — a unit is never silently converted, only accepted
+  or rejected;
+- age is outside a supported range and local limits are missing (`facts.js` `scope.*`; rules
+  `SCOPE-001`/`002`/`003`);
+- the module manifest fails schema validation, hash verification, or has an unsupported
+  `schemaVersion` (`src/kbVerify.js#verifyManifest`, `SUPPORTED_SCHEMA_VERSIONS`) — `server.mjs`
+  throws at startup and refuses to serve that module; this is "the UI/engine-version-incompatible"
+  condition applied to the manifest shape itself: a matching content hash says nothing about
+  whether the running code understands the shape it just verified.
 
-A failed system should display a clear “no assessment produced” state, not stale or partially calculated advice.
+**Disclosed but not yet enforced:** evidence-staleness expiry
+(`src/evidenceStalenessPolicy.js`) has a fail-closed design and a `checkEvidenceExpiry` code path
+in `src/kbVerify.js`, but `maxAgeDays` is `null` — no human has made the governance decision that
+sets the staleness window. Every consumer of the expiry verdict must disclose "not enforced"
+loudly (`server.mjs` logs a warning at startup); `null` must never be read as "checked and passed"
+or as "never expires."
+
+A failed system displays a clear "no assessment produced"/refusal-to-start state, not stale or partially calculated advice.

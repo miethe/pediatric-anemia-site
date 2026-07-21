@@ -113,7 +113,8 @@
         "testFile": "tests/dangerous-miss-scenarios.test.mjs",
         "testMarkers": [
           "DM-HEME-002: hemolysis markers with unknown reticulocyte response abstain from a unifying diagnosis",
-          "DM-HEME-002 NEGATIVE: a known high reticulocyte response resolves the pattern to strongly-supported (proves the abstention was driven by the unknown retic value)"
+          "DM-HEME-002 NEGATIVE: a known high reticulocyte response resolves the pattern to strongly-supported (proves the abstention was driven by the unknown retic value)",
+          "DM-HEME-002 REGRESSION (P4-V1 R2): hemolysis markers positive WITH retic.response \"low\" (not \"unknown\") — the aplastic-crisis signature — produces a SILENT empty differential and no alert when history is uncaptured"
         ],
         "coverageKind": "behavioral_positive_and_negative"
       },

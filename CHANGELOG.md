@@ -2,11 +2,71 @@
 
 ## [Unreleased]
 
+Wave-0 Safety Foundation program (EP-1 through EP-6). This is still an unvalidated research
+prototype: the items below describe software behavior only and prove nothing about clinical
+validity, safety, diagnostic performance, or regulatory status.
+
+### Changed
+
+- Replaced the boolean/unknown intake shape with an explicit four-state model
+  (`present` / `absent` / `unknown` / `not-assessed`) across all 56 history, symptom, and exam
+  fields. A field left `not-assessed` can no longer satisfy a rule-out or differential-clearing
+  branch — missingness is never silently treated as a normal or negative finding.
+- Numeric lab values (hemoglobin, MCV, RDW, RBC, WBC, ANC, platelets, ferritin, sTfR/ferritin
+  index, blood lead level) are now checked against a closed unit table. A unit mismatch is
+  rejected — fail-closed — at both the assess API and the browser assessment, instead of being
+  silently accepted or converted.
+- The server previously tolerated a missing knowledge-base manifest at startup. It now requires a
+  signed manifest (content hash + supersedes chain) that matches the shipped knowledge base, and
+  refuses to start or serve at all if the manifest is missing, invalid, hash-mismatched, or
+  version-incompatible, or if a request's unit/age falls outside what the knowledge base supports.
+  An evidence-staleness check exists in the same fail-closed path but is not yet active — no
+  expiration window has been set — and that non-enforcement is disclosed at startup and via the
+  knowledge-base API rather than passing silently.
+
+### Added
+
+- Evidence records now carry exact-passage provenance (source locator, exact passage, evidence
+  grade, applicability) instead of a bare evidence-ID reference. Every rule and diagnostic pattern
+  resolves to a passage record or an explicit `implementation-proposal` flag; as shipped, **all 91
+  rules currently resolve to `implementation-proposal`**, not `source-supported` — none of the
+  rule base is yet backed by an independently reviewed, verbatim-cited clinical source.
+- Rules now carry governance metadata in the audit trail: version, effective/retire dates, owner,
+  safety class, required test-case links, change rationale, and source passage. Every rule also
+  carries a `clinicalApprovers[]` field that ships structurally empty across all 91 rules — no rule
+  has received named, credentialed clinical sign-off, and the system is built to refuse treating
+  any non-clinician source (including automated or AI-generated review output) as one.
+- Added a semantic diff classifier for knowledge-base changes (flags rule additions/removals,
+  threshold changes, and evidence changes as non-cosmetic) and a reproducible content-hash signing
+  script, both used to produce the manifest above.
+- Added property-based, boundary-value, mutation, and dangerous-miss test suites proving the rule
+  engine's behavior against the shipped knowledge base (added to the existing suite; `npm test` now
+  runs 967 passing subtests across 45 files). These are software-behavior tests, not clinical
+  validation.
+
+### Known issues (disclosed, not fixed in this release)
+
+An independent adversarial "what would this engine miss that harms a child?" review of the
+dangerous-miss suite recorded 19 findings (5 critical); none were fixed here because they are
+clinical-content changes and this program's guardrails forbid AI-authored rule edits. Notable
+open findings — see `.claude/findings/wave0-ep6-validation-corpus-findings.md`:
+
+- Raw WBC/ANC/platelet counts are not wired into any rule, so a pancytopenia-with-fever
+  presentation can currently return no alert at all.
+- The browser assessment submits every untouched checkbox as confirmed-`absent` rather than
+  `not-assessed`, which can defeat the new tri-state missingness protection at the input boundary.
+- A malformed local reference range can coerce to 0, which can cause a severely low hemoglobin to
+  be reported as "no anemia."
+- The severe-anemia alert can be suppressed when sex-at-birth is not provided.
+- A classic acute-leukemia presentation can currently return an empty assessment.
+
 ### Evidence Foundry Buildout (E0): Converter & Module Scaffold
 
-- Added `tools/rf-bundle-to-kb-pack/`, a deterministic Node ESM CLI converter that transforms verified Research Foundry evidence bundles into candidate knowledge-base package proposals. The converter accepts an `rf` run with `status: verified` and produces a gitignored staging directory (`build/kb-pack/`) containing module artifacts (rules, candidates, evidence records, governance metadata, and test traces) that require clinical review before being committed to a versioned module package.
-- Added `modules/cbc_suite_v1/`, a new module scaffold extending the existing pediatric anemia prototype to include a vertical slice of CBC-related rules. The module follows the same structure as `modules/anemia/` (module.json, index.js delegating fact derivation, rules.json, candidates.json, evidence.json, rule-provenance.json, and evidence-assertions.json) and is registered in all three module registries (src/modules/registry.js, src/facts/registry.js, src/evidence.js). The module is unsigned and shipped as a proposal only — no rules are clinically approved and the module carries no production release status.
-- Added unified evidence registry in `src/evidence.js`, unifying `modules/anemia/evidence.json` and `modules/cbc_suite_v1/evidence.json` into a single canonical evidence store at runtime, keyed by evidence ID with support for cross-module evidence references.
+- Added `tools/rf-bundle-to-kb-pack/`, a deterministic Node ESM CLI converter that transforms verified Research Foundry evidence bundles into candidate knowledge-base package proposals. The converter accepts an `rf` run with `status: verified` and produces a gitignored staging directory (`build/kb-pack/`) containing module artifacts (rules, candidates, evidence records, governance metadata, and test traces) that require clinical review before being committed to a versioned module package. It is offline and deterministic: zero network calls and zero generative-model calls in any verb (test-enforced), byte-identical output across clean re-runs.
+- Added `modules/cbc_suite_v1/`, a new module package holding a 4-rule vertical slice migrated through the converter. The package follows the same structure as `modules/anemia/` (module.json, index.js delegating fact derivation to the anemia module, rules.json, candidates.json, evidence.json, reference-ranges.json, plus new rule-provenance.json and evidence-assertions.json sidecars) and is registered in `src/modules/registry.js` and `src/facts/registry.js` (deliberately not `src/ranges/registry.js` — range resolution flows through the delegated anemia call; `DEFAULT_MODULE_ID` stays `anemia`). The module is unsigned and shipped as a proposal only — `module.json.status: "unsigned-stub"`, `approvedBy: []`; no rule is clinically approved and every rule's provenance is explicitly marked `implementation-proposal`.
+- Added module-variable-envelope validation to `scripts/validate-kb.mjs` (the 8 §3.2 envelope fields are presence-checked for every module except the legacy pre-envelope `anemia` manifest) alongside real draft-2020-12 JSON-Schema validation of every module's rules.json, proven by a seeded-invalid fixture that fails `npm run validate` with a specific schema-violation message.
+- Added 8 pre-E1 Architecture Decision Records (`docs/adr/0001`–`0008`), all at `status: proposed` — none accepted; they document deferred decisions (authoring model, passage licensing, terminology ownership, approval identity, signing/key custody, validation data boundary, surveillance cadence, discovery-lane hardening), not made ones.
+- Added 10 deferred-item design specs plus a consolidated RFUP upstream-routing note, closing the plan's deferral-triage table.
 
 ## 0.3.1 — 2026-07-15
 
