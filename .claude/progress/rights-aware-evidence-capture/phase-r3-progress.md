@@ -10,15 +10,15 @@ execution_model: sequential
 phase: EP-R3
 created: '2026-07-21'
 title: 'EP-R3: Evidence Taxonomy & Archive Capture (WP3)'
-status: not_started
-started: null
+status: in_progress
+started: '2026-07-21'
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 11
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 0
+completed_tasks: 1
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -37,7 +37,7 @@ tasks:
     asset in any directory; no captured field carries a verbatim span beyond the passageFidelity
     policy already enforced. Use Explore read-only first to enumerate existing candidate spans.
     Ships BEFORE EPR3-T5/T6 write anything. Residual gap R-1 recorded in the test header as open.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   - Explore
