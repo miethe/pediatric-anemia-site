@@ -39,3 +39,75 @@ test('rule (a) young-infant scope-abstention does NOT fire at 24 months (well ab
     'the young-infant scope-abstention alert must not appear in result.alerts for an in-scope age',
   );
 });
+
+// Negative case for rule (b) (P4-T6): an explicit local-lab neutropenia flag is a valid local
+// profile in its own right (`modules/anemia/facts.anemia.js#cytopeniaTri` short-circuits to
+// `'false'` on an explicit `localFlags.neutropenia: false`, without needing a numeric
+// `localRanges.ancLower` at all) — once neutropenia status is actually resolved,
+// `CBC-NEUT-LOCALRANGE-001`'s `is-unknown` guard must NOT match, so the note must not fire.
+test('rule (b) local-range-precedence does NOT fire when a local-lab flag already resolves neutropenia status', () => {
+  const result = assessCbcSuite({
+    patient: { ageMonths: 24, sexAtBirth: 'male' },
+    cbc: { anc: 1.0, localFlags: { neutropenia: false } },
+  });
+
+  assert.ok(
+    !result.provenance.matchedRuleIds.includes('CBC-NEUT-LOCALRANGE-001'),
+    'a resolved (non-unknown) neutropenia status via a local-lab flag must not match CBC-NEUT-LOCALRANGE-001',
+  );
+  assert.ok(
+    !result.interpretiveNotes.some((entry) => entry.id === 'CBC-NEUT-LOCALRANGE-001'),
+    'the local-range-required note must not appear once a local profile has resolved neutropenia status',
+  );
+});
+
+// Negative case for rule (c) (P4-T7): a resolved-FALSE cbc.neutropenia fact (an explicit
+// local-lab flag of `false`) must NOT match CBC-NEUT-BENIGNDIFF-001 — the rule's `is-present`
+// guard fires only on the resolved-true state, never on a resolved-false one.
+test('rule (c) benign-ethnic/Duffy-null neutropenia differential does NOT fire when cbc.neutropenia resolves false', () => {
+  const result = assessCbcSuite({
+    patient: { ageMonths: 24, sexAtBirth: 'male' },
+    cbc: { localFlags: { neutropenia: false } },
+  });
+
+  assert.ok(
+    !result.provenance.matchedRuleIds.includes('CBC-NEUT-BENIGNDIFF-001'),
+    'a resolved-false cbc.neutropenia fact must not match CBC-NEUT-BENIGNDIFF-001',
+  );
+  assert.ok(
+    !result.rankedDifferential.some(
+      (entry) => entry.id === 'benign-ethnic-neutropenia-differential-pattern',
+    ),
+    'the benign-ethnic-neutropenia-differential-pattern candidate must not appear in rankedDifferential',
+  );
+});
+
+// Negative case for rule (d) (P4-T8): isolated anemia — anemia present, but every other lineage
+// (WBC/ANC/platelets) is explicitly resolved NOT cytopenic via a compatible local range — must NOT
+// fire CBC-MARROW-REDFLAG-001. `multilineageCytopenia = triAll([anemiaPresentTri,
+// triAny([leukopeniaTri, neutropeniaTri, thrombocytopeniaTri])])` resolves 'false' whenever the
+// second `triAny` term resolves 'false' (all three lineages definitively ruled out), regardless of
+// anemia being present — proving the rule is genuinely gated on CO-OCCURRING cytopenia, not on
+// anemia alone.
+test('rule (d) marrow-red-flag alert does NOT fire for isolated anemia with no co-occurring cytopenia', () => {
+  const result = assessCbcSuite({
+    patient: { ageMonths: 24, sexAtBirth: 'male' },
+    cbc: {
+      hemoglobin: 9,
+      wbc: 8,
+      anc: 2,
+      platelets: 250,
+      localRanges: { wbcLower: 5, ancLower: 1, plateletsLower: 150 },
+    },
+  });
+
+  assert.ok(
+    !result.provenance.matchedRuleIds.includes('CBC-MARROW-REDFLAG-001'),
+    'anemia present with every other lineage definitively ruled out (not cytopenic) must not match '
+      + 'CBC-MARROW-REDFLAG-001',
+  );
+  assert.ok(
+    !result.alerts.some((entry) => entry.id === 'CBC-MARROW-REDFLAG-001'),
+    'the marrow-red-flag alert must not appear in result.alerts for isolated (non-multilineage) anemia',
+  );
+});

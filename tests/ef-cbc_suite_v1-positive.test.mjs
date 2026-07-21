@@ -56,3 +56,94 @@ test('rule (a) young-infant scope-abstention fires below the 6-month supported-a
     'the alert must communicate that interpretation is out of scope, not a clinical finding',
   );
 });
+
+// Positive case for rule (d) (P4-T8): `cbc.multilineageCytopenia` (delegated tri-state fact,
+// `modules/anemia/facts.anemia.js` — `triAll([anemiaPresentTri, triAny([leukopeniaTri,
+// neutropeniaTri, thrombocytopeniaTri])])`) resolves 'true' when anemia is present together with
+// at least one other cytopenia. In scope (24 months, well above the 6-month floor) so rule (a)
+// does not interfere; `cbc.anc` is omitted so rule (b)'s `cbc.anc exists` guard does not match
+// either — this case isolates rule (d) only.
+test('rule (d) marrow-red-flag alert fires when anemia co-occurs with another cytopenia (multilineage cytopenia)', () => {
+  const result = assessCbcSuite({
+    patient: { ageMonths: 24, sexAtBirth: 'male' },
+    cbc: {
+      hemoglobin: 9,
+      platelets: 80,
+      localRanges: { plateletsLower: 150 },
+    },
+  });
+
+  assert.ok(
+    result.provenance.matchedRuleIds.includes('CBC-MARROW-REDFLAG-001'),
+    'anemia (hb 9 < hbLower 11) plus thrombocytopenia (platelets 80 < local lower 150) must match '
+      + 'CBC-MARROW-REDFLAG-001',
+  );
+  const alert = result.alerts.find((entry) => entry.id === 'CBC-MARROW-REDFLAG-001');
+  assert.ok(alert, 'the marrow-red-flag alert must be present in result.alerts');
+  assert.equal(
+    alert.severity,
+    'urgent',
+    'per 02 §4.6\'s fact/type/unit/missingness resolution requirement, severity must be the '
+      + 'evidence-resolved "urgent", never a generic default',
+  );
+  assert.ok(
+    alert.title.toLowerCase().includes('marrow'),
+    'the alert must name the marrow-failure/infiltration concern, not a paraphrase',
+  );
+});
+
+// Positive case for rule (c) (P4-T7, re-scoped per the parent plan's binding "FR-16(c) candidate
+// identity" resolution — see this module's rule-provenance.json#CBC-NEUT-BENIGNDIFF-001
+// authoringNotes): CBC-NEUT-BENIGNDIFF-001's `when` is the tri-state `cbc.neutropenia` fact
+// resolved to `'true'` (`op: "is-present"`, src/ruleEngine.js). `modules/anemia/facts.anemia.js`'s
+// `cytopeniaTri(localFlags.neutropenia, anc, cbc.localRanges?.ancLower)` resolves 'true'
+// immediately whenever `cbc.localFlags.neutropenia` is truthy, regardless of any ANC value — the
+// most direct, unambiguous way to drive the fact to 'true' without also depending on the numeric
+// ANC/ancLower comparison rule (b) already covers.
+test('rule (c) benign-ethnic/Duffy-null neutropenia differential fires when cbc.neutropenia resolves true', () => {
+  const result = assessCbcSuite({
+    patient: { ageMonths: 24, sexAtBirth: 'male' },
+    cbc: { localFlags: { neutropenia: true } },
+  });
+
+  assert.ok(
+    result.provenance.matchedRuleIds.includes('CBC-NEUT-BENIGNDIFF-001'),
+    'a resolved-true cbc.neutropenia fact must match CBC-NEUT-BENIGNDIFF-001',
+  );
+  const candidate = result.rankedDifferential.find(
+    (entry) => entry.id === 'benign-ethnic-neutropenia-differential-pattern',
+  );
+  assert.ok(
+    candidate,
+    'the benign-ethnic-neutropenia-differential-pattern candidate must be present in rankedDifferential',
+  );
+  assert.equal(candidate.level, 'possible');
+  assert.ok(
+    candidate.matchedRules.includes('CBC-NEUT-BENIGNDIFF-001'),
+    'the candidate must record CBC-NEUT-BENIGNDIFF-001 as a matched rule',
+  );
+});
+
+// Positive case for rule (b) (P4-T6): an ANC value is supplied but NEITHER a local-lab neutropenia
+// flag (`cbc.localFlags.neutropenia`) NOR a local/analyzer-specific ANC lower reference limit
+// (`cbc.localRanges.ancLower`) is — `modules/anemia/facts.anemia.js#cytopeniaTri` therefore resolves
+// `cbc.neutropenia` to `'unknown'` (not `'false'`), and `CBC-NEUT-LOCALRANGE-001`'s `when` clause
+// (`cbc.anc exists` AND `cbc.neutropenia is-unknown`) must fire, surfacing the interpretive note
+// rather than silently proceeding as if neutropenia had been ruled out.
+test('rule (b) local-range-precedence fires when an ANC value has no compatible local profile', () => {
+  const result = assessCbcSuite({
+    patient: { ageMonths: 24, sexAtBirth: 'male' },
+    cbc: { anc: 1.0 },
+  });
+
+  assert.ok(
+    result.provenance.matchedRuleIds.includes('CBC-NEUT-LOCALRANGE-001'),
+    'an ANC value with no local flag/range must match CBC-NEUT-LOCALRANGE-001',
+  );
+  const note = result.interpretiveNotes.find((entry) => entry.id === 'CBC-NEUT-LOCALRANGE-001');
+  assert.ok(note, 'the local-range-required note must be present in result.interpretiveNotes');
+  assert.ok(
+    note.detail.includes('local, analyzer-specific ANC lower reference limit'),
+    'the note must direct the clinician to supply a local reference range or flag',
+  );
+});
