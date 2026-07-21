@@ -815,7 +815,8 @@ Reassess when:
 |---|---|---|
 | Store DOI, PMID, title, authors, date | Cleared | Verify accuracy; metadata only |
 | Store original paraphrase of one study finding | Facts-only candidate | Lawful access, locator, no blocking terms, no copied expression |
-| Encode a reported numeric threshold | Facts-only candidate | Preserve population/assay limits; assess contract and compilation dependence |
+| Encode a measured/observed numeric value (e.g., a cohort's reported sensitivity, specificity, or other quantity at a stated cutoff, drawn from a primary study) [Amendment 2026-07-21, EPR5-T1] | Facts-only candidate | Preserve population/assay limits; assess contract and compilation dependence |
+| Encode a consensus/judgment-derived numeric recommendation (e.g., a guideline committee's threshold, cutoff, or scoring recommendation) [Amendment 2026-07-21, EPR5-T1] | `LEGAL_REVIEW_REQUIRED` | Represents the drafting body's professional judgment, not a bare measured fact — do not route to Facts-only candidate; preserve population/assay limits and assess contract/compilation dependence pending review; see Appendix D |
 | Encode an equation | Facts-only candidate | Check patent, branded method, license, inputs, validity |
 | Combine several studies into an original rule | Facts-only candidate | Document synthesis and expert judgment; do not reproduce source organization |
 | Display a citation and link | Usually cleared | No copied preview or endorsement; use stable identifier |
@@ -833,6 +834,13 @@ Reassess when:
 | Bulk-download subscription content for RAG | Contract/legal review | Requires explicit TDM, automated retrieval, storage, and model-use rights |
 | Train a model on source full text | Legal review required | Separate use not implied by reading or clinical subscription |
 | Use AAP logo or “AAP-approved” claim | Prohibited absent authorization | Citation is not endorsement |
+
+> **Amendment note (EPR5-T1):** the two numeric-value rows above replace what was originally a single
+> "Encode a reported numeric threshold → Facts-only candidate" row. See Appendix D for the dated
+> amendment entry, its rationale, and its scope. This row split states a routing rule only; it makes
+> no determination about any specific threshold family. Whether a given clinical threshold is measured
+> or committee-judged is open question **OQ-1** and routes to counsel — it is not decided here or
+> anywhere in this document.
 
 ---
 
@@ -1372,3 +1380,55 @@ https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinica
 - Medical knowledge reuse does not establish clinical validity or regulatory compliance.
 - Legal clearance does not establish that a rule is clinically correct, safe, or appropriately validated.
 - Clinical authority does not establish product reuse rights.
+
+---
+
+## Appendix D — Amendment log (Phase EP-R5, declared local amendments)
+
+This document is a vendored copy of the reviewed spec bundle: it is checksummed at vendoring time in
+`docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/checksums.sha256` and that
+checksum is recorded in `schemas/rights/VENDORING.md` (`EPR0-T2` provenance record) alongside the
+bundle's vendored schemas. Every edit made to this file after vendoring is a **declared amendment**,
+recorded below with a date, task ID, section touched, and rationale — **never a silent edit**. As of
+the first entry below, this file's SHA-256 no longer matches the value recorded in `checksums.sha256`;
+that divergence is expected and is exactly what "declared amendment" means (the same convention
+`schemas/rights/VENDORING.md` uses for the vendored schema files).
+
+Every amendment entry below draws solely on
+`.claude/findings/rights-governance-spec-v1.0-review-findings.md` (the review determination recorded
+at commit `cd15b4a`) for its facts and citations. Per the phase's standing constraint, case law is
+cited here as the reason a data model needs a particular axis — **never** as a determination of how
+any specific item, source, or threshold should be classified. This log draws no legal conclusion and
+states none.
+
+- **2026-07-21 — EPR5-T1 (FR-WP5-01), §15 decision matrix.** Split the single "Encode a reported
+  numeric threshold → Facts-only candidate" row into two rows, distinguishing what §15 previously
+  treated as one case:
+  - a **measured/observed value** from a primary study (e.g., a cohort's reported sensitivity or
+    specificity at a stated cutoff) — routing unchanged: *Facts-only candidate*, subject to the
+    existing conditions (preserve population/assay limits; assess contract and compilation
+    dependence);
+  - a **consensus/judgment-derived recommendation** (e.g., a guideline committee's threshold, cutoff,
+    or scoring recommendation) — now routes to **`LEGAL_REVIEW_REQUIRED`** (§6) rather than
+    Facts-only candidate.
+
+  **Rationale.** The published spec never cited *CCC Information Services, Inc. v. Maclean Hunter
+  Market Reports, Inc.*, 44 F.3d 61 (2d Cir. 1994), which held that used-car valuations reflecting the
+  editors' predictions and professional judgment were **protected expression, not facts** — in a
+  commercial-database context. A guideline consensus cutoff is a committee's professional judgment,
+  which is exactly the fact pattern *CCC* found protectable; a measured value from a primary study is
+  close to the strong end of the facts argument instead. Treating both under a single "Facts-only
+  candidate" disposition, as originally published, understated the exposure of the judgment-derived
+  case. *Feist*, *CCC*, and *ADA* are added to Appendix B, and cited from the body, by **EPR5-T2**
+  (not by this entry — EPR5-T1's scope is the §15 routing split only).
+
+  **Scope of this amendment — what it does *not* do.** This amendment states a routing *rule*
+  (judgment-derived → `LEGAL_REVIEW_REQUIRED`; measured → unchanged). It makes **no determination**
+  about how any specific existing or future threshold family should be classified as measured or
+  judged. That determination is a case-by-case legal question and remains open question **OQ-1**
+  (`.claude/worknotes/rights-aware-evidence-capture/decisions-block.md` §6 "Open questions"; also
+  tracked in the plan's Quality Gates table,
+  `docs/project_plans/implementation_plans/infrastructure/rights-aware-evidence-capture-v1.md`), which
+  routes to counsel and is explicitly **not closable by this phase or by any agent**. No item in this
+  project's knowledge base is reclassified, reassessed, or assigned `judgment_basis` by this
+  amendment; every item continues to carry `judgment_basis: unassessed` until OQ-1 is answered.
