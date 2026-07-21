@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 18
-completed_tasks: 2
+completed_tasks: 3
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -257,7 +257,7 @@ tasks:
     hard guardrail and every PRD §7 non-goal (02 §6.4, restated verbatim) against
     the actual committed state. Produces the written guardrail/non-goal checklist
     karen (P7-GATE2) reviews.'
-  status: pending
+  status: completed
   assigned_to:
   - documentation-writer
   dependencies:
@@ -266,6 +266,12 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  evidence:
+  - Ran npm run check end-to-end (exit 0): 1100/1100 tests pass, validate/coverage/build/verify:d4/check:imports/smoke:browser/smoke
+      all green
+  - Authored .claude/worknotes/evidence-foundry-buildout/guardrail-nongoal-checklist-phase-7.md: all
+      6 CLAUDE.md hard guardrails and all 7 PRD Section 7 non-goals (02 Section 6.4)
+      independently re-verified MET against the actual diff at HEAD
 - id: P7-GATE1
   description: 'task-completion-validator gate: verify Phase 7 exit gate — deferred-items
     triage table fully mapped to spec stubs 1:1; npm run check green.'
@@ -375,7 +381,7 @@ files_modified:
 - docs/architecture.md
 - docs/project_plans/design-specs/*.md
 - .claude/worknotes/evidence-foundry-buildout/rfup-external-routing-note.md
-progress: 11
+progress: 16
 updated: '2026-07-21'
 ---
 
