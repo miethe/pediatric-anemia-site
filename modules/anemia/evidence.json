@@ -20,6 +20,27 @@
         "Microcytic differentiation among iron deficiency, thalassemia, and anemia of inflammation",
         "Severe iron deficiency anemia category at hemoglobin <7 g/dL (not a universal transfusion threshold)"
       ],
+      "access_basis": "institutional_subscription",
+      "license": {
+        "status": "copyrighted",
+        "rights_holder": "American Academy of Pediatrics",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "terms": {
+        "incorporation_into_other_products": "restricted_without_written_approval",
+        "adaptation": "restricted_without_written_approval",
+        "commercial_use": "not_granted_by_subscription",
+        "redistribution": "restricted",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "AAP2026_IDA#ev_001",
@@ -312,6 +333,27 @@
         "Recognition that physiologic and contextual factors affect hemoglobin interpretation",
         "Need for transparent cutoff provenance rather than a single universal pediatric threshold"
       ],
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": "World Health Organization",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "WHO2024_HB#ev_001",
@@ -553,6 +595,27 @@
         "Peripheral smear and multi-lineage cytopenia interpretation",
         "Hemolysis, marrow production failure, nutritional, renal, endocrine, infectious, and inherited causes"
       ],
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": "American Society of Hematology",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "BLOOD2022_PED_ANEMIA#ev_001",
@@ -750,6 +813,27 @@
         "Urgency tiers and confirmation timelines for higher blood lead levels",
         "Assessment and treatment of coexisting iron deficiency"
       ],
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": "US Centers for Disease Control and Prevention",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "CDC2025_LEAD#ev_001",
@@ -958,6 +1042,27 @@
         "Need for a health care professional to independently review the basis of recommendations",
         "Regulatory importance of intended use, time criticality, and specificity of outputs"
       ],
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": "US Food and Drug Administration",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "FDA2026_CDS#ev_001",
@@ -1171,6 +1276,27 @@
         "Repeat testing when clinical suspicion remains"
       ],
       "recencyNote": "Retained as a foundational laboratory guideline because no newer replacement was identified in the prioritized review set.",
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": "British Society for Haematology",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "BSH2020_G6PD#ev_001",

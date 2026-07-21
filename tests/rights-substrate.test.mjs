@@ -105,12 +105,24 @@ function collectKeysDeep(value, found = new Set()) {
   return found;
 }
 
+// EPR2-T3 (FR-WP2-03): `license.rights_holder` is a required key on schemas/evidence.schema.json's
+// `$defs/license` (EPR2-T1), chosen deliberately to mirror schemas/rights/rights_record.schema.json's
+// `copyright.rights_holder` vocabulary one-for-one (EPR2-T1's own commit message: "mirroring
+// rights_record.copyright"). It is a plain copyright-attribution field ("the named copyright holder"),
+// carries no clearance authority, and is not a rights *record* — the schema's own field description
+// says so explicitly. It is NOT the D4 violation this check exists to catch (an inlined governance
+// record, e.g. a `rights` or `extensions.rights` key); it is a narrow, intentional false positive of
+// the substring scan below. Exempted by exact key name only — every other "rights"-containing key
+// (including the literal "rights" key and any "extensions.rights"-shaped path) still fails.
+const ALLOWLISTED_RIGHTS_SUBSTRING_KEYS = new Set(['rights_holder']);
+
 for (const relPath of CLINICAL_JSON_FILES) {
   test(`D4: ${relPath} carries no inline rights key (no "rights", no "extensions.rights")`, async () => {
     const parsed = await readJson(relPath);
     const keys = collectKeysDeep(parsed);
     assert.ok(!keys.has('rights'), `${relPath} must not have any key literally named "rights"`);
     for (const key of keys) {
+      if (ALLOWLISTED_RIGHTS_SUBSTRING_KEYS.has(key)) continue;
       assert.ok(
         !key.includes('rights'),
         `${relPath} must not have any key containing "rights" (found "${key}") — rights data belongs only under rights/, joined via rights/rights-ledger.json`,
