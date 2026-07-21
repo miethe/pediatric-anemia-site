@@ -28,15 +28,19 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { MODULE_IDS } from '../src/modules/registry.js';
+import { validate } from '../scripts/lib/json-schema-lite.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const RULES_PATH = path.join(REPO_ROOT, 'modules', 'anemia', 'rules.json');
 const BACKFILL_PATH = path.join(REPO_ROOT, 'scripts', 'evidence', 'backfill-rule-governance.mjs');
 
 const readJson = async (p) => JSON.parse(await readFile(p, 'utf8'));
+const exists = async (p) => access(p).then(() => true, () => false);
 
 /**
  * The detector, factored out so the non-vacuity test can run it against poisoned input.
@@ -85,6 +89,54 @@ test('AC-D4: every rule carries clinicalApprovers as an explicit empty array, no
       + 'Absence is not the same claim as "[] = nobody has approved this"; an absent field invites a '
       + 'consumer to treat approval status as unknown rather than as explicitly not-granted.',
   );
+});
+
+// --- (1b) STATE, ACROSS EVERY MODULE AND EVERY PRODUCED ARTIFACT ------------------------------
+//
+// Added per reviewer-gate finding 4 (2026-07-21). The original version of this file read exactly
+// one source file, so the guarantee was defeatable by a second module, or by a build/runtime
+// transform that populated `clinicalApprovers` on the way to `dist/` while the tracked source JSON
+// stayed clean. Both holes are closed below.
+
+test('AC-D4: clinicalApprovers is [] in EVERY registered module, not just anemia', async () => {
+  assert.ok(MODULE_IDS.length > 0, 'no registered modules — this test would be vacuous');
+  for (const moduleId of MODULE_IDS) {
+    const rulesPath = path.join(REPO_ROOT, 'modules', moduleId, 'rules.json');
+    assert.ok(await exists(rulesPath), `${moduleId}: rules.json not found at ${rulesPath}`);
+    const offenders = rulesWithClinicalApprovers(await readJson(rulesPath));
+    assert.deepEqual(offenders, [], `D-4 VIOLATION in module '${moduleId}':\n  ${offenders.join('\n  ')}`);
+  }
+});
+
+test('AC-D4: clinicalApprovers is [] in the BUILT artifacts too — a build-time transform cannot smuggle approvers in', async () => {
+  let checked = 0;
+  for (const moduleId of MODULE_IDS) {
+    const builtPath = path.join(REPO_ROOT, 'dist', 'modules', moduleId, 'rules.json');
+    if (!(await exists(builtPath))) continue; // dist/ is a build output; absent on a clean checkout
+    const offenders = rulesWithClinicalApprovers(await readJson(builtPath));
+    assert.deepEqual(offenders, [],
+      `D-4 VIOLATION in BUILT artifact dist/modules/${moduleId}/rules.json — the shipped knowledge `
+      + `base claims clinical approval that the source does not:\n  ${offenders.join('\n  ')}`);
+    checked += 1;
+  }
+  // Not an assertion failure when dist/ is absent (clean checkout), but say so rather than pass silently.
+  if (checked === 0) {
+    console.error('# note: no dist/ build artifacts present to check — run `npm run build` for full D-4 coverage');
+  }
+});
+
+test('AC-D4: the schema itself forbids a populated clinicalApprovers (maxItems: 0)', async () => {
+  const schema = await readJson(path.join(REPO_ROOT, 'schemas', 'rule.schema.json'));
+  assert.equal(schema.properties.clinicalApprovers.maxItems, 0,
+    'rule.schema.json must pin clinicalApprovers to maxItems: 0 so a populated list is a hard schema '
+    + 'violation, not merely a test failure. Raising this is how the project would first claim '
+    + 'clinical sign-off — it must never be done to make a build pass.');
+
+  const [rule] = await readJson(RULES_PATH);
+  const poisoned = { ...rule, clinicalApprovers: ['Dr. A. Clinician, MD'] };
+  const errors = validate(schema, poisoned);
+  assert.ok(errors.length > 0,
+    'the schema accepted a populated clinicalApprovers — maxItems: 0 is not being enforced by the validator');
 });
 
 // --- (2) MECHANISM --------------------------------------------------------------------------

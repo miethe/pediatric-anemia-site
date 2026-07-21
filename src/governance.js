@@ -61,8 +61,19 @@ export function isActive(rule, asOf = new Date()) {
 }
 
 /**
- * Clinical approval status. Returns a string, never a boolean, precisely so that no caller can
- * write `if (approved)` and have `[]` quietly collapse into a falsy "fine, carry on".
+ * Clinical approval status as a descriptive label, for display and logging.
+ *
+ * CORRECTION (reviewer gate 2026-07-21, finding 5): an earlier version of this file claimed the
+ * string return made `if (clinicalApprovalStatus(rule))` safe. That was FALSE — every returned
+ * label is a non-empty, therefore truthy, string, so such an `if` passes for an unapproved rule.
+ * The claim was exactly the kind of over-statement this codebase forbids, so it is retracted rather
+ * than quietly softened.
+ *
+ * The real protection is that this function does not return a boolean at all, so it cannot be
+ * *mistaken* for the approval predicate. `hasCredentialedClinicalApproval()` is the only boolean
+ * surface, and it is the one to branch on. Do not branch on this value's truthiness — compare it
+ * explicitly, or use the predicate.
+ *
  * @returns {'no-credentialed-approval'|'attested'}
  */
 export function clinicalApprovalStatus(rule) {

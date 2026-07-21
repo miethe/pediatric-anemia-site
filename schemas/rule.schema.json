@@ -66,8 +66,9 @@
     "clinicalApprovers": {
       "type": "array",
       "minItems": 0,
+      "maxItems": 0,
       "items": { "type": "string", "minLength": 1 },
-      "description": "REQUIRED key. `[]` means NO credentialed clinical approval yet — never treat non-empty as achievable by anything other than a real named human clinician's attestation (D-4/AC-D4). Ships `[]` on every rule; ARC/council-review output is explicitly NOT a valid source for populating this field. A dedicated structural test (EP4-T3) enforces this stays empty."
+      "description": "REQUIRED key, and under this schema version it MUST be exactly `[]` — `maxItems: 0` makes a populated approver list a hard schema violation, not merely a test failure (D-4/AC-D4; hardened per reviewer-gate finding 4, 2026-07-21). `[]` means NO credentialed clinical approval yet. No credentialed human clinician has approved any rule in this knowledge base, so there is currently no legal non-empty value, and ARC/council-review/rf output is explicitly NOT a valid source for one. Raising `maxItems` is the deliberate, reviewable act by which this project would first claim clinical sign-off; it must never be done to make a build pass. `items` is retained so that when a real attestation process exists, the element shape is already specified."
     }
   },
   "$defs": {

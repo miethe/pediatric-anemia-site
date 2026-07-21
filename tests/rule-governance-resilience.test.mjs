@@ -75,14 +75,22 @@ test('AC-D4/AC-WP4-RESIL: empty clinicalApprovers reads as no-credentialed-appro
     'a non-array truthy value must not be read as approval');
 });
 
-test('AC-WP4-RESIL: clinicalApprovalStatus returns a string, so `if (approved)` cannot silently pass on []', async () => {
+test('AC-WP4-RESIL: clinicalApprovalStatus is NOT a safe truthiness check, and the boolean predicate is', async () => {
   const [rule] = await loadRules();
   const status = clinicalApprovalStatus(rule);
+
+  // Retracted claim (reviewer gate 2026-07-21, finding 5): an earlier version of this test asserted
+  // that returning a string prevented `if (approved)` from silently passing on []. That was false.
+  // This test now asserts the ACTUAL, weaker property and names the hazard honestly, rather than
+  // asserting a truthy string while claiming truthiness was impossible.
   assert.equal(typeof status, 'string');
-  // The guard against the classic bug: a truthy status string forces callers to compare explicitly
-  // rather than rely on falsiness, and hasCredentialedClinicalApproval is the only boolean surface.
-  assert.ok(status.length > 0);
+  assert.ok(Boolean(status), 'documented hazard: the status label IS truthy — never branch on it');
+
+  // The real guarantee: the only boolean surface answers false for an unapproved rule.
   assert.equal(hasCredentialedClinicalApproval(rule), false);
+  assert.equal(typeof hasCredentialedClinicalApproval(rule), 'boolean');
+  assert.equal(hasCredentialedClinicalApproval({ clinicalApprovers: ['Dr. X'] }), true,
+    'the predicate must still be able to report true, or it would be vacuous');
 });
 
 // --- requiredTestCaseIds: [] is NEVER "exempt from testing" ----------------------------------
