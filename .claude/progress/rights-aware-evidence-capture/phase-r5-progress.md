@@ -18,7 +18,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 7
-completed_tasks: 2
+completed_tasks: 3
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -77,7 +77,7 @@ tasks:
     EU sui generis database-right discussion with territorial scoping and the CJEU
     British Horseracing Board / Fixtures Marketing creation-vs-obtaining carve-out.
     Each edit is a recorded amendment.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -86,6 +86,10 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: medium
+  started: '2026-07-21T01:00:00Z'
+  completed: '2026-07-21T01:45:00Z'
+  evidence:
+  - commit: b2656c1
 - id: EPR5-T4
   description: 'Citation hygiene (FR-WP5-06, findings §2.E): cite or remove [S7];
     de-overload [S1]/[S14]; correct [S11]''s pin-cite; use the ELI permalink for [S13];
@@ -232,7 +236,7 @@ files_modified:
 - docs/project_plans/design-specs/rights-release-gate.md
 - docs/project_plans/design-specs/single-source-rule-reanchoring.md
 - docs/project_plans/design-specs/first-party-rights-record.md
-progress: 28
+progress: 42
 updated: '2026-07-21'
 ---
 
