@@ -2,10 +2,13 @@
 
 **Status: BLOCKED. Not completed.** Phase 5 cannot reach AC P5.1 in this environment.
 
-**Work IS committed and pushed** — ARC `b5df293`, PED `cfa800f`, both on `main`. A disk-full
-(`ENOSPC`) condition halted the phase before fix cycle 4 could be written; disk space recovered
-afterwards and everything delivered was committed and pushed. Fix cycle 4 (RR-1 HIGH, C1, C2, C3)
-remains **unapplied** — see the resume checklist.
+**Work IS committed and pushed** — ARC `b5df293` + `afe3b98`, PED `cfa800f` + `a236f91`, both on
+`main`. A disk-full (`ENOSPC`) condition halted the phase before fix cycle 4 could be written; disk
+space recovered afterwards. **Fix cycle 4 (RR-1 HIGH, C1, C2, C3) has now been applied** in ARC
+`afe3b98` — RR-1's false `not_applicable` on `subgroup_or_access_failure` is corrected to
+`not_covered` referencing open HIGH `PAC-P4T2-001`, and the deterministic boundary scan re-runs
+`all_clean: true`. The committed skeleton is now truthful. **The phase itself remains BLOCKED on
+owner action** (SDK credential + evidence-rights receipts) — fix cycle 4 does not change that.
 
 **Plan:** `docs/project_plans/implementation_plans/enhancements/arc-clinical-council-adoption-v1.md` §4 P5, AC P5.1
 **Progress:** `.claude/progress/arc-clinical-council-adoption-v1/phase-5-progress.md`
@@ -118,10 +121,10 @@ artifact (`_placeholder()` returns `int(minimum)`) and was precisely what permit
 
 | ID | Sev | Owner role | Summary |
 |---|---|---|---|
-| **RR-1** | **HIGH — UNFIXED** | `equity-and-family-governance-owner` | `dangerous_miss_review.families[subgroup_or_access_failure]` still asserts `not_applicable` with empty `finding_refs` while PED DM-EQUITY-009 is `no_control_exists` with open HIGH `PAC-P4T2-001`. The identical defect fixed for five other families, left unapplied on one of the **two wholly unmitigated** hazards. Fix cycle 4 was drafted and verified but **never written to disk** (ENOSPC). |
-| C1 | MEDIUM — UNFIXED | `arc-runtime-owner` | `adjudication_record.yaml` `decided_at_disclosure` states a falsehood about its own schema (claims `decided_at` "requires a non-empty string"; it is bare `{"type":"string"}` — empty validates). A disclosure that exists to prevent a misleading implication must not contain one. |
-| C2 | LOW — UNFIXED | `arc-runtime-owner` | `data_boundary_scan_adjudication.md` §3 heading says "18 files" / headline says "all but one"; truth is 19 files carry `possible_full_text`, one of which additionally carries `patient_name_context`. 19 allowlist anchors point at the miscounted heading. |
-| C3 | LOW — UNFIXED | `arc-runtime-owner` | `data_boundary_scan_allowlist.yaml` `metadata.fix_cycle: 1` stale after cycles 2–3. |
+| **RR-1** | **HIGH — FIXED (ARC `afe3b98`)** | `equity-and-family-governance-owner` | `dangerous_miss_review.families[subgroup_or_access_failure]` asserted `not_applicable` with empty `finding_refs` while PED DM-EQUITY-009 is `no_control_exists` with open HIGH `PAC-P4T2-001`. Now `not_covered` with `finding_refs: ["PED:PAC-P4T2-001 (DM-EQUITY-009, high, open)"]`, mirroring the five already-corrected families. The *artifact label* is fixed; the *hazard itself* stays wholly unmitigated and owner-held (`equity-and-family-governance-owner`). |
+| C1 | MEDIUM — FIXED (ARC `afe3b98`) | `arc-runtime-owner` | `adjudication_record.yaml` `decided_at_disclosure` rewritten to state the schema truth (`decided_at` is bare `{"type":"string"}`; emptiness is not schema-enforced). |
+| C2 | LOW — FIXED (ARC `afe3b98`) | `arc-runtime-owner` | `data_boundary_scan_adjudication.md` corrected to "19 files carry `possible_full_text`" (one also carries `patient_name_context`); an explicit anchor was added so the 18 existing allowlist links stay resolvable. |
+| C3 | LOW — FIXED (ARC `afe3b98`) | `arc-runtime-owner` | `data_boundary_scan_allowlist.yaml` `metadata.fix_cycle` bumped `1 → 4`; the two self-scan `expected_sha256` entries for the edited adjudication file refreshed so the scan stays `all_clean`. |
 | RR-2 | MEDIUM | `arc-schema-owner` | `not_covered` now carries materially different states in one array (unassessed / not-reachable-in-product ×3 / open-critical-coverage-finding / no-control-exists). |
 | RR-4 | LOW | `arc-runtime-owner` | `local_approvals_required`'s causal claim that alert-dominance depends on derived `localFlags` is unhedged; PED's cited test exercises a different path. |
 | RF-1 | — | `arc-schema-owner` | `council_recommendation` enum has no "never executed" value; `abstained` is a proxy. |
@@ -200,23 +203,19 @@ other agent's uncommitted ARC work was never staged and is untouched.
 ### Disk-full interruption — what it cost
 
 The session hit **`ENOSPC`** mid-phase; `Bash` became entirely unavailable (it could not write its
-own stdout capture file). Space recovered afterwards and everything delivered was committed. Two
-things were **not** done and remain open:
+own stdout capture file). Space recovered afterwards; everything delivered was committed, and on
+resume (2026-07-21) fix cycle 4 was applied. Remaining open work is now **only owner action**:
 
-1. **Fix cycle 4 was never applied** — RR-1 (HIGH), C1 (MEDIUM), C2, C3. All four were drafted and
-   source-verified by the implementer before the failure, but nothing was written to disk. The
-   committed tree therefore still carries them.
-2. **`validate-phase-completion.py` never ran** — the phase exit gate was not executed. Moot for a
-   `blocked` phase, but it means P5-T1's task row was deliberately left `in_progress` rather than
-   flipped to `completed` without the timestamps/evidence the gate requires.
+1. **Fix cycle 4 — DONE (ARC `afe3b98`).** RR-1 (HIGH), C1 (MEDIUM), C2, C3 all applied and the
+   deterministic boundary scan re-run `all_clean: true` (30/30 allowlist, 0 absolute-path hits).
+2. **`validate-phase-completion.py`** — not run against P5 as `completed` because the phase is
+   `blocked`, not complete. P5-T1's row stays `in_progress` (its qualifying-input work is done and
+   verified, but the phase it belongs to cannot exit); P5-T2/T3/T4/V1 stay `blocked`. This is
+   correct for a blocked phase — there is no completed phase to gate.
 
-### Resume checklist
+### Resume checklist (owner action only — no repository work remains for P5)
 
-1. Apply fix cycle 4: RR-1 (HIGH), C1, C2, C3 — then re-run the data-boundary scan and re-review
-   with **both** lenses (any material edit invalidates approval, plan §5).
-2. Run `validate-phase-completion.py`; set P5-T1 `completed` with timestamps + evidence
-   (`commit:b5df293`), and P5-T2/T3/T4/V1 explicitly `blocked`.
-3. **Owner actions to unblock the phase** — none can be done by a repository agent:
+1. **Owner actions to unblock the phase** — none can be done by a repository agent:
    `arc-runtime-owner` provisions an SDK credential; `evidence-rights-owner` signs an
    `EvidenceRightsReceipt` binding `knowledge-packs/pediatric-anemia/source-manifest.yaml`
    (sha256 `f4c33c82fe4977a7d4db2633ab04d82b39bb7bf421d048aba5a5b37a51b711f6`, all 15 source IDs,

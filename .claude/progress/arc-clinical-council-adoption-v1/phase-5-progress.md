@@ -13,6 +13,8 @@ plan_ref: docs/project_plans/implementation_plans/enhancements/arc-clinical-coun
 commit_refs:
 - b5df293
 - cfa800f
+- a236f91
+- afe3b98
 pr_refs: []
 execution_model: sequential
 plan_structure: unified
