@@ -10,8 +10,8 @@ execution_model: batch-parallel
 phase: 2
 title: 'Evidence Foundry Buildout — Phase 2: Converter Core (EF-WP0)'
 status: completed
-started: null
-completed: null
+started: 2026-07-21
+completed: 2026-07-21
 commit_refs: []
 pr_refs: []
 overall_progress: 0

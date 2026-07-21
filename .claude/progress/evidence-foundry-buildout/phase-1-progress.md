@@ -11,7 +11,7 @@ phase: 1
 title: 'Evidence Foundry Buildout — Phase 1: Foundation & Fixtures'
 status: completed
 started: 2026-07-21
-completed: null
+completed: 2026-07-21
 commit_refs: []
 pr_refs: []
 overall_progress: 0

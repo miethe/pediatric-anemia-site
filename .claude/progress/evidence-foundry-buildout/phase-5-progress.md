@@ -10,8 +10,8 @@ execution_model: batch-parallel
 phase: 5
 title: 'Evidence Foundry Buildout — Phase 5: Manifest & Traceability'
 status: completed
-started: null
-completed: null
+started: 2026-07-21
+completed: 2026-07-21
 commit_refs: []
 pr_refs: []
 overall_progress: 0

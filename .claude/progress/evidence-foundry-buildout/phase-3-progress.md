@@ -10,8 +10,8 @@ execution_model: batch-parallel
 phase: 3
 title: 'Evidence Foundry Buildout — Phase 3: Projection & Drafting'
 status: completed
-started: null
-completed: null
+started: 2026-07-21
+completed: 2026-07-21
 commit_refs: []
 pr_refs: []
 overall_progress: 0

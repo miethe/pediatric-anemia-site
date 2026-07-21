@@ -10,8 +10,8 @@ execution_model: batch-parallel
 phase: 4
 title: 'Evidence Foundry Buildout — Phase 4: Vertical Slice + Test Corpus'
 status: completed
-started: null
-completed: null
+started: 2026-07-21
+completed: 2026-07-21
 commit_refs: []
 pr_refs: []
 overall_progress: 0
