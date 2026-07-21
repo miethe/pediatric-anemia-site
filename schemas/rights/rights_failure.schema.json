@@ -78,7 +78,12 @@
       "required": ["reviewed_at"],
       "properties": {
         "reviewed_at": {"type": "string", "format": "date-time"},
-        "reviewed_by": {"type": "array", "items": {"type": "string"}},
+        "reviewed_by": {
+          "type": "array",
+          "items": {"type": "string"},
+          "maxItems": 0,
+          "description": "LOCAL AMENDMENT (EPR0-T3, D6): forced empty in this feature — no human reviewer identity may be agent-authored. See schemas/rights/VENDORING.md."
+        },
         "notes": {"type": ["string", "null"]}
       }
     },

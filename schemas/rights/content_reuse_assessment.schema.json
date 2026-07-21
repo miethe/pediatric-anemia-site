@@ -155,7 +155,11 @@
       "properties": {
         "agent_assessor": {"type": ["string", "null"]},
         "human_rights_reviewer": {"type": ["string", "null"]},
-        "clinical_reviewer": {"type": ["string", "null"]},
+        "clinical_reviewer": {
+          "type": ["string", "null"],
+          "const": null,
+          "description": "LOCAL AMENDMENT (EPR0-T3, D6): forced null in this feature. No clinical sign-off exists in this project and none may be agent-authored. See schemas/rights/VENDORING.md."
+        },
         "counsel_reviewer": {"type": ["string", "null"]},
         "reviewed_at": {"type": "string", "format": "date-time"},
         "review_status": {

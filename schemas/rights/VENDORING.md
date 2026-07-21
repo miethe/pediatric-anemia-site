@@ -43,10 +43,85 @@ Spec v1.0`).
 
 ## Declared amendments
 
-_(EPR0-T3 fills this section in when it edits the vendored files in place to apply the handoff §9
-local amendment layer. Until EPR0-T3 lands, this section is intentionally empty and every vendored
-file's on-disk checksum equals its "Vendored checksum" above — the provenance test asserts exactly
-that for this task.)_
+**EPR0-T3 (FR-WP0-06/D6, handoff §9).** The vendored schemas are not usable as published — handoff
+§9 records six conflicts (§9.1–§9.6); this task addresses the five owned by EP-R0 (§9.2–§9.6; §9.1 is
+owned solely by EPR3-T2, which re-homes the taxonomy fields onto `schemas/evidence.schema.json`
+instead of `rights_extension`) plus D6's reviewer/clearance constraints. Every amendment below is an
+annotated, declared divergence from the checksums recorded in "Vendored files" above — never a silent
+edit. Each amendment is also annotated in place, as a `description` field on the touched schema node,
+so a reader of the schema file itself (not only this document) sees the divergence.
+
+Three of the five vendored files diverge from their "Vendored checksum" as of this task:
+`schemas/rights/rights_record.schema.json`, `schemas/rights/content_reuse_assessment.schema.json`,
+`schemas/rights/rights_failure.schema.json`. `schemas/rights/permission_record.schema.json` and
+`schemas/rights/rights_extension.schema.json` are untouched by this task and remain byte-identical to
+their "Vendored checksum" (`rights_extension.schema.json`'s §9.1 conflict is EPR3-T2's to resolve).
+
+- 2026-07-21 — `schemas/rights/rights_record.schema.json` (handoff §9.3): added `unknown` to
+  `access.basis`'s enum, treated as blocking by `scripts/validate-rights.mjs` (EPR0-T5). The published
+  enum closes with `other` and has no `unknown` member, so an agent that does not know the access
+  basis had to guess or write `other` — both record a false certainty.
+- 2026-07-21 — `schemas/rights/rights_record.schema.json` (handoff §9.4): the same restriction family
+  was modelled twice with incompatible enums — `access.text_and_data_mining_allowed` /
+  `access.model_training_allowed` (`yes`/`yes_with_conditions`/`no`/`unknown`[/`not_assessed`]) vs.
+  `contract.bulk_retrieval` / `contract.model_training`
+  (`allowed`/`allowed_with_conditions`/`prohibited`/`not_addressed`/`unknown`). No structural rename
+  was possible without breaking `additionalProperties: false` compatibility with the spec's own
+  examples, so this amendment designates one home per restriction via `description` annotations only:
+  `access.text_and_data_mining_allowed` and `access.model_training_allowed` are canonical;
+  `contract.bulk_retrieval` and `contract.model_training` are annotated deprecated-in-copy, retained
+  for schema shape only. A consumer must read only the canonical field per restriction.
+- 2026-07-21 — `schemas/rights/rights_record.schema.json` (handoff §9.6, fail-open #1): replaced
+  `format: "uri"` with `pattern: "^https?://\\S+$"` on `access.terms_url` and `copyright.license_url`.
+  This repo's `scripts/lib/json-schema-lite.mjs` validator silently ignores `format` except
+  `date`/`date-time` — an unenforced `format: "uri"` fails open (`license_url: "not a url"` would have
+  validated clean). No `format: "uri"` remains anywhere under `schemas/rights/`.
+- 2026-07-21 — `schemas/rights/rights_record.schema.json` (handoff §9.6, fail-open #2): added
+  `"not": {"const": {}}` to the `contract` object, forbidding the empty object. Published,
+  `{"contract": {}}` validated identically to `contract: null` and was indistinguishable from "no
+  restrictions exist" — `null` is now the only representation of "not assessed"; a non-empty object is
+  required for anything else.
+- 2026-07-21 — `schemas/rights/rights_record.schema.json` (handoff §9.2): annotated
+  `component_decisions[].component_type` declaring the **enum** authoritative over the spec's §5.1
+  prose table, which diverges from it (e.g. the prose table's single "Prose or abstract" / "Figure or
+  chart" rows each map to two enum members). `rights_component_class`
+  (`schemas/evidence.schema.json`, EPR3-T2) is valued from this enum, never from the prose table.
+- 2026-07-21 — `schemas/rights/rights_record.schema.json` (handoff §9.5, **DEF-R4**): recorded, via the
+  root `description`, that `rights_record` cannot describe first-party content — `source_id` is
+  required with `minLength: 3`, `record_scope` has no first-party member, and `overall_status` has no
+  `OWNED`/`FIRST_PARTY`/`NOT_APPLICABLE` value. **No schema field was added or relaxed to work around
+  this.** Consequence for this plan: `derived_synthesis` evidence items get no `rights_record` in this
+  feature. Re-homing first-party content into the rights-record model (or an explicit sibling model)
+  is deferred as **DEF-R4**, pending RF adjudication of handoff §9.5 (open question OQ-4). EP-R3
+  (EPR3-T7) models first-party authorship on the evidence item itself instead.
+- 2026-07-21 — `schemas/rights/rights_record.schema.json` (D6): `review.human_reviewer` and
+  `review.counsel_reviewer` each gained `"const": null` — forced null in this feature. No human
+  clinical/rights sign-off exists in this project and none may be agent-authored.
+- 2026-07-21 — `schemas/rights/rights_record.schema.json` (D6): `review.review_status` gained
+  `"not": {"const": "counsel_approved"}`. `counsel_approved` remains a legitimate enum member for a
+  future human-driven workflow, but no agent-writable path in this feature may assign it.
+- 2026-07-21 — `schemas/rights/rights_record.schema.json` (D6): `overall_status` gained
+  `"not": {"enum": ["CLEARED_OPEN_LICENSE", "CLEARED_PUBLIC_DOMAIN", "CLEARED_FACTS_ONLY", "CLEARED_PERMISSION"]}`
+  — no agent-writable path in this feature may assign any `CLEARED_*` member. A record at
+  `overall_status: UNKNOWN` is unaffected and still validates (D7: this is a structural authority
+  constraint, never a clearance gate).
+- 2026-07-21 — `schemas/rights/content_reuse_assessment.schema.json` (D6): `review.clinical_reviewer`
+  gained `"const": null`, for the same reason as `rights_record.review.human_reviewer`. No other field
+  on this schema is amended by this task — in particular
+  `content_reuse_assessment.decision.status` (the same `CLEARED_*` enum as `rights_record.overall_status`,
+  handoff §9.10) and `content_reuse_assessment.review.review_status` (a related but distinct enum,
+  handoff §9.7) are **not** constrained here; this feature seeds no `content_reuse_assessment` records,
+  and the plan's EPR0-T3 acceptance criteria enumerate exactly six D6 field paths, this being one of
+  them. A future phase that seeds `content_reuse_assessment` records must extend this amendment layer
+  rather than assume the constraint is already there.
+- 2026-07-21 — `schemas/rights/rights_failure.schema.json` (D6): `review.reviewed_by` gained
+  `"maxItems": 0` — forced empty in this feature. No human reviewer identity may be agent-authored.
+
+**Not amended, and not silently left as-is: `permission_record.schema.json`'s `review.approved_by`**
+(`required`, `minItems: 1`) carries the same class of reviewer-authority risk as the six D6 paths
+above, but this feature seeds zero `permission_record`s and the plan's EPR0-T3 acceptance criteria do
+not name this path — see the negative criterion's enumerated list. A phase that seeds
+`permission_record`s must add this constraint before doing so, not assume it is already covered.
 
 ## Non-vendored bundle assets
 

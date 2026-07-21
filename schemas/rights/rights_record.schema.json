@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://research-foundry.example/schemas/rights_record.schema.json",
   "title": "Research Foundry Rights Record",
-  "description": "Source-level and access-context rights baseline. A separate content_reuse_assessment is required for each externally shipped use.",
+  "description": "Source-level and access-context rights baseline. A separate content_reuse_assessment is required for each externally shipped use. LOCAL AMENDMENT (EPR0-T3, handoff §9.5): this document cannot describe first-party content — `derived_synthesis` evidence items are not given a rights_record in this feature; the gap is recorded, not silently routed around. See schemas/rights/VENDORING.md and DEF-R4.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -47,6 +47,7 @@
       "required": ["basis", "terms_verified_at"],
       "properties": {
         "basis": {
+          "description": "LOCAL AMENDMENT (EPR0-T3, handoff §9.3): `unknown` added to the published enum, treated as blocking by scripts/validate-rights.mjs. Without it an unassessed source's access basis must be guessed or forced into `other`, both of which record a false certainty. See schemas/rights/VENDORING.md.",
           "enum": [
             "public_web",
             "open_repository",
@@ -59,12 +60,17 @@
             "government_source",
             "partner_confidential",
             "data_use_agreement",
-            "other"
+            "other",
+            "unknown"
           ]
         },
         "platform": {"type": ["string", "null"]},
         "account_or_agreement_id": {"type": ["string", "null"]},
-        "terms_url": {"type": ["string", "null"], "format": "uri"},
+        "terms_url": {
+          "type": ["string", "null"],
+          "pattern": "^https?://\\S+$",
+          "description": "LOCAL AMENDMENT (EPR0-T3, handoff §9.6): `format: \"uri\"` replaced with `pattern`. The `json-schema-lite` validator this repo uses silently ignores `format` except `date`/`date-time`, so an unenforced `format: \"uri\"` would fail open. See schemas/rights/VENDORING.md."
+        },
         "terms_snapshot_uri": {"type": ["string", "null"]},
         "terms_snapshot_sha256": {"type": ["string", "null"]},
         "terms_verified_at": {"type": "string", "format": "date-time"},
@@ -73,9 +79,11 @@
           "enum": ["yes", "yes_with_conditions", "no", "unknown"]
         },
         "text_and_data_mining_allowed": {
+          "description": "LOCAL AMENDMENT (EPR0-T3, handoff §9.4): designated the canonical home for the text-and-data-mining restriction. `contract.bulk_retrieval` is deprecated-in-copy and must not be read as an independent source of truth for this restriction. See schemas/rights/VENDORING.md.",
           "enum": ["yes", "yes_with_conditions", "no", "unknown"]
         },
         "model_training_allowed": {
+          "description": "LOCAL AMENDMENT (EPR0-T3, handoff §9.4): designated the canonical home for the model-training restriction. `contract.model_training` is deprecated-in-copy and must not be read as an independent source of truth for this restriction. See schemas/rights/VENDORING.md.",
           "enum": ["yes", "yes_with_conditions", "no", "unknown", "not_assessed"]
         },
         "termination_or_deletion_duties": {
@@ -102,7 +110,11 @@
         "rights_holder": {"type": ["string", "null"]},
         "publication_license": {"type": ["string", "null"]},
         "license_version": {"type": ["string", "null"]},
-        "license_url": {"type": ["string", "null"], "format": "uri"},
+        "license_url": {
+          "type": ["string", "null"],
+          "pattern": "^https?://\\S+$",
+          "description": "LOCAL AMENDMENT (EPR0-T3, handoff §9.6): `format: \"uri\"` replaced with `pattern`, for the same fail-open reason as `access.terms_url`. See schemas/rights/VENDORING.md."
+        },
         "license_applies_to": {
           "type": "array",
           "items": {
@@ -152,6 +164,8 @@
     "contract": {
       "type": ["object", "null"],
       "additionalProperties": false,
+      "description": "LOCAL AMENDMENT (EPR0-T3, handoff §9.6): the empty object `{}` is now forbidden via `not`. Published, `{\"contract\": {}}` validated identically to `null` and read as \"no restrictions assessed\" and \"no restrictions exist\" indistinguishably. Use `null` for \"not assessed\"; a non-empty object for anything else. See schemas/rights/VENDORING.md.",
+      "not": {"const": {}},
       "properties": {
         "incorporation_into_other_products": {
           "enum": ["allowed", "allowed_with_conditions", "restricted_without_written_approval", "prohibited", "not_addressed", "unknown"]
@@ -169,9 +183,11 @@
           "enum": ["allowed", "allowed_with_conditions", "not_granted", "prohibited", "not_addressed", "unknown"]
         },
         "bulk_retrieval": {
+          "description": "LOCAL AMENDMENT (EPR0-T3, handoff §9.4): deprecated-in-copy. The text-and-data-mining restriction's canonical home is `access.text_and_data_mining_allowed`; this field is retained for schema compatibility only and must not be read as an independent source of truth. See schemas/rights/VENDORING.md.",
           "enum": ["allowed", "allowed_with_conditions", "prohibited", "not_addressed", "unknown"]
         },
         "model_training": {
+          "description": "LOCAL AMENDMENT (EPR0-T3, handoff §9.4): deprecated-in-copy. The model-training restriction's canonical home is `access.model_training_allowed`; this field is retained for schema compatibility only and must not be read as an independent source of truth. See schemas/rights/VENDORING.md.",
           "enum": ["allowed", "allowed_with_conditions", "prohibited", "not_addressed", "unknown"]
         },
         "territory_limits": {"type": "array", "items": {"type": "string"}},
@@ -202,6 +218,7 @@
         "required": ["component_type", "decision"],
         "properties": {
           "component_type": {
+            "description": "LOCAL AMENDMENT (EPR0-T3, handoff §9.2): this enum, not the spec's §5.1 prose table, is declared authoritative — the two diverge (e.g. the prose table's single \"Prose or abstract\" / \"Figure or chart\" rows map to two enum members each). `rights_component_class` (schemas/evidence.schema.json, EPR3-T2) is valued from this enum. See schemas/rights/VENDORING.md.",
             "enum": [
               "bibliographic_metadata",
               "atomic_facts_and_methods",
@@ -289,6 +306,7 @@
       "items": {"type": "string"}
     },
     "overall_status": {
+      "description": "LOCAL AMENDMENT (EPR0-T3, D6): no agent-writable path in this feature may assign any `CLEARED_*` member — enforced structurally via `not`, below. No clinical/rights sign-off exists in this project and none may be manufactured. See schemas/rights/VENDORING.md.",
       "enum": [
         "CLEARED_OPEN_LICENSE",
         "CLEARED_PUBLIC_DOMAIN",
@@ -301,7 +319,15 @@
         "CONTRACT_RESTRICTED",
         "PROHIBITED",
         "UNKNOWN"
-      ]
+      ],
+      "not": {
+        "enum": [
+          "CLEARED_OPEN_LICENSE",
+          "CLEARED_PUBLIC_DOMAIN",
+          "CLEARED_FACTS_ONLY",
+          "CLEARED_PERMISSION"
+        ]
+      }
     },
     "recommended_action": {"type": ["string", "null"]},
     "permission_record_ids": {"type": "array", "items": {"type": "string"}},
@@ -312,10 +338,19 @@
       "required": ["reviewed_at", "review_status"],
       "properties": {
         "assessed_by_agent": {"type": ["string", "null"]},
-        "human_reviewer": {"type": ["string", "null"]},
-        "counsel_reviewer": {"type": ["string", "null"]},
+        "human_reviewer": {
+          "type": ["string", "null"],
+          "const": null,
+          "description": "LOCAL AMENDMENT (EPR0-T3, D6): forced null in this feature. No human clinical/rights sign-off exists in this project and none may be agent-authored. See schemas/rights/VENDORING.md."
+        },
+        "counsel_reviewer": {
+          "type": ["string", "null"],
+          "const": null,
+          "description": "LOCAL AMENDMENT (EPR0-T3, D6): forced null in this feature, for the same reason as `human_reviewer`. See schemas/rights/VENDORING.md."
+        },
         "reviewed_at": {"type": "string", "format": "date-time"},
         "review_status": {
+          "description": "LOCAL AMENDMENT (EPR0-T3, D6): `counsel_approved` remains a schema member (it is a legitimate future state) but no agent-writable path in this feature may assign it — enforced structurally via `not`, below. See schemas/rights/VENDORING.md.",
           "enum": [
             "agent_triage_only",
             "human_reviewed",
@@ -323,7 +358,8 @@
             "counsel_approved",
             "counsel_rejected",
             "expired"
-          ]
+          ],
+          "not": {"const": "counsel_approved"}
         },
         "next_review_at": {"type": ["string", "null"], "format": "date-time"},
         "change_triggers": {"type": "array", "items": {"type": "string"}},
