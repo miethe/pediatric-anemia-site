@@ -121,7 +121,15 @@ tasks:
     (WHO2024_HB#ev_001, WHO2024_HB#ev_004, BSH2020_G6PD#ev_006) and the HIGH numeric-omission
     findings in docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md (additionally AAP2026_IDA#ev_002).
     Use Explore read-only to confirm the enumeration before editing. No reproduced table in any form.'
-  status: not_started
+  status: completed
+  commit: 3f9d32840f9704bb177afc9b2c086de11126f88c
+  completion_note: 'WHO2024_HB#ev_001 -> per_value_atoms (4 band-unresolved cutoff atoms); WHO2024_HB#ev_004,
+    BSH2020_G6PD#ev_006, AAP2026_IDA#ev_002 -> no_reported_value_available (reported values absent
+    from retrievable in-repo provenance; nothing authored). New optional numeric_recapture schema field
+    + numericAtom; appended coverage gate (g) evidence-numeric-recapture-resolution (+ unit test);
+    build-evidence-pack carries the field through --check byte-identically. EPR3-T1 negative invariant
+    green; REG_002_CLEARED untouched (false). KB-edit cascade re-signed + rebound (module.json,
+    10 dangerous-miss fixtures, hazard matrix, gate count 6->7). validate + test green (1262/1262).'
   assigned_to:
   - general-purpose
   - Explore
