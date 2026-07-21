@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { evaluateCondition } from '../src/ruleEngine.js';
@@ -8,6 +8,17 @@ import { loadAttestationLedger, validateBindingsAgainstLedger } from './evidence
 import { validate } from './lib/json-schema-lite.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+// P3-T3: modules/<id>/evidence-assertions.json is a NEW, optional-per-module artifact (OQ-3/OQ-7)
+// — existence-gated, since it postdates modules/anemia/ and no task requires backfilling it there.
+async function fileExists(filePath) {
+  try {
+    await access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 // REG-002 (content-rights review, launched EP-0-T8) has NOT cleared verbatim reuse of AAP/AAFP
 // guideline text (D-EP3-4). Every passage record minted by scripts/evidence/build-evidence-pack.mjs
@@ -274,6 +285,52 @@ export function validateEvidenceDocument(evidenceData, moduleId, evidenceSchema)
   return { errors, warnings, passageIndex, sourcesWithPassages };
 }
 
+/**
+ * P3-T3 (FR-12 second half, `02 §4.10`, OQ-3/OQ-7): validate modules/<moduleId>/evidence-assertions.json
+ * against schemas/evidence-assertions.schema.json, plus the cross-record invariants the schema
+ * cannot express on its own: assertionId uniqueness across the array, per-assertion `rfRunId`
+ * agreement with the document's own `rfProvenance.rfRunId` (the schema validates each assertion in
+ * isolation and cannot see its siblings or the parent), and `passageId`/`exactPassageSha256`
+ * mutual agreement (`psg_<hash>` must be minted from the same digest, never a stray value).
+ * Pure function over in-memory data (mirrors validateEvidenceDocument/validateCandidates above),
+ * so it is independently unit-testable against a tampered/seeded-bad fixture without touching disk.
+ */
+export function validateEvidenceAssertions(assertionsData, moduleId, assertionsSchema) {
+  const errors = [];
+
+  for (const schemaError of validate(assertionsSchema, assertionsData)) {
+    errors.push(`${moduleId}/evidence-assertions.json: evidence-assertions.schema.json ${schemaError.path}: ${schemaError.message}`);
+  }
+
+  const assertions = Array.isArray(assertionsData?.assertions) ? assertionsData.assertions : [];
+  const documentRfRunId = assertionsData?.rfProvenance?.rfRunId;
+  const seenAssertionIds = new Set();
+
+  for (const assertion of assertions) {
+    const label = assertion?.assertionId ?? '<missing-assertionId>';
+
+    if (assertion?.assertionId !== undefined) {
+      if (seenAssertionIds.has(assertion.assertionId)) {
+        errors.push(`${moduleId}/evidence-assertions.json#${label}: duplicate assertionId`);
+      }
+      seenAssertionIds.add(assertion.assertionId);
+    }
+
+    if (documentRfRunId !== undefined && assertion?.rfRunId !== undefined && assertion.rfRunId !== documentRfRunId) {
+      errors.push(`${moduleId}/evidence-assertions.json#${label}: rfRunId "${assertion.rfRunId}" does not match the document's rfProvenance.rfRunId "${documentRfRunId}"`);
+    }
+
+    if (typeof assertion?.passageId === 'string' && typeof assertion?.exactPassageSha256 === 'string') {
+      const expectedPassageId = `psg_${assertion.exactPassageSha256.replace(/^sha256:/, '')}`;
+      if (assertion.passageId !== expectedPassageId) {
+        errors.push(`${moduleId}/evidence-assertions.json#${label}: passageId "${assertion.passageId}" is not minted from exactPassageSha256 (expected "${expectedPassageId}")`);
+      }
+    }
+  }
+
+  return { errors, assertionCount: assertions.length };
+}
+
 function setsEqual(a, b) {
   if (a.size !== b.size) return false;
   for (const item of a) {
@@ -438,6 +495,19 @@ export async function validateModule(moduleId, rootDir) {
     errors.push(...validateFidelityFindings(evidenceData, fidelityFindings, moduleId));
   }
 
+  // P3-T3: existence-gated — modules/anemia/ predates this artifact type and has no
+  // evidence-assertions.json; its absence there is not an error. Any module directory that DOES
+  // carry the file (modules/cbc_suite_v1/ onward) gets full schema + cross-record validation.
+  let evidenceAssertionsCount = 0;
+  const evidenceAssertionsPath = path.join(moduleDir, 'evidence-assertions.json');
+  if (await fileExists(evidenceAssertionsPath)) {
+    const evidenceAssertionsSchema = await readJson(path.join(rootDir, 'schemas', 'evidence-assertions.schema.json'));
+    const evidenceAssertionsData = await readJson(evidenceAssertionsPath);
+    const assertionValidation = validateEvidenceAssertions(evidenceAssertionsData, moduleId, evidenceAssertionsSchema);
+    errors.push(...assertionValidation.errors);
+    evidenceAssertionsCount = assertionValidation.assertionCount;
+  }
+
   errors.push(...validateBooleanFactPathAllowList(rules, moduleId));
 
   const ruleIds = new Set();
@@ -587,6 +657,7 @@ export async function validateModule(moduleId, rootDir) {
     passageCount,
     rulePassageStatusCounts,
     candidatePassageStatusCounts,
+    evidenceAssertionsCount,
   };
 }
 
@@ -610,7 +681,8 @@ if (isMain) {
     const summary = results
       .map(
         (result) =>
-          `${result.moduleId} (${result.ruleCount} rules, ${result.candidateCount} candidates, ${result.evidenceCount} evidence records, ${result.passageCount} passage records)`,
+          `${result.moduleId} (${result.ruleCount} rules, ${result.candidateCount} candidates, ${result.evidenceCount} evidence records, ${result.passageCount} passage records`
+          + `${result.evidenceAssertionsCount ? `, ${result.evidenceAssertionsCount} evidence-assertions` : ''})`,
       )
       .join(', ');
     console.log(`Validated modules: ${summary}.`);

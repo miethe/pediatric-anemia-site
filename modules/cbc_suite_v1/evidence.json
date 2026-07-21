@@ -1,5 +1,585 @@
 {
   "knowledgeBaseVersion": "0.1.0-2026-07-21",
   "reviewedThrough": "2026-07-21",
-  "sources": []
+  "sources": [
+    {
+      "id": "CALIPER2020_HEMATOLOGY_I",
+      "rfSourceCardId": "src_20260718_rfcbc001_01",
+      "duplicateRfSourceCardIds": [
+        "src_20260718_rfcbc001_10"
+      ],
+      "priority": "foundational-outside-five-year-window",
+      "year": 2020,
+      "publicationDate": "2020-08",
+      "title": "CALIPER Hematology Reference Standards (I): Improving Laboratory Test Interpretation in Children (Beckman Coulter DxH 900)",
+      "authors": [
+        "Tahmasebi H",
+        "Higgins V",
+        "Bohn MK",
+        "Hall A",
+        "Adeli K"
+      ],
+      "organization": "American Journal of Clinical Pathology (Oxford University Press)",
+      "journal": "AJCP 154(3):330-341; CLSI EP28-A3c methodology",
+      "doi": "10.1093/ajcp/aqaa059",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7403759/",
+      "limitations": [
+        "Reference intervals are analyzer-specific (Beckman Coulter DxH 900) and not directly transferable to other hematology platforms",
+        "CALIPER cohort is Canadian; ethnic/geographic transferability not established here",
+        "Per-parameter numeric reference-interval tables not verbatim-verifiable from retrieved text",
+        "Neonatal (first days of life) dynamics not resolved beyond the 0-<1 y partition",
+        "This paper (DOI 10.1093/ajcp/aqaa059) was carded twice by the rf pipeline under distinct source_card_ids — src_20260718_rfcbc001_01 (trust.source_rank=primary, cites clm_009/clm_011) and src_20260718_rfcbc001_10 (trust.source_rank=secondary, cites clm_026/clm_027). Both are merged into this single evidence.json source (matching the sourceId alias modules/cbc_suite_v1/evidence-assertions.json already uses for both cards, 02 doc section 4.7's stable-identity rule for Source); the source_rank discrepancy between the two cards is preserved here, not resolved or averaged. rfSourceCardId records src_20260718_rfcbc001_01 as the canonical card; src_20260718_rfcbc001_10 is the duplicate."
+      ],
+      "conflictsWith": [
+        "Adult hematology reference intervals (source states pediatric-specific standards are required, not adult)."
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Age-specific reference-interval differences were statistically significant for 39 of 47 hematologic parameters, confirming pediatric intervals cannot rely on adult cutoffs (clm_009; direct basis for dec_cbc_local_range_precedence_001).",
+        "Establishes a database of pediatric reference standards for 47 hematologic parameters calculated per CLSI guidelines on the Beckman Coulter DxH 900 (clm_011; supports the cross-analyzer-portability inference clm_inf07).",
+        "All 47 hematologic parameters were measured on the Beckman Coulter DxH 900, making the reference standards analyzer/method-specific (clm_026; supports the cross-analyzer-portability inference clm_inf07).",
+        "Significant age-specific differences were observed for 39 of the 47 hematologic parameters, motivating age-partitioned reference intervals (clm_027; direct basis for dec_cbc_local_range_precedence_001)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "CALIPER pediatric hematology reference intervals (Beckman Coulter DxH 900) update after 2020",
+      "supersessionStatus": "not_superseded",
+      "recencyNote": "Retained per module.json evidence_policy.older_source_rule (\"foundational_not_superseded_with_reason\"): published 2020-08 is outside the module's 1825-day (five-year) recent-source window (evidence_policy.recent_window_days), but it is the RF-CBC-001 fixture's sole grounding for clm_009/clm_011/clm_026/clm_027 (age-partitioned, analyzer-specific reference-interval evidence), all cited by dec_cbc_local_range_precedence_001; no more recent equivalent-scope study is present in this bundle.",
+      "passages": [
+        {
+          "id": "CALIPER2020_HEMATOLOGY_I#implementation-proposal",
+          "sourceId": "CALIPER2020_HEMATOLOGY_I",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "CALIPER pediatric hematology reference intervals (Beckman Coulter DxH 900) update after 2020",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc001_01",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "CALIPER2023_MINDRAY_79PARAM",
+      "rfSourceCardId": "src_20260718_rfcbc001_02",
+      "priority": "primary-current",
+      "year": 2023,
+      "publicationDate": "2023-03",
+      "title": "Comprehensive pediatric reference intervals for 79 hematology markers in the CALIPER cohort of healthy children and adolescents using the Mindray BC-6800Plus system",
+      "authors": [
+        "Bohn, Mary Kathryn",
+        "Wilson, Siobhan",
+        "Steele, Shannon",
+        "Adeli, Khosrow"
+      ],
+      "organization": "International Journal of Laboratory Hematology (Wiley)",
+      "journal": "IJLH v45(4):469-480; CLSI EP28-A3c methodology",
+      "doi": "10.1111/ijlh.14068",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/36990763/",
+      "limitations": [
+        "Analyzer-specific (Mindray BC-6800Plus) — RIs are method-dependent and not directly transferable to other hematology analyzers",
+        "Canadian CALIPER cohort — population-specific",
+        "Numeric reference-interval values reside in paywalled full-text tables, not retrievable here"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "79 hematology parameters were assayed on the Mindray BC-6800Plus system — a separate analyzer from the DxH 900 CALIPER cohort — establishing that pediatric hematology reference intervals are analyzer-specific and not portable across platforms without local verification (clm_062; supports the cross-analyzer-portability inference clm_inf07)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "CALIPER pediatric hematology reference intervals (Mindray BC-6800Plus) update after 2023",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "CALIPER2023_MINDRAY_79PARAM#implementation-proposal",
+          "sourceId": "CALIPER2023_MINDRAY_79PARAM",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "CALIPER pediatric hematology reference intervals (Mindray BC-6800Plus) update after 2023",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc001_02",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "COH2015_ELANE_MUTATIONS",
+      "rfSourceCardId": "src_20260718_rfcbc001_03",
+      "priority": "foundational-outside-five-year-window",
+      "year": 2015,
+      "publicationDate": "2015-01",
+      "title": "The diversity of mutations and clinical outcomes for ELANE-associated neutropenia",
+      "authors": [
+        "David C. Dale",
+        "Audrey Anna Bolyard",
+        "Vahagn Makaryan"
+      ],
+      "organization": "Current Opinion in Hematology (Wolters Kluwer)",
+      "journal": "Current Opinion in Hematology (Wolters Kluwer)",
+      "doi": "10.1097/MOH.0000000000000105",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4380169/",
+      "limitations": [
+        "ANC threshold passages render the ×10^9/l exponent as '10/l' in the PMC text-extraction (superscript lost); numeric coefficient (0.2, 0.5, 2.0) is intact",
+        "Registry cohort not population-representative; diagnosis-assignment methodology may bias genotype-phenotype associations vs other series"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Thirty of 187 severe congenital neutropenia (SCN) patients (16%) developed MDS/AML versus 0% of cyclic neutropenia patients (p<0.0001); every frame-shift ELANE mutation occurred in the SCN group, concentrating myeloid-malignancy risk in the persistent congenital pattern (clm_053; direct basis for dec_cbc_marrow_red_flag_001).",
+        "Severe congenital neutropenia patients usually have an ANC below 0.5x10^9/L without regular cyclic fluctuations and a bone marrow showing myeloid maturation arrest (clm_051; supports the unit-normalization inference clm_inf01)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "ELANE-associated congenital neutropenia mutation/outcome review update after 2015",
+      "supersessionStatus": "not_superseded",
+      "recencyNote": "Retained per module.json evidence_policy.older_source_rule (\"foundational_not_superseded_with_reason\"): published 2015-01 is outside the module's 1825-day (five-year) recent-source window (evidence_policy.recent_window_days), but it is the RF-CBC-001 fixture's sole grounding for clm_053 (SCN vs cyclic-neutropenia MDS/AML incidence), cited directly by dec_cbc_marrow_red_flag_001; no more recent equivalent-scope study is present in this bundle.",
+      "passages": [
+        {
+          "id": "COH2015_ELANE_MUTATIONS#implementation-proposal",
+          "sourceId": "COH2015_ELANE_MUTATIONS",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "ELANE-associated congenital neutropenia mutation/outcome review update after 2015",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc001_03",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "BJHAEM2010_SCNIR_LEUKEMIA_RISK",
+      "rfSourceCardId": "src_20260718_rfcbc001_04",
+      "priority": "foundational-outside-five-year-window",
+      "year": 2010,
+      "publicationDate": "2010-04",
+      "title": "Stable Long-Term Risk of Leukaemia in Patients with Severe Congenital Neutropenia Maintained on G-CSF Therapy",
+      "authors": [
+        "Severe Chronic Neutropenia International Registry (SCNIR) investigators"
+      ],
+      "organization": "British Journal of Haematology (Wiley)",
+      "journal": "British Journal of Haematology (Wiley)",
+      "doi": "10.1111/j.1365-2141.2010.08216.x",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2906693/",
+      "limitations": [
+        "Full-text extraction from PMC dropped scientific-notation superscripts (e.g. '0.5 ×10/l' should read 0.5 ×10^9/L) — verified against standard SCN diagnostic convention but flag on ingest.",
+        "Cohort not age-stratified; SCN is congenital (dx typically infancy/childhood) but this report does not break out pediatric-only rates.",
+        "Risk estimates are cohort-level hazards, not individual-patient decision rules."
+      ],
+      "conflictsWith": [
+        "Prior 2001 SCNIR estimate of ~8%/year (range 4–12%/year) MDS/AML hazard after year 10–12 — superseded by this report's 2.3%/year plateau; conflict preserved, not averaged."
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Severe congenital neutropenia is diagnosed clinically by absolute neutrophil counts persistently below 0.5x10^9/L with marrow maturation arrest of neutrophil precursors (clm_033; supports the unit-normalization inference clm_inf01)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "SCNIR severe congenital neutropenia leukemia-risk registry update after 2010",
+      "supersessionStatus": "not_superseded",
+      "recencyNote": "Retained per module.json evidence_policy.older_source_rule (\"foundational_not_superseded_with_reason\"): published 2010-04 is outside the module's 1825-day (five-year) recent-source window (evidence_policy.recent_window_days), but it is the RF-CBC-001 fixture's sole grounding for clm_033 (clinical SCN diagnostic definition), which grounds the unit-normalization inference clm_inf01 cited by dec_cbc_local_range_precedence_001; no more recent equivalent-scope study is present in this bundle.",
+      "passages": [
+        {
+          "id": "BJHAEM2010_SCNIR_LEUKEMIA_RISK#implementation-proposal",
+          "sourceId": "BJHAEM2010_SCNIR_LEUKEMIA_RISK",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "SCNIR severe congenital neutropenia leukemia-risk registry update after 2010",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc001_04",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES",
+      "rfSourceCardId": "src_20260718_rfcbc001_05",
+      "priority": "foundational-outside-five-year-window",
+      "year": 2020,
+      "publicationDate": "2020-09",
+      "title": "Outcomes of Isolated Neutropenia Referred to Pediatric Hematology-Oncology Clinic",
+      "authors": [
+        "Nagalapuram V",
+        "McCall D",
+        "Palabindela P",
+        "Howard TH",
+        "Bemrich-Stolz C",
+        "Lebensburger J",
+        "Hilliard L",
+        "Wilson HP"
+      ],
+      "organization": "Pediatrics (American Academy of Pediatrics)",
+      "journal": "Pediatrics vol. 146, issue 4 (Oct 2020)",
+      "doi": "10.1542/peds.2019-3637",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/32883808/",
+      "limitations": [
+        "single-center retrospective cohort",
+        "referral-population selection bias (peds heme-onc referrals only)",
+        "severity-band scheme is this study's operational categorization, not a consensus standard"
+      ],
+      "conflictsWith": [
+        "Severity-band cutoffs are not universally standardized; other pediatric sources define neutropenia severity bands differently (e.g., varying ANC breakpoints), so these exact bands should not be treated as the single authoritative standard."
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Black children had higher odds of persistent mild neutropenia in a pediatric hematology-oncology referral cohort, consistent with a benign ethnic neutropenia consideration (clm_074; direct basis for dec_cbc_benign_neutropenia_differential_pattern_001)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "Pediatric isolated neutropenia referral-outcomes study update after 2020",
+      "supersessionStatus": "not_superseded",
+      "recencyNote": "Retained per module.json evidence_policy.older_source_rule (\"foundational_not_superseded_with_reason\"): published 2020-09 is outside the module's 1825-day (five-year) recent-source window (evidence_policy.recent_window_days), but it is the RF-CBC-001 fixture's sole grounding for clm_074 (race-associated persistent mild neutropenia), cited directly by dec_cbc_benign_neutropenia_differential_pattern_001; no more recent equivalent-scope study is present in this bundle.",
+      "passages": [
+        {
+          "id": "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES#implementation-proposal",
+          "sourceId": "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Pediatric isolated neutropenia referral-outcomes study update after 2020",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc001_05",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SCNIR2022_GCSF_OUTCOMES",
+      "rfSourceCardId": "src_20260718_rfcbc001_08",
+      "priority": "primary-current",
+      "year": 2022,
+      "publicationDate": "2022-07",
+      "title": "Outcomes for patients with severe chronic neutropenia treated with granulocyte colony-stimulating factor",
+      "authors": [
+        "Dale DC",
+        "Bolyard AA",
+        "Shannon JA",
+        "Connelly JA",
+        "Link DC",
+        "Bonilla MA",
+        "Newburger PE"
+      ],
+      "organization": "Blood Advances (American Society of Hematology)",
+      "journal": "Blood Adv 2022;6(13):3861-3869",
+      "doi": "10.1182/bloodadvances.2021005684",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35476051/",
+      "limitations": [
+        "Registry enrollment criteria, not a formal age-banded reference-interval study",
+        "No sex- or gestational/postnatal-age-specific ANC cutoffs given",
+        "BM examination timing/reading not standardized; genetic testing incomplete",
+        "ANC assay method (analyzer vs manual differential) not stated"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Congenital neutropenia was defined by early-childhood onset and/or genetic results with ANC remaining below 0.5x10^9/L beyond age 0.25 to 1.0 years (clm_004; direct basis for dec_cbc_marrow_red_flag_001).",
+        "MDS/AML occurred in 4.4% of all SCNIR patients (77/1752) but in 11.3% of the 670 congenital-neutropenia patients, concentrating myeloid risk in the congenital etiology (clm_005; direct basis for dec_cbc_marrow_red_flag_001).",
+        "No autoimmune/idiopathic-group patient (0 of 816) evolved to a myeloid malignancy, supporting a favorable myeloid prognosis for that etiology (clm_006; supports the marrow-risk inference clm_inf04).",
+        "Severe chronic neutropenia (SCN) is defined as blood neutrophils below 0.5x10^9/L persisting for more than 3 months (clm_001; supports the unit-normalization inference clm_inf01)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "SCNIR severe chronic neutropenia G-CSF outcomes registry update after 2022",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "SCNIR2022_GCSF_OUTCOMES#implementation-proposal",
+          "sourceId": "SCNIR2022_GCSF_OUTCOMES",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "SCNIR severe chronic neutropenia G-CSF outcomes registry update after 2022",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc001_08",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "HEMATOLREP2024_NEUTROPENIA_REVIEW",
+      "rfSourceCardId": "src_20260718_rfcbc001_09",
+      "priority": "peer-reviewed-recent",
+      "year": 2024,
+      "publicationDate": "2024-06",
+      "title": "Neutropenia in Childhood—A Narrative Review and Practical Diagnostic Approach",
+      "authors": [
+        "Georgios Katsaras",
+        "Silouani Koutsi",
+        "Evdokia Psaroulaki",
+        "Dimitra Gouni",
+        "Pelagia Tsitsani"
+      ],
+      "organization": "MDPI (Hematology Reports)",
+      "journal": "Hematol Rep 2024;16(2):375-389",
+      "doi": "10.3390/hematolrep16020038",
+      "url": "https://doi.org/10.3390/hematolrep16020038",
+      "limitations": [
+        "superscript exponent lost in extraction; unit reconstructed",
+        "narrative review — thresholds are secondary/derived not primary lab-derived",
+        "gene names ELANE/HAX1 partly dropped in extraction of Section 5"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Neutropenia is defined by age- and race-specific ANC cutoffs: <2500x10^9/L in neonates/infants, <1500x10^9/L in toddlers/older children/adults, and 1000-1500x10^9/L lower limit in African American children (clm_018; direct basis for dec_cbc_young_infant_scope_abstention_001).",
+        "Neutropenia severity is graded mild (1000-1500x10^9/L), moderate (500-999x10^9/L), and severe (<500x10^9/L) by ANC (clm_019; supports the unit-normalization inference clm_inf01)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "Pediatric neutropenia diagnostic-approach narrative review update after 2024",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "HEMATOLREP2024_NEUTROPENIA_REVIEW#implementation-proposal",
+          "sourceId": "HEMATOLREP2024_NEUTROPENIA_REVIEW",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Pediatric neutropenia diagnostic-approach narrative review update after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc001_09",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "rfSourceCardId": "src_20260718_rfcbc001_11",
+      "priority": "peer-reviewed-recent",
+      "year": 2023,
+      "publicationDate": "2023-07",
+      "title": "Duffy-Null Phenotype-Associated Neutropenia is the Most Common Etiology for Leukopenia/Neutropenia Referrals to a Tertiary Children's Hospital",
+      "authors": [
+        "Kelsey Gay",
+        "Kristopher Dulay",
+        "Yaddanapudi Ravindranath",
+        "Süreyya Savaşan"
+      ],
+      "organization": "The Journal of Pediatrics (Elsevier)",
+      "journal": "Volume 262, article 113608",
+      "doi": "10.1016/j.jpeds.2023.113608",
+      "url": "https://doi.org/10.1016/j.jpeds.2023.113608",
+      "limitations": [],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Duffy-null phenotype-associated neutropenia accounted for 77.7% of leukopenia/neutropenia referrals at a Detroit tertiary children's hospital (clm_039; direct basis for dec_cbc_benign_neutropenia_differential_pattern_001).",
+        "Among Yemeni pediatric referrals, Duffy-null phenotype-associated neutropenia prevalence was 96.6% (clm_040; direct basis for dec_cbc_benign_neutropenia_differential_pattern_001).",
+        "Among African American pediatric referrals, Duffy-null phenotype-associated neutropenia prevalence was 91% (clm_041; direct basis for dec_cbc_benign_neutropenia_differential_pattern_001).",
+        "Absence of recurrent, frequent, or serious infection is named as the discriminator between benign and pathologic neutropenia (clm_043; direct basis for dec_cbc_benign_neutropenia_differential_pattern_001)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "Duffy-null / benign ethnic neutropenia pediatric referral-etiology study update after 2023",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "JPEDS2023_DUFFY_NULL_NEUTROPENIA#implementation-proposal",
+          "sourceId": "JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Duffy-null / benign ethnic neutropenia pediatric referral-etiology study update after 2023",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc001_11",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    }
+  ]
 }
