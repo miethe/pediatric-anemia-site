@@ -73,6 +73,14 @@ function baseSource(overrides = {}) {
         judgment_basis: 'unassessed',
         judgment_basis_attestation: null,
         rights_component_class: 'bibliographic_metadata',
+        // EPR3-T4 (FR-WP3-04/06): structured_locator + not_captured are also REQUIRED. The sentinel
+        // is exempt from the non-empty not_captured[] rule (it captured nothing from a source).
+        structured_locator: {
+          source: 'TEST_SOURCE', edition_or_version: null, section: null, table: null, row: null,
+          column: null, assay_or_method: null, population_or_scope: null, retrieved_at: null,
+          unresolved_components: [],
+        },
+        not_captured: [],
       },
     ],
     access_basis: 'unknown',

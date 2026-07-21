@@ -72,6 +72,15 @@ import { fileURLToPath } from 'node:url';
 import { MODULE_IDS } from '../src/modules/registry.js';
 import { KB_JSON_FILES } from './sign-kb.mjs';
 import { resolveRightsRecordsForIdentifier } from './validate-kb.mjs';
+// Gate (f)'s implementation lives in its own module (EPR3-T4). It reads the evidence-item taxonomy
+// axes to classify table-derived items; keeping that read in a file that ALSO reads the rights
+// authority fields (gate (b) above) would trip tests/rights-axis-separation.test.mjs's file-granular
+// D2 barrier probe — a false positive, since the two are unrelated functions, but the barrier's
+// allowlist is frozen empty by design. Homing the axis-reading gate in a rights-authority-free module
+// keeps that barrier honest. Re-exported below so the CLI, GATES list, and tests import it from here.
+import { checkEvidenceItemLocatorCapture } from './lib/evidence-item-capture-gate.mjs';
+
+export { checkEvidenceItemLocatorCapture };
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -152,10 +161,14 @@ export async function loadRightsContext(rootDir = root, { argv = [], env = {} } 
 
   const clinicalIdentifiers = [];
   const kbJsonFileArtifacts = [];
+  const evidencePassages = [];
   for (const moduleId of MODULE_IDS) {
     const evidenceData = await readJson(path.join(rootDir, 'modules', moduleId, 'evidence.json'));
     for (const source of evidenceData.sources ?? []) {
       if (source?.id) clinicalIdentifiers.push({ type: 'evidence_source_id', id: source.id });
+      for (const passage of source?.passages ?? []) {
+        evidencePassages.push({ moduleId, sourceId: source?.id ?? null, passage });
+      }
     }
     for (const filename of KB_JSON_FILES) {
       const artifactPath = `modules/${moduleId}/${filename}`;
@@ -173,6 +186,7 @@ export async function loadRightsContext(rootDir = root, { argv = [], env = {} } 
     rightsFailureSchema,
     clinicalIdentifiers,
     kbJsonFileArtifacts,
+    evidencePassages,
     asOf: resolveAsOf(argv, env),
   };
 }
@@ -498,7 +512,12 @@ export const GATES = [
     description: 'Bidirectional coverage between scripts/sign-kb.mjs KB_JSON_FILES artifact paths and rights_record entries via a kb_json_file_path-shaped rights/rights-ledger.json identifier (EPR1-T2).',
     run: checkKbJsonFileCoverage,
   },
-  // EP-R2 / EP-R3: append your gate here as a new `{ id, description, run }` entry, with
+  {
+    id: 'evidence-item-locator-capture',
+    description: 'Cross-field consistency of each evidence item\'s structured_locator / not_captured[]: no valued-yet-unresolved component, table-derived items address table/row/column individually, and table-derived items name the omitted table_structure (EPR3-T4, FR-WP3-04/06, D1). Semantics only; field PRESENCE is schema-owned.',
+    run: checkEvidenceItemLocatorCapture,
+  },
+  // EP-R3 (later tasks): append your gate here as a new `{ id, description, run }` entry, with
   // its own `export function checkX(context) {...}` defined above (per this file's module
   // contract, in the header comment). Do not rename, reorder-and-renumber, or edit the body or
   // signature of an existing entry — that is an escalation to the plan owner, not a local edit.

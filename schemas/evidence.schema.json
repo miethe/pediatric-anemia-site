@@ -251,7 +251,9 @@
         "evidence_item_type",
         "judgment_basis",
         "judgment_basis_attestation",
-        "rights_component_class"
+        "rights_component_class",
+        "structured_locator",
+        "not_captured"
       ],
       "description": "A single exact-passage evidence record (D-EP3-3). Every member below except `applicability` is REQUIRED as a key — legitimate absence is expressed as an explicit typed null (`evidenceGrade`, `supersedes`, and every member of `sourceLocator`/`applicability`), never by omitting the key. `applicability` is conditionally required by the allOf below (AC-WP3-RESIL, EP3-T6): required on every `source-supported` record (an unrestricted-by-default clinical applicability claim on a supposedly source-backed record is a safety defect), optional only on the `implementation-proposal` sentinel, where absence means \"unrestricted\" because there is no clinical claim being made at all. The one content invariant (AC EP3-T1) is enforced by the first allOf member below: a record is valid only when `exactPassage` is non-empty OR `status` is `implementation-proposal` — the proposal sentinel is the only way to have an empty passage. EPR3-T2 (FR-WP3-01/02/03, D2) adds three orthogonal REQUIRED axis fields — `evidence_item_type` (what kind of thing), `rights_component_class` (which rights component of the source), `judgment_basis` (measured vs. judged, always `unassessed` today) — plus the forced-null `judgment_basis_attestation` that gates the third. They sit here as first-class members, NOT under `extensions.rights` (RF handoff §9.1), and they are separate from the two axes this record already carried: the epistemic `status` and the reuse-posture `passageFidelity`. Five axes now coexist on one record and none is derived from another (AC-WP3-AXES): a passage can be `source-supported` (epistemically sound) and still sit against a contract-restricted `rights/` record, or be `quarantined` while its rights are unrestricted.",
       "properties": {
@@ -293,6 +295,14 @@
         "rights_component_class": {
           "$ref": "#/$defs/rightsComponentClass",
           "description": "EPR3-T2 (FR-WP3-03, D2), axis 3 of 3. WHICH RIGHTS COMPONENT of the source this item draws on. Deliberately orthogonal to `evidence_item_type`: an `observed_finding` may be drawn from a `table`, a `figure`, or `prose`, and a `reference_interval_value` is very often a `table` — the two axes carry different vocabularies for different purposes and neither is derivable from the other (AC-WP3-AXES). Legal disposition of that component lives on the joined `rights/` record's `overall_status`, never here: this field names the component, it does not clear it (D7)."
+        },
+        "structured_locator": {
+          "$ref": "#/$defs/structuredLocator",
+          "description": "EPR3-T4 (FR-WP3-04, D1). REQUIRED. The addressable provenance that IS the archive (D1: 'the archive is provenance, not text'): each applicable component of where this item was found, held as an INDIVIDUALLY ADDRESSABLE structured field — never a single free-text locator string. There is no free-text catch-all on `$defs/structuredLocator` (unlike the EP-3 `sourceLocator.raw` that predates this feature): a locator that collapses table/row/column into one prose string cannot be represented as complete, and the coverage gate `evidence-item-locator-capture` in scripts/validate-rights.mjs additionally fails any table-derived item (`rights_component_class: \"table\"` or `evidence_item_type: \"reference_interval_value\"`) whose table/row/column is silently null rather than either addressed or listed in `structured_locator.unresolved_components`. Missingness is never treated as normal (D2): an incomplete locator records its unknown-but-applicable components explicitly in `unresolved_components`, it does not omit them. This field is the epistemic/provenance locator; it carries no clearance authority (D7)."
+        },
+        "not_captured": {
+          "$ref": "#/$defs/notCaptured",
+          "description": "EPR3-T4 (FR-WP3-06, D1). REQUIRED, and non-empty on every located record (the `allOf` clause below exempts only the `implementation-proposal` sentinel, which captured nothing from a source). Maximal capture means maximal addressable provenance, NOT retained third-party expression — so what was deliberately NOT stored (the verbatim wording, a table's structure, a figure, the visual layout) is recorded here EXPLICITLY, each entry naming a `kind` and a `rationale`, rather than left implicit. The `evidence-item-locator-capture` gate additionally requires any table-derived item to carry a `not_captured[]` entry of kind `table_structure`: per-value atoms are captured, the table itself is named as omitted, and no reproduced table exists in any form (D1, REG_002 uncleared). Each `rationale` is this project's own explanation of an omission, never a transcription of the omitted third-party text (that would defeat the point and trip EPR3-T1's negative invariant)."
         },
         "reviewFlags": {
           "type": "array",
@@ -353,6 +363,20 @@
           },
           "then": true,
           "else": { "type": "object", "required": ["applicability"] }
+        },
+        {
+          "description": "EPR3-T4 (FR-WP3-06, D1): `not_captured[]` is non-empty on every LOCATED record — a captured item always withheld SOMETHING (at minimum the verbatim wording it paraphrases, D-EP3-4), and D1 requires that omission be recorded explicitly, never left implicit. The `implementation-proposal` sentinel is the sole exemption: it captured nothing from a source, so there is nothing it deliberately did not store. This clause references only `status` and `not_captured` — no taxonomy axis field — so it does not couple two axes (D2, asserted by tests/rights-evidence-item-axes.test.mjs).",
+          "if": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "implementation-proposal" } }
+          },
+          "then": true,
+          "else": {
+            "type": "object",
+            "required": ["not_captured"],
+            "properties": { "not_captured": { "minItems": 1 } }
+          }
         },
         {
           "description": "EP3-T5 (EP3T5-F01): a record flagged near-verbatim-span-pending-rights must be marked withheld.",
@@ -510,6 +534,117 @@
         "section": { "type": ["string", "null"], "minLength": 1 },
         "table": { "type": ["string", "null"], "minLength": 1 },
         "figure": { "type": ["string", "null"], "minLength": 1 }
+      }
+    },
+    "structuredLocator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "edition_or_version",
+        "section",
+        "table",
+        "row",
+        "column",
+        "assay_or_method",
+        "population_or_scope",
+        "retrieved_at",
+        "unresolved_components"
+      ],
+      "description": "EPR3-T4 (FR-WP3-04, D1). The structured, individually-addressable provenance of an evidence item — the component-by-component 'where I found this' that makes an item mechanically re-fetchable and re-bindable. It is DELIBERATELY not `$defs/sourceLocator`: that EP-3 shape carries a free-text `raw` catch-all, and FR-WP3-04 forbids a free-text locator wherever a structured component applies. There is no free-text member here at all — every component is its own typed field — so a locator cannot be 'collapsed' into one prose string and still validate as complete. Distinct nullability semantics per D2: a component present with a non-empty string is CAPTURED and addressable; a component set to `null` means NOT APPLICABLE to this item (an `observed_finding` drawn from prose legitimately has `table: null, row: null, column: null`); a component that APPLIES but whose value could not be determined is listed by name in `unresolved_components` (explicit incompleteness) — it is never silently nulled. `source` is the one always-present component (every item has a source it was drawn from). The cross-component rules JSON Schema cannot express — a component may not be both non-null AND listed unresolved; a table-derived item's table/row/column may not be silently null — are enforced by the `evidence-item-locator-capture` coverage gate in scripts/validate-rights.mjs. No `format: \"uri\"` anywhere (FR-WP0-08): `retrieved_at` is a bare `date`, the only format `scripts/lib/json-schema-lite.mjs` enforces.",
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The source this item was drawn from — the enclosing source's citation key (e.g. `AAP2026_IDA`) or an equally addressable identifier. Always present and non-null: an item with no addressable source has no provenance at all."
+        },
+        "edition_or_version": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The edition, version, revision, or year-stamp of the source that pins WHICH published state this item was read from (guidelines are revised; a value read from the 2024 edition is not the same locator as the 2026 one). Null when the source is not versioned or the edition does not apply; named in `unresolved_components` when it applies but is not yet known."
+        },
+        "section": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The named or numbered section / heading / subsection the item sits under. Null when not applicable; listed in `unresolved_components` when applicable-but-unknown."
+        },
+        "table": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The table identifier (e.g. `Table 2`) when the item is drawn from a table. INDEPENDENTLY addressable from `row` and `column` — the three together locate a single cell without ever reproducing the table. Null when the item is not table-derived; a table-derived item (see the coverage gate) must set this or list `table` in `unresolved_components`, never leave it a silent null."
+        },
+        "row": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The row label / index within `table` (e.g. `Hemoglobin, 6–24 mo`). Addressable on its own axis so a single value is locatable without the surrounding rows. Same table-derived rule as `table`."
+        },
+        "column": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The column label / index within `table` (e.g. `Lower limit (g/dL)`). Addressable on its own axis. Same table-derived rule as `table`."
+        },
+        "assay_or_method": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The assay, instrument, analytic method, or equation the value/finding is specific to (e.g. `automated impedance CBC`, `serum ferritin immunoassay`) — the same reference value can differ by method, so the method is part of its address. Null when not applicable; `unresolved_components` when applicable-but-unknown."
+        },
+        "population_or_scope": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The population, age band, sex, or scope the item's addressed location is qualified by within the source (e.g. `children 12–35 months`). This is a LOCATOR facet (which cell/row of the source you read), distinct from the passage-level `applicability` clinical claim; both may legitimately be present. Null when not applicable; `unresolved_components` when applicable-but-unknown."
+        },
+        "retrieved_at": {
+          "type": ["string", "null"],
+          "format": "date",
+          "description": "The date the source was observed at this locator, so the provenance is re-verifiable against a point in time. Supplied from the capture record, never from wall-clock time inside a generator (the feature's determinism rule). Null when genuinely not recorded; may be listed in `unresolved_components` when it should be known but is not."
+        },
+        "unresolved_components": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "edition_or_version",
+              "section",
+              "table",
+              "row",
+              "column",
+              "assay_or_method",
+              "population_or_scope",
+              "retrieved_at"
+            ]
+          },
+          "description": "The explicit record of which APPLICABLE components could not (yet) be determined — the D2 'missingness is never treated as normal' discipline for locators: an incomplete locator NAMES its gaps rather than validating as though it were complete. A component listed here MUST be `null` above (the `evidence-item-locator-capture` gate fails a component that is both valued and listed unresolved — that is a contradiction, not a partial). Empty array means the locator is complete as captured: every applicable component is addressed and every null is a deliberate not-applicable. `source` is intentionally not a member — it is always present and non-null, so it can never be unresolved."
+        }
+      }
+    },
+    "notCaptured": {
+      "type": "array",
+      "description": "EPR3-T4 (FR-WP3-06, D1). What this item DELIBERATELY did not store — the negative space of maximal capture. Every located item withheld something (at minimum the verbatim wording behind its paraphrase); recording it here makes the boundary explicit rather than leaving a reader to infer it. Non-emptiness on located records is enforced by the `allOf` clause on `$defs/passage`; a table-derived item's obligation to name `table_structure` here is enforced by the `evidence-item-locator-capture` coverage gate. Each entry is a `{ kind, rationale }` pair — the `kind` a closed vocabulary of what was omitted, the `rationale` this project's own one-line explanation of WHY (never a transcription of the omitted third-party expression, which would defeat the D1 boundary and trip EPR3-T1's negative invariant).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "rationale"],
+        "properties": {
+          "kind": {
+            "enum": [
+              "verbatim_wording",
+              "prose",
+              "table_structure",
+              "figure",
+              "chart",
+              "visual_layout",
+              "image_or_media",
+              "supplementary_material",
+              "other"
+            ],
+            "description": "The kind of expression deliberately not retained. `verbatim_wording` — the exact phrasing behind a paraphrase; `prose` — surrounding narrative text; `table_structure` — a table's layout/cells, omitted in favour of per-value atoms (the table-derived obligation, D1/REG_002 uncleared); `figure`/`chart`/`image_or_media` — visual assets; `visual_layout` — page/typographic layout; `supplementary_material` — appendices/supplements; `other` — anything else, explained in `rationale`. Closed enum: an unrecognised omission-kind is a reviewable schema change, not a silent free-text value."
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1,
+            "description": "This project's own explanation of why the item above was not stored (e.g. 'per-value atoms captured instead; reproducing the table would retain third-party expression, REG_002 uncleared'). It states the reason for an omission — it is NOT a place to transcribe the omitted third-party text, which would reintroduce exactly what D1 forbids."
+          }
+        }
       }
     },
     "applicability": {

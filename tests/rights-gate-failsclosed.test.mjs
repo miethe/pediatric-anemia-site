@@ -79,10 +79,10 @@ function withSubstrateCopy(mutate, assertions) {
 test('control: an unmutated copy of the seeded substrate passes the CLI with exit 0', () => {
   withSubstrateCopy(null, (result) => {
     assert.equal(result.status, 0, `expected exit 0 on the unmodified substrate; stderr:\n${result.stderr}`);
-    // EPR1-T2 appends a 5th gate (kb-json-file-coverage) per this file's own module contract — the
-    // literal here tracks GATES.length, not a fixed constant; each later phase that appends its own
-    // gate (EP-R2, EP-R3) bumps this count in turn.
-    assert.match(result.stdout, /validate-rights: 5 gate\(s\) passed/);
+    // EPR1-T2 appended a 5th gate (kb-json-file-coverage); EPR3-T4 appends a 6th
+    // (evidence-item-locator-capture) per this file's own module contract — the literal here tracks
+    // GATES.length, not a fixed constant; each later phase that appends its own gate bumps it in turn.
+    assert.match(result.stdout, /validate-rights: 6 gate\(s\) passed/);
   });
 });
 

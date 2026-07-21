@@ -73,6 +73,23 @@ function basePassage(overrides = {}) {
     judgment_basis: 'unassessed',
     judgment_basis_attestation: null,
     rights_component_class: 'table',
+    // EPR3-T4: structured_locator + not_captured are now REQUIRED members of $defs/passage. A
+    // schema-valid value is supplied here so the axis fixtures keep validating; the semantics of
+    // these two fields (table-derived addressing, table_structure omission) are EPR3-T4's own gate's
+    // and test's concern, not this axis suite's.
+    structured_locator: {
+      source: 'FAKE_SRC',
+      edition_or_version: null,
+      section: null,
+      table: 'Table 2',
+      row: 'Hb, 6-24 mo',
+      column: 'Lower limit',
+      assay_or_method: null,
+      population_or_scope: null,
+      retrieved_at: '2026-07-20',
+      unresolved_components: [],
+    },
+    not_captured: [{ kind: 'table_structure', rationale: 'per-value atom captured; table layout not stored' }],
     ...overrides,
   };
 }

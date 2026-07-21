@@ -385,6 +385,23 @@ function passageAt({ itemType, componentClass, status }) {
     judgment_basis: 'unassessed',
     judgment_basis_attestation: null,
     rights_component_class: componentClass,
+    // EPR3-T4: structured_locator + not_captured are now REQUIRED members of $defs/passage. A
+    // schema-valid value keeps every axis tuple representable; the table-derived locator/omission
+    // SEMANTICS are enforced by EPR3-T4's gate (scripts/validate-rights.mjs), not by the passage
+    // subschema this suite validates against, so one fixed value serves every (A, B, C) coordinate.
+    structured_locator: {
+      source: 'AAP2026_IDA',
+      edition_or_version: null,
+      section: 'Screening',
+      table: 'Table 2',
+      row: 'Hb, 6-24 mo',
+      column: 'Lower limit',
+      assay_or_method: null,
+      population_or_scope: null,
+      retrieved_at: '2026-07-20',
+      unresolved_components: [],
+    },
+    not_captured: [{ kind: 'table_structure', rationale: 'per-value atom captured; table layout not stored' }],
   };
 }
 

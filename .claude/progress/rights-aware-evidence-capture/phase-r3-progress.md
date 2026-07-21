@@ -87,7 +87,7 @@ tasks:
     date. Free-text locators are unacceptable where a structured component applies. Every item
     also carries not_captured[] naming what was deliberately not stored (prose, table structure,
     figures, layout) and why. An incomplete locator records its missing components explicitly.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
