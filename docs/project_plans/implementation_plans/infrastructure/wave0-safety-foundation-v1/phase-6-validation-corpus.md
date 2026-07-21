@@ -72,6 +72,28 @@ generators and a closed unit table.** Any dependency requires a written rational
 
 ## Phase EP-6 Quality Gates
 
+> **AMENDMENT 2026-07-21 (at EP-6 close): EP6-T4 was a gap-fill, and the "all 10 families" gate is
+> met as 8/10 executable + 2/10 honestly uncontrolled.**
+>
+> **On ownership (Risk 5 was inverted).** This plan states EP-6 owns converting the ten
+> `DM-CBC-001..DM-WORKFLOW-010` families into executable fixtures, with
+> `arc-clinical-council-adoption-v1.md` P4-T1 consuming them. In fact P4-T1 had already done the
+> conversion: `tests/dangerous-miss-scenarios.test.mjs` already executes the real engine. Re-deriving
+> would have duplicated ~30KB of verified work and created two competing sources of truth for the same
+> hazards, so EP6-T4 was re-scoped to the residual gaps (see the commit and the findings register).
+>
+> **On the 10/10 gate.** Eight families are behaviorally executable against the real engine. **DM-EQUITY-009
+> and DM-WORKFLOW-010 carry `controlBinding: no_control_exists`** and are structurally asserted as
+> unexecuted. This is deliberate and is the safety-correct outcome: neither family has an engine to test
+> — they would require a subgroup/equity evaluator and an alert-lifecycle state machine, and
+> `assessPediatricAnemia` is a stateless pure function with neither. Fabricating a control to reach a
+> cosmetic 10/10 would hide two unmitigated patient-safety hazards behind a passing test. The gate is
+> therefore recorded as **met-with-recorded-exception**, not silently ticked.
+>
+> **On EP6-T5.** The review is **not** a none-found result: 19 findings, 5 critical, in
+> `.claude/findings/wave0-ep6-validation-corpus-findings.md`. None were fixed — they are KB/rule-level
+> defects and the repo forbids AI-published rule changes. Recorded per D-4 as `not_executed_owner_held`.
+
 - [ ] All 4 new test files (`property`, `boundary`, `mutation`, `dangerous-miss`) green
 - [ ] Mutation-score baseline defined from a real measurement run and met (EP6-T3, OQ-4)
 - [ ] All 10 ARC-named dangerous-miss families pass as executable fixtures (EP6-T4)

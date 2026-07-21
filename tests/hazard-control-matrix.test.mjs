@@ -372,16 +372,60 @@ test('R1: the five REACHABLE_HAZARDS rows (engine_rule or engine-native applicab
   }
 });
 
-test('R1: independently re-verify the zero-production-callers claim for scripts/lib/local-applicability.mjs live against the repository, not trusting the manifest', async () => {
-  const { readdir, readFile } = await import('node:fs/promises');
-  const srcFiles = await readdir(path.join(root, 'src'));
-  for (const filename of srcFiles.filter((name) => name.endsWith('.js'))) {
-    const source = await readFile(path.join(root, 'src', filename), 'utf8');
+// EP6-T4 gap closure: the original version of this check (`readdir(path.join(root, 'src'))` with no
+// `recursive` option) only listed the FLAT contents of src/ — it silently skipped every file under
+// src/evidence/, src/facts/, src/lib/, src/modules/, src/ranges/, and it never looked at server.mjs
+// (the REST API entrypoint that also calls assessPediatricAnemia per docs/architecture.md). A future
+// import of scripts/lib/local-applicability.mjs from any of those places would have made
+// DM-LAB-005/DM-RESULT-007/DM-FHIR-008's "repository_only_not_reachable_by_deployed_app" claim false
+// while this test kept passing. collectProductionSourceFiles below walks src/ recursively and also
+// scans server.mjs, so the claim is re-verified against everything that can actually run in production,
+// not just the top-level src/ listing.
+async function collectProductionSourceFiles() {
+  const { readdir } = await import('node:fs/promises');
+  async function walk(dir) {
+    const entries = await readdir(dir, { withFileTypes: true });
+    const files = [];
+    for (const entry of entries) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        files.push(...(await walk(full)));
+      } else if (entry.isFile() && (entry.name.endsWith('.js') || entry.name.endsWith('.mjs'))) {
+        files.push(full);
+      }
+    }
+    return files;
+  }
+  return [...(await walk(path.join(root, 'src'))), path.join(root, 'server.mjs')];
+}
+
+test('R1: independently re-verify the zero-production-callers claim for scripts/lib/local-applicability.mjs live against the repository (recursively over every src/ subdirectory, plus the server.mjs API entrypoint), not trusting the manifest', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const productionFiles = await collectProductionSourceFiles();
+  for (const filePath of productionFiles) {
+    const source = await readFile(filePath, 'utf8');
+    const relative = path.relative(root, filePath);
     assert.ok(
       !source.includes('local-applicability'),
-      `src/${filename} must not import scripts/lib/local-applicability.mjs — if this ever changes, DM-LAB-005/DM-RESULT-007/DM-FHIR-008's productIntegration rows must be re-authored, not left stale`,
+      `${relative} must not import scripts/lib/local-applicability.mjs — if this ever changes, DM-LAB-005/DM-RESULT-007/DM-FHIR-008's productIntegration rows must be re-authored, not left stale`,
     );
   }
+});
+
+test('R1 discrimination proof: the recursive scan actually descends into src/ subdirectories and includes server.mjs — a flat, non-recursive src/ listing (the prior form of this check) would have missed both', async () => {
+  const productionFiles = await collectProductionSourceFiles();
+  assert.ok(
+    productionFiles.some((filePath) => path.relative(root, filePath).startsWith(path.join('src', 'modules') + path.sep)),
+    'the scan must include at least one file under src/modules/ — proof it is not a flat, top-level-only listing',
+  );
+  assert.ok(
+    productionFiles.some((filePath) => path.relative(root, filePath).startsWith(path.join('src', 'evidence') + path.sep)),
+    'the scan must include at least one file under src/evidence/ — another subdirectory a flat listing would miss',
+  );
+  assert.ok(
+    productionFiles.includes(path.join(root, 'server.mjs')),
+    'the scan must include server.mjs — the REST API entrypoint that also calls assessPediatricAnemia',
+  );
 });
 
 test('R1: independently re-verify schemas/patient-input.schema.json has no specimen/analyzer/method/unitCode property, live against the repository', async () => {
@@ -441,6 +485,49 @@ test('NEGATIVE: removing coverageFinding from a row entirely is schema-invalid (
   delete target.coverageFinding;
   const errors = validate(schema, mutated);
   assert.ok(errors.length > 0, 'a row missing coverageFinding must fail schema validation');
+});
+
+// --- EP6-T4 gap closure: DM-HEME-002's coverageFinding cites a specific regression test in its own
+// prose ("...reproduced against the live engine (tests/dangerous-miss-scenarios.test.mjs, 'DM-HEME-002
+// REGRESSION (P4-V1 R2)')") but, before this addition, nothing structurally re-verified that citation.
+// requiredTests.testMarkers only listed the two original behavioral tests, so renaming or deleting the
+// REGRESSION test (which is what actually pins the PAC-P4T2-006 silent-empty-differential gap as
+// reproducible) would NOT have failed any existing check here or in
+// tests/dangerous-miss-scenarios.test.mjs itself -- the disclosed gap would have silently stopped being
+// enforced while the manifest kept claiming it was. requiredTests.testMarkers now carries the regression
+// test's literal title as a third marker (so the generic "every requiredTests.testMarkers entry is a
+// real, present substring" test above already re-verifies it), and the two tests below make the tie to
+// PAC-P4T2-006 explicit and prove it is a live check, not decorative.
+
+function testMarkerPresent(source, marker) {
+  return source.includes(marker);
+}
+
+const DM_HEME_002_REGRESSION_MARKER = 'DM-HEME-002 REGRESSION (P4-V1 R2)';
+
+test('R2 gap closure (DM-HEME-002): requiredTests.testMarkers pins the literal title of the aplastic-crisis regression test that PAC-P4T2-006\'s coverageFinding cites, and that test is still live in tests/dangerous-miss-scenarios.test.mjs', () => {
+  const row = byHazard['DM-HEME-002'];
+  assert.ok(
+    row.requiredTests.testMarkers.some((marker) => marker.includes(DM_HEME_002_REGRESSION_MARKER)),
+    'DM-HEME-002 requiredTests.testMarkers must include the regression test that reproduces the PAC-P4T2-006 gap, or a future rename/deletion of that test would silently go unenforced',
+  );
+  assert.ok(
+    row.coverageFinding.description.includes(DM_HEME_002_REGRESSION_MARKER),
+    'PAC-P4T2-006 coverageFinding.description must still cite the regression test it claims reproduces the gap',
+  );
+  assert.ok(
+    testMarkerPresent(dmTestSource, DM_HEME_002_REGRESSION_MARKER),
+    'the regression test itself must still exist in tests/dangerous-miss-scenarios.test.mjs',
+  );
+});
+
+test('R2 gap closure NEGATIVE (discrimination proof, real removal): renaming/removing the regression test\'s literal title out of the loaded tests/dangerous-miss-scenarios.test.mjs source is detected by the same check used above', () => {
+  assert.ok(testMarkerPresent(dmTestSource, DM_HEME_002_REGRESSION_MARKER), 'sanity: the marker this proof removes must actually be present in the live file');
+  const mutatedSource = dmTestSource.replace(DM_HEME_002_REGRESSION_MARKER, 'DM-HEME-002 REGRESSION-RENAMED-OR-DELETED');
+  assert.ok(
+    !testMarkerPresent(mutatedSource, DM_HEME_002_REGRESSION_MARKER),
+    'a renamed or deleted regression test must be detected as marker absence, not silently pass',
+  );
 });
 
 // --- R6 [MED, lab]: DM-LAB-005's coverage boundary against the P3 CRITICAL_VALUE_* lane is visible --
