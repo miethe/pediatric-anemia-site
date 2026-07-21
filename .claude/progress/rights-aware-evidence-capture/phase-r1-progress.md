@@ -18,7 +18,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 5
-completed_tasks: 2
+completed_tasks: 3
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -75,7 +75,7 @@ tasks:
     rights records, (b) add a 5th path to KB_JSON_FILES without a record, (c) point
     a ledger entry at a deleted path. Plus a fourth test asserting a record at clearance_status
     UNKNOWN still passes (D7).'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -84,6 +84,10 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T00:00:00Z'
+  completed: '2026-07-21T00:00:00Z'
+  evidence:
+  - commit: 7326717
 - id: EPR1-T4
   description: 'No-clinical-change proof (FR-WP1-04): this phase changes no value
     in reference-ranges.json and does not alter deriveFacts() behaviour. Verify by
@@ -173,7 +177,7 @@ files_modified:
 - scripts/validate-kb.mjs
 - scripts/validate-rights.mjs
 - tests/rights-coverage.test.mjs
-progress: 40
+progress: 60
 updated: '2026-07-21'
 ---
 
