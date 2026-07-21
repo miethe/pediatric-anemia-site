@@ -85,7 +85,7 @@ A commercial release must be blocked when rights are **unknown**, **materially d
 
 ### 3.1 Facts, methods, systems, procedures, and discoveries
 
-Under 17 U.S.C. § 102(b), copyright protection does not extend to an idea, procedure, process, system, method of operation, concept, principle, or discovery, regardless of how it is described or illustrated. The U.S. Copyright Office likewise states that copyright does not protect facts, ideas, systems, or methods of operation, though it may protect the way they are expressed. [S1][S2]
+Under 17 U.S.C. § 102(b), copyright protection does not extend to an idea, procedure, process, system, method of operation, concept, principle, or discovery, regardless of how it is described or illustrated. The U.S. Copyright Office likewise states that copyright does not protect facts, ideas, systems, or methods of operation, though it may protect the way they are expressed. [S1][S2] The controlling U.S. Supreme Court authority for this fact/expression line is *Feist Publications v. Rural Telephone Service*, 499 U.S. 340 (1991) [S16], which holds that facts are not original to their discoverer and that copyright protects only the original selection, coordination, or arrangement contributed by an author — not the underlying facts themselves. [Amendment 2026-07-21, EPR5-T2, per FR-WP5-02]
 
 Operational consequence:
 
@@ -100,7 +100,7 @@ A compilation may receive copyright protection for original selection, coordinat
 Operational consequence:
 
 - Encoding one independently stated threshold is different from reproducing a publisher’s entire age-by-risk-by-time threshold table.
-- A complete table, nomogram, taxonomy, or curated set may create compilation risk even when individual values are factual.
+- A complete table, nomogram, taxonomy, or curated set may create compilation risk even when individual values are factual — a coding taxonomy of numbering plus short descriptions was held copyrightable in *ADA v. Delta Dental Plans Ass'n*, 126 F.3d 977 (7th Cir. 1997) [S18], and a compiled set of values reflecting professional judgment, not bare measurement, was held protected expression in *CCC Information Services v. Maclean Hunter Market Reports*, 44 F.3d 61 (2d Cir. 1994) [S17]. [Amendment 2026-07-21, EPR5-T2, per FR-WP5-02]
 - The risk increases when the shipped product preserves the source’s same scope, selection, sequence, labels, categories, and arrangement and can substitute for the source product.
 
 Outside the United States, additional rights may exist. European Union law, for example, recognizes a sui generis database right protecting substantial investment in obtaining, verifying, or presenting database contents. [S13]
@@ -840,7 +840,11 @@ Reassess when:
 > amendment entry, its rationale, and its scope. This row split states a routing rule only; it makes
 > no determination about any specific threshold family. Whether a given clinical threshold is measured
 > or committee-judged is open question **OQ-1** and routes to counsel — it is not decided here or
-> anywhere in this document.
+> anywhere in this document. The judgment-derived row's routing rests on *CCC Information Services v.
+> Maclean Hunter Market Reports*, 44 F.3d 61 (2d Cir. 1994) [S17], which held that valuations
+> reflecting the compiler's predictions and professional judgment — not bare measurement — were
+> protected expression, not facts, in a commercial-database context. [Amendment 2026-07-21, EPR5-T2,
+> per FR-WP5-02]
 
 ---
 
@@ -1369,6 +1373,25 @@ https://www.copyright.gov/title17/92chap1.html
 **[S15]** U.S. Food and Drug Administration, *Clinical Decision Support Software: Final Guidance*, January 2026. Verified 2026-07-21.  
 https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software
 
+**Case law** — added [Amendment 2026-07-21, EPR5-T2, per FR-WP5-02]. These are judicial authorities,
+not verified web sources; they are transcribed from
+`.claude/findings/rights-governance-spec-v1.0-review-findings.md` (review determination at commit
+`cd15b4a`), not reconstructed from memory, and no "Verified" date applies to case citations the way it
+does to [S1]–[S15]'s URLs. See Appendix D for the full rationale; each is also cited from the body at
+the section noted below.
+
+**[S16]** *Feist Publications v. Rural Telephone Service*, 499 U.S. 340 (1991). Controlling U.S.
+Supreme Court authority for the fact/expression (originality) distinction underlying §3.1's
+facts-are-not-copyrightable framing. Cited from the body at §3.1.
+
+**[S17]** *CCC Information Services v. Maclean Hunter Market Reports*, 44 F.3d 61 (2d Cir. 1994). Held
+that used-car valuations reflecting the editors' predictions and professional judgment were protected
+expression, not facts, in a commercial-database context — the authority for §15's measured-vs-judged
+routing split. Cited from the body at §3.2 and §15.
+
+**[S18]** *ADA v. Delta Dental Plans Ass'n*, 126 F.3d 977 (7th Cir. 1997). Held a coding taxonomy
+(numbering plus short descriptions) copyrightable. Cited from the body at §3.2.
+
 ---
 
 ## Appendix C — Interpretation cautions
@@ -1432,3 +1455,31 @@ states none.
   routes to counsel and is explicitly **not closable by this phase or by any agent**. No item in this
   project's knowledge base is reclassified, reassessed, or assigned `judgment_basis` by this
   amendment; every item continues to carry `judgment_basis: unassessed` until OQ-1 is answered.
+
+- **2026-07-21 — EPR5-T2 (FR-WP5-02), Appendix B and citing sections.** Added three case-law
+  authorities to Appendix B's new "Case law" subsection — [S16] *Feist Publications v. Rural
+  Telephone Service*, 499 U.S. 340 (1991); [S17] *CCC Information Services v. Maclean Hunter Market
+  Reports*, 44 F.3d 61 (2d Cir. 1994); [S18] *ADA v. Delta Dental Plans Ass'n*, 126 F.3d 977 (7th Cir.
+  1997) — and cited each from the body, not merely listed in the appendix:
+  - [S16] *Feist* is cited at §3.1, as the controlling authority for the fact/expression (originality)
+    distinction that §3.1 already stated without a case citation.
+  - [S17] *CCC* is cited at §3.2 (compilation/taxonomy risk discussion) and at §15 (the amendment
+    note EPR5-T1 added, which named the case in prose in Appendix D but not in the visible §15 body
+    text until this entry).
+  - [S18] *ADA* is cited at §3.2 (taxonomy/compilation risk discussion), as the authority for a coding
+    taxonomy (numbering plus short descriptions) being independently copyrightable.
+
+  **Rationale.** FR-WP5-02 and the review findings (`.claude/findings/rights-governance-spec-v1.0-review-findings.md`
+  §2.A) identify all three cases as omitted from the originally published spec despite being directly
+  relevant to the fact/expression and compilation-risk analysis the spec's operational guidance
+  depends on. All three citations are transcribed verbatim from the review findings document and the
+  phase task table (`docs/project_plans/implementation_plans/infrastructure/rights-aware-evidence-capture-v1/phase-r5-spec-amendments.md`,
+  EPR5-T2 row), not reconstructed from memory.
+
+  **Scope of this amendment — what it does *not* do.** This amendment adds citations only. It draws no
+  legal conclusion about any specific source, threshold, taxonomy, or compilation in this project's
+  knowledge base, and reclassifies nothing. §3.7's works/funded-works conflation, §16.2's contract
+  caveat placement, and §3.2's EU sui generis scoping are **not** addressed by this entry — they are
+  **EPR5-T3**'s scope (FR-WP5-03/04/05), sequenced after this task. The six citation-hygiene items
+  ([S7], [S1]/[S14] overload, [S11] pin-cite, [S13] permalink, [S5]/[S6]/[S7] 403 annotation, [S15]
+  date pin) are **EPR5-T4**'s scope (FR-WP5-06), also not addressed here.
