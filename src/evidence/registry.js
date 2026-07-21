@@ -18,9 +18,16 @@
 // for any moduleId not present in this map, so a second module can never be silently resolved
 // against the wrong module's passages.
 import { passageById as anemiaPassageById, passagesFor as anemiaPassagesFor } from '../evidence.js';
+// The second module has registered (P4-T5) — its own evidence.js-shaped loader over its own
+// evidence.json, exactly the extension this file's header comment anticipated. Never anemia's.
+import {
+  passageById as cbcSuiteV1PassageById,
+  passagesFor as cbcSuiteV1PassagesFor,
+} from '../../modules/cbc_suite_v1/evidence.js';
 
 const REGISTRY = new Map([
   ['anemia', { passageById: anemiaPassageById, passagesFor: anemiaPassagesFor }],
+  ['cbc_suite_v1', { passageById: cbcSuiteV1PassageById, passagesFor: cbcSuiteV1PassagesFor }],
 ]);
 
 function accessorsFor(moduleId) {

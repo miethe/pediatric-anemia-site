@@ -1,1 +1,15 @@
-{}
+{
+  "benign-ethnic-neutropenia-differential-pattern": {
+    "id": "benign-ethnic-neutropenia-differential-pattern",
+    "label": "Benign ethnic/Duffy-null neutropenia differential pattern",
+    "category": "differential (hematology — neutropenia)",
+    "summary": "A reviewable pattern, not a confirmed diagnosis, toward a benign ethnic/Duffy-null-phenotype-associated etiology for isolated mild neutropenia. Drawn from evidence that this etiology accounts for the large majority of pediatric neutropenia referrals in ancestrally relevant subgroups (77.7% overall; up to 96.6% and 91% in specific referral subgroups) and that absence of recurrent, frequent, or serious infection is the named discriminator from pathologic neutropenia. This pattern is always conflict-visible against, and must never suppress or downrank, a co-occurring marrow-red-flag safety alert (see CBC-MARROW-REDFLAG-001) — the two may legitimately co-occur in the same patient, and the red-flag alert must dominate.",
+    "defaultNextSteps": [
+      "Confirm absence of recurrent, frequent, or serious infection history.",
+      "Consider Duffy-null phenotype / ancestrally relevant context where clinically available.",
+      "If any marrow-red-flag feature is present, do not use this pattern to defer, downrank, or suppress the referral pathway."
+    ],
+    "evidence": ["JPEDS2023_DUFFY_NULL_NEUTROPENIA", "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES"],
+    "sourcePassageId": "JPEDS2023_DUFFY_NULL_NEUTROPENIA#implementation-proposal"
+  }
+}

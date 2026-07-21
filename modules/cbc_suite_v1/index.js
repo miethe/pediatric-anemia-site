@@ -16,7 +16,14 @@
 // above already resolves ranges through `anemia`'s existing registration (see
 // `modules/anemia/ranges.js`'s hardcoded `MODULE_ID = 'anemia'`), so a second registration
 // would be dead code, not a real second range source.
+//
+// Units are different: `src/units.js#validateUnits` is keyed on the moduleId `assess()` is
+// actually called with, and runs before `deriveFacts`, so it does NOT inherit through the
+// deriveFacts delegation above the way ranges do. `./units.js` registers this module's own
+// `'cbc_suite_v1'` unit specs (found missing, and fixed, while implementing P4-T5 — see that
+// file's header comment for why).
 import anemiaModule from '../anemia/index.js';
+import './units.js';
 
 export default {
   id: 'cbc_suite_v1',
