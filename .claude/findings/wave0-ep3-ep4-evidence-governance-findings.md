@@ -66,8 +66,36 @@ introduced by this phase — the phase merely made it visible and machine-checka
 | R-1 | Paraphrase-only is enforced *structurally* (the `passageFidelity` field), not *semantically*. `validate-kb.mjs` cannot detect a near-verbatim span on its own; F01 was found by an external audit. | Semantic detection would need the restricted source text in-repo, which is the very thing REG-002 has not cleared. |
 | R-2 | REG-002 has **not** cleared verbatim reuse of AAP/AAFP guideline text — it answered CPT/SNOMED/LOINC/WHO vocabulary licensing and named guideline-text reuse as its own biggest gap. | Blocked on an external content-rights determination. Flip `REG_002_CLEARED` (`scripts/validate-kb.mjs:16`) when it clears. |
 | R-3 | `validateFidelityFindings` is wired only for `moduleId === 'anemia'`; it becomes a silent no-op the day a second module ships. | Flagged in-code; belongs to the multi-module work, not this phase. |
-| R-4 | 76 of 91 rules are grounded only by an `implementation-proposal` sentinel. | Correct and fail-safe today, but it quantifies how much of the KB is not source-grounded. Closing it needs retrievable, rights-cleared sources — a content problem, not an engineering one. |
+| R-4 | **All 91** rules are grounded only by an `implementation-proposal` sentinel (was 76/91 before the reviewer gate removed the keyword-derived bindings — see RG-1). Superseded by R-7. | Correct and fail-safe today, but it quantifies how much of the KB is not source-grounded. Closing it needs retrievable, rights-cleared sources plus a human-attested mapping — a content and review problem, not an engineering one. |
 | R-5 | The EP3-T5 audit itself is synthetic. No credentialed human has reviewed any passage. | `clinicalApprovers[]` is `[]` on all 91 rules and structurally enforced to stay that way (D-4, EP4-T3). |
+
+## Reviewer-gate findings (2026-07-21, `gpt-5.6-sol`, verdict: CHANGES REQUIRED)
+
+Report: `docs/audits/ep3-ep4-reviewer-gate-2026-07-21.md`. All eight were remediated in `8a6ddc7`
+and `aabc24e`.
+
+| ID | Sev | Finding | Disposition |
+|---|---|---|---|
+| RG-1 | high | `sourcePassageId` bound by raw substring matching produced false grounding — `Q-NORMO-LOW-001` bound to a marrow-replacement passage because the fact name appears in a **negated** condition (the rule fires when the finding is *absent*) | Matcher's authority **removed**, not improved. All 91 rules now bind to proposal sentinels; source-supported binding requires a human-attested `REVIEWED_RULE_PASSAGE_MAP`, currently empty |
+| RG-2 | high | 22 records claimed `source-supported` while carrying audit flags, contradicting the schema's own definition | New `quarantined` status; `source-supported` now means located AND unflagged, enforced bidirectionally |
+| RG-3 | high | Passage pointer discarded by `ruleEngine`/`engine`; validation only proved "the source has *some* passage" | Pointer propagated into `provenance.ruleAudit`; validator checks the actual pointer. Candidate-level pointers and UI rendering remain open (R-6) |
+| RG-4 | high | D-4 was a single-file assertion, defeatable by a second module or a build-time transform | Schema `maxItems: 0`; test covers all `MODULE_IDS` and `dist/` artifacts |
+| RG-5 | medium | `clinicalApprovalStatus()` was documented as making `if (approved)` safe — **false**, every label is truthy; the test asserted the truthy string while claiming truthiness was impossible | Claim retracted explicitly at both sites. This was our own over-claim, caught by the gate |
+| RG-6 | medium | `isBindableAsSourceSupported` failed **open** on missing `reviewFlags` | Fails closed; mis-named test corrected |
+| RG-7 | medium | Vendor stage had no `--check`, embedded the operator's absolute path, retained `localeCompare()` | All three fixed; `runId` replaces the absolute path |
+| RG-8 | medium | Trackers claimed completion while success criteria were pending | SC-2 recorded as `deviated` with the reason; commit refs and timestamps recorded |
+
+**RG-5 is the one worth remembering.** It was not an upstream defect or a delegate's error — it was
+a safety claim written into this phase's own code and test, asserting a protection that did not
+exist. It passed 622 tests and two prior self-reviews. Only the adversarial cross-family gate caught
+it, which is the argument for keeping that gate mandatory rather than advisory.
+
+## Residual gaps added by the reviewer gate
+
+| ID | Gap |
+|---|---|
+| R-6 | Candidate (`candidate.evidence[]`) still resolves only to a passage-bearing *source*, not an exact passage; the SPA and algorithm explorer still render source-ID chips with no passage/status awareness. Deliberately out of scope, not half-done. |
+| R-7 | **0 of 91 rules have source-supported grounding.** Every rule binds to an implementation-proposal sentinel. Closing this needs a human-attested rule to passage mapping — it cannot be produced mechanically, which is precisely what RG-1 demonstrated. |
 
 ## Related
 

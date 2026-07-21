@@ -10,11 +10,11 @@ execution_model: sequential
 phase: 4
 title: 'EP-4: Rule Metadata for Governance'
 status: completed
-started: null
-completed: null
-commit_refs: []
+started: '2026-07-20T20:00Z'
+completed: '2026-07-21T03:00Z'
+commit_refs: [545e666, 8a6ddc7, aabc24e]
 pr_refs: []
-overall_progress: 0
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 4
 completed_tasks: 4

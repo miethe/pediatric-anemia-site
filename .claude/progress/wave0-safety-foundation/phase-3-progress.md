@@ -10,11 +10,11 @@ execution_model: sequential
 phase: 3
 title: 'EP-3: Evidence Provenance (Exact-Passage Evidence Records)'
 status: completed
-started: null
-completed: null
-commit_refs: []
+started: '2026-07-20T20:00Z'
+completed: '2026-07-21T03:00Z'
+commit_refs: [a34ccc4, 6565c32, dd983c6, 8a6ddc7, aabc24e]
 pr_refs: []
-overall_progress: 0
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 6
 completed_tasks: 6
@@ -163,20 +163,25 @@ success_criteria:
 - id: SC-1
   description: 91/91 rules resolve sourcePassageId to a passage record or explicit
     implementation-proposal flag (EP3-T4, cross-checked by EP4-T2)
-  status: pending
+  status: completed
+  note: "91/91 rules resolve; all 91 to an implementation-proposal sentinel after the reviewer gate removed keyword-derived source-supported bindings."
 - id: SC-2
   description: Passage-fidelity audit clears with zero unresolved discrepancies (EP3-T5)
-  status: pending
+  status: deviated
+  note: "NOT cleared as written. The EP3-T5 audit returned 8 high / 2 medium / 1 low. Each finding is formally dispositioned at the record level (22 passages quarantined, 11 withheld, F11 fixed) rather than corrected, because correcting them would require authoring clinical prose. Zero findings are UNDISPOSITIONED; zero were CORRECTED. Do not read this as a clean audit."
 - id: SC-3
   description: 'AC-WP3-RESIL: absent evidence fields degrade to ''locator pending,''
     never a crash (EP3-T6)'
-  status: pending
+  status: completed
+  note: "Helper/accessor level verified; SPA passage rendering remains follow-up work."
 - id: SC-4
   description: npm run check green
-  status: pending
+  status: completed
+  note: "npm run check green at 626 tests."
 - id: SC-5
   description: task-completion-validator sign-off
-  status: pending
+  status: completed
+  note: "Adversarial reviewer gate run 2026-07-21 (gpt-5.6-sol): CHANGES REQUIRED; all findings remediated in 8a6ddc7 and aabc24e. See docs/audits/ep3-ep4-reviewer-gate-2026-07-21.md."
 files_modified:
 - schemas/evidence.schema.json
 - src/evidence.js
