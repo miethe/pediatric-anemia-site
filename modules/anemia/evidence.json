@@ -40,10 +40,10 @@
         "sublicensing": "unknown"
       },
       "terms_snapshot": {
-        "status": "not_captured",
-        "locator": null,
+        "status": "captured",
+        "locator": "https://publications.aap.org/pediatriccare/pages/terms",
         "sha256": null,
-        "retrieved_at": null
+        "retrieved_at": "2026-07-21"
       },
       "passages": [
         {
