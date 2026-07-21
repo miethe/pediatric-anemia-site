@@ -12,7 +12,7 @@ title: "EP-7: Review Contract & Docs"
 status: "completed"
 started: 2026-07-21
 completed: 2026-07-21
-commit_refs: []
+commit_refs: ["57dc6cb"]
 pr_refs: []
 
 overall_progress: 100

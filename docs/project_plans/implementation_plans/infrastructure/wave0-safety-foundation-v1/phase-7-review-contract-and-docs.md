@@ -29,7 +29,8 @@ files_affected:
   - README.md
   - CLAUDE.md
   - CHANGELOG.md
-commit_refs: []  # populated in the follow-up closeout commit
+commit_refs:
+  - 57dc6cb
 ---
 
 # Phase EP-7: Review Contract & Docs (WP7)
