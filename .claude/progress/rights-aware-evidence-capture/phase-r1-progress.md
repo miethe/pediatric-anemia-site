@@ -123,7 +123,7 @@ tasks:
   started: '2026-07-21T00:00:00Z'
   completed: '2026-07-21T00:00:00Z'
   evidence:
-  - commit: PENDING
+  - commit: a1c83d2
 parallelization:
   batch_1:
   - EPR1-T1
