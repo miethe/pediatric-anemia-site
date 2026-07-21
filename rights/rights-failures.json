@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Top-level rights/ tree (D4): join container for rights_failure entries — the vendored schemas/rights/rights_failure.schema.json (EPR0-T2) plus its declared local amendment layer (EPR0-T3) is the shape authority for each entry in `failures`. A rights_failure records a blocking or open rights problem (e.g. an unresolved access-basis, an unaddressed contract restriction) and cross-links to an existing project identifier — never a new, agent-invented finding ID. EPR0-T1 creates this container empty; EPR0-T4 populates it, cross-linking known open failures (REG-002, EP3T5-F01, EP3T5-F02) to their existing identifiers. Every rights_failure.review.reviewed_by stays maxItems: 0 (D6) — no reviewer is ever recorded by an agent.",
+  "failures": []
+}

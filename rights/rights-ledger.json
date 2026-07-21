@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Top-level rights/ tree (D4): the join ledger. This is the ONLY link between a clinical KB identifier (an evidence.json source id, a rule id, a candidate id, a reference-ranges.json entry) and a rights/ record id (rights-records.json / rights-failures.json). No clinical JSON file (rules.json, candidates.json, evidence.json, reference-ranges.json) may carry an inline rights key of any kind, including under an `extensions.rights` path — that inline shape is explicitly rejected by D4 and is asserted against in tests/rights-substrate.test.mjs. EPR0-T1 creates this ledger empty; EPR0-T4 populates it while seeding the 6 triage-only rights records, joining each KB-cited source id to its rights_record_id.",
+  "entries": []
+}

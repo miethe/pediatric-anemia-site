@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Top-level rights/ tree (D4): join container for rights_record entries — the vendored schemas/rights/rights_record.schema.json (EPR0-T2) plus its declared local amendment layer (EPR0-T3) is the shape authority for each entry in `records`. No `rights_record` may be inlined into any clinical KB JSON file (rules.json, candidates.json, evidence.json, reference-ranges.json); the only cross-reference between a clinical identifier and a record here is rights/rights-ledger.json. EPR0-T1 creates this container empty; EPR0-T4 seeds it with 6 triage-only records (one per KB-cited source from RF-EV-003), each at review.review_status: agent_triage_only and overall_status: UNKNOWN. No CLEARED_* value may ever appear in this file.",
+  "records": []
+}
