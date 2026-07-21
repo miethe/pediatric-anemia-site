@@ -7,33 +7,55 @@
 // Structure:
 //   1. Headline / required tests (ARC-001 regression, skeleton-before-leaf, negation parity,
 //      fail-closed, sameNumericValue, RA-5, empty changeset, round-trip).
+//   1b. EP5-T4 adversarial-finding regressions (EP5T4-001..004) -- the exact mutations a
+//      cross-family review (gpt-5.6-sol) used to break this file four times, each confirmed by
+//      execution. See .claude/findings/wave0-ep5-manifest-and-diff-findings.md.
 //   2. Table-driven coverage of the consolidated seeded-mutation table (amended section 6,
 //      M01-M83). Each mutation is its own `test()` so a failure names the mutation id directly.
 //   3. A dedicated scope test for the mutations this classifier is DESIGNED to miss (Family H --
 //      JS source edits outside the 5 diffed JSON files).
 //
-// Coverage accounting (also restated in the EP5-T3 completion report, verbatim):
-//   - Individually mutated and asserted: M01-M23, M25-M37, M40, M42-M44, M46, M47, M53, M55, M56,
-//     M58-M60, M63-M76, M78, M83 (table-driven), plus M24, M38, M39, M41, M45, M52, M61, M62, M77
-//     as dedicated named tests. That is 73 of 83.
+// Coverage accounting -- CORRECTED (the EP5-T3 completion report's original "73/83" claim was
+// found overstated by the EP5T4-005 adversarial pass; see the findings doc for the full list of
+// what was wrong and how each was fixed here, not merely re-asserted):
+//   - Individually mutated and asserted: M01-M23 (M02 now simulated on its correct rule FAMILY,
+//     an alert, not a substituted candidate rule), M25-M37, M40, M42-M44, M46, M47, M53, M55, M56,
+//     M58-M60, M63-M76, M78, M83 (table-driven), plus M24 (now a genuinely dedicated test, was
+//     previously claimed but did not exist), M38, M39, M41, M45, M52, M61, M62, M77 as dedicated
+//     named tests. That is 73 of 83.
 //   - Verified as correctly OUT OF SCOPE (Family H, JS source edits no JSON differ can see) via
 //     the scope.filesNotDiffed assertion, not via individual simulation: M48, M49, M50, M51, M54,
 //     M57, M79, M80, M81, M82. That is 10 of 83.
 //   - 73 + 10 = 83/83 addressed. Known caveats, each documented at its own test:
-//       * M02 -- adapted onto a different rule (ALERT-001's `when` no longer has a `value` field
-//         after the EP-1 tri-state migration).
-//       * M21 -- partial: this implementation reports B2 only, not the table's stated B2+B6, for
-//         one leaf whose fact/op/value-shape all change at once. Still correctly never reports
-//         "no change."
-//       * M22, M34, M47, M76 -- documented DISCREPANCY (not a partial match): B13, D1, G4, and F8
-//         are never wired into decision-function Rule 6 in either the pre- or post-amendment
-//         code, so all four resolve to `block`, not the table's stated `review`. One shared root
-//         cause, asserted both as a dedicated pattern test and at each mutation's own test.
+//       * M02 -- ALERT-001's `when` no longer has a `value` field after the EP-1 tri-state
+//         migration (genuinely, not a stale line number). Re-simulated on ALERT-006, the closest
+//         surviving alert-family rule with M02's exact leaf shape, instead of the previous
+//         version's candidate-rule (IMF-001) substitution -- fixed per EP5T4-005.
+//       * M21 -- was under-asserted (B2 only); the classifier now ALSO detects the accompanying
+//         value-shape change and this test now asserts the full table-specified B2+B6 pair --
+//         fixed per EP5T4-005 (see diffWhen's Step 3 comment for the implementation).
+//       * M22, M34, M47, M76 -- documented DISCREPANCY (not a partial match, and deliberately NOT
+//         "fixed" to match the table): B13, D1, G4, and F8 are never wired into decision-function
+//         Rule 6 in either the pre- or post-amendment code, so all four resolve to `block`, not
+//         the table's stated `review`. Conservative, not unsafe -- the implementation is left as
+//         is and the ACTUAL behavior is asserted. One shared root cause, asserted both as a
+//         dedicated pattern test and at each mutation's own test.
 //       * M20 -- reclassified, not partial: RA-1's own detection-requirement text (array fields
 //         diff by multiset -> C8+C9) postdates and supersedes the original table's "C11" call for
 //         this array-field edit; C11 is scalar-field-only by its own interpolate()-call grounding.
 //       * M31 -- tier upgraded from the table's "review" to "block": marrow-failure-infiltration
 //         IS protective under RA-9, so RA-1 escalates this D4 edit.
+//       * M38, M39, M45 -- now assert the operational consequence (`clean`/`cosmeticOnly` ==
+//         false), not merely `invariant.passed === false` -- fixed per EP5T4-005.
+//       * M52 -- now also asserts the required `review` tier on its B9 half, not just the class --
+//         fixed per EP5T4-005.
+//       * M24/M61 -- both target the identical underlying mutation (`2`->`2.0`) under two
+//         different revisions of the consolidated table's numbering. `JSON.parse` collapses `2`
+//         and `2.0` to the same JS double, so the table's `B5 value-format-change · note` is
+//         PROVABLY unreachable through the full base/head-snapshot pipeline for this mutation --
+//         both tests keep the helper-level unit assertion (classifyValueChange(2, 2.0) === 'B5')
+//         and assert-and-document the full-pipeline zero-change result, rather than fake a
+//         full-pipeline pass. Honesty over a green checkmark.
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -255,8 +277,17 @@ test('empty changeset: cosmeticOnly and clean are defined for zero changes (RA-4
   // working as designed against real, imperfect data), not a defect in this test or the
   // classifier -- see the dedicated test below and the EP5-T3 completion report. This test
   // isolates the "empty changeset -> clean, GIVEN fully-resolved bindings" property on its own.
+  // NOTE (EP5T4-003): this fixture used to be a single note-type rule. Since EP5T4-003 fixed
+  // outputIsProtective() to treat ALL note outputs as protective (fail-safe -- see that function's
+  // header comment and the dedicated test below), a lone note rule is no longer a valid stand-in
+  // for "genuinely non-protective" -- it would make requiredTestCaseIds mandatory and this fixture
+  // would no longer isolate the property this test exists to prove. Replaced with two
+  // low-level, no-caution candidate rules sharing one candidateId (so neither is a SOLE
+  // contributor, RA-9's other protective trigger) -- genuinely non-protective under every branch
+  // of outputIsProtective, so an empty requiredTestCaseIds legitimately resolves.
   const syntheticRules = [
-    { id: 'SYN-NOTE-001', output: { type: 'note' }, requiredTestCaseIds: [], changeRationale: 'x' },
+    { id: 'SYN-CAND-001', output: { type: 'candidate', candidateId: 'syn-pattern', level: 'possible', cautions: [] }, requiredTestCaseIds: [], changeRationale: 'x' },
+    { id: 'SYN-CAND-002', output: { type: 'candidate', candidateId: 'syn-pattern', level: 'possible', cautions: [] }, requiredTestCaseIds: [], changeRationale: 'x' },
   ];
   const alwaysResolves = { has: () => true };
   assert.equal(isClean({ changes, invariants }, syntheticRules, syntheticRules, alwaysResolves), true);
@@ -305,14 +336,20 @@ test('RA-6: class ids are always emitted in the full form, never bare', () => {
   assert.match(entry.class, /^[A-Z]\d+ [a-z-]+$/, 'full form: e.g. "B1 threshold-change", never bare "B1"');
 });
 
-test('outputIsProtective (RA-9): extends to all question outputs and to a sole-contributor candidate rule', () => {
+test('outputIsProtective (RA-9 + EP5T4-003): extends to all question outputs, to a sole-contributor candidate rule, and (EP5T4-003 fail-safe fix) to note outputs', () => {
   const questionRule = rules.find((r) => r.output.type === 'question');
   assert.equal(outputIsProtective(questionRule, rules), true, 'all question outputs are protective under RA-9');
   const tec001 = rules.find((r) => r.id === 'TEC-001');
   assert.equal(isSoleContributor('transient-erythroblastopenia', 'TEC-001', rules), true);
   assert.equal(outputIsProtective(tec001, rules), true);
+  // EP5T4-003 (confirmed by execution, see .claude/findings/wave0-ep5-manifest-and-diff-findings.md):
+  // RA-9's own text scopes the extension to questions/sole-contributor-candidates only, excluding
+  // all 6 note rules -- a confirmed SPEC gap that let a note rewritten from a hedged caution into a
+  // false-reassurance claim (NOTE-004) tier only `review`. Fixed fail-safe: every note output is
+  // now protective. This does NOT resolve OQ-12 (see outputIsProtective's header comment) -- it
+  // only closes the detection gap.
   const noteRule = rules.find((r) => r.output.type === 'note');
-  assert.equal(outputIsProtective(noteRule, rules), false, 'note outputs are deliberately NOT extended by RA-9');
+  assert.equal(outputIsProtective(noteRule, rules), true, 'EP5T4-003: note outputs are now protective (fail-safe fix; OQ-12 tier-calibration question remains open)');
 });
 
 test('outputIsProtectiveSafe: fails closed (returns true) on a throw', () => {
@@ -372,6 +409,66 @@ test('resolveRequiredTestCaseIds: a non-empty array resolves only if every id is
 });
 
 // =================================================================================================
+// 1b. EP5-T4 adversarial-finding regressions (gpt-5.6-sol cross-family pass, confirmed by
+//     execution). Each mutation below is the EXACT mutation from
+//     .claude/findings/wave0-ep5-manifest-and-diff-findings.md; verified (outside this suite, via
+//     an ad hoc before/after run against the pre-fix HEAD copy of scripts/kb-diff.mjs) to fail
+//     against the pre-fix implementation and pass against the fix below.
+// =================================================================================================
+
+test('EP5T4-001 (critical): reordering ALERT-001.output.actions (emergency alert) is detected and blocks -- not silently clean', () => {
+  const report = diffAfter((head) => {
+    const r = ruleIn(head, 'ALERT-001');
+    r.output.actions = [...r.output.actions].reverse();
+  });
+  const entries = changesFor(report, { ruleId: 'ALERT-001' });
+  assert.ok(entries.length > 0, 'a reorder of actions[] on an emergency alert must report SOMETHING, never a silent pass');
+  assert.ok(entries.some((c) => c.class === 'C9 safety-string-add' && c.tier === 'block' && c.outputProtective === true), `expected a block-tier C9 entry for the reorder: ${JSON.stringify(entries)}`);
+  assert.equal(report.summary.cosmeticOnly, false);
+  assert.equal(report.summary.clean, false);
+});
+
+test('EP5T4-001: an in-place element edit inside actions[] (RA-1\'s own original detection requirement) is still caught as a paired remove+add -- the reorder fix does not regress it', () => {
+  const report = diffAfter((head) => {
+    const r = ruleIn(head, 'ALERT-001');
+    r.output.actions[0] = 'A rewritten first action string.';
+  });
+  const entries = changesFor(report, { ruleId: 'ALERT-001' });
+  assert.ok(entries.some((c) => c.class === 'C8 safety-string-remove' && c.tier === 'block'), `in-place edit must still emit a remove half: ${JSON.stringify(entries)}`);
+  assert.ok(entries.some((c) => c.class === 'C9 safety-string-add' && c.tier === 'block'), `in-place edit must still emit an add half: ${JSON.stringify(entries)}`);
+  assert.ok(!entries.some((c) => c.path && c.path.endsWith('[reorder]')), 'an in-place edit is not a reorder and must not ALSO emit the reorder entry');
+});
+
+test('EP5T4-002 (high): a combined combinator-swap + arity edit on ALERT-009.when still emits B10 combinator-swap · block, alongside B9', () => {
+  const report = diffAfter((head) => {
+    const r = ruleIn(head, 'ALERT-009');
+    r.when = { any: [r.when.all[0]] }; // {all:[neutropenia,fever]} -> {any:[neutropenia]}: type AND arity both change
+  });
+  const entries = changesFor(report, { ruleId: 'ALERT-009' });
+  assert.ok(entries.some((c) => c.class === 'B10 combinator-swap' && c.tier === 'block'), `combinator type change must be caught independent of the simultaneous arity change: ${JSON.stringify(entries)}`);
+  assert.ok(entries.some((c) => c.class === 'B9 leaf-remove'), 'the leaf lost in the same edit must ALSO still be reported');
+});
+
+test('EP5T4-003 (high): rewriting NOTE-004 from a hedged caution into a false-reassurance claim blocks (does not resolve OQ-12)', () => {
+  const report = diffAfter((head) => {
+    ruleIn(head, 'NOTE-004').output.detail = 'A normal assay excludes G6PD deficiency; no repeat testing is needed.';
+  });
+  const entries = changesFor(report, { ruleId: 'NOTE-004' });
+  assert.equal(entries.length, 1);
+  assert.equal(entries[0].class, 'C10 display-text-change');
+  assert.equal(entries[0].tier, 'block');
+  assert.equal(entries[0].outputProtective, true);
+});
+
+test('EP5T4-004 (medium): reordering iron-deficiency-anemia.evidence[] (same ids, reversed) is D8 candidate-evidence-change, block', () => {
+  const report = diffAfter((head) => {
+    head.candidates['iron-deficiency-anemia'].evidence = [...head.candidates['iron-deficiency-anemia'].evidence].reverse();
+  });
+  const entries = changesFor(report, { candidateId: 'iron-deficiency-anemia' });
+  assert.ok(entries.some((c) => c.class === 'D8 candidate-evidence-change' && c.tier === 'block'), `a pure evidence[] reorder must be caught, not erased as an unordered-set match: ${JSON.stringify(entries)}`);
+});
+
+// =================================================================================================
 // 2. Table-driven coverage of the consolidated seeded-mutation table (M01-M83)
 // =================================================================================================
 
@@ -380,14 +477,19 @@ test('M01: ALERT-001.output.severity emergency->urgent is C5 severity-change, bl
   assert.ok(hasChange(report, (c) => c.ruleId === 'ALERT-001' && c.class === 'C5 severity-change' && c.tier === 'block'));
 });
 
-test('M02 (adapted -- see note): a boolean-eq leaf flip on a protective rule is B3, block', () => {
+test('M02 (EP5T4-005 fix -- simulated at its actual site, not a substituted rule): a boolean-eq leaf flip on ALERT-006, an emergency-severity ALERT rule, is B3, block', () => {
   // As originally written, M02 targets ALERT-001.when.value true->false. That no longer applies
   // to HEAD: ALERT-001's when is now `{fact:"symptoms.instability", op:"is-present"}` (EP-1
-  // tri-state migration) -- there is no `value` field left to flip. Substituted onto IMF-001's
-  // bare `eq true` leaf (anemia.present), which exercises the identical class/tier outcome B02
-  // was checking for (a boolean flip on a protective rule's condition, block).
-  const report = diffAfter((head) => { ruleIn(head, 'IMF-001').when.all[0].value = false; });
-  assert.ok(hasChange(report, (c) => c.ruleId === 'IMF-001' && c.class === 'B3 boolean-value-flip' && c.tier === 'block'));
+  // tri-state migration) -- there is no `value` field left to flip on ALERT-001 itself, genuinely,
+  // not merely a stale line number. The EP5-T3 version of this test substituted the mutation onto
+  // IMF-001, a CANDIDATE rule -- a different rule FAMILY than M02 specified, and the adversarial
+  // pass (EP5T4-005) confirmed that substitution as a real test-accounting gap: the test claimed
+  // M02 coverage while never touching an alert rule at all. Fixed here by finding the closest
+  // surviving site with M02's EXACT structural shape (`{fact, op:'eq', value:true}`) on a rule of
+  // the SAME family M02 specified (an alert), and choosing one at the same severity (`emergency`)
+  // as ALERT-001: `ALERT-006.when.all[0]` (`smear.schistocytes eq true`) is exactly that leaf.
+  const report = diffAfter((head) => { ruleIn(head, 'ALERT-006').when.all[0].value = false; });
+  assert.ok(hasChange(report, (c) => c.ruleId === 'ALERT-006' && c.class === 'B3 boolean-value-flip' && c.tier === 'block'));
 });
 
 test('M05: IMF-001 leaf gte 1 -> gte 2 is B1 threshold-change, block', () => {
@@ -502,19 +604,23 @@ test('M20 (documented reclassification -- see note): replacing a {{ferritin.thre
   assert.ok(entries.some((c) => c.class === 'C9 safety-string-add' && c.tier === 'block'), 'RA-1 escalation: ID-001 is a protective (meets-defined-pattern) candidate rule');
 });
 
-test('M21 (partial coverage -- see note): rewriting {op:eq,value:true} as {op:in,value:[true]} is detected as B2 operator-change, block (does not claim equivalence)', () => {
-  // Known gap, documented rather than silently claimed complete: the amended table expects BOTH
-  // B2 (operator changed) AND B6 (value became an array) to be reported for this single leaf.
-  // This implementation's Step 3 matches the leaf once (by stable slot) and reports one class for
-  // it (B2, since fact is unchanged and op changed) -- it does not also separately flag the value
-  // shape change on the same leaf. The safety property M21 exists to prove -- the classifier must
-  // NOT report "no change" -- holds: this edit is reported, at block tier. The exact two-class
-  // split is not implemented; see the EP5-T3 completion report.
+test('M21 (EP5T4-005 fix -- was under-asserted, now B2 + B6): rewriting {op:eq,value:true} as {op:in,value:[true]} is B2 operator-change AND B6 value-set-change, both block', () => {
+  // EP5-T3's original version of this test only ASSERTED B2, documenting a claimed
+  // "implementation gap" (no B6). The adversarial pass (EP5T4-005) confirmed the under-assertion
+  // as a test-accounting gap, not a settled implementation limit: Step 3's factSame&&!opSame
+  // branch now ALSO checks for a value-shape change at the same leaf and reports B6
+  // value-set-change when the value becomes an array (see diffWhen's Step 3 comment for why this
+  // is handled as a local, taxonomy-only routing fix rather than by reusing
+  // classifyValueChange's typeof-first ordering, which targets a different call site). Both
+  // classes are already-defined FIXED_DANGEROUS entries -- block either way -- so this closes the
+  // "must not claim no-change" property AND the exact two-class split the table specifies.
   const report = diffAfter((head) => {
     const r = ruleIn(head, 'IMF-001');
     r.when.all[0] = { fact: 'anemia.present', op: 'in', value: [true] }; // op+value rewrite, fact unchanged
   });
-  assert.ok(hasChange(report, (c) => c.ruleId === 'IMF-001' && c.class === 'B2 operator-change' && c.tier === 'block'), 'must not claim no-change');
+  const entries = changesFor(report, { ruleId: 'IMF-001' });
+  assert.ok(entries.some((c) => c.class === 'B2 operator-change' && c.tier === 'block'), `must not claim no-change: ${JSON.stringify(entries)}`);
+  assert.ok(entries.some((c) => c.class === 'B6 value-set-change' && c.tier === 'block'), `value becoming an array must also be flagged: ${JSON.stringify(entries)}`);
 });
 
 test('M22, M34, M47, M76 (systematic finding -- see note): B13/D1/G4/F8 are never wired into decision-function Rule 6, so all four resolve to block, not the table\'s stated review', () => {
@@ -547,6 +653,25 @@ test('M22 (documented discrepancy -- see note): deleting the `op` key from an eq
 test('M23: leaf value true->"true" is B4 value-type-change, block', () => {
   const report = diffAfter((head) => { ruleIn(head, 'IMF-001').when.all[0].value = 'true'; });
   assert.ok(hasChange(report, (c) => c.ruleId === 'IMF-001' && c.class === 'B4 value-type-change' && c.tier === 'block'));
+});
+
+test('M24 (EP5T4-005 fix -- dedicated test written; was claimed in the EP5-T3 coverage count but did not exist): leaf value 2->2.0 at Q-NORMO-HIGH-001 (rules.json:2768\'s cited site) cannot be exercised through the full pipeline, same finding as M61', () => {
+  // M24's specified mutation ("Leaf value 2->2.0", `rules.json:2768`) targets the SAME site as
+  // M61 (Q-NORMO-HIGH-001's `lt 2` leaf, `when.all[2]`) under a later renumbering of the
+  // consolidated mutation table -- both are the identical underlying edit. The EP5-T3 completion
+  // report claimed M24 as one of "M24, M38, M39, M41, M45, M52, M61, M62, M77 as dedicated named
+  // tests," but no test literally named/keyed to M24 existed -- the adversarial pass (EP5T4-005)
+  // confirmed this as a real accounting gap, not merely a labeling nit. This test closes it
+  // HONESTLY rather than fabricating a full-pipeline pass: `JSON.parse("2")` and
+  // `JSON.parse("2.0")` both produce the identical JS `Number(2)`, so by the time a mutated
+  // head-snapshot object reaches classifyKB() there is no observable difference left to classify
+  // -- classifyValueChange(2, 2.0) === 'B5 value-format-change' is already proven directly (see
+  // the headline test above); THIS test proves that the full base/head-snapshot pipeline cannot
+  // exercise that code path for this mutation, full stop.
+  const head = clone();
+  ruleIn(head, 'Q-NORMO-HIGH-001').when.all[2].value = 2.0;
+  const report = classifyKB({ base: clone(), head });
+  assert.equal(changesFor(report, { ruleId: 'Q-NORMO-HIGH-001' }).length, 0, 'M24 (== M61\'s site): 2 and 2.0 are indistinguishable after JSON.parse -- structurally unrepresentable through the full pipeline, not a classifier defect');
 });
 
 test('M25: Q-002 leaf op missing->falsy is B2 operator-change, block', () => {
@@ -644,21 +769,34 @@ test('M37: removing a supports[] line from an evidence.json source record is E5 
   assert.ok(hasChange(report, (c) => c.class === 'E5 evidence-record-content-change' && c.path === 'sources[AAP2026_IDA]' && c.tier === 'block'));
 });
 
-test('M38: bumping evidence.json\'s knowledgeBaseVersion alone trips the redefined three-way E7 invariant, block', () => {
+test('M38 (EP5T4-005 fix -- now asserts the operational consequence): bumping evidence.json\'s knowledgeBaseVersion alone trips the redefined three-way E7 invariant AND makes the release non-clean', () => {
   const head = clone();
   head.evidence.knowledgeBaseVersion = '0.2.0-2026-08-01';
   const report = classifyKB({ base: clone(), head });
   const e7 = report.invariants.find((i) => i.id === 'E7 evidence-dual-source-drift');
   assert.equal(e7.passed, false);
+  // EP5-T3's original version of this test stopped at `e7.passed === false`. The invariant
+  // failing is not itself the safety property -- nothing reads invariants[] directly at release
+  // time; `summary.clean`/`summary.cosmeticOnly` are what actually gate `npm run check:release`
+  // (RA-3/RA-4). This mutation produces NO changes[] entries at all (evidence.json's own
+  // knowledgeBaseVersion field is not independently diffed as a change -- only invariants[] sees
+  // it), so asserting the operational consequence is the only way this test proves the invariant
+  // failure actually BLOCKS a release rather than merely being recorded.
+  assert.equal(report.changes.length, 0, 'this mutation produces no changes[] entries -- the invariant is the ONLY signal');
+  assert.equal(report.summary.cosmeticOnly, false, 'a failing invariant must defeat cosmeticOnly even with an empty changes[]');
+  assert.equal(report.summary.clean, false, 'a failing invariant must defeat clean even with an empty changes[]');
 });
 
-test('M39: bumping only modules/anemia/index.js\'s manifest version trips the same E7 invariant, block', () => {
+test('M39 (EP5T4-005 fix -- now asserts the operational consequence): bumping only modules/anemia/index.js\'s manifest version trips the same E7 invariant AND makes the release non-clean', () => {
   const base = clone();
   const head = clone();
   head.indexManifest = { ...head.indexManifest, knowledgeBaseVersion: '0.2.0-2026-08-01' };
   const report = classifyKB({ base, head });
   const e7 = report.invariants.find((i) => i.id === 'E7 evidence-dual-source-drift');
   assert.equal(e7.passed, false);
+  assert.equal(report.changes.length, 0, 'this mutation produces no changes[] entries -- the invariant is the ONLY signal');
+  assert.equal(report.summary.cosmeticOnly, false, 'a failing invariant must defeat cosmeticOnly even with an empty changes[]');
+  assert.equal(report.summary.clean, false, 'a failing invariant must defeat clean even with an empty changes[]');
 });
 
 test('M40: hbLower 11->10.5 in the 6-<24mo female band is F1 range-value-change, block', () => {
@@ -698,12 +836,17 @@ test('M44: top-level reference-ranges source AAP2026_IDA->LOCAL_LAB is F7 range-
   assert.ok(hasChange(report, (c) => c.class === 'F7 range-source-change' && c.tier === 'block'));
 });
 
-test('M45: landing a threshold change with knowledgeBaseVersion unchanged fails the G2 version-omission invariant', () => {
+test('M45 (EP5T4-005 fix -- now asserts the operational consequence): landing a threshold change with knowledgeBaseVersion unchanged fails the G2 version-omission invariant AND makes the release non-clean', () => {
   const head = clone();
   ruleIn(head, 'IMF-001').when.all[2].value = 2; // M05's edit, module.json untouched
   const report = classifyKB({ base: clone(), head });
   const g2 = report.invariants.find((i) => i.id === 'G2 version-omission');
   assert.equal(g2.passed, false);
+  // EP5-T3's original version of this test stopped at `g2.passed === false`. Asserting the
+  // operational consequence closes the same accounting gap as M38/M39: `clean`/`cosmeticOnly`,
+  // not raw invariants[], are what actually gate a release.
+  assert.equal(report.summary.cosmeticOnly, false);
+  assert.equal(report.summary.clean, false);
 });
 
 test('M46: approvedBy []->["ARC clinical council"] is G3 attestation-change, block (CLAUDE.md: named humans only)', () => {
@@ -719,14 +862,17 @@ test('M47 (documented discrepancy -- see note): supportedAgeMonths.max 216->240 
   assert.ok(hasChange(report, (c) => c.class === 'G4 manifest-declarative-change' && c.path === 'supportedAgeMonths' && c.tier === 'block'));
 });
 
-test('M52: a paired mutation classifies each hunk correctly on its own (per-hunk classification is correct; the COMBINATION is a probe-only concern, FN-7)', () => {
+test('M52 (EP5T4-005 fix -- now also asserts the required review tier): a paired mutation classifies each hunk correctly on its own (per-hunk classification is correct; the COMBINATION is a probe-only concern, FN-7)', () => {
   const report = diffAfter((head) => {
     ruleIn(head, 'IMF-001').when.all[2].value = 2; // B1, block
     const alert = ruleIn(head, 'ALERT-009');
-    alert.when.all = [alert.when.all[0]]; // remove a leaf from a related alert's `all` -> B9
+    alert.when.all = [alert.when.all[0]]; // remove a leaf from a related alert's `all` -> B9, broaden -> review
   });
   assert.ok(hasChange(report, (c) => c.ruleId === 'IMF-001' && c.class === 'B1 threshold-change' && c.tier === 'block'));
-  assert.ok(hasChange(report, (c) => c.ruleId === 'ALERT-009' && c.class === 'B9 leaf-remove'), 'the second hunk (broadening removal under `all`) must ALSO appear on its own terms');
+  // EP5-T3's original version of this test asserted the B9 class but never its tier. The table's
+  // own text ("one B9, which in isolation broadens and would be tiered review") makes the tier
+  // part of the property under test, not incidental -- asserting it now.
+  assert.ok(hasChange(report, (c) => c.ruleId === 'ALERT-009' && c.class === 'B9 leaf-remove' && c.tier === 'review'), 'the second hunk (broadening removal under `all`) must ALSO appear on its own terms, at review tier');
 });
 
 test('M53: emptying ALERT-001\'s requiredTestCaseIds is G6 protective-test-binding-remove, block', () => {
@@ -780,9 +926,13 @@ test('M67: adding a string to TEC-001.output.cautions (already-protective rule) 
   assert.ok(hasChange(report, (c) => c.ruleId === 'TEC-001' && c.class === 'C9 safety-string-add' && c.tier === 'block'));
 });
 
-test('M68: editing NOTE-001.output.detail (a note-type output) is C10 display-text-change, review -- NOT block, because RA-9 deliberately does not extend to note outputs', () => {
+test('M68 (superseded by EP5T4-003 -- see note): editing NOTE-001.output.detail (a note-type output) is C10 display-text-change, block -- note outputs are now protective', () => {
+  // Was `review` under the original RA-9 scoping (notes excluded). EP5T4-003 fixed that gap
+  // fail-safe (see outputIsProtective()'s header comment and EP5T4-003 in
+  // .claude/findings/wave0-ep5-manifest-and-diff-findings.md): every note output is now
+  // protective, so a display-text edit on one blocks like any other protective rule's text edit.
   const report = diffAfter((head) => { ruleIn(head, 'NOTE-001').output.detail += ' Additional context.'; });
-  assert.ok(hasChange(report, (c) => c.ruleId === 'NOTE-001' && c.class === 'C10 display-text-change' && c.tier === 'review'));
+  assert.ok(hasChange(report, (c) => c.ruleId === 'NOTE-001' && c.class === 'C10 display-text-change' && c.tier === 'block'));
 });
 
 test('M69: adding output.evidence to Q-001 is C12 output-evidence-change, block', () => {

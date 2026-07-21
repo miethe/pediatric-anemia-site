@@ -230,10 +230,32 @@ function multisetDiff(beforeArr = [], afterArr = []) {
 }
 
 function diffStringArray(beforeArr, afterArr, fieldPath, addClass, removeClass) {
-  const { removed, added } = multisetDiff(beforeArr ?? [], afterArr ?? []);
+  const before = beforeArr ?? [];
+  const after = afterArr ?? [];
+  const { removed, added } = multisetDiff(before, after);
   const out = [];
   for (const v of removed) out.push({ class: removeClass, path: fieldPath, before: v, after: null });
   for (const v of added) out.push({ class: addClass, path: fieldPath, before: null, after: v });
+
+  // EP5T4-001 (critical, confirmed by execution): multiset comparison -- RA-1's OWN detection
+  // requirement text ("for array fields, compare before/after by multiset, not by length") -- is
+  // correct for catching an in-place element edit (removed.length===1/added.length===1 above,
+  // that is what RA-1 exists to fix) but is BLIND to a pure reorder: same multiset, different
+  // sequence. These arrays are read in order by a clinician (`actions[]` is "do this first";
+  // `A4 rule-reorder`'s own grounding elsewhere in this file/the SPIKE says the same of
+  // nextSteps/support/cautions/defaultNextSteps -- "clinician reads the first next-step first").
+  // Reordering `actions[]` on an emergency alert changes what a clinician does first while
+  // reporting NOTHING under multiset comparison alone -- confirmed by execution (EP5T4-001,
+  // .claude/findings/wave0-ep5-manifest-and-diff-findings.md). The amended SPIKE-005 spec (RA-1)
+  // is itself internally inconsistent here: its own multiset prescription is what erases the
+  // reorder, and it never separately addresses order sensitivity. This is the fail-closed
+  // reading: keep the multiset comparison UNCHANGED for in-place edits (do not regress RA-1's own
+  // fix), and ADD an order check on top, routed through the SAME add/remove classes so a reorder
+  // inherits the classes' existing protective-output tiering (Rule 5's C9/D6 block-if-protective
+  // escalation, or C8/D5's unconditional block) rather than inventing a new, uncalibrated class.
+  if (removed.length === 0 && added.length === 0 && before.length > 0 && !arraysEqualOrdered(before, after)) {
+    out.push({ class: addClass, path: `${fieldPath}[reorder]`, before: null, after });
+  }
   return out;
 }
 
@@ -376,19 +398,43 @@ export function diffWhen(beforeTree, headTree) {
 
   // Step 0 -- combinator skeleton BEFORE leaf matching (ARC-028 property 1/2). Catches an
   // all<->any swap and a not-wrap/unwrap even when the leaf multiset is byte-identical.
+  //
+  // EP5T4-002 (high, confirmed by execution): the ORIGINAL form of this check only compared
+  // combinator types when `skelB.shape === skelA.shape` (arity/nesting otherwise identical) --
+  // gating the whole B10 check on shape equality and then walking `keys` by INDEX. A combined
+  // combinator-AND-arity edit (`{all:[a,b]}` -> `{any:[a]}`: root type all->any AND child count
+  // 2->1) changes `shape` too, so the gate never opened and B10 was silently skipped -- the leaf
+  // multiset difference (losing `b`) was still caught downstream as a lone `B9 leaf-remove`, but
+  // the combinator swap itself vanished. Executed consequence: `ALERT-009.when` from
+  // `{all:[neutropenia,fever]}` to `{any:[neutropenia]}` emitted only `B9 · review`, no B10, and
+  // with `neutropenia=true,fever=false` this flips the alert from "does not fire" to "fires" --
+  // exactly the skeleton-before-leaf property (ARC-028 property 2) this check exists to enforce,
+  // defeated by the exact attack it was built to stop. See EP5T4-002 in
+  // .claude/findings/wave0-ep5-manifest-and-diff-findings.md.
+  //
+  // Fix: compare combinator type BY ADDRESS, independent of overall shape/arity. The root address
+  // ('$') and any nested combinator's address are stable regardless of how many children it (or
+  // an unrelated sibling) has; only compare the addresses present on BOTH sides -- an address that
+  // exists on only one side is an arity change with nothing to swap-compare, already fully
+  // explained by Step 4's leaf residue below. (A nested combinator whose ancestor gained/lost an
+  // earlier sibling can, in principle, have its position-derived address alias a different node --
+  // the same known limitation `walkCondition`'s own comment documents for leaf `posAddr`. Worst
+  // case here is a spurious extra `block`-tier B10 alongside the real classes, never a silent
+  // miss, so it stays on the fail-closed side.)
   const skelB = combinatorSkeleton(beforeTree);
   const skelA = combinatorSkeleton(headTree);
-  if (skelB.shape === skelA.shape) {
-    for (let i = 0; i < skelB.keys.length; i += 1) {
-      if (skelB.keys[i].type !== skelA.keys[i].type) {
-        raw.push({
-          class: 'B10 combinator-swap',
-          leafAddr: skelB.keys[i].addr,
-          path: pathFor(skelB.keys[i].addr),
-          before: skelB.keys[i].type,
-          after: skelA.keys[i].type,
-        });
-      }
+  const skelBTypeByAddr = new Map(skelB.keys.map((k) => [k.addr, k.type]));
+  const skelATypeByAddr = new Map(skelA.keys.map((k) => [k.addr, k.type]));
+  for (const [addr, beforeType] of skelBTypeByAddr) {
+    const afterType = skelATypeByAddr.get(addr);
+    if (afterType !== undefined && afterType !== beforeType) {
+      raw.push({
+        class: 'B10 combinator-swap',
+        leafAddr: addr,
+        path: pathFor(addr),
+        before: beforeType,
+        after: afterType,
+      });
     }
   }
 
@@ -506,6 +552,24 @@ export function diffWhen(beforeTree, headTree) {
         const opSame = b.op === h.op;
         if (factSame && !opSame) {
           raw.push({ class: 'B2 operator-change', leafAddr: h.addr, path: pathFor(h.addr, '.op'), fact: h.fact, before: b.op, after: h.op });
+          // EP5T4-005/M21 test-accounting fix: an op change alone (B2, above) does not surface a
+          // SIMULTANEOUS value-shape change at the same leaf -- e.g. rewriting
+          // {op:'eq', value:true} as {op:'in', value:[true]} previously reported ONLY B2, silently
+          // dropping that the comparison also became a set-membership test. classifyValueChange's
+          // amended (RA-2) ordering checks typeof-mismatch FIRST and unconditionally, so a
+          // boolean->array transition there resolves to B4 -- but that ordering targets Step 1's
+          // "same key" (op-UNCHANGED) pairs, not this step's op-CHANGED pairs. The pre-amendment
+          // table's own M21 call (B2+B6, "value became an array -- classifier must not claim
+          // equivalence") is honored directly: detect "value became an array/set" as B6
+          // specifically (B6 value-set-change is an existing FIXED_DANGEROUS class, block either
+          // way -- not a new taxonomy entry), falling back to the generic classifyValueChange for
+          // any other simultaneous op+value edit at a stable slot.
+          if (!deepEqual(b.value, h.value)) {
+            const valueClass = (Array.isArray(h.value) && !Array.isArray(b.value))
+              ? 'B6 value-set-change'
+              : classifyValueChange(b.value, h.value);
+            raw.push({ class: valueClass, leafAddr: h.addr, path: pathFor(h.addr, '.value'), fact: h.fact, op: h.op, before: b.value, after: h.value });
+          }
         } else if (!factSame && opSame) {
           raw.push({ class: 'B7 fact-repoint', leafAddr: h.addr, path: pathFor(h.addr, '.fact'), op: h.op, before: b.fact, after: h.fact });
         } else {
@@ -542,21 +606,43 @@ export function diffWhen(beforeTree, headTree) {
 }
 
 // ---------------------------------------------------------------------------------------------
-// RA-9 -- outputIsProtective(), extended to question outputs and sole-contributor candidates.
-// Note-type outputs are deliberately NOT extended (RA-9's own text names only questions and
-// sole-contributor candidates) -- a scoped, honest omission, not an oversight; see OQ-12.
+// RA-9 -- outputIsProtective(), extended to question outputs, sole-contributor candidates, AND
+// (EP5T4-003) note outputs.
+//
+// EP5T4-003 (high, confirmed by execution): the amended spec's RA-9 text itself scopes this
+// extension to questions and sole-contributor candidates only, deliberately excluding all 6
+// note-type rules -- so the implementation below matched the spec exactly and this was a
+// SPEC-level gap, not an implementation bug. Confirmed live: rewriting NOTE-004.output.detail from
+// "a normal assay ... may NOT exclude G6PD deficiency, repeat testing [if suspicion remains]" into
+// "a normal assay excludes G6PD deficiency; no repeat testing is needed" -- inverting a hedged
+// caution into a false-reassurance clinical claim -- classified only `C10 display-text-change ·
+// review`, never `block`, because `outputProtective` was `false` for a note rule. See EP5T4-003 in
+// .claude/findings/wave0-ep5-manifest-and-diff-findings.md.
+//
+// FIX (fail-safe direction): note-type outputs are now treated as protective, so a text edit on
+// one blocks. Rationale: blocking too much costs review effort; blocking too little ships a false
+// reassurance to a clinician. This follows ARC-028 preserved property 1 (unresolved => block), the
+// same fail-closed posture as every other rule in this function.
+//
+// THIS DOES NOT RESOLVE OQ-12. Do not read the change above as settling whether note-type edits
+// genuinely warrant the SAME weight as an emergency alert -- that clinical-calibration question is
+// still, and remains, referred to a named credentialed pediatric hematology reviewer (OQ-12,
+// SPIKE-005 amended section item 7). This fix only closes the DETECTION gap (a false-reassurance
+// rewrite must never classify below `block`); it does not, and cannot, substitute for that
+// clinical sign-off.
 // ---------------------------------------------------------------------------------------------
 export function outputIsProtective(rule, allRules) {
   const o = rule.output;
   if (o.type === 'alert') return true; // all alert rules
   if (o.type === 'question') return true; // RA-9: all question (missing-data) rules
+  if (o.type === 'note') return true; // EP5T4-003: fail-safe extension beyond RA-9's literal text -- see OQ-12 note above
   if (o.type === 'candidate') {
     if ((LEVEL_RANK[o.level] ?? 0) >= 4) return true; // meets-defined-pattern | strongly-supported
     if ((o.cautions ?? []).length > 0) return true;
     if (isSoleContributor(o.candidateId, rule.id, allRules)) return true; // RA-9
     return false;
   }
-  return false; // note-type outputs: NOT extended by RA-9, deliberately
+  return false;
 }
 
 export function isSoleContributor(candidateId, ruleId, allRules) {
@@ -963,7 +1049,20 @@ function diffCandidates(baseCandidates, headCandidates, headEvidenceIds, knownCa
       out.push({ class: 'D4 candidate-summary-change', file: CANDIDATES_FILE, candidateId: key, path: 'summary', before: b.summary ?? null, after: h.summary ?? null });
     }
     out.push(...diffStringArray(b.defaultNextSteps, h.defaultNextSteps, 'defaultNextSteps', 'D6 default-next-step-add', 'D5 default-next-step-remove').map((c) => ({ ...c, file: CANDIDATES_FILE, candidateId: key })));
-    if (!arraysEqualAsSets(b.evidence ?? [], h.evidence ?? [])) {
+    // EP5T4-004 (medium, confirmed by execution): Family D defines D8 as ANY evidence[] change,
+    // but this compared before/after as an unordered SET -- a pure reorder (same ids, different
+    // sequence) reported `changes: []`/`cosmeticOnly: true`. Confirmed: reordering
+    // iron-deficiency-anemia.evidence from [AAP2026_IDA, BLOOD2022_PED_ANEMIA] to the reverse
+    // erased silently. This also has a real consequence beyond display order: the rule's/
+    // candidate's `sourcePassageId` (here `AAP2026_IDA#implementation-proposal`) is documented
+    // (schemas/candidate.schema.json) as resolved against the FIRST-cited source in `evidence[]` --
+    // reordering so a different source becomes first creates a first-source/sourcePassageId
+    // mismatch with nothing in changes[] to flag it. See EP5T4-004 in
+    // .claude/findings/wave0-ep5-manifest-and-diff-findings.md. Fix: order-sensitive comparison
+    // (D8 is not in FIXED_DANGEROUS/FIXED_COSMETIC and is not named in Rule 3-6, so it already
+    // falls through Rule 7's fail-closed default to `block` -- same root cause/pattern as
+    // B13/D1/G4/F8 above, not a new tiering decision).
+    if (!arraysEqualOrdered(b.evidence ?? [], h.evidence ?? [])) {
       out.push({ class: 'D8 candidate-evidence-change', file: CANDIDATES_FILE, candidateId: key, path: 'evidence', before: b.evidence ?? [], after: h.evidence ?? [] });
     }
     if (b.sourcePassageId !== h.sourcePassageId) {
