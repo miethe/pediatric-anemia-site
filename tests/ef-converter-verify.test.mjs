@@ -118,16 +118,21 @@ test('P2-T7: verify exits 0 (vacuous pass) against a pack with no rules.json yet
   }
 });
 
-test('P2-T7: verify exits 0 against the real, empty modules/cbc_suite_v1/rules.json (vacuous pass, same fixture P1-T5 already proved)', async () => {
+test('P2-T7: verify exits 0 against the real, committed modules/cbc_suite_v1/rules.json (Phase 4 migrates slice rules in; count and rules must all still validate)', async () => {
   const rules = await loadJson(path.join(REPO_ROOT, 'modules', 'cbc_suite_v1', 'rules.json'));
-  assert.deepEqual(rules, []);
+  // Phase 4 (P4-T1..T4) migrates exactly the 4 named slice rules into this file over several
+  // tasks — do not hardcode a specific count here (this test would go stale after every one of
+  // those tasks lands); assert only that whatever is committed is schema-valid, matching
+  // `verify`'s own actual contract.
   const dir = await makeTempPack(rules);
   try {
     const { result: exitCode, output } = await withCapturedStdout(() =>
       runVerify({ pack: dir, ruleSchema: RULE_SCHEMA_PATH }),
     );
     assert.equal(exitCode, EXIT_OK);
-    assert.equal(JSON.parse(output).rulesJson.count, 0);
+    const summary = JSON.parse(output);
+    assert.equal(summary.rulesJson.count, rules.length);
+    assert.equal(summary.rulesJson.valid, true);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }

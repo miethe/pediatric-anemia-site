@@ -1,1 +1,34 @@
-[]
+[
+  {
+    "id": "CBC-NEUT-YOUNGINF-001",
+    "category": "safety",
+    "when": {
+      "fact": "scope.neonatalOrYoungInfant",
+      "op": "eq",
+      "value": true
+    },
+    "evidence": [
+      "HEMATOLREP2024_NEUTROPENIA_REVIEW",
+      "CALIPER2020_HEMATOLOGY_I"
+    ],
+    "output": {
+      "type": "alert",
+      "severity": "important",
+      "title": "Neutropenia/CBC interpretation out of scope below 6 months",
+      "detail": "Neutropenia is defined by distinct age-banded ANC cutoffs (<2500x10^9/L in neonates/infants vs <1500x10^9/L in toddlers/older children); applying the older-child cutoff to a neonate or young infant would under-flag neutropenia. This module's supported age range begins at 6 months.",
+      "actions": [
+        "Do not interpret this patient's CBC/ANC result against this module's thresholds — the age-appropriate infant reference range and clinical pathway are out of scope here.",
+        "Route to an age-appropriate neonatal/young-infant hematology pathway."
+      ]
+    },
+    "version": "0.1.0",
+    "effectiveDate": "2026-07-21",
+    "retireDate": null,
+    "owner": "team:pediatric-cds-kb-maintainers",
+    "safetyClass": "safety-critical",
+    "requiredTestCaseIds": [],
+    "changeRationale": "Drafted proposal (P3-T5) joined to dec_cbc_young_infant_scope_abstention_001 — no clinical re-review has occurred; no credentialed clinician has approved this proposal.",
+    "sourcePassageId": "HEMATOLREP2024_NEUTROPENIA_REVIEW#implementation-proposal",
+    "clinicalApprovers": []
+  }
+]

@@ -76,9 +76,17 @@ test('all 91 committed modules/anemia rules still validate cleanly against rule.
   }
 });
 
-test('the empty modules/cbc_suite_v1/rules.json still validates (vacuously) against rule.schema.json', async () => {
+test('the committed modules/cbc_suite_v1/rules.json still validates cleanly against rule.schema.json (Phase 4 slice-rule migration)', async () => {
+  // Phase 1 (P1-T3) shipped an empty-but-valid rules.json; Phase 4 (P4-T1..T4) migrates the 4
+  // named slice rules into it across several tasks. Rather than hardcode a specific count (which
+  // would go stale after every one of those tasks lands), assert only what this test actually
+  // exists to prove: every rule currently committed here is schema-valid.
+  const schema = await loadJson(RULE_SCHEMA_PATH);
   const rules = await loadJson(path.join(REPO_ROOT, 'modules', 'cbc_suite_v1', 'rules.json'));
-  assert.deepEqual(rules, [], 'cbc_suite_v1 ships an empty-but-valid rules.json in Phase 1 (P1-T3)');
+  assert.ok(Array.isArray(rules));
+  for (const rule of rules) {
+    assert.deepEqual(validate(schema, rule), [], `${rule.id} should validate cleanly`);
+  }
 });
 
 test('validateModule() — the exact function npm run validate calls per module — fails closed on the seeded-bad KB with a specific rule.schema.json message', async () => {

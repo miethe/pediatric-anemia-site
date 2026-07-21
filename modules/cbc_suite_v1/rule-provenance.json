@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0",
+  "moduleId": "cbc_suite_v1",
+  "rfProvenance": {
+    "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+    "rfBundleId": "bundle_20260718_intent_research_20260717_rf_cbc_001",
+    "fixturePath": "tests/fixtures/rf-cbc-001/"
+  },
+  "entries": [
+    {
+      "ruleId": "CBC-NEUT-YOUNGINF-001",
+      "moduleId": "cbc_suite_v1",
+      "basis": {
+        "kind": "implementation_proposal",
+        "decisionId": "dec_cbc_young_infant_scope_abstention_001",
+        "rfClaimIds": [
+          "clm_018",
+          "clm_inf02"
+        ],
+        "evidenceAssertionIds": [
+          "evas_cbc_young_infant_anc_001",
+          "evas_cbc_young_infant_anc_002"
+        ]
+      },
+      "missingness": "scope.neonatalOrYoungInfant is a plain boolean derived from patient.ageMonths (modules/anemia/facts.anemia.js): when ageMonths is absent it resolves to false, not to a missing/unknown state, so this rule does NOT fire and does NOT abstain when age is unrecorded. This vertical slice carries no missing-age question rule of its own in modules/cbc_suite_v1/rules.json (unlike modules/anemia's committed Q-001) — an unrecorded age is silently treated as \"not a young infant\" rather than prompted for. Flagged as a known E1 gap (`02 §7.3` item 7), not silently treated as safe.",
+      "localProfileRequirement": null,
+      "testIds": [],
+      "reviewStatus": "draft",
+      "reviewBy": "2027-07-21",
+      "supersedes": null,
+      "authoringNotes": "Reuses the existing `scope.neonatalOrYoungInfant` fact — already derived by modules/anemia/facts.anemia.js for the same age-6-months boundary and delegated to cbc_suite_v1 per OQ-1 — no new fact is required for this rule."
+    }
+  ]
+}

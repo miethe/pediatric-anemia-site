@@ -9,7 +9,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundr
 execution_model: batch-parallel
 phase: 3
 title: 'Evidence Foundry Buildout — Phase 3: Projection & Drafting'
-status: pending
+status: completed
 started: null
 completed: null
 commit_refs: []
@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 8
-completed_tasks: 1
+completed_tasks: 8
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -35,7 +35,7 @@ tasks:
     per slice rule (young-infant abstention, local-range precedence, iron-deficiency
     pattern, marrow-red-flag) matching the 02 §4.12 schema. Cite specific RF-CBC-001
     claim IDs from the P1-T6 fixture; all review.* fields stay ''pending''.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -51,7 +51,7 @@ tasks:
     authors, organization, url/doi, journal — never synthesized — limitations, conflictsWith,
     contentRights, supports[], reviewBy/surveillanceQuery/supersessionStatus, recencyNote).
     Preserves modules/anemia/evidence.json''s existing shape.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -67,7 +67,7 @@ tasks:
     locator, exactPassage/exactPassageSha256, displayPolicy, claimStatus, applicability,
     laboratory, reviewBy) and schemas/evidence-assertions.schema.json, wired into
     scripts/validate-kb.mjs. Applies OQ-2''s rights-restricted fallback.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -84,7 +84,7 @@ tasks:
     inference -> requires populated inference_basis.from_claims; speculation/unsupported
     -> never emitted as rule evidence. Author schemas/authoring-decisions.schema.json,
     wire into scripts/validate-kb.mjs.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -100,7 +100,7 @@ tasks:
     field table (''pattern'' wording, never diagnostic certainty). Output stays in
     build/kb-pack/cbc_suite_v1/0.1.0-proposal/ (gitignored staging) — not yet committed
     into modules/cbc_suite_v1/.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -116,7 +116,7 @@ tasks:
     pack''s rules.json, plus the companion rule-provenance.json (ruleId, moduleId,
     basis.*, missingness, localProfileRequirement, testIds, reviewStatus: ''draft''),
     joined by rule id. Author schemas/rule-provenance.schema.json, wired into scripts/validate-kb.mjs.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -147,7 +147,7 @@ tasks:
 - id: P3-GATE
   description: 'task-completion-validator gate: verify Phase 3 exit gate — propose
     yields a schema-valid pack; mixed/contradicted claims stay conflict-visible.'
-  status: pending
+  status: completed
   assigned_to:
   - task-completion-validator
   dependencies:
@@ -208,7 +208,7 @@ files_modified:
 - schemas/rule-provenance.schema.json
 - schemas/authoring-decisions.schema.json
 - tests/ef-converter-propose.test.mjs
-progress: 12
+progress: 100
 updated: '2026-07-21'
 ---
 
