@@ -20,7 +20,7 @@
     "source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "priority", "year", "title", "organization", "journal", "url", "supports", "passages"],
+      "required": ["id", "priority", "year", "title", "organization", "journal", "url", "supports", "passages", "license", "access_basis", "terms"],
       "properties": {
         "id": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
         "priority": { "type": "string", "minLength": 1 },
@@ -46,6 +46,90 @@
           "minItems": 1,
           "items": { "$ref": "#/$defs/passage" },
           "description": "Exact-passage-level evidence records for this source (EP-3, D-EP3-2/D-EP3-3). Every source has at least one: the minted `<id>#implementation-proposal` sentinel, plus one per source-supported passage backfilled from the RF-EV-001 bundle."
+        },
+        "access_basis": {
+          "description": "EPR2-T1 (FR-WP2-01/05). REQUIRED — omission fails validation; an unassessed source states that explicitly as `unknown` rather than omitting the key (D2). How this repo actually accesses this source's content today. Vocabulary matches schemas/rights/rights_record.schema.json's `access.basis` one-for-one, including the `unknown` local amendment (EPR0-T3, handoff §9.3) so this field and the source's joined rights_record (rights/rights-ledger.json, D4) never disagree on a name for the same concept. This is a lightweight, always-present source-level summary a consumer can read without resolving the ledger — it is NOT a duplicate of the full rights_record and carries no clearance authority itself (D6/D7): a coverage gate may read it, a clearance gate may not exist to read it.",
+          "enum": [
+            "public_web",
+            "open_repository",
+            "personal_subscription",
+            "institutional_subscription",
+            "purchased_copy",
+            "licensed_api",
+            "direct_permission",
+            "author_provided_copy",
+            "government_source",
+            "partner_confidential",
+            "data_use_agreement",
+            "other",
+            "unknown"
+          ]
+        },
+        "license": {
+          "$ref": "#/$defs/license",
+          "description": "EPR2-T1 (FR-WP2-01/05). REQUIRED — omission fails validation; every member below is itself required with an explicit typed unknown/null where genuinely unassessed. Source-level copyright/licence posture, a lightweight sibling of schemas/rights/rights_record.schema.json's `copyright` object — the authoritative, extensible governance record lives in rights/, joined via rights/rights-ledger.json (D4); this field is not a duplicate of it and carries no clearance authority (D6/D7)."
+        },
+        "terms": {
+          "$ref": "#/$defs/terms",
+          "description": "EPR2-T1 (FR-WP2-01/03/05). REQUIRED — omission fails validation; every member below is itself required with an explicit typed unknown where genuinely unassessed. Source-level terms-of-use restrictions transcribed from an observed terms document, a lightweight sibling of schemas/rights/rights_record.schema.json's `contract` object — the authoritative record lives in rights/, joined via rights/rights-ledger.json (D4). `terms_snapshot` (EPR2-T2) separately records the locator and date the terms were observed at; this object records the restriction facts transcribed from that locator, never the terms prose itself (D1) — a fixture attempting to store terms text in any member here is rejected by the closed enums below, none of which is a free-text type."
+        }
+      }
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "rights_holder", "license_url", "noncommercial_only", "no_derivatives"],
+      "description": "EPR2-T1 (FR-WP2-01/05). Source-level copyright/licence posture. Every member is required; use the typed unknown/null member rather than omitting the key when genuinely unassessed (D2). Field names and enum vocabulary are drawn one-for-one from schemas/rights/rights_record.schema.json's `copyright` object so this lightweight summary and the source's joined rights_record (rights/rights-ledger.json, D4) never disagree on a name for the same concept — this object is not a duplicate of the full rights_record and carries no clearance authority of its own.",
+      "properties": {
+        "status": {
+          "description": "Matches schemas/rights/rights_record.schema.json's `copyright.status` enum exactly. `us_federal_government_work` is a distinct member from `public_domain` by design — it names the 17 U.S.C. §105 basis, never a public-domain claim resting on funding source alone (see EPR2-T4, FR-WP2-04, which extends this object to record that distinction explicitly).",
+          "enum": ["copyrighted", "open_license", "public_domain", "us_federal_government_work", "mixed_or_third_party", "unknown"]
+        },
+        "rights_holder": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The named copyright holder, or null when unassessed or genuinely unstated by the source."
+        },
+        "license_url": {
+          "type": ["string", "null"],
+          "pattern": "^https?://\\S+$",
+          "description": "No `format: \"uri\"` (FR-WP0-08) — scripts/lib/json-schema-lite.mjs silently ignores `format` except date/date-time, so an unenforced `format: \"uri\"` would fail open. Null when no published licence URL is known or the field is unassessed; a non-null value that is not a URL is rejected by `pattern`."
+        },
+        "noncommercial_only": {
+          "type": ["boolean", "null"],
+          "description": "Null when unassessed. True/false only once actually determined from the licence/terms."
+        },
+        "no_derivatives": {
+          "type": ["boolean", "null"],
+          "description": "Null when unassessed. True/false only once actually determined from the licence/terms."
+        }
+      }
+    },
+    "terms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["incorporation_into_other_products", "adaptation", "commercial_use", "redistribution", "sublicensing"],
+      "description": "EPR2-T1 (FR-WP2-01/03/05). Source-level terms-of-use restrictions. Every member is required; use the closed enum's `unknown` (or `not_addressed`) member rather than omitting the key when genuinely unassessed (D2). Field names and enum vocabulary are drawn one-for-one from schemas/rights/rights_record.schema.json's `contract` object — this object is not a duplicate of the full rights_record and carries no clearance authority of its own; the authoritative record lives in rights/, joined via rights/rights-ledger.json (D4). Every member is a closed enum: there is no free-text member anywhere on this object capable of holding terms prose (D1) — the facts recorded here must be transcribed from an observed terms document (see `terms_snapshot`, EPR2-T2), never authored.",
+      "properties": {
+        "incorporation_into_other_products": {
+          "description": "Matches schemas/rights/rights_record.schema.json's `contract.incorporation_into_other_products` enum exactly.",
+          "enum": ["allowed", "allowed_with_conditions", "restricted_without_written_approval", "prohibited", "not_addressed", "unknown"]
+        },
+        "adaptation": {
+          "description": "Matches schemas/rights/rights_record.schema.json's `contract.adaptation` enum exactly — covers altering, abridging, adapting, or modifying the source content, or preparing a derivative work based on it.",
+          "enum": ["allowed", "allowed_with_conditions", "restricted_without_written_approval", "prohibited", "not_addressed", "unknown"]
+        },
+        "commercial_use": {
+          "description": "A local extension of schemas/rights/rights_record.schema.json's `contract.commercial_use` enum, which closes with `not_granted`. This field adds `not_granted_by_subscription` — the literal value the vendored spec bundle's own prose narrative uses for the AAP2026_IDA case (Research_Foundry_Source_Reuse_and_Rights_Governance_Spec_v1.0.md, Appendix A; FR-WP2-03): a subscription that grants read access grants no commercial-use right, a more precise claim than the generic `not_granted`. This field lives on schemas/evidence.schema.json, not on the vendored schemas/rights/rights_record.schema.json, so extending its enum here is not a vendored-schema amendment and needs no schemas/rights/VENDORING.md entry.",
+          "enum": ["allowed", "allowed_with_conditions", "not_granted", "not_granted_by_subscription", "prohibited", "not_addressed", "unknown"]
+        },
+        "redistribution": {
+          "description": "Matches schemas/rights/rights_record.schema.json's `contract.redistribution` enum exactly.",
+          "enum": ["allowed", "allowed_with_conditions", "restricted", "prohibited", "not_addressed", "unknown"]
+        },
+        "sublicensing": {
+          "description": "Matches schemas/rights/rights_record.schema.json's `contract.sublicensing` enum exactly.",
+          "enum": ["allowed", "allowed_with_conditions", "not_granted", "prohibited", "not_addressed", "unknown"]
         }
       }
     },
