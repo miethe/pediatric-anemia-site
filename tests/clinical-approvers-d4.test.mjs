@@ -221,3 +221,53 @@ test('AC-D4: the detector actually rejects a populated clinicalApprovers (this t
   // And the clean copy must still pass, so the detector is not simply always-failing.
   assert.deepEqual(rulesWithClinicalApprovers(JSON.parse(JSON.stringify(rules))), []);
 });
+
+// --- (4) RUNTIME + BUILD-ORDER ENFORCEMENT ---------------------------------------------------
+//
+// Added per reviewer-gate finding 4, SECOND pass (2026-07-21). The file-level checks above were
+// still defeatable three ways, all three demonstrated by the reviewer:
+//   (a) an in-memory transform populating clinicalApprovers on the rules array passed to the engine,
+//       after every file check had already passed;
+//   (b) `npm run check` runs tests BEFORE the build, so a transform in build-static.mjs could
+//       populate dist/ after the only D-4 test had run (and the dist case skips when dist/ is absent);
+//   (c) a module registered in REGISTRY but omitted from the hand-maintained MODULE_IDS literal.
+// Each is now closed structurally, and each closure is asserted here.
+
+test('AC-D4: the ENGINE refuses to evaluate rules that claim clinical approval (runtime bypass closed)', async () => {
+  const { assess } = await import('../src/engine.js');
+  const rules = await readJson(RULES_PATH);
+  const candidates = await readJson(path.join(REPO_ROOT, 'modules', 'anemia', 'candidates.json'));
+  const input = { patient: { ageMonths: 24, sex: 'female' }, cbc: { hemoglobin: 9.5, hemoglobinUnit: 'g/dL' } };
+
+  // Baseline: the clean KB evaluates fine, so the assertion below is not passing for the wrong reason.
+  assert.doesNotThrow(() => assess(input, 'anemia', rules, candidates));
+
+  // The reviewer's exact bypass: an in-memory transform, never touching any file on disk.
+  const poisoned = rules.map((rule) => ({ ...rule, clinicalApprovers: ['arc-run-synthetic-review'] }));
+  assert.throws(() => assess(input, 'anemia', poisoned, candidates), /D-4 VIOLATION/,
+    'the engine must refuse to evaluate rules claiming clinical approval — a static file check alone '
+    + 'is defeatable by any in-memory transform');
+
+  // A single poisoned rule among 90 clean ones must also be caught.
+  const oneBad = rules.map((rule, i) => (i === 0 ? { ...rule, clinicalApprovers: ['Dr. X'] } : rule));
+  assert.throws(() => assess(input, 'anemia', oneBad, candidates), /D-4 VIOLATION/);
+});
+
+test('AC-D4: the post-build gate exists and is wired AFTER the build in npm run check', async () => {
+  const pkg = await readJson(path.join(REPO_ROOT, 'package.json'));
+  const check = pkg.scripts.check;
+  assert.ok(pkg.scripts['verify:d4'], 'package.json must define a verify:d4 script');
+  assert.ok(check.includes('verify:d4'), 'npm run check must run the post-build D-4 gate');
+  assert.ok(check.indexOf('npm run build') < check.indexOf('verify:d4'),
+    'verify:d4 must run AFTER npm run build, or a build-time transform slips past it');
+  assert.ok(await exists(path.join(REPO_ROOT, 'scripts', 'verify-d4-built.mjs')));
+});
+
+test('AC-D4: MODULE_IDS is derived from the registry, so a module cannot hide from D-4', async () => {
+  const registrySource = await readFile(path.join(REPO_ROOT, 'src', 'modules', 'registry.js'), 'utf8');
+  assert.ok(/MODULE_IDS\s*=\s*Object\.freeze\(\[\.\.\.REGISTRY\.keys\(\)\]\)/.test(registrySource),
+    'MODULE_IDS must be derived from REGISTRY.keys(), not restated as a literal — a hand-maintained '
+    + 'list can omit a registered module and hide it from every MODULE_IDS-driven safety gate');
+  const { listModules } = await import('../src/modules/registry.js');
+  assert.equal(MODULE_IDS.length, listModules().length, 'MODULE_IDS and REGISTRY have diverged');
+});
