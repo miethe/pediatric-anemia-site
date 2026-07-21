@@ -25,14 +25,17 @@
 // KNOWN LIMITATIONS surfaced here, not silently resolved (mirrors the transparency posture
 // `modules/cbc_suite_v1/authoring-decisions.yaml`'s own header already established):
 //
-//   1. FR-16(c) names this slice role "iron-deficiency-anemia candidate pattern," but the
-//      RF-CBC-001 fixture (this plan's binding OQ-2 evidentiary source) is scoped to the
+//   1. FR-16(c) originally named this slice role "iron-deficiency-anemia candidate pattern," but
+//      the RF-CBC-001 fixture (this plan's binding OQ-2 evidentiary source) is scoped to the
 //      neutropenia / marrow-failure-risk evidence base and contains ZERO ferritin/iron claims.
-//      P3-T1 already flagged this and authored `dec_cbc_benign_neutropenia_differential_pattern_001`
-//      as the genuinely-evidenced RF-CBC-001 analog of that slice role (a benign-vs-referral
-//      differential candidate pattern) rather than mislabel neutropenia evidence as iron-deficiency
-//      evidence. This module carries that resolution forward: the drafted candidate below is named
-//      and evidenced for what it actually is.
+//      P3-T1 flagged this and authored `dec_cbc_benign_neutropenia_differential_pattern_001` as the
+//      genuinely-evidenced RF-CBC-001 analog of that slice role (a benign-vs-referral differential
+//      candidate pattern) rather than mislabel neutropenia evidence as iron-deficiency evidence.
+//      RESOLVED (P3-GATE remediation): the parent plan's binding "FR-16(c) candidate identity"
+//      decision formally re-scopes FR-16(c) to this benign-ethnic/Duffy-null neutropenia
+//      differential identity — no iron-deficiency candidate is authored, migrated, or referenced
+//      anywhere in the E0 vertical slice. The drafted candidate below is named and evidenced for
+//      what it actually is.
 //   2. `02 §4.13`'s own field-mapping table sends "version/effective/review dates," the rule's
 //      credentialed-approver list, "test IDs," and "supersession" to `rule-provenance.json` (a
 //      P3-T6 sidecar) on the premise that the CURRENT `schemas/rule.schema.json` permits only
@@ -255,16 +258,17 @@ export const RULE_PROPOSALS = Object.freeze([
       + 'no clinical re-review has occurred; no credentialed clinician has approved this proposal.',
     supersedes: null,
     authoringNotes:
-      'KNOWN LIMITATION (carried forward from P3-T1\'s own flag): FR-16(c) names this slice role '
+      'RESOLVED IDENTITY (P3-GATE remediation): FR-16(c) originally named this slice role '
       + '"iron-deficiency-anemia candidate pattern," but the RF-CBC-001 fixture (this plan\'s '
       + 'binding OQ-2 evidentiary source) is scoped to neutropenia/marrow-failure evidence and '
-      + 'contains zero ferritin/iron claims. This proposal is drafted under its true evidentiary '
+      + 'contains zero ferritin/iron claims. The parent plan\'s binding "FR-16(c) candidate '
+      + 'identity" decision formally re-scopes FR-16(c) to this proposal\'s true evidentiary '
       + 'identity (benign-ethnic/Duffy-null neutropenia differential), joined to '
-      + 'dec_cbc_benign_neutropenia_differential_pattern_001, rather than mislabeling this '
-      + 'evidence as iron-deficiency-anemia. `when` uses the existing `cbc.neutropenia` tri-state '
-      + 'fact; the infection-history-absence and ancestry-context refinements named in the '
-      + 'evidence (clm_043, clm_inf05) are not yet derivable facts in this module (E1 item) — '
-      + 'flagged, not silently assumed.',
+      + 'dec_cbc_benign_neutropenia_differential_pattern_001 — no iron-deficiency candidate is '
+      + 'authored, migrated, or referenced anywhere in this slice. `when` uses the existing '
+      + '`cbc.neutropenia` tri-state fact; the infection-history-absence and ancestry-context '
+      + 'refinements named in the evidence (clm_043, clm_inf05) are not yet derivable facts in '
+      + 'this module (separate, still-open E1 item) — flagged, not silently assumed.',
   }),
 
   Object.freeze({

@@ -17,16 +17,22 @@
 # KNOWN LIMITATION -- surfaced, not silently resolved (see the P3-T1 task-completion summary):
 # RF-CBC-001's research brief scopes it to "the neutropenia scope-exit / red-flag evidence base"
 # (tests/fixtures/rf-cbc-001/research_brief.md); it contains zero ferritin/iron claims. FR-16(c)
-# names the third slice rule "iron-deficiency-anemia candidate pattern rule" -- the same candidate
-# identity already evidenced separately in modules/anemia/candidates.json from anemia-specific
-# sources outside this bundle. Because this decision record's basis must cite real RF-CBC-001
-# claim IDs (P3-T1's binding acceptance criteria), and no RF-CBC-001 claim supports iron/ferritin
-# content, dec_cbc_benign_neutropenia_differential_pattern_001 below is authored as the genuinely
-# evidenced RF-CBC-001 analog of that slice role -- a benign-vs-referral differential candidate
-# pattern (Duffy-null/benign-ethnic neutropenia vs. red-flag features) -- under a decision ID that
-# names what it actually is, rather than mislabeling neutropenia evidence as iron-deficiency
-# evidence. This is flagged for explicit resolution before Phase 3 (P3-T5) drafts a candidates.json
-# entry, and before Phase 4 (P4-T3) commits a candidate under either identity.
+# originally named the third slice rule "iron-deficiency-anemia candidate pattern rule" -- the same
+# candidate identity already evidenced separately in modules/anemia/candidates.json from
+# anemia-specific sources outside this bundle. Because this decision record's basis must cite real
+# RF-CBC-001 claim IDs (P3-T1's binding acceptance criteria), and no RF-CBC-001 claim supports
+# iron/ferritin content, dec_cbc_benign_neutropenia_differential_pattern_001 below is authored as
+# the genuinely evidenced RF-CBC-001 analog of that slice role -- a benign-vs-referral differential
+# candidate pattern (Duffy-null/benign-ethnic neutropenia vs. red-flag features) -- under a
+# decision ID that names what it actually is, rather than mislabeling neutropenia evidence as
+# iron-deficiency evidence.
+#
+# RESOLVED (P3-GATE remediation): the parent implementation plan's binding "FR-16(c) candidate
+# identity" decision (docs/project_plans/implementation_plans/infrastructure/
+# evidence-foundry-buildout-v1.md) formally re-scopes FR-16(c) to this benign-ethnic/Duffy-null
+# neutropenia differential identity. No iron-deficiency candidate is authored, migrated, or
+# referenced anywhere in the E0 vertical slice; Phase 4's P4-T3 migrates a candidate under this
+# identity only.
 
 schemaVersion: "1.0"
 moduleId: cbc_suite_v1
@@ -116,10 +122,10 @@ decisions:
       clinician_2: pending
       laboratory_medicine: pending
 
-  # FR-16(c) role: differential candidate pattern, "pattern" not diagnostic certainty.
-  # See KNOWN LIMITATION note above -- RF-CBC-001 has no iron/ferritin claims, so this decision is
-  # authored under its own honest identity (benign-vs-referral neutropenia differential) rather
-  # than mislabeled as iron-deficiency-anemia. Flagged for resolution before P3-T5/P4-T3.
+  # FR-16(c) role (re-scoped, see RESOLVED note above): differential candidate pattern, "pattern"
+  # not diagnostic certainty. RF-CBC-001 has no iron/ferritin claims, so this decision is authored
+  # under its own honest identity (benign-vs-referral neutropenia differential) rather than
+  # mislabeled as iron-deficiency-anemia. This is the identity P4-T3 migrates.
   - decision_id: dec_cbc_benign_neutropenia_differential_pattern_001
     module_id: cbc_suite_v1
     status: approved_for_rule_draft

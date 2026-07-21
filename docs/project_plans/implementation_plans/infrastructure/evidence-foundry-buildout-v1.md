@@ -368,6 +368,26 @@ comparable), not a materially interesting diff — E1 is where a second proposal
 sufficient for FR-19's conversion-report enumeration; if Phase 5 execution finds it insufficient, escalate
 rather than silently expanding scope (per the PRD's own OQ-4 instruction).
 
+**FR-16(c) candidate identity — re-scope (P3-GATE remediation, binding).** RF-CBC-001 (the OQ-2-bound
+fixture) is scoped to the neutropenia/marrow-failure-risk evidence base and contains zero ferritin/iron
+claims (confirmed directly against `tests/fixtures/rf-cbc-001/claims/claim_ledger.yaml`'s 87 entries). No
+"iron-deficiency-anemia candidate pattern" can be honestly authored from it — every `basis.rf_claim_ids`
+entry in `modules/cbc_suite_v1/authoring-decisions.yaml` must cite a real fixture claim (P3-T1's own
+binding AC), and inventing an iron-deficiency threshold or pattern from prose the converter never read
+would itself violate FR-14/the CLAUDE.md "no invented thresholds" guardrail. Sourcing a second `rf` run
+to genuinely ground an iron-deficiency candidate is out of scope for this vertical slice (it would add an
+unplanned research dependency mid-Phase-3/4 and is exactly the kind of scope creep the decisions block
+instructs against). **Resolution: FR-16(c) is re-scoped** from "iron-deficiency-anemia candidate pattern
+rule" to the **benign-ethnic/Duffy-null neutropenia differential candidate pattern rule** — the candidate
+identity P3-T1 and P3-T5 already authored honestly under `dec_cbc_benign_neutropenia_differential_pattern_001`
+/ `benign-ethnic-neutropenia-differential-pattern`, grounded in real `clm_039`/`clm_040`/`clm_041`/
+`clm_074`/`clm_043`/`clm_inf05` claims. This satisfies FR-16(c)'s structural role (a "pattern," not
+diagnostic-certainty, differential candidate, conflict-visible against the FR-16(d) marrow-red-flag rule)
+without relabeling neutropenia evidence as iron-deficiency evidence. P4-T3 migrates a candidate under
+**this** identity only; no iron-deficiency candidate is authored, migrated, or referenced anywhere in the
+E0 vertical slice. The PRD's FR-16 row and the Phase 3-5 manifest's P3-T1/P3-T5/P4-T3/P4-T7/P4-T8 rows are
+updated to match this resolution and must not be reopened without a new decisions-block entry.
+
 **OQ-5, OQ-6, OQ-7 (decisions block §11, binding — encoded as tasks, not re-decided here)**: generated
 tests land flat under `tests/` as `ef-<module>-<category>.test.mjs` (Phase 4) and `ef-converter-<aspect>.test.mjs`
 (Phases 2, 3, 5) — the `npm test` glob (`tests/*.test.mjs`) is never touched (P1-T1 confirms this in the
