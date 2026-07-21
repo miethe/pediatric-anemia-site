@@ -108,22 +108,16 @@ test('AC-D4: clinicalApprovers is [] in EVERY registered module, not just anemia
   }
 });
 
-test('AC-D4: clinicalApprovers is [] in the BUILT artifacts too — a build-time transform cannot smuggle approvers in', async () => {
-  let checked = 0;
-  for (const moduleId of MODULE_IDS) {
-    const builtPath = path.join(REPO_ROOT, 'dist', 'modules', moduleId, 'rules.json');
-    if (!(await exists(builtPath))) continue; // dist/ is a build output; absent on a clean checkout
-    const offenders = rulesWithClinicalApprovers(await readJson(builtPath));
-    assert.deepEqual(offenders, [],
-      `D-4 VIOLATION in BUILT artifact dist/modules/${moduleId}/rules.json — the shipped knowledge `
-      + `base claims clinical approval that the source does not:\n  ${offenders.join('\n  ')}`);
-    checked += 1;
-  }
-  // Not an assertion failure when dist/ is absent (clean checkout), but say so rather than pass silently.
-  if (checked === 0) {
-    console.error('# note: no dist/ build artifacts present to check — run `npm run build` for full D-4 coverage');
-  }
-});
+// NOTE — there is deliberately NO built-artifact case in this file (removed 2026-07-21).
+// `npm test` runs BEFORE `npm run build`, so any dist/ present here is from a PREVIOUS build. An
+// in-test dist check therefore validates a stale artifact: it passed in a worktree whose dist/ had
+// just been rebuilt, and failed on a clean checkout carrying a pre-EP-4 dist/ — order-dependent in
+// both directions, which makes it worse than no check.
+//
+// The authoritative built-artifact gate is `scripts/verify-d4-built.mjs`, run by `npm run verify:d4`
+// AFTER `npm run build` in the check chain, where the artifact is guaranteed current. It fails
+// closed on a missing or poisoned build. The test below asserts that ordering, which is the part
+// this file can honestly verify.
 
 test('AC-D4: the schema itself forbids a populated clinicalApprovers (maxItems: 0)', async () => {
   const schema = await readJson(path.join(REPO_ROOT, 'schemas', 'rule.schema.json'));
