@@ -56,6 +56,7 @@
 //                                            requested-use record instead of writing a second one.
 
 import { readFile } from 'node:fs/promises';
+import { realpathSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MODULE_IDS } from '../src/modules/registry.js';
@@ -422,7 +423,31 @@ export function runAllGates(context, gates = GATES) {
 
 // --- thin CLI ------------------------------------------------------------------------------------
 
-const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+/**
+ * True iff this module was invoked directly as the CLI entry point (`node scripts/validate-rights.mjs`),
+ * false for every other importer (e.g. the test suites that `import` this file's exported gates).
+ *
+ * Both sides MUST be realpath'd before comparing. Node's ESM loader resolves `import.meta.url`
+ * through the filesystem's real path, but `process.argv[1]` is left exactly as the shell/spawn
+ * caller passed it — under a symlinked checkout path (reproduced on macOS, where `$TMPDIR`/`os.tmpdir()`
+ * sits under `/var/...`, itself a symlink to `/private/var/...`) the two strings silently disagree,
+ * `isMain` comes back false, the CLI block below never runs, and `node scripts/validate-rights.mjs`
+ * (and therefore `npm run validate`) exits 0 having validated nothing — a fail-OPEN bug, the opposite
+ * of this file's D7 fail-closed posture. `path.resolve` alone does not fix this: it normalizes a
+ * path string but never dereferences a symlink.
+ */
+function resolveIsMain() {
+  if (!process.argv[1]) return false;
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    // A missing/unreadable argv[1] (e.g. this module was imported, not executed, in some exotic
+    // host) can never be "this file run as the CLI" — fail closed to "not main" rather than throw.
+    return false;
+  }
+}
+
+const isMain = resolveIsMain();
 
 if (isMain) {
   try {

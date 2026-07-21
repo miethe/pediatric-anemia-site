@@ -20,7 +20,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdtempSync, realpathSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdtempSync, realpathSync, rmSync, readFileSync, writeFileSync, symlinkSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -96,6 +96,50 @@ test('D7 control: every seeded record sits at overall_status "UNKNOWN" and the C
     assert.equal(result.status, 0, `an UNKNOWN overall_status must never fail the gate; stderr:\n${result.stderr}`);
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// --- regression: CLI entry guard must not fail open under a symlinked checkout path -----------------
+//
+// EPR0-T6 review fix: the CLI entry guard (`isMain` in scripts/validate-rights.mjs) used to compare
+// a non-realpath'd `process.argv[1]` against a realpath'd `import.meta.url`. Node's ESM loader
+// resolves `import.meta.url` through the filesystem's real path, but `process.argv[1]` is left
+// exactly as the caller passed it — so when the script is invoked through a symlinked path, the two
+// strings silently disagree, `isMain` comes back false, the CLI block never runs, and the process
+// exits 0 having validated nothing (the opposite of this suite's D7 fail-closed posture). This test
+// does not rely on the host OS's own tmpdir symlinking (e.g. macOS's `/var` -> `/private/var`); it
+// builds a real substrate copy, corrupts one gate's precondition (reusing gate (a)'s fixture), points
+// an explicit symlink at that copy, and spawns the CLI through the symlinked path — asserting the
+// corrupted fixture still produces a non-zero exit rather than a silent, unvalidated exit 0.
+test('regression: CLI entry guard fails closed when invoked through a symlinked path', () => {
+  const realDir = makeSubstrateCopy();
+  const symlinkDir = path.join(tmpdir(), `rights-gate-symlink-${process.pid}-${Date.now()}`);
+  try {
+    const ledger = readJsonFixture(realDir, 'rights', 'rights-ledger.json');
+    const before = ledger.entries.length;
+    ledger.entries = ledger.entries.filter((entry) => entry.clinical_identifier !== 'WHO2024_HB');
+    assert.equal(ledger.entries.length, before - 1, 'fixture setup: expected exactly one WHO2024_HB ledger entry to remove');
+    writeJsonFixture(realDir, ['rights', 'rights-ledger.json'], ledger);
+
+    symlinkSync(realDir, symlinkDir, 'dir');
+
+    const result = spawnSync(process.execPath, [path.join(symlinkDir, 'scripts', 'validate-rights.mjs')], {
+      cwd: symlinkDir,
+      encoding: 'utf8',
+    });
+
+    assert.notEqual(
+      result.status,
+      0,
+      'expected the CLI, invoked through a symlinked path, to still fail closed on a broken '
+      + `precondition rather than silently exiting 0 having skipped validation entirely; `
+      + `stdout:\n${result.stdout}\nstderr:\n${result.stderr}`,
+    );
+    assert.match(result.stderr, /\[missing-assessment-coverage]/);
+    assert.match(result.stderr, /WHO2024_HB/);
+  } finally {
+    unlinkSync(symlinkDir);
+    rmSync(realDir, { recursive: true, force: true });
   }
 });
 
