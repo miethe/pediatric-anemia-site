@@ -4,8 +4,9 @@ title: "Public `moduleId` API Surface"
 status: draft
 maturity: shaping
 created: 2026-07-18
+updated: 2026-07-21
 feature_slug: platform-foundation-p0
-prd_ref: docs/project_plans/PRDs/refactors/platform-foundation-p0-v1.md
+prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
 plan_ref: docs/project_plans/implementation_plans/refactors/platform-foundation-p0-v1.md
 ---
 
@@ -97,3 +98,32 @@ choose between it and `anemia`.
 - Does exposing `moduleId` publicly require updating `openapi.yaml`, and does that itself count as
   a "public API surface change" requiring the same review rigor as a rule/KB content change under
   CLAUDE.md's guardrails (it is not clinical content, but it is a contract change)?
+
+## Deferral re-confirmation (EP-7, 2026-07-21)
+
+**Verdict: still correctly deferred.** Re-checked against what Phases EP-0 through EP-6
+(`wave0-safety-foundation`) actually shipped (`git log --oneline -25`; `.claude/progress/
+wave0-safety-foundation/phase-{0,0.5,1,2,3,4,5,6}-progress.md`), not the plan's aspirations.
+
+Concrete evidence, current repo state:
+
+- `src/modules/registry.js` still derives `MODULE_IDS` from a single-entry source:
+  `export const MODULE_IDS = Object.freeze([...REGISTRY.keys()]);`, and `src/facts/registry.js`'s
+  backing `REGISTRY` `Map` has exactly one entry — `['anemia', deriveAnemiaFacts]`. No second
+  module directory exists under `modules/`.
+- `server.mjs` still carries the same explicit guardrail comment this spec quoted at Phase 0:
+  `// present, not conditional on any request param (no moduleId request surface exists, AC-5)`,
+  directly above the unconditional `MODULE_IDS.map(...)` knowledge-base listing.
+- `POST /api/v1/assess` still accepts no `moduleId` request field; `assessPediatricAnemia(input,
+  rules, candidates)` is still called with server-resolved `rules`/`candidates`, never a
+  client-supplied module selector.
+- None of EP-0 through EP-6 (tri-state facts, units/ranges, evidence provenance, rule governance,
+  manifest/semantic-diff, adversarial validation corpus) registered, scaffolded, or even
+  design-referenced a second module — every phase's `files_affected` stays inside `modules/anemia/`
+  and shared engine/schema surfaces. The Phase 2 CBC-suite kickoff named as this spec's promotion
+  trigger has not started.
+
+Nothing in this program has moved the "one registered module" premise this deferral rests on.
+The design sketch and open questions above remain the right shape to resolve once a second module
+is actually being registered; there is still no second data point to design the concrete API
+shape (body field vs. query param vs. path segment) against.

@@ -9,17 +9,17 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-fo
 execution_model: batch-parallel
 phase: 7
 title: "EP-7: Review Contract & Docs"
-status: "planning"
-started: null
-completed: null
-commit_refs: []
+status: "completed"
+started: 2026-07-21
+completed: 2026-07-21
+commit_refs: ["57dc6cb"]
 pr_refs: []
 
-overall_progress: 0
+overall_progress: 100
 completion_estimate: "on-track"
 
 total_tasks: 7
-completed_tasks: 0
+completed_tasks: 7
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -34,7 +34,7 @@ model_usage:
 tasks:
   - id: "EP7-T1"
     description: "schemas/review-record.schema.json: data contract only (not the app) for change-proposal -> dual-review -> conflict-resolution -> approval, emitting the approvedBy[] shape EP-5's manifest consumes."
-    status: "pending"
+    status: "completed"
     assigned_to: ["documentation-writer"]
     dependencies: ["EP-0"]
     estimated_effort: "1.0 pt"
@@ -43,7 +43,7 @@ tasks:
     model_effort: "high"
   - id: "EP7-T2"
     description: "Review-portal design doc: describe workflow states (proposed/under-review/disputed/approved/rejected) and role vocabulary. Cross-reference ARC's council seat taxonomy as a role-vocabulary input only — not an approval source (D-4 applies here too)."
-    status: "pending"
+    status: "completed"
     assigned_to: ["documentation-writer"]
     dependencies: ["EP7-T1"]
     estimated_effort: "1.0 pt"
@@ -52,7 +52,7 @@ tasks:
     model_effort: "high"
   - id: "EP7-T3"
     description: "DOC-006 — author design specs for DEF-6, DEF-7, DEF-8: refresh docs/project_plans/design-specs/{public-moduleid-api-surface,algorithm-explainers-examples-relocation,headless-browser-runtime-smoke-check}.md, confirming each is still correctly deferred given what this phase actually shipped."
-    status: "pending"
+    status: "completed"
     assigned_to: ["documentation-writer"]
     dependencies: ["EP-6"]
     estimated_effort: "0.5 pts"
@@ -61,7 +61,7 @@ tasks:
     model_effort: "adaptive"
   - id: "EP7-T4"
     description: "Fix stale data/*.json path references in README.md, docs/clinical-algorithm.md, and docs/project_plans/expansion/01-platform-expansion-roadmap.md to the current modules/anemia/*.json paths."
-    status: "pending"
+    status: "completed"
     assigned_to: ["documentation-writer"]
     dependencies: ["EP-6"]
     estimated_effort: "0.5 pts"
@@ -70,7 +70,7 @@ tasks:
     model_effort: "adaptive"
   - id: "EP7-T5"
     description: "Correct stale test-count claim (README.md:96) + update docs/architecture.md §6/§7/§10 and CLAUDE.md's hard-guardrails/architecture-orientation block to reflect tri-state facts, fail-closed units, exact-passage evidence, governed rule metadata, and the verified manifest."
-    status: "pending"
+    status: "completed"
     assigned_to: ["documentation-writer"]
     dependencies: ["EP-6"]
     estimated_effort: "0.5 pts"
@@ -79,7 +79,7 @@ tasks:
     model_effort: "adaptive"
   - id: "EP7-T6"
     description: "CHANGELOG [Unreleased] entry categorizing this phase's user-facing/behavioral changes (tri-state input shape, fail-closed unit rejection, honest not-assessed representation)."
-    status: "pending"
+    status: "completed"
     assigned_to: ["documentation-writer"]
     dependencies: ["EP-6"]
     estimated_effort: "0.25 pts"
@@ -88,7 +88,7 @@ tasks:
     model_effort: "adaptive"
   - id: "EP7-T7"
     description: "Plan frontmatter finalization & findings closeout: set plan status: completed, populate commit_refs/files_affected/updated; finalize findings doc (draft -> accepted) or record N/A."
-    status: "pending"
+    status: "completed"
     assigned_to: ["artifact-tracker"]
     dependencies: ["EP7-T3", "EP7-T4", "EP7-T5", "EP7-T6"]
     estimated_effort: "0.25 pts"
@@ -107,15 +107,15 @@ parallelization:
 blockers: []
 
 success_criteria: [
-  { id: "SC-1", description: "Review-record schema round-trips all 4 workflow states (EP7-T1)", status: "pending" },
-  { id: "SC-2", description: "Design doc contains an explicit D-4 non-goal statement (EP7-T2)", status: "pending" },
-  { id: "SC-3", description: "All 3 deferred items (DEF-6, DEF-7, DEF-8) have a current design-spec path; deferred_items_spec_refs populated (EP7-T3)", status: "pending" },
-  { id: "SC-4", description: "Zero stale data/*.json references remain in README, clinical-algorithm.md, or the roadmap doc (EP7-T4)", status: "pending" },
-  { id: "SC-5", description: "Test-count and architecture docs match shipped state (EP7-T5)", status: "pending" },
-  { id: "SC-6", description: "CHANGELOG [Unreleased] entry present (EP7-T6)", status: "pending" },
-  { id: "SC-7", description: "Plan frontmatter complete; findings doc finalized or N/A (EP7-T7)", status: "pending" },
-  { id: "SC-8", description: "karen end-of-feature review passed", status: "pending" },
-  { id: "SC-9", description: "task-completion-validator sign-off", status: "pending" }
+  { id: "SC-1", description: "Review-record schema round-trips all 4 workflow states (EP7-T1)", status: "met" },
+  { id: "SC-2", description: "Design doc contains an explicit D-4 non-goal statement (EP7-T2)", status: "met" },
+  { id: "SC-3", description: "All 3 deferred items (DEF-6, DEF-7, DEF-8) have a current design-spec path; deferred_items_spec_refs populated (EP7-T3)", status: "met" },
+  { id: "SC-4", description: "Zero stale data/*.json references remain in README, clinical-algorithm.md, or the roadmap doc (EP7-T4)", status: "met" },
+  { id: "SC-5", description: "Test-count and architecture docs match shipped state (EP7-T5)", status: "met" },
+  { id: "SC-6", description: "CHANGELOG [Unreleased] entry present (EP7-T6)", status: "met" },
+  { id: "SC-7", description: "Plan frontmatter complete; findings doc finalized or N/A (EP7-T7)", status: "met" },
+  { id: "SC-8", description: "karen end-of-feature review passed", status: "met" },
+  { id: "SC-9", description: "task-completion-validator sign-off", status: "met" }
 ]
 
 files_modified: [
