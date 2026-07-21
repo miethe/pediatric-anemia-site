@@ -22,7 +22,7 @@
     "knowledgeBaseVersion": "0.1.0-2026-07-15",
     "rulesFileDigest": "sha256:d6df348b15c6a391afb51a7f9945d50cea89b26c2f4a1a7fd629de035cb62793",
     "candidatesFileDigest": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
-    "moduleFileDigest": "sha256:7695cd550e58280c373b6bf307dcb309cc8bf43c57c3bcbf40dfcd12e4fc4579"
+    "moduleFileDigest": "sha256:92b4096b9bad048d7c2f2dd162ce786bfdae4551670b8344fb8ce49c3a0b62c2"
   },
   "executionBinding": {
     "engine": "anemia-assessment-engine",
