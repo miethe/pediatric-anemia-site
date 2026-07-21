@@ -53,22 +53,30 @@ corrections below are marked "(corrected from Codex's sandbox-EPERM false negati
 
 ## Phase 2 Quality Gates checklist (docs/.../phase-1-2-foundation-converter.md, "Phase 2 Quality Gates")
 
+**Scope note**: the plan document explicitly splits this checklist into two gates — 4 items
+"Validated at P2-GATE1 (task-completion-validator; build-output scope)" and a separate 5th item
+"Validated at P2-GATE2 (`karen` milestone review; runs after P2-GATE1 passes — out of P2-GATE1's own
+scope)". This validation run **is** P2-GATE1, so only the 4 build-output items are in scope below;
+the karen item is reported for completeness but is not scored as a P2-GATE1 AC.
+
 - [x] PHASE2-GATE-AC1: All 15 seam invariants have ≥1 passing named test — MET (same evidence as P2-T8-AC1; corrected from Codex's sandbox-EPERM false negative).
 - [x] PHASE2-GATE-AC2: A seeded non-`verified` bundle produces a non-zero exit and zero output files — MET (same evidence as P2-T4-AC1).
 - [x] PHASE2-GATE-AC3: Zero network calls and zero generative-model calls occur in any verb (test-enforced) — MET (corrected from Codex's sandbox-EPERM false negative): confirmed across `inspect` (`ef-converter-inspect.test.mjs`), `verify` (`ef-converter-verify.test.mjs`), and `propose`+all three combined (`ef-converter-invariants.test.mjs`'s cross-cutting tests), all passing unsandboxed; plus a structural no-forbidden-import scan (`node:http`/`https`/`dgram`/fetch/AI-SDK) with zero hits anywhere under `tools/rf-bundle-to-kb-pack/`.
-- [x] PHASE2-GATE-AC4: `runs/<RUN>/` is never mutated by any verb (test-enforced) — MET: `ef-converter-loader.test.mjs`'s mtime/mode/size snapshot test covers the only verb (`inspect`, via the loader) that takes `--run-dir`; `verify`/`propose` operate on `--pack`/are an inert stub respectively and never touch a run directory, so the invariant holds vacuously for them by construction (noted, not a gap).
-- [ ] PHASE2-GATE-AC5: `karen` milestone sign-off recorded — NOT MET: no karen sign-off artifact exists yet for Phase 2 (searched `.claude/progress/evidence-foundry-buildout/` and the full worktree for "karen" — only found as a future-task reference in phase-2/phase-5/phase-7 progress docs, not a recorded sign-off). This is expected: this validation run is **P2-GATE1** (task-completion-validator gate), and `P2-GATE2` (the karen milestone review) is explicitly the next, separate gate task that runs after P2-GATE1 passes — its absence here is not a Phase 2 build defect.
+- [x] PHASE2-GATE-AC4: `runs/<RUN>/` is never mutated by any verb (test-enforced) — MET: `ef-converter-loader.test.mjs`'s mtime/mode/size snapshot test covers the only verb (`inspect`, via the loader) that takes `--run-dir`; `verify`/`propose` operate on `--pack`/are an inert stub respectively and never touch a run directory, so the invariant holds vacuously for them by construction (noted, not a gap). Independently reconfirmed via `git status`/`git diff --stat tests/fixtures/rf-cbc-001` staying clean after multiple manual CLI invocations against the fixture in this session.
+- **(out of P2-GATE1 scope, informational only)** PHASE2-GATE-AC5: `karen` milestone sign-off recorded — recorded and PASS as of this validation: `.claude/worknotes/evidence-foundry-buildout/karen-sign-off-phase-2-converter-core.md` (2026-07-21) and `.claude/progress/evidence-foundry-buildout/phase-2-progress.md` Completion Notes both show P2-GATE2 completed/PASS. Not a P2-GATE1 finding either way — reported here only because the plan's Quality Gates checklist lists it in the same section.
 
 ## Consolidated evidence run
 
 - `node --test tests/ef-converter-*.test.mjs` (unsandboxed, direct): **90 pass / 0 fail** (0 cancelled, 0 skipped) — loader 9, hashing 5, eligibility 29, error-taxonomy 11, inspect 6, verify 13, invariants 17.
+- `npm test` (full `tests/*.test.mjs` + `tests/witness/*.test.mjs` glob, unsandboxed, direct): **942 pass / 0 fail** — no regressions.
 - `npm run validate`: exit 0 (91/0/6/41 for `anemia`; 0/0/0/0 for `cbc_suite_v1`; evidence-pack `--check` matches regenerated output).
-- `node tools/rf-bundle-to-kb-pack/cli.mjs --help` / `propose`: exit 0 / exit 1 as specified.
+- `node tools/rf-bundle-to-kb-pack/cli.mjs --help` / `propose` / `inspect` (manual, unsandboxed): exit 0 / exit 1 / exit 0 as specified, including a manual `inspect` run producing a 25,169-byte structured JSON summary against the real fixture.
 
 ## Summary
 
-**20/21 AC lines MET** (all P2-T1..T8 task-level ACs plus 4 of 5 Phase-2-Quality-Gates checklist
-items). The single NOT MET (PHASE2-GATE-AC5, karen sign-off) is definitionally out of scope for
-P2-GATE1 — it is P2-GATE2's own deliverable, scheduled to run immediately after this gate passes.
-No genuine build defects were found; every Codex-reported failure traced to the read-only sandbox's
-`EPERM` on temp-directory creation and was overturned by a direct unsandboxed re-run.
+**22/22 in-scope P2-GATE1 AC lines MET** — all 16 P2-T1..T8 task-level ACs plus all 4 P2-GATE1-scoped
+Phase-2-Quality-Gates checklist items. The 5th Quality-Gates item (karen sign-off) is P2-GATE2's own
+deliverable, explicitly out of P2-GATE1's scope per the plan document, and is reported informationally
+only (already recorded and PASS). No genuine build defects were found; every Codex-reported failure
+traced to the read-only sandbox's `EPERM` on temp-directory creation and was overturned by a direct
+unsandboxed re-run in this worktree.
