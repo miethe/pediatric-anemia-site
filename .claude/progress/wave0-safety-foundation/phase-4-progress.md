@@ -8,16 +8,20 @@ prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-foundation-v1.md
 execution_model: sequential
 phase: 4
+created: '2026-07-19'
 title: 'EP-4: Rule Metadata for Governance'
-status: deviated
-started: '2026-07-20T20:00Z'
-completed: '2026-07-21T03:00Z'
-commit_refs: [545e666, 8a6ddc7, aabc24e]
+status: pending
+started: 2026-07-20T20:00Z
+completed: 2026-07-21T03:00Z
+commit_refs:
+- 545e666
+- 8a6ddc7
+- aabc24e
 pr_refs: []
 overall_progress: 100
 completion_estimate: at-risk
 total_tasks: 4
-completed_tasks: 4
+completed_tasks: 3
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -44,9 +48,12 @@ tasks:
   assigned_model: sonnet
   model_effort: medium
   started: 2026-07-21T00:00Z
-  completed: 2026-07-21T01:30Z
+  completed: 2026-07-21T03:00Z
   evidence:
   - commit: 545e666
+  verified_by:
+  - EP4-T2
+  - EP4-T3
 - id: EP4-T2
   description: Single-commit codemod over all 91 rules populating version/effectiveDate/owner/safetyClass/sourcePassageId/changeRationale;
     requiredTestCaseIds[] populated where an EP-6 fixture already exists, else explicit
@@ -62,15 +69,18 @@ tasks:
   assigned_model: haiku
   model_effort: medium
   started: 2026-07-21T00:00Z
-  completed: 2026-07-21T01:30Z
+  completed: 2026-07-21T03:00Z
   evidence:
   - commit: 545e666
+  verified_by:
+  - EP4-T3
+  - EP4-T4
 - id: EP4-T3
   description: 'D-4 structural test — clinicalApprovers[] empty (FR-WP4-03, AC-D4):
     dedicated node:test asserts clinicalApprovers is [] on all 91 rules, and fails
     if populated from any non-owner-attested source, including ARC council output.
     The single most important AC in this phase.'
-  status: completed
+  status: partial
   assigned_to:
   - general-purpose
   dependencies:
@@ -83,6 +93,9 @@ tasks:
   completed: 2026-07-21T01:30Z
   evidence:
   - commit: 545e666
+  note: D-4 is enforced at four layers and all reviewer-demonstrated bypasses are
+    closed, but pass 5 reopened it once already; nothing in-phase verifies this verifier,
+    so it stays partial until a reviewer gate passes.
 - id: EP4-T4
   description: 'R-P2 resilience — consumers handle absent governance fields (AC-WP4-RESIL):
     retireDate: null treated as ''active,'' clinicalApprovers: [] as ''no credentialed
@@ -98,9 +111,11 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   started: 2026-07-21T00:00Z
-  completed: 2026-07-21T01:30Z
+  completed: 2026-07-21T03:00Z
   evidence:
   - commit: 545e666
+  verified_by:
+  - EP4-T3
 parallelization:
   batch_1:
   - EP4-T1
@@ -120,32 +135,45 @@ success_criteria:
   description: All 91 rules validate against the extended rule.schema.json in one
     commit (EP4-T1/T2)
   status: completed
-  note: "All 91 rules validate against the extended schema; verified 0 behavioral diffs vs main after stripping the 9 governance fields, so the dangerous-miss/hazard-matrix digest rebinds are safe."
+  note: All 91 rules validate against the extended schema; verified 0 behavioral diffs
+    vs main after stripping the 9 governance fields, so the dangerous-miss/hazard-matrix
+    digest rebinds are safe.
 - id: SC-2
   description: 'AC-D4 structural test passes: clinicalApprovers[] is [] on all 91
     rules, and the test fails on any non-owner-attested population (EP4-T3)'
   status: partial
-  note: "PARTIAL — reopened by reviewer pass 5, which showed the runtime layer still evaluated a malformed truthy clinicalApprovers ("approved"); now strict (only an explicit empty array is evaluable). Hardened after the gate demonstrated three earlier live bypasses. Now enforced at four layers: schema maxItems: 0, source+built-artifact tests across all MODULE_IDS (derived from REGISTRY), a post-build verify:d4 gate wired AFTER npm run build, and a runtime refusal in src/engine.js assess(). 11 D-4 tests including non-vacuity and baseline cases."
+  note: 'PARTIAL — reopened by reviewer pass 5, which showed the runtime layer still
+    evaluated a malformed truthy non-array clinicalApprovers value; now strict (only
+    an explicit empty array is evaluable). Hardened after the gate demonstrated three
+    earlier live bypasses. Enforced at four layers: schema maxItems 0, source and
+    built-artifact tests across all MODULE_IDS (derived from REGISTRY), a post-build
+    verify:d4 gate ordered after npm run build, and a runtime refusal at the lowest
+    exported evaluation entry point (ruleEngine.runRules).'
 - id: SC-3
   description: 'AC-WP4-RESIL: absent governance fields never misread as errors or
     as exemptions (EP4-T4)'
   status: completed
-  note: "Semantics implemented in src/governance.js and now WIRED into a real path — engine.js attaches hasCredentialedClinicalApproval/isActive to provenance.ruleAudit (reviewer pass 2, FIX-F). The false anti-truthiness claim was retracted at both sites."
+  note: Semantics implemented in src/governance.js and now WIRED into a real path
+    — engine.js attaches hasCredentialedClinicalApproval/isActive to provenance.ruleAudit
+    (reviewer pass 2, FIX-F). The false anti-truthiness claim was retracted at both
+    sites.
 - id: SC-4
   description: npm run check green
   status: completed
-  note: "npm run check green at 678 tests, including the post-build verify:d4 gate. (Count updated per reviewer pass 5, which flagged the recorded figure as stale.)"
+  note: npm run check green at 678 tests, including the post-build verify:d4 gate.
+    (Count updated per reviewer pass 5, which flagged the recorded figure as stale.)
 - id: SC-5
   description: task-completion-validator sign-off
   status: pending
-  note: "NOT signed off. Two adversarial reviewer-gate passes (gpt-5.6-sol, 2026-07-21) both returned CHANGES REQUIRED. Sign-off requires a passing gate."
+  note: NOT signed off. Two adversarial reviewer-gate passes (gpt-5.6-sol, 2026-07-21)
+    both returned CHANGES REQUIRED. Sign-off requires a passing gate.
 files_modified:
 - schemas/rule.schema.json
 - modules/anemia/rules.json
 - src/ruleEngine.js
 - src/engine.js
 - scripts/validate-kb.mjs
-progress: 100
+progress: 75
 updated: '2026-07-20'
 ---
 

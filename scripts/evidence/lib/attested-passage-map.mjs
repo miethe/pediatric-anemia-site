@@ -112,22 +112,48 @@ export function validateAttestationEntries(entries, idField, { passagesFor, isBi
     // Positive check (2): the attestation artifact must EXIST. An attestation that is only a string
     // inside this JSON file is not reviewable; requiring a committed, diffable file means a human
     // reviewing the commit can actually read what was attested.
+    // A `startsWith` prefix test is NOT containment (reviewer gate, sixth pass): both
+    // "docs/attestations/../../README.md" and "docs/attestations/." passed it and authorised a
+    // binding. Resolve first, then check containment against the RESOLVED directory, and require a
+    // regular file — a directory or a symlink out of the tree is not a reviewable artifact.
     const ref = entry?.attestationRef;
     if (typeof ref === 'string' && ref.length > 0) {
-      if (!ref.startsWith(`${ATTESTATION_ARTIFACT_DIR}/`)) {
-        problems.push(`${label}: attestationRef "${ref}" must live under ${ATTESTATION_ARTIFACT_DIR}/`);
-      } else if (!existsSync(path.resolve(REPO_ROOT_FOR_REFS, ref))) {
+      const resolvedDir = path.resolve(REPO_ROOT_FOR_REFS, ATTESTATION_ARTIFACT_DIR);
+      const resolved = path.resolve(REPO_ROOT_FOR_REFS, ref);
+      const contained = resolved.startsWith(resolvedDir + path.sep);
+      if (!contained) {
         problems.push(
-          `${label}: attestationRef "${ref}" does not exist on disk — an attestation must point at a `
-          + 'committed, reviewable artifact, not a bare string',
+          `${label}: attestationRef "${ref}" resolves to "${resolved}", outside ${ATTESTATION_ARTIFACT_DIR}/. `
+          + 'Path traversal and directory references are not reviewable artifacts.',
         );
+      } else {
+        let stats = null;
+        try { stats = lstatSync(resolved); } catch { stats = null; }
+        if (!stats) {
+          problems.push(
+            `${label}: attestationRef "${ref}" does not exist on disk — an attestation must point at a `
+            + 'committed, reviewable artifact, not a bare string',
+          );
+        } else if (stats.isSymbolicLink()) {
+          problems.push(`${label}: attestationRef "${ref}" is a symlink; it must be a regular committed file`);
+        } else if (!stats.isFile()) {
+          problems.push(`${label}: attestationRef "${ref}" is not a regular file`);
+        }
       }
     }
 
     // Honest date check.
+    // Shape alone is not validity: "2026-99-99" matched the regex and authorised a binding
+    // (reviewer gate, sixth pass). Round-trip through Date so only real calendar dates pass.
     const attestedOn = entry?.attestedOn;
-    if (typeof attestedOn === 'string' && !/^\d{4}-\d{2}-\d{2}$/.test(attestedOn)) {
-      problems.push(`${label}: attestedOn "${attestedOn}" must be an ISO date (YYYY-MM-DD)`);
+    if (typeof attestedOn === 'string') {
+      const shapeOk = /^\d{4}-\d{2}-\d{2}$/.test(attestedOn);
+      const roundTrips = shapeOk
+        && !Number.isNaN(new Date(`${attestedOn}T00:00:00Z`).getTime())
+        && new Date(`${attestedOn}T00:00:00Z`).toISOString().slice(0, 10) === attestedOn;
+      if (!roundTrips) {
+        problems.push(`${label}: attestedOn "${attestedOn}" must be a real ISO calendar date (YYYY-MM-DD)`);
+      }
     }
 
     const passageId = entry?.passageId;
@@ -159,7 +185,7 @@ export function validateAttestationEntries(entries, idField, { passagesFor, isBi
 // scripts/validate-kb.mjs also reads, so the DATA is checked rather than only the code path that
 // usually produces it.
 
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, lstatSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 

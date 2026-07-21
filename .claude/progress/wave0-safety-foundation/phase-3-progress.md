@@ -8,16 +8,22 @@ prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-foundation-v1.md
 execution_model: sequential
 phase: 3
+created: '2026-07-19'
 title: 'EP-3: Evidence Provenance (Exact-Passage Evidence Records)'
-status: deviated
-started: '2026-07-20T20:00Z'
-completed: '2026-07-21T03:00Z'
-commit_refs: [a34ccc4, 6565c32, dd983c6, 8a6ddc7, aabc24e]
+status: pending
+started: 2026-07-20T20:00Z
+completed: 2026-07-21T03:00Z
+commit_refs:
+- a34ccc4
+- 6565c32
+- dd983c6
+- 8a6ddc7
+- aabc24e
 pr_refs: []
 overall_progress: 100
 completion_estimate: at-risk
 total_tasks: 6
-completed_tasks: 6
+completed_tasks: 4
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -45,10 +51,12 @@ tasks:
   assigned_model: sonnet
   model_effort: high
   started: 2026-07-20T20:00Z
-  completed: 2026-07-20T23:30Z
+  completed: 2026-07-21T03:00Z
   evidence:
   - commit: a34ccc4
   - test: tests/evidence-passages.test.mjs
+  verified_by:
+  - EP3-T4
 - id: EP3-T2
   description: 'rf-bundle -> KB-pack converter (OQ-2 resolved: lives in this repo,
     registers as satisfying EF-WP0): new, deterministic, re-runnable converter consuming
@@ -63,9 +71,11 @@ tasks:
   assigned_model: sonnet
   model_effort: high
   started: 2026-07-20T20:00Z
-  completed: 2026-07-20T23:30Z
+  completed: 2026-07-21T03:00Z
   evidence:
   - commit: a34ccc4
+  verified_by:
+  - EP3-T5
 - id: EP3-T3
   description: 'Backfill passage records for all 6 evidence sources (AC-WP3-ENUM):
     run EP3-T2''s converter against RF-EV-001 to mint a passage-level record per source.
@@ -81,14 +91,17 @@ tasks:
   assigned_model: sonnet
   model_effort: medium
   started: 2026-07-20T20:00Z
-  completed: 2026-07-20T23:30Z
+  completed: 2026-07-21T03:00Z
   evidence:
   - commit: a34ccc4
+  verified_by:
+  - EP3-T4
+  - EP3-T5
 - id: EP3-T4
   description: Extend scripts/validate-kb.mjs so every rule.evidence[]/candidate.evidence[]
     reference resolves to a passage-level record or an explicit implementation-proposal
     flag.
-  status: completed
+  status: partial
   assigned_to:
   - general-purpose
   dependencies:
@@ -102,11 +115,14 @@ tasks:
   completed: 2026-07-20T23:30Z
   evidence:
   - commit: 6565c32
+  note: Implemented and green under npm run check, but nothing in-phase verifies the
+    verifier itself; awaiting a passing reviewer gate rather than claiming a verifier
+    that does not exist.
 - id: EP3-T5
   description: 'Passage-fidelity audit (cross-family lens): independent audit of EP3-T3''s
     backfilled passages against the source RF-EV-001 bundle claims — proven pattern
     on this exact corpus.'
-  status: completed
+  status: partial
   assigned_to:
   - general-purpose
   dependencies:
@@ -120,6 +136,8 @@ tasks:
   evidence:
   - commit: dd983c6
   - audit: docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md
+  note: The audit is itself a verifier; whether its remediation is adequate is exactly
+    what the reviewer gate is still assessing.
 - id: EP3-T6
   description: 'R-P2 resilience — consumers handle absent evidence fields (AC-WP3-RESIL):
     target_surfaces src/engine.js, src/app.js, src/algorithmExplorer.js, scripts/validate-kb.mjs.
@@ -135,10 +153,13 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   started: 2026-07-20T20:00Z
-  completed: 2026-07-20T23:30Z
+  completed: 2026-07-21T03:00Z
   evidence:
   - commit: 6565c32
   - test: tests/evidence-resilience.test.mjs
+  verified_by:
+  - EP3-T1
+  - EP3-T4
 parallelization:
   batch_1:
   - EP3-T1
@@ -164,24 +185,35 @@ success_criteria:
   description: 91/91 rules resolve sourcePassageId to a passage record or explicit
     implementation-proposal flag (EP3-T4, cross-checked by EP4-T2)
   status: completed
-  note: "91/91 rules resolve; all 91 to an implementation-proposal sentinel after the reviewer gate removed keyword-derived source-supported bindings."
+  note: 91/91 rules resolve; all 91 to an implementation-proposal sentinel after the
+    reviewer gate removed keyword-derived source-supported bindings.
 - id: SC-2
   description: Passage-fidelity audit clears with zero unresolved discrepancies (EP3-T5)
   status: deviated
-  note: "NOT cleared as written. The EP3-T5 audit returned 8 high / 2 medium / 1 low. Each finding is formally dispositioned at the record level (22 passages quarantined, 11 withheld, F11 fixed) rather than corrected, because correcting them would require authoring clinical prose. Zero findings are UNDISPOSITIONED; zero were CORRECTED. Do not read this as a clean audit."
+  note: NOT cleared as written. The EP3-T5 audit returned 8 high / 2 medium / 1 low.
+    Each finding is formally dispositioned at the record level (22 passages quarantined,
+    11 withheld, F11 fixed) rather than corrected, because correcting them would require
+    authoring clinical prose. Zero findings are UNDISPOSITIONED; zero were CORRECTED.
+    Do not read this as a clean audit.
 - id: SC-3
   description: 'AC-WP3-RESIL: absent evidence fields degrade to ''locator pending,''
     never a crash (EP3-T6)'
   status: completed
-  note: "Helper/accessor level verified; SPA passage rendering remains follow-up work."
+  note: Helper/accessor level verified; SPA passage rendering remains follow-up work.
 - id: SC-4
   description: npm run check green
   status: completed
-  note: "npm run check green; test count grows each remediation round — see the phase-4 tracker and the latest commit for the current figure."
+  note: npm run check green; test count grows each remediation round — see the phase-4
+    tracker and the latest commit for the current figure.
 - id: SC-5
   description: task-completion-validator sign-off
   status: pending
-  note: "NOT signed off. Two adversarial reviewer-gate passes (gpt-5.6-sol, 2026-07-21) BOTH returned CHANGES REQUIRED. Remediation landed in 8a6ddc7, aabc24e, 7b62a90 and later commits, but no gate pass has yet returned APPROVE. An earlier revision of this file recorded this criterion as completed while citing a CHANGES REQUIRED report — that was wrong and is corrected here. Sign-off requires a passing gate, not a run that happened."
+  note: NOT signed off. Two adversarial reviewer-gate passes (gpt-5.6-sol, 2026-07-21)
+    BOTH returned CHANGES REQUIRED. Remediation landed in 8a6ddc7, aabc24e, 7b62a90
+    and later commits, but no gate pass has yet returned APPROVE. An earlier revision
+    of this file recorded this criterion as completed while citing a CHANGES REQUIRED
+    report — that was wrong and is corrected here. Sign-off requires a passing gate,
+    not a run that happened.
 files_modified:
 - schemas/evidence.schema.json
 - src/evidence.js
@@ -190,7 +222,7 @@ files_modified:
 - src/engine.js
 - src/app.js
 - src/algorithmExplorer.js
-progress: 100
+progress: 66
 updated: '2026-07-20'
 ---
 

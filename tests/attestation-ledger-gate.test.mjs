@@ -249,3 +249,37 @@ test('hasRecognizedCredential accepts real credentials and rejects vague ones', 
     assert.ok(!hasRecognizedCredential(c), `${JSON.stringify(c)} should not be recognised`);
   }
 });
+
+// --- reviewer gate, SIXTH pass ---------------------------------------------------------------
+// `startsWith("docs/attestations/")` is a PREFIX test, not containment: both
+// "docs/attestations/../../README.md" and "docs/attestations/." satisfied it and authorised a
+// binding. And the ISO-date regex checked shape, not calendar validity, so "2026-99-99" passed.
+// Both are the same underlying mistake — validating the string rather than the thing it denotes.
+
+test('attestationRef path traversal and directory references are rejected (containment, not prefix)', async () => {
+  const { index, passage, base } = await bindableFixture();
+  const entity = [{ id: 'SCOPE-001', evidence: [passage.sourceId], sourcePassageId: passage.id }];
+  for (const ref of [
+    'docs/attestations/../../README.md',
+    'docs/attestations/..',
+    'docs/attestations/.',
+    'docs/attestations/../../package.json',
+  ]) {
+    const errors = gate(entity, index, [{ ...base, attestedBy: 'J. Okonkwo', credential: 'MD', attestationRef: ref }]);
+    assert.ok(errors.length > 0, `attestationRef "${ref}" must be rejected`);
+  }
+});
+
+test('attestedOn must be a real calendar date, not merely ISO-shaped', async () => {
+  const { index, passage, base } = await bindableFixture();
+  const entity = [{ id: 'SCOPE-001', evidence: [passage.sourceId], sourcePassageId: passage.id }];
+  for (const date of ['2026-99-99', '2026-02-30', '2026-13-01', '0000-00-00']) {
+    const errors = gate(entity, index, [{ ...base, attestedBy: 'J. Okonkwo', credential: 'MD', attestedOn: date }]);
+    assert.ok(errors.length > 0, `attestedOn "${date}" must be rejected`);
+  }
+  // and a real date still passes
+  assert.deepEqual(
+    gate(entity, index, [{ ...base, attestedBy: 'J. Okonkwo', credential: 'MD', attestedOn: '2026-02-28' }]),
+    [],
+  );
+});
