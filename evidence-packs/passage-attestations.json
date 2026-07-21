@@ -17,8 +17,10 @@
     "ERROR, regardless of how it got there.",
     "",
     "Entry shape: { ruleId | candidateId, passageId, attestedBy, credential, attestedOn,",
-    "attestationRef }. Every field is a required non-empty string. `attestedBy` must name a real",
-    "human reviewer and is rejected if it looks like a model, agent, council, or pipeline",
+    "attestationRef }. Every field is a required non-empty string. `attestedBy` should name a real",
+    "reviewer. NOTE: this check is a tripwire, not proof — code cannot establish that an",
+    "attester is human; see docs/attestations/README.md. It is rejected if it looks like a model,",
+    "agent, council, or pipeline",
     "identifier. `passageId` must resolve to a passage that is currently bindable (not quarantined",
     "by the EP3-T5 fidelity audit), and must belong to a source the entity actually cites."
   ],

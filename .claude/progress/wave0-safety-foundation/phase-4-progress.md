@@ -10,15 +10,15 @@ execution_model: sequential
 phase: 4
 created: '2026-07-19'
 title: 'EP-4: Rule Metadata for Governance'
-status: pending
+status: partial
 started: 2026-07-20T20:00Z
-completed: 2026-07-21T03:00Z
+completed: null  # phase is partial: verifier tasks await a passing reviewer gate
 commit_refs:
 - 545e666
 - 8a6ddc7
 - aabc24e
 pr_refs: []
-overall_progress: 100
+overall_progress: 75
 completion_estimate: at-risk
 total_tasks: 4
 completed_tasks: 3

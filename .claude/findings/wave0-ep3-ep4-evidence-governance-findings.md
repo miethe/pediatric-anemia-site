@@ -71,10 +71,15 @@ introduced by this phase — the phase merely made it visible and machine-checka
 
 ## Reviewer-gate findings (2026-07-21, `gpt-5.6-sol`, verdict: CHANGES REQUIRED)
 
-Report: `docs/audits/ep3-ep4-reviewer-gate-2026-07-21.md`. The gate ran **four passes**; the first
-three returned CHANGES REQUIRED and each found real defects in the previous round's remediation.
-Remediation landed across `8a6ddc7`, `aabc24e`, `7b62a90`, `7cf036c`, `34ebb4e` and the final
-fourth-pass fixes.
+Report: `docs/audits/ep3-ep4-reviewer-gate-2026-07-21.md`. The gate ran **seven passes**. Every one
+of the first six returned CHANGES REQUIRED, and each found real defects in the previous round's
+remediation. Remediation landed across `8a6ddc7`, `aabc24e`, `7b62a90`, `7cf036c`, `34ebb4e`,
+`a1b37d4`, `8075868`, `0d4eb51` and the seventh-pass fixes.
+
+By pass 7 the substantive invariants held — clinical-approval enforcement, cross-source grounding,
+the located-record biconditional, candidate resolution, the output contract, and module scoping —
+and the remaining findings were containment hardening, wording that still over-claimed, and
+tracker bookkeeping.
 
 | ID | Sev | Finding | Disposition |
 |---|---|---|---|
@@ -102,13 +107,20 @@ it, which is the argument for keeping that gate mandatory rather than advisory.
 | RG-12 | medium | `runRules()` is exported and evaluated poisoned rules without throwing, so "every evaluation path crosses the D-4 guard" was false | Guard moved to `runRules`, the lowest exported evaluation entry point |
 | RG-14 | high | The automated-identifier **deny-list** was defeated by `attestedBy: "OpenAI o3"`, and calling it "requires a human identifier" was itself an over-claim — a deny-list of model names is unbounded and permanently incomplete | Replaced with POSITIVE checks: a recognised clinical credential from a closed list, an `attestationRef` that must resolve to a file existing under `docs/attestations/`, and an ISO date. The deny-list is retained and broadened but relabelled a tripwire. `docs/attestations/README.md` states plainly that the gate **cannot** verify humanity — that rests on the out-of-band artifact and the humans reviewing the commit |
 | RG-15 | medium | The D-4 runtime guard rejected non-empty arrays but evaluated `clinicalApprovers: "approved"` — a malformed truthy claim | Strict form: only an explicit empty array is evaluable, matching the static detector exactly |
+| RG-16 | high | `attestationRef` containment used a lexical `path.resolve` + `startsWith` prefix test, so `docs/attestations/../../README.md` and `docs/attestations/.` escaped it; a later pass escaped again through a **symlinked intermediate directory**, which `path.resolve` cannot see through and `lstat` (leaf-only) missed | Containment now checked on canonical `realpath`s, with every path component rejected if it is a symlink, and the target required to be a regular file |
+| RG-17 | medium | `attestedOn` validated ISO *shape* but not calendar validity, so `2026-99-99` authorised a binding | Round-tripped through `Date`; `2026-02-30` and `2026-13-01` rejected too |
+| RG-18 | medium | Code comments and the ledger still said the gate "requires a human attestation" while the README correctly said code cannot establish that | Wording corrected at both sites to "structurally valid attestation record" |
+| RG-19 | medium | Phase-4 frontmatter was invalid YAML (an unescaped quote in a note written during an earlier remediation), so the file declared as source of truth could not be parsed by its own validators; both trackers also used an unsupported status and claimed completion timestamps and 100% progress against partial task sets | Both trackers parse, use the supported `partial` status, carry reconciled progress figures, and pass `validate_artifact.py` and `validate-phase-completion.py` |
 | RG-13 | low | The `source-supported ⇔ empty reviewFlags` claim was overstated globally — the 6 sentinels carry empty flags without being source-supported | Claim scoped to *located* records in the schema and pinned by a test |
 
-**The pattern across passes is the finding.** Three consecutive rounds of remediation each introduced
+**The pattern across passes is the finding.** Six consecutive rounds of remediation each introduced
 or left a fail-open path, and every one shared a shape: a guarantee asserted at the place data is
 *produced*, or over the *happy path*, rather than over the data and entry points that actually
 exist. Each was caught only by an adversarial reviewer that executed the bypass instead of reading
-the code. For a repository whose core discipline is not over-claiming, "we enforce X" written in a
+the code. The last three were pure *string-versus-referent* errors: checking that a path string
+starts with a prefix rather than that the file it denotes is contained; checking that a date is
+ISO-shaped rather than that it exists; checking a name against a deny-list and calling the result
+"human". For a repository whose core discipline is not over-claiming, "we enforce X" written in a
 comment above a check that does not enforce X is the highest-frequency defect observed in this
 phase — including several written by the orchestrator rather than by a delegate.
 

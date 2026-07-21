@@ -57,6 +57,21 @@ export function hasRecognizedCredential(credential) {
 // Positive check (2): the attestation artifact must exist on disk.
 export const ATTESTATION_ARTIFACT_DIR = 'docs/attestations';
 
+function realpathOrNull(p) {
+  try { return realpathSync(p); } catch { return null; }
+}
+
+function hasSymlinkComponent(absPath) {
+  let current = absPath;
+  const seen = new Set();
+  while (current && current !== path.dirname(current) && !seen.has(current)) {
+    seen.add(current);
+    try { if (lstatSync(current).isSymbolicLink()) return true; } catch { /* missing: reported elsewhere */ }
+    current = path.dirname(current);
+  }
+  return false;
+}
+
 const REQUIRED_ATTESTATION_FIELDS = ['passageId', 'attestedBy', 'credential', 'attestedOn', 'attestationRef'];
 
 /**
@@ -94,8 +109,8 @@ export function validateAttestationEntries(entries, idField, { passagesFor, isBi
     const attestedBy = entry?.attestedBy;
     if (typeof attestedBy === 'string' && attestedBy.length > 0 && AUTOMATED_IDENTIFIER_PATTERN.test(attestedBy)) {
       problems.push(
-        `${label}: attestedBy "${attestedBy}" matches the automated-identifier pattern — attestation must name a `
-        + 'human clinical reviewer, never a model, agent, council, or pipeline identifier',
+        `${label}: attestedBy "${attestedBy}" matches the automated-identifier pattern — attestation must not name a `
+        + 'model, agent, council, or pipeline identifier (a tripwire only — this cannot establish humanity)',
       );
     }
 
@@ -118,9 +133,15 @@ export function validateAttestationEntries(entries, idField, { passagesFor, isBi
     // regular file — a directory or a symlink out of the tree is not a reviewable artifact.
     const ref = entry?.attestationRef;
     if (typeof ref === 'string' && ref.length > 0) {
-      const resolvedDir = path.resolve(REPO_ROOT_FOR_REFS, ATTESTATION_ARTIFACT_DIR);
-      const resolved = path.resolve(REPO_ROOT_FOR_REFS, ref);
-      const contained = resolved.startsWith(resolvedDir + path.sep);
+      // path.resolve() is LEXICAL — it cannot see through a symlinked parent directory. The
+      // reviewer escaped containment with `docs/attestations/escape -> ../..` plus
+      // `attestationRef: "docs/attestations/escape/README.md"`: the lexical path stayed inside the
+      // directory while the real file was outside it, and lstat() only inspects the FINAL
+      // component. Containment must therefore be checked on CANONICAL real paths.
+      const resolvedDir = realpathOrNull(path.resolve(REPO_ROOT_FOR_REFS, ATTESTATION_ARTIFACT_DIR));
+      const resolved = realpathOrNull(path.resolve(REPO_ROOT_FOR_REFS, ref));
+      const contained = Boolean(resolvedDir) && Boolean(resolved)
+        && resolved.startsWith(resolvedDir + path.sep);
       if (!contained) {
         problems.push(
           `${label}: attestationRef "${ref}" resolves to "${resolved}", outside ${ATTESTATION_ARTIFACT_DIR}/. `
@@ -129,6 +150,13 @@ export function validateAttestationEntries(entries, idField, { passagesFor, isBi
       } else {
         let stats = null;
         try { stats = lstatSync(resolved); } catch { stats = null; }
+        // Reject a symlink anywhere in the path, not only at the leaf.
+        if (stats && hasSymlinkComponent(path.resolve(REPO_ROOT_FOR_REFS, ref))) {
+          problems.push(
+            `${label}: attestationRef "${ref}" traverses a symlink; every component must be a real `
+            + 'committed path inside the attestations directory',
+          );
+        }
         if (!stats) {
           problems.push(
             `${label}: attestationRef "${ref}" does not exist on disk — an attestation must point at a `
@@ -185,7 +213,7 @@ export function validateAttestationEntries(entries, idField, { passagesFor, isBi
 // scripts/validate-kb.mjs also reads, so the DATA is checked rather than only the code path that
 // usually produces it.
 
-import { readFileSync, lstatSync } from 'node:fs';
+import { readFileSync, lstatSync, realpathSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -276,7 +304,8 @@ export function validateBindingsAgainstLedger({
         errors.push(
           `${moduleId}/${entity.id}: sourcePassageId "${pointer}" claims SOURCE-SUPPORTED grounding with `
           + 'no matching attestation in evidence-packs/passage-attestations.json. A source-supported '
-          + 'binding requires a named human clinical attestation; the ledger is currently empty, so no '
+          + 'binding requires a structurally valid attestation record (humanity itself rests on the '
+          + 'out-of-band artifact and commit review — see docs/attestations/README.md); the ledger is currently empty, so no '
           + 'such binding is legitimate today. Fall back to the source\'s implementation-proposal sentinel.',
         );
       }

@@ -11,7 +11,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, symlink, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -282,4 +282,29 @@ test('attestedOn must be a real calendar date, not merely ISO-shaped', async () 
     gate(entity, index, [{ ...base, attestedBy: 'J. Okonkwo', credential: 'MD', attestedOn: '2026-02-28' }]),
     [],
   );
+});
+
+// --- reviewer gate, SEVENTH pass -------------------------------------------------------------
+// path.resolve() is LEXICAL: it cannot see through a symlinked parent directory. The reviewer
+// escaped containment with `docs/attestations/escape -> ../..` plus
+// `attestationRef: "docs/attestations/escape/README.md"` — the lexical path stayed inside the
+// directory while the real file was outside it, and lstat() only inspects the FINAL component.
+
+test('a symlinked intermediate directory cannot escape the attestations directory', async () => {
+  const { index, passage, base } = await bindableFixture();
+  const link = path.join(REPO_ROOT, 'docs', 'attestations', 'escape-test');
+  await unlink(link).catch(() => {});
+  await symlink('../..', link, 'dir');
+  try {
+    const errors = gate(
+      [{ id: 'SCOPE-001', evidence: [passage.sourceId], sourcePassageId: passage.id }],
+      index,
+      [{ ...base, attestedBy: 'J. Okonkwo', credential: 'MD', attestationRef: 'docs/attestations/escape-test/README.md' }],
+    );
+    assert.ok(errors.length > 0,
+      'containment must be checked on canonical real paths — a lexical prefix test is escapable '
+      + 'through any symlinked parent directory');
+  } finally {
+    await unlink(link).catch(() => {});
+  }
 });
