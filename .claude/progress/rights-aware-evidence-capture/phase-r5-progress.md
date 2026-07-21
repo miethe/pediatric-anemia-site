@@ -18,7 +18,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 7
-completed_tasks: 1
+completed_tasks: 2
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -55,7 +55,7 @@ tasks:
     v. Delta Dental Plans Ass''n, 126 F.3d 977 (7th Cir. 1997) to Appendix B. Each
     must be cited from the BODY, not merely listed. Citations are transcribed from
     the findings document, not reconstructed from memory.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -64,6 +64,10 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: medium
+  started: '2026-07-21T00:30:00Z'
+  completed: '2026-07-21T01:00:00Z'
+  evidence:
+  - commit: b453878
 - id: EPR5-T3
   description: '§3.7, §16.2, §3.2 corrections (FR-WP5-03/04/05): fix §3.7''s conflation
     of government works (uncopyrightable, 17 U.S.C. §105) with government-funded works,
@@ -228,7 +232,7 @@ files_modified:
 - docs/project_plans/design-specs/rights-release-gate.md
 - docs/project_plans/design-specs/single-source-rule-reanchoring.md
 - docs/project_plans/design-specs/first-party-rights-record.md
-progress: 14
+progress: 28
 updated: '2026-07-21'
 ---
 
