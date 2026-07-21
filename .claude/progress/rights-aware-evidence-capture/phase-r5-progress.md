@@ -134,7 +134,7 @@ tasks:
     .claude/findings/rights-governance-spec-v1.0-review-findings.md. Every figure
     is transcribed, none invented; the text must not imply any of the 13 has been
     bound — 0 of 91 rules remain grounded.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -143,6 +143,10 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: medium
+  started: '2026-07-21T16:00:00Z'
+  completed: '2026-07-21T16:15:00Z'
+  evidence:
+  - commit: cb8c11e
 - id: EPR5-T7
   description: 'NOTICE.md, docs/architecture.md §7, residual gap, deferred-item specs
     (FR-WP5-09, FR-WP5-10): update NOTICE.md and docs/architecture.md §7 to describe
