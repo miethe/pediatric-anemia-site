@@ -436,6 +436,15 @@ rf-bundle-to-kb-pack converter + cbc_suite_v1 vertical slice (E0)").
 
 ---
 
+## Findings
+
+Findings were captured during Phases 1 and 3 of execution and documented in `.claude/findings/evidence-foundry-buildout-findings.md`. Per P7-T14 finalization (deferred-items-and-findings.md §2 Step 4), the findings document has been updated:
+- Status set to `accepted`
+- `promoted_to` set to `/docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md`
+- All load-bearing findings either include corresponding design-specs or are explicitly marked as already-resolved/deferred-to-named-task (no new design-spec rows warranted)
+
+---
+
 ## Completion Notes
 
 Fill in when Phase 7 is complete: what was built, key learnings, unexpected challenges, and the

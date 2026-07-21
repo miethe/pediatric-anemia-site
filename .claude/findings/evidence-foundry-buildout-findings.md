@@ -3,12 +3,12 @@ schema_version: 2
 doc_type: report
 report_category: finding
 title: "Findings: Evidence Foundry Buildout"
-status: draft
+status: accepted
 source: agent
 created: '2026-07-21'
 updated: '2026-07-21'
 feature_slug: "evidence-foundry-buildout"
-promoted_to: null
+promoted_to: /docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md
 related_plan: /docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md
 ---
 
