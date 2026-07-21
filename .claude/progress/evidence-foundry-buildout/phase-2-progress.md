@@ -124,13 +124,14 @@ tasks:
 
   - id: "P2-GATE2"
     description: "karen milestone review — converter core (decisions block §4, first of 3 named milestones): independently re-check the 15/15 invariant claim, the fail-closed exit-code taxonomy, and CLAUDE.md hard guardrails ('no generative model in the decision path,' 'no invented thresholds') against Phase 2's actual diff, not the plan's description of it. Any gap becomes a new task before Phase 3 opens."
-    status: "pending"
+    status: "completed"
     assigned_to: ["karen"]
     dependencies: ["P2-GATE1"]
     estimated_effort: "—"
     priority: "critical"
     assigned_model: "sonnet"
     model_effort: "adaptive"
+    sign_off_ref: ".claude/worknotes/evidence-foundry-buildout/karen-sign-off-phase-2-converter-core.md"
 
 parallelization:
   batch_1: ["P2-T1"]
@@ -151,7 +152,7 @@ success_criteria: [
   { id: "SC-2", description: "A seeded non-'verified' bundle produces a non-zero exit and zero output files", status: "pending" },
   { id: "SC-3", description: "Zero network calls and zero generative-model calls occur in any verb (test-enforced)", status: "pending" },
   { id: "SC-4", description: "runs/<RUN>/ is never mutated by any verb (test-enforced)", status: "pending" },
-  { id: "SC-5", description: "karen milestone sign-off recorded (P2-GATE2 deliverable, validated after P2-GATE1 passes — not part of P2-GATE1's own acceptance scope)", status: "pending" }
+  { id: "SC-5", description: "karen milestone sign-off recorded (P2-GATE2 deliverable, validated after P2-GATE1 passes — not part of P2-GATE1's own acceptance scope)", status: "met" }
 ]
 
 files_modified: [
@@ -217,3 +218,12 @@ Phase 6 (Pre-E1 ADRs) opens in parallel once P2-GATE1 lands — no file overlap 
 
 Fill in when Phase 2 is complete: what was built, key learnings, unexpected challenges, recommendations
 for Phase 3, and the `karen` sign-off summary.
+
+**`karen` sign-off (P2-GATE2): PASS** — recorded at
+`.claude/worknotes/evidence-foundry-buildout/karen-sign-off-phase-2-converter-core.md` (2026-07-21).
+Independently re-verified against the actual diff: 15/15 seam-invariant tests (90/90 suite pass,
+unsandboxed), the fail-closed exit-code taxonomy (GOVERNANCE/HUMAN_REVIEW non-writable + forwarded
+verbatim by `dispatchVerb`, never remapped), and both named CLAUDE.md hard guardrails (zero
+network/generative-model imports; no invented clinical thresholds — the sole numeric literal is a
+`02 §3.7` recency-staleness check over metadata dates, not a lab value). No gap found; Phase 3 may
+open. PHASE2-GATE-AC5 is now MET.
