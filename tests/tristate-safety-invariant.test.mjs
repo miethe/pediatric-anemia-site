@@ -279,6 +279,10 @@ test('unknown is neither present nor absent, and all absence spellings normalize
 test('negative control proves structural and behavioral detectors fail on an unsafe rule', () => {
   const unsafeRule = {
     id: 'SYNTHETIC-UNSAFE-CLEARING',
+    // D-4 (reviewer gate, fifth pass): the runtime guard now requires an EXPLICIT empty
+    // clinicalApprovers[] on every evaluated rule — absence is no longer evaluable, because an
+    // absent field is not the same statement as "nobody has approved this".
+    clinicalApprovers: [],
     when: { not: { fact: 'history.pica', op: 'is-absent' } },
     output: {
       type: 'candidate',
@@ -309,6 +313,7 @@ test('negative control proves structural and behavioral detectors fail on an uns
 
 test('compound negative control catches adverse behavior that requires multiple unknown facts', () => {
   const unsafeCompoundRule = {
+    clinicalApprovers: [], // see the note on unsafeRule above
     id: 'SYNTHETIC-UNSAFE-COMPOUND-CLEARING',
     when: {
       any: [

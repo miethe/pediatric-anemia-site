@@ -1,0 +1,714 @@
+{
+  "schemaVersion": "1",
+  "runId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+  "reviewDate": "2026-07-18",
+  "sources": [
+    {
+      "kbSourceId": "AAP2026_IDA",
+      "sourceCardId": "src_20260718_rfev001_00",
+      "surveillanceQuery": "AAP iron deficiency and iron deficiency anemia clinical report update after 2026",
+      "passages": [
+        {
+          "evidenceId": "ev_001",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Screening > Laboratory Screening (paragraph beginning 'Screening to identify children and adolescents with ID and IDA includes')",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "summary": "AAP names the CBC (Hb, MCV, RDW) plus serum ferritin as the two core laboratory tests for identifying iron deficiency and IDA, with both performed together.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Infants, children, and adolescents (birth through adolescence) being screened for ID/IDA; general primary-care and subspecialty context",
+            "sex": null,
+            "assay": "CBC on an automated cell counter; serum ferritin immunoassay. Not a single numeric threshold — test-selection statement"
+          },
+          "supersedes": "2010 AAP clinical report on screening/prevention of ID and IDA"
+        },
+        {
+          "evidenceId": "ev_002",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Table 1 — 'Normal Hematologic Parameters in Infants, Children, and Adolescents by Age and Sex, From Age 9 Months to 18 Years' (ref 42), Hemoglobin / MCV / RDW rows; columns 6–24 mo, 2–6 y, 6–12 y, 12–<18 y (Females, Males)",
+            "page": null,
+            "section": null,
+            "table": "Table 1",
+            "figure": null
+          },
+          "summary": "Table 1 provides age- and sex-specific normal Hb (g/dL), MCV (fL), and RDW (%) intervals spanning 6–24 months through 12–<18 years, used as the KB fallback CBC reference intervals.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Females and males, 6–24 mo / 2–6 y / 6–12 y / 12–<18 y (table title states 'From Age 9 Months to 18 Years'); age- and sex-stratified",
+            "sex": null,
+            "assay": "Automated CBC analyzer; intervals derived from reference source cited as ref 42. Local laboratory intervals should be used where available"
+          },
+          "supersedes": "2010 AAP clinical report"
+        },
+        {
+          "evidenceId": "ev_003",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Diagnosis > Iron Studies (final sentence of paragraph reviewing SF thresholds, following WHO and ASH threshold discussion)",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "summary": "AAP sets serum ferritin ≤20 ng/mL as indicating ID for young and school-aged children and ≤30 ng/mL for adolescents and all menstruating individuals.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Young and school-aged children (≤20 ng/mL) vs adolescents and all menstruating individuals (≤30 ng/mL); age- and menstruating-status stratified",
+            "sex": "female",
+            "assay": "Serum ferritin (SF) immunoassay; interpretation confounded by inflammation (see ev_004). AAP threshold differs from WHO <12/<15 ng/mL and aligns with ASH ≤20/≤30 ng/mL"
+          },
+          "supersedes": "Longstanding SF thresholds of 10–12 ng/mL; WHO 2020 <12/<15 ng/mL cited as alternative provenance"
+        },
+        {
+          "evidenceId": "ev_004",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Diagnosis > Iron Studies (paragraph beginning 'In most otherwise healthy children without evidence of acute infection or chronic disease')",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "summary": "Ferritin is an acute-phase reactant; an elevated CRP in an ill or inflamed child means SF cannot be treated as a reliable ID marker, while CRP is unnecessary in a clinically well child.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Children/adolescents with acute or chronic inflammation, tissue injury, or acute illness; contrasted with clinically well children",
+            "sex": null,
+            "assay": "Serum ferritin interpreted alongside C-reactive protein (CRP); qualitative interpretive rule, no numeric CRP cutoff stated"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_005",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Diagnosis > Iron Studies (paragraph on soluble transferrin receptor); corroborated by Table 4 (sTfR1) row",
+            "page": null,
+            "section": null,
+            "table": "Table 4",
+            "figure": null
+          },
+          "summary": "[withheld pending REG-002 content-rights clearance]",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Children with chronic inflammatory conditions and risk factors for ID; used to separate ID from anemia of chronic inflammation",
+            "sex": null,
+            "assay": "Soluble transferrin receptor (sTfR/sTfR1) assay combined with serum ferritin; index = sTfR/log10(ferritin). Less affected by inflammation than SF; limited availability and lack of published pediatric norms"
+          },
+          "supersedes": "Recommended in 2010 AAP clinical report"
+        },
+        {
+          "evidenceId": "ev_006",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Laboratory Diagnosis of IDA > Complete Blood Cell Count (paragraph beginning 'The most valuable laboratory test'); Table 3 'Differential Diagnosis of Children With Microcytic Anemia'",
+            "page": null,
+            "section": null,
+            "table": "Table 3",
+            "figure": null
+          },
+          "summary": "Microcytic anemia with reduced MCV and elevated RDW is most consistent with IDA, but thalassemia trait and chronic inflammation can also cause microcytic anemia and must be differentiated (Table 3).",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Children/adolescents with microcytic anemia; differential across IDA, alpha/beta thalassemia trait, and anemia of inflammation/chronic disease",
+            "sex": null,
+            "assay": "CBC (MCV, RDW) plus SF/iron panel; beta thalassemia trait via elevated Hb A2 on Hb analysis after 6 months of age (ID falsely normalizes Hb A2); qualitative pattern, not a single cutoff"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_007",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Treatment of Severe or Refractory IDA > Severe IDA (opening sentences)",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "summary": "AAP defines severe IDA as confirmed IDA with Hb <7 g/dL, and notes some such children are minimally symptomatic — transfusion is reserved for clinical instability, not triggered by the Hb value alone.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Young children and adolescents with confirmed IDA; category applies within an established IDA diagnosis, not to anemia of any cause",
+            "sex": null,
+            "assay": "Hemoglobin from CBC; category is diagnostic-severity classification, not an executable transfusion rule (transfusion tied to hemodynamic instability / blood loss, not the number alone)"
+          },
+          "supersedes": null
+        }
+      ]
+    },
+    {
+      "kbSourceId": "WHO2024_HB",
+      "sourceCardId": "src_20260718_rfev001_01",
+      "surveillanceQuery": "WHO haemoglobin cutoffs anaemia guideline update after 2024",
+      "passages": [
+        {
+          "evidenceId": "ev_001",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Executive summary, p.xi, Table 2 (Haemoglobin cutoffs to define anaemia in individuals and populations)",
+            "page": "xi",
+            "section": null,
+            "table": "Table 2",
+            "figure": null
+          },
+          "summary": "WHO 2024 defines anaemia with age/population-specific haemoglobin cutoffs, including four distinct pediatric bands from 6 months to 14 years.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Children 6 months-14 years, both sexes; age-banded (6-23 mo, 24-59 mo, 5-11 y, 12-14 y girls/boys); apparently-healthy reference basis; applies at individual and population level",
+            "sex": null,
+            "assay": "Cutoffs defined on haemoglobin concentration via a 5th-percentile statistical derivation; stated as not tied to a specific analyzer but assumes standardized haemoglobin measurement"
+          },
+          "supersedes": "WHO 2011 'Haemoglobin concentrations for the diagnosis of anaemia and assessment of severity' and prior WHO documents (1968-2005)"
+        },
+        {
+          "evidenceId": "ev_002",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Executive summary, p.xi, Normative statement 1.a (Haemoglobin cutoffs to define any anaemia)",
+            "page": "xi",
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "summary": "The 2024 revision modified the haemoglobin cutoff for exactly one pediatric group -- children 6-23 months -- rather than applying a single universal pediatric threshold.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Children 6-23 months, both sexes -- the only pediatric group whose defining cutoff was changed in the 2024 revision",
+            "sex": null,
+            "assay": "5th-percentile statistical cutoff derivation; stated as not method-dependent"
+          },
+          "supersedes": "Prior WHO 6-23 mo cutoff (explicit prior numeric value not stated verbatim in executive summary -- see Limitations)"
+        },
+        {
+          "evidenceId": "ev_003",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section 1 (What should be the haemoglobin cutoffs...), scope/definitions narrative, para 'Physiological, environmental, and genetic factors...'",
+            "page": null,
+            "section": "1 (What should be the haemoglobin cutoffs...)",
+            "table": null,
+            "figure": null
+          },
+          "summary": "WHO states physiological, environmental, and genetic factors and lifecycle variation must be considered when defining haemoglobin cutoffs -- supporting contextual, non-universal interpretation.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "All age and lifecycle groups including children (explicitly 'early life ... and with age'); context = defining/interpreting haemoglobin cutoffs",
+            "sex": null,
+            "assay": "not applicable (qualitative interpretive principle)"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_004",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Executive summary, p.xii-xiii, Normative statement 2.a.1 (Elevation of residence) + Table 4 and equation footnote b",
+            "page": "xii-xiii",
+            "section": null,
+            "table": "Table 4",
+            "figure": null
+          },
+          "summary": "WHO recommends adjusting haemoglobin to define anaemia for elevation of residence, via a stated increment table and quadratic equation -- a contextual/physiologic modifier of interpretation.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "All population groups including children; residents/workers at elevation, esp. below 2500 m (>98% of world population)",
+            "sex": null,
+            "assay": "Adjustment applied to the haemoglobin concentration value (subtract from observed Hb, or add to the cutoff); not analyzer-dependent"
+          },
+          "supersedes": "2001 WHO programme-managers guide elevation adjustments"
+        },
+        {
+          "evidenceId": "ev_005",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Executive summary, p.xiv, Normative statement 2.b (Infection and inflammation)",
+            "page": "xiv",
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "summary": "WHO explicitly recommends that haemoglobin NOT be adjusted for infection/inflammation -- a contextual caveat distinguishing haemoglobin interpretation from inflammation-adjusted iron markers.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "All groups including children in infection/inflammation- and malaria-endemic settings",
+            "sex": null,
+            "assay": "Haemoglobin is NOT inflammation-adjusted (contrast: serum ferritin / transferrin receptor commonly are); not analyzer-dependent"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_006",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Introduction / methods narrative, para 'This guideline updates and complements previous recommendations...'",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "summary": "WHO documents that the 2024 cutoffs update and consolidate a traceable lineage of prior WHO guidance (1968-2005), giving transparent provenance for the thresholds.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "not applicable (provenance / methodology statement)",
+            "sex": null,
+            "assay": "not applicable"
+          },
+          "supersedes": "Five WHO documents 1968-2005; WHO 2011 summary publication"
+        }
+      ]
+    },
+    {
+      "kbSourceId": "BLOOD2022_PED_ANEMIA",
+      "sourceCardId": "src_20260718_rfev001_02",
+      "surveillanceQuery": "Anemia in the pediatric patient (Blood 2022) update or successor review after 2022",
+      "passages": [
+        {
+          "evidenceId": "ev_001",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section 'Classification of anemia' (refers to Figure 2)",
+            "page": null,
+            "section": "Classification of anemia",
+            "table": null,
+            "figure": "Figure 2"
+          },
+          "summary": "The review's core framework classifies pediatric anemia first by MCV (microcytic/normocytic/macrocytic) then refines by reticulocyte count — the morphology-first, reticulocyte-response approach the KB relies on.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Infants and children with anemia (individual-patient diagnostic workup); not applicable to a single numeric cutoff",
+            "sex": null,
+            "assay": "Automated hematology analyzer (MCV) plus reticulocyte count; classification is method-dependent on analyzer-reported indices"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_002",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section 'Normocytic anemia' (first sentence)",
+            "page": null,
+            "section": "Normocytic anemia",
+            "table": null,
+            "figure": null
+          },
+          "summary": "The review anchors the normocytic band at MCV 80-100 fL, the only explicit numeric MCV range stated in the source.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Pediatric patients (age band not sub-specified in this sentence); note the review's own Figure 1/Table 1 show MCV reference limits are age-dependent in children, so this 80-100 fL band is a general anchor, not an age-specific cutoff",
+            "sex": null,
+            "assay": "Automated hematology analyzer-reported MCV; method-dependent"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_003",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section 'Laboratory investigation'",
+            "page": null,
+            "section": "Laboratory investigation",
+            "table": null,
+            "figure": null
+          },
+          "summary": "Reticulocyte count direction (elevated vs low relative to anemia severity) distinguishes an adequate erythropoietic response to blood loss/hemolysis from inadequate marrow production.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Infants and children with anemia; interpretive rule, not applicable to a single sex/age band",
+            "sex": null,
+            "assay": "Reticulocyte count (automated or manual); interpretation is relative to degree of anemia, no fixed numeric cutoff given"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_004",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section 'Laboratory investigation' (peripheral blood smear)",
+            "page": null,
+            "section": "Laboratory investigation",
+            "table": null,
+            "figure": null
+          },
+          "summary": "Peripheral smear morphology (spherocytes, elliptocytes, schistocytes/helmet cells) points to specific hemolytic mechanisms — supporting the KB's smear-interpretation use of this source.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Infants and children with anemia; qualitative smear findings, not applicable to a numeric cutoff",
+            "sex": null,
+            "assay": "Peripheral blood smear microscopy (morphology); not a numeric threshold"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_005",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section 'BM replacement syndromes'",
+            "page": null,
+            "section": "BM replacement syndromes",
+            "table": null,
+            "figure": null
+          },
+          "summary": "Multilineage cytopenia — pancytopenia with relative reticulocytopenia, teardrop RBCs, giant platelets, and immature leukocytes — signals marrow replacement, backing the KB's multi-lineage-cytopenia escalation.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Infants and children with anemia plus another cytopenia; qualitative pattern, not applicable to a numeric cutoff",
+            "sex": null,
+            "assay": "CBC differential plus peripheral blood smear; not a numeric threshold"
+          },
+          "supersedes": null
+        }
+      ]
+    },
+    {
+      "kbSourceId": "CDC2025_LEAD",
+      "sourceCardId": "src_20260718_rfev001_03",
+      "surveillanceQuery": "CDC blood lead reference value and recommended actions update after 2025-08-21",
+      "passages": [
+        {
+          "evidenceId": "ev_001",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section 'Initial screening blood lead level' / heading 'If the patient's BLL is ≥ 3.5 micrograms per deciliter'",
+            "page": null,
+            "section": "Initial screening blood lead level",
+            "table": null,
+            "figure": null
+          },
+          "summary": "[withheld pending REG-002 content-rights clearance]",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Children (childhood lead poisoning prevention); both sexes; CDC screening context cites Medicaid-enrolled testing at ages 12 and 24 months, or 24-72 months if never screened",
+            "sex": null,
+            "assay": "Blood lead level measured in µg/dL; capillary (finger-prick/heel-prick) or venous sample for initial screening; capillary result at/above BLRV requires a venous sample"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_002",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section 'Initial screening blood lead level', first paragraph",
+            "page": null,
+            "section": "Initial screening blood lead level",
+            "table": null,
+            "figure": null
+          },
+          "summary": "A capillary screening result at or above the BLRV must be confirmed with a venous sample before further action.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Children undergoing initial blood lead screening; both sexes",
+            "sex": null,
+            "assay": "Method-dependent: capillary (finger/heel-prick) initial screen vs venous confirmatory draw; venous draw recommended for confirmatory BLL screening"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_003",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Table 1 — 'Recommended schedule for obtaining a confirmatory venous sample'",
+            "page": null,
+            "section": null,
+            "table": "Table 1",
+            "figure": null
+          },
+          "summary": "[withheld pending REG-002 content-rights clearance]",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Children with an elevated initial screening capillary BLL; both sexes",
+            "sex": null,
+            "assay": "Timelines keyed to initial screening capillary BLL; confirmation is by venous sample"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_004",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section 'If the patient's BLL is 3.5-19 micrograms per deciliter', iron-deficiency bullet",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "summary": "For a confirmed BLL of 3.5-19 µg/dL, CDC directs providers to test for and treat iron deficiency per AAP guidelines.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Children with confirmed BLL 3.5-19 µg/dL; both sexes",
+            "sex": null,
+            "assay": "Iron-deficiency testing/treatment thresholds deferred to AAP guidelines; not specified numerically in this CDC document"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_005",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Headings 'If the patient's BLL is 20-44 micrograms per deciliter' and 'If the patient's BLL is ≥ 45 micrograms per deciliter'",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "summary": "CDC defines escalating action tiers at 20-44 µg/dL (history/physical, environmental investigation, PEHSU/Poison Control contact) and ≥45 µg/dL (highest tier: detailed neuro exam, possible hospital admission, toxicologist consult for chelation).",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Children with confirmed BLL 20-44 µg/dL or ≥45 µg/dL; both sexes",
+            "sex": null,
+            "assay": "Tiers keyed to confirmed venous BLL; not analyzer-specific in this document"
+          },
+          "supersedes": null
+        }
+      ]
+    },
+    {
+      "kbSourceId": "FDA2026_CDS",
+      "sourceCardId": "src_20260718_rfev001_04",
+      "surveillanceQuery": "FDA Clinical Decision Support Software final guidance update after 2026-01-29",
+      "passages": [
+        {
+          "evidenceId": "ev_001",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section II (Background), four-criteria enumeration (pp. 5-6)",
+            "page": "5-6",
+            "section": "II (Background)",
+            "table": null,
+            "figure": null
+          },
+          "summary": "FDA states a CDS software function is excluded from the device definition under section 520(o)(1)(E) only if it meets all four listed non-device CDS criteria.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "not applicable",
+            "sex": null,
+            "assay": "not applicable"
+          },
+          "supersedes": "Clinical Decision Support Software final guidance, September 28, 2022"
+        },
+        {
+          "evidenceId": "ev_002",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section II (Background), Criterion (4) verbatim (p. 6); also Section IV(4), pp. 14-15",
+            "page": "6",
+            "section": "II (Background)",
+            "table": null,
+            "figure": null
+          },
+          "summary": "[withheld pending REG-002 content-rights clearance]",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "not applicable",
+            "sex": null,
+            "assay": "not applicable"
+          },
+          "supersedes": "Clinical Decision Support Software final guidance, September 28, 2022"
+        },
+        {
+          "evidenceId": "ev_003",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section IV(3) (Interpretation of Criterion 3), pp. 10-11",
+            "page": "10-11",
+            "section": "IV(3) (Interpretation of Criterion 3)",
+            "table": null,
+            "figure": null
+          },
+          "summary": "[withheld pending REG-002 content-rights clearance]",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "not applicable",
+            "sex": null,
+            "assay": "not applicable"
+          },
+          "supersedes": "Clinical Decision Support Software final guidance, September 28, 2022"
+        },
+        {
+          "evidenceId": "ev_004",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section IV(4)(a) (Interpretation of Criterion 4), p. 14",
+            "page": "14",
+            "section": "IV(4)(a) (Interpretation of Criterion 4)",
+            "table": null,
+            "figure": null
+          },
+          "summary": "[withheld pending REG-002 content-rights clearance]",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "not applicable",
+            "sex": null,
+            "assay": "not applicable"
+          },
+          "supersedes": "Clinical Decision Support Software final guidance, September 28, 2022"
+        },
+        {
+          "evidenceId": "ev_005",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Section IV(4) (Interpretation of Criterion 4), p. 15",
+            "page": "15",
+            "section": "IV(4) (Interpretation of Criterion 4)",
+            "table": null,
+            "figure": null
+          },
+          "summary": "[withheld pending REG-002 content-rights clearance]",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "not applicable",
+            "sex": null,
+            "assay": "not applicable"
+          },
+          "supersedes": "Clinical Decision Support Software final guidance, September 28, 2022"
+        }
+      ]
+    },
+    {
+      "kbSourceId": "BSH2020_G6PD",
+      "sourceCardId": "src_20260718_rfev001_05",
+      "surveillanceQuery": "BSH laboratory diagnosis of G6PD deficiency guideline update after 2020",
+      "passages": [
+        {
+          "evidenceId": "ev_001",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Page 5, 'Recommendations: Laboratory diagnosis' (first two bullets)",
+            "page": "5",
+            "section": "Recommendations: Laboratory diagnosis",
+            "table": null,
+            "figure": null
+          },
+          "summary": "G6PD deficiency should be diagnosed by measuring enzyme activity directly with a quantitative spectrophotometric assay, and a quantitative assay must follow any abnormal or borderline screening test.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "All patients suspected of G6PD deficiency (males and females; applies across ages including neonates/children); not age-band-restricted",
+            "sex": null,
+            "assay": "Quantitative spectrophotometric G6PD activity assay (WHO one-substrate or Glock & McLean method); screening/POC tests are insufficient to confirm or exclude, especially in females"
+          },
+          "supersedes": "The Assessment of Glucose-6-Phosphate Dehydrogenase Deficiency, General Haematology Task Force, 1991"
+        },
+        {
+          "evidenceId": "ev_002",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Page 6, 'Factors affecting clinical interpretation' (opening paragraph)",
+            "page": "6",
+            "section": "Factors affecting clinical interpretation",
+            "table": null,
+            "figure": null
+          },
+          "summary": "[withheld pending REG-002 content-rights clearance]",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Any patient tested during or soon after acute hemolysis/reticulocytosis (all ages); heightened for African-type variant",
+            "sex": null,
+            "assay": "Quantitative G6PD activity assay; interpretation is reticulocyte-dependent — result must be read alongside the reticulocyte count on the same sample"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_003",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Page 6, 'Factors affecting clinical interpretation'; corroborated by Page 5, 'Recommendations: Laboratory diagnosis' (third bullet)",
+            "page": "6",
+            "section": "Factors affecting clinical interpretation",
+            "table": null,
+            "figure": null
+          },
+          "summary": "[withheld pending REG-002 content-rights clearance]",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Patient with clinically suspected G6PD deficiency and unexplained hemolysis, initial assay normal/equivocal (all ages)",
+            "sex": null,
+            "assay": "Repeat quantitative G6PD activity assay after reticulocytosis resolves"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_004",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Page 7, 'Molecular diagnosis' (opening paragraph)",
+            "page": "7",
+            "section": "Molecular diagnosis",
+            "table": null,
+            "figure": null
+          },
+          "summary": "In a recently transfused patient a G6PD deficiency may be masked, so molecular analysis should be considered when a precise diagnosis is needed.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Recently transfused patients, heterozygous females, or cases where reticulocytosis may mask deficiency (all ages)",
+            "sex": null,
+            "assay": "Enzyme activity assay may be unreliable post-transfusion (donor cells) or with reticulocytosis; molecular/DNA analysis is the confirmatory alternative"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_005",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Page 3, Table I 'Classification of G6PD variants' (Class / Residual G6PD activity (% of normal))",
+            "page": "3",
+            "section": null,
+            "table": "Table I",
+            "figure": null
+          },
+          "summary": "[withheld pending REG-002 content-rights clearance]",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Hemizygous males (footnote: '*Levels of residual G6PD activity in hemizygous males'); classification framework applies across ages",
+            "sex": "male",
+            "assay": "Residual activity as % of the laboratory's normal (quantitative assay); Class I defined clinically (CNSHA), not purely biochemically"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_006",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Page 6, 'Normal values' (adult reference values paragraph)",
+            "page": "6",
+            "section": "Normal values",
+            "table": null,
+            "figure": null
+          },
+          "summary": "The guideline gives adult normal-range G6PD activity reference values in international units per gram of haemoglobin at 30 C and 37 C.",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Adults (explicitly 'For adults'); NOT applicable to neonates/infants, whose values deviate (see ev_007). Each lab should establish its own reference range (ICSH or commercial kit).",
+            "sex": null,
+            "assay": "Quantitative spectrophotometric assay; values are temperature-dependent (30 C vs 37 C) and 6-PGD-correction-dependent; expressed per gram haemoglobin (iu = umol substrate converted per minute)"
+          },
+          "supersedes": null
+        },
+        {
+          "evidenceId": "ev_007",
+          "status": "source-supported",
+          "sourceLocator": {
+            "raw": "Page 6, 'Normal values' (newborn/premature paragraph)",
+            "page": "6",
+            "section": "Normal values",
+            "table": null,
+            "figure": null
+          },
+          "summary": "[withheld pending REG-002 content-rights clearance]",
+          "evidenceGrade": "source-supported-fact",
+          "applicability": {
+            "age": "Newborns and infants; premature infants born between 29 and 32 weeks gestation vs term neonates",
+            "sex": null,
+            "assay": "Quantitative G6PD activity assay; adult reference ranges do not apply to neonates/infants (age- and gestational-age-dependent)"
+          },
+          "supersedes": null
+        }
+      ]
+    }
+  ]
+}

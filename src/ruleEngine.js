@@ -106,7 +106,42 @@ function mergeCandidate(store, rule, facts, catalog) {
   store.set(id, current);
 }
 
+/**
+ * D-4 RUNTIME GUARANTEE (reviewer gate, fourth pass, 2026-07-21).
+ *
+ * This lived in src/engine.js `assess()`. The reviewer showed that `runRules()` is itself exported
+ * and evaluated the same poisoned rules without complaint, so "every evaluation path crosses the
+ * guard" was false. The guard belongs at the LOWEST exported evaluation entry point, which is here:
+ * every caller — assess(), and any direct consumer of runRules() — now crosses it.
+ *
+ * No credentialed human clinician has approved any rule in this knowledge base. A rule arriving
+ * here with a non-empty `clinicalApprovers` is a false claim of clinical sign-off, and evaluation
+ * refuses rather than emitting output that carries it.
+ */
+export function assertNoClaimedClinicalApproval(rules) {
+  // STRICT (reviewer gate, fifth pass): the only evaluable value is an EXPLICIT EMPTY ARRAY.
+  // The previous form checked `Array.isArray(v) && v.length > 0`, so `clinicalApprovers: "approved"`
+  // — a truthy non-array — sailed through both runRules() and assess(). A malformed approval claim
+  // is not safer than a well-formed one, and absence is not the same statement as "[] = nobody has
+  // approved this". This now matches the static detector's definition exactly, so the runtime and
+  // file-level layers cannot disagree about what counts as a violation.
+  const offenders = (Array.isArray(rules) ? rules : [])
+    .filter((rule) => !(Array.isArray(rule?.clinicalApprovers) && rule.clinicalApprovers.length === 0))
+    .map((rule) => `${rule?.id ?? '<no id>'} (${JSON.stringify(rule?.clinicalApprovers)})`);
+  if (offenders.length > 0) {
+    throw new Error(
+      `D-4 VIOLATION — refusing to evaluate: ${offenders.length} rule(s) do not carry an explicit empty `
+      + `clinicalApprovers[] (${offenders.slice(0, 5).join(', ')}${offenders.length > 5 ? ', …' : ''}). `
+      + 'Only `clinicalApprovers: []` is evaluable — a populated list claims credentialed clinical '
+      + 'approval that does not exist, a non-array value is a malformed claim, and an absent field is '
+      + 'not the same statement as "nobody has approved this". No synthetic review (ARC council, '
+      + 'council-review, rf verification, or model self-attestation) may populate it.',
+    );
+  }
+}
+
 export function runRules(facts, rules, catalog = {}) {
+  assertNoClaimedClinicalApproval(rules);
   const candidates = new Map();
   const alerts = [];
   const questions = [];
@@ -115,7 +150,11 @@ export function runRules(facts, rules, catalog = {}) {
 
   for (const rule of rules) {
     const matched = evaluateCondition(rule.when, facts);
-    audit.push({ ruleId: rule.id, matched });
+    // Reviewer-gate fix-5 (finding 3, scope-bounded): carry the rule's sourcePassageId through to
+    // the audit trail instead of discarding it — this is the raw pointer only; src/engine.js
+    // resolves it to the passage's status (it has evidence.js loaded, this module deliberately
+    // does not) and attaches that alongside in provenance.ruleAudit.
+    audit.push({ ruleId: rule.id, matched, sourcePassageId: rule.sourcePassageId ?? null });
     if (!matched) continue;
 
     const output = rule.output ?? {};

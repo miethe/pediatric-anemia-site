@@ -8,10 +8,11 @@
     "start": "node server.mjs",
     "build": "node scripts/build-static.mjs",
     "test": "node --test tests/*.test.mjs tests/witness/*.test.mjs",
-    "validate": "node scripts/validate-kb.mjs",
+    "validate": "node scripts/validate-kb.mjs && node scripts/evidence/build-evidence-pack.mjs --check",
     "smoke": "node scripts/smoke-test.mjs",
-    "check": "npm test && npm run validate && npm run coverage:rules && npm run build && npm run check:imports && npm run smoke:browser && npm run smoke",
+    "check": "npm test && npm run validate && npm run coverage:rules && npm run build && npm run verify:d4 && npm run check:imports && npm run smoke:browser && npm run smoke",
     "check:imports": "node scripts/check-app-imports.mjs",
+    "verify:d4": "node scripts/verify-d4-built.mjs",
     "smoke:browser": "node scripts/smoke-browser-unit-rejection.mjs",
     "coverage:rules": "node scripts/rule-coverage.mjs --require-all --min=91"
   },

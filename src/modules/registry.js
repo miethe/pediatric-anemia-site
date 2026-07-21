@@ -23,7 +23,12 @@ export function listModules() {
 // isRegisteredModule for existence checks — none of it replaces the synchronous hook-object
 // accessors above.
 
-export const MODULE_IDS = Object.freeze(['anemia']);
+// DERIVED, not restated (reviewer gate 2026-07-21, finding 4, second pass). MODULE_IDS was a
+// hand-maintained literal that could silently drift from REGISTRY — a module registered in
+// REGISTRY but omitted here would be invisible to every MODULE_IDS-driven gate, including the D-4
+// clinicalApprovers check and validate-kb. Deriving it makes that divergence impossible by
+// construction rather than by remembering.
+export const MODULE_IDS = Object.freeze([...REGISTRY.keys()]);
 
 // Deliberate tripwire (SPIKE-002 Q5 assertion 1, tests/module-registry.test.mjs): today there
 // is exactly one registered module, so the default is hardcoded. Revisit this the day a second

@@ -37,8 +37,30 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["ruleId", "matched"],
-            "properties": { "ruleId": { "type": "string" }, "matched": { "type": "boolean" } }
+            "required": [
+              "ruleId", "matched", "sourcePassageId", "sourcePassageStatus",
+              "hasCredentialedClinicalApproval", "isActive"
+            ],
+            "properties": {
+              "ruleId": { "type": "string" },
+              "matched": { "type": "boolean" },
+              "sourcePassageId": {
+                "type": ["string", "null"],
+                "description": "Reviewer-gate fix-5: the rule's raw sourcePassageId pointer, carried through unresolved by src/ruleEngine.js. Null on a rule with no pointer."
+              },
+              "sourcePassageStatus": {
+                "enum": ["source-supported", "quarantined", "implementation-proposal", null],
+                "description": "Reviewer re-review (finding D): now REQUIRED and constrained to the closed evidence-status enum (was an unconstrained optional string — a document claiming e.g. \"clinically-approved-by-magic\" here used to validate). src/engine.js's resolution of sourcePassageId, scoped to this assessment's own module via src/evidence/registry.js (FIX-E) — 'source-supported' | 'quarantined' | 'implementation-proposal', or null if the pointer does not resolve."
+              },
+              "hasCredentialedClinicalApproval": {
+                "type": "boolean",
+                "description": "FIX-F: src/governance.js#hasCredentialedClinicalApproval(rule), additive per-rule provenance wiring src/governance.js into a real output path. Always false today — no credentialed human clinician has approved any rule (D-4)."
+              },
+              "isActive": {
+                "type": "boolean",
+                "description": "FIX-F: src/governance.js#isActive(rule) — true unless the rule's retireDate has passed. Always true today (retireDate is null on every rule)."
+              }
+            }
           }
         }
       }
@@ -70,7 +92,11 @@
         "cautions": { "type": "array", "items": { "type": "string" } },
         "nextSteps": { "type": "array", "items": { "type": "string" } },
         "matchedRules": { "type": "array", "items": { "type": "string" } },
-        "evidence": { "type": "array", "items": { "type": "string" } }
+        "evidence": { "type": "array", "items": { "type": "string" } },
+        "sourcePassageId": {
+          "type": ["string", "null"],
+          "description": "FIX-C side effect: src/ruleEngine.js's mergeCandidate() spreads the diagnostic-pattern catalog entry (modules/anemia/candidates.json), which now carries its own sourcePassageId (EP3-T4). Carried through unresolved (raw pointer, no status resolution) — resolving it to a passage status in provenance, the way rule-level sourcePassageId is resolved, remains out of scope for this fix."
+        }
       }
     },
     "question": {

@@ -1,0 +1,120 @@
+{
+  "_comment": [
+    "EP3-T5 passage-fidelity audit findings, machine-readable. Authored from",
+    "docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md.",
+    "",
+    "THIS IS A SYNTHETIC ADVERSARIAL REVIEW (gpt-5.6-terra, cross-family lens). It is NOT clinical",
+    "validation, NOT credentialed clinical review, and confers no release authority. It is used here",
+    "only to DE-CLAIM: every flag below can suppress or withhold a claim, never add or strengthen one.",
+    "",
+    "Both scripts/evidence/vendor-rf-bundle.mjs and scripts/evidence/build-evidence-pack.mjs read this",
+    "file, so every deviation of the shipped KB from the raw RF-EV-001 bundle is traceable to a numbered",
+    "finding. Findings are applied mechanically; no clinical prose is authored by this pipeline.",
+    "",
+    "Note on causation: most of these defects originate in the RF-EV-001 bundle's own `summary` fields,",
+    "which the converter copied faithfully. They are content defects in the upstream evidence bundle,",
+    "not converter bugs -- which is precisely why an independent cross-family audit was in the plan."
+  ],
+  "auditRunId": "ep3-t5-passage-fidelity-2026-07-20",
+  "auditModel": "gpt-5.6-terra",
+  "auditDate": "2026-07-20",
+  "auditReport": "docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md",
+  "auditVerdict": "DISCREPANCIES FOUND — 8 high, 2 medium, 1 low",
+  "flagSemantics": {
+    "source-not-independently-retrievable": "The cited source artifact could not be independently retrieved or rights-cleared, so a located-passage claim against it cannot be substantiated from outside the RF bundle's own self-attestation. Blocks source-supported binding.",
+    "overclaims-source-modality": "The passage states as mandatory ('must', 'is confirmed') what the located source states conditionally ('might need to be', 'should'). Blocks source-supported binding.",
+    "adds-claim-not-in-located-passage": "The passage asserts something the located passage does not support. Blocks source-supported binding.",
+    "omits-source-numerics": "The passage drops thresholds, units, age bands, or formulae that the located passage carries. The passage is incomplete rather than false; it must not be used as executable grounding. Blocks source-supported binding.",
+    "near-verbatim-span-pending-rights": "The passage text shares a contiguous span with restricted source text long enough to constitute reproduction while REG-002 is uncleared. Triggers WITHHOLDING of the passage text, not merely a flag."
+  },
+  "bindingRule": "A passage carrying ANY flag MUST NOT be bound as source-supported grounding for a rule. EP-4 falls back to that source's implementation-proposal sentinel. This is fail-safe by construction: the direction of error is always toward 'we do not claim this is source-backed.'",
+  "withholdPlaceholder": "[withheld pending REG-002 content-rights clearance]",
+  "findings": [
+    {
+      "id": "EP3T5-F01",
+      "severity": "high",
+      "flag": "near-verbatim-span-pending-rights",
+      "claim": "Passage text reproduces 8-13 contiguous words of restricted source text despite passageFidelity: paraphrase. The span originates in the RF bundle's own summary field.",
+      "passageIds": [
+        "FDA2026_CDS#ev_002", "FDA2026_CDS#ev_003", "FDA2026_CDS#ev_004", "FDA2026_CDS#ev_005",
+        "BSH2020_G6PD#ev_003", "BSH2020_G6PD#ev_005", "BSH2020_G6PD#ev_007",
+        "AAP2026_IDA#ev_005", "CDC2025_LEAD#ev_001", "CDC2025_LEAD#ev_003", "BSH2020_G6PD#ev_002"
+      ]
+    },
+    {
+      "id": "EP3T5-F02",
+      "severity": "high",
+      "flag": "source-not-independently-retrievable",
+      "claim": "The AAP source card provides only a publisher URL with file_path: null plus a self-attestation of full-text access, not a retrievable artifact. RF-EV-002 and REG-002 independently recorded HTTP 403 / subscription-required for this source. Shipping these as source-supported in a clinical KB is an over-claim.",
+      "passageIds": [
+        "AAP2026_IDA#ev_001", "AAP2026_IDA#ev_002", "AAP2026_IDA#ev_003", "AAP2026_IDA#ev_004",
+        "AAP2026_IDA#ev_005", "AAP2026_IDA#ev_006", "AAP2026_IDA#ev_007"
+      ]
+    },
+    {
+      "id": "EP3T5-F03",
+      "severity": "high",
+      "flag": "adds-claim-not-in-located-passage",
+      "claim": "Passage asserts the AAP Table 1 intervals are 'used as the KB fallback' — an implementation claim the located passage does not make — while dropping the Hb/MCV/RDW numeric intervals it does carry.",
+      "passageIds": ["AAP2026_IDA#ev_002"]
+    },
+    {
+      "id": "EP3T5-F04",
+      "severity": "high",
+      "flag": "omits-source-numerics",
+      "claim": "Passage states only that four pediatric haemoglobin bands exist, dropping every cutoff (<105, <110, <115, <120 g/L) and its age/sex band.",
+      "passageIds": ["WHO2024_HB#ev_001"]
+    },
+    {
+      "id": "EP3T5-F05",
+      "severity": "high",
+      "flag": "omits-source-numerics",
+      "claim": "Passage refers to 'a stated increment table and quadratic equation' without the equation, its coefficients, units, or adjustment direction.",
+      "passageIds": ["WHO2024_HB#ev_004"]
+    },
+    {
+      "id": "EP3T5-F06",
+      "severity": "high",
+      "flag": "omits-source-numerics",
+      "claim": "Passage drops the 30C/37C adult G6PD reference values and the 6-PGD-correction distinction the located passage carries.",
+      "passageIds": ["BSH2020_G6PD#ev_006"]
+    },
+    {
+      "id": "EP3T5-F07",
+      "severity": "high",
+      "flag": "adds-claim-not-in-located-passage",
+      "claim": "Passage adds that transfusion is reserved for haemodynamic instability; the located passage supports only Hb <7 g/dL and possible minimal symptoms. Adding an unsourced transfusion statement to a pediatric CDS knowledge base is the most dangerous single defect in this audit.",
+      "passageIds": ["AAP2026_IDA#ev_007"]
+    },
+    {
+      "id": "EP3T5-F08",
+      "severity": "high",
+      "flag": "overclaims-source-modality",
+      "claim": "Located passage says the factors 'might need to be considered'; the passage says they 'must be considered'.",
+      "passageIds": ["WHO2024_HB#ev_003"]
+    },
+    {
+      "id": "EP3T5-F09",
+      "severity": "medium",
+      "flag": "adds-claim-not-in-located-passage",
+      "claim": "Passage adds that CRP is unnecessary in a clinically well child; the located passage supports only that ferritin is unreliable when CRP is elevated in illness/inflammation.",
+      "passageIds": ["AAP2026_IDA#ev_004"]
+    },
+    {
+      "id": "EP3T5-F10",
+      "severity": "medium",
+      "flag": "overclaims-source-modality",
+      "claim": "Located passage says providers 'should collect a venous sample'; the passage says it 'must be confirmed before further action', adding a sequencing claim.",
+      "passageIds": ["CDC2025_LEAD#ev_002"]
+    }
+  ],
+  "nonPassageFindings": [
+    {
+      "id": "EP3T5-F11",
+      "severity": "low",
+      "claim": "build-evidence-pack.mjs orders records with localeCompare(), which is locale-dependent, so byte determinism is not established across environments.",
+      "remediation": "Replace with an explicit ASCII/codepoint comparator.",
+      "target": "scripts/evidence/build-evidence-pack.mjs"
+    }
+  ]
+}

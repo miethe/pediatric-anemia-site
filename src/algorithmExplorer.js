@@ -1,6 +1,6 @@
 import { assessPediatricAnemia } from './engine.js';
 import { deriveFacts } from './facts.js';
-import { EVIDENCE } from './evidence.js';
+import { EVIDENCE, passageById, passageExactText, passageLocatorText } from './evidence.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -37,16 +37,27 @@ function formatSource(id) {
   return `${source.organization} ${source.year}`;
 }
 
+// EP3-T6 (AC-WP3-RESIL): `item` may be a source-id string, an `{id, use}` object (existing
+// tolerance), or an `{id, use, passageId}` object naming a specific passage-level record. A
+// passageId that does not resolve (unknown id, or a legacy-shape passage missing its locator/
+// text) degrades to "locator pending" via the src/evidence.js accessors — it never throws.
 function evidenceLink(item, { compact = false } = {}) {
   const id = typeof item === 'string' ? item : item?.id;
   const use = typeof item === 'object' ? item?.use : '';
+  const passageId = typeof item === 'object' ? item?.passageId : undefined;
   const source = EVIDENCE[id];
   if (!source) return `<span class="algorithm-source missing">${escapeHtml(id)}</span>`;
   const title = `${source.title}${use ? ` — ${use}` : ''}`;
+  const passageNote = passageId
+    ? (() => {
+        const passage = passageById(passageId);
+        return `<small class="algorithm-source-passage">${escapeHtml(passageExactText(passage))} <em>(${escapeHtml(passageLocatorText(passage))})</em></small>`;
+      })()
+    : '';
   return `
     <a class="algorithm-source${compact ? ' compact' : ''}" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(title)}">
       <span class="algorithm-source-id">${escapeHtml(id)}</span>
-      <span class="algorithm-source-copy"><strong>${escapeHtml(source.organization)} · ${escapeHtml(source.year)}</strong>${compact ? '' : `<small>${escapeHtml(use || source.title)}</small>`}</span>
+      <span class="algorithm-source-copy"><strong>${escapeHtml(source.organization)} · ${escapeHtml(source.year)}</strong>${compact ? '' : `<small>${escapeHtml(use || source.title)}</small>${passageNote}`}</span>
       <span aria-hidden="true">↗</span>
     </a>`;
 }

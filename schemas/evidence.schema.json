@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/evidence.schema.json",
+  "title": "Pediatric Anemia Evidence Document",
+  "description": "Validates modules/anemia/evidence.json: the single evidence source (DEF-1) — a knowledge-base-version-stamped list of cited sources, each carrying its existing prose (`supports`) and, per EP-3, an array of exact-passage-level `passages[]` records. Structural validity never implies clinical validity: a passage validating here only means the record is shaped correctly, not that its content is accurate or locally applicable.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["knowledgeBaseVersion", "reviewedThrough", "sources"],
+  "properties": {
+    "knowledgeBaseVersion": { "type": "string", "minLength": 1 },
+    "reviewedThrough": { "type": "string", "format": "date" },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": false,
+      "items": { "$ref": "#/$defs/source" }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "priority", "year", "title", "organization", "journal", "url", "supports", "passages"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+        "priority": { "type": "string", "minLength": 1 },
+        "year": { "type": "integer" },
+        "title": { "type": "string", "minLength": 1 },
+        "organization": { "type": "string", "minLength": 1 },
+        "journal": { "type": "string", "minLength": 1 },
+        "doi": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional. Not every source has a DOI (e.g. WHO2024_HB, a WHO guideline, does not); this property is simply absent rather than null on those records, matching every other genuinely-optional descriptive field on this object (journal-style citation metadata, not a passage-level clinical fact) — see `$defs/passage` for the fields where the codebase's typed-null convention instead applies."
+        },
+        "url": { "type": "string", "minLength": 1 },
+        "supports": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "pmcid": { "type": "string", "minLength": 1, "description": "Optional; present only when the source has a PubMed Central id." },
+        "recencyNote": { "type": "string", "minLength": 1, "description": "Optional free-text note explaining why an older source is still retained." },
+        "passages": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/passage" },
+          "description": "Exact-passage-level evidence records for this source (EP-3, D-EP3-2/D-EP3-3). Every source has at least one: the minted `<id>#implementation-proposal` sentinel, plus one per source-supported passage backfilled from the RF-EV-001 bundle."
+        }
+      }
+    },
+    "passage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "sourceId",
+        "status",
+        "sourceLocator",
+        "exactPassage",
+        "passageFidelity",
+        "reviewFlags",
+        "reviewFindingIds",
+        "evidenceGrade",
+        "reviewDate",
+        "supersedes",
+        "surveillanceQuery",
+        "provenance"
+      ],
+      "description": "A single exact-passage evidence record (D-EP3-3). Every member below except `applicability` is REQUIRED as a key — legitimate absence is expressed as an explicit typed null (`evidenceGrade`, `supersedes`, and every member of `sourceLocator`/`applicability`), never by omitting the key. `applicability` is conditionally required by the allOf below (AC-WP3-RESIL, EP3-T6): required on every `source-supported` record (an unrestricted-by-default clinical applicability claim on a supposedly source-backed record is a safety defect), optional only on the `implementation-proposal` sentinel, where absence means \"unrestricted\" because there is no clinical claim being made at all. The one content invariant (AC EP3-T1) is enforced by the first allOf member below: a record is valid only when `exactPassage` is non-empty OR `status` is `implementation-proposal` — the proposal sentinel is the only way to have an empty passage.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]+#(ev_[0-9]{3}|implementation-proposal)$",
+          "description": "\"<sourceId>#<rf evidence_id>\", or \"<sourceId>#implementation-proposal\" for the minted sentinel."
+        },
+        "sourceId": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]+$",
+          "description": "Must equal the `id` of the enclosing source record. (This schema validates the passage in isolation and cannot cross-check the parent; that equality is enforced by scripts/evidence/build-evidence-pack.mjs and tests/evidence-passages.test.mjs.)"
+        },
+        "status": {
+          "enum": ["source-supported", "quarantined", "implementation-proposal"],
+          "description": "`source-supported` means located AND carrying zero `reviewFlags` (reviewer-gate fix-2). `quarantined` means a passage was located, but the independent EP3-T5 fidelity audit found a defect (a non-empty `reviewFlags`) that prevents it from grounding a clinical claim — it is a defective source claim, not an implementation proposal, and the two must not be conflated: a proposal never claimed a located passage, a quarantined record did and that claim did not hold up. `implementation-proposal` is the explicit minted sentinel (D-EP3-3) — exactly one per source."
+        },
+        "sourceLocator": { "$ref": "#/$defs/sourceLocator" },
+        "exactPassage": {
+          "type": "string",
+          "description": "A PARAPHRASE (see `passageFidelity`, D-EP3-4) of the located passage, sourced from the RF extracted point's `summary` — never its `quote`. Empty string only on an `implementation-proposal` record."
+        },
+        "passageFidelity": {
+          "enum": ["verbatim", "paraphrase", "withheld"],
+          "description": "States what kind of text `exactPassage` holds. REG-002 has not cleared verbatim reuse of guideline text, so every record minted by this codebase's converter is `paraphrase` unless withheld; `verbatim` is schema-representable for a future cleared source but is asserted by nobody today. `withheld` (EP3T5-F01) means the independent EP3-T5 fidelity audit found the located span shared a rights-restricted contiguous span with source text; vendor-rf-bundle.mjs replaced `exactPassage` with the fixed placeholder before this record was ever minted, and `reviewFlags` carries `near-verbatim-span-pending-rights`."
+        },
+        "reviewFlags": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "source-not-independently-retrievable",
+              "overclaims-source-modality",
+              "adds-claim-not-in-located-passage",
+              "omits-source-numerics",
+              "near-verbatim-span-pending-rights"
+            ]
+          },
+          "description": "EP3-T5: zero or more independent-audit fidelity flags naming a specific way this passage over- or under-claims relative to its located source passage. Closed enum matching evidence-packs/rf-ev-001/fidelity-findings.json's `flagSemantics` keys — nothing outside that file may add a flag here. Empty array on a clean record. ANY non-empty value here means `status` MUST be `quarantined` (reviewer-gate fix-2, enforced by the allOf below) and blocks source-supported binding — see src/evidence.js#isBindableAsSourceSupported, the single shared predicate EP-4's rule->passage binder and scripts/validate-kb.mjs both call. Flags only suppress a claim; they never add or strengthen one."
+        },
+        "reviewFindingIds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "EP3-T5: the evidence-packs/rf-ev-001/fidelity-findings.json finding id(s) (e.g. \"EP3T5-F02\") that produced this record's `reviewFlags`. Empty array on a clean record. Every entry must resolve to a real finding id, and the flags it names must exactly match `reviewFlags`; both directions are enforced cross-file by scripts/validate-kb.mjs, which this schema cannot reach into the findings file to check on its own."
+        },
+        "evidenceGrade": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Null on an `implementation-proposal` record (there is no grade to assign to a sentinel). Otherwise the mapped `pediatric_cds.classification` from the RF extracted point (e.g. `source_supported_fact` -> `source-supported-fact`)."
+        },
+        "applicability": { "$ref": "#/$defs/applicability" },
+        "reviewDate": { "type": "string", "format": "date" },
+        "supersedes": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Free-text description of what this passage's guidance supersedes, from `pediatric_cds.lifecycle.supersedes`. Null when the source states no supersession."
+        },
+        "surveillanceQuery": {
+          "type": "string",
+          "minLength": 1,
+          "description": "A standing search query for detecting whether this source has been updated. Asserted per source (not derivable from any single RF extracted point) by the converter's source map."
+        },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "required": ["exactPassage"],
+            "properties": { "exactPassage": { "const": "" } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "implementation-proposal" } }
+          }
+        },
+        {
+          "description": "AC-WP3-RESIL (EP3-T6): applicability is required unless the record IS the implementation-proposal sentinel.",
+          "if": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "implementation-proposal" } }
+          },
+          "then": true,
+          "else": { "type": "object", "required": ["applicability"] }
+        },
+        {
+          "description": "EP3-T5 (EP3T5-F01): a record flagged near-verbatim-span-pending-rights must be marked withheld.",
+          "if": {
+            "type": "object",
+            "required": ["reviewFlags"],
+            "properties": { "reviewFlags": { "contains": { "const": "near-verbatim-span-pending-rights" } } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["passageFidelity"],
+            "properties": { "passageFidelity": { "const": "withheld" } }
+          }
+        },
+        {
+          "description": "EP3-T5 (EP3T5-F01): the converse — a record marked withheld must carry the flag that caused it.",
+          "if": {
+            "type": "object",
+            "required": ["passageFidelity"],
+            "properties": { "passageFidelity": { "const": "withheld" } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["reviewFlags"],
+            "properties": { "reviewFlags": { "contains": { "const": "near-verbatim-span-pending-rights" } } }
+          }
+        },
+        {
+          "description": "Reviewer-gate fix-2: `source-supported` now strictly means located AND unflagged — a record cannot declare itself source-supported while carrying an audit flag.",
+          "if": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "source-supported" } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["reviewFlags"],
+            "properties": { "reviewFlags": { "maxItems": 0 } }
+          }
+        },
+        {
+          "description": "Reviewer-gate fix-2: the converse — any non-empty reviewFlags forces status to quarantined, so a flagged record can never still read as source-supported or as an implementation-proposal.",
+          "if": {
+            "type": "object",
+            "required": ["reviewFlags"],
+            "properties": { "reviewFlags": { "minItems": 1 } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "quarantined" } }
+          }
+        },
+        {
+          "description": "Reviewer-gate re-review fix (finding B). SCOPE, stated precisely (corrected in the fourth pass, which flagged the earlier wording as overstated): the equivalence holds only over LOCATED records — source-supported means empty reviewFlags, and quarantined means non-empty reviewFlags. It is NOT a global property of every passage: the six implementation-proposal sentinels legitimately carry empty reviewFlags without being source-supported, because they assert no located passage at all. This clause is the quarantined-implies-non-empty half. Without this, {status: \"quarantined\", reviewFlags: []} validated — a record could claim the defect-flag status while carrying none of the flags that justify it. `status: \"quarantined\"` now requires at least one reviewFlags entry, so `quarantined` and `reviewFlags: []` can never coexist (mirrors the source-supported=>empty-flags rule above, in the opposite direction).",
+          "if": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "quarantined" } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["reviewFlags"],
+            "properties": { "reviewFlags": { "minItems": 1 } }
+          }
+        }
+      ]
+    },
+    "sourceLocator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw", "page", "section", "table", "figure"],
+      "description": "`raw` is always present, even on a proposal sentinel (where it explains why there is no located passage). The four parsed members are independently nullable: a locator that names a page but no table has `table: null`, not an omitted key.",
+      "properties": {
+        "raw": { "type": "string", "minLength": 1 },
+        "page": { "type": ["string", "null"], "minLength": 1 },
+        "section": { "type": ["string", "null"], "minLength": 1 },
+        "table": { "type": ["string", "null"], "minLength": 1 },
+        "figure": { "type": ["string", "null"], "minLength": 1 }
+      }
+    },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["age", "sex", "assay"],
+      "description": "Population applicability of the passage. Every member is independently nullable: `sex` in particular is null whenever the source does not name a single sex (D-EP3 field map — 'parsed from population when it names a sex, else null'), which is the common case, not an error.",
+      "properties": {
+        "age": { "type": ["string", "null"], "minLength": 1 },
+        "sex": { "type": ["string", "null"], "minLength": 1 },
+        "assay": { "type": ["string", "null"], "minLength": 1 }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runId", "sourceCardId", "evidenceId"],
+      "description": "Where this passage record came from. Unlike the applicability/locator fields, none of these are legitimately absent: every passage — including the minted proposal sentinel — traces to a specific RF run and source card.",
+      "properties": {
+        "runId": { "type": "string", "minLength": 1 },
+        "sourceCardId": { "type": "string", "minLength": 1 },
+        "evidenceId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The RF `extracted_points[].evidence_id` (e.g. `ev_001`), or the literal `implementation-proposal` for the minted sentinel."
+        }
+      }
+    }
+  }
+}

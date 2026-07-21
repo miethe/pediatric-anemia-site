@@ -28,6 +28,14 @@ function scrub(result) {
   return { ...result, meta: { ...result.meta, generatedAt: 'x' } };
 }
 
+// Explicit codepoint comparator (reviewer-gate fix-4: `String.prototype.localeCompare` is
+// locale-dependent, so it cannot back a deterministic diff between two snapshot directories).
+function compareCodepoints(a, b) {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+}
+
 // Recursively collect *.json under a directory.
 async function collect(dir, base = dir) {
   const out = [];
@@ -37,7 +45,7 @@ async function collect(dir, base = dir) {
   } catch {
     return out;
   }
-  for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+  for (const entry of entries.sort((a, b) => compareCodepoints(a.name, b.name))) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) out.push(...(await collect(full, base)));
     else if (entry.name.endsWith('.json')) out.push({ full, rel: path.relative(base, full) });
