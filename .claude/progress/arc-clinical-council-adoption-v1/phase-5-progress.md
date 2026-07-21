@@ -10,7 +10,9 @@ created: '2026-07-19'
 updated: '2026-07-21'
 prd_ref: docs/project_plans/expansion/00-expansion-plan.md
 plan_ref: docs/project_plans/implementation_plans/enhancements/arc-clinical-council-adoption-v1.md
-commit_refs: []
+commit_refs:
+- b5df293
+- cfa800f
 pr_refs: []
 execution_model: sequential
 plan_structure: unified
@@ -27,7 +29,7 @@ tasks:
     council/role schemas, profiles, receipts, protocols, and AOS identifiers by digest.
     Immutable pilot input manifest plus clean data-boundary scan.
 - id: P5-T2
-  status: pending
+  status: blocked
   assigned_to:
   - python-backend-engineer
   dependencies:
@@ -36,7 +38,7 @@ tasks:
     the trusted-writer path. Execution receipts bind every reviewer output and exclude
     stale artifacts.
 - id: P5-T3
-  status: pending
+  status: blocked
   assigned_to:
   - python-backend-engineer
   dependencies:
@@ -45,7 +47,7 @@ tasks:
     dangerous-miss results, certification, and recommendation liveness. `arc validate`
     clean; scorecard is not a skeleton placeholder.
 - id: P5-T4
-  status: pending
+  status: blocked
   assigned_to:
   - general-purpose
   dependencies:
@@ -54,7 +56,7 @@ tasks:
     privacy, methods, safety, equity, and release decisions to the exact digest. Each
     unavailable gate remains explicitly owner-held or not executed.
 - id: P5-V1
-  status: pending
+  status: blocked
   assigned_to:
   - pediatric-clinical-adjudicator
   - correctness-reviewer
@@ -78,7 +80,7 @@ parallelization:
 total_tasks: 5
 completed_tasks: 0
 in_progress_tasks: 1
-blocked_tasks: 0
+blocked_tasks: 4
 progress: 0
 ---
 

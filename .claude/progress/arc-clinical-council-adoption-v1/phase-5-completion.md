@@ -1,8 +1,11 @@
 ## Phase 5 Completion Note — Qualifying pilot and certification
 
 **Status: BLOCKED. Not completed.** Phase 5 cannot reach AC P5.1 in this environment.
-**Work is UNCOMMITTED** — see "Durability warning" at the bottom. A disk-full (`ENOSPC`) condition
-halted the phase before the final fix cycle, the progress-YAML update, and the commit.
+
+**Work IS committed and pushed** — ARC `b5df293`, PED `cfa800f`, both on `main`. A disk-full
+(`ENOSPC`) condition halted the phase before fix cycle 4 could be written; disk space recovered
+afterwards and everything delivered was committed and pushed. Fix cycle 4 (RR-1 HIGH, C1, C2, C3)
+remains **unapplied** — see the resume checklist.
 
 **Plan:** `docs/project_plans/implementation_plans/enhancements/arc-clinical-council-adoption-v1.md` §4 P5, AC P5.1
 **Progress:** `.claude/progress/arc-clinical-council-adoption-v1/phase-5-progress.md`
@@ -184,29 +187,36 @@ it silently.
 
 ---
 
-### Durability warning — READ FIRST
+### Commits
 
-The session halted on **`ENOSPC` (disk full)**. `Bash` became entirely unavailable (it cannot write
-its own stdout capture file), so I could **not**:
+| Repo | Commit | Contents |
+|---|---|---|
+| ARC (`agentic-research`) | **`b5df293`** (parent `80bb663`) | the 30-file run directory, additive only |
+| PED (`pediatric-anemia-site`) | **`cfa800f`** (parent `fa50ac8`) | this note, phase-5 progress (`status: blocked`), routing record |
 
-1. apply fix cycle 4 (RR-1, C1, C2, C3 — all drafted and source-verified, none written);
-2. run `validate-phase-completion.py`;
-3. set the progress frontmatter to `blocked`;
-4. **commit or push anything, in either repo.**
+Both squashed to one commit per repo, direct to `main`, pushed. Explicit paths staged only — the
+other agent's uncommitted ARC work was never staged and is untouched.
 
-**All 30 files of P5-T1 are untracked and uncommitted.** They are intact and verified as of ARC
-`80bb663` / PED `fa50ac8` — but they will be lost if the working tree is cleaned. **Free disk space
-and commit before doing anything else.** Do not run `git clean`, `git checkout --`, `git restore`, or
-`git stash` in the ARC tree.
+### Disk-full interruption — what it cost
+
+The session hit **`ENOSPC`** mid-phase; `Bash` became entirely unavailable (it could not write its
+own stdout capture file). Space recovered afterwards and everything delivered was committed. Two
+things were **not** done and remain open:
+
+1. **Fix cycle 4 was never applied** — RR-1 (HIGH), C1 (MEDIUM), C2, C3. All four were drafted and
+   source-verified by the implementer before the failure, but nothing was written to disk. The
+   committed tree therefore still carries them.
+2. **`validate-phase-completion.py` never ran** — the phase exit gate was not executed. Moot for a
+   `blocked` phase, but it means P5-T1's task row was deliberately left `in_progress` rather than
+   flipped to `completed` without the timestamps/evidence the gate requires.
 
 ### Resume checklist
 
-1. Free disk space; confirm `Bash` works.
-2. Commit `runs/2026-07-21-arc-clinical-qualifying-pilot/` (explicit path only) in ARC.
-3. Apply fix cycle 4: RR-1 (HIGH), C1, C2, C3 — then re-run the data-boundary scan and re-review
-   with both lenses (any material edit invalidates approval, plan §5).
-4. Set `phase-5-progress.md` frontmatter to `blocked`; P5-T1 `completed`, P5-T2/T3/T4/V1 `blocked`.
-5. **Owner actions to unblock the phase** — none can be done by a repository agent:
+1. Apply fix cycle 4: RR-1 (HIGH), C1, C2, C3 — then re-run the data-boundary scan and re-review
+   with **both** lenses (any material edit invalidates approval, plan §5).
+2. Run `validate-phase-completion.py`; set P5-T1 `completed` with timestamps + evidence
+   (`commit:b5df293`), and P5-T2/T3/T4/V1 explicitly `blocked`.
+3. **Owner actions to unblock the phase** — none can be done by a repository agent:
    `arc-runtime-owner` provisions an SDK credential; `evidence-rights-owner` signs an
    `EvidenceRightsReceipt` binding `knowledge-packs/pediatric-anemia/source-manifest.yaml`
    (sha256 `f4c33c82fe4977a7d4db2633ab04d82b39bb7bf421d048aba5a5b37a51b711f6`, all 15 source IDs,
