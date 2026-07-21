@@ -47,8 +47,9 @@ patient JSON → deriveFacts() (src/facts.js, shim over modules/anemia/facts.ane
   (`clinicalApprovers[]`/`approvedBy[]` stay schema-forced empty; no clinical sign-off exists).
 - Module package architecture: see `docs/architecture.md` §2a.
 - API: `GET /health`, `GET /api/v1/knowledge-base`, `POST /api/v1/assess` (`server.mjs`, `openapi.yaml`).
-- **Gate before commit:** `npm run check` (= `npm test` + `npm run validate` + `npm run build` +
-  `npm run check:imports` + `npm run smoke`). All must pass. Node ≥ 20.
+- **Gate before commit:** `npm run check` (= `npm test && npm run validate && npm run coverage:rules && npm run build && npm run verify:d4 && npm run check:imports && npm run smoke:browser && npm run smoke`).
+  All must pass. Node ≥ 20. `package.json`'s `scripts.check` is authoritative — this string is
+  copied verbatim from it and a doc-truth test (`tests/claudemd-check-gate.test.mjs`) fails on drift.
 
 ## Where the plan lives
 
