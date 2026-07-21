@@ -9,7 +9,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-fo
 execution_model: batch-parallel
 phase: 6
 title: 'EP-6: Adversarial Validation Corpus'
-status: pending
+status: completed
 started: '2026-07-21T14:00:00Z'
 completed: null
 commit_refs: []
@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 5
-completed_tasks: 4
+completed_tasks: 5
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -111,7 +111,7 @@ tasks:
     harms a child?'' Independent adversarial review of EP6-T4''s fixtures plus the
     full rule/candidate set for gaps the 10 named families don''t cover. Highest-stakes
     reasoning gate in the whole plan.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -120,6 +120,13 @@ tasks:
   priority: critical
   assigned_model: fable
   model_effort: max
+  started: '2026-07-21T16:00:00Z'
+  completed: '2026-07-21T17:00:00Z'
+  evidence:
+  - report: .claude/findings/wave0-ep6-validation-corpus-findings.md
+  - test: tests/dangerous-miss-ep6.test.mjs
+  - note: 19 findings (5 critical) from 3 blind fable lenses; D-4 not_executed_owner_held;
+      none fixed per no-AI-rule-changes guardrail
 parallelization:
   batch_1:
   - EP6-T1
@@ -168,7 +175,7 @@ files_modified:
 - scripts/mutation-run.mjs
 - tests/dangerous-miss.test.mjs
 updated: '2026-07-21'
-progress: 80
+progress: 100
 ---
 
 # wave0-safety-foundation - Phase 6: Adversarial Validation Corpus
