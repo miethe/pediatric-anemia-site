@@ -68,6 +68,44 @@
       "type": ["string", "null"],
       "format": "date-time",
       "description": "REQUIRED key, legitimately nullable — `null` before a release timestamp exists. When non-null, an RFC 3339 date-time."
+    },
+    "module_topic": {
+      "type": "string",
+      "minLength": 1,
+      "description": "OPTIONAL. Evidence Foundry P1-T2 (docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md §3.2) module-variable-envelope field. Not required here — modules/anemia/module.json predates this field and stays valid without it. Presence/content checks beyond basic type live in scripts/validate-kb.mjs (field-presence validation only, per this plan's OQ-7 ruling), not in this schema."
+    },
+    "intended_hcp_users": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "OPTIONAL. §3.2 envelope field — see `module_topic`'s description for the presence-vs-schema split rationale."
+    },
+    "patient_population": {
+      "type": "object",
+      "description": "OPTIONAL. §3.2 envelope field (age_min_months/age_max_months_exclusive/settings) — see `module_topic`'s description. Sub-shape is intentionally not constrained here (field-presence validation only)."
+    },
+    "intended_output": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "OPTIONAL. §3.2 envelope field — see `module_topic`'s description."
+    },
+    "explicit_exclusions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "OPTIONAL. §3.2 envelope field — see `module_topic`'s description."
+    },
+    "jurisdictions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "OPTIONAL. §3.2 envelope field — see `module_topic`'s description."
+    },
+    "integration_targets": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "OPTIONAL. §3.2 envelope field — see `module_topic`'s description."
+    },
+    "evidence_policy": {
+      "type": "object",
+      "description": "OPTIONAL. §3.2 envelope field (recent_window_days/older_source_rule/exact_passage_required_for_implementable_claim) — see `module_topic`'s description. Sub-shape is intentionally not constrained here (field-presence validation only)."
     }
   },
   "allOf": [

@@ -1,0 +1,99 @@
+id: ext_20260718_b4d03713_001
+source_card_id: src_20260718_rfcbc001_03
+created_at: '2026-07-18T15:17:45-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: Cyclic neutropenia is characterized by severe neutropenia at an ANC below 0.2 x10^9/L with infections
+    recurring at ~21-day intervals.
+  locator: INTRODUCTION, para 1 (CyN definition)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Severe congenital neutropenia patients usually have an ANC below 0.5 x10^9/L without regular cyclic
+    fluctuations and a bone marrow showing myeloid maturation arrest.
+  locator: INTRODUCTION para 1 + METHODS 'SCNIR patients' para (SCN definition)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: CyN diagnosis in the SCNIR was based on serial counts fluctuating from near 2.0 x10^9/L down to
+    below 0.2 x10^9/L at ~21-day intervals.
+  locator: METHODS 'SCNIR patients' para (CyN diagnostic criteria)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Thirty of 187 SCN patients (16%) developed MDS/AML while no CyN patient did (p<0.0001); all 19
+    frame-shift ELANE mutations occurred in SCN.
+  locator: OBSERVATIONS 'Mutations and myelodysplasia/acute myeloid leukemia' para 1-2
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: After 20 years on G-CSF, 100% of G214R (8/8) and 100% of C151Y (4/4) SCN patients experienced
+    a severe event, versus 0% for P139L/IVS4+5 G>A and 10% for S126L.
+  locator: OBSERVATIONS 'G-CSF, mutations, and outcomes' para 2 (20-year severe-event outcomes)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: The estimated 20-year cumulative incidence of a severe event was 46% (95% CI 35-55%) in SCN versus
+    7% (95% CI 0-17%) in CyN.
+  locator: OBSERVATIONS 'G-CSF, mutations, and outcomes' para 2 (cumulative incidence)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: The SCNIR cohort comprised 307 patients carrying 104 distinct ELANE mutations followed longitudinally
+    up to 27 years; sequencing was concluded useful for predicting outcomes.
+  locator: ABSTRACT 'Recent findings' + OBSERVATIONS 'Mutations and clinical diagnoses'
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: INTRODUCTION, para 1 (CyN definition)
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: INTRODUCTION para 1 + METHODS 'SCNIR patients' para (SCN definition)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: METHODS 'SCNIR patients' para (CyN diagnostic criteria)
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: OBSERVATIONS 'Mutations and myelodysplasia/acute myeloid leukemia' para 1-2
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: OBSERVATIONS 'G-CSF, mutations, and outcomes' para 2 (20-year severe-event outcomes)
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: OBSERVATIONS 'G-CSF, mutations, and outcomes' para 2 (cumulative incidence)
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: ABSTRACT 'Recent findings' + OBSERVATIONS 'Mutations and clinical diagnoses'
+contradictions_or_cautions:
+- text: ANC threshold passages render the ×10^9/l exponent as '10/l' in the PMC text-extraction (superscript
+    lost); numeric coefficient (0.2, 0.5, 2.0) is intact
+  locator: card/trust
+- text: Registry cohort not population-representative; diagnosis-assignment methodology may bias genotype-phenotype
+    associations vs other series
+  locator: card/trust

@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { assessPediatricAnemia } from './src/engine.js';
 import { EVIDENCE, KNOWLEDGE_BASE_VERSION, REVIEWED_THROUGH } from './src/evidence.js';
-import { MODULE_IDS } from './src/modules/registry.js';
+import { MODULE_IDS, DEFAULT_MODULE_ID } from './src/modules/registry.js';
 import { shapeServerError } from './src/serverErrors.js';
 import { verifyManifest, SUPPORTED_SCHEMA_VERSIONS } from './src/kbVerify.js';
 import { EVIDENCE_STALENESS_POLICY } from './src/evidenceStalenessPolicy.js';
@@ -61,12 +61,15 @@ function discloseEvidenceStaleness(moduleId, verdict) {
   }
 }
 
-// Startup: load every registered module's knowledge base AND its manifest, and REQUIRE the
-// manifest to verify — missing, schema-invalid, tampered, incompatible (unsupported
-// schemaVersion), or expired all refuse to start (SPIKE-006 RQ4, docs/architecture.md §10). Fail
-// fast — exit, not a silent partial start, and never a per-request fallback path — even though
-// only the default module is served today (no client-facing moduleId surface exists, per
-// platform-foundation-p0-v1.md Sequencing Note 6).
+// Startup: load every registered module's knowledge base AND its manifest verdict. Loading and
+// disclosure ALWAYS succeed for every registered module (KB files + manifest.json are read, and
+// verifyModuleManifest's verdict — servable or not — is computed and returned); this function
+// never throws on a non-servable manifest. Whether a non-servable verdict is fatal is the
+// CALLER's decision (see the loop below): missing/schema-invalid/tampered/incompatible/expired on
+// the module this server actually serves refuses to start (SPIKE-006 RQ4, docs/architecture.md
+// §10); the same verdict on any other registered module is disclosed, not fatal — no
+// client-facing moduleId surface exists (platform-foundation-p0-v1.md Sequencing Note 6), so no
+// route depends on any module but DEFAULT_MODULE_ID being servable.
 async function loadModuleData(moduleId) {
   const moduleDir = path.join(root, 'modules', moduleId);
   const moduleRules = JSON.parse(await readFile(path.join(moduleDir, 'rules.json'), 'utf8'));
@@ -79,11 +82,6 @@ async function loadModuleData(moduleId) {
   const sourceFiles = await loadKbSourceFiles();
   const manifestVerdict = await verifyModuleManifest({ moduleId, manifest, files, sourceFiles });
   discloseEvidenceStaleness(moduleId, manifestVerdict);
-  if (!manifestVerdict.servable) {
-    throw new Error(
-      `module "${moduleId}" manifest failed verification — refusing to serve: ${manifestVerdict.reasons.join('; ')}`,
-    );
-  }
 
   return {
     rules: moduleRules,
@@ -94,25 +92,46 @@ async function loadModuleData(moduleId) {
   };
 }
 
+// evidence-foundry-buildout P1-T3 (in-flight finding): this loop used to exit fatally whenever
+// ANY registered module's manifest failed verification — written when 'anemia' was the only
+// registered module, so "any module" and "the served module" were the same thing. That stopped
+// being true the moment a second module was registered (OQ-1): `cbc_suite_v1` is a deliberate
+// `unsigned-stub` scaffold with zero client-facing moduleId surface (R-P4/PRD §6.1 — no route
+// lets a caller reach it), so it legitimately never passes manifest verification until it is
+// reviewed and signed. Only `DEFAULT_MODULE_ID` — the module actually served by every existing
+// route — still fails closed exactly as before; every other registered module's KB data and
+// manifest verdict are still loaded and disclosed (see modulesSummary below), just never fatal.
 const modulesById = {};
 for (const moduleId of MODULE_IDS) {
+  let moduleData;
   try {
-    modulesById[moduleId] = await loadModuleData(moduleId);
+    moduleData = await loadModuleData(moduleId);
   } catch (error) {
     console.error(`Fatal: failed to load knowledge base for module "${moduleId}": ${error.message}`);
     process.exit(1);
   }
+  if (moduleId === DEFAULT_MODULE_ID && !moduleData.manifestVerdict.servable) {
+    console.error(
+      `Fatal: module "${moduleId}" manifest failed verification — refusing to serve: `
+        + `${moduleData.manifestVerdict.reasons.join('; ')}`,
+    );
+    process.exit(1);
+  }
+  modulesById[moduleId] = moduleData;
 }
 
 const rules = modulesById.anemia.rules;
 const candidates = modulesById.anemia.candidates;
 
 // Additive per-module discovery breakdown surfaced on GET /api/v1/knowledge-base — always
-// present, not conditional on any request param (no moduleId request surface exists, AC-5).
+// present, not conditional on any request param (no moduleId request surface exists, AC-5), and
+// present for EVERY registered module regardless of servability (proves the discovery plumbing
+// generalizes to a second module, per scripts/smoke-test.mjs's own stated design intent).
 // `manifest`/`evidenceStalenessPolicy` disclose the same provenance this server verified at
 // startup (AC-WP5-RESIL): `approvedBy: []` and `supersedes: null` are served as-is, never as an
-// error, and a null `evidenceStalenessPolicy.maxAgeDays` is disclosed as "not enforced" rather
-// than omitted.
+// error, a null `evidenceStalenessPolicy.maxAgeDays` is disclosed as "not enforced" rather than
+// omitted, and a non-servable manifest (e.g. `cbc_suite_v1`'s `unsigned-stub` status today) is
+// disclosed exactly as read — this endpoint never hides a module's real, unservable state.
 const modulesSummary = Object.fromEntries(
   MODULE_IDS.map((moduleId) => {
     const moduleData = modulesById[moduleId];

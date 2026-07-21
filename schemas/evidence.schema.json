@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/pediatric-anemia/schemas/evidence.schema.json",
-  "title": "Pediatric Anemia Evidence Document",
-  "description": "Validates modules/anemia/evidence.json: the single evidence source (DEF-1) — a knowledge-base-version-stamped list of cited sources, each carrying its existing prose (`supports`) and, per EP-3, an array of exact-passage-level `passages[]` records. Structural validity never implies clinical validity: a passage validating here only means the record is shaped correctly, not that its content is accurate or locally applicable.",
+  "title": "Pediatric CDS Module Evidence Document",
+  "description": "Validates modules/<moduleId>/evidence.json for any registered module (originally authored against modules/anemia/evidence.json, DEF-1, and now applied module-agnostically by scripts/validate-kb.mjs's per-module loop) — a knowledge-base-version-stamped list of cited sources, each carrying its existing prose (`supports`) and, per EP-3, an array of exact-passage-level `passages[]` records. Structural validity never implies clinical validity: a passage validating here only means the record is shaped correctly, not that its content is accurate or locally applicable.",
   "type": "object",
   "additionalProperties": false,
   "required": ["knowledgeBaseVersion", "reviewedThrough", "sources"],
@@ -11,9 +11,10 @@
     "reviewedThrough": { "type": "string", "format": "date" },
     "sources": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 0,
       "uniqueItems": false,
-      "items": { "$ref": "#/$defs/source" }
+      "items": { "$ref": "#/$defs/source" },
+      "description": "`minItems: 0` (relaxed from the original anemia-only `1`, evidence-foundry-buildout P1-T3): a brand-new module package scaffold — e.g. modules/cbc_suite_v1/evidence.json at E0 — legitimately has zero sources until its evidence is converted (Phase 3+). Every EXISTING populated module's evidence.json is unaffected: none has ever had fewer than 1 source, so this only widens what is legal, it narrows nothing."
     }
   },
   "$defs": {

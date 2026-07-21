@@ -1,0 +1,87 @@
+id: ext_20260718_8947b7b1_001
+source_card_id: src_20260718_rfcbc001_04
+created_at: '2026-07-18T15:17:45-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: Severe congenital neutropenia is diagnosed clinically by absolute neutrophil counts persistently
+    below 0.5 ×10^9/L with marrow maturation arrest of neutrophil precursors.
+  locator: Introduction, para 1 (diagnostic definition of SCN)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: After 10 years on G-CSF the estimated annual hazard of MDS/AML reached a stable plateau of 2.3%/year
+    (95% CI 1.7–2.9%).
+  locator: Results and Discussion, para 2 (updated hazard estimate)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: The estimated annual hazard of death from sepsis on long-term G-CSF was stable at 0.81%/year (95%
+    CI 0.56–1.16%).
+  locator: Results and Discussion, para 2 (sepsis-death hazard)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: After 15 years on G-CSF the cumulative incidence was 10% for sepsis death and 22% for MDS/AML.
+  locator: Results and Discussion, para 3 (cumulative incidence at 15 years)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: Patients failing to reach the cohort-median ANC of 2.188 ×10^9/L despite G-CSF at or above the
+    median dose of 8 μg/kg/day were the high-risk subgroup for both sepsis death and MDS/AML.
+  locator: Results and Discussion, para 5 (risk-stratification medians)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: The relative hazard of MDS/AML increased 1.24-fold per doubling of the month-6 G-CSF dose (P=0.003).
+  locator: Results and Discussion, para 4 (dose-response for MDS/AML)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Introduction, para 1 (diagnostic definition of SCN)
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Results and Discussion, para 2 (updated hazard estimate)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Results and Discussion, para 2 (sepsis-death hazard)
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Results and Discussion, para 3 (cumulative incidence at 15 years)
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Results and Discussion, para 5 (risk-stratification medians)
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Results and Discussion, para 4 (dose-response for MDS/AML)
+contradictions_or_cautions:
+- text: Full-text extraction from PMC dropped scientific-notation superscripts (e.g. '0.5 ×10/l' should
+    read 0.5 ×10^9/L) — verified against standard SCN diagnostic convention but flag on ingest.
+  locator: card/trust
+- text: Cohort not age-stratified; SCN is congenital (dx typically infancy/childhood) but this report
+    does not break out pediatric-only rates.
+  locator: card/trust
+- text: Risk estimates are cohort-level hazards, not individual-patient decision rules.
+  locator: card/trust

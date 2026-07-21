@@ -1,0 +1,59 @@
+id: ext_20260718_4bc626f6_001
+source_card_id: src_20260718_rfcbc001_01
+created_at: '2026-07-18T15:17:45-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: Reference standards were derived from 566 healthy children and adolescents spanning birth to under
+    21 years.
+  locator: Abstract — Methods
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Age-specific reference-interval differences were statistically significant for 39 of the 47 hematologic
+    parameters examined, confirming pediatric intervals cannot rely on adult cutoffs.
+  locator: Abstract — Results
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: Sex-specific reference-interval differences were observed for eight hematologic parameters, occurring
+    primarily during and after puberty.
+  locator: Abstract — Results
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The study establishes a database of pediatric reference standards for 47 hematologic parameters
+    calculated per CLSI guidelines on the Beckman Coulter DxH 900.
+  locator: Abstract — Methods / Conclusions
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract — Methods
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Abstract — Results
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Abstract — Methods / Conclusions
+contradictions_or_cautions:
+- text: Reference intervals are analyzer-specific (Beckman Coulter DxH 900) and not directly transferable
+    to other hematology platforms
+  locator: card/trust
+- text: CALIPER cohort is Canadian; ethnic/geographic transferability not established here
+  locator: card/trust
+- text: Per-parameter numeric reference-interval tables not verbatim-verifiable from retrieved text
+  locator: card/trust
