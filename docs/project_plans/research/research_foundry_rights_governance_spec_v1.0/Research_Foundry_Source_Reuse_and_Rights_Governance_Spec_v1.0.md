@@ -156,7 +156,9 @@ Operational policy:
 
 Copyright protection is generally unavailable for **works of the United States Government** — a work
 prepared by an officer or employee of the federal government as part of that person's official duties
-— under 17 U.S.C. § 105, subject to statutory nuances and third-party content. [S14] That rule does
+— under 17 U.S.C. § 105, subject to statutory nuances and third-party content. [S1] [Amendment
+2026-07-21, EPR5-T4, per FR-WP5-06: citation consolidated from the retired [S14] into [S1] — see
+Appendix B and Appendix D] That rule does
 **not** extend to **government-*funded*** works: federal grant or contract funding does not itself
 divest the authoring university, researcher, or publisher of copyright in the resulting article. §105
 turns on federal *authorship*, not on federal *funding*. [Amendment 2026-07-21, EPR5-T3, per
@@ -186,7 +188,7 @@ Operational consequence:
 
 ### 3.9 Trademarks and endorsement
 
-Trademarks identify the source of goods or services. A source name may be cited descriptively, but logos, branding, and product positioning must not suggest sponsorship or endorsement without authorization. [S11]
+Trademarks identify the source of goods or services. A source name may be cited descriptively, but logos, branding, and product positioning must not suggest sponsorship or endorsement without authorization. [S11] [Amendment 2026-07-21, EPR5-T4, per FR-WP5-06: pin-cite corrected — see Appendix B and Appendix D]
 
 Operational consequence:
 
@@ -205,7 +207,7 @@ Operational consequence:
 
 ### 3.11 Regulatory transparency is separate from content permission
 
-FDA’s January 2026 CDS guidance addresses when clinicians can independently review the basis of recommendations and distinguishes certain non-device CDS from device software functions. It does not grant copyright or reuse rights. [S15]
+FDA’s Clinical Decision Support Software final guidance, re-issued January 29, 2026 (superseding the January 6, 2026 version, itself superseding the September 2022 final guidance), addresses when clinicians can independently review the basis of recommendations and distinguishes certain non-device CDS from device software functions. It does not grant copyright or reuse rights. [S15] [Amendment 2026-07-21, EPR5-T4, per FR-WP5-06: date pinned — see Appendix B and Appendix D]
 
 Operational consequence:
 
@@ -901,7 +903,10 @@ per §3.3's operational consequence. [Amendment 2026-07-21, EPR5-T3, per FR-WP5-
 Do not assume the right to:
 
 - copy AAP prose;
-- reproduce an AAP figure, table, chart, nomogram, algorithm, form, handout, or slide;
+- reproduce an AAP figure, table, chart, nomogram, algorithm, form, handout, or slide — AAP's own
+  author instructions govern figures, tables, and supplementary material and impose their own reuse
+  constraints on top of the subscription terms above [S7] [Amendment 2026-07-21, EPR5-T4, per
+  FR-WP5-06: [S7] was defined in Appendix B but never cited from the body — cited here];
 - extract and redistribute the full AAP threshold or knowledge set;
 - incorporate Pediatric Care Online Materials into the commercial knowledge base in violation of the subscription terms;
 - use AAP trademarks or imply endorsement.
@@ -1350,8 +1355,13 @@ This specification is implemented when:
 
 ## Appendix B — Authoritative source register
 
-**[S1]** U.S. Copyright Office, *Title 17, Chapter 1*, §§ 102–103. Verified 2026-07-21.  
-https://www.copyright.gov/title17/92chap1.html
+**[S1]** U.S. Copyright Office, *Title 17, Chapter 1*, §§ 102, 103, 105. Verified 2026-07-21.  
+https://www.copyright.gov/title17/92chap1.html  
+*[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* Section coverage extended from §§102–103 to include
+§105: the §105 citation previously carried under a separate entry, [S14], pointed at this identical
+URL. Citing the same chapter page under two source numbers for different subsections overstated it as
+two independently identified sources rather than one page consulted for three sections. [S14] is
+retired below and folded into this entry; see Appendix D.
 
 **[S2]** U.S. Copyright Office, *What Does Copyright Protect?* Verified 2026-07-21.  
 https://www.copyright.gov/help/faq/faq-protect.html
@@ -1370,7 +1380,18 @@ https://publications.aap.org/pediatriccare/pages/terms
 https://publications.aap.org/pages/licensing-permissions
 
 **[S7]** American Academy of Pediatrics, *Pediatrics Author Instructions: Figures, Tables, and Supplementary Material*. Verified 2026-07-21.  
-https://publications.aap.org/pediatrics/pages/author-instructions
+https://publications.aap.org/pediatrics/pages/author-instructions  
+*[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* Now cited from the body at §16.3 (previously
+defined here but never cited).
+
+**Automated-retrieval note on [S5]/[S6]/[S7]** *[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* All
+three `publications.aap.org` URLs above return HTTP 403 Forbidden to automated/scripted clients
+(confirmed by direct fetch during this amendment, consistent with the review finding). A human
+browser session can reach the pages; an automated agent cannot. The "Verified 2026-07-21" stamps on
+[S5], [S6], and [S7] therefore record a human verification and are **not machine-reproducible** — an
+agent re-running this citation set will see a 403, not confirmation, and must not treat that 403 as
+evidence the source changed or went away. This is mildly ironic given §8.2's ban on unapproved
+automated retrieval, and is recorded here rather than silently left implicit.
 
 **[S8]** Creative Commons, *Attribution 4.0 International*. Verified 2026-07-21.  
 https://creativecommons.org/licenses/by/4.0/
@@ -1382,20 +1403,40 @@ https://creativecommons.org/licenses/by-nc/4.0/
 https://pmc.ncbi.nlm.nih.gov/about/copyright/  
 https://pmc.ncbi.nlm.nih.gov/tools/openftlist/
 
-**[S11]** U.S. Patent and Trademark Office, *Trademark Basics*. Verified 2026-07-21.  
-https://www.uspto.gov/trademarks/basics
+**[S11]** U.S. Patent and Trademark Office, *What Is a Trademark?* (Trademark Basics: Learning the
+Essentials). Verified 2026-07-21.  
+https://www.uspto.gov/trademarks/basics/what-trademark  
+*[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* Pin-cite corrected: previously pointed at the
+`/trademarks/basics` section landing page, one page up from the specific page that states a trademark
+"identifies your goods or services" and discusses logos/branding distinguishing a business in the
+marketplace — the actual textual basis for §3.9's citation.
 
 **[S12]** U.S. Patent and Trademark Office, *Patent Essentials*. Verified 2026-07-21.  
 https://www.uspto.gov/patents/basics/essentials
 
-**[S13]** EUR-Lex, *Directive 96/9/EC on the Legal Protection of Databases*. Verified 2026-07-21.  
-https://eur-lex.europa.eu/legal-content/en/LSU/?uri=CELEX:31996L0009
+**[S13]** EUR-Lex, *Directive 96/9/EC of the European Parliament and of the Council of 11 March 1996 on
+the legal protection of databases* — ELI permalink. Verified 2026-07-21.  
+https://eur-lex.europa.eu/eli/dir/1996/9/oj/eng  
+*[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* Replaced the prior `legal-content/.../LSU/?uri=CELEX:...`
+URL, which returns a bot challenge to automated clients, with the European Legislation Identifier
+(ELI) permalink — a stable, canonical identifier for the same instrument that resolves cleanly.
 
-**[S14]** U.S. Copyright Office, 17 U.S.C. § 105, *United States Government Works*. Verified 2026-07-21.  
-https://www.copyright.gov/title17/92chap1.html
+**[S14]** *Retired — folded into [S1].* *[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* Previously:
+U.S. Copyright Office, 17 U.S.C. § 105, *United States Government Works*, at
+`https://www.copyright.gov/title17/92chap1.html` — the identical URL already cited as [S1]. Retained
+here as a numbering placeholder, not deleted silently, so a reader following an existing [S14]
+reference elsewhere is redirected rather than met with a gap; see [S1] and Appendix D. No text in this
+document cites [S14] after this amendment.
 
-**[S15]** U.S. Food and Drug Administration, *Clinical Decision Support Software: Final Guidance*, January 2026. Verified 2026-07-21.  
-https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software
+**[S15]** U.S. Food and Drug Administration, *Clinical Decision Support Software: Final Guidance*,
+re-issued January 29, 2026 (docket FDA-2017-D-6569, CDRH GUI01400062). Verified 2026-07-21.  
+https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software  
+*[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* Date pinned to the exact re-issue date per the
+review finding: FDA issued a revised final CDS guidance on 2026-01-06, superseded five days later by
+a further re-issue on 2026-01-29, which is the controlling version. `fda.gov` returns a spurious 404 to
+automated fetchers (bot-blocking, not a dead link); the "Verified" stamp reflects human verification
+against the guidance PDF cover page, the FDA guidance-database entry, an FDA CDRH town hall transcript,
+and three independent law-firm analyses, not an automated fetch of this URL.
 
 **Case law** — added [Amendment 2026-07-21, EPR5-T2, per FR-WP5-02]. These are judicial authorities,
 not verified web sources; they are transcribed from
@@ -1563,3 +1604,56 @@ states none.
   assigned a rights disposition by this entry. The six citation-hygiene items ([S7], [S1]/[S14]
   overload, [S11] pin-cite, [S13] permalink, [S5]/[S6]/[S7] 403 annotation, [S15] date pin) remain
   **EPR5-T4**'s scope (FR-WP5-06), not addressed here.
+
+- **2026-07-21 — EPR5-T4 (FR-WP5-06), citation hygiene.** Per the review findings §2.E ("Minor
+  citation hygiene"), resolved all six items the finding named. **The review found no fabricated
+  citations anywhere in the source register — all 15 originally published sources ([S1]–[S15]) were
+  independently checked and hold up (findings §1).** This entry is refinement of a clean register, not
+  a fabrication remediation; a future reader should not infer a fabrication problem from the volume of
+  changes below.
+
+  1. **[S7] cited, not removed.** [S7] (AAP *Pediatrics Author Instructions: Figures, Tables, and
+     Supplementary Material*) was defined in Appendix B but never cited from the body. It is a real,
+     independently-checked source (findings §1), so it is cited, not deleted: added to §16.3's bullet
+     on AAP figures/tables/charts/nomograms, where it is directly on point — AAP's own author
+     instructions for exactly that content class.
+  2. **[S1]/[S14] de-overloaded.** [S1] (Title 17, Chapter 1) and [S14] (17 U.S.C. §105) cited the
+     identical URL (`copyright.gov/title17/92chap1.html`) under two different source numbers for
+     different subsections, presenting one page as two independently identified authorities. [S14] is
+     retired (Appendix B entry kept as a redirect placeholder, not deleted, so an existing [S14]
+     cross-reference is not silently orphaned) and folded into [S1], whose section coverage is
+     extended from §§102–103 to §§102, 103, 105. §3.7's body citation, previously [S14], now reads
+     [S1].
+  3. **[S11] pin-cite corrected.** [S11] pointed at the `/trademarks/basics` section landing page.
+     Verified by direct fetch during this amendment: the specific page stating a trademark "identifies
+     your goods or services" — the textual basis for §3.9's citation — is one page deeper, at
+     `/trademarks/basics/what-trademark`. Corrected the URL to that page.
+  4. **[S13] uses the ELI permalink.** [S13]'s prior EUR-Lex `legal-content/.../LSU/?uri=CELEX:...` URL
+     returns a bot challenge to automated clients. Verified by direct fetch during this amendment: the
+     European Legislation Identifier (ELI) permalink for the same instrument,
+     `https://eur-lex.europa.eu/eli/dir/1996/9/oj/eng`, is stable and resolves cleanly. Swapped to it.
+  5. **[S5]/[S6]/[S7] 403 annotated.** Verified by direct fetch during this amendment: all three
+     `publications.aap.org` URLs return HTTP 403 Forbidden to automated clients, confirming the review
+     finding. Added an Appendix B note stating this explicitly, so the "Verified 2026-07-21" stamps on
+     these three entries are understood as human-only verification, not machine-reproducible — a
+     re-running agent will see a 403 and must not read it as evidence the source moved or lapsed.
+  6. **[S15] date pinned.** Per findings §1's [S15] check, pinned the FDA CDS guidance citation to its
+     exact controlling date, **January 29, 2026** (re-issue of docket FDA-2017-D-6569,
+     CDRH GUI01400062, superseding the 2026-01-06 version, itself superseding the September 2022 final
+     guidance) — in both the Appendix B entry and the §3.11 body citation.
+
+  **Rationale.** All six items and their resolutions are named in
+  `.claude/findings/rights-governance-spec-v1.0-review-findings.md` §2.E and the phase task table
+  (`docs/project_plans/implementation_plans/infrastructure/rights-aware-evidence-capture-v1/phase-r5-spec-amendments.md`,
+  EPR5-T4 row). The specific corrected URLs for [S11] and [S13], the 403 status of [S5]/[S6]/[S7], and
+  the exact FDA re-issue framing for [S15] were independently verified by direct fetch during this
+  amendment, since the finding names the defect but not always the corrected value; every fact drawn
+  directly from the finding is used as published, not reconstructed from memory.
+
+  **Scope of this amendment — what it does *not* do.** This amendment is citation hygiene only. It
+  adds, retires, or repoints source-register entries and their in-body citation markers; it draws no
+  legal conclusion about any specific source, threshold, taxonomy, or compilation in this project's
+  knowledge base, reclassifies nothing, and clears nothing. No item in this project's knowledge base is
+  reclassified, reassessed, or assigned a rights disposition by this amendment. OQ-1 stays open. This
+  is the final task-level amendment of Phase EP-R5's spec-amendment set; EPR5-T5–T7 touch other files
+  (`CLAUDE.md`, `NOTICE.md`, `docs/architecture.md`), not this document.
