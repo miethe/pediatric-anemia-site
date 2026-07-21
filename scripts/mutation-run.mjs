@@ -70,7 +70,7 @@ const BASELINE_PATH = path.join(REPO_ROOT, 'tests/mutation-baseline.json');
 // zero-production-callers claim, extended to cover the REST API entrypoint alongside src/). Without
 // it here, that read ENOENTs inside every sandbox copy and the fidelity self-check below fails for
 // the wrong reason (a missing sandboxed file, not a real mutant).
-const SANDBOX_ENTRIES = ['src', 'modules', 'scripts', 'tests', 'schemas', 'examples', 'docs', 'evidence-packs', 'package.json', 'server.mjs'];
+const SANDBOX_ENTRIES = ['src', 'modules', 'scripts', 'tests', 'schemas', 'examples', 'docs', 'evidence-packs', 'tools', 'package.json', 'server.mjs'];
 
 // Targeted victim-test subset (NOT the whole suite -- see the runtime-budget note in the task
 // brief). Chosen to cover, between them, every layer a rules.json/facts.anemia.js/ranges.js defect
