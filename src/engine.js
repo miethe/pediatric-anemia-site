@@ -1,7 +1,7 @@
 import { runRules, assertNoClaimedClinicalApproval } from './ruleEngine.js';
 import { getModule } from './modules/registry.js';
 import { prepareUnitValidatedInput } from './units.js';
-import { passageByIdForModule } from './evidence/registry.js';
+import { passageByIdForModule, sourceRightsPositionForModule } from './evidence/registry.js';
 import { hasCredentialedClinicalApproval, isActive } from './governance.js';
 
 const CORE_LIMITATIONS = [
@@ -73,11 +73,19 @@ export function assess(input, moduleId, rules, candidates) {
       // FIX-F (reviewer re-review, finding F): src/governance.js's honest, non-throwing boolean
       // predicates are wired into this real output path (previously unused production code, only
       // exercised by its own isolated test) — additive to the existing entry shape.
+      //
+      // EPR2-T6 (R-P2 resilience, FR-WP2-07): sourceRightsPosition is resolved the same way —
+      // through src/evidence/registry.js's moduleId-scoped accessor, never a second evidence
+      // store. A rule with no resolvable passage (unset/unknown sourcePassageId) still gets a
+      // rights-position entry via sourceRightsPositionForModule(moduleId, undefined), which
+      // degrades to "rights position unassessed" rather than throwing or being omitted.
       ruleAudit: ruleOutput.audit.map((entry) => {
         const rule = ruleById.get(entry.ruleId);
+        const passage = passageByIdForModule(moduleId, entry.sourcePassageId);
         return {
           ...entry,
-          sourcePassageStatus: passageByIdForModule(moduleId, entry.sourcePassageId)?.status ?? null,
+          sourcePassageStatus: passage?.status ?? null,
+          sourceRightsPosition: sourceRightsPositionForModule(moduleId, passage?.sourceId),
           hasCredentialedClinicalApproval: rule ? hasCredentialedClinicalApproval(rule) : false,
           isActive: rule ? isActive(rule) : false,
         };

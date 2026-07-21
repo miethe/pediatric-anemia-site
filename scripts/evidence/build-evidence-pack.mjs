@@ -26,6 +26,14 @@ import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// EPR2-T6 (R-P2 resilience, FR-WP2-07): reused from src/evidence.js rather than re-implemented —
+// no second evidence store (DEF-1). This script never touches `license`/`terms` itself (see
+// buildEvidenceDocument below, which passes every non-`passages` source key through unchanged), so
+// it already tolerates a legacy-shape source missing those fields entirely; sourceRightsPosition is
+// imported here so that fact is asserted directly (countUnassessedRightsPositions) rather than left
+// implicit, and so the generation log surfaces it to a reviewer scanning the diff.
+import { sourceRightsPosition, RIGHTS_POSITION_UNASSESSED } from '../../src/evidence.js';
+
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const PACK_PATH = path.join(REPO_ROOT, 'evidence-packs', 'rf-ev-001', 'pack.json');
 const EVIDENCE_PATH = path.join(REPO_ROOT, 'modules', 'anemia', 'evidence.json');
@@ -102,7 +110,7 @@ function buildFidelityIndex(fidelityFindings) {
   };
 }
 
-function buildPassageRecords(packSource, pack, fidelityIndex) {
+export function buildPassageRecords(packSource, pack, fidelityIndex) {
   const records = [];
   // Source-supported records — one per extracted point marked source_supported_fact in the pack.
   // Order: by RF evidence_id ascending, which for this bundle is ev_001..ev_00N in file order.
@@ -182,7 +190,7 @@ function buildPassageRecords(packSource, pack, fidelityIndex) {
   return records;
 }
 
-function buildEvidenceDocument(existingDoc, pack, fidelityIndex) {
+export function buildEvidenceDocument(existingDoc, pack, fidelityIndex) {
   // Index the pack by kbSourceId so we can attach passages to each existing source without
   // reordering the sources[] array (that ordering is set by the evidence file itself, not by us).
   const packByKb = new Map(pack.sources.map((s) => [s.kbSourceId, s]));
@@ -194,7 +202,10 @@ function buildEvidenceDocument(existingDoc, pack, fidelityIndex) {
     }
     const passages = buildPassageRecords(packSource, pack, fidelityIndex);
     // Preserve every existing property; only add or replace `passages`. This is intentionally
-    // additive so we do not clobber the `supports[]` prose or per-source metadata.
+    // additive so we do not clobber the `supports[]` prose or per-source metadata. EPR2-T6
+    // (R-P2 resilience): this loop never reads or requires `license`/`access_basis`/`terms`/
+    // `terms_snapshot` — a legacy-shape `source` missing any (or all) of them passes through
+    // exactly as it arrived, so this function cannot throw on their absence.
     const next = {};
     for (const key of Object.keys(source)) {
       if (key === 'passages') continue;
@@ -217,6 +228,19 @@ function buildEvidenceDocument(existingDoc, pack, fidelityIndex) {
     ...existingDoc,
     sources: nextSources,
   };
+}
+
+/**
+ * EPR2-T6 (R-P2 resilience, FR-WP2-07): counts sources whose rights position is unassessed —
+ * either genuinely absent (legacy-shape source) or explicitly `license.status: "unknown"` — via
+ * the shared src/evidence.js#sourceRightsPosition accessor (DEF-1, single source of truth). Pure
+ * and side-effect-free; never throws on a `doc.sources` entry missing `license` entirely, which is
+ * exactly the mid-migration shape this task exists to tolerate. Used by main() below to surface the
+ * count in the generation log, not to block generation — this script is D7 coverage-shaped only,
+ * never a clearance gate.
+ */
+export function countUnassessedRightsPositions(doc) {
+  return (doc.sources ?? []).filter((source) => sourceRightsPosition(source) === RIGHTS_POSITION_UNASSESSED).length;
 }
 
 function serialize(doc) {
@@ -279,11 +303,13 @@ async function main() {
   const nextDoc = buildEvidenceDocument(existing, pack, fidelityIndex);
   const nextSerialised = serialize(nextDoc);
 
+  const unassessedCount = countUnassessedRightsPositions(nextDoc);
+
   if (check) {
     const current = await readFile(EVIDENCE_PATH, 'utf8');
     if (current === nextSerialised) {
       const totalPassages = nextDoc.sources.reduce((n, s) => n + s.passages.length, 0);
-      console.log(`build-evidence-pack --check: ${path.relative(REPO_ROOT, EVIDENCE_PATH)} matches regenerated output (${nextDoc.sources.length} sources, ${totalPassages} passages).`);
+      console.log(`build-evidence-pack --check: ${path.relative(REPO_ROOT, EVIDENCE_PATH)} matches regenerated output (${nextDoc.sources.length} sources, ${totalPassages} passages, ${unassessedCount} with rights position unassessed).`);
       return;
     }
     const diff = firstDiffLines(current, nextSerialised);
@@ -294,10 +320,18 @@ async function main() {
 
   await writeFile(EVIDENCE_PATH, nextSerialised, 'utf8');
   const totalPassages = nextDoc.sources.reduce((n, s) => n + s.passages.length, 0);
-  console.log(`Wrote ${path.relative(REPO_ROOT, EVIDENCE_PATH)}: ${nextDoc.sources.length} sources, ${totalPassages} passages.`);
+  console.log(`Wrote ${path.relative(REPO_ROOT, EVIDENCE_PATH)}: ${nextDoc.sources.length} sources, ${totalPassages} passages, ${unassessedCount} with rights position unassessed.`);
 }
 
-main().catch((error) => {
-  console.error(`build-evidence-pack: ${error.stack ?? error.message}`);
-  process.exit(1);
-});
+// EPR2-T6 (R-P2 resilience): guarded the same way scripts/validate-kb.mjs is — importing this
+// module for its exported pure functions (buildEvidenceDocument, buildPassageRecords,
+// countUnassessedRightsPositions; tests/evidence-rights-resilience.test.mjs does exactly this)
+// must not also run the CLI and overwrite modules/anemia/evidence.json as a side effect of import.
+const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isMain) {
+  main().catch((error) => {
+    console.error(`build-evidence-pack: ${error.stack ?? error.message}`);
+    process.exit(1);
+  });
+}

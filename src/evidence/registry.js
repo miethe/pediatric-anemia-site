@@ -17,10 +17,21 @@
 // MODULE_CODE_LOADERS. passageByIdForModule FAILS LOUDLY — throws, never returns anemia's data —
 // for any moduleId not present in this map, so a second module can never be silently resolved
 // against the wrong module's passages.
-import { passageById as anemiaPassageById, passagesFor as anemiaPassagesFor } from '../evidence.js';
+//
+// EPR2-T6 (R-P2 resilience): sourceRightsPositionById is registered the same way — a moduleId-
+// scoped accessor over src/evidence.js's own sourceRightsPositionById, never a second store.
+import {
+  passageById as anemiaPassageById,
+  passagesFor as anemiaPassagesFor,
+  sourceRightsPositionById as anemiaSourceRightsPositionById,
+} from '../evidence.js';
 
 const REGISTRY = new Map([
-  ['anemia', { passageById: anemiaPassageById, passagesFor: anemiaPassagesFor }],
+  ['anemia', {
+    passageById: anemiaPassageById,
+    passagesFor: anemiaPassagesFor,
+    sourceRightsPositionById: anemiaSourceRightsPositionById,
+  }],
 ]);
 
 function accessorsFor(moduleId) {
@@ -43,4 +54,14 @@ export function passageByIdForModule(moduleId, passageId) {
 /** Passage list for `sourceId`, scoped to `moduleId`'s own evidence. Unknown moduleId throws. */
 export function passagesForModule(moduleId, sourceId) {
   return accessorsFor(moduleId).passagesFor(sourceId);
+}
+
+/**
+ * Rights-position label for `sourceId`, scoped to `moduleId`'s own evidence — never another
+ * module's. Unknown moduleId throws (fail loud, same contract as passageByIdForModule); an
+ * unknown or absent sourceId within a known module degrades to "rights position unassessed" via
+ * src/evidence.js#sourceRightsPositionById, never throws.
+ */
+export function sourceRightsPositionForModule(moduleId, sourceId) {
+  return accessorsFor(moduleId).sourceRightsPositionById(sourceId);
 }

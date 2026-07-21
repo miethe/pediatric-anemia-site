@@ -91,19 +91,32 @@ test('AAP2026_IDA: terms encode non-commercial, non-incorporable, non-adaptable 
   }
 });
 
-test('AAP2026_IDA: terms_snapshot records no terms document was independently captured (locator-only, D1) and no terms prose appears anywhere on the source record', () => {
+test('AAP2026_IDA: terms_snapshot records the real locator+date the terms facts were transcribed from (locator-only, D1) and no terms prose appears anywhere on the source record', () => {
+  // EPR2-T3 follow-up (post-review): this test originally asserted terms_snapshot.status stayed
+  // "not_captured" while the `terms` object above already asserted four specific restrictions —
+  // that gap (facts transcribed from a prose finding with no recorded locator) is exactly the D1
+  // violation the reviewer's own re-review caught. The restriction facts trace to [S5] in
+  // docs/project_plans/research/research_foundry_rights_governance_spec_v1.0's
+  // Research_Foundry_Source_Reuse_and_Rights_Governance_Spec_v1.0.md ("AAP Pediatric Care Online
+  // Terms and Conditions", human-verified 2026-07-21 — see that file's "Automated-retrieval note
+  // on [S5]/[S6]/[S7]"), so the locator below is that real, in-repo-recorded reference, not an
+  // invented one.
   const aap = evidenceDoc.sources.find((s) => s.id === 'AAP2026_IDA');
-  assert.equal(aap.terms_snapshot.status, 'not_captured');
-  assert.equal(aap.terms_snapshot.locator, null);
-  assert.equal(aap.terms_snapshot.sha256, null);
-  assert.equal(aap.terms_snapshot.retrieved_at, null);
+  assert.equal(aap.terms_snapshot.status, 'captured');
+  assert.equal(aap.terms_snapshot.locator, 'https://publications.aap.org/pediatriccare/pages/terms');
+  assert.equal(
+    aap.terms_snapshot.sha256,
+    null,
+    'sha256 stays null: publications.aap.org returns HTTP 403 to automated clients (Cloudflare bot-challenge) — only a human browser session can compute a content hash, and none is fabricated here',
+  );
+  assert.equal(aap.terms_snapshot.retrieved_at, '2026-07-21');
 
   // No value on these three objects is longer than a short enum token/URL/hash/date — nothing here
   // is a paragraph of terms prose.
   const allStrings = [
     aap.license.status, aap.license.rights_holder,
     ...Object.values(aap.terms),
-    aap.terms_snapshot.status,
+    aap.terms_snapshot.status, aap.terms_snapshot.locator, aap.terms_snapshot.retrieved_at,
   ].filter((v) => typeof v === 'string');
   for (const s of allStrings) {
     assert.ok(s.length < 80, `unexpectedly long string value on AAP2026_IDA rights-metadata surface: "${s}"`);
