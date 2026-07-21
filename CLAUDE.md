@@ -82,6 +82,23 @@ when-to-reach-for-what, honesty boundaries). Linked handoff docs there are canon
 - `rf` API reach: `http://10.42.10.76:7432`; creds at `~/.config/research-foundry/serve.env`
   (`RF_API_URL` + `RF_TOKEN_AGENT`).
 
+## Evidence grounding — corrected blocking picture
+
+**0 of 91 rules remain grounded** (bound to a `status: source-supported` passage in
+`evidence-packs/passage-attestations.json`, which ships empty by design). The prior project belief —
+that this gap is wholly a licensing problem — is **corrected** by
+`.claude/findings/rights-governance-spec-v1.0-review-findings.md` §3: measured from code, the gap is
+**~2/3 attestation-shaped (60 rules)** — their sentinel's primary source already has ≥1 bindable
+passage, so the only mechanical blocker is the empty ledger — and **~1/3 licensing-shaped (31 rules)**
+— all bound to `AAP2026_IDA`, whose 7 passages are quarantined `source-not-independently-retrievable`.
+The same review records that **13 passages are already bindable today** (BLOOD 5, WHO 3, CDC 2, BSH 2,
+FDA 1) — a fact recorded nowhere before this note. None of the 13 has been bound; binding requires a
+named credentialed clinician attesting each rule individually (60 separate records from a 13-passage
+pool), and the 13 survivors are the numerics-light paraphrases — the threshold-bearing passages were
+quarantined for `omits-source-numerics`, so attesting them grounds rules to thin framework claims
+rather than to the cutoffs those rules encode. See the findings doc for the full picture, including
+why the Rights Governance Spec v1.0 does not unblock most of the 31.
+
 ## Program tracking
 
 - **Operator run:** `.operator/runs/op_run_20260717_050047_pediatric-cds-platform-e/`.
