@@ -10,7 +10,7 @@ execution_model: sequential
 phase: EP-R2
 created: '2026-07-21'
 title: 'EP-R2: Source Rights Metadata (WP2)'
-status: not_started
+status: pending
 started: null
 completed: null
 commit_refs: []
@@ -18,7 +18,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 0
+completed_tasks: 1
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -30,11 +30,12 @@ model_usage:
   external: []
 tasks:
 - id: EPR2-T1
-  description: '$defs/source gains structured licence / access / terms (FR-WP2-01, FR-WP2-05):
-    extend schemas/evidence.schema.json $defs/source with structured license, access_basis, and
-    terms fields drawn from spec vocabulary, under the existing additionalProperties:false posture.
-    Fields are required, not optional, with explicit typed unknown/null where genuinely unassessed.
-    Use pattern for any URL-shaped field — never format:"uri" (FR-WP0-08).'
+  description: '$defs/source gains structured licence / access / terms (FR-WP2-01,
+    FR-WP2-05): extend schemas/evidence.schema.json $defs/source with structured license,
+    access_basis, and terms fields drawn from spec vocabulary, under the existing
+    additionalProperties:false posture. Fields are required, not optional, with explicit
+    typed unknown/null where genuinely unassessed. Use pattern for any URL-shaped
+    field — never format:"uri" (FR-WP0-08).'
   status: not_started
   assigned_to:
   - general-purpose
@@ -46,9 +47,9 @@ tasks:
   model_effort: high
 - id: EPR2-T2
   description: 'terms_snapshot — locator only, never text (FR-WP2-02, D1): add a terms_snapshot
-    reference field recording what terms were observed and when, by locator and retrieval date.
-    It records no terms prose; the schema must have no free-text body property capable of holding
-    terms language.'
+    reference field recording what terms were observed and when, by locator and retrieval
+    date. It records no terms prose; the schema must have no free-text body property
+    capable of holding terms language.'
   status: not_started
   assigned_to:
   - general-purpose
@@ -59,12 +60,13 @@ tasks:
   assigned_model: sonnet
   model_effort: high
 - id: EPR2-T3
-  description: 'Atomic backfill of 6 sources; AAP block machine-readable (FR-WP2-03): backfill
-    all 6 sources in the same commit as the schema change. Encode AAP2026_IDA''s access basis
-    as subscription, its terms as barring altering/abridging/adapting and incorporating the Materials
-    into other materials, and commercial_use: not_granted_by_subscription (findings §1, Appendix A).
-    Restriction facts are transcribed from the recorded terms locator, not authored.'
-  status: not_started
+  description: 'Atomic backfill of 6 sources; AAP block machine-readable (FR-WP2-03):
+    backfill all 6 sources in the same commit as the schema change. Encode AAP2026_IDA''s
+    access basis as subscription, its terms as barring altering/abridging/adapting
+    and incorporating the Materials into other materials, and commercial_use: not_granted_by_subscription
+    (findings §1, Appendix A). Restriction facts are transcribed from the recorded
+    terms locator, not authored.'
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -73,12 +75,17 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T00:00:00Z'
+  completed: '2026-07-21T00:00:00Z'
+  evidence:
+  - commit: 3225e63
 - id: EPR2-T4
-  description: 'CDC2025_LEAD — government *work* vs government-*funded* (FR-WP2-04): encode CDC2025_LEAD
-    as a U.S. federal government work under 17 U.S.C. §105, and record the distinction the reviewed
-    spec §3.7 conflates — government works are uncopyrightable; government-funded works by university
-    authors are not (abundant in the PMC corpus). Records a statutory basis already in the findings;
-    makes no new legal determination.'
+  description: 'CDC2025_LEAD — government *work* vs government-*funded* (FR-WP2-04):
+    encode CDC2025_LEAD as a U.S. federal government work under 17 U.S.C. §105, and
+    record the distinction the reviewed spec §3.7 conflates — government works are
+    uncopyrightable; government-funded works by university authors are not (abundant
+    in the PMC corpus). Records a statutory basis already in the findings; makes no
+    new legal determination.'
   status: not_started
   assigned_to:
   - general-purpose
@@ -90,9 +97,9 @@ tasks:
   model_effort: high
 - id: EPR2-T5
   description: 'Source -> rights-record gate, seam consumer (FR-WP2-06): extend scripts/validate-kb.mjs
-    so every evidence source resolves to a rights record in rights/rights-ledger.json, reusing
-    EP-R1''s exported ledger-resolution helper unchanged — call site only, no restructure, rename,
-    or re-signature.'
+    so every evidence source resolves to a rights record in rights/rights-ledger.json,
+    reusing EP-R1''s exported ledger-resolution helper unchanged — call site only,
+    no restructure, rename, or re-signature.'
   status: not_started
   assigned_to:
   - general-purpose
@@ -105,11 +112,11 @@ tasks:
   model_effort: high
 - id: EPR2-T6
   description: 'R-P2 / R-P4 — consumer resilience + browser smoke (FR-WP2-07): target_surfaces
-    src/evidence.js, src/engine.js, src/app.js, scripts/evidence/build-evidence-pack.mjs must
-    not throw on a legacy-shaped source record encountered mid-migration, and absent rights fields
-    must render as "rights position unassessed", never "unrestricted". Carries the phase''s R-P4
-    runtime obligation (npm run smoke:browser + check:imports); src/app.js is the only browser
-    surface any phase of this feature touches.'
+    src/evidence.js, src/engine.js, src/app.js, scripts/evidence/build-evidence-pack.mjs
+    must not throw on a legacy-shaped source record encountered mid-migration, and
+    absent rights fields must render as "rights position unassessed", never "unrestricted".
+    Carries the phase''s R-P4 runtime obligation (npm run smoke:browser + check:imports);
+    src/app.js is the only browser surface any phase of this feature touches.'
   status: not_started
   assigned_to:
   - general-purpose
@@ -143,40 +150,42 @@ parallelization:
 blockers: []
 success_criteria:
 - id: SC-1
-  description: $defs/source carries required license, access_basis, terms; omission fails, explicit
-    unknown passes (EPR2-T1)
+  description: $defs/source carries required license, access_basis, terms; omission
+    fails, explicit unknown passes (EPR2-T1)
   status: not_started
 - id: SC-2
-  description: No format "uri" introduced anywhere; pattern used or the gap documented in-schema
-    (EPR2-T1)
+  description: No format "uri" introduced anywhere; pattern used or the gap documented
+    in-schema (EPR2-T1)
   status: not_started
 - id: SC-3
-  description: terms_snapshot is locator + date only; terms prose is structurally unstorable (EPR2-T2)
+  description: terms_snapshot is locator + date only; terms prose is structurally
+    unstorable (EPR2-T2)
   status: not_started
 - id: SC-4
   description: All 6 sources validate in the same commit as the schema change (EPR2-T3)
   status: not_started
 - id: SC-5
-  description: 'AAP block is machine-readable: subscription basis, non-incorporable, commercial_use
-    not_granted_by_subscription (EPR2-T3)'
+  description: 'AAP block is machine-readable: subscription basis, non-incorporable,
+    commercial_use not_granted_by_subscription (EPR2-T3)'
   status: not_started
 - id: SC-6
-  description: government_work and government_funded are distinct; funding alone cannot mark public
-    domain (EPR2-T4)
+  description: government_work and government_funded are distinct; funding alone cannot
+    mark public domain (EPR2-T4)
   status: not_started
 - id: SC-7
-  description: Every source resolves to a rights record; EP-R1's helper unmodified (EPR2-T5, R-P3)
+  description: Every source resolves to a rights record; EP-R1's helper unmodified
+    (EPR2-T5, R-P3)
   status: not_started
 - id: SC-8
-  description: All 4 consumers survive a legacy record; unassessed never renders as unrestricted
-    (EPR2-T6, R-P2)
+  description: All 4 consumers survive a legacy record; unassessed never renders as
+    unrestricted (EPR2-T6, R-P2)
   status: not_started
 - id: SC-9
   description: npm run smoke:browser + check:imports pass (EPR2-T6, R-P4)
   status: not_started
 - id: SC-10
-  description: No CLEARED_* status, attestation, or approval value written; package.json untouched;
-    schemas/evidence.schema.json merged before EP-R3 starts
+  description: No CLEARED_* status, attestation, or approval value written; package.json
+    untouched; schemas/evidence.schema.json merged before EP-R3 starts
   status: not_started
 - id: SC-11
   description: npm run check green
@@ -192,7 +201,7 @@ files_modified:
 - src/engine.js
 - src/app.js
 - scripts/evidence/build-evidence-pack.mjs
-progress: 0
+progress: 16
 updated: '2026-07-21'
 ---
 
