@@ -376,6 +376,44 @@ export function validateAuthoringDecisions(decisionsData, moduleId, decisionsSch
   return { errors, decisionCount: decisions.length };
 }
 
+/**
+ * P3-T6 (FR-15, `02 §4.13`): validate modules/<moduleId>/rule-provenance.json against
+ * schemas/rule-provenance.schema.json, plus the cross-record invariants the schema cannot express
+ * on its own: `ruleId` uniqueness across the array, and each entry's own `moduleId` agreeing with
+ * the document's own top-level `moduleId` (same shape of gap validateEvidenceAssertions/
+ * validateAuthoringDecisions close for their own artifacts above). Pure function over in-memory
+ * data, so it is independently unit-testable against a tampered/seeded-bad fixture without
+ * touching disk.
+ */
+export function validateRuleProvenance(provenanceData, moduleId, provenanceSchema) {
+  const errors = [];
+
+  for (const schemaError of validate(provenanceSchema, provenanceData)) {
+    errors.push(`${moduleId}/rule-provenance.json: rule-provenance.schema.json ${schemaError.path}: ${schemaError.message}`);
+  }
+
+  const entries = Array.isArray(provenanceData?.entries) ? provenanceData.entries : [];
+  const documentModuleId = provenanceData?.moduleId;
+  const seenRuleIds = new Set();
+
+  for (const entry of entries) {
+    const label = entry?.ruleId ?? '<missing-ruleId>';
+
+    if (entry?.ruleId !== undefined) {
+      if (seenRuleIds.has(entry.ruleId)) {
+        errors.push(`${moduleId}/rule-provenance.json#${label}: duplicate ruleId`);
+      }
+      seenRuleIds.add(entry.ruleId);
+    }
+
+    if (documentModuleId !== undefined && entry?.moduleId !== undefined && entry.moduleId !== documentModuleId) {
+      errors.push(`${moduleId}/rule-provenance.json#${label}: moduleId "${entry.moduleId}" does not match the document's top-level moduleId "${documentModuleId}"`);
+    }
+  }
+
+  return { errors, entryCount: entries.length };
+}
+
 function setsEqual(a, b) {
   if (a.size !== b.size) return false;
   for (const item of a) {
@@ -568,6 +606,21 @@ export async function validateModule(moduleId, rootDir) {
     authoringDecisionsCount = decisionsValidation.decisionCount;
   }
 
+  // P3-T6: existence-gated, same rationale as evidence-assertions.json/authoring-decisions.yaml
+  // above — modules/anemia/ predates rule-provenance.json and has no such file; its absence there
+  // is not an error. Phase 3 stages this file only under build/kb-pack/ (P3-T7's `propose` verb);
+  // Phase 4 (P4-T1..T4) migrates it into modules/cbc_suite_v1/ itself, at which point this block
+  // starts exercising it for real without any further wiring changes.
+  let ruleProvenanceCount = 0;
+  const ruleProvenancePath = path.join(moduleDir, 'rule-provenance.json');
+  if (await fileExists(ruleProvenancePath)) {
+    const ruleProvenanceSchema = await readJson(path.join(rootDir, 'schemas', 'rule-provenance.schema.json'));
+    const ruleProvenanceData = await readJson(ruleProvenancePath);
+    const ruleProvenanceValidation = validateRuleProvenance(ruleProvenanceData, moduleId, ruleProvenanceSchema);
+    errors.push(...ruleProvenanceValidation.errors);
+    ruleProvenanceCount = ruleProvenanceValidation.entryCount;
+  }
+
   errors.push(...validateBooleanFactPathAllowList(rules, moduleId));
 
   const ruleIds = new Set();
@@ -719,6 +772,7 @@ export async function validateModule(moduleId, rootDir) {
     candidatePassageStatusCounts,
     evidenceAssertionsCount,
     authoringDecisionsCount,
+    ruleProvenanceCount,
   };
 }
 
@@ -744,7 +798,8 @@ if (isMain) {
         (result) =>
           `${result.moduleId} (${result.ruleCount} rules, ${result.candidateCount} candidates, ${result.evidenceCount} evidence records, ${result.passageCount} passage records`
           + `${result.evidenceAssertionsCount ? `, ${result.evidenceAssertionsCount} evidence-assertions` : ''}`
-          + `${result.authoringDecisionsCount ? `, ${result.authoringDecisionsCount} authoring-decisions` : ''})`,
+          + `${result.authoringDecisionsCount ? `, ${result.authoringDecisionsCount} authoring-decisions` : ''}`
+          + `${result.ruleProvenanceCount ? `, ${result.ruleProvenanceCount} rule-provenance entries` : ''})`,
       )
       .join(', ');
     console.log(`Validated modules: ${summary}.`);
