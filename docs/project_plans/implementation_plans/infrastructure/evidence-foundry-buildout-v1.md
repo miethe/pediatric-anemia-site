@@ -2,7 +2,7 @@
 title: 'Implementation Plan: Evidence Foundry Buildout (E0 + Pre-E1 ADRs)'
 schema_version: 2
 doc_type: implementation_plan
-status: in_progress
+status: completed
 created: 2026-07-19
 updated: '2026-07-21'
 feature_slug: evidence-foundry-buildout
@@ -73,7 +73,9 @@ tags:
 - converter
 - infrastructure
 milestone: null
-commit_refs: []
+commit_refs:
+- debff5989577f89d1055ed0d0352e7419a5d11cc
+- 5dfa0053736a115cfe863019d891a89833b04f48
 pr_refs: []
 files_affected:
 - tools/rf-bundle-to-kb-pack/**
