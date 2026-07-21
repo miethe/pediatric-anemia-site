@@ -9,7 +9,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundr
 execution_model: batch-parallel
 phase: 1
 title: 'Evidence Foundry Buildout — Phase 1: Foundation & Fixtures'
-status: pending
+status: in_progress
 started: 2026-07-21
 completed: null
 commit_refs: []
@@ -197,20 +197,20 @@ blockers: []
 success_criteria:
 - id: SC-1
   description: npm run check green
-  status: pending
+  status: met
 - id: SC-2
   description: cbc_suite_v1 fixture/module loads via getModule('cbc_suite_v1')
-  status: pending
+  status: met
 - id: SC-3
   description: Seeded-bad-KB fixture fails npm run validate with a specific schema
     error
-  status: pending
+  status: met
 - id: SC-4
   description: src/evidence.js no longer independently hand-maintains evidence content
-  status: pending
+  status: met
 - id: SC-5
   description: Path-mapping worknote exists and is referenced by the parent plan
-  status: pending
+  status: met
 files_modified:
 - modules/cbc_suite_v1/module.json
 - modules/cbc_suite_v1/index.js
