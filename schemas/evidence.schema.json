@@ -20,7 +20,7 @@
     "source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "priority", "year", "title", "organization", "journal", "url", "supports", "passages", "license", "access_basis", "terms"],
+      "required": ["id", "priority", "year", "title", "organization", "journal", "url", "supports", "passages", "license", "access_basis", "terms", "terms_snapshot"],
       "properties": {
         "id": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
         "priority": { "type": "string", "minLength": 1 },
@@ -72,6 +72,10 @@
         "terms": {
           "$ref": "#/$defs/terms",
           "description": "EPR2-T1 (FR-WP2-01/03/05). REQUIRED — omission fails validation; every member below is itself required with an explicit typed unknown where genuinely unassessed. Source-level terms-of-use restrictions transcribed from an observed terms document, a lightweight sibling of schemas/rights/rights_record.schema.json's `contract` object — the authoritative record lives in rights/, joined via rights/rights-ledger.json (D4). `terms_snapshot` (EPR2-T2) separately records the locator and date the terms were observed at; this object records the restriction facts transcribed from that locator, never the terms prose itself (D1) — a fixture attempting to store terms text in any member here is rejected by the closed enums below, none of which is a free-text type."
+        },
+        "terms_snapshot": {
+          "$ref": "#/$defs/termsSnapshot",
+          "description": "EPR2-T2 (FR-WP2-02, D1). REQUIRED — omission fails validation; every member below is itself required, with explicit typed null for genuinely uncaptured. Records WHAT TERMS DOCUMENT WAS OBSERVED AND WHEN — an addressable locator plus a retrieval date — never the terms text itself. This is the load-bearing D1 boundary field: the archive stores provenance precise enough to re-fetch and re-verify, never retained third-party expression. It mirrors, at source-summary granularity, schemas/rights/rights_record.schema.json's `access.terms_snapshot_uri` / `access.terms_snapshot_sha256` / `access.terms_verified_at` triad (D4) — the authoritative, extensible governance record lives in rights/, joined via rights/rights-ledger.json; this field is a lightweight, always-present summary and carries no clearance authority of its own (D6/D7). `terms` (EPR2-T1, above) records the restriction *facts* transcribed from the document this field locates; this field records only where and when that document was observed. EP-R3's negative invariant (EPR3-T1) extends coverage of this no-retained-text boundary once it lands."
         }
       }
     },
@@ -130,6 +134,33 @@
         "sublicensing": {
           "description": "Matches schemas/rights/rights_record.schema.json's `contract.sublicensing` enum exactly.",
           "enum": ["allowed", "allowed_with_conditions", "not_granted", "prohibited", "not_addressed", "unknown"]
+        }
+      }
+    },
+    "termsSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "locator", "sha256", "retrieved_at"],
+      "description": "EPR2-T2 (FR-WP2-02, D1). An addressable reference to the terms document actually observed for this source — never the terms text itself. Every member is required; use `status: \"not_captured\"` or `\"unknown\"` with the other three members null, rather than omitting the key, when a snapshot genuinely was not taken or is unassessed (D2 — omission is never a substitute for a typed 'unassessed'/'not captured' value). There is no free-text body property anywhere on this object capable of holding terms prose: `locator` is a scheme-qualified reference matched by `pattern` (rejects any value containing whitespace, so a pasted paragraph of terms text cannot validate here), `sha256` is a closed 64-hex-digit content hash, and `retrieved_at` is a bare date. No `format: \"uri\"` is used (FR-WP0-08) — scripts/lib/json-schema-lite.mjs silently ignores it; `locator` uses `pattern` instead.",
+      "properties": {
+        "status": {
+          "description": "Whether a terms snapshot locator was actually captured for this source. `not_captured` records the gap explicitly (D1's `not_captured[]` discipline) rather than leaving `locator` silently null with no stated reason.",
+          "enum": ["captured", "not_captured", "unknown"]
+        },
+        "locator": {
+          "type": ["string", "null"],
+          "pattern": "^[a-zA-Z][a-zA-Z0-9+.-]*://\\S+$",
+          "description": "A scheme-qualified addressable reference to the terms document as observed (e.g. `https://...` or an internal content-addressed reference such as `internal://rights-snapshots/<slug>.html`) — a locator, never the document body. The pattern requires a scheme and forbids any whitespace, so a fixture attempting to store prose (which contains spaces) is rejected. Null when `status` is `not_captured` or `unknown`."
+        },
+        "sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Content hash of the observed terms document at `locator`, when computed. Null when not computed, not captured, or unassessed."
+        },
+        "retrieved_at": {
+          "type": ["string", "null"],
+          "format": "date",
+          "description": "The date the terms document was observed at `locator`. Null when `status` is `not_captured` or `unknown`."
         }
       }
     },

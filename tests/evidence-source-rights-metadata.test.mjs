@@ -83,6 +83,17 @@ function baseSource(overrides = {}) {
       redistribution: 'unknown',
       sublicensing: 'unknown',
     },
+    // EPR2-T2 (FR-WP2-02, D1): terms_snapshot became a required sibling of terms/license/
+    // access_basis after this fixture was authored. Kept in sync here so this file's own
+    // "fully unassessed source validates clean" case stays representative of the current
+    // required-fields shape; see tests/evidence-source-terms-snapshot.test.mjs for the
+    // dedicated terms_snapshot coverage.
+    terms_snapshot: {
+      status: 'unknown',
+      locator: null,
+      sha256: null,
+      retrieved_at: null,
+    },
     ...overrides,
   };
   return source;
