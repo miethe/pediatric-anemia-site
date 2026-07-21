@@ -2,7 +2,21 @@ import { finite, num, statusIs, includes, countTrue } from '../../src/facts/core
 import { allAssessed, countPresent, toTri } from '../../src/facts/tristate.js';
 import { createUnitValidatedDeriver } from '../../src/units.js';
 import { getEffectiveRanges, getFerritinThreshold } from '../../modules/anemia/ranges.js';
+import moduleManifest from './module.json' with { type: 'json' };
 import './units.js';
+
+// The single source of truth for this module's supported age scope (docs/architecture.md §10
+// condition 2: "age is outside a supported range and local limits are missing"). Read from
+// modules/anemia/module.json's supportedAgeMonths — never hardcoded here — so the manifest stays
+// the one place this boundary is declared (EP5-T6; previously this file hardcoded 6/216 inline,
+// which was a second, driftable source of truth for the exact same number the manifest already
+// carries as a governance-hashed field, per src/kbVerify.js's GOVERNANCE_FIELD_KEYS).
+const SUPPORTED_AGE_MONTHS_MIN = Number.isFinite(moduleManifest.supportedAgeMonths?.min)
+  ? moduleManifest.supportedAgeMonths.min
+  : null;
+const SUPPORTED_AGE_MONTHS_MAX = Number.isFinite(moduleManifest.supportedAgeMonths?.max)
+  ? moduleManifest.supportedAgeMonths.max
+  : null;
 
 function triAny(values) {
   if (countPresent(values) > 0) return 'true';
@@ -50,9 +64,13 @@ function deriveFactsFromSnapshot(input = {}) {
   const platelets = num(cbc.platelets);
 
   const ranges = getEffectiveRanges(input);
-  const supportedAge = ageMonths !== null && ageMonths >= 6 && ageMonths < 216;
-  const neonatalOrYoungInfant = ageMonths !== null && ageMonths < 6;
-  const outsidePediatricRange = ageMonths !== null && ageMonths >= 216;
+  const supportedAge = ageMonths !== null
+    && SUPPORTED_AGE_MONTHS_MIN !== null && SUPPORTED_AGE_MONTHS_MAX !== null
+    && ageMonths >= SUPPORTED_AGE_MONTHS_MIN && ageMonths < SUPPORTED_AGE_MONTHS_MAX;
+  const neonatalOrYoungInfant = ageMonths !== null
+    && SUPPORTED_AGE_MONTHS_MIN !== null && ageMonths < SUPPORTED_AGE_MONTHS_MIN;
+  const outsidePediatricRange = ageMonths !== null
+    && SUPPORTED_AGE_MONTHS_MAX !== null && ageMonths >= SUPPORTED_AGE_MONTHS_MAX;
 
   let anemiaStatus = 'indeterminate';
   if (hb !== null && ranges.hbLower !== null) {
@@ -417,3 +435,66 @@ function deriveFactsFromSnapshot(input = {}) {
 // Shared with the engine boundary so direct module consumers receive the same one-snapshot
 // guarantee. Future modules can wrap their raw derivation function without duplicating policy.
 export const deriveFacts = createUnitValidatedDeriver('anemia', deriveFactsFromSnapshot);
+
+// ---------------------------------------------------------------------------------------------
+// ARCH §10 condition 2 — "age is outside a supported range and local limits are missing" must
+// refuse to produce an assessment, not merely narrow the limitations text (EP5-T6; the phase plan's
+// own wording). Follows the SAME rejection shape as src/units.js's UnitRejectionError (name/code/
+// statusCode/details) so server.mjs and src/app.js can handle both consistently.
+// ---------------------------------------------------------------------------------------------
+
+export class AgeOutOfSupportedRangeError extends Error {
+  constructor({ ageMonths, supportedAgeMonths }) {
+    super(
+      `Patient age (${ageMonths} months) is outside this module's supported age range `
+        + `(${supportedAgeMonths?.min}-${supportedAgeMonths?.max} months, per `
+        + "modules/anemia/module.json's supportedAgeMonths) and no local CBC reference limits "
+        + '(cbc.localRanges.hbLower/mcvLower/mcvUpper) were supplied to cover it. Refusing to '
+        + 'produce an assessment (docs/architecture.md §10).',
+    );
+    this.name = 'AgeOutOfSupportedRangeError';
+    this.code = 'AGE_OUT_OF_SUPPORTED_RANGE';
+    this.statusCode = 400;
+    this.details = [{
+      field: 'patient.ageMonths',
+      ageMonths,
+      supportedAgeMonths: supportedAgeMonths ?? null,
+      reason: 'age-outside-supported-range-no-local-limits',
+    }];
+  }
+}
+
+/**
+ * The module-descriptor `assertInScope` hook (see modules/anemia/index.js and src/engine.js#assess,
+ * which calls `module.assertInScope?.(facts)` generically — engine.js itself never references age
+ * or any anemia-specific fact path, keeping it module-agnostic per docs/architecture.md §2a).
+ *
+ * Deliberately NOT called from inside deriveFactsFromSnapshot/deriveFacts: fact derivation stays a
+ * pure, always-succeeding introspection primitive. tests/witness/branch-seam.test.mjs and
+ * tests/tristate-safety-invariant.test.mjs call deriveFacts() directly (bypassing assess()) to
+ * inspect intermediate facts for ages outside the supported range (e.g. proving the ferritin
+ * threshold and CBC reference bands correctly resolve to null there) — those call sites must keep
+ * working unchanged. Only assess() — the "produce a real, patient-facing assessment" boundary —
+ * refuses.
+ *
+ * Reuses facts.scope.supportedAge/needsLocalRanges, the SAME facts this file already computed for
+ * the pre-EP5-T6 "narrow limitations text" behavior (modules/anemia/index.js#limitations and rules
+ * SCOPE-001/SCOPE-002) — this is a strengthening of an existing signal, not a parallel/third
+ * source of truth. `needsLocalRanges` is false the moment a caller supplies local
+ * cbc.localRanges.{hbLower,mcvLower,mcvUpper} covering the analytes the built-in age-band table
+ * would otherwise have supplied — i.e. exactly "the caller supplies local ranges covering that
+ * age", the carve-out EP5-T6 specifies.
+ *
+ * A null/unknown age is NOT this condition (that is a missingness case, not an out-of-range one) —
+ * `assess()` still proceeds and every downstream fact naturally reads as tri-state 'unknown'.
+ */
+export function assertAgeWithinSupportedScope(facts) {
+  const ageMonths = facts?.patient?.ageMonths ?? null;
+  if (ageMonths === null) return;
+  if (facts?.scope?.supportedAge) return;
+  if (!facts?.scope?.needsLocalRanges) return;
+  throw new AgeOutOfSupportedRangeError({
+    ageMonths,
+    supportedAgeMonths: moduleManifest.supportedAgeMonths ?? null,
+  });
+}

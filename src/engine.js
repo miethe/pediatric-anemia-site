@@ -22,6 +22,12 @@ export function assess(input, moduleId, rules, candidates) {
   const module = getModule(moduleId);
   const { input: snapshot, unitValidation } = prepareUnitValidatedInput(moduleId, input);
   const facts = module.deriveFacts(snapshot);
+  // ARCH §10 condition 2 (EP5-T6): a module may declare an optional `assertInScope` hook that
+  // refuses to produce an assessment for facts outside its supported scope (e.g. anemia's
+  // age-outside-supported-range-with-no-local-limits case). Generic and module-agnostic by
+  // design — this file has no anemia-specific knowledge; see
+  // modules/anemia/facts.anemia.js#assertAgeWithinSupportedScope for the concrete anemia policy.
+  module.assertInScope?.(facts);
   const ruleOutput = runRules(facts, rules, candidates);
   const ruleById = new Map(rules.map((rule) => [rule.id, rule]));
   const unitsAssumed = unitValidation.fields

@@ -2,132 +2,224 @@
 type: progress
 schema_version: 2
 doc_type: progress
-prd: "wave0-safety-foundation"
-feature_slug: "wave0-safety-foundation"
+prd: wave0-safety-foundation
+feature_slug: wave0-safety-foundation
 prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/wave0-safety-foundation-v1.md
 execution_model: batch-parallel
 phase: 5
-title: "EP-5: Manifest & Semantic Diff"
-status: "planning"
+title: 'EP-5: Manifest & Semantic Diff'
+status: in_progress
 started: null
 completed: null
 commit_refs: []
 pr_refs: []
-
 overall_progress: 0
-completion_estimate: "on-track"
-
+completion_estimate: on-track
 total_tasks: 7
-completed_tasks: 0
-in_progress_tasks: 0
+completed_tasks: 6
+in_progress_tasks: 1
 blocked_tasks: 0
 at_risk_tasks: 0
-
-owners: ["backend-architect"]
-contributors: ["code-reviewer"]
-
+owners:
+- backend-architect
+contributors:
+- code-reviewer
 model_usage:
-  primary: "sonnet"
-  external: ["gpt-5.6-sol (codex exec)"]
-
+  primary: sonnet
+  external:
+  - gpt-5.6-sol (codex exec)
 tasks:
-  - id: "EP5-T1"
-    description: "scripts/sign-kb.mjs (Branch A default per SPIKE-006): compute clinicalContentHash (SHA-256) over the canonicalized concatenation of modules/anemia/{rules,candidates,evidence,reference-ranges}.json; validationRunId from the equivalence-harness/CI run; supersedes chain per SPIKE-006's recommendation. approvedBy[] ships empty per D-4."
-    status: "pending"
-    assigned_to: ["backend-architect"]
-    dependencies: ["Entry (EP-3+4 output available to hash)"]
-    estimated_effort: "2.0 pts"
-    priority: "high"
-    assigned_model: "sonnet"
-    model_effort: "high"
-  - id: "EP5-T2"
-    description: "schemas/kb-manifest.schema.json: formalize ARCH §6's shape, superseding module.json's current field-presence-only checks (DEF-5)."
-    status: "pending"
-    assigned_to: ["backend-architect"]
-    dependencies: ["EP5-T1"]
-    estimated_effort: "1.0 pt"
-    priority: "high"
-    assigned_model: "sonnet"
-    model_effort: "high"
-  - id: "EP5-T3"
-    description: "scripts/kb-diff.mjs — semantic diff classifier: implement SPIKE-005's design (EP0-T3/T4) — classify rule-add/remove/threshold-change/evidence-change. Hardest implementation task in the phase (H3, genuinely algorithmic)."
-    status: "pending"
-    assigned_to: ["backend-architect"]
-    dependencies: ["EP-0 (SPIKE-005 design)"]
-    estimated_effort: "3.0 pts"
-    priority: "critical"
-    assigned_model: "sonnet"
-    model_effort: "xhigh"
-  - id: "EP5-T4"
-    description: "Seeded adversarial diff pass (Risk 2 mitigation): cross-family adversarial review tasked explicitly with 'find a safety-relevant change this classifier misses' against EP5-T3's implementation."
-    status: "pending"
-    assigned_to: ["backend-architect"]
-    dependencies: ["EP5-T3"]
-    estimated_effort: "1.0 pt"
-    priority: "high"
-    assigned_model: "gpt-5.6-sol (codex exec)"
-    model_effort: "xhigh"
-  - id: "EP5-T5"
-    description: "Flip server.mjs to required-and-verified manifest handling: flip today's tolerant-of-absence handling (:26-31, catches ENOENT, continues with manifest: null) to required-and-verified. Behavior change to the startup fail-fast path, not an addition."
-    status: "pending"
-    assigned_to: ["backend-architect"]
-    dependencies: ["EP5-T1", "EP5-T2"]
-    estimated_effort: "1.5 pts"
-    priority: "high"
-    assigned_model: "sonnet"
-    model_effort: "high"
-  - id: "EP5-T6"
-    description: "AC-FAILCLOSED — implement + test all 5 ARCH §10 conditions: unit absent/incompatible; age outside supported range; KB signature/hash invalid; UI/engine version incompatible; evidence expired vs. evidenceReviewedThrough policy. target_surfaces server.mjs, src/units.js, src/ranges/registry.js, src/app.js."
-    status: "pending"
-    assigned_to: ["code-reviewer"]
-    dependencies: ["EP2-T4", "EP5-T5"]
-    estimated_effort: "1.0 pt"
-    priority: "high"
-    assigned_model: "sonnet"
-    model_effort: "high"
-  - id: "EP5-T7"
-    description: "FR-WP5-05 / AC-WP5-RESIL — consumers handle legitimately-empty manifest fields: supersedes: null valid on first release, approvedBy: [] valid per D-4 — both legitimately empty; clinicalContentHash/validationRunId missing or status !== verified must fail closed."
-    status: "pending"
-    assigned_to: ["code-reviewer"]
-    dependencies: ["EP5-T5"]
-    estimated_effort: "0.5 pts"
-    priority: "high"
-    assigned_model: "sonnet"
-    model_effort: "adaptive"
-
+- id: EP5-T1
+  description: 'scripts/sign-kb.mjs (Branch A default per SPIKE-006): compute clinicalContentHash
+    (SHA-256) over the canonicalized concatenation of modules/anemia/{rules,candidates,evidence,reference-ranges}.json;
+    validationRunId from the equivalence-harness/CI run; supersedes chain per SPIKE-006''s
+    recommendation. approvedBy[] ships empty per D-4.'
+  status: completed
+  assigned_to:
+  - backend-architect
+  dependencies:
+  - Entry (EP-3+4 output available to hash)
+  estimated_effort: 2.0 pts
+  priority: high
+  assigned_model: sonnet
+  model_effort: high
+  started: 2026-07-21T00:00Z
+  completed: 2026-07-21T06:00Z
+  evidence:
+  - commit: 6a63a53
+- id: EP5-T2
+  description: 'schemas/kb-manifest.schema.json: formalize ARCH §6''s shape, superseding
+    module.json''s current field-presence-only checks (DEF-5).'
+  status: completed
+  assigned_to:
+  - backend-architect
+  dependencies:
+  - EP5-T1
+  estimated_effort: 1.0 pt
+  priority: high
+  assigned_model: sonnet
+  model_effort: high
+  started: 2026-07-21T00:00Z
+  completed: 2026-07-21T06:00Z
+  evidence:
+  - commit: 6a63a53
+- id: EP5-T3
+  description: 'scripts/kb-diff.mjs — semantic diff classifier: implement SPIKE-005''s
+    design (EP0-T3/T4) — classify rule-add/remove/threshold-change/evidence-change.
+    Hardest implementation task in the phase (H3, genuinely algorithmic).'
+  status: completed
+  assigned_to:
+  - backend-architect
+  dependencies:
+  - EP-0 (SPIKE-005 design)
+  estimated_effort: 3.0 pts
+  priority: critical
+  assigned_model: sonnet
+  model_effort: xhigh
+  started: 2026-07-21T00:00Z
+  completed: 2026-07-21T06:00Z
+  evidence:
+  - commit: 6a63a53
+- id: EP5-T4
+  description: 'Seeded adversarial diff pass (Risk 2 mitigation): cross-family adversarial
+    review tasked explicitly with ''find a safety-relevant change this classifier
+    misses'' against EP5-T3''s implementation.'
+  status: completed
+  assigned_to:
+  - backend-architect
+  dependencies:
+  - EP5-T3
+  estimated_effort: 1.0 pt
+  priority: high
+  assigned_model: gpt-5.6-sol (codex exec)
+  model_effort: xhigh
+  started: 2026-07-21T00:00Z
+  completed: 2026-07-21T06:00Z
+  evidence:
+  - commit: 6a63a53
+- id: EP5-T5
+  description: 'Flip server.mjs to required-and-verified manifest handling: flip today''s
+    tolerant-of-absence handling (:26-31, catches ENOENT, continues with manifest:
+    null) to required-and-verified. Behavior change to the startup fail-fast path,
+    not an addition.'
+  status: completed
+  assigned_to:
+  - backend-architect
+  dependencies:
+  - EP5-T1
+  - EP5-T2
+  estimated_effort: 1.5 pts
+  priority: high
+  assigned_model: sonnet
+  model_effort: high
+  started: 2026-07-21T00:00Z
+  completed: 2026-07-21T06:00Z
+  evidence:
+  - commit: 6a63a53
+- id: EP5-T6
+  description: 'AC-FAILCLOSED — implement + test all 5 ARCH §10 conditions: unit absent/incompatible;
+    age outside supported range; KB signature/hash invalid; UI/engine version incompatible;
+    evidence expired vs. evidenceReviewedThrough policy. target_surfaces server.mjs,
+    src/units.js, src/ranges/registry.js, src/app.js.'
+  status: in_progress
+  assigned_to:
+  - code-reviewer
+  dependencies:
+  - EP2-T4
+  - EP5-T5
+  estimated_effort: 1.0 pt
+  priority: high
+  assigned_model: sonnet
+  model_effort: high
+  started: 2026-07-21T00:00Z
+  completed: 2026-07-21T06:00Z
+  evidence:
+  - commit: 6a63a53
+- id: EP5-T7
+  description: 'FR-WP5-05 / AC-WP5-RESIL — consumers handle legitimately-empty manifest
+    fields: supersedes: null valid on first release, approvedBy: [] valid per D-4
+    — both legitimately empty; clinicalContentHash/validationRunId missing or status
+    !== verified must fail closed.'
+  status: completed
+  assigned_to:
+  - code-reviewer
+  dependencies:
+  - EP5-T5
+  estimated_effort: 0.5 pts
+  priority: high
+  assigned_model: sonnet
+  model_effort: adaptive
+  started: 2026-07-21T00:00Z
+  completed: 2026-07-21T06:00Z
+  evidence:
+  - commit: 6a63a53
 parallelization:
-  batch_1: ["EP5-T1", "EP5-T3"]
-  batch_2: ["EP5-T2", "EP5-T4"]
-  batch_3: ["EP5-T5"]
-  batch_4: ["EP5-T6", "EP5-T7"]
-  critical_path: ["EP5-T1", "EP5-T2", "EP5-T5", "EP5-T6"]
-  estimated_total_time: "5.5 pts (critical path; Branch B signing contingency adds ~3 pts to EP5-T1 if SPIKE-006 recommends real cryptographic signing — re-baseline before proceeding, do not silently absorb)"
-
+  batch_1:
+  - EP5-T1
+  - EP5-T3
+  batch_2:
+  - EP5-T2
+  - EP5-T4
+  batch_3:
+  - EP5-T5
+  batch_4:
+  - EP5-T6
+  - EP5-T7
+  critical_path:
+  - EP5-T1
+  - EP5-T2
+  - EP5-T5
+  - EP5-T6
+  estimated_total_time: 5.5 pts (critical path; Branch B signing contingency adds
+    ~3 pts to EP5-T1 if SPIKE-006 recommends real cryptographic signing — re-baseline
+    before proceeding, do not silently absorb)
 blockers: []
-
-success_criteria: [
-  { id: "SC-1", description: "clinicalContentHash reproducible on two clean runs against unchanged input (EP5-T1)", status: "pending" },
-  { id: "SC-2", description: "approvedBy[] test-enforced empty at the manifest layer (EP5-T1, reinforcing EP4-T3)", status: "pending" },
-  { id: "SC-3", description: "Semantic diff classifier flags 100% of SPIKE-005 seeded safety-relevant mutations as non-cosmetic (EP5-T3/T4)", status: "pending" },
-  { id: "SC-4", description: "Server refuses to start/serve on missing/invalid/expired/incompatible manifest (EP5-T5)", status: "pending" },
-  { id: "SC-5", description: "All 5 ARCH §10 fail-closed conditions have a passing automated test (EP5-T6)", status: "pending" },
-  { id: "SC-6", description: "AC-WP5-RESIL: legitimately-empty fields never conflated with must-not-be-empty fields (EP5-T7)", status: "pending" },
-  { id: "SC-7", description: "SPIKE-006 signing branch (A or B) explicitly recorded, not assumed", status: "pending" },
-  { id: "SC-8", description: "npm run check green", status: "pending" },
-  { id: "SC-9", description: "task-completion-validator sign-off", status: "pending" }
-]
-
-files_modified: [
-  "scripts/sign-kb.mjs",
-  "schemas/kb-manifest.schema.json",
-  "scripts/kb-diff.mjs",
-  "server.mjs",
-  "src/units.js",
-  "src/ranges/registry.js",
-  "src/app.js",
-  "modules/anemia/module.json"
-]
+success_criteria:
+- id: SC-1
+  description: clinicalContentHash reproducible on two clean runs against unchanged
+    input (EP5-T1)
+  status: pending
+- id: SC-2
+  description: approvedBy[] test-enforced empty at the manifest layer (EP5-T1, reinforcing
+    EP4-T3)
+  status: pending
+- id: SC-3
+  description: Semantic diff classifier flags 100% of SPIKE-005 seeded safety-relevant
+    mutations as non-cosmetic (EP5-T3/T4)
+  status: pending
+- id: SC-4
+  description: Server refuses to start/serve on missing/invalid/expired/incompatible
+    manifest (EP5-T5)
+  status: pending
+- id: SC-5
+  description: All 5 ARCH §10 fail-closed conditions have a passing automated test
+    (EP5-T6)
+  status: pending
+- id: SC-6
+  description: 'AC-WP5-RESIL: legitimately-empty fields never conflated with must-not-be-empty
+    fields (EP5-T7)'
+  status: pending
+- id: SC-7
+  description: SPIKE-006 signing branch (A or B) explicitly recorded, not assumed
+  status: pending
+- id: SC-8
+  description: npm run check green
+  status: pending
+- id: SC-9
+  description: task-completion-validator sign-off
+  status: pending
+files_modified:
+- scripts/sign-kb.mjs
+- schemas/kb-manifest.schema.json
+- scripts/kb-diff.mjs
+- server.mjs
+- src/units.js
+- src/ranges/registry.js
+- src/app.js
+- modules/anemia/module.json
+progress: 85
+updated: '2026-07-21'
 ---
 
 # wave0-safety-foundation - Phase 5: Manifest & Semantic Diff

@@ -362,7 +362,7 @@ test('R1: the three previously-misleading control_bound rows (DM-LAB-005, DM-RES
   }
 });
 
-test('R1: the five engine-rule rows are reachable_in_shipped_product with at least one productCaller and inputSurfaceSupported true, and carry no productIntegration.finding', () => {
+test('R1: the five REACHABLE_HAZARDS rows (engine_rule or engine-native applicability_blocker) are reachable_in_shipped_product with at least one productCaller and inputSurfaceSupported true, and carry no productIntegration.finding', () => {
   for (const hazardId of REACHABLE_HAZARDS) {
     const row = byHazard[hazardId];
     assert.equal(row.productIntegration.status, 'reachable_in_shipped_product');

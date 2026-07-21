@@ -215,13 +215,25 @@ separate from any anemia claim.
 **Witnesses:** `SCOPE-001` (also incidentally witnesses `SCOPE-003`, since a built-in range genuinely
 does not exist below 6 months — expected, not a separate claim).
 
-**Clinical picture:** A 3-month-old infant — deliberately given no CBC/labs/history data, because
+**Clinical picture:** A 3-month-old infant — originally given no CBC/labs/history data at all, since
 the point of this fixture is purely that the built-in reference intervals do not apply below 6
 months, independent of any lab values.
 
+**EP5-T6 update (ARCH §10 condition 2):** `cbc.localRanges.{hbLower,mcvLower,mcvUpper}` were added
+(synthetic placeholder values, not a clinical claim — no `hemoglobin`/`mcv` measurement is supplied,
+so no CBC interpretation happens either way). Reason: `src/engine.js#assess()` now refuses to
+produce an assessment at all (`AgeOutOfSupportedRangeError`) for an age outside
+`modules/anemia/module.json`'s `supportedAgeMonths` when local reference limits are absent — the
+"refuse to assess, not merely narrow limitations text" requirement. Supplying local ranges is the
+documented carve-out ("if the caller supplies local ranges covering that age, the refusal does not
+apply") and is the only way left to reach `SCOPE-001` through the real `assess()` path: it no longer
+fires for a bare out-of-range age with no local ranges (that input now throws before rule
+evaluation — see `tests/arch-s10-failclosed.test.mjs` and
+`tests/fixtures/dangerous-miss/SYNTHETIC-DM-AGE-003.json` for that fail-closed behavior itself).
+
 **Thresholds used:**
-- `patient.ageMonths: 3` < 6 → the `ageMonths < 6` cutoff hard-coded in `facts.anemia.js`
-  (`neonatalOrYoungInfant`), exactly `SCOPE-001`'s condition
+- `patient.ageMonths: 3` < 6 → the `ageMonths < supportedAgeMonths.min` cutoff (read from
+  `modules/anemia/module.json`, not hardcoded, as of EP5-T6), exactly `SCOPE-001`'s condition
   (`scope.neonatalOrYoungInfant === true`). This mirrors the existing `AAP2026_IDA` scope note
   ("6 months to <18 years") in `modules/anemia/reference-ranges.json` — no new boundary.
 
@@ -232,12 +244,17 @@ months, independent of any lab values.
 **Witnesses:** `SCOPE-002` (also incidentally witnesses `SCOPE-003`, for the same structural reason
 as above — no built-in band exists at or beyond 216 months).
 
-**Clinical picture:** An 18-year-4-month-old (220 months) patient — again deliberately given no
-CBC/labs, since the point is purely that the built-in intervals stop before 18 years.
+**Clinical picture:** An 18-year-4-month-old (220 months) patient — originally given no CBC/labs,
+since the point is purely that the built-in intervals stop before 18 years.
+
+**EP5-T6 update (ARCH §10 condition 2):** same rationale and mechanism as
+`scope-neonatal-young-infant.json` above — `cbc.localRanges.{hbLower,mcvLower,mcvUpper}` (synthetic
+placeholder values) were added so `assess()`'s new age-scope refusal does not block this fixture
+from still reaching `SCOPE-002`/`SCOPE-003`.
 
 **Thresholds used:**
-- `patient.ageMonths: 220` ≥ 216 → the `ageMonths >= 216` cutoff hard-coded in `facts.anemia.js`
-  (`outsidePediatricRange`), exactly `SCOPE-002`'s condition
+- `patient.ageMonths: 220` ≥ 216 → the `ageMonths >= supportedAgeMonths.max` cutoff (read from
+  `modules/anemia/module.json`, not hardcoded, as of EP5-T6), exactly `SCOPE-002`'s condition
   (`scope.outsidePediatricRange === true`). 216 months (18 years) is the existing
   `maxMonthsExclusive` boundary of the last band in `modules/anemia/reference-ranges.json` — no
   new boundary introduced.

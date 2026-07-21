@@ -2,7 +2,9 @@
   "patient": { "ageMonths": 4, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
   "cbc": {
     "hemoglobin": 9.5, "mcv": 85, "rdw": 15, "rbc": 3.4, "wbc": 8.8, "platelets": 340,
-    "rbcInterpretation": "normal", "localRanges": {}, "localFlags": {}
+    "rbcInterpretation": "normal",
+    "localRanges": { "hbLower": 9, "mcvLower": 70, "mcvUpper": 100 },
+    "localFlags": {}
   },
   "reticulocytes": { "response": "unknown" },
   "symptoms": {},

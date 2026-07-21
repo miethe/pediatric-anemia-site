@@ -20,9 +20,9 @@
   },
   "candidateBinding": {
     "knowledgeBaseVersion": "0.1.0-2026-07-15",
-    "rulesFileDigest": "sha256:d6df348b15c6a391afb51a7f9945d50cea89b26c2f4a1a7fd629de035cb62793",
+    "rulesFileDigest": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
     "candidatesFileDigest": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
-    "moduleFileDigest": "sha256:92b4096b9bad048d7c2f2dd162ce786bfdae4551670b8344fb8ce49c3a0b62c2"
+    "moduleFileDigest": "sha256:57280d0461fcd3a8f1597805ccc11b93b7ff5b6ff6fb695c288da67f5cd6ba73"
   },
   "executionBinding": {
     "engine": "anemia-assessment-engine",
@@ -32,9 +32,20 @@
   "input": {
     "kind": "patientInput",
     "patientInput": {
-      "patient": { "ageMonths": 2, "sexAtBirth": "male", "menstruating": false, "recentTransfusion": false, "highAltitude": false },
-      "cbc": { "hemoglobin": 9.0, "mcv": 95 },
-      "reticulocytes": { "response": "unknown" },
+      "patient": {
+        "ageMonths": 2,
+        "sexAtBirth": "male",
+        "menstruating": false,
+        "recentTransfusion": false,
+        "highAltitude": false
+      },
+      "cbc": {
+        "hemoglobin": 9,
+        "mcv": 95
+      },
+      "reticulocytes": {
+        "response": "unknown"
+      },
       "labs": {},
       "symptoms": {},
       "history": {},
@@ -46,29 +57,25 @@
     "profileRef": null
   },
   "expectedBehavior": {
-    "type": "abstention",
+    "type": "fail_closed",
     "requiredSignal": "Age/developmental partitions outside validated scope must not use fallback thresholds silently. Visible scope exit or abstention.",
-    "expectedAlerts": [
-      { "id": "SCOPE-001", "severity": "important" },
-      { "id": "SCOPE-003", "severity": "important" }
+    "expectedAlerts": [],
+    "expectedAbstention": null,
+    "expectedBlockers": [
+      "AGE_OUT_OF_SUPPORTED_RANGE"
     ],
-    "expectedAbstention": {
-      "rankedDifferentialEmpty": true,
-      "classificationIndeterminate": true,
-      "maxCandidateLevel": null
-    },
-    "expectedBlockers": [],
     "forbiddenSignals": [
       "a resolved hemoglobinLowerLimit, mcvLowerLimit, or mcvUpperLimit for a 2-month-old (no built-in interval covers ages under 6 months)",
-      "an anemiaStatus other than indeterminate when no local range is supplied for an age below 6 months"
+      "an anemiaStatus other than indeterminate when no local range is supplied for an age below 6 months",
+      "a returned assessment result of any kind (with or without alerts) for an age outside the supported range with no local reference limits supplied — docs/architecture.md ARCH §10 requires a hard refusal ('no assessment produced'), not a returned indeterminate/empty result"
     ]
   },
   "expectedTrace": {
-    "mechanism": "rule_audit",
-    "matchedRuleIdsMustInclude": ["SCOPE-001", "SCOPE-003"],
-    "note": "Verified by direct execution on 2026-07-19. classification.thresholdSource/ageBand/hemoglobinLowerLimit are all null and anemiaStatus/morphology are 'indeterminate' for a 2-month-old with no local ranges supplied; the engine does not silently apply the built-in 6-24-month fallback interval."
+    "mechanism": "none_available",
+    "matchedRuleIdsMustInclude": [],
+    "note": "EP5-T6 (2026-07-21) supersedes the original 2026-07-19 execution note below. Re-verified by direct execution: assessPediatricAnemia() now throws AgeOutOfSupportedRangeError (code AGE_OUT_OF_SUPPORTED_RANGE, statusCode 400) for this exact input before any rule ever evaluates -- no result object, no provenance.matchedRuleIds, no rule_audit trail exists at all, hence mechanism 'none_available'. SCOPE-001/SCOPE-003 no longer fire for this scenario because assess() refuses before reaching rule evaluation; they remain witnessed elsewhere (tests/witness/alerts/scope-neonatal-young-infant.json, now with cbc.localRanges supplied so the refusal's documented carve-out applies and the module proceeds to fire the alerts). ORIGINAL 2026-07-19 note (behavior superseded, kept for the audit trail): classification.thresholdSource/ageBand/hemoglobinLowerLimit were all null and anemiaStatus/morphology were 'indeterminate' for a 2-month-old with no local ranges supplied via a normally-returned result carrying SCOPE-001/SCOPE-003 alerts; EP5-T6 determined that ARCH §10's 'refuse to assess (not merely narrow limitations text)' requirement was not met by that softer abstention and hardened it to a genuine refusal."
   },
-  "rollbackSignal": "Re-verify by execution if modules/anemia/rules.json, candidates.json, or module.json digests change, or if the supportedAge boundary (facts.anemia.js) or SCOPE-001/SCOPE-003 are edited.",
+  "rollbackSignal": "Re-verify by execution if modules/anemia/rules.json, candidates.json, or module.json digests change, or if the supportedAge boundary (now read from modules/anemia/module.json's supportedAgeMonths, not hardcoded), modules/anemia/facts.anemia.js#assertAgeWithinSupportedScope, or SCOPE-001/SCOPE-003 are edited.",
   "execution": {
     "state": "not_executed",
     "receipt": null,

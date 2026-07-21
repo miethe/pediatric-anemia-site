@@ -24,6 +24,18 @@ They are **synthetic, test-only inputs**. They are not clinical worked examples 
 values in `ranges-local-override-partial.json` (11.4 / 80.5) are deliberately copied from the
 existing adolescent band rather than invented.
 
+**EP5-T6 addition (ARCH §10 condition 2, unrelated to the ferritin/age-band pins above).**
+`ferritin-below-supported-age.json` (4 mo) and `ferritin-above-pediatric-range.json` (216 mo) now
+also carry `cbc.localRanges.{hbLower,mcvLower,mcvUpper}` (synthetic placeholder values, not read
+from any KB band). This is needed ONLY because line 18 above is true — `scripts/rule-coverage.mjs`
+feeds every file in this directory through the real `assess()`, and `assess()` now refuses to
+produce an assessment (`AgeOutOfSupportedRangeError`) for an age outside
+`modules/anemia/module.json`'s `supportedAgeMonths` unless local reference limits are supplied. The
+ferritin branch pins these two fixtures exist for are asserted via `branch-seam.test.mjs` calling
+`deriveFacts()` directly (never `assess()`), and ferritin-threshold selection does not read
+`cbc.localRanges.{hbLower,mcvLower,mcvUpper}` at all — so this addition changes nothing about what
+either fixture pins; it only keeps `rule-coverage.mjs`'s walk from throwing.
+
 **Scope of that claim (corrected by the EP05-T5 review).** It covers every *asserted* and every
 *threshold-bearing* number — the values these tests pin, and any value chosen to sit on a particular
 side of a decision boundary. It does **not** cover the ordinary observational CBC values each
