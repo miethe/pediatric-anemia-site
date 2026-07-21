@@ -10,8 +10,11 @@
 // Verbs (02 §4.5):
 //   inspect  — read-only summary of a run's eligibility/hashes; emits no pack output. (P2-T6)
 //   verify   — structural pre-check of a staged pack (or, this phase, of loader output). (P2-T7)
-//   propose  — drafts a full kb-pack proposal. NOT implemented until Phase 3 — see
-//              lib/verbs/propose.mjs. Running it now exits non-zero with a clear message.
+//   propose  — assembles the full staged kb-pack proposal (pack-provenance.json, evidence.json,
+//              evidence-assertions.json, candidates.json, rule-proposals.json, rules.json,
+//              rule-provenance.json) by wiring together the hand-authored P3-T1..T6 content
+//              behind the same loader -> hashing -> eligibility pipeline inspect/verify use, plus
+//              the seam-invariant-8 conflict-visibility guard. See lib/verbs/propose.mjs. (P3-T7)
 //
 // Zero network calls, zero LLM/generative-model invocations, ever (FR-10, 02 §2.3 items 13-15).
 // Never mutates the `rf` run directory (seam invariant 6).
@@ -43,7 +46,8 @@ Verbs:
 
   propose --run-dir <dir> --module <module.json path> --decisions <authoring-decisions.yaml>
           --out <build/kb-pack/... dir>
-      Drafts a full kb-pack proposal. NOT YET IMPLEMENTED — wired in Phase 3.
+      Assembles a full staged kb-pack proposal at --out. Fails closed (governance exit) if any
+      drafted rule proposal is grounded solely by a mixed/contradicted claim (seam invariant 8).
 
 Global:
   -h, --help    Show this help and exit 0.

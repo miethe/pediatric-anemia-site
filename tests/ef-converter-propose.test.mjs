@@ -1,0 +1,441 @@
+// tests/ef-converter-propose.test.mjs — P3-T7 (evidence-foundry-buildout Phase 3, `02 §4.5`,
+// `02 §4.6` phases 4-9).
+//
+// Task acceptance criteria (phase-3-5-projection-slice-manifest.md, row P3-T7):
+//   1. "`propose` run against the fixture succeeds and every emitted file validates against its
+//      schema" — proven below by running the real `propose` verb against the real, committed
+//      `tests/fixtures/rf-cbc-001` fixture and the real, committed `modules/cbc_suite_v1/` module
+//      package, then schema-validating every emitted file that has a dedicated schema
+//      (`rules.json`, `rule-provenance.json`, `evidence.json`, `evidence-assertions.json`,
+//      `candidates.json`, per-entry). `pack-provenance.json` and `rule-proposals.json` have no
+//      dedicated schema — this plan's binding OQ-7 ruling names exactly 4 new schema files (none
+//      of them these two) — so those two files are instead checked structurally.
+//   2. "the conflict-visibility test fails if a `mixed` claim is ever the sole basis for a
+//      generated rule" — proven both (a) directly against `assertNoSoleConflictedBasis` with a
+//      synthetic stub `mixed`/`contradicted` claim (no real bundle involved at all, matching this
+//      AC's own "stub" wording) and (b) as a real, non-vacuous check against the actual
+//      `RULE_PROPOSALS` content and the real fixture's routing report.
+
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import http from 'node:http';
+import https from 'node:https';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import {
+  CONVERTER_NAME,
+  CONVERTER_VERSION,
+  ConflictedSoleBasisError,
+  PACK_VERSION,
+  assertNoSoleConflictedBasis,
+  buildPackProvenance,
+  run as runPropose,
+} from '../tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs';
+import { loadBundle } from '../tools/rf-bundle-to-kb-pack/lib/loader.mjs';
+import { pinArtifacts } from '../tools/rf-bundle-to-kb-pack/lib/hashing.mjs';
+import { checkEligibility } from '../tools/rf-bundle-to-kb-pack/lib/eligibility.mjs';
+import { routeClaims } from '../tools/rf-bundle-to-kb-pack/lib/claim-routing.mjs';
+import { RULE_PROPOSALS } from '../tools/rf-bundle-to-kb-pack/lib/rule-candidate-drafts.mjs';
+import { GovernanceError, UsageError, EXIT_OK, EXIT_GOVERNANCE } from '../tools/rf-bundle-to-kb-pack/lib/errors.mjs';
+import { validate } from '../scripts/lib/json-schema-lite.mjs';
+
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const FIXTURE_DIR = path.join(REPO_ROOT, 'tests', 'fixtures', 'rf-cbc-001');
+const CONVERTER_ROOT = path.join(REPO_ROOT, 'tools', 'rf-bundle-to-kb-pack');
+const REAL_MODULE_PATH = path.join(REPO_ROOT, 'modules', 'cbc_suite_v1', 'module.json');
+const REAL_DECISIONS_PATH = path.join(REPO_ROOT, 'modules', 'cbc_suite_v1', 'authoring-decisions.yaml');
+const REAL_MODULE_DIR = path.join(REPO_ROOT, 'modules', 'cbc_suite_v1');
+
+async function loadJson(p) {
+  return JSON.parse(await readFile(p, 'utf8'));
+}
+
+async function loadSchema(name) {
+  return loadJson(path.join(REPO_ROOT, 'schemas', name));
+}
+
+async function withCapturedStdout(fn) {
+  const chunks = [];
+  const original = process.stdout.write.bind(process.stdout);
+  process.stdout.write = (chunk) => {
+    chunks.push(typeof chunk === 'string' ? chunk : chunk.toString('utf8'));
+    return true;
+  };
+  try {
+    const result = await fn();
+    return { result, output: chunks.join('') };
+  } finally {
+    process.stdout.write = original;
+  }
+}
+
+// =================================================================================================
+// 1. propose run against the real fixture assembles a schema-valid full staged pack
+// =================================================================================================
+
+test('P3-T7: propose run against the real fixture + real cbc_suite_v1 module succeeds and emits all 7 files', async () => {
+  const outDir = await mkdtemp(path.join(os.tmpdir(), 'ef-propose-test-out-'));
+  try {
+    const { result: exitCode, output } = await withCapturedStdout(() =>
+      runPropose({
+        runDir: FIXTURE_DIR,
+        module: REAL_MODULE_PATH,
+        decisions: REAL_DECISIONS_PATH,
+        out: outDir,
+      }),
+    );
+
+    assert.equal(exitCode, EXIT_OK);
+    assert.ok(output.trim().length > 0, 'propose must print a non-empty summary');
+    const summary = JSON.parse(output);
+    assert.equal(summary.verb, 'propose');
+    assert.equal(summary.moduleId, 'cbc_suite_v1');
+    // claim-routing.mjs's rejection count is a LATER, stricter classification than
+    // eligibility.mjs's (a "supported" claim eligibility already deemed a fact_candidate is still
+    // routing-rejected unless evidence-assertions.json actually resolves an exact passage for it
+    // -- and this module's evidence-assertions.json only carries the 19 assertions the 4 slice
+    // rules actually cite, not all 74 supported claims in the fixture).
+    assert.equal(summary.routing.eligibleForRuleEvidence, 27);
+    assert.equal(summary.routing.conflictObjects, 0, 'the real fixture has 0 mixed/contradicted claims');
+    assert.equal(summary.routing.rejected, 60);
+
+    // ---- pack-provenance.json (no dedicated schema — checked structurally) ----
+    const packProvenance = await loadJson(path.join(outDir, 'pack-provenance.json'));
+    assert.equal(packProvenance.moduleId, 'cbc_suite_v1');
+    assert.equal(packProvenance.packVersion, PACK_VERSION);
+    assert.deepEqual(packProvenance.converter, { name: CONVERTER_NAME, version: CONVERTER_VERSION });
+    assert.equal(packProvenance.rfBundleId, 'bundle_20260718_intent_research_20260717_rf_cbc_001');
+    assert.equal(packProvenance.rfRunId, 'rf_run_20260717_rf_cbc_001_pediatric_cds_establish');
+    assert.equal(packProvenance.rfIntentId, 'intent_research_20260717_rf_cbc_001_pediatric_cds_establish');
+    assert.equal(packProvenance.upstreamVerification.bundleStatus, 'verified');
+    assert.equal(typeof packProvenance.upstreamVerification.bundleSha256, 'string');
+    assert.equal(packProvenance.upstreamVerification.bundleSha256.length, 64);
+    assert.ok(Array.isArray(packProvenance.upstreamArtifacts) && packProvenance.upstreamArtifacts.length > 0);
+    assert.ok(
+      packProvenance.upstreamArtifacts.every((a) => typeof a.sha256 === 'string' && a.sha256.length === 64),
+    );
+    assert.equal(
+      packProvenance.upstreamCounts.matches,
+      true,
+      `recorded vs. recalculated counts must agree: ${JSON.stringify(packProvenance.upstreamCounts)}`,
+    );
+    assert.equal(packProvenance.upstreamCounts.recalculated.claims_total, 87);
+    assert.equal(packProvenance.dataClassification, 'personal');
+    assert.equal(packProvenance.rfWritebackApproved, true);
+    assert.ok(packProvenance.rfLineage && typeof packProvenance.rfLineage === 'object');
+
+    // ---- evidence.json (byte-verbatim copy; validated against schemas/evidence.schema.json) ----
+    const evidenceSchema = await loadSchema('evidence.schema.json');
+    const evidenceDoc = await loadJson(path.join(outDir, 'evidence.json'));
+    assert.deepEqual(validate(evidenceSchema, evidenceDoc), []);
+    const committedEvidenceRaw = await readFile(path.join(REAL_MODULE_DIR, 'evidence.json'), 'utf8');
+    const stagedEvidenceRaw = await readFile(path.join(outDir, 'evidence.json'), 'utf8');
+    assert.equal(stagedEvidenceRaw, committedEvidenceRaw, 'evidence.json must be a byte-verbatim copy');
+
+    // ---- evidence-assertions.json (validated against schemas/evidence-assertions.schema.json) ----
+    const assertionsSchema = await loadSchema('evidence-assertions.schema.json');
+    const assertionsDoc = await loadJson(path.join(outDir, 'evidence-assertions.json'));
+    assert.deepEqual(validate(assertionsSchema, assertionsDoc), []);
+    const committedAssertionsRaw = await readFile(
+      path.join(REAL_MODULE_DIR, 'evidence-assertions.json'), 'utf8',
+    );
+    const stagedAssertionsRaw = await readFile(path.join(outDir, 'evidence-assertions.json'), 'utf8');
+    assert.equal(
+      stagedAssertionsRaw, committedAssertionsRaw,
+      'evidence-assertions.json must be a byte-verbatim copy',
+    );
+
+    // ---- candidates.json (each entry validated against schemas/candidate.schema.json) ----
+    const candidateSchema = await loadSchema('candidate.schema.json');
+    const candidatesDoc = await loadJson(path.join(outDir, 'candidates.json'));
+    const candidateIds = Object.keys(candidatesDoc);
+    assert.ok(candidateIds.length > 0, 'the staged pack must draft at least 1 candidate');
+    for (const [id, candidate] of Object.entries(candidatesDoc)) {
+      assert.equal(candidate.id, id, `candidate key/id mismatch for "${id}"`);
+      assert.deepEqual(validate(candidateSchema, candidate), []);
+      assert.match(candidate.label, /pattern/i, `candidate "${id}" label must say "pattern," never a diagnosis`);
+    }
+
+    // ---- rule-proposals.json (no dedicated schema — checked structurally) ----
+    const ruleProposalsDoc = await loadJson(path.join(outDir, 'rule-proposals.json'));
+    assert.equal(ruleProposalsDoc.proposals.length, 4);
+    for (const proposal of ruleProposalsDoc.proposals) {
+      assert.ok(proposal.decisionId, `${proposal.id} must be joined to an authoring decision`);
+    }
+
+    // ---- rules.json (each rule validated against schemas/rule.schema.json) ----
+    const ruleSchema = await loadSchema('rule.schema.json');
+    const rulesDoc = await loadJson(path.join(outDir, 'rules.json'));
+    assert.equal(rulesDoc.length, 4);
+    for (const rule of rulesDoc) {
+      assert.deepEqual(validate(ruleSchema, rule), [], `${rule.id} must validate against rule.schema.json`);
+    }
+
+    // ---- rule-provenance.json (validated against schemas/rule-provenance.schema.json) ----
+    const ruleProvenanceSchema = await loadSchema('rule-provenance.schema.json');
+    const ruleProvenanceDoc = await loadJson(path.join(outDir, 'rule-provenance.json'));
+    assert.deepEqual(validate(ruleProvenanceSchema, ruleProvenanceDoc), []);
+    assert.equal(ruleProvenanceDoc.entries.length, 4);
+    const ruleIds = new Set(rulesDoc.map((r) => r.id));
+    const provenanceRuleIds = new Set(ruleProvenanceDoc.entries.map((e) => e.ruleId));
+    assert.deepEqual(provenanceRuleIds, ruleIds, 'rules.json and rule-provenance.json must join bijectively by id');
+  } finally {
+    await rm(outDir, { recursive: true, force: true });
+  }
+});
+
+test('P3-T7: propose fails closed (UsageError) on a module id it has no hand-authored drafting content for, and writes NOTHING to --out', async () => {
+  // propose has hand-authored drafting content (P3-T1..T6) only for "cbc_suite_v1" — this proves
+  // it refuses to silently draft that content under a different module's identity, and that the
+  // failure happens before any file is written to --out (mkdir/writeFile never runs).
+  const outDir = await mkdtemp(path.join(os.tmpdir(), 'ef-propose-test-fail-'));
+  const tempModuleDir = await mkdtemp(path.join(os.tmpdir(), 'ef-propose-test-wrongmodule-'));
+  try {
+    const wrongModulePath = path.join(tempModuleDir, 'module.json');
+    await writeFile(wrongModulePath, JSON.stringify({ id: 'some_other_module', title: 'Wrong Module' }), 'utf8');
+    await writeFile(
+      path.join(tempModuleDir, 'authoring-decisions.yaml'),
+      'notes: temp stub for P3-T7 wrong-module test\n',
+      'utf8',
+    );
+
+    await assert.rejects(
+      () => runPropose({
+        runDir: FIXTURE_DIR,
+        module: wrongModulePath,
+        decisions: path.join(tempModuleDir, 'authoring-decisions.yaml'),
+        out: outDir,
+      }),
+      (err) => {
+        assert.ok(err instanceof UsageError);
+        assert.match(err.message, /some_other_module/);
+        return true;
+      },
+    );
+
+    const outDirEntries = await readdir(outDir);
+    assert.deepEqual(outDirEntries, [], 'nothing may be written to --out before the module-id check passes');
+  } finally {
+    await rm(outDir, { recursive: true, force: true });
+    await rm(tempModuleDir, { recursive: true, force: true });
+  }
+});
+
+test('P3-T7: propose requires --run-dir, --module, --decisions, and --out (usage error, not a stack trace)', async () => {
+  await assert.rejects(() => runPropose({}), (err) => {
+    assert.ok(err instanceof UsageError);
+    assert.equal(err.exitCode, 1);
+    return true;
+  });
+  await assert.rejects(() => runPropose({ runDir: FIXTURE_DIR }), UsageError);
+  await assert.rejects(() => runPropose({ runDir: FIXTURE_DIR, module: REAL_MODULE_PATH }), UsageError);
+  await assert.rejects(
+    () => runPropose({ runDir: FIXTURE_DIR, module: REAL_MODULE_PATH, decisions: REAL_DECISIONS_PATH }),
+    UsageError,
+  );
+});
+
+test('P3-T7: propose rejects a --decisions path that does not match the module\'s own authoring-decisions.yaml', async () => {
+  const outDir = await mkdtemp(path.join(os.tmpdir(), 'ef-propose-test-decisions-mismatch-'));
+  try {
+    await assert.rejects(
+      () => runPropose({
+        runDir: FIXTURE_DIR,
+        module: REAL_MODULE_PATH,
+        decisions: path.join(REPO_ROOT, 'modules', 'anemia', 'evidence.json'), // any wrong path
+        out: outDir,
+      }),
+      UsageError,
+    );
+  } finally {
+    await rm(outDir, { recursive: true, force: true });
+  }
+});
+
+test('P3-T7: propose makes zero outbound network calls (http.request/https.request/fetch never invoked)', async () => {
+  const outDir = await mkdtemp(path.join(os.tmpdir(), 'ef-propose-test-network-'));
+  const originalHttpRequest = http.request;
+  const originalHttpsRequest = https.request;
+  const originalFetch = globalThis.fetch;
+  let httpCalls = 0;
+  let httpsCalls = 0;
+  let fetchCalls = 0;
+
+  http.request = (...args) => {
+    httpCalls += 1;
+    return originalHttpRequest.apply(http, args);
+  };
+  https.request = (...args) => {
+    httpsCalls += 1;
+    return originalHttpsRequest.apply(https, args);
+  };
+  if (typeof originalFetch === 'function') {
+    globalThis.fetch = (...args) => {
+      fetchCalls += 1;
+      return originalFetch.apply(globalThis, args);
+    };
+  }
+
+  try {
+    await withCapturedStdout(() =>
+      runPropose({
+        runDir: FIXTURE_DIR,
+        module: REAL_MODULE_PATH,
+        decisions: REAL_DECISIONS_PATH,
+        out: outDir,
+      }),
+    );
+  } finally {
+    http.request = originalHttpRequest;
+    https.request = originalHttpsRequest;
+    if (typeof originalFetch === 'function') globalThis.fetch = originalFetch;
+    await rm(outDir, { recursive: true, force: true });
+  }
+
+  assert.equal(httpCalls, 0, 'propose must never call http.request');
+  assert.equal(httpsCalls, 0, 'propose must never call https.request');
+  assert.equal(fetchCalls, 0, 'propose must never call fetch');
+});
+
+// =================================================================================================
+// 2. Seam invariant 8 — a mixed/contradicted claim never grounds a one-sided rule (stub + real)
+// =================================================================================================
+
+function makeRoutedFixture() {
+  return routeClaims([
+    { claim_id: 'clm_stub_mixed', status: 'mixed', sources: [] },
+    { claim_id: 'clm_stub_contradicted', status: 'contradicted', sources: [] },
+    { claim_id: 'clm_stub_speculation', status: 'speculation', sources: [] },
+    { claim_id: 'clm_stub_supported', status: 'supported', sources: [] },
+    {
+      claim_id: 'clm_stub_inference',
+      status: 'inference',
+      inference_basis: { from_claims: ['clm_stub_supported'] },
+    },
+  ], [
+    // Only clm_stub_supported has a resolved exact passage (an evidence-assertions.json entry
+    // naming it) — this is what makes it eligible as a rule's sole positive basis.
+    { rfClaimId: 'clm_stub_supported' },
+  ]);
+}
+
+test('P3-T7 (stub): assertNoSoleConflictedBasis throws when a rule proposal\'s ONLY cited claim is mixed', () => {
+  const routingReport = makeRoutedFixture();
+  const stubProposal = { id: 'STUB-MIXED-001', rfClaimIds: ['clm_stub_mixed'] };
+  assert.throws(
+    () => assertNoSoleConflictedBasis([stubProposal], routingReport),
+    (err) => {
+      assert.ok(err instanceof ConflictedSoleBasisError);
+      assert.ok(err instanceof GovernanceError);
+      assert.equal(err.exitCode, EXIT_GOVERNANCE);
+      assert.equal(err.proposalId, 'STUB-MIXED-001');
+      return true;
+    },
+  );
+});
+
+test('P3-T7 (stub): assertNoSoleConflictedBasis throws when a rule proposal\'s ONLY cited claim is contradicted', () => {
+  const routingReport = makeRoutedFixture();
+  const stubProposal = { id: 'STUB-CONTRADICTED-001', rfClaimIds: ['clm_stub_contradicted'] };
+  assert.throws(
+    () => assertNoSoleConflictedBasis([stubProposal], routingReport),
+    ConflictedSoleBasisError,
+  );
+});
+
+test('P3-T7 (stub): assertNoSoleConflictedBasis throws when a rule proposal cites ONLY mixed+contradicted claims combined (still no sole basis)', () => {
+  const routingReport = makeRoutedFixture();
+  const stubProposal = {
+    id: 'STUB-COMBINED-001',
+    rfClaimIds: ['clm_stub_mixed', 'clm_stub_contradicted', 'clm_stub_speculation'],
+  };
+  assert.throws(
+    () => assertNoSoleConflictedBasis([stubProposal], routingReport),
+    ConflictedSoleBasisError,
+  );
+});
+
+test('P3-T7 (stub): assertNoSoleConflictedBasis does NOT throw when a mixed claim is combined with a real supported anchor', () => {
+  const routingReport = makeRoutedFixture();
+  const stubProposal = {
+    id: 'STUB-ANCHORED-001',
+    rfClaimIds: ['clm_stub_mixed', 'clm_stub_supported'],
+  };
+  assert.doesNotThrow(() => assertNoSoleConflictedBasis([stubProposal], routingReport));
+});
+
+test('P3-T7 (stub): assertNoSoleConflictedBasis does NOT throw for a proposal solely grounded by an inference claim with a populated basis', () => {
+  const routingReport = makeRoutedFixture();
+  const stubProposal = { id: 'STUB-INFERENCE-001', rfClaimIds: ['clm_stub_inference'] };
+  assert.doesNotThrow(() => assertNoSoleConflictedBasis([stubProposal], routingReport));
+});
+
+test('P3-T7: assertNoSoleConflictedBasis does NOT throw for the real RULE_PROPOSALS against the real fixture\'s routing report', async () => {
+  const loaded = await loadBundle({ runDir: FIXTURE_DIR, modulePath: REAL_MODULE_PATH });
+  const pinned = await pinArtifacts(loaded);
+  const evidenceAssertionsDoc = await loadJson(path.join(REAL_MODULE_DIR, 'evidence-assertions.json'));
+  const routingReport = routeClaims(
+    pinned.artifacts.claimLedger.parsed.claims,
+    evidenceAssertionsDoc.assertions,
+  );
+  assert.doesNotThrow(() => assertNoSoleConflictedBasis(RULE_PROPOSALS, routingReport));
+});
+
+// =================================================================================================
+// 3. buildPackProvenance is a pure function of its pinned-bundle/eligibility inputs (no I/O)
+// =================================================================================================
+
+test('P3-T7: buildPackProvenance is a pure function of its inputs (no I/O, deterministic given identical inputs)', async () => {
+  const loaded = await loadBundle({ runDir: FIXTURE_DIR, modulePath: REAL_MODULE_PATH });
+  const pinned = await pinArtifacts(loaded);
+  const eligibility = checkEligibility(pinned);
+  const a = buildPackProvenance(pinned, eligibility);
+  const b = buildPackProvenance(pinned, eligibility);
+  assert.deepEqual(a, b);
+});
+
+// =================================================================================================
+// 4. Structural: no forbidden network/AI-SDK import in this file (same convention as every other
+//    verb test file in this suite)
+// =================================================================================================
+
+async function collectConverterSourceFiles(dir) {
+  const { readdir } = await import('node:fs/promises');
+  const files = [];
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...(await collectConverterSourceFiles(full)));
+    } else if (entry.isFile() && entry.name.endsWith('.mjs')) {
+      files.push(full);
+    }
+  }
+  return files;
+}
+
+const FORBIDDEN_IMPORT_PATTERNS = [
+  /^\s*import\b[^;]*from\s+['"](?:node:)?http['"]/m,
+  /^\s*import\b[^;]*from\s+['"](?:node:)?https['"]/m,
+  /^\s*import\b[^;]*from\s+['"](?:node:)?dgram['"]/m,
+  /^\s*import\b[^;]*from\s+['"]@anthropic-ai\/[^'"]*['"]/m,
+  /^\s*import\b[^;]*from\s+['"]openai['"]/m,
+  /(?<!\/\/[^\n]*)\bfetch\s*\(/,
+];
+
+test('P3-T7: no file under tools/rf-bundle-to-kb-pack/ imports a network or AI/model-SDK module (structural)', async () => {
+  const files = await collectConverterSourceFiles(CONVERTER_ROOT);
+  assert.ok(files.length > 0, 'sanity: the converter source tree must not be empty');
+
+  for (const file of files) {
+    const source = await readFile(file, 'utf8');
+    for (const pattern of FORBIDDEN_IMPORT_PATTERNS) {
+      assert.ok(
+        !pattern.test(source),
+        `${path.relative(REPO_ROOT, file)} matches forbidden pattern ${pattern} (network/AI-SDK import)`,
+      );
+    }
+  }
+});

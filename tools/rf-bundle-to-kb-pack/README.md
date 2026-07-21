@@ -7,10 +7,12 @@ of the Evidence Foundry buildout's Phase 2 ("Converter Core"). Design spec:
 Task table: `docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1/phase-1-2-foundation-converter.md`
 (row `P2-T1`).
 
-**Status (end of P2-T1)**: CLI scaffold + verb dispatch only. `inspect`/`verify` route to stub
-handlers that throw `NotImplementedError` until P2-T6/P2-T7 land; `propose` is intentionally inert
-until Phase 3. Nothing in this tool is signed, released, or clinically approved — its only output
-authority is a *proposal* (02 §4.1, "Release authority: None").
+**Status (as of P3-T7)**: `inspect` (P2-T6), `verify` (P2-T7), and `propose` (P3-T7) are all real.
+`propose` assembles the full staged `02 §4.4` pack by wiring together the hand-authored P3-T1..T6
+drafting content behind the same loader → hashing → eligibility pipeline `inspect`/`verify` use,
+plus the seam-invariant-8 conflict-visibility guard (`lib/verbs/propose.mjs`). Nothing in this tool
+is signed, released, or clinically approved — its only output authority is a *proposal* (02 §4.1,
+"Release authority: None").
 
 ## Why this tool is not `rf`
 
@@ -37,7 +39,8 @@ node tools/rf-bundle-to-kb-pack/cli.mjs propose \
   --module modules/cbc_suite_v1/module.json \
   --decisions modules/cbc_suite_v1/authoring-decisions.yaml \
   --out build/kb-pack/cbc_suite_v1/0.1.0-proposal
-# -> exits non-zero, "not yet implemented — wired in Phase 3" until Phase 3 lands.
+# -> exit 0; writes pack-provenance.json, evidence.json, evidence-assertions.json, candidates.json,
+#    rule-proposals.json, rules.json, rule-provenance.json to --out (P3-T7).
 ```
 
 Note the `--module` path is `module.json`, not the 02 doc's `module.yaml` — the 02 doc predates
@@ -59,7 +62,7 @@ Five internal boundaries, one file (or small directory) each, matching the phase
 | Eligibility | `lib/eligibility.mjs` | Status reconciliation + per-claim eligibility (02 §3.7 field table) | **P2-T4** | hashing, errors |
 | Verb handler | `lib/verbs/inspect.mjs` | Runs loader → hashing → eligibility, prints summary, emits no pack output | **P2-T6** | loader, hashing, eligibility, errors |
 | Verb handler | `lib/verbs/verify.mjs` | Structural pre-check (Phase 2: input-side only; P5-T1 completes the pack-output path) | **P2-T7** | inspect (per task table), errors |
-| Verb handler | `lib/verbs/propose.mjs` | Full kb-pack drafting | **Phase 3** (inert stub this phase) | — |
+| Verb handler | `lib/verbs/propose.mjs` | Assembles the full staged pack (pack-provenance.json + evidence/evidence-assertions copies + P3-T5/T6 drafting output) behind loader → hashing → eligibility → claim-routing, plus the seam-invariant-8 conflict-visibility guard | **P3-T7** | loader, hashing, eligibility, claim-routing, rule-candidate-drafts, govern-staged-rules, errors |
 
 **Verb-handler contract**: every file under `lib/verbs/` exports `async function run(options)`
 that either resolves to a numeric process exit code (see `EXIT_*` in `lib/errors.mjs`) or throws a
@@ -67,11 +70,12 @@ that either resolves to a numeric process exit code (see `EXIT_*` in `lib/errors
 — it never remaps it. A non-`ConverterError` throw (a genuine bug) falls back to `EXIT_USAGE` (1)
 since none of the 8 taxonomy states is a natural fit for an unclassified crash.
 
-**Data flow for `inspect`/`verify`** (02 §4.6 phases 1-4, this phase's scope):
+**Data flow for `inspect`/`verify`/`propose`** (02 §4.6 phases 1-4 for all three; `propose` continues
+into phases 4-9 via `claim-routing.mjs`'s `routeClaims` + the P3-T5/P3-T6 drafting modules):
 
 ```
 loader.loadBundle()  ->  hashing.pinArtifacts()  ->  eligibility.checkEligibility()  ->  verb prints summary / exits
-     (P2-T2)                  (P2-T3)                       (P2-T4)                          (P2-T6 / P2-T7)
+     (P2-T2)                  (P2-T3)                       (P2-T4)                          (P2-T6 / P2-T7 / P3-T7)
 ```
 
 Each arrow is a plain function call passing the prior stage's return value forward — no shared
@@ -149,9 +153,9 @@ to accidentally violate later.
 | 5 | Pins `run_id`, bundle ID, bundle/ledger/source hashes | `hashing.mjs` (P2-T3) |
 | 6 | Never mutates `runs/<run_id>/` | `loader.mjs` (P2-T2) — read-only by construction |
 | 7 | `supported` claims admitted as fact candidates only when source + exact passage resolve | `eligibility.mjs` (P2-T4) |
-| 8 | `mixed`/`contradicted` claims -> conflict-visible objects only, never one-sided rules | `eligibility.mjs` (P2-T4), drafting logic (Phase 3) |
-| 9 | `inference` claims admitted only as implementation-proposal inputs with `inference_basis.from_claims` | `eligibility.mjs` (P2-T4), drafting logic (Phase 3) |
-| 10 | `speculation`/`unsupported` claims rejected from clinical rule evidence | `eligibility.mjs` (P2-T4) |
+| 8 | `mixed`/`contradicted` claims -> conflict-visible objects only, never one-sided rules | `eligibility.mjs` (P2-T4) categorization; `claim-routing.mjs` (P3-T4) `basis.kind` routing; `propose.mjs`'s `assertNoSoleConflictedBasis` (P3-T7) fail-closed guard |
+| 9 | `inference` claims admitted only as implementation-proposal inputs with `inference_basis.from_claims` | `eligibility.mjs` (P2-T4), `claim-routing.mjs` (P3-T4) |
+| 10 | `speculation`/`unsupported` claims rejected from clinical rule evidence | `eligibility.mjs` (P2-T4), `claim-routing.mjs` (P3-T4) |
 | 11 | No confidence-to-probability translation | `eligibility.mjs` (P2-T4) / drafting logic (Phase 3) — asserted directly by P2-T8 |
 | 12 | Absence of an extracted claim is never treated as evidence of normality/safety | `eligibility.mjs` (P2-T4) / drafting logic (Phase 3) — asserted directly by P2-T8 |
 | 13 | Deterministic: identical bytes + converter version -> identical normalized output bytes | Whole pipeline; proven by P2-T8 and Phase 5's double-run gate |
@@ -175,7 +179,7 @@ tools/rf-bundle-to-kb-pack/
     verbs/
       inspect.mjs              `inspect` verb (P2-T6)
       verify.mjs                `verify` verb (P2-T7)
-      propose.mjs                `propose` verb (Phase 3; inert stub this phase)
+      propose.mjs                `propose` verb (P3-T7)
 ```
 
 `build/kb-pack/` (this tool's eventual output root) is git-ignored (`.gitignore`, P1-T7) — nothing
