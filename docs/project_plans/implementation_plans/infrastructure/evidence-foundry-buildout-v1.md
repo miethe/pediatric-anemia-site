@@ -40,10 +40,20 @@ references:
   - docs/project_plans/PRDs/refactors/platform-foundation-p0-v1.md
 spike_ref: null
 adr_refs: []
-deferred_items_spec_refs: []
+deferred_items_spec_refs:
+- docs/project_plans/design-specs/fhir-terminology-emitters.md
+- docs/project_plans/design-specs/clinical-review-portal-workflow.md
+- docs/project_plans/design-specs/cbc-12-angle-research-operation.md
+- docs/project_plans/design-specs/surveillance-update-registry-engine.md
+- docs/project_plans/design-specs/retrospective-validation-harness.md
+- docs/project_plans/design-specs/signed-release-key-custody.md
+- docs/project_plans/design-specs/upstream-rf-validators-pediatric.md
+- docs/project_plans/design-specs/property-mutation-semantic-diff-ci.md
+- docs/project_plans/design-specs/production-monitoring-telemetry.md
+- docs/project_plans/design-specs/withdraw-rollback-machinery.md
 findings_doc_ref: .claude/findings/evidence-foundry-buildout-findings.md
 charter_ref: null
-changelog_ref: null
+changelog_ref: CHANGELOG.md
 changelog_required: true
 test_plan_ref: null
 plan_structure: independent

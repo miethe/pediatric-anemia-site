@@ -9,7 +9,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundr
 execution_model: batch-parallel
 phase: 5
 title: 'Evidence Foundry Buildout — Phase 5: Manifest & Traceability'
-status: pending
+status: completed
 started: null
 completed: null
 commit_refs: []
@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 7
-completed_tasks: 1
+completed_tasks: 7
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -37,7 +37,7 @@ tasks:
     converter.{name, version, configSha256}, testCorpusHash, traceabilityHash. Author
     schemas/release-manifest.schema.json, wire it into scripts/validate-kb.mjs as
     existence-gated, and complete P2-T7''s verify verb pack-output-validation stub.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -51,7 +51,7 @@ tasks:
     claim, source, or candidate item with its specific exclusion reason — every speculation/unsupported
     claim P3-T4''s routing rejected must appear here with its specific reason, not
     be silently dropped.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -65,7 +65,7 @@ tasks:
     between the staged cbc_suite_v1 proposal and modules/anemia/rules.json — no impact-graph
     traversal. Sorted, deterministic output; expected result is exactly 4 added, 0
     removed, 0 changed.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -79,7 +79,7 @@ tasks:
     -> decision -> rule -> test -> output index for the 4 slice rules and prove both
     required bidirectional queries work — (1) given a rendered output, show rule/decision/claims/passages/sources/review-date;
     (2) given a source, list claims/rules/tests/outputs potentially affected.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -94,7 +94,7 @@ tasks:
     version and assert SHA-256 equality across every emitted artifact. Add tests/ef-converter-determinism.test.mjs
     and tests/ef-converter-manifest.test.mjs. No timestamps embedded in hashed content;
     sorted serialization throughout.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -108,7 +108,7 @@ tasks:
 - id: P5-GATE1
   description: 'task-completion-validator gate: verify Phase 5 exit gate — manifest
     hash reproducible; conversion report enumerates every exclusion.'
-  status: pending
+  status: completed
   assigned_to:
   - task-completion-validator
   dependencies:
@@ -184,7 +184,7 @@ files_modified:
 - scripts/validate-kb.mjs
 - tests/ef-converter-determinism.test.mjs
 - tests/ef-converter-manifest.test.mjs
-progress: 14
+progress: 100
 updated: '2026-07-21'
 ---
 

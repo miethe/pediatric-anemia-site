@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Evidence Foundry Buildout (E0): Converter & Module Scaffold
+
+- Added `tools/rf-bundle-to-kb-pack/`, a deterministic Node ESM CLI converter that transforms verified Research Foundry evidence bundles into candidate knowledge-base package proposals. The converter accepts an `rf` run with `status: verified` and produces a gitignored staging directory (`build/kb-pack/`) containing module artifacts (rules, candidates, evidence records, governance metadata, and test traces) that require clinical review before being committed to a versioned module package.
+- Added `modules/cbc_suite_v1/`, a new module scaffold extending the existing pediatric anemia prototype to include a vertical slice of CBC-related rules. The module follows the same structure as `modules/anemia/` (module.json, index.js delegating fact derivation, rules.json, candidates.json, evidence.json, rule-provenance.json, and evidence-assertions.json) and is registered in all three module registries (src/modules/registry.js, src/facts/registry.js, src/evidence.js). The module is unsigned and shipped as a proposal only — no rules are clinically approved and the module carries no production release status.
+- Added unified evidence registry in `src/evidence.js`, unifying `modules/anemia/evidence.json` and `modules/cbc_suite_v1/evidence.json` into a single canonical evidence store at runtime, keyed by evidence ID with support for cross-module evidence references.
+
 ## 0.3.1 — 2026-07-15
 
 - Selecting a stage now folds the six-stage grid down to that stage so the decision specification becomes the focus; the grid re-expands from the collapsed card or the "Show all six steps" control.
