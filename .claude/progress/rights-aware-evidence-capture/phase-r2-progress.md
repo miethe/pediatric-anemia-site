@@ -18,7 +18,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 2
+completed_tasks: 5
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -36,7 +36,7 @@ tasks:
     additionalProperties:false posture. Fields are required, not optional, with explicit
     typed unknown/null where genuinely unassessed. Use pattern for any URL-shaped
     field — never format:"uri" (FR-WP0-08).'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -45,12 +45,16 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T16:40:00-04:00'
+  completed: '2026-07-21T16:48:33-04:00'
+  evidence:
+  - commit: '9239762'
 - id: EPR2-T2
   description: 'terms_snapshot — locator only, never text (FR-WP2-02, D1): add a terms_snapshot
     reference field recording what terms were observed and when, by locator and retrieval
     date. It records no terms prose; the schema must have no free-text body property
     capable of holding terms language.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -59,6 +63,10 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T16:48:33-04:00'
+  completed: '2026-07-21T16:53:13-04:00'
+  evidence:
+  - commit: 61a2ea7
 - id: EPR2-T3
   description: 'Atomic backfill of 6 sources; AAP block machine-readable (FR-WP2-03):
     backfill all 6 sources in the same commit as the schema change. Encode AAP2026_IDA''s
@@ -104,7 +112,7 @@ tasks:
     so every evidence source resolves to a rights record in rights/rights-ledger.json,
     reusing EP-R1''s exported ledger-resolution helper unchanged — call site only,
     no restructure, rename, or re-signature.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -114,6 +122,10 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T17:20:00-04:00'
+  completed: '2026-07-21T17:36:59-04:00'
+  evidence:
+  - commit: 511269d
 - id: EPR2-T6
   description: 'R-P2 / R-P4 — consumer resilience + browser smoke (FR-WP2-07): target_surfaces
     src/evidence.js, src/engine.js, src/app.js, scripts/evidence/build-evidence-pack.mjs
@@ -205,7 +217,7 @@ files_modified:
 - src/engine.js
 - src/app.js
 - scripts/evidence/build-evidence-pack.mjs
-progress: 33
+progress: 83
 updated: '2026-07-21'
 ---
 
