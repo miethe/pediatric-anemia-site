@@ -1,0 +1,100 @@
+id: ext_20260718_10595dd6_001
+source_card_id: src_20260718_rfkid001_03
+created_at: '2026-07-18T16:10:10-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: KDIGO 2024 defines CKD as abnormalities of kidney structure or function present for a minimum
+    of 3 months with implications for health, applied to children and adults.
+  locator: Ch. Definition and classification of CKD, 'Defining CKD' (p. S181; PDF p.21); also CGA nomenclature
+    figure (p. S126; PDF p.10)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: For children and adolescents over age 2, KDIGO 2024 advises flagging eGFRcr <90 mL/min/1.73 m2
+    as 'low' — a higher cutoff than the adult threshold and than the 2012 pediatric cutoff of 60.
+  locator: Ch.1 Special considerations — Pediatric considerations, Practice Point 1.2.3.5 (p. S186; PDF
+    p.70)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: KDIGO GFR categories span G1 (>=90) to G5 (<15) mL/min/1.73 m2, with G3 split into G3a and G3b;
+    these category boundaries are population-general staging, not the pediatric 'low' flag.
+  locator: CGA nomenclature figure, 'GFR categories (ml/min/1.73 m2), Description and range' (p. S126;
+    PDF p.10)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: KDIGO albuminuria categories are A1 <30 mg/g, A2 30-300 mg/g, A3 >300 mg/g by urine albumin-to-creatinine
+    ratio (with mg/mmol equivalents).
+  locator: CGA nomenclature figure, 'Persistent albuminuria categories, Description and range' (p. S126;
+    PDF p.10)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: KDIGO 2024 directs that GFR in children be estimated with equations validated in comparable populations,
+    naming the CKiD U25 2021 creatinine equation (ages 1-25; uses age, sex, height) as a preferred example.
+  locator: Ch.1.2.4 Selection of GFR estimating equations — Pediatric considerations, Practice Point 1.2.4.3
+    (p. S190; PDF p.74) and Table 14 'Validated GFR estimating equations' (p. S189; PDF p.73)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: 'KDIGO 2024 flags creatinine-assay dependence in children: labs must QC the lowest end of the
+    expected range, and enzymatic (not Jaffe) creatinine assays are preferred because non-creatinine chromogens
+    contribute more in children and neonatal samples are frequently icteric/hemolyzed.'
+  locator: Ch.1 Special considerations — Pediatric considerations, Practice Points 1.2.3.3 and 1.2.3.4
+    (p. S186; PDF p.70)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Ch. Definition and classification of CKD, 'Defining CKD' (p. S181; PDF p.21); also CGA nomenclature
+    figure (p. S126; PDF p.10)
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Ch.1 Special considerations — Pediatric considerations, Practice Point 1.2.3.5 (p. S186; PDF
+    p.70)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: CGA nomenclature figure, 'GFR categories (ml/min/1.73 m2), Description and range' (p. S126;
+    PDF p.10)
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: CGA nomenclature figure, 'Persistent albuminuria categories, Description and range' (p. S126;
+    PDF p.10)
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Ch.1.2.4 Selection of GFR estimating equations — Pediatric considerations, Practice Point 1.2.4.3
+    (p. S190; PDF p.74) and Table 14 'Validated GFR estimating equations' (p. S189; PDF p.73)
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Ch.1 Special considerations — Pediatric considerations, Practice Points 1.2.3.3 and 1.2.3.4
+    (p. S186; PDF p.70)
+contradictions_or_cautions:
+- text: Guideline scope is primarily adult with an explicit pediatric-considerations subsection; it is
+    not a dedicated pediatric reference-interval source.
+  locator: card/trust
+- text: Table 1 (CKD diagnostic criteria, incl. the '<60 mL/min/1.73 m2' defining threshold) renders as
+    a graphic and was not extractable as verbatim text from the PDF.
+  locator: card/trust

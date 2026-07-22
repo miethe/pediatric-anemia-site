@@ -1,0 +1,36 @@
+id: bundle_20260718_intent_research_20260717_rf_kid_001
+intent_id: intent_research_20260717_rf_kid_001_pediatric_cds_evidence
+run_id: rf_run_20260717_rf_kid_001_pediatric_cds_evidence
+created_at: '2026-07-18T16:24:19-04:00'
+status: verified
+artifacts:
+  research_brief: research_brief.md
+  swarm_plan: swarm_plan.yaml
+  source_cards_dir: sources/
+  extraction_cards_dir: extractions/
+  claim_ledger: claims/claim_ledger.yaml
+  report: reports/report_draft.md
+  verification: reviews/verification.yaml
+  ccdash_event: writebacks/ccdash_event.yaml
+counts:
+  source_cards: 12
+  extraction_cards: 12
+  claims_total: 87
+  claims_supported: 73
+  claims_mixed: 0
+  claims_contradicted: 0
+  claims_inference: 10
+  claims_speculation: 4
+  claims_unsupported: 0
+governance:
+  sensitivity: personal
+  approved_for_writeback: true
+  approved_by: null
+  approval_timestamp: null
+lineage:
+  raw_idea_ids: []
+  intent_id: intent_research_20260717_rf_kid_001_pediatric_cds_evidence
+  ibom_id: ibom_research_20260717_rf_kid_001_pediatric_cds_evidence
+  intenttree_node_id: ''
+  skillbom_ids_used:
+  - skill_research_swarm_v0

@@ -1,0 +1,107 @@
+id: ext_20260718_3cb2024f_001
+source_card_id: src_20260718_rfkid001_02
+created_at: '2026-07-18T16:10:10-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: The guideline replaces the term 'prehypertension' with 'elevated blood pressure', aligning pediatric
+    terminology with the 2017 AHA/ACC adult guideline.
+  locator: 'Abstract, para 1; and Section 3.1 ''Definition of HTN'', p.6 (col 3): ''the term "prehypertension"
+    has been replaced by the term "elevated blood pressure"'''
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: 'For children aged 1 to <13 years, BP categories are percentile-based with a static-mmHg upper
+    bound applied by ''whichever is lower'': Normal <90th pct; Elevated >=90th to <95th pct (or 120/80);
+    Stage 1 >=95th to <95th+12 mmHg (or 130/80-139/89); Stage 2 >=95th+12 mmHg (or >=140/90).'
+  locator: Table 3 'Updated Definitions of BP Categories and Stages', column 'For Children Aged 1–13 y',
+    p.6
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: 'For adolescents >=13 years, BP is classified by static adult-style mmHg cut points: Normal <120/<80;
+    Elevated 120/<80 to 129/<80; Stage 1 130/80-139/89; Stage 2 >=140/90 mm Hg.'
+  locator: Table 3 'Updated Definitions of BP Categories and Stages', column 'For Children Aged ≥13 y',
+    p.6
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: HTN is diagnosed when a child/adolescent has auscultatory-confirmed BP readings >=95th percentile
+    at 3 different visits (grade C, moderate).
+  locator: Table 1, KAS 3, p.2
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: Left ventricular hypertrophy is defined as LV mass >51 g/m2.7 (boys and girls) for children/adolescents
+    older than 8 y, and as LV mass >115 g/BSA for boys and >95 g/BSA for girls.
+  locator: Table 1, KAS 15-2, p.3; and Section 'Key Action Statement 15' (part 2), p.~24
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: New normative BP tables are based on normal-weight children only; the 50th/90th/95th percentiles
+    were derived by quantile regression on normal-weight children (BMI <85th percentile).
+  locator: Section 3.2 'New BP Tables', p.6-7; and screening-table footnote (Tables 6/7 derivation note)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: BP should be measured annually in children and adolescents >=3 y of age, and at every health care
+    encounter for those with obesity, BP-raising medications, renal disease, aortic arch obstruction/coarctation,
+    or diabetes (both grade C, moderate).
+  locator: Table 1, KAS 1 and KAS 2, p.2
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: 'Abstract, para 1; and Section 3.1 ''Definition of HTN'', p.6 (col 3): ''the term "prehypertension"
+    has been replaced by the term "elevated blood pressure"'''
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Table 3 'Updated Definitions of BP Categories and Stages', column 'For Children Aged 1–13 y',
+    p.6
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Table 3 'Updated Definitions of BP Categories and Stages', column 'For Children Aged ≥13 y',
+    p.6
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Table 1, KAS 3, p.2
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Table 1, KAS 15-2, p.3; and Section 'Key Action Statement 15' (part 2), p.~24
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Section 3.2 'New BP Tables', p.6-7; and screening-table footnote (Tables 6/7 derivation note)
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: Table 1, KAS 1 and KAS 2, p.2
+contradictions_or_cautions:
+- text: Static adolescent cut points (>=13y) adopt adult 2017 ACC/AHA thresholds; not derived from pediatric
+    outcome data (subcommittee retained a statistical, not outcome-based, definition).
+  locator: card/trust
+- text: Normative percentile tables derived from auscultatory data; oscillometric/ABPM devices may yield
+    different values.
+  locator: card/trust

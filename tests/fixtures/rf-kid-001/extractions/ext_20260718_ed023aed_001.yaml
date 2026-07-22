@@ -1,0 +1,92 @@
+id: ext_20260718_ed023aed_001
+source_card_id: src_20260718_rfkid001_01
+created_at: '2026-07-18T16:10:10-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: In internal validation, the U25 creatinine-only eGFR significantly underestimated measured GFR
+    in self-reported Black participants (bias -3.37 mL/min/1.73 m2), whereas the cystatin C-only U25 eGFR
+    showed no significant bias across race groups.
+  locator: Results, section 'Under 25 (U25) estimating equation performance by self-reported race', para
+    1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: In unadjusted models, self-reported Black race was associated with 12.8% higher measured GFR after
+    adjusting for serum creatinine.
+  locator: Results, section 'Racial differences in measured GFR and serum creatinine', para 2
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: Adjusting for cystatin C, self-reported Black race was associated with 3.5% lower measured GFR
+    overall, an effect that attenuated and became non-significant in older age groups.
+  locator: Results, section 'Racial differences in measured GFR and serum cystatin c', para 2
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The average of the creatinine-based and cystatin C-based U25 equations yielded unbiased GFR estimates
+    and had the highest proportions within 30% and within 10% of mGFR and the lowest RMSE among the three
+    U25 forms.
+  locator: Results, section 'Under 25 (U25) estimating equation performance by self-reported race', para
+    1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: Measured GFR was obtained by plasma iohexol disappearance and BSA-standardized with the Haycock
+    formula; serum creatinine (mg/dL) and cystatin C (mg/L) were centrally measured with IFCC-calibrated
+    methods.
+  locator: Methods, section 'Kidney function measurement and serum creatinine and cystatin c'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: The analytic cohort comprised 190 self-reported Black participants (473 person-visits) and 675
+    non-Black participants (1,897 person-visits), median age 9 years; median SCr was 1.2 mg/dL in both
+    groups while median cystatin C and mGFR differed by group.
+  locator: Results, opening paragraph (Table 1 cohort characteristics)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Results, section 'Under 25 (U25) estimating equation performance by self-reported race', para
+    1
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Results, section 'Racial differences in measured GFR and serum creatinine', para 2
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Results, section 'Racial differences in measured GFR and serum cystatin c', para 2
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Results, section 'Under 25 (U25) estimating equation performance by self-reported race', para
+    1
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Results, opening paragraph (Table 1 cohort characteristics)
+contradictions_or_cautions:
+- text: All participants have a CKD diagnosis; may not generalize to children free of kidney disease
+  locator: card/trust
+- text: Small subgroup <6 years (n=46 person-visits)
+  locator: card/trust
+- text: Estimated lean body mass proxy; no directly measured muscle mass or genetic ancestry
+  locator: card/trust
+- text: Abstract and Results body report slightly different cohort counts (see Limitations)
+  locator: card/trust

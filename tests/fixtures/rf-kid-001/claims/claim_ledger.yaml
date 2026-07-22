@@ -1,0 +1,1554 @@
+id: claims_20260718_rf_run_20260717_rf_kid_001
+intent_id: intent_research_20260717_rf_kid_001_pediatric_cds_evidence
+report_ref: reports/report_draft.md
+verification_status: passed
+claims:
+- claim_id: clm_001
+  text: Urine dipstick color grades map to protein concentrations trace=15, 1+=30, 2+=100, 3+=300, 4+>=1,000
+    mg/dL, and a reading of 1+ or more is considered abnormal.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_07
+    evidence_id: ev_001
+    relation: supports
+    locator: Laboratory Testing / Urine dipstick paragraph ("The intensity of color changes...")
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_002
+  text: A spot first-morning urine protein-to-creatinine ratio of 0.2 or less (0.5 or less at six to 24
+    months of age) with normal urinalysis indicates likely transient or orthostatic proteinuria.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_07
+    evidence_id: ev_002
+    relation: supports
+    locator: Evaluation / spot UPr/Cr paragraph ("If the UPr/Cr ratio is 0.2 or less...")
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_003
+  text: In children the normal amount of protein excreted is less than 100 mg per m2 per day on 24-hour
+    quantitation.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_07
+    evidence_id: ev_003
+    relation: supports
+    locator: Laboratory Testing / 24-hour excretion paragraph ("In children, the normal amount of protein...")
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_004
+  text: Nephrotic-range (heavy) proteinuria is defined as more than 1,000 mg per m2 per day, or a urine
+    protein-to-creatinine ratio of more than 2.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_07
+    evidence_id: ev_004
+    relation: supports
+    locator: Nephrotic syndrome paragraph ("Nephrotic syndrome is characterized by heavy proteinuria...")
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_005
+  text: A high urine protein-to-creatinine ratio (>2 in nonglomerular disease, >0.5 in glomerular disease)
+    predicts significant CKD progression in children.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_07
+    evidence_id: ev_005
+    relation: supports
+    locator: Introduction / CKD risk paragraph ("The Chronic Kidney Disease in Children study demonstrated...")
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_006
+  text: Depressed GFR is characterized as less than 60 mL per minute per 1.73 m2 for more than three months
+    and is among the criteria prompting pediatric-nephrology referral and renal biopsy.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_07
+    evidence_id: ev_006
+    relation: supports
+    locator: Referral / nephrology criteria paragraph ("...renal insufficiency with depressed glomerular
+      filtration rate...")
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_007
+  text: Orthostatic proteinuria is the most common type in children (especially adolescent males) and
+    is benign; referral and biopsy are reserved for red-flag features such as active sediment, hematuria,
+    hypertension, hypocomplementemia, or depressed GFR.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_07
+    evidence_id: ev_007
+    relation: supports
+    locator: Abstract / Orthostatic proteinuria and Referral sections
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_008
+  text: KDIGO 2024 defines CKD as abnormalities of kidney structure or function present for a minimum
+    of 3 months with implications for health, applied to children and adults.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_03
+    evidence_id: ev_001
+    relation: supports
+    locator: Ch. Definition and classification of CKD, 'Defining CKD' (p. S181; PDF p.21); also CGA nomenclature
+      figure (p. S126; PDF p.10)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_009
+  text: For children and adolescents over age 2, KDIGO 2024 advises flagging eGFRcr <90 mL/min/1.73 m2
+    as 'low' — a higher cutoff than the adult threshold and than the 2012 pediatric cutoff of 60.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_03
+    evidence_id: ev_002
+    relation: supports
+    locator: Ch.1 Special considerations — Pediatric considerations, Practice Point 1.2.3.5 (p. S186;
+      PDF p.70)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_010
+  text: KDIGO GFR categories span G1 (>=90) to G5 (<15) mL/min/1.73 m2, with G3 split into G3a and G3b;
+    these category boundaries are population-general staging, not the pediatric 'low' flag.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_03
+    evidence_id: ev_003
+    relation: supports
+    locator: CGA nomenclature figure, 'GFR categories (ml/min/1.73 m2), Description and range' (p. S126;
+      PDF p.10)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_011
+  text: KDIGO albuminuria categories are A1 <30 mg/g, A2 30-300 mg/g, A3 >300 mg/g by urine albumin-to-creatinine
+    ratio (with mg/mmol equivalents).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_03
+    evidence_id: ev_004
+    relation: supports
+    locator: CGA nomenclature figure, 'Persistent albuminuria categories, Description and range' (p. S126;
+      PDF p.10)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_012
+  text: KDIGO 2024 directs that GFR in children be estimated with equations validated in comparable populations,
+    naming the CKiD U25 2021 creatinine equation (ages 1-25; uses age, sex, height) as a preferred example.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_03
+    evidence_id: ev_005
+    relation: supports
+    locator: Ch.1.2.4 Selection of GFR estimating equations — Pediatric considerations, Practice Point
+      1.2.4.3 (p. S190; PDF p.74) and Table 14 'Validated GFR estimating equations' (p. S189; PDF p.73)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_013
+  text: 'KDIGO 2024 flags creatinine-assay dependence in children: labs must QC the lowest end of the
+    expected range, and enzymatic (not Jaffe) creatinine assays are preferred because non-creatinine chromogens
+    contribute more in children and neonatal samples are frequently icteric/hemolyzed.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_03
+    evidence_id: ev_006
+    relation: supports
+    locator: Ch.1 Special considerations — Pediatric considerations, Practice Points 1.2.3.3 and 1.2.3.4
+      (p. S186; PDF p.70)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_014
+  text: A spot urine P/C ratio above 20 mg/mmol (0.2 mg/mg) is the most commonly reported cutoff for detecting
+    proteinuria.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_10
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract (structured summary), results sentence 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_015
+  text: A spot urine P/C ratio above 350 mg/mmol (3.5 mg/mg) confirms nephrotic-range proteinuria.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_10
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract (structured summary), results sentence 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_016
+  text: The ISSHP recommends a P/C ratio of 30 mg/mmol (0.3 mg/mg) to classify proteinuria in pregnant
+    women at risk of preeclampsia.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_10
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract (structured summary), results sentence 2
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_017
+  text: The P/C ratio cutoff should be established per laboratory because it depends on the patient population
+    and the laboratory methodologies.
+  materiality: background
+  claim_type: causal
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_10
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract (structured summary), closing recommendation
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_018
+  text: A high degree of correlation was observed between spot P/C ratio values and protein concentration
+    in 24-hour urine collections, supporting P/C as a substitute for 24-h collection.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_10
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract (structured summary), correlation sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_019
+  text: ROC analysis identified eGFR-equation agreement thresholds vs the CKiD 2012 reference of <70 mL/min/1.73
+    m2 for Schwartz-Lyon, U25, and FAS-height, and <60 mL/min/1.73 m2 for Bedside Schwartz, beyond which
+    bias increased.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_05
+    evidence_id: ev_001
+    relation: supports
+    locator: Results — 'Formula performance ...' section (also Abstract/Results and Conclusions); Bland-Altman
+      / ROC paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_020
+  text: Among plasma-creatinine-only equations, Schwartz-Lyon had the highest agreement with the CKiD
+    2012 reference (ICC 0.913, CCC 0.911, TDI 14.0 mL/min/1.73 m2, P30 99.2%).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_05
+    evidence_id: ev_002
+    relation: supports
+    locator: Results — 'Formula performance of 12 PCr-based eGFR equations...' paragraph; also Abstract
+      Results
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_021
+  text: The U25 combined PCr-CystC equation showed excellent agreement with the CKiD 2012 combined reference
+    (ICC 0.993, CCC 0.990, TDI 3.9 mL/min/1.73 m2, P30 100%), and is preferred where cystatin C is feasible.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_05
+    evidence_id: ev_003
+    relation: supports
+    locator: Results — 'Correlation between the CKiD 2012 and U25 combined PCr-CysC equations' paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_022
+  text: The plasma-creatinine-only U25 equation achieved ICC 0.922, CCC 0.882, TDI 20.0 mL/min/1.73 m2,
+    and P30 93.3% against the CKiD 2012 combined reference.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_05
+    evidence_id: ev_004
+    relation: supports
+    locator: Results — 'Formula performance...' paragraph and Abstract Results
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_023
+  text: Plasma creatinine was measured by an enzymatic method and cystatin C by a particle-enhanced immunoturbidimetric
+    assay, applied throughout the study — a documented assay-method dependence for any derived threshold.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_05
+    evidence_id: ev_005
+    relation: supports
+    locator: Methods — 'Measurement of Pcr and CystC' paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_024
+  text: The study cohort comprised 120 eGFR measurements from 23 pediatric kidney transplant recipients
+    (mean age 14.2 +/- 3.4 years) who received adult-donor kidneys (donor mean age 31.7 +/- 10.0 years).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_05
+    evidence_id: ev_006
+    relation: supports
+    locator: Results — 'Demographic and clinical characteristics' paragraph; also Abstract Results
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_025
+  text: The authors define microscopic hematuria as >5 RBC/mm3 uncentrifuged or >5 RBC/HPF centrifuged
+    on at least 2-3 occasions, while noting literature definitions range 1-10 RBC/HPF.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_06
+    evidence_id: ev_001
+    relation: supports
+    locator: HEMATURIA > Definitions and Measurement Methods, para 2
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_026
+  text: Persistent hematuria is defined as >4-6 weeks of UA showing >5 RBC/HPF absent exercise, menses,
+    or trauma.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_06
+    evidence_id: ev_002
+    relation: supports
+    locator: HEMATURIA > Classification, final para
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_027
+  text: Hypercalciuria in children >2 years is a urine calcium/creatinine ratio >0.2 mg/mg; infant acceptable
+    thresholds are higher (<0.8 under 6 months, <0.6 for 6-12 months).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_06
+    evidence_id: ev_003
+    relation: supports
+    locator: HEMATURIA > Nonglomerular Causes of Hematuria, para 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_028
+  text: Proteinuria is defined as >100 mg/m2 per day or U p/c >0.2 mg/mg on a spot sample; neonates/infants
+    allowed up to 300 mg/m2, and normal U p/c is <0.5 mg/mg for infants 6-24 months.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_06
+    evidence_id: ev_004
+    relation: supports
+    locator: PROTEINURIA > Definition, para 1 (and Measurement Methods for the >2 yr U p/c normal)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_029
+  text: Nephrotic-range proteinuria is defined as >1,000 mg/m2 per day, or >50 mg/kg per day, or a spot
+    U p/c >2.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_06
+    evidence_id: ev_005
+    relation: supports
+    locator: PROTEINURIA > Definition, para 1 (final sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_030
+  text: Orthostatic proteinuria is diagnosed when a first-morning U p/c is <=0.2 mg/mg with a random-sample
+    U p/c >0.2 (or positive dipstick); it is one of the most common causes of proteinuria in adolescents
+    and has a benign course.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_06
+    evidence_id: ev_006
+    relation: supports
+    locator: PROTEINURIA > Classification, orthostatic proteinuria para
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_031
+  text: The guideline replaces the term 'prehypertension' with 'elevated blood pressure', aligning pediatric
+    terminology with the 2017 AHA/ACC adult guideline.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_02
+    evidence_id: ev_001
+    relation: supports
+    locator: 'Abstract, para 1; and Section 3.1 ''Definition of HTN'', p.6 (col 3): ''the term "prehypertension"
+      has been replaced by the term "elevated blood pressure"'''
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_032
+  text: 'For children aged 1 to <13 years, BP categories are percentile-based with a static-mmHg upper
+    bound applied by ''whichever is lower'': Normal <90th pct; Elevated >=90th to <95th pct (or 120/80);
+    Stage 1 >=95th to <95th+12 mmHg (or 130/80-139/89); Stage 2 >=95th+12 mmHg (or >=140/90).'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_02
+    evidence_id: ev_002
+    relation: supports
+    locator: Table 3 'Updated Definitions of BP Categories and Stages', column 'For Children Aged 1–13
+      y', p.6
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_033
+  text: 'For adolescents >=13 years, BP is classified by static adult-style mmHg cut points: Normal <120/<80;
+    Elevated 120/<80 to 129/<80; Stage 1 130/80-139/89; Stage 2 >=140/90 mm Hg.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_02
+    evidence_id: ev_003
+    relation: supports
+    locator: Table 3 'Updated Definitions of BP Categories and Stages', column 'For Children Aged ≥13
+      y', p.6
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_034
+  text: HTN is diagnosed when a child/adolescent has auscultatory-confirmed BP readings >=95th percentile
+    at 3 different visits (grade C, moderate).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_02
+    evidence_id: ev_004
+    relation: supports
+    locator: Table 1, KAS 3, p.2
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_035
+  text: Left ventricular hypertrophy is defined as LV mass >51 g/m2.7 (boys and girls) for children/adolescents
+    older than 8 y, and as LV mass >115 g/BSA for boys and >95 g/BSA for girls.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_02
+    evidence_id: ev_005
+    relation: supports
+    locator: Table 1, KAS 15-2, p.3; and Section 'Key Action Statement 15' (part 2), p.~24
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_036
+  text: New normative BP tables are based on normal-weight children only; the 50th/90th/95th percentiles
+    were derived by quantile regression on normal-weight children (BMI <85th percentile).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_02
+    evidence_id: ev_006
+    relation: supports
+    locator: Section 3.2 'New BP Tables', p.6-7; and screening-table footnote (Tables 6/7 derivation note)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_037
+  text: BP should be measured annually in children and adolescents >=3 y of age, and at every health care
+    encounter for those with obesity, BP-raising medications, renal disease, aortic arch obstruction/coarctation,
+    or diabetes (both grade C, moderate).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_02
+    evidence_id: ev_007
+    relation: supports
+    locator: Table 1, KAS 1 and KAS 2, p.2
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_038
+  text: In 45 pediatric kidney transplant recipients aged 1-18, median measured (iohexol) GFR was 93.3
+    mL/min/1.73 m2, with 57.8% >=90, 33.3% between 60-89, and 8.9% between 30-59.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_11
+    evidence_id: ev_001
+    relation: supports
+    locator: Results, cohort description (para 2)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_039
+  text: Among the whole cohort, the U25-CysC equation had the highest accuracy, with 88.9% of estimates
+    within 30% (P30) and 37.8% within 10% (P10) of measured GFR.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_11
+    evidence_id: ev_002
+    relation: supports
+    locator: Results, accuracy paragraph (whole cohort) + Abstract Results
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_040
+  text: The Gentian CysC equation had the smallest mean bias in the whole cohort at 0.1 mL/min/1.73 m2
+    (IQR -16.6 to 12.9).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_11
+    evidence_id: ev_003
+    relation: supports
+    locator: Results, bias paragraph + Abstract Results
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_041
+  text: The CAPA equation misclassified K/DOQI CKD stage the least — 24.4% of the whole cohort and 33.3%
+    of the histological-change subgroup — versus roughly 40-50% for most equations.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_11
+    evidence_id: ev_004
+    relation: supports
+    locator: Results, CKD staging paragraph + Abstract Results
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_042
+  text: Bland-Altman analysis showed Bedside Schwartz, Gentian CysC, CAPA, and U25-CysC tended to overestimate
+    GFR in patients with GFR above 100 mL/min/1.73 m2.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_11
+    evidence_id: ev_005
+    relation: supports
+    locator: Results, Bland-Altman paragraph + Abstract Results
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_043
+  text: The study applied the Bedside Schwartz creatinine-based equation eGFR = 0.413 x (height/Cr), with
+    height in cm and Cr in mg/dL.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_11
+    evidence_id: ev_006
+    relation: supports
+    locator: Materials and methods, Estimation of GFR, equation 1 (Bedside Schwartz)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_044
+  text: CysC was measured by turbidimetric assay (Gentian AS) standardized to IFCC reference material;
+    for the pre-IFCC CKiD Cr-CysC equation the Gentian CysC value was divided by 1.17.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_11
+    evidence_id: ev_007
+    relation: supports
+    locator: Materials and methods — Measurement of creatinine and cystatin C; Estimation of GFR (IFCC
+      calibration note)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_045
+  text: Proteinuria in children can be glomerular and/or tubular in origin and is temporally categorized
+    as transient, orthostatic, or persistent.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_08
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract (published abstract, PubMed/ScienceDirect)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_046
+  text: Persistent proteinuria may indicate serious underlying kidney pathology and warrants further evaluation.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_08
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract (published abstract, PubMed/ScienceDirect)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_047
+  text: Hematuria is defined as an increased number of red blood cells in the urine and may be gross or
+    microscopic.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_08
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract (published abstract, PubMed/ScienceDirect)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_048
+  text: Hematuria in children can originate from the glomeruli or from other sites in the urinary tract.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_08
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract (published abstract, PubMed/ScienceDirect)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_049
+  text: Asymptomatic isolated microscopic hematuria or mild proteinuria in an otherwise healthy child
+    is less likely to be clinically significant.
+  materiality: background
+  claim_type: comparative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_08
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract (published abstract, PubMed/ScienceDirect)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_050
+  text: The co-occurrence of both hematuria and proteinuria requires further workup and careful monitoring.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_08
+    evidence_id: ev_006
+    relation: supports
+    locator: Abstract (published abstract, PubMed/ScienceDirect)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_051
+  text: The U25 equations take the form eGFR = K x (height/serum creatinine) or eGFR = K x (1/cystatin
+    C), reported in mL/min per 1.73 m2, with two variants (sex-dependent K, or sex-and-age-dependent K)
+    per biomarker.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_00
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract; Methods → Statistical analysis
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_052
+  text: The sex-specific (age-independent) creatinine K constant is 41.8 for males and 37.6 for females.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_00
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract; Results → Estimating values of K for the U25 equations
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_053
+  text: In the age-dependent creatinine model, K rises monotonically from age 1 to 18 then stays constant
+    to 25; males 35.7 (age 1) to 50.8 (>=18), females 33.1 to 41.4.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_00
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract; Results → Estimating values of K for the U25 equations
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_054
+  text: The constant cystatin C K is 81.9 for males and 74.9 for females (eGFR = K x 1/cysC, cysC in mg/L).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_00
+    evidence_id: ev_004
+    relation: supports
+    locator: Results → Estimating values of K for the U25 equations (cystatin-C paragraph)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_055
+  text: In the age-dependent cystatin C model K is non-monotonic, peaking at age 15 for males (K=87.2,
+    rising from 74.8) and age 12 for females (K=79.9, rising from 76.5).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_00
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract; Results → Estimating values of K for the U25 equations (cystatin-C paragraph)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_056
+  text: 'The K constants are assay-specific: serum creatinine was assayed enzymatically on an Advia 2400
+    (Siemens) and IDMS-standardized, and cystatin C nephelometrically (Siemens) and calibrated to IFCC
+    standards; using differently calibrated assays can invalidate the constants.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_00
+    evidence_id: ev_006
+    relation: supports
+    locator: Methods (biochemistry/assay description)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_057
+  text: Developed/internally validated on 2655 iohexol-mGFR observations from 928 CKiD participants; among
+    13 equations compared, only the two U25 age-dependent equations achieved non-significant bias and
+    P30 accuracy >85% in both children (<18 y) and young adults (>=18 y); the equations contain no race
+    coefficient.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_00
+    evidence_id: ev_007
+    relation: supports
+    locator: Abstract; Discussion (comparison to other published equations)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_058
+  text: In 29 children with mild CKD, 22 had creatinine- vs cystatin-C-based eGFR that differed by at
+    least 15 mL/min/1.73 m2, establishing that threshold as the study's definition of clinically meaningful
+    discordance.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_09
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract (Results) — Pediatr Nephrol 38(12):4051-4059
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_059
+  text: The CKiD U25 equation most accurately identified children with an eGFR below 90 mL/min/1.73 m2,
+    the threshold this study used to flag low/near-normal GFR.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_09
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract (Results) — Pediatr Nephrol 38(12):4051-4059
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_060
+  text: 'The direction of discordance dictated which equation best matched measured GFR: when creatinine-eGFR
+    exceeded cystatin-C-eGFR by at least 15 mL/min the U25 creatinine formula was closest to 4-point iohexol
+    GFR, and when cystatin-C-eGFR was higher the U25-combined was closest.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_09
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract (Results) — Pediatr Nephrol 38(12):4051-4059
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_061
+  text: The authors recommend the CKiD U25-combined (creatinine + cystatin-C) formula to screen children
+    for a low GFR, and either U25-combined or FAS-combined for tracking eGFR change longitudinally.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_09
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract (Conclusions) — Pediatr Nephrol 38(12):4051-4059
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_062
+  text: All six equations disagreed with 4-point measured iohexol GFR in more than one-third of participants,
+    showing pediatric eGFR formulas remain unreliable at the normal/near-normal range and need refinement.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_09
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract (Conclusions) — Pediatr Nephrol 38(12):4051-4059
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_063
+  text: In this pediatric/young-adult cohort the average measured GFR (mGFR by Tc-99m DTPA) was 84.1 mL/min/1.73
+    m2.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_04
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract — Results sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_064
+  text: Non-race-corrected creatinine equations overestimated eGFR in all groups; CKiD U25-creatinine
+    had the lowest bias at 22.59 mL/min/1.73 m2.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_04
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract — Results sentence (creatinine equations)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_065
+  text: CKiD U25-CysC and Schwartz CysC gave the best correlation, P30, and lowest bias; CKiD U25-CysC
+    = correlation 0.6281, P30 80.7%, bias 3.72 mL/min/1.73 m2, and Schwartz CysC = 0.6372, 77.2%, -4.68
+    mL/min/1.73 m2.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_04
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract — Results sentence (cystatin C equations)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_066
+  text: mGFR was measured by intravenous Tc-99m DTPA tracer and retrospectively compared with equation-based
+    eGFR in 57 patients aged 6 months to 22 years of different races/ethnicities.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_04
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract — Methods sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_067
+  text: The authors conclude that both CKiD U25-CysC and Schwartz CysC estimate mGFR well, with CKiD U25-CysC
+    having the overall best performance in this cohort.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_04
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract — Conclusion sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_068
+  text: In internal validation, the U25 creatinine-only eGFR significantly underestimated measured GFR
+    in self-reported Black participants (bias -3.37 mL/min/1.73 m2), whereas the cystatin C-only U25 eGFR
+    showed no significant bias across race groups.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_01
+    evidence_id: ev_001
+    relation: supports
+    locator: Results, section 'Under 25 (U25) estimating equation performance by self-reported race',
+      para 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_069
+  text: In unadjusted models, self-reported Black race was associated with 12.8% higher measured GFR after
+    adjusting for serum creatinine.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_01
+    evidence_id: ev_002
+    relation: supports
+    locator: Results, section 'Racial differences in measured GFR and serum creatinine', para 2
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_070
+  text: Adjusting for cystatin C, self-reported Black race was associated with 3.5% lower measured GFR
+    overall, an effect that attenuated and became non-significant in older age groups.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_01
+    evidence_id: ev_003
+    relation: supports
+    locator: Results, section 'Racial differences in measured GFR and serum cystatin c', para 2
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_071
+  text: The average of the creatinine-based and cystatin C-based U25 equations yielded unbiased GFR estimates
+    and had the highest proportions within 30% and within 10% of mGFR and the lowest RMSE among the three
+    U25 forms.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_01
+    evidence_id: ev_004
+    relation: supports
+    locator: Results, section 'Under 25 (U25) estimating equation performance by self-reported race',
+      para 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_072
+  text: Measured GFR was obtained by plasma iohexol disappearance and BSA-standardized with the Haycock
+    formula; serum creatinine (mg/dL) and cystatin C (mg/L) were centrally measured with IFCC-calibrated
+    methods.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_01
+    evidence_id: ev_005
+    relation: supports
+    locator: Methods, section 'Kidney function measurement and serum creatinine and cystatin c'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_073
+  text: The analytic cohort comprised 190 self-reported Black participants (473 person-visits) and 675
+    non-Black participants (1,897 person-visits), median age 9 years; median SCr was 1.2 mg/dL in both
+    groups while median cystatin C and mGFR differed by group.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfkid001_01
+    evidence_id: ev_006
+    relation: supports
+    locator: Results, opening paragraph (Table 1 cohort characteristics)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf01
+  text: 'KDIGO 2024''s pediatric eGFRcr <90 mL/min/1.73 m2 ''low'' flag (children >2 y) and the <60 mL/min/1.73
+    m2 ''depressed GFR'' referral/CKD-staging threshold are two distinct cutoffs that must coexist in
+    the module, not be reconciled: <90 is a screening flag, <60 (for >3 months) is the CKD G3+/referral
+    threshold.'
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_009
+    - clm_006
+    - clm_010
+    reasoning_summary: clm_009 sets the >2 y screening flag at <90; clm_006 sets referral/depressed-GFR
+      at <60 for >3 months; clm_010 shows <60 (G3a boundary) is population-general staging, so the two
+      thresholds serve different functions and both must be encoded.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf02
+  text: 'Nephrotic-range proteinuria has a source conflict in spot-ratio units: pediatric sources define
+    it at spot U p/c >2 mg/mg (clm_004, clm_029) while the general/adult narrative review states >350
+    mg/mmol = 3.5 mg/mg (clm_015); since 2 mg/mg approximately equals 226 mg/mmol, the pediatric cutoff
+    is materially LOWER than 350 mg/mmol — preserve as an unresolved population/units conflict, do not
+    average.'
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_004
+    - clm_029
+    - clm_015
+    reasoning_summary: clm_004 and clm_029 (pediatric) both give nephrotic spot U p/c >2 mg/mg; clm_015
+      (general review) gives >350 mg/mmol (3.5 mg/mg); unit conversion (1 mg/mg = 113 mg/mmol for protein)
+      shows 2 mg/mg = 226 mg/mmol < 350 mg/mmol, a genuine discordance, not a rounding artifact.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf03
+  text: The proteinuria-detection spot cutoff converges across sources at U p/c >0.2 mg/mg (= 20 mg/mmol)
+    for children >2 y (clm_002, clm_014, clm_028), but is age-band-relaxed to <0.5 mg/mg normal for infants
+    6-24 months and up to 300 mg/m2/day for neonates/infants (clm_002, clm_028) — the module must branch
+    the proteinuria threshold on age band.
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_002
+    - clm_014
+    - clm_028
+    reasoning_summary: clm_014 (adult review, 20 mg/mmol) and clm_028/clm_002 (pediatric, 0.2 mg/mg spot;
+      0.5 mg/mg for 6-24 mo) agree on the >2 y cutoff and jointly establish the infant relaxation, so
+      a single flat 0.2 threshold would over-flag infants.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf04
+  text: The CKiD U25 K constants (creatinine 41.8 M / 37.6 F; cystatin C 81.9 M / 74.9 F, plus the age-dependent
+    tables) are valid ONLY for IDMS-standardized enzymatic serum creatinine (mg/dL) and IFCC-standardized
+    cystatin C (mg/L) with height in METERS; applying them to Jaffe/non-standardized assays, differently
+    calibrated cystatin C, or height in cm invalidates the estimate.
+  materiality: material
+  claim_type: causal
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_052
+    - clm_054
+    - clm_056
+    - clm_013
+    - clm_044
+    reasoning_summary: clm_056 states the U25 constants are assay-specific (enzymatic IDMS creatinine,
+      IFCC cystatin C); clm_013 is KDIGO's independent creatinine-assay-dependence warning; clm_044 shows
+      a real recalibration (Gentian CysC / 1.17) required for a pre-IFCC equation; source src_00 specifies
+      height in meters, whereas Bedside Schwartz (clm_043) uses height in cm — a concrete unit hazard
+      for the converter.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf05
+  text: 'Creatinine-only, cystatin-C-only, and combined U25 eGFR are not interchangeable: a creatinine-vs-cystatin
+    discordance of >=15 mL/min/1.73 m2 is clinically meaningful (clm_058) and its direction dictates which
+    formula is closest to measured GFR (clm_060); cystatin-C and combined forms consistently outperform
+    creatinine-only across cohorts (clm_021, clm_039, clm_065, clm_068, clm_071) — the CDS must record
+    which method produced any eGFR value.'
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_058
+    - clm_060
+    - clm_021
+    - clm_039
+    - clm_068
+    - clm_071
+    reasoning_summary: Multiple cohorts (clm_021 combined ICC 0.993; clm_039 U25-CysC P30 88.9%; clm_071
+      averaged form best P30/RMSE) plus the >=15 mL/min discordance definition (clm_058) and direction-dependent
+      accuracy (clm_060) jointly establish that the biomarker choice materially changes the number.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf06
+  text: 'Pediatric eGFR equations are least reliable exactly at the normal/near-normal range the <90 screening
+    flag targets: all six equations disagreed with iohexol GFR in >1/3 of participants (clm_062) and multiple
+    equations overestimated GFR above 100 mL/min/1.73 m2 (clm_042), so an eGFR near 90 should be treated
+    by the module as imprecise rather than a hard cutoff.'
+  materiality: material
+  claim_type: prediction
+  status: inference
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_062
+    - clm_042
+    - clm_059
+    reasoning_summary: clm_062 (all 6 disagree >1/3 at near-normal range) and clm_042 (overestimation
+      >100) indicate wide error bands around 90; clm_059 shows U25 is merely the best at flagging <90,
+      not accurate — so the flag is a screen, not a diagnosis.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf07
+  text: 'GAP / missingness: there is no located source-supported creatinine or cystatin-C eGFR interpretation
+    for infants under 1 year (or by gestational/postnatal age) — CKiD U25 is validated only for ages 1-25
+    y (clm_012, clm_051, clm_057); the module must return ''no validated eGFR threshold'' for <1 y rather
+    than extrapolate.'
+  materiality: material
+  claim_type: factual
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_012
+    - clm_051
+    - clm_057
+    reasoning_summary: clm_012/clm_051/clm_057 all bound U25 validity at ages 1-25; no source card in
+      this run supplies a <1 y eGFR equation or threshold, so infancy is an explicit evidence gap.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf08
+  text: 'Microscopic-hematuria thresholds are method-dependent and heterogeneous: the working definition
+    is >5 RBC/HPF (centrifuged) or >5 RBC/mm3 (uncentrifuged) on 2-3 occasions, but the literature range
+    is 1-10 RBC/HPF (clm_025) and persistence requires >4-6 weeks (clm_026); the module must record centrifuged-vs-uncentrifuged
+    and HPF-vs-mm3 method with any hematuria threshold and cannot assume a single universal cutoff.'
+  materiality: material
+  claim_type: factual
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_025
+    - clm_026
+    reasoning_summary: clm_025 explicitly pairs the cutoff to preparation method (centrifuged HPF vs uncentrifuged
+      mm3) and flags a 1-10 RBC/HPF literature spread; clm_026 adds the temporal persistence criterion
+      — so the threshold is analyzer/method-scoped, not fixed.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf09
+  text: 'Blood-pressure interpretation is jointly age-band- and method-scoped: 1-<13 y uses percentile-based
+    categories with a static-mmHg ''whichever is lower'' bound (clm_032) while >=13 y uses static adult
+    cut points (clm_033), and the normative percentiles derive from auscultatory measurements in normal-weight
+    (BMI <85th pct) children only (clm_036) — so oscillometric/ABPM readings and children with obesity
+    fall outside the normative basis and must be flagged as method/population-out-of-scope.'
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_032
+    - clm_033
+    - clm_036
+    reasoning_summary: clm_032 and clm_033 split the classification rule at age 13; clm_036 confines the
+      reference tables to auscultatory normal-weight data, so applying them to oscillometric devices or
+      obese children exceeds the derivation population.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf10
+  text: 'Consolidated red-flag / pediatric-nephrology referral triggers (each a within-scope escalation,
+    not a diagnosis): eGFR <60 mL/min/1.73 m2 for >3 months (clm_006); nephrotic-range spot U p/c >2 mg/mg
+    (clm_004, clm_029); co-occurring hematuria AND proteinuria (clm_050); confirmed HTN >=95th percentile
+    at 3 visits (clm_034); persistent hematuria >5 RBC/HPF for >4-6 weeks (clm_026); and active sediment,
+    hypocomplementemia, or hypertension accompanying proteinuria (clm_007).'
+  materiality: material
+  claim_type: recommendation
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_006
+    - clm_004
+    - clm_050
+    - clm_034
+    - clm_026
+    - clm_007
+    reasoning_summary: Each trigger is individually source-stated (clm_006 depressed GFR referral; clm_004/clm_029
+      nephrotic; clm_050 combined hematuria+proteinuria workup; clm_034 HTN diagnosis; clm_026 persistent
+      hematuria; clm_007 red-flag features) — the aggregation into one referral list is the inference.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec01
+  text: 'SCOPE EXIT (implementation boundary) — dialysis / kidney failure (KDIGO G5 / on renal replacement
+    therapy): the module must NOT compute or interpret eGFR or urinalysis thresholds for children on dialysis,
+    because eGFR equations assume residual filtering function and are not validated in kidney failure.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: 'Implementation boundary, not a directly-stated fact in the cards: KDIGO staging
+      (clm_010) places dialysis at G5 where estimating equations lose meaning; asserted as a proposal
+      for the CDS converter, to be confirmed against a dialysis-specific source before activation.'
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec02
+  text: 'SCOPE EXIT (implementation boundary) — kidney transplant recipients: the module must NOT apply
+    CKiD U25 screening thresholds unmodified to pediatric transplant recipients, because eGFR equations
+    overestimate GFR above 100 mL/min/1.73 m2 and behave differently with adult-donor kidneys in these
+    cohorts.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: Boundary proposal supported in spirit by transplant-cohort evidence (clm_024 adult-donor
+      recipients, clm_038 transplant GFR distribution, clm_042 overestimation >100) but stated as an implementation
+      exit rather than a source-asserted rule; transplant-specific calibration would be required before
+      in-scope interpretation.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec03
+  text: 'SCOPE EXIT (implementation boundary) — acute kidney injury (AKI): the module must NOT interpret
+    creatinine or eGFR as CKD/GFR staging in AKI, because CKD and its thresholds require abnormalities
+    present for a minimum of 3 months (clm_008) and eGFR equations assume steady-state creatinine that
+    AKI violates.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: 'Boundary proposal anchored on the KDIGO chronicity definition (clm_008): a non-steady-state
+      creatinine breaks the eGFR assumption; stated as an implementation exit for the converter, not a
+      directly-quoted AKI rule.'
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec04
+  text: 'PROPOSAL — equation-selection default for the CDS: prefer CKiD U25-combined (creatinine + cystatin
+    C) to screen for low GFR when cystatin C is available, fall back to U25-creatinine (requires height
+    in meters) when only creatinine is available, and gate both on the >2 y, ages 1-25 validity window
+    with the <90 mL/min/1.73 m2 screening flag.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: Forward-looking implementation default synthesizing clm_061/clm_021/clm_071 (combined
+      form preferred, best accuracy), clm_051/clm_054 (creatinine-only fallback needs height), and clm_009/clm_059
+      (<90 screening flag, >2 y); offered as a converter proposal requiring clinical sign-off, not an
+      executable directive.
+  report_locations: []
+  reviewer_notes: ''
+unresolved_questions: []

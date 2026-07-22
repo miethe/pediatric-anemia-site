@@ -1,0 +1,103 @@
+id: ext_20260718_852d2d7c_001
+source_card_id: src_20260718_rfkid001_11
+created_at: '2026-07-18T16:10:11-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: In 45 pediatric kidney transplant recipients aged 1-18, median measured (iohexol) GFR was 93.3
+    mL/min/1.73 m2, with 57.8% >=90, 33.3% between 60-89, and 8.9% between 30-59.
+  locator: Results, cohort description (para 2)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Among the whole cohort, the U25-CysC equation had the highest accuracy, with 88.9% of estimates
+    within 30% (P30) and 37.8% within 10% (P10) of measured GFR.
+  locator: Results, accuracy paragraph (whole cohort) + Abstract Results
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: The Gentian CysC equation had the smallest mean bias in the whole cohort at 0.1 mL/min/1.73 m2
+    (IQR -16.6 to 12.9).
+  locator: Results, bias paragraph + Abstract Results
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The CAPA equation misclassified K/DOQI CKD stage the least — 24.4% of the whole cohort and 33.3%
+    of the histological-change subgroup — versus roughly 40-50% for most equations.
+  locator: Results, CKD staging paragraph + Abstract Results
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: Bland-Altman analysis showed Bedside Schwartz, Gentian CysC, CAPA, and U25-CysC tended to overestimate
+    GFR in patients with GFR above 100 mL/min/1.73 m2.
+  locator: Results, Bland-Altman paragraph + Abstract Results
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: The study applied the Bedside Schwartz creatinine-based equation eGFR = 0.413 x (height/Cr), with
+    height in cm and Cr in mg/dL.
+  locator: Materials and methods, Estimation of GFR, equation 1 (Bedside Schwartz)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: CysC was measured by turbidimetric assay (Gentian AS) standardized to IFCC reference material;
+    for the pre-IFCC CKiD Cr-CysC equation the Gentian CysC value was divided by 1.17.
+  locator: Materials and methods — Measurement of creatinine and cystatin C; Estimation of GFR (IFCC calibration
+    note)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Results, cohort description (para 2)
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Results, accuracy paragraph (whole cohort) + Abstract Results
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Results, bias paragraph + Abstract Results
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Results, CKD staging paragraph + Abstract Results
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Results, Bland-Altman paragraph + Abstract Results
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Materials and methods, Estimation of GFR, equation 1 (Bedside Schwartz)
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: Materials and methods — Measurement of creatinine and cystatin C; Estimation of GFR (IFCC calibration
+    note)
+contradictions_or_cautions:
+- text: Single center, n=45, selection bias (biopsy-triggered enrollment)
+  locator: card/trust
+- text: Cohort skewed to mGFR>60; poor generalizability to advanced CKD
+  locator: card/trust
+- text: CysC assay/equation heterogeneity limits head-to-head comparison
+  locator: card/trust
+- text: Full-text-to-markdown conversion dropped several equation exponents (see Limitations)
+  locator: card/trust

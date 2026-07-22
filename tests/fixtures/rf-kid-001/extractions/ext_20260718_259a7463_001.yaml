@@ -1,0 +1,68 @@
+id: ext_20260718_259a7463_001
+source_card_id: src_20260718_rfkid001_10
+created_at: '2026-07-18T16:10:11-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: A spot urine P/C ratio above 20 mg/mmol (0.2 mg/mg) is the most commonly reported cutoff for detecting
+    proteinuria.
+  locator: Abstract (structured summary), results sentence 1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: A spot urine P/C ratio above 350 mg/mmol (3.5 mg/mg) confirms nephrotic-range proteinuria.
+  locator: Abstract (structured summary), results sentence 1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: The ISSHP recommends a P/C ratio of 30 mg/mmol (0.3 mg/mg) to classify proteinuria in pregnant
+    women at risk of preeclampsia.
+  locator: Abstract (structured summary), results sentence 2
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The P/C ratio cutoff should be established per laboratory because it depends on the patient population
+    and the laboratory methodologies.
+  locator: Abstract (structured summary), closing recommendation
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: A high degree of correlation was observed between spot P/C ratio values and protein concentration
+    in 24-hour urine collections, supporting P/C as a substitute for 24-h collection.
+  locator: Abstract (structured summary), correlation sentence
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract (structured summary), results sentence 1
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Abstract (structured summary), results sentence 1
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Abstract (structured summary), results sentence 2
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Abstract (structured summary), correlation sentence
+contradictions_or_cautions:
+- text: Full text not accessible (HTTP 403 / paywall); pediatric-specific numeric thresholds not present
+    in the abstract
+  locator: card/trust
+- text: Narrative review, not a primary diagnostic-accuracy study or reference-interval derivation
+  locator: card/trust

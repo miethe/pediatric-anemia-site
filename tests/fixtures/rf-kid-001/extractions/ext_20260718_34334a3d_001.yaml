@@ -1,0 +1,88 @@
+id: ext_20260718_34334a3d_001
+source_card_id: src_20260718_rfkid001_06
+created_at: '2026-07-18T16:10:10-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: The authors define microscopic hematuria as >5 RBC/mm3 uncentrifuged or >5 RBC/HPF centrifuged
+    on at least 2-3 occasions, while noting literature definitions range 1-10 RBC/HPF.
+  locator: HEMATURIA > Definitions and Measurement Methods, para 2
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Persistent hematuria is defined as >4-6 weeks of UA showing >5 RBC/HPF absent exercise, menses,
+    or trauma.
+  locator: HEMATURIA > Classification, final para
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: Hypercalciuria in children >2 years is a urine calcium/creatinine ratio >0.2 mg/mg; infant acceptable
+    thresholds are higher (<0.8 under 6 months, <0.6 for 6-12 months).
+  locator: HEMATURIA > Nonglomerular Causes of Hematuria, para 1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Proteinuria is defined as >100 mg/m2 per day or U p/c >0.2 mg/mg on a spot sample; neonates/infants
+    allowed up to 300 mg/m2, and normal U p/c is <0.5 mg/mg for infants 6-24 months.
+  locator: PROTEINURIA > Definition, para 1 (and Measurement Methods for the >2 yr U p/c normal)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: Nephrotic-range proteinuria is defined as >1,000 mg/m2 per day, or >50 mg/kg per day, or a spot
+    U p/c >2.
+  locator: PROTEINURIA > Definition, para 1 (final sentence)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: Orthostatic proteinuria is diagnosed when a first-morning U p/c is <=0.2 mg/mg with a random-sample
+    U p/c >0.2 (or positive dipstick); it is one of the most common causes of proteinuria in adolescents
+    and has a benign course.
+  locator: PROTEINURIA > Classification, orthostatic proteinuria para
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: HEMATURIA > Definitions and Measurement Methods, para 2
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: HEMATURIA > Classification, final para
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: HEMATURIA > Nonglomerular Causes of Hematuria, para 1
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: PROTEINURIA > Definition, para 1 (and Measurement Methods for the >2 yr U p/c normal)
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: PROTEINURIA > Definition, para 1 (final sentence)
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: PROTEINURIA > Classification, orthostatic proteinuria para
+contradictions_or_cautions:
+- text: Definitions are review-level syntheses; some ranges (e.g., microscopic hematuria 1-10 RBC/HPF
+    in the literature) are explicitly heterogeneous
+  locator: card/trust
+- text: mg/m2 superscripts were lost in machine text extraction and reconstructed from the published print
+    convention
+  locator: card/trust

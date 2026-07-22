@@ -1,0 +1,77 @@
+id: ext_20260718_ce896fbe_001
+source_card_id: src_20260718_rfkid001_09
+created_at: '2026-07-18T16:10:11-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: In 29 children with mild CKD, 22 had creatinine- vs cystatin-C-based eGFR that differed by at
+    least 15 mL/min/1.73 m2, establishing that threshold as the study's definition of clinically meaningful
+    discordance.
+  locator: Abstract (Results) — Pediatr Nephrol 38(12):4051-4059
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: The CKiD U25 equation most accurately identified children with an eGFR below 90 mL/min/1.73 m2,
+    the threshold this study used to flag low/near-normal GFR.
+  locator: Abstract (Results) — Pediatr Nephrol 38(12):4051-4059
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: 'The direction of discordance dictated which equation best matched measured GFR: when creatinine-eGFR
+    exceeded cystatin-C-eGFR by at least 15 mL/min the U25 creatinine formula was closest to 4-point iohexol
+    GFR, and when cystatin-C-eGFR was higher the U25-combined was closest.'
+  locator: Abstract (Results) — Pediatr Nephrol 38(12):4051-4059
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The authors recommend the CKiD U25-combined (creatinine + cystatin-C) formula to screen children
+    for a low GFR, and either U25-combined or FAS-combined for tracking eGFR change longitudinally.
+  locator: Abstract (Conclusions) — Pediatr Nephrol 38(12):4051-4059
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: All six equations disagreed with 4-point measured iohexol GFR in more than one-third of participants,
+    showing pediatric eGFR formulas remain unreliable at the normal/near-normal range and need refinement.
+  locator: Abstract (Conclusions) — Pediatr Nephrol 38(12):4051-4059
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract (Results) — Pediatr Nephrol 38(12):4051-4059
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Abstract (Results) — Pediatr Nephrol 38(12):4051-4059
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Abstract (Results) — Pediatr Nephrol 38(12):4051-4059
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Abstract (Conclusions) — Pediatr Nephrol 38(12):4051-4059
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Abstract (Conclusions) — Pediatr Nephrol 38(12):4051-4059
+contradictions_or_cautions:
+- text: Small sample (n=29)
+  locator: card/trust
+- text: Normal/near-normal GFR range only
+  locator: card/trust
+- text: Full text not accessible; body-of-paper numbers not verifiable here
+  locator: card/trust
