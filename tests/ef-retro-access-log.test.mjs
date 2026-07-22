@@ -8,7 +8,12 @@
 //   2. A seeded entry mutation (an already-written line altered after the fact) is REJECTED by the
 //      hash-chain verifier, fail-closed (`verifyAccessLogChain` throws `AccessLogChainError`).
 //   3. Zero overlap between the access log and the review-record chain: distinct schema files,
-//      distinct on-disk paths, no cross-`$ref`, no cross-import between the two tools.
+//      distinct on-disk paths, no cross-`$ref`, no cross-import between the two AUDIT/CHAIN
+//      modules (`lib/access-log.mjs` / `lib/chain.mjs`) specifically. (Updated by P4-T5, FR-23:
+//      `tools/retro-validate/lib/discordance.mjs` is a later, deliberately-documented, SEPARATE
+//      cross-import of `tools/review-record/lib/adjudication.mjs`'s PRD OQ-5 authorship-union
+//      helper -- outside the access-log module this AC is actually about; a dedicated test below
+//      pins that import to that ONE file so it can never silently spread.)
 //   4. No case-level data can ever occupy an access-log entry: the schema's closed property set
 //      structurally forbids it (an extra case-shaped key is rejected exactly like an unsupported
 //      keyword would be).
@@ -395,7 +400,18 @@ test('neither schema $refs, or has a $id colliding with, the other (no shared sc
   );
 });
 
-test('no file under tools/retro-validate/ imports from tools/review-record/, and vice versa (no cross-import; a prose mention of the sibling tool in a comment is fine and expected -- both READMEs document the FR-22 distinctness requirement)', async () => {
+// NOTE (updated by P4-T5, FR-23): this test originally scanned the ENTIRE tools/retro-validate/
+// tree for any import from tools/review-record/ -- correct for FR-22's actual scope (the
+// access-log AUDIT TRAIL must share no file/schema/import with the review-record CHAIN, both
+// audit-shaped artifacts), but broader than the standing repo-wide rule requires. P4-T5's own
+// binding clause (FR-23) requires the discordance/adjudication bridge
+// (tools/retro-validate/lib/discordance.mjs) to REUSE tools/review-record/lib/adjudication.mjs's
+// PRD OQ-5 authorship-union helper "(shared helper, not re-implemented)" -- a deliberate,
+// documented cross-tool import entirely OUTSIDE lib/access-log.mjs. The check below is narrowed to
+// the actual audit-trail file this AC is about (lib/access-log.mjs) rather than the whole tool
+// directory; distinctness of the audit trail itself is unaffected by discordance.mjs's own,
+// separately-justified import.
+test('lib/access-log.mjs (the audit trail itself) imports nothing from tools/review-record/, and no file under tools/review-record/ imports from tools/retro-validate/ (no cross-import between the two AUDIT/CHAIN modules; a prose mention of the sibling tool in a comment is fine and expected -- both READMEs document the FR-22 distinctness requirement)', async () => {
   async function collectSourceFiles(dir) {
     const entries = await readdir(dir, { withFileTypes: true });
     const files = [];
@@ -409,15 +425,13 @@ test('no file under tools/retro-validate/ imports from tools/review-record/, and
 
   const importRe = /^\s*import\b[^;]*from\s+['"]([^'"]+)['"]/gm;
 
-  const retroValidateFiles = await collectSourceFiles(RETRO_VALIDATE_ROOT);
-  for (const file of retroValidateFiles) {
-    const source = await readFile(file, 'utf8');
-    for (const match of source.matchAll(importRe)) {
-      assert.ok(
-        !match[1].includes('review-record'),
-        `${path.relative(REPO_ROOT, file)} imports from "${match[1]}" -- the access-log audit trail must not import tools/review-record`,
-      );
-    }
+  const accessLogFile = path.join(RETRO_VALIDATE_ROOT, 'lib', 'access-log.mjs');
+  const accessLogSource = await readFile(accessLogFile, 'utf8');
+  for (const match of accessLogSource.matchAll(importRe)) {
+    assert.ok(
+      !match[1].includes('review-record'),
+      `${path.relative(REPO_ROOT, accessLogFile)} imports from "${match[1]}" -- the access-log audit trail must not import tools/review-record`,
+    );
   }
 
   const reviewRecordFiles = await collectSourceFiles(REVIEW_RECORD_ROOT);
@@ -427,6 +441,34 @@ test('no file under tools/retro-validate/ imports from tools/review-record/, and
       assert.ok(
         !match[1].includes('retro-validate'),
         `${path.relative(REPO_ROOT, file)} imports from "${match[1]}" -- the review-record chain must not import tools/retro-validate`,
+      );
+    }
+  }
+});
+
+test('P4-T5 (FR-23): tools/retro-validate/lib/discordance.mjs is the ONE sanctioned cross-import from tools/review-record/ -- no OTHER file under tools/retro-validate/ (in particular lib/access-log.mjs, lib/boundary.mjs, lib/corpus.mjs, lib/replay.mjs, lib/metrics.mjs) imports from tools/review-record/', async () => {
+  async function collectSourceFiles(dir) {
+    const entries = await readdir(dir, { withFileTypes: true });
+    const files = [];
+    for (const entry of entries) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) files.push(...(await collectSourceFiles(full)));
+      else if (entry.name.endsWith('.mjs')) files.push(full);
+    }
+    return files;
+  }
+
+  const importRe = /^\s*import\b[^;]*from\s+['"]([^'"]+)['"]/gm;
+  const sanctionedFile = path.join(RETRO_VALIDATE_ROOT, 'lib', 'discordance.mjs');
+
+  const retroValidateFiles = await collectSourceFiles(RETRO_VALIDATE_ROOT);
+  for (const file of retroValidateFiles) {
+    if (file === sanctionedFile) continue;
+    const source = await readFile(file, 'utf8');
+    for (const match of source.matchAll(importRe)) {
+      assert.ok(
+        !match[1].includes('review-record'),
+        `${path.relative(REPO_ROOT, file)} imports from "${match[1]}" -- only lib/discordance.mjs (FR-23's shared authorship-union reuse) may cross-import tools/review-record`,
       );
     }
   }

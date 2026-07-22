@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/tools/retro-validate/schemas/discordance-record.schema.json",
+  "title": "Retrospective Validation Discordance / Adjudication-Ready Record",
+  "description": "Evidence Foundry E1 Phase 4 (FR-23, PRD OQ-5). TOOL-LOCAL BY DESIGN, same rationale as fixture-corpus.schema.json -- lives under tools/retro-validate/schemas/, never scripts/validate-kb.mjs's wave-2 barrier. Shape for ONE harness-vs-reference-label disagreement, emitted by tools/retro-validate/lib/discordance.mjs#computeDiscordanceRecords from an already-written replay-output.json (never re-runs the engine, never reads raw patient input). Closed property set (additionalProperties:false): caseRef, candidateDigest, engineOutputSet, referenceLabelSet, disagreementClass -- exactly the FR-23 field list, plus corpusId/moduleId/discordanceId/schemaVersion identity/versioning scaffolding. This record is 'adjudication-ready', NOT an adjudication decision: it carries no reviewerId/decision/rationale of its own (those are a human act, composed on top by tools/retro-validate/lib/discordance.mjs#toAdjudicationScaffoldInput before tools/review-record's own `scaffold --role adjudication` verb is invoked). caseRef is a de-identified, corpus-local case identifier only -- this schema carries no clinical-input or patient-identifying content of any kind, and validating against it is never a clinical-validity, safety, or diagnostic-performance claim.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "discordanceId",
+    "corpusId",
+    "moduleId",
+    "caseRef",
+    "candidateDigest",
+    "disagreementClass",
+    "engineOutputSet",
+    "referenceLabelSet"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "REQUIRED, non-null. Integer discordance-record-shape version, bumped only when this schema's own shape changes."
+    },
+    "discordanceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$",
+      "description": "REQUIRED, non-null. Stable, deterministic identifier for this one discordance record within its corpus/candidate run -- derived from (corpusId, caseRef, disagreementClass), never a random/timestamp-derived value (this tool's own determinism posture, FR-19)."
+    },
+    "corpusId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "REQUIRED, non-null. The fixture corpus id this disagreement was observed in (schemas/fixture-corpus.schema.json's own `corpusId`, carried through unchanged)."
+    },
+    "moduleId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "REQUIRED, non-null. The candidate build's moduleId (lib/replay.mjs#replayCorpus's `candidate.moduleId`), carried through unchanged -- never re-derived."
+    },
+    "caseRef": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "REQUIRED, non-null (FR-23 'case ref'). The corpus-local caseId this disagreement belongs to -- a de-identified, corpus-scoped reference only, never patient-identifying content (mirrors schemas/fixture-corpus.schema.json's own case.caseId shape/intent)."
+    },
+    "candidateDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "REQUIRED, non-null (FR-23 'candidate digest'). The pinned candidate build's registry packDigest (lib/replay.mjs#replayCorpus's `candidate.packDigest`) that produced the engine output being compared -- same sha256:<64 hex> shape schemas/release-registry.schema.json's own packDigest field uses, and the exact same shape tools/review-record's `subjectContentHash` field requires -- this is the P1-T2 canonical adjudication-role scaffold input this record's shape maps onto (see tools/retro-validate/lib/discordance.mjs#toAdjudicationScaffoldInput)."
+    },
+    "disagreementClass": {
+      "enum": [
+        "candidate-pattern-mismatch",
+        "safety-flag-mismatch",
+        "missing-data-prompt-mismatch",
+        "dangerous-miss-discordance"
+      ],
+      "description": "REQUIRED, non-null (FR-23 'disagreement class'). Which single dimension of harness-vs-reference-label agreement this record documents a disagreement in -- one record per (case, dimension) disagreement, never a bundled multi-dimension record (see lib/discordance.mjs's own header for why one-record-per-dimension was chosen over a combined shape)."
+    },
+    "engineOutputSet": { "$ref": "#/$defs/idSet" },
+    "referenceLabelSet": { "$ref": "#/$defs/idSet" }
+  },
+  "$defs": {
+    "idSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidatePatternIds", "safetyFlagIds", "missingDataPromptIds"],
+      "description": "REQUIRED, non-null (FR-23 'engine output set' / 'reference label set'). The same three id-array shape schemas/fixture-corpus.schema.json#/$defs/referenceLabels and lib/replay.mjs's own per-case output already use -- carried through unchanged, never re-derived or re-abbreviated, so a Workstream A consumer can compare the two sides of a discordance record without a second lookup.",
+      "properties": {
+        "candidatePatternIds": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "safetyFlagIds": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "missingDataPromptIds": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    }
+  }
+}

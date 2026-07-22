@@ -21,8 +21,12 @@ software-agreement metrics, landed this task): it reads an already-written `repl
 `run-provenance.json` sidecar (the sole sanctioned timestamp location) into the same `--run`
 directory. All three verbs also access-log every invocation, success or not (FR-22,
 `lib/access-log.mjs`, see below) -- this is a side audit channel, not a change to any verb's own
-primary output/error contract. Nothing in this tool is, or may be read as, a clinical-validity,
-safety, diagnostic-performance, or IRB/DUA-compliance claim.
+primary output/error contract. `lib/discordance.mjs` (FR-23, landed P4-T5) is an offline consumer of
+an already-written `replay-output.json`: it computes adjudication-ready discordance records and
+bridges them into `tools/review-record`'s own `scaffold --role adjudication` verb -- see
+"Discordance / adjudication-ready records" below; it is not wired into `report`'s own CLI surface.
+Nothing in this tool is, or may be read as, a clinical-validity, safety, diagnostic-performance, or
+IRB/DUA-compliance claim.
 
 ## Ruling R6 -- what this tool is not
 
@@ -99,7 +103,7 @@ same pattern `tools/rf-bundle-to-kb-pack/` already established for this repo's E
 | **Corpus** | `lib/corpus.mjs` | Reads/parses `<dir>/corpus.json`; loads (and caches) the fixture-corpus schema. Pure I/O + parse, no validation, no writes. | **P4-T1** (this task) | errors |
 | **Boundary** | `lib/boundary.mjs` | `checkFixtures(corpusDir)` -- the schema-enforced (not procedural) de-identification gate (FR-20). Real schema-validation as of P4-T1; **P4-T2** hardened `run`/`report` (`lib/verbs/run.mjs`, `lib/verbs/report.mjs`) to call it FIRST, unconditionally, and refuse to proceed past an unchecked/failing corpus. | P4-T1 (initial), **P4-T2** (enforcement + hardening, landed) | corpus, errors |
 | **Replay** | `lib/replay.mjs` | Version-pinned deterministic engine replay (FR-19) -- `resolveCandidate()` resolves the candidate build exclusively via a registry-entry `packDigest` match (never "current tree"); `replayCorpus()`/`writeReplayOutput()` sort cases, strip `assess()`'s one non-deterministic field (`meta.generatedAt`), and write canonical (sorted-key) bytes; byte-identical double-run output, test-proven. Landed, **P4-T3**. | **P4-T3** (landed) | boundary, corpus, errors |
-| **Metrics** | `lib/metrics.mjs`, plus the discordance/adjudication model (P4-T5, FR-23) and the human-only protocol schema (`lib/protocol.mjs`, `schemas/protocol.schema.json`, **P4-T6**, FR-24) | Software-agreement `agreement-report.json` (5 OQ-5 measures) + `run-provenance.json` sidecar; FR-24 protocol-qualification banner (structurally always non-qualifying) AND, as of P4-T6, a structural `const:null`-threshold schema gate on any `--protocol` document, enforced fail-closed by `lib/verbs/report.mjs`. Landed, **P4-T4**/**P4-T6**. Discordance records (P4-T5) still to come. | **P4-T4** (landed) / **P4-T5** / **P4-T6** (landed) | replay, errors |
+| **Metrics** | `lib/metrics.mjs`, the discordance/adjudication-record model (`lib/discordance.mjs`, `schemas/discordance-record.schema.json`, **P4-T5**, FR-23), and the human-only protocol schema (`lib/protocol.mjs`, `schemas/protocol.schema.json`, **P4-T6**, FR-24) | Software-agreement `agreement-report.json` (5 OQ-5 measures) + `run-provenance.json` sidecar; FR-24 protocol-qualification banner (structurally always non-qualifying) AND, as of P4-T6, a structural `const:null`-threshold schema gate on any `--protocol` document, enforced fail-closed by `lib/verbs/report.mjs`; AND, as of P4-T5, `computeDiscordanceRecords()` (one adjudication-ready record per labeled-case-vs-reference-label disagreeing dimension) plus `toAdjudicationScaffoldInput()`, which maps a discordance record onto `tools/review-record`'s own `scaffold --role adjudication` options shape -- proven by a real integration test that invokes that verb's `run()` directly. Landed, **P4-T4**/**P4-T5**/**P4-T6**. | **P4-T4** (landed) / **P4-T5** (landed) / **P4-T6** (landed) | replay, errors, (P4-T5 only) `tools/review-record/lib/adjudication.mjs` |
 | **Access log** | `lib/access-log.mjs`, `access-log.jsonl` (generated, not committed) | Append-only, structured audit trail of every `check-fixtures`/`run`/`report` invocation (FR-22) -- distinct from the review-record chain (no shared files, no shared schema, no cross-import; test-asserted). Landed, P4-T7. | **P4-T7** (landed) | errors |
 
 **Access-log call sites**: every file under `lib/verbs/` calls `access-log.mjs#logAccessAttempt` as
@@ -121,12 +125,48 @@ lib/verbs/run.mjs              -- boundary-gated (P4-T2) -> real (P4-T3, landed)
 lib/verbs/report.mjs            -- boundary-gated (P4-T2: calls checkFixtures first) -> real (P4-T4, landed): reads replay-output.json -> computeAgreementMeasures() -> writeAgreementReport() + writeRunProvenance()
 ```
 
-**Data flow** (P4-T5 still to come):
+**Data flow**:
 
 ```
-corpus.loadCorpusDocument()  ->  boundary.checkFixtures()  ->  replay.resolveCandidate() + replayCorpus()  ->  protocol.assertProtocolShape() (P4-T6)  ->  metrics.computeAgreementMeasures() + evaluateProtocolQualification()
-        (P4-T1)                        (P4-T1/P4-T2)                          (P4-T3, landed)                                       (P4-T6, landed; --protocol only)                          (P4-T4, landed; P4-T5 extends)
+corpus.loadCorpusDocument()  ->  boundary.checkFixtures()  ->  replay.resolveCandidate() + replayCorpus()  ->  protocol.assertProtocolShape() (P4-T6)  ->  metrics.computeAgreementMeasures() + evaluateProtocolQualification()  ->  discordance.computeDiscordanceRecords() (P4-T5, offline consumer of replay-output.json, not wired into `report`'s own CLI surface)
+        (P4-T1)                        (P4-T1/P4-T2)                          (P4-T3, landed)                                       (P4-T6, landed; --protocol only)                          (P4-T4, landed)                                                                      (P4-T5, landed)
 ```
+
+## Discordance / adjudication-ready records (`lib/discordance.mjs`, P4-T5, FR-23, PRD OQ-5)
+
+`computeDiscordanceRecords(replayDocument)` (pure, no I/O) walks an already-written
+`replay-output.json` and emits one **adjudication-ready discordance record** per (labeled case,
+disagreeing dimension) -- never a clinical-validity claim, purely a structural record of where the
+pinned engine build's output disagreed with a case's own fixture `referenceLabels`. Four dimensions:
+`candidate-pattern-mismatch`, `safety-flag-mismatch`, `missing-data-prompt-mismatch` (each a
+strict-set-inequality check against the corresponding OQ-5 measure's own comparison), and
+`dangerous-miss-discordance` (reuses `../metrics.mjs#isDangerousMissDiscordant` verbatim -- this
+file does not re-implement that named-flag-vs-fallback rule). A single case can emit multiple
+records (one per disagreeing dimension); an unlabeled case never emits one. Every record validates
+against the tool-local `schemas/discordance-record.schema.json` (closed shape:
+`caseRef`/`candidateDigest`/`engineOutputSet`/`referenceLabelSet`/`disagreementClass`, per FR-23,
+plus identity/versioning fields) -- a record missing any required field is schema-rejected
+fail-closed (seeded fixtures under `tests/fixtures/ef-retro/discordance-records/`).
+
+**"Structurally consumable by Workstream A"**: `toAdjudicationScaffoldInput(record, humanInput)`
+maps a discordance record onto the EXACT options shape `tools/review-record/lib/verbs/scaffold.mjs#run`
+accepts for `--role adjudication` (P1-T2's canonical adjudication-role scaffold input) --
+`record.candidateDigest` (already `sha256:<64 hex>`-shaped) becomes `subject`, `record.moduleId`
+becomes `module`. A discordance record is adjudication-READY, not an adjudication decision:
+`humanInput.reviewerId`/`humanInput.decision` -- the actual human adjudicator's identity and
+verdict -- are NEVER derived from the record and this function throws if either is missing.
+`tests/ef-retro-discordance.test.mjs` proves every discordance record the `metrics-corpus` fixture
+produces is accepted by the REAL `tools/review-record` `scaffold` verb (`run()` imported directly,
+not re-implemented or mocked).
+
+**Adjudicator-≠-author reuse (PRD OQ-5)**: `checkAdjudicatorNotAuthor` computes eligibility using
+`computeAuthorshipUnion`/`rosterEntryInAuthorshipUnion` **imported** from
+`tools/review-record/lib/adjudication.mjs` (P2-T4's own PRD OQ-5 implementation) -- `lib/discordance.mjs`
+contains no git-log parsing, no authorship-source-kind constants, and no name-heuristic logic of its
+own (grep-tested). This is the ONE sanctioned cross-import between the two tools --
+`tests/ef-retro-access-log.test.mjs` pins it to exactly this one file, so it cannot silently spread
+into `lib/access-log.mjs` or any other module (which would violate FR-22's own audit-trail
+distinctness guarantee).
 
 `run` and `report` each call `boundary.checkFixtures()` first and refuse to proceed on an
 unchecked or failing corpus (ADR-0006 binding clause, hardened by P4-T2, landed) -- `check-fixtures` is
@@ -311,9 +351,13 @@ forbids case-level data from ever occupying an entry (there is no key it could o
   `tests/ef-retro-access-log.test.mjs`.
 - **Distinct from the review-record chain, by construction, not by convention alone**: different
   schema file, different `$id`, no `$ref` in either direction, no cross-import between
-  `tools/retro-validate/` and `tools/review-record/`, different on-disk path
+  `lib/access-log.mjs` specifically and `tools/review-record/`, different on-disk path
   (`tools/retro-validate/access-log.jsonl` vs. `modules/<id>/reviews/*.yaml`) -- all four dimensions
-  are test-asserted in `tests/ef-retro-access-log.test.mjs`.
+  are test-asserted in `tests/ef-retro-access-log.test.mjs`. (`lib/discordance.mjs` -- a wholly
+  separate module, P4-T5, FR-23 -- IS a deliberate, test-pinned exception to the broader
+  no-cross-import posture; see "Discordance / adjudication-ready records" above. That test pins the
+  exception to exactly that one file, so it can never silently widen to include `lib/access-log.mjs`
+  or any other module in this tool.)
 - **Generated, not committed**: `access-log.jsonl` itself is a runtime artifact of real invocations
   (`.gitignore`d), exactly like `tools/rf-bundle-to-kb-pack/`'s own converter output. Tests exercise
   the module against isolated tmp paths (`--access-log-path` flag / `RETRO_VALIDATE_ACCESS_LOG_PATH`
@@ -345,13 +389,15 @@ tools/retro-validate/
   schemas/
     fixture-corpus.schema.json      tool-local fixture-corpus schema (P4-T1, FR-20)
     access-log-entry.schema.json     tool-local access-log-entry schema (P4-T7, FR-22)
+    discordance-record.schema.json    tool-local discordance/adjudication-ready-record schema (P4-T5, FR-23)
     protocol.schema.json             human-only prespecified-protocol schema (P4-T6, FR-24, landed)
   lib/
     errors.mjs                        exit taxonomy: OK/USAGE/BOUNDARY + RegistryError/ProtocolError classes (P4-T1, extended P4-T3/P4-T6)
     corpus.mjs                         CORPUS module: load/parse (P4-T1)
     boundary.mjs                        BOUNDARY module: schema-enforced gate (P4-T1 / P4-T2)
     replay.mjs                           REPLAY module: resolveCandidate/replayCorpus/writeReplayOutput (P4-T3, landed)
-    metrics.mjs                           METRICS module: computeAgreementMeasures/evaluateProtocolQualification/report+provenance builders+writers (P4-T4, landed; P4-T5 extends)
+    metrics.mjs                           METRICS module: computeAgreementMeasures/evaluateProtocolQualification/report+provenance builders+writers (P4-T4, landed)
+    discordance.mjs                        DISCORDANCE module: computeDiscordanceRecords/toAdjudicationScaffoldInput/checkAdjudicatorNotAuthor (P4-T5, landed, FR-23 -- the ONE file in this tool that imports tools/review-record/)
     protocol.mjs                           PROTOCOL module: loadProtocolSchema/validateProtocolDocument/assertProtocolShape (P4-T6, landed, FR-24)
     access-log.mjs                         ACCESS-LOG module: append/verify hash chain (P4-T7, landed)
     verbs/
@@ -362,6 +408,12 @@ tools/retro-validate/
 
 Corpus fixtures for tests live under `tests/fixtures/ef-retro/<corpus-name>/corpus.json` (never
 committed real patient data -- synthetic content only, per this repo's own hard guardrails).
+Discordance-record fixtures (P4-T5) live under `tests/fixtures/ef-retro/discordance-records/`
+(one schema-valid `valid-record.json` sanity fixture plus 5 seeded missing-field fixtures, one per
+FR-23-named field); `tests/fixtures/ef-retro/discordance-adjudication-scaffold/` is a throwaway
+`tools/review-record` `--root` tree (a `governance/reviewer-roster.yaml` with one synthetic reviewer
+scoped to `anemia`) used ONLY by the P4-T5 scaffold-bridge integration test -- file-disjoint from
+`tests/fixtures/ef-review-record-cli/` (P2's own fixture root).
 Seeded rejection-class fixtures (P4-T1/P4-T2): `identifier-name` / `identifier-mrn` /
 `identifier-dob` / `identifier-address` / `identifier-contact` / `identifier-ssn-pattern`
 (identifier-bearing case, >=6 classes), `missing-provenance` (case lacking its provenance marker),
@@ -419,3 +471,17 @@ branch of all 5 OQ-5 measures at once; each case's own `tags` name the branch it
   three threshold-slot locations (top-level, per-utility-measure, per-stratum on all three axes)
   independently rejects a populated value; the required non-empty `authoredBy` (named-human
   ownership) is enforced; and the closed (`additionalProperties: false`) shape is enforced.
+- `tests/ef-retro-discordance.test.mjs` (P4-T5) -- `computeDiscordanceRecords` over the P4-T4
+  `metrics-corpus` fixture, cross-checked against `computeAgreementMeasures`'s own already-proven
+  hand-derived values (never independently re-derived); every emitted record schema-valid; an
+  unlabeled case never emits a record; determinism (`discordanceId` stable, no randomness); the 5
+  seeded missing-field fixtures under `tests/fixtures/ef-retro/discordance-records/` each rejected
+  fail-closed at the exact missing field; `toAdjudicationScaffoldInput`'s human-supplied-only
+  `reviewerId`/`decision` contract; a REAL integration test invoking
+  `tools/review-record/lib/verbs/scaffold.mjs#run` directly over every discordance record the
+  metrics-corpus fixture produces (all accepted, `EXIT_OK`) plus a negative control (an
+  out-of-roster-scope module still fails closed via scaffold's OWN roster check); the
+  adjudicator-≠-author reuse (`checkAdjudicatorNotAuthor`), both functionally (against the real
+  `anemia` module's own git-derived authorship union) and via a source-level grep-test proving
+  `lib/discordance.mjs` imports, never re-implements, `tools/review-record/lib/adjudication.mjs`'s
+  helpers; and the standard zero-network two-layer proof.
