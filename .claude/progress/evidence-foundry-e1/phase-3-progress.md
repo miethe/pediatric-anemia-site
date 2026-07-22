@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 8
-completed_tasks: 5
+completed_tasks: 6
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -195,7 +195,7 @@ tasks:
     posture (two-part digest, fail-closed, unsigned-stub → integrity-recorded → superseded/revoked
     enum) stays byte-untouched. Sole post-P1 barrier-file change (scripts/validate-kb.mjs)
     in this wave; document the surface decision in the tool README.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   - backend-architect
@@ -206,6 +206,36 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  note: 'Verifier-surface wiring implemented (FR-18/PRD OQ-2): scripts/validate-kb.mjs#loadAndValidateReleaseRegistry
+    now also runs tools/release-sign/lib/registry.mjs#checkRegistryHistoryAppendOnly
+    (append-only-shape, layer 2) whenever the tree being validated is git-tracked,
+    joining the existing registry schema-validity (P1-T7) + schema-forced signature/TESTKEY
+    null (P1-T5/P3-T5) checks already in npm run validate -- return shape unchanged
+    ({errors,entryCount,present}), so no existing P1-T7 assertion needed updating.
+    Sole barrier-file touched: scripts/validate-kb.mjs (import + ~15 lines in loadAndValidateReleaseRegistry).
+    Bug found+fixed in the same file-ownership lane while wiring this in: checkRegistryHistoryAppendOnly
+    used "git log --follow", whose content-similarity rename heuristic misattributed
+    schemas/release-registry.schema.json (added by P1-T5, one commit before releases/registry.json
+    itself existed) as a rename ancestor, making git show fail on the real, untampered
+    repo -- removed --follow (registry.json is a fixed, never-renamed path; a plain
+    path-scoped git log has no such failure mode); regression-guarded by a real-repo
+    test. Full cryptographic verify (Ed25519) deliberately NOT wired in -- stays a
+    tools/release-sign CLI verb exercised only by its own tests; no new npm script;
+    src/, server.mjs, openapi.yaml, modules/anemia/module.json byte-untouched (diff-scope
+    test against main). 10 new tests (tests/ef-release-registry-validate-wiring.test.mjs);
+    all 76 tests across the P3 release-sign/registry test files green; npm run validate
+    + npm run check:imports clean. Surface decision documented in tools/release-sign/README.md
+    ("Verifier surface wired into npm run validate" section). PRE-EXISTING, OUT-OF-SCOPE
+    finding (not fixed, not my file ownership): tests/ef-release-no-keys.test.mjs
+    (P3-T5, committed 540b50d, unmodified by this task) has a self-matching bug --
+    its own fixture literal "-----BEGIN PRIVATE KEY-----...-----END PRIVATE KEY-----"
+    matches its own git-tracked-tree PEM-header scan, failing "P3-T5 (a) [2/2]" whenever
+    the full flat tests/ef-*.test.mjs glob runs; flagged for the phase gate/task-completion-validator.'
+  started: 2026-07-22T00:00Z
+  completed: 2026-07-22T00:00Z
+  evidence:
+  - test: tests/ef-release-registry-validate-wiring.test.mjs
+  - doc: tools/release-sign/README.md
 - id: P3-T7
   description: 'Signing-ceremony runbook (FR-17): author docs/governance/signing-ceremony-runbook.md
     — human-executed offline key generation, custody model, signing steps over the
@@ -319,7 +349,7 @@ files_modified:
 - tests/ef-release-registry.test.mjs
 - tests/ef-release-no-keys.test.mjs
 - tests/fixtures/ef-release/**
-progress: 62
+progress: 75
 updated: '2026-07-22'
 ---
 

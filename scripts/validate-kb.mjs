@@ -11,6 +11,15 @@ import { validate } from './lib/json-schema-lite.mjs';
 // than adding a `yaml` dependency just for this validator. tests/authoring-decisions-schema.test.mjs
 // already establishes this same cross-import for the equivalent test-side check.
 import { parseYamlDocument } from '../tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs';
+// P3-T6 (FR-18, PRD OQ-2 — verifier-surface wiring): joins ONLY the structural half of
+// tools/release-sign's append-only guarantee (the git-history walk, layer 2 of that tool's own
+// two-layer design — see tools/release-sign/lib/registry.mjs's own header) into `npm run validate`.
+// This is a read-only, offline `git log`/`git show` walk, never a cryptographic operation — the
+// `sign`/`verify` verbs (Ed25519) are deliberately NOT imported here; see this file's
+// "P3-T6 verifier-surface decision" comment on `loadAndValidateReleaseRegistry` below, and
+// tools/release-sign/README.md's own "Verifier surface wired into npm run validate" section.
+import { checkRegistryHistoryAppendOnly } from '../tools/release-sign/lib/registry.mjs';
+import { RegistryAppendOnlyViolationError } from '../tools/release-sign/lib/errors.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -742,6 +751,28 @@ export function validateReleaseRegistryDocument(registryData, registrySchema) {
  * own top-level description), so in this phase's checkout (and any checkout before P3-T4 lands)
  * the file, and its parent `releases/` directory, do not exist at all. That absence is not itself
  * an error.
+ *
+ * P3-T6 (FR-18, PRD OQ-2, verifier-surface wiring): once the file IS present, this also runs
+ * `tools/release-sign/lib/registry.mjs#checkRegistryHistoryAppendOnly` — the append-only-shape
+ * layer 2 git-history walk (see that function's own header) — against the SAME tree `rootDir`
+ * points at, so a hand-committed mutation/removal of an existing `releases/registry.json` entry
+ * that bypassed the `register` verb entirely now fails `npm run validate`, not just a future
+ * `register` invocation. This is a STRUCTURAL check only (read-only `git log`/`git show`, no
+ * `node:crypto`, no signature verification) — see tools/release-sign/README.md's "Verifier surface
+ * wired into npm run validate" section for the full FR-18/OQ-2 surface-decision rationale: full
+ * cryptographic `verify` (Ed25519) is deliberately never invoked from here.
+ *
+ * The git-history walk itself only runs when `rootDir` is git-tracked (a `.git` entry — file or
+ * directory, a git worktree's own `.git` is a file — exists directly under it). This is not a
+ * fail-open loophole for the real, committed `releases/registry.json`: `npm run validate` always
+ * runs against this repository's own git-tracked root, where `.git` always exists. The gate exists
+ * so a synthetic, non-git-initialized tempdir tree built by an unrelated schema-shape test (this
+ * function predates P3-T6 and several such tests already call it directly, P1-T7) does not spuriously
+ * fail merely because there is no git history at all to walk — "no git repository here" and "a git
+ * repository here with zero commits touching this path" both mean the same thing this function's own
+ * `{ revisions: 0 }` return already documents: nothing to compare yet, not a violation. Any OTHER git
+ * failure (a corrupt repository, git itself missing) is never swallowed here — only `.git`'s own
+ * absence short-circuits the walk before it is ever attempted.
  */
 export async function loadAndValidateReleaseRegistry(rootDir) {
   const registryPath = path.join(rootDir, 'releases', 'registry.json');
@@ -751,6 +782,16 @@ export async function loadAndValidateReleaseRegistry(rootDir) {
   const registrySchema = await readJson(path.join(rootDir, 'schemas', 'release-registry.schema.json'));
   const registryData = await readJson(registryPath);
   const documentResult = validateReleaseRegistryDocument(registryData, registrySchema);
+
+  if (await fileExists(path.join(rootDir, '.git'))) {
+    try {
+      checkRegistryHistoryAppendOnly(rootDir, path.relative(rootDir, registryPath));
+    } catch (err) {
+      if (!(err instanceof RegistryAppendOnlyViolationError)) throw err;
+      documentResult.errors.push(`releases/registry.json (git-history append-only check): ${err.message}`);
+    }
+  }
+
   return { ...documentResult, present: true };
 }
 

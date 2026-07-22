@@ -261,14 +261,24 @@ export function assertRegisterAppendsExactlyOne(currentDoc, nextDoc) {
 /**
  * Layer (2), see this file's own header: walks EVERY git-committed revision of `registryRelPath`
  * (oldest to newest) and asserts each one is entry-prefix-compatible with its immediate
- * predecessor. Exported standalone (not called by `run` below) — a future `npm run validate` wire-
- * in (P3-T6, structural-only per this plan's own scope note) or a dedicated test invokes this
- * directly against `releases/registry.json`'s real git history; `register` itself only ever
- * enforces layer (1) at write time (a not-yet-committed working-tree write has no git history of
- * its own yet to walk).
+ * predecessor. Exported standalone — wired into `npm run validate` by
+ * `scripts/validate-kb.mjs#loadAndValidateReleaseRegistry` (P3-T6, structural-only per this plan's
+ * own scope note) whenever the tree being validated is itself git-tracked, and also invoked
+ * directly by this tool's own tests against a throwaway repo; `register` itself only ever enforces
+ * layer (1) at write time (a not-yet-committed working-tree write has no git history of its own
+ * yet to walk).
  *
  * Uses `git log`/`git show` only (via `node:child_process#execFileSync`) — read-only, offline, no
- * network call, and no mutation of git state of any kind.
+ * network call, and no mutation of git state of any kind. Deliberately NOT `git log --follow`
+ * (P3-T6 fix): `--follow` performs content-similarity rename detection across the WHOLE repository
+ * history, which is the wrong tool here — this function tracks one fixed, never-renamed path, and
+ * `--follow`'s heuristic can misattribute an unrelated older file (e.g. this very plan's own
+ * `schemas/release-registry.schema.json`, added in an earlier commit than `releases/registry.json`
+ * itself, coincidentally similar in size/shape) as a "rename ancestor." `git show <hash>:<path>`
+ * then fails outright for that misattributed hash, because the path genuinely does not exist under
+ * that name at that revision — not an append-only violation, a tooling false positive. A plain
+ * `git log -- <path>` has no such failure mode: it only ever returns commits that touched the path
+ * under its own, unchanging name.
  *
  * @param {string} repoRoot repository root `git` should be invoked from (the `cwd` for both
  *   subcommands below)
@@ -282,7 +292,7 @@ export function checkRegistryHistoryAppendOnly(repoRoot, registryRelPath) {
   try {
     logOutput = execFileSync(
       'git',
-      ['log', '--format=%H', '--follow', '--', registryRelPath],
+      ['log', '--format=%H', '--', registryRelPath],
       { cwd: repoRoot, encoding: 'utf8' },
     );
   } catch (err) {

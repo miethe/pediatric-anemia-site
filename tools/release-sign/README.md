@@ -1,7 +1,9 @@
 # `tools/release-sign` — signed-release manifest / registry / sign / verify tooling
 
 **Status**: `manifest` (P3-T1), `sign` (P3-T2), `verify` (P3-T3), and `register` (P3-T4) are all
-implemented — every verb in this tool's dispatch table now has a real implementation.
+implemented — every verb in this tool's dispatch table now has a real implementation. `npm run
+validate` now joins this tool's structural (non-cryptographic) checks (P3-T6) — see "Verifier
+surface wired into `npm run validate`" below.
 **Structural validity produced by this tool never implies clinical validity, safety, or release
 authorization.** No signature
 minted by this tool (dry-run or otherwise) confers clinical standing — see
@@ -323,14 +325,72 @@ one-file-per-record:
    itself)** — walks every git-committed revision of a registry file (`git log`/`git show`, read-
    only, no network) and asserts each is entry-prefix-compatible with its predecessor. This is the
    layer that would catch a hand-edited, directly-committed mutation that never went through
-   `register` at all — something an in-process, working-tree-only check cannot see. A future
-   structural wire-in of this function into `npm run validate` is P3-T6's scope, not this task's;
-   `register` itself only enforces layer 1 at write time, and `tests/ef-release-registry.test.mjs`
-   exercises layer 2 directly against a throwaway git repo.
+   `register` at all — something an in-process, working-tree-only check cannot see. **Wired into
+   `npm run validate` (P3-T6)** by `scripts/validate-kb.mjs#loadAndValidateReleaseRegistry` —
+   see "Verifier surface wired into `npm run validate`" below; `register` itself still only enforces
+   layer 1 at write time, and `tests/ef-release-registry.test.mjs` exercises layer 2 directly
+   against a throwaway git repo. Deliberately does **not** pass `--follow` to `git log` (a P3-T6
+   fix): `--follow`'s content-similarity rename detection can misattribute an unrelated older file
+   as this path's "ancestor" (concretely, it once misattributed
+   `schemas/release-registry.schema.json`, added by P1-T5 before `releases/registry.json` itself
+   existed, as a rename source for this repo's own registry — a tooling false positive, not an
+   append-only violation, that would have broken this wiring on the real, untampered repo). See
+   `lib/registry.mjs#checkRegistryHistoryAppendOnly`'s own header for the full explanation.
 
 Both layers reduce to one comparison primitive, `assertEntriesPrefixPreserving` (structural,
 key-order-independent equality via a self-contained `stableStringify` — not a cross-tool import of
 `tools/review-record/lib/chain.mjs`'s own copy, which owns a disjoint file set in this same wave).
+
+## Verifier surface wired into `npm run validate` (P3-T6, FR-18, PRD OQ-2)
+
+**The decision.** `npm run validate` (`scripts/validate-kb.mjs`) joins exactly two of this tool's
+checks, both structural and both already covered above — **never** a cryptographic operation:
+
+1. **Registry schema-validity** (`validateReleaseRegistryDocument` / `loadAndValidateReleaseRegistry`,
+   P1-T7) — `releases/registry.json` validates against `schemas/release-registry.schema.json`.
+   This is also where **forced-empty/TESTKEY-leak protection** lives: the schema pins every real
+   registry entry's `signature` to `type: "null"` (never an object, so a `TESTKEY-` `keyId` — or
+   any signature at all — cannot exist in a persisted registry entry in the first place;
+   `tests/ef-contract-release-registry.test.mjs` and `tests/ef-release-no-keys.test.mjs` group (d)
+   already prove this fail-closed) and `withdrawalState` to `const: "none"`.
+2. **Append-only shape** (`checkRegistryHistoryAppendOnly`, P3-T4/P3-T6) — the git-history walk
+   documented above, run whenever the tree `npm run validate` is checking is itself git-tracked (a
+   `.git` entry exists at its root — always true for this repository's own real invocations; a
+   synthetic, non-git-initialized fixture tree used by an unrelated schema-shape test degrades to
+   "nothing to compare," not a spurious failure).
+
+**What is deliberately NOT wired in: full cryptographic `verify`.** `tools/release-sign`'s `verify`
+verb (Ed25519 signature verification, `node:crypto`, FR-13's own 5-class fail-closed taxonomy) stays
+exactly what it already was — a `tools/release-sign` CLI verb, exercised only by this tool's own
+tests (`tests/ef-release-sign-verify.test.mjs`). `verify` is deliberately never wired into
+`scripts/validate-kb.mjs`, is deliberately never wired into the anemia SPA/API runtime (`src/`,
+`server.mjs`), and this task adds no new npm script — `manifest`/`register`/`sign`/`verify` stay
+exactly the four `node tools/release-sign/cli.mjs <verb>` invocations OQ-1 already established;
+`npm run validate` grows no new command-line surface, only two new function calls inside its
+existing `scripts/validate-kb.mjs` entrypoint.
+
+**Why.** `npm run validate` is a fast, offline, KB-authoring structural gate — it runs on every
+`modules/`/`schemas/`/`governance/` change, has no reason to expect a signed (or even a fully-built)
+release candidate to exist on disk, and existed long before this tool did. Cryptographic
+verification is inherently about a *specific candidate document* (`verify --candidate <path>
+--registry <path>`) that `npm run validate` has no candidate to point at — there is nothing for it
+to verify against by default, only the committed KB source tree and the always-present
+`releases/registry.json`. Folding `verify` in here would also blur ruling R3's own boundary ("CI can
+never sign, and CI's *default* checks stay narrowly scoped to what they can prove without a
+candidate in hand") and would give `npm run validate` a reason to eventually import `node:crypto`
+signing/verification primitives it does not need for its actual job of proving the KB source tree
+and its append-only integrity records are internally consistent. A real release candidate's
+signature is verified by running `verify` directly (see "`verify` verb usage" above), a deliberate,
+separate, later-stage step — not a side effect of every `npm run validate` invocation.
+
+**Byte-untouched elsewhere.** This decision — and this task's whole change — touches exactly
+`scripts/validate-kb.mjs` (the sole post-P1 barrier-file change in this wave, per this plan's own
+scope note) plus this tool's own `lib/registry.mjs` (the `--follow` fix above) and this README. It
+makes **no** change to `src/`, `server.mjs`, `openapi.yaml`, or `modules/anemia/module.json` — the
+anemia browser deployment's SPIKE-006 posture (two-part digest, fail-closed,
+`unsigned-stub -> integrity-recorded -> superseded/revoked` enum, `src/kbVerify.js`) stays
+byte-untouched, proven by a diff-scope test
+(`tests/ef-release-registry-validate-wiring.test.mjs`).
 
 ## Golden-bytes regression pin (P3-T1)
 
