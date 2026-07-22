@@ -513,6 +513,151 @@ export async function validateKbPackReleaseManifests(rootDir) {
   return results;
 }
 
+/**
+ * P1-T7 (Evidence Foundry E1 Phase 1, FR-6/FR-16, R-P3 seam task): validate one already-parsed
+ * `modules/<moduleId>/reviews/<review_id>.yaml` review-record document against
+ * `schemas/review-record.schema.json` (P1-T2, canonical five-role model), plus the two
+ * cross-record invariants the schema cannot express on its own: the record's own `review_id` must
+ * agree with the filename it was found under, and its own `moduleId` must agree with the
+ * `modules/<moduleId>/` directory it was found under (the schema validates the document in
+ * isolation and has no filesystem access — same shape of gap `validateReleaseManifest` closes for
+ * `moduleId`/`packVersion` above). Pure function over in-memory data, independently unit-testable
+ * against a tampered/seeded-bad fixture without touching disk.
+ *
+ * Structural validity proven here never implies clinical validity, safety, or that a named human
+ * clinician reviewed anything — see `schemas/review-record.schema.json`'s own top-level
+ * description for that standing caveat.
+ */
+export function validateReviewRecord(recordData, moduleId, reviewId, reviewRecordSchema) {
+  const errors = [];
+  for (const schemaError of validate(reviewRecordSchema, recordData)) {
+    errors.push(`${moduleId}/reviews/${reviewId}.yaml: review-record.schema.json ${schemaError.path}: ${schemaError.message}`);
+  }
+  if (typeof recordData?.review_id === 'string' && recordData.review_id !== reviewId) {
+    errors.push(`${moduleId}/reviews/${reviewId}.yaml: review_id "${recordData.review_id}" does not match its own filename "${reviewId}.yaml"`);
+  }
+  if (typeof recordData?.moduleId === 'string' && recordData.moduleId !== moduleId) {
+    errors.push(`${moduleId}/reviews/${reviewId}.yaml: moduleId "${recordData.moduleId}" does not match the modules/${moduleId}/ directory it was found under`);
+  }
+  return errors;
+}
+
+/**
+ * P1-T7: existence-gated across `modules/<moduleId>/reviews/` — this directory is NET-NEW (OQ-2
+ * store layout, `.claude/worknotes/evidence-foundry-e1-v1/contracts-design.md` §(b)) and no
+ * module ships any review-act files yet (P2-T2's CLI is what will eventually write them); its
+ * absence, or its presence-but-empty, is not itself an error — same existence-gate posture
+ * `evidence-assertions.json`/`authoring-decisions.yaml` already use above. Every `.yaml` file
+ * found there IS fully schema- and cross-record-validated, never silently skipped.
+ */
+export async function validateModuleReviews(moduleDir, moduleId, rootDir) {
+  const reviewsDir = path.join(moduleDir, 'reviews');
+  const errors = [];
+  let reviewCount = 0;
+  if (!(await fileExists(reviewsDir))) return { errors, reviewCount };
+
+  let entries;
+  try {
+    entries = await readdir(reviewsDir, { withFileTypes: true });
+  } catch {
+    return { errors, reviewCount };
+  }
+  const yamlFilenames = entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.yaml'))
+    .map((entry) => entry.name)
+    .sort();
+  if (yamlFilenames.length === 0) return { errors, reviewCount };
+
+  const reviewRecordSchema = await readJson(path.join(rootDir, 'schemas', 'review-record.schema.json'));
+  for (const filename of yamlFilenames) {
+    const reviewId = filename.slice(0, -'.yaml'.length);
+    const raw = await readFile(path.join(reviewsDir, filename), 'utf8');
+    const recordData = parseYamlDocument(raw);
+    errors.push(...validateReviewRecord(recordData, moduleId, reviewId, reviewRecordSchema));
+    reviewCount += 1;
+  }
+  return { errors, reviewCount };
+}
+
+/**
+ * P1-T7: validate one already-parsed `governance/reviewer-roster.yaml` document against
+ * `schemas/reviewer-roster.schema.json` (P1-T4), plus the one cross-record invariant the schema
+ * cannot express on its own: cross-entry `reviewerId` uniqueness. The schema's own `uniqueItems`
+ * on `reviewers[]` only rejects two BYTE-IDENTICAL whole entries — two entries sharing a
+ * `reviewerId` but differing in any other field (e.g. a stale duplicate with a different `name`)
+ * would pass `uniqueItems` cleanly, which is exactly the gap `schemas/reviewer-roster.schema.json`'s
+ * own `reviewerId` field description names as "a P1-T7/P2-T2 validator-wiring concern." Pure
+ * function over in-memory data, independently unit-testable without touching disk.
+ */
+export function validateReviewerRoster(rosterData, rosterSchema) {
+  const errors = [];
+  for (const schemaError of validate(rosterSchema, rosterData)) {
+    errors.push(`governance/reviewer-roster.yaml: reviewer-roster.schema.json ${schemaError.path}: ${schemaError.message}`);
+  }
+
+  const reviewers = Array.isArray(rosterData?.reviewers) ? rosterData.reviewers : [];
+  const seenReviewerIds = new Set();
+  for (const [index, reviewer] of reviewers.entries()) {
+    const reviewerId = reviewer?.reviewerId;
+    if (typeof reviewerId !== 'string') continue;
+    if (seenReviewerIds.has(reviewerId)) {
+      errors.push(`governance/reviewer-roster.yaml#reviewers[${index}]: duplicate reviewerId "${reviewerId}"`);
+    }
+    seenReviewerIds.add(reviewerId);
+  }
+
+  return { errors, reviewerCount: reviewers.length };
+}
+
+/**
+ * P1-T7: reads and validates the ONE committed `governance/reviewer-roster.yaml` file (P1-T4) —
+ * NOT existence-gated like the artifacts above, because this file ships committed by P1-T4 and is
+ * required infrastructure, not an optional per-module sidecar; a missing roster file is a real
+ * configuration error, not a legitimate "not yet authored" state.
+ */
+export async function loadAndValidateReviewerRoster(rootDir) {
+  const rosterSchema = await readJson(path.join(rootDir, 'schemas', 'reviewer-roster.schema.json'));
+  const raw = await readFile(path.join(rootDir, 'governance', 'reviewer-roster.yaml'), 'utf8');
+  const rosterData = parseYamlDocument(raw);
+  return validateReviewerRoster(rosterData, rosterSchema);
+}
+
+/**
+ * P1-T7: validate one already-parsed `releases/registry.json` document against
+ * `schemas/release-registry.schema.json` (P1-T5/OQ-4). No cross-record invariant beyond the
+ * schema itself is checked at this task's scope — append-only-ness is a git-history-level
+ * invariant `tools/release-sign`'s `register` writer enforces procedurally (P3-T4), not something
+ * this single-document check can see. Pure function over in-memory data, independently
+ * unit-testable against a tampered/seeded-bad fixture without touching disk.
+ */
+export function validateReleaseRegistryDocument(registryData, registrySchema) {
+  const errors = [];
+  for (const schemaError of validate(registrySchema, registryData)) {
+    errors.push(`releases/registry.json: release-registry.schema.json ${schemaError.path}: ${schemaError.message}`);
+  }
+  const entries = Array.isArray(registryData?.entries) ? registryData.entries : [];
+  return { errors, entryCount: entries.length };
+}
+
+/**
+ * P1-T7: existence-gated across the WHOLE `releases/registry.json` file — this task's own
+ * acceptance criteria requires the absent-file case to "pass with an explicit note, never a
+ * crash": the registry seed file itself does not ship until P3-T4 (schemas/release-registry.schema.json's
+ * own top-level description), so in this phase's checkout (and any checkout before P3-T4 lands)
+ * the file, and its parent `releases/` directory, do not exist at all. That absence is not itself
+ * an error.
+ */
+export async function loadAndValidateReleaseRegistry(rootDir) {
+  const registryPath = path.join(rootDir, 'releases', 'registry.json');
+  if (!(await fileExists(registryPath))) {
+    return { errors: [], entryCount: 0, present: false };
+  }
+  const registrySchema = await readJson(path.join(rootDir, 'schemas', 'release-registry.schema.json'));
+  const registryData = await readJson(registryPath);
+  const documentResult = validateReleaseRegistryDocument(registryData, registrySchema);
+  return { ...documentResult, present: true };
+}
+
 function setsEqual(a, b) {
   if (a.size !== b.size) return false;
   for (const item of a) {
@@ -859,6 +1004,14 @@ export async function validateModule(moduleId, rootDir) {
     0,
   );
 
+  // P1-T7 (Evidence Foundry E1 Phase 1, FR-6/R-P3 seam task): modules/<moduleId>/reviews/*.yaml is
+  // a NET-NEW, existence-gated artifact directory (OQ-2 store layout) — no module ships any
+  // review-act files yet. validateModuleReviews handles the existence gate itself; every file
+  // found there IS fully schema- and cross-record-validated against schemas/review-record.schema.json.
+  const reviewsValidation = await validateModuleReviews(moduleDir, moduleId, rootDir);
+  errors.push(...reviewsValidation.errors);
+  const reviewRecordCount = reviewsValidation.reviewCount;
+
   return {
     moduleId,
     errors,
@@ -872,6 +1025,7 @@ export async function validateModule(moduleId, rootDir) {
     evidenceAssertionsCount,
     authoringDecisionsCount,
     ruleProvenanceCount,
+    reviewRecordCount,
   };
 }
 
@@ -883,9 +1037,16 @@ if (isMain) {
   // own doc comment) — this is NOT one of the MODULE_IDS-scoped checks above because the artifact
   // it validates does not live under modules/<id>/ at all.
   const kbPackManifestResults = await validateKbPackReleaseManifests(root);
+  // P1-T7: whole-tree, once-per-run checks (not per MODULE_IDS entry) — governance/reviewer-roster.yaml
+  // is a single committed file (P1-T4); releases/registry.json is existence-gated across the whole
+  // tree, the same posture build/kb-pack/ above uses (it does not ship until P3-T4).
+  const reviewerRosterResult = await loadAndValidateReviewerRoster(root);
+  const releaseRegistryResult = await loadAndValidateReleaseRegistry(root);
   const allErrors = [
     ...results.flatMap((result) => result.errors),
     ...kbPackManifestResults.flatMap((result) => result.errors),
+    ...reviewerRosterResult.errors,
+    ...releaseRegistryResult.errors,
   ];
   const allWarnings = results.flatMap((result) => result.warnings);
 
@@ -905,7 +1066,8 @@ if (isMain) {
           `${result.moduleId} (${result.ruleCount} rules, ${result.candidateCount} candidates, ${result.evidenceCount} evidence records, ${result.passageCount} passage records`
           + `${result.evidenceAssertionsCount ? `, ${result.evidenceAssertionsCount} evidence-assertions` : ''}`
           + `${result.authoringDecisionsCount ? `, ${result.authoringDecisionsCount} authoring-decisions` : ''}`
-          + `${result.ruleProvenanceCount ? `, ${result.ruleProvenanceCount} rule-provenance entries` : ''})`,
+          + `${result.ruleProvenanceCount ? `, ${result.ruleProvenanceCount} rule-provenance entries` : ''}`
+          + `${result.reviewRecordCount ? `, ${result.reviewRecordCount} review records` : ''})`,
       )
       .join(', ');
     console.log(`Validated modules: ${summary}.`);
@@ -914,6 +1076,14 @@ if (isMain) {
         `build/kb-pack/: validated ${kbPackManifestResults.length} release-manifest.unsigned.json file(s).`,
       );
     }
+    // P1-T7: always printed (not gated on a >0 count) — an empty roster/absent registry is the
+    // expected, honest state pre-G1/pre-P3-T4, not a silent no-op.
+    console.log(`governance/reviewer-roster.yaml: validated ${reviewerRosterResult.reviewerCount} reviewer(s).`);
+    console.log(
+      releaseRegistryResult.present
+        ? `releases/registry.json: validated ${releaseRegistryResult.entryCount} entrie(s).`
+        : 'releases/registry.json: not yet seeded (absent) — expected pre-P3-T4, not an error.',
+    );
 
     // Reviewer-gate fix-5: report the RESOLVED sourcePassageId status split (not just "resolves to
     // some passage") so a reviewer can see at a glance how many rules actually claim source-supported

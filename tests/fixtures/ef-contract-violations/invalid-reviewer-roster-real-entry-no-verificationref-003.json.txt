@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "reviewers": [
+    {
+      "reviewerId": "seeded-bad-real-1",
+      "name": "SYNTHETIC-INVALID fixture (P1-T7): a synthetic:false roster entry with no verificationRef must be rejected -- gate G1 out-of-band credential verification never occurred for this entry.",
+      "credentialRef": "credential-registry:SEEDED-BAD-0001",
+      "moduleScopes": ["cbc_suite_v1"],
+      "synthetic": false
+    }
+  ]
+}
