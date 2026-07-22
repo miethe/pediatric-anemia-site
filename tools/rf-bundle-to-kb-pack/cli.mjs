@@ -15,6 +15,10 @@
 //              rule-provenance.json) by wiring together the hand-authored P3-T1..T6 content
 //              behind the same loader -> hashing -> eligibility pipeline inspect/verify use, plus
 //              the seam-invariant-8 conflict-visibility guard. See lib/verbs/propose.mjs. (P3-T7)
+//   batch    — runs inspect -> verify -> propose over the literal, hand-enumerated 4-pair list in
+//              lib/batch.mjs's BATCH_PAIRS — never a directory glob or a "process everything under
+//              runs/" pattern (multi-bundle-conversion-e1 Phase 2, row P2-T3, FR-5, R-7 mitigation).
+//              Halts on the first pair that fails, naming it explicitly. See lib/batch.mjs.
 //
 // Zero network calls, zero LLM/generative-model invocations, ever (FR-10, 02 §2.3 items 13-15).
 // Never mutates the `rf` run directory (seam invariant 6).
@@ -22,12 +26,14 @@
 import { run as runInspect } from './lib/verbs/inspect.mjs';
 import { run as runVerify } from './lib/verbs/verify.mjs';
 import { run as runPropose } from './lib/verbs/propose.mjs';
+import { run as runBatch } from './lib/batch.mjs';
 import { ConverterError, EXIT_OK, EXIT_USAGE } from './lib/errors.mjs';
 
 const VERB_HANDLERS = Object.freeze({
   inspect: runInspect,
   verify: runVerify,
   propose: runPropose,
+  batch: runBatch,
 });
 
 const HELP_TEXT = `rf-bundle-to-kb-pack — deterministic converter from a verified rf evidence bundle
@@ -48,6 +54,12 @@ Verbs:
           --out <build/kb-pack/... dir>
       Assembles a full staged kb-pack proposal at --out. Fails closed (governance exit) if any
       drafted rule proposal is grounded solely by a mixed/contradicted claim (seam invariant 8).
+
+  batch [--rule-schema <schema path>] [--out-base <dir>]
+      Runs inspect -> verify -> propose, in that order, for each of the 4 named
+      {fixture, module} pairs hand-enumerated in lib/batch.mjs's BATCH_PAIRS (never a glob or a
+      "process everything under runs/" pattern -- R-7 mitigation). Halts on the first pair whose
+      any stage fails, naming the pair explicitly; already-succeeded pairs' output is untouched.
 
 Global:
   -h, --help    Show this help and exit 0.
