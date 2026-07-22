@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ef-retro-valid-deidentified",
+  "description": "Fixture-shaped de-identified corpus for P4-T1 fixture-corpus schema-conformance tests. Fixture content only -- not a real de-identified data source; real-data ingestion is gated on SPIKE-007 / gate G3.",
+  "sourceAttestation": {
+    "ref": "fixture-partner-dua-000",
+    "provenanceClass": "deidentified",
+    "deidentificationStandard": "safe-harbor"
+  },
+  "cases": [
+    {
+      "caseId": "case-001",
+      "provenance": "deidentified",
+      "sourceRef": "fixture-sub-batch-1",
+      "input": {
+        "patient": { "ageMonths": 24 },
+        "cbc": { "hemoglobin": 8.8, "mcv": 62 }
+      },
+      "referenceLabels": {
+        "dangerousMissExpected": false
+      }
+    }
+  ]
+}

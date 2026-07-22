@@ -73,7 +73,10 @@
 //   assessFn() and perturbing every rule's requiredTestCaseIds vs. the byte-committed rules.json
 //   snapshot (`--check` drift). They are excluded here by path rather than renamed, so the four
 //   ef-* dirs keep the plain .json extension their own consumers (tests/ef-review-record-
-//   migration.test.mjs, tests/ef-contract-forced-empty.test.mjs, etc.) expect.
+//   migration.test.mjs, tests/ef-contract-forced-empty.test.mjs, etc.) expect. Evidence Foundry E1
+//   (P4-T1) added a fifth entry, tests/fixtures/ef-retro/ — retrospective-validation-harness
+//   fixture-corpus schema-conformance fixtures (tools/retro-validate/schemas/fixture-corpus.schema.json),
+//   same rationale: plain *.json, not an anemia-rule activation witness.
 //
 //   sourcePassageId — D-EP3-6's fail-safe, non-optimistic binder. For each rule:
 //     1. primarySourceId = rule.evidence[0] ("the rule's first cited source").
@@ -137,6 +140,7 @@ const EXCLUDED_FIXTURE_DIRS = [
   'tests/fixtures/ef-release',
   'tests/fixtures/ef-review-record-migration',
   'tests/fixtures/ef-contract-violations',
+  'tests/fixtures/ef-retro',
 ];
 const CHANGE_RATIONALE =
   'EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): '

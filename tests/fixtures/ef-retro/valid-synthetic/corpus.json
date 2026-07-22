@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ef-retro-valid-synthetic",
+  "description": "Synthetic fixture corpus for P4-T1 fixture-corpus schema-conformance tests. No real patient data.",
+  "sourceAttestation": {
+    "ref": "synthetic-generation-note-001",
+    "provenanceClass": "synthetic"
+  },
+  "cases": [
+    {
+      "caseId": "case-001",
+      "provenance": "synthetic",
+      "sourceRef": "batch-a",
+      "input": {
+        "patient": { "ageMonths": 18, "sexAtBirth": "female" },
+        "cbc": { "hemoglobin": 9.5, "mcv": 65 }
+      },
+      "referenceLabels": {
+        "candidatePatternIds": ["iron-deficiency-anemia"],
+        "safetyFlagIds": [],
+        "missingDataPromptIds": [],
+        "dangerousMissExpected": false
+      },
+      "tags": ["regression"]
+    },
+    {
+      "caseId": "case-002",
+      "provenance": "synthetic",
+      "input": {
+        "patient": { "ageMonths": 6 },
+        "cbc": { "hemoglobin": 6.2, "mcv": 58 }
+      }
+    }
+  ]
+}
