@@ -1,0 +1,96 @@
+id: ext_20260718_a92d52ad_001
+source_card_id: src_20260718_rfev001_00
+created_at: '2026-07-18T14:34:59-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: AAP names the CBC (Hb, MCV, RDW) plus serum ferritin as the two core laboratory tests for identifying
+    iron deficiency and IDA, with both performed together.
+  locator: Screening > Laboratory Screening (paragraph beginning 'Screening to identify children and adolescents
+    with ID and IDA includes')
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Table 1 provides age- and sex-specific normal Hb (g/dL), MCV (fL), and RDW (%) intervals spanning
+    6–24 months through 12–<18 years, used as the KB fallback CBC reference intervals.
+  locator: Table 1 — 'Normal Hematologic Parameters in Infants, Children, and Adolescents by Age and Sex,
+    From Age 9 Months to 18 Years' (ref 42), Hemoglobin / MCV / RDW rows; columns 6–24 mo, 2–6 y, 6–12
+    y, 12–<18 y (Females, Males)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: AAP sets serum ferritin ≤20 ng/mL as indicating ID for young and school-aged children and ≤30
+    ng/mL for adolescents and all menstruating individuals.
+  locator: Diagnosis > Iron Studies (final sentence of paragraph reviewing SF thresholds, following WHO
+    and ASH threshold discussion)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Ferritin is an acute-phase reactant; an elevated CRP in an ill or inflamed child means SF cannot
+    be treated as a reliable ID marker, while CRP is unnecessary in a clinically well child.
+  locator: Diagnosis > Iron Studies (paragraph beginning 'In most otherwise healthy children without evidence
+    of acute infection or chronic disease')
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: The sTfR-ferritin index (sTfR/log10 ferritin) is elevated (>2) in iron deficiency and <1 in anemia
+    of chronic inflammation without concomitant ID, helping distinguish the two.
+  locator: Diagnosis > Iron Studies (paragraph on soluble transferrin receptor); corroborated by Table
+    4 (sTfR1) row
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: Microcytic anemia with reduced MCV and elevated RDW is most consistent with IDA, but thalassemia
+    trait and chronic inflammation can also cause microcytic anemia and must be differentiated (Table
+    3).
+  locator: Laboratory Diagnosis of IDA > Complete Blood Cell Count (paragraph beginning 'The most valuable
+    laboratory test'); Table 3 'Differential Diagnosis of Children With Microcytic Anemia'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: AAP defines severe IDA as confirmed IDA with Hb <7 g/dL, and notes some such children are minimally
+    symptomatic — transfusion is reserved for clinical instability, not triggered by the Hb value alone.
+  locator: Treatment of Severe or Refractory IDA > Severe IDA (opening sentences)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Table 1 — 'Normal Hematologic Parameters in Infants, Children, and Adolescents by Age and Sex,
+    From Age 9 Months to 18 Years' (ref 42), Hemoglobin / MCV / RDW rows; columns 6–24 mo, 2–6 y, 6–12
+    y, 12–<18 y (Females, Males)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Diagnosis > Iron Studies (final sentence of paragraph reviewing SF thresholds, following WHO
+    and ASH threshold discussion)
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Diagnosis > Iron Studies (paragraph on soluble transferrin receptor); corroborated by Table
+    4 (sTfR1) row
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Laboratory Diagnosis of IDA > Complete Blood Cell Count (paragraph beginning 'The most valuable
+    laboratory test'); Table 3 'Differential Diagnosis of Children With Microcytic Anemia'
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: Treatment of Severe or Refractory IDA > Severe IDA (opening sentences)
+contradictions_or_cautions: []

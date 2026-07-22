@@ -1,0 +1,56 @@
+id: ext_20260718_729373ab_001
+source_card_id: src_20260718_rfev001_02
+created_at: '2026-07-18T14:34:59-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: The review's core framework classifies pediatric anemia first by MCV (microcytic/normocytic/macrocytic)
+    then refines by reticulocyte count — the morphology-first, reticulocyte-response approach the KB relies
+    on.
+  locator: Section 'Classification of anemia' (refers to Figure 2)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: The review anchors the normocytic band at MCV 80-100 fL, the only explicit numeric MCV range stated
+    in the source.
+  locator: Section 'Normocytic anemia' (first sentence)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: Reticulocyte count direction (elevated vs low relative to anemia severity) distinguishes an adequate
+    erythropoietic response to blood loss/hemolysis from inadequate marrow production.
+  locator: Section 'Laboratory investigation'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Peripheral smear morphology (spherocytes, elliptocytes, schistocytes/helmet cells) points to specific
+    hemolytic mechanisms — supporting the KB's smear-interpretation use of this source.
+  locator: Section 'Laboratory investigation' (peripheral blood smear)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: Multilineage cytopenia — pancytopenia with relative reticulocytopenia, teardrop RBCs, giant platelets,
+    and immature leukocytes — signals marrow replacement, backing the KB's multi-lineage-cytopenia escalation.
+  locator: Section 'BM replacement syndromes'
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Section 'Normocytic anemia' (first sentence)
+contradictions_or_cautions:
+- text: Narrative review, not a threshold standard — provides classification approach, not age-specific
+    diagnostic cutoffs
+  locator: card/trust
+- text: PMC metadata DOI for PMC9373018 (10.1182/blood.2020006479) differs from the KB record's cited
+    DOI (10.1182/blood.2021013018) — flagged, not resolved
+  locator: card/trust

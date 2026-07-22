@@ -1,0 +1,70 @@
+id: ext_20260718_0fc1db95_001
+source_card_id: src_20260718_rfev001_01
+created_at: '2026-07-18T14:34:59-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: WHO 2024 defines anaemia with age/population-specific haemoglobin cutoffs, including four distinct
+    pediatric bands from 6 months to 14 years.
+  locator: Executive summary, p.xi, Table 2 (Haemoglobin cutoffs to define anaemia in individuals and
+    populations)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: The 2024 revision modified the haemoglobin cutoff for exactly one pediatric group -- children
+    6-23 months -- rather than applying a single universal pediatric threshold.
+  locator: Executive summary, p.xi, Normative statement 1.a (Haemoglobin cutoffs to define any anaemia)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: WHO states physiological, environmental, and genetic factors and lifecycle variation must be considered
+    when defining haemoglobin cutoffs -- supporting contextual, non-universal interpretation.
+  locator: Section 1 (What should be the haemoglobin cutoffs...), scope/definitions narrative, para 'Physiological,
+    environmental, and genetic factors...'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: WHO recommends adjusting haemoglobin to define anaemia for elevation of residence, via a stated
+    increment table and quadratic equation -- a contextual/physiologic modifier of interpretation.
+  locator: Executive summary, p.xii-xiii, Normative statement 2.a.1 (Elevation of residence) + Table 4
+    and equation footnote b
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: WHO explicitly recommends that haemoglobin NOT be adjusted for infection/inflammation -- a contextual
+    caveat distinguishing haemoglobin interpretation from inflammation-adjusted iron markers.
+  locator: Executive summary, p.xiv, Normative statement 2.b (Infection and inflammation)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: WHO documents that the 2024 cutoffs update and consolidate a traceable lineage of prior WHO guidance
+    (1968-2005), giving transparent provenance for the thresholds.
+  locator: Introduction / methods narrative, para 'This guideline updates and complements previous recommendations...'
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Executive summary, p.xi, Table 2 (Haemoglobin cutoffs to define anaemia in individuals and
+    populations)
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Executive summary, p.xi, Normative statement 1.a (Haemoglobin cutoffs to define any anaemia)
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Introduction / methods narrative, para 'This guideline updates and complements previous recommendations...'
+contradictions_or_cautions: []

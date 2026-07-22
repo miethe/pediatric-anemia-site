@@ -1,0 +1,69 @@
+id: ext_20260718_5900a44f_001
+source_card_id: src_20260718_rfev001_03
+created_at: '2026-07-18T14:34:59-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: CDC's Blood Lead Reference Value (BLRV) is 3.5 µg/dL; a BLL at or above this value triggers the
+    recommended-action pathway.
+  locator: Section 'Initial screening blood lead level' / heading 'If the patient's BLL is ≥ 3.5 micrograms
+    per deciliter'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: A capillary screening result at or above the BLRV must be confirmed with a venous sample before
+    further action.
+  locator: Section 'Initial screening blood lead level', first paragraph
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: 'CDC Table 1 sets confirmatory-venous-sample timelines that shorten as the initial capillary BLL
+    rises: ≥3.5-9 within 3 months, 10-19 within 1 month, 20-44 within 2 weeks, ≥45 within 48 hours.'
+  locator: Table 1 — 'Recommended schedule for obtaining a confirmatory venous sample'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: For a confirmed BLL of 3.5-19 µg/dL, CDC directs providers to test for and treat iron deficiency
+    per AAP guidelines.
+  locator: Section 'If the patient's BLL is 3.5-19 micrograms per deciliter', iron-deficiency bullet
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: 'CDC defines escalating action tiers at 20-44 µg/dL (history/physical, environmental investigation,
+    PEHSU/Poison Control contact) and ≥45 µg/dL (highest tier: detailed neuro exam, possible hospital
+    admission, toxicologist consult for chelation).'
+  locator: Headings 'If the patient's BLL is 20-44 micrograms per deciliter' and 'If the patient's BLL
+    is ≥ 45 micrograms per deciliter'
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Section 'Initial screening blood lead level' / heading 'If the patient's BLL is ≥ 3.5 micrograms
+    per deciliter'
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Table 1 — 'Recommended schedule for obtaining a confirmatory venous sample'
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Section 'If the patient's BLL is 3.5-19 micrograms per deciliter', iron-deficiency bullet
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Headings 'If the patient's BLL is 20-44 micrograms per deciliter' and 'If the patient's BLL
+    is ≥ 45 micrograms per deciliter'
+contradictions_or_cautions: []
