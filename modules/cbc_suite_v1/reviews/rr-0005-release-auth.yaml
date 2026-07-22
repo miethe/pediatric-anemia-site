@@ -1,0 +1,16 @@
+schemaVersion: 1
+review_id: rr-0005-release-auth
+role: release-auth
+moduleId: cbc_suite_v1
+subjectContentHash: sha256:0a91991b6fd8b2480fed14625c461ba09d8eb4c9e4ba022c19e8fb72257103b2
+previousRecordHash: sha256:9d6af2f4b35125dd6499657129f481f973485e4ba03459d683b85ebc6b02672a
+supersedes: null
+reviewerId: "dryrun-cbc-suite-release-auth"
+decision: approve
+rationale: "SYNTHETIC RELEASE-AUTHORIZATION PERSONA -- NOT CREDENTIALED. Exercises the terminal role of the ADR-0004 chain only (FR-11 dry-run, P2-T8) and is STRUCTURALLY NON-QUALIFYING for release authorization by design (FR-6): this entire five-record set is synthetic:true, so this record can never advance modules/cbc_suite_v1/module.json's status past unsigned-stub or populate approvedBy[]/clinicalApprovers[]."
+reviewedAt: 2026-07-22T06:58:37.497Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-M9qsxhS84ODH_gZpBUDAugEyuU0xo7bXonsPtip2EPo
+  value: "e/y76Ajvj1C6nFNTmBAPF2WYW3sSNEj+j0jiz5HlEGRRDa1f99bGJ3xtEHD8uoWGnRRLtwZ2tWP3f/jOCi5YBw=="

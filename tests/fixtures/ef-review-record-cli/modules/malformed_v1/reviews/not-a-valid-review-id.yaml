@@ -1,0 +1,8 @@
+# tests/fixtures/ef-review-record-cli/modules/malformed_v1/reviews/not-a-valid-review-id.yaml
+#
+# P2-T1 CLI-test fixture ONLY. Deliberately does not follow the OQ-2 rr-<seq4>-<role>.yaml filename
+# shape -- exercises lib/store.mjs's fail-closed MalformedReviewIdError path in
+# tests/ef-review-record-cli.test.mjs. Content below is irrelevant; the filename is the point.
+
+schemaVersion: 1
+role: clinical-1

@@ -5,7 +5,7 @@ title: "Evidence Foundry Buildout: Upstream `rf` validators — pediatric extrac
 status: draft
 maturity: shaping
 created: 2026-07-21
-updated: 2026-07-21
+updated: 2026-07-22
 feature_slug: "evidence-foundry-buildout"
 prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md
@@ -110,6 +110,15 @@ That is, this item is promoted out of "deferred" only once the `research-foundry
 ships the pediatric-extraction-completeness validator and the exact-passage hard-gate as `rf`-side
 changes — an event tracked in the `research-foundry` repository and its own CHANGELOG, not in this
 repository's task tracker.
+
+## E1 State (evidence-foundry-e1-v1)
+
+`evidence-foundry-e1-v1` did not touch `tools/rf-bundle-to-kb-pack/` or any upstream `rf` surface —
+the converter-side eligibility check this repository already carries (§"Current State" above) is
+unchanged from E0, and the upstream validator requirement this spec documents remains unmet: no
+RFUP acceptance has occurred. E1's own closure task (P5-T10) confirmed the consolidated routing
+note (`.claude/worknotes/evidence-foundry-buildout/rfup-external-routing-note.md`, P7-T13) is still
+current. This spec's Promotion Trigger is unaffected by anything E1 shipped.
 
 ## Open Questions
 

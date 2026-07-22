@@ -5,11 +5,11 @@ title: "Evidence Foundry: Withdraw/Rollback Machinery (DF-E2-03)"
 status: draft
 maturity: shaping
 created: 2026-07-21
-updated: 2026-07-21
-feature_slug: evidence-foundry-buildout
-prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
-plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md
-problem_statement: "No mechanism exists to withdraw an active KB release or roll a client back to a prior signed version when a retraction, safety notice, or emergency-withdrawal-class change fires, because no signed release or registry exists yet for a withdrawal state to attach to."
+updated: 2026-07-22
+feature_slug: evidence-foundry-e1
+prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-e1-v1.md
+plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1.md
+problem_statement: "E1 now ships an inert OQ-4 withdrawal-state field family on the release registry (const 'none', never set to anything else), so a future E2 withdraw/rollback engine has a seeded field to extend rather than a bare registry — but no mechanism exists to actually withdraw an active KB release or roll a client back to a prior signed version when a retraction, safety notice, or emergency-withdrawal-class change fires, because no signed release exists yet, and E1 builds no detection, classification, or rollback code path at all."
 open_questions:
   - "Who holds authority to confirm an emergency withdrawal at E1/E2 (a named clinical role per ADR-4, an on-call rotation, both), and what is the confirmation medium (signed commit, portal action, issue-tracker approval)?"
   - "What is the rollback SLA (hours/days) from trigger detection to an active client rejecting the withdrawn KB, and how is that SLA measured before any live deployment exists to generate real incident data?"
@@ -36,13 +36,19 @@ and rollback drill/criteria are documented." `02 §8.4`'s operational-risk table
 directly: "Retraction response delay — Active unsafe rule remains deployed," with the stated control
 being "Immediate trigger lane, withdrawal state, runtime denylist/registry check, rollback SLA."
 
-This feature (E0, `evidence-foundry-buildout`) builds none of this. It ships the deterministic
+E0 (`evidence-foundry-buildout`) built none of this — it shipped the deterministic
 `rf-bundle-to-kb-pack` converter and a 4-rule `cbc_suite_v1` vertical slice at proposal status
-only — no signed release exists, no registry exists, and therefore no withdrawal state or rollback
-target can exist yet. The Deferred Items Triage Table in the parent plan
-(`evidence-foundry-buildout-v1.md`, row `DF-E2-03`) categorizes this as **prereq**: "Withdraw/rollback
-machinery needs a registry of signed releases to roll back between; none exists before E1" (trigger:
-"E1 signed release registry exists").
+only, with no signed release and no registry, so no withdrawal state or rollback target could exist
+yet. The Deferred Items Triage Table in the (then) parent plan categorized this as **prereq**:
+"Withdraw/rollback machinery needs a registry of signed releases to roll back between; none exists
+before E1" (trigger: "E1 signed release registry exists").
+
+E1 (`evidence-foundry-e1`, this plan) is the first plan to actually create that registry — see
+"What E1 Shipped: the OQ-4 Registry Seed" below. This spec's promotion trigger has therefore
+partially fired: a registry now exists, but it is empty (`{"schemaVersion": 1, "entries": []}`), it
+holds only inert, `const`/`null`-typed placeholders for the fields this machinery would extend, and
+E1 builds zero detection, classification, or rollback code path. This machinery remains `shaping`,
+not implementation-ready — see "E2 Boundary" below for exactly what still separates the two.
 
 This spec is seeded jointly from two Phase 6 ADRs, per the parent plan's explicit instruction:
 
@@ -56,21 +62,77 @@ This spec is seeded jointly from two Phase 6 ADRs, per the parent plan's explici
   itself the fifth materiality class this ADR ratifies... and rollback needs the registry (ADR-5) plus
   this ADR's human-confirmed trigger-handling design to know when and how a rollback is initiated."
 
-## Current State (what E0 actually ships)
+## Current State (E1, what this program actually ships as of this update)
 
-- No signed release exists anywhere in this repository — `build/kb-pack/cbc_suite_v1/0.1.0-proposal/
-  release-manifest.unsigned.json` (P5-T1) is the only manifest artifact, and its `status` field, like
-  `modules/anemia/module.json`'s existing precedent, is the literal `"unsigned-stub"` — never
-  `active`, `superseded`, `withdrawn`, or `expired` (§5.7's state machine has no state this feature's
-  output legitimately occupies except the pre-`signed` proposal states).
-- No registry file exists (`ADR-5`'s recommended `releases/registry.json` or equivalent is not
-  created by this feature — it is ADR-5's own unimplemented recommendation).
-- No withdrawal detection, denylist, or rollback code path exists in `src/engine.js`, `server.mjs`, or
-  anywhere else in the runtime. Nothing polls for retraction/correction/withdrawal/safety-notice/
-  cutoff-or-formula-change/superseding-guideline events (§7.4 item 3's six named trigger types).
-- `ADR-5` and `ADR-7` are both `status: proposed`, not `accepted` — this spec's design sketch below is
-  therefore itself provisional pending both ADRs' ratification, exactly as the triage table's
-  promotion trigger states.
+- Still no *signed* release exists anywhere in this repository: E1's release-candidate artifacts
+  (`build/kb-pack/cbc_suite_v1/0.1.0-proposal/release-manifest.unsigned.json`, P5-T1; dry-run signed
+  candidates under the same tree, P3-T2) all carry `dryRun: true`/`"unsigned-stub"`-class status —
+  never `active`, `superseded`, `withdrawn`, or `expired` (§5.7's state machine has no state this
+  program's output legitimately occupies except the pre-`signed` proposal states).
+- A registry file **now exists**: `releases/registry.json`, git-tracked, root-level, per
+  `schemas/release-registry.schema.json` (P1-T5) and populated by `tools/release-sign`'s `register`
+  verb (P3-T4). See "What E1 Shipped: the OQ-4 Registry Seed" below for its exact shape.
+- Still no withdrawal detection, denylist, or rollback code path exists anywhere in `src/engine.js`,
+  `server.mjs`, or the runtime. Nothing polls for retraction/correction/withdrawal/safety-notice/
+  cutoff-or-formula-change/superseding-guideline events (§7.4 item 3's six named trigger types). E1's
+  own quality gates require this to stay true — `tests/ef-retro-*` and the retrospective harness
+  (`tools/retro-validate`) never write registry entries, only read them.
+- `ADR-0005` and `ADR-0007` remain `status: proposed`, not `accepted` — this spec's design sketch
+  below is therefore still provisional pending both ADRs' ratification, exactly as the promotion
+  trigger states, now updated to reflect that the registry half of that trigger has fired.
+
+## What E1 Shipped: the OQ-4 Registry Seed
+
+The implementation plan's decisions block resolved **OQ-4** — "`releases/registry.json` E2-seed
+fields: exactly the FR-14 list, nothing more" — and P1-T5/P3-T4 built exactly that. This is the
+concrete substrate this spec's "Withdrawal state on the registry entry" design-sketch item (below)
+would extend, not invent from scratch:
+
+- **Shape shipped**: `{schemaVersion, entries[]}`, each entry `additionalProperties: false` over
+  exactly ten fields — `version`, `moduleId`, `packDigest`, `manifestDigest`, `signature`, `signedAt`,
+  `supersedes`, `withdrawalState`, `withdrawnAt`, `withdrawalReason`.
+- **Inert withdrawal consts, verbatim from OQ-4's resolution**: `withdrawalState` is `const: "none"`
+  under this schema version — never `enum`, so any other value (e.g. `"withdrawn"`) is a hard schema
+  violation, not a policy violation a task could work around. `withdrawnAt` and `withdrawalReason` are
+  both `type: "null"` — always exactly `null`, reinforcing that a withdrawal timestamp/reason cannot
+  exist without a withdrawal. `signature`, `signedAt`, and `supersedes` are likewise `null`-typed
+  (mirroring the DF-E1-06 signing boundary — no real signature exists pre-G2, and E1 registers at most
+  one entry per module, so no supersession chain exists yet either).
+- **Surveillance hooks omitted entirely, deliberately** — this is the field family this spec and
+  `DF-E2-01` (surveillance/update/registry engine) would need but that OQ-4's resolution explicitly
+  declined to seed: no re-verify-cadence field, no materiality-class field, no signer-identity index.
+  The registry schema's own header states the reason plainly: "surveillance hooks (re-verify cadence,
+  materiality class) are omitted entirely — they belong to ADR-0007's unaccepted taxonomy, and seeding
+  them would speculate ahead of G0." `additionalProperties: false` on the entry shape makes adding any
+  such field today a structural rejection, not a documentation gap — this program chose not to guess
+  at ADR-0007's eventual shape rather than seed a field it might have to change later.
+- **Append-only enforcement is procedural, not schema-level** — `register`'s two-layer (in-process +
+  git-history) check (P3-T4) is what actually prevents a past entry from being mutated or removed; the
+  JSON Schema alone cannot compare a document to its own prior committed state. This spec's future
+  "withdrawn entry is never deleted or rewritten in place" requirement (design-sketch item 1, below)
+  would need to extend this same enforcement mechanism, not a new one.
+
+## E2 Boundary
+
+Restated precisely, now that E1's half of the prerequisite exists: this spec's machinery is **entirely
+E2 scope**. E1 draws the boundary at exactly one point — a registry exists, with an inert
+`withdrawalState` field family that no E1 code path can set to anything but its seeded defaults.
+Everything on the other side of that boundary remains unbuilt and unshaped-past-`shaping`:
+
+- **No trigger detection or classification** (`DF-E2-01`'s job — ADR-0007's five-class materiality
+  taxonomy, including "emergency withdrawal," is itself unratified).
+- **No human-confirmed withdrawal action, no code path that could write anything other than
+  `withdrawalState: "none"`** — raising that ceiling (from `const: "none"` to an `enum` admitting
+  `"withdrawn"`) is, per this program's standing convention (mirroring the `approvedBy[]`
+  `maxItems: 0` idiom), the deliberate, separately reviewed act that would first give this machinery
+  teeth; no E1 or E2-planning task performs it implicitly.
+- **No runtime rejection of withdrawn/expired KBs** — `src/engine.js`/`server.mjs` carry no load-time
+  registry check of any kind; this remains a from-scratch build against §7.4's E2 go gate.
+- **No rollback drill, executable or otherwise.**
+
+E1's contribution to this boundary is narrow and honest: a schema that will not silently accept an
+undisclosed withdrawal field later (`additionalProperties: false`), and a registry file that already
+exists for `DF-E2-01`/this spec to extend rather than create from nothing — nothing more.
 
 ## Design Sketch
 
@@ -115,16 +177,20 @@ plan):
    runtime's load-time check rejects the withdrawn release and falls back to (or refuses to silently
    substitute) the prior one per whatever policy this spec's open questions resolve.
 
-None of this is implemented by E0 or committed by this spec; `ADR-5` and `ADR-7` both remain
-`proposed`, and E1/E2 planning must ratify or revise them before any of the above becomes an
-implementation task.
+None of this design sketch is implemented by E0, by E1, or committed by this spec — see "E2 Boundary"
+above for exactly what E1 shipped instead (the inert registry seed) and what remains untouched. `ADR-0005`
+and `ADR-0007` both remain `proposed`, and E1/E2 planning must ratify or revise them before any of the
+above becomes an implementation task.
 
 ## Promotion Trigger
 
-Per the parent plan's Deferred Items Triage Table: "E1 signed release registry exists." This
-machinery cannot be designed past `shaping` until `ADR-5`'s signed-release registry is accepted and a
-first real release exists to register, withdraw, and roll back against — before that, there is nothing
-concrete to attach a withdrawal state or rollback target to.
+Per the parent plan's Deferred Items Triage Table: "E2 planning." E1's half of the original trigger —
+"a signed-release registry exists" — has now fired (`releases/registry.json`, per "What E1 Shipped"
+above); what remains outstanding, and what actually gates this spec's promotion past `shaping`, is E2
+planning itself: a first real (non-dry-run, non-`unsigned-stub`) release to register, withdraw, and
+roll back against, `ADR-0007`'s materiality taxonomy ratified, and an E2 implementation plan that picks
+this spec up as a task. E1 alone — registry seed included — is not sufficient to promote this spec;
+nothing here changes that.
 
 ## Open Questions
 
@@ -138,20 +204,30 @@ can be authored as a deterministic test against a registry fixture before any li
 
 - ADR: `docs/adr/0007-surveillance-cadence-materiality-classes.md` — ratifies "emergency withdrawal" as
   the fifth materiality class and requires human-confirmed withdrawal action; names `DF-E2-03`
-  explicitly as depending on both its taxonomy and `ADR-5`'s registry.
+  explicitly as depending on both its taxonomy and `ADR-0005`'s registry.
 - ADR: `docs/adr/0005-kb-serialization-signing-key-custody.md` — the signed-release registry this
   machinery's withdrawal state and rollback target attach to; names `DF-E2-03` (via `DF-E2-01`'s
-  shared dependency) as blocked on its registry recommendation.
+  shared dependency) as blocked on its registry recommendation. `status: proposed` (G0 outstanding),
+  same as `ADR-0007` — see `docs/project_plans/design-specs/signed-release-key-custody.md`'s "What
+  Stays Gated" section for the full G0/G2 boundary this spec's own registry dependency inherits.
+- Registry schema (E1, shipped): `schemas/release-registry.schema.json` — the exact ten-field,
+  `additionalProperties: false` shape this spec's "What E1 Shipped" section quotes; `withdrawalState`
+  const/`withdrawnAt`/`withdrawalReason` null-typed under this schema version.
+- Tool: `tools/release-sign/README.md` (`register` verb, P3-T4) — the writer that populates
+  `releases/registry.json`'s seeded shape; this spec's future withdrawal-state write would need to
+  extend the same append-only enforcement this verb already implements.
 - Design spec: `docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md` §5.6 (release
   gate table, "Rollback" row), §5.7 (release state machine, `withdrawn` terminal state), §7.4 (E2 scope
   item 11, E2 go gate rollback-drill criterion), §8.4 ("Retraction response delay" risk row).
-- Deferred items: `docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md`
-  Deferred Items Triage Table, row `DF-E2-03`.
+- Deferred items: `docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1.md`
+  Deferred Items Triage Table, row `DF-E2-03`; Decisions & OQ Resolutions § OQ-4 (the registry seed
+  decision this spec's "What E1 Shipped" section quotes verbatim).
 - CLAUDE.md hard guardrails: "No AI-published rule changes... signed release" (extended here to
-  withdrawal, per ADR-7's rationale); the deterministic/offline converter-and-runtime constraint
+  withdrawal, per ADR-0007's rationale); the deterministic/offline converter-and-runtime constraint
   (governs how a client can safely discover and act on a withdrawal without a network call).
 - Related deferred-item specs: `docs/project_plans/design-specs/surveillance-update-registry-engine.md`
   (`DF-E2-01`, detects and classifies the trigger this machinery acts on),
   `docs/project_plans/design-specs/production-monitoring-telemetry.md` (`DF-E2-02`, monitors the
   incidents a withdrawal responds to), `docs/project_plans/design-specs/signed-release-key-custody.md`
-  (`DF-E1-06`, the signing/registry substrate this spec's withdrawal state is recorded against).
+  (`DF-E1-06`, the signing/registry substrate this spec's withdrawal state is recorded against and
+  updated alongside this spec, P5-T7).

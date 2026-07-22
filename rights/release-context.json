@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "release_context_id": "internal-research-baseline",
+  "description": "Declared release context for the pediatric CDS research prototype (EPR0-T1, FR-WP0-01/02, D4). Governs which intended uses, territories, and channels THIS PLATFORM currently claims for itself. This is a scope declaration, not a source-level rights clearance — a rights_record (schemas/rights/rights_record.schema.json, vendored in EPR0-T2) decides what a specific source permits; this file decides what the product is currently allowed to do with anything it holds. Every future content_reuse_assessment is checked for CONTAINMENT within this context (the assessment's requested use/territory/channel must be a subset of what is declared permitted here) — this file is never widened to fit a request.",
+  "established_at": "2026-07-21T00:00:00Z",
+  "commercial": false,
+  "use_type": "internal_research",
+  "intended_uses": {
+    "vocabulary_source": "docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/Research_Foundry_Source_Reuse_and_Rights_Governance_Spec_v1.0.md §5.2 (Intended-use classes) — every string below is copied verbatim from that list, never invented.",
+    "permitted": [
+      "internal reading",
+      "internal research notes",
+      "internal searchable archive",
+      "evidence-atom extraction",
+      "candidate-rule authoring",
+      "internal validation"
+    ],
+    "not_permitted": [
+      "automated text and data mining",
+      "model training or retrieval corpus",
+      "commercial runtime logic",
+      "commercial user-facing explanation",
+      "source preview or excerpt display",
+      "clinician-facing citation",
+      "patient-facing content",
+      "documentation, marketing, or training",
+      "sublicense, export, or partner distribution"
+    ]
+  },
+  "territory": {
+    "scope": "single_jurisdiction_internal",
+    "permitted_jurisdictions": ["US"],
+    "notes": "Single-tenant internal research deployment. No cross-border hosting, distribution, or localization is claimed."
+  },
+  "channel": {
+    "scope": "internal_only",
+    "permitted_channels": ["internal_engineering_environment"],
+    "notes": "Browser-local research prototype plus its mirror REST API, reachable only inside the internal engineering environment. No hosted multi-tenant, public, or partner-facing channel is in scope."
+  },
+  "notes": "commercial:false is load-bearing: any fixture that asserts a commercial-shaped use (commercial:true, or an intended_uses value drawn from the not_permitted set above) against this context must fail containment. This file grants no clearance to any source and creates no rights_record — see rights/rights-records.json and schemas/rights/rights_record.schema.json for that axis."
+}

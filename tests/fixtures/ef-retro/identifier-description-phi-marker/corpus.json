@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ef-retro-identifier-description-phi-marker",
+  "description": "Seeded P4 fix-cycle violation (BLOCKER a, Codex second-opinion review): a corpus whose free-text `description` field carries synthetic PHI markers -- Patient Name: Jane Testcase, MRN: 1234567, DOB: 2015-03-14. This exact shape previously validated cleanly because `description` had only a maxLength cap, no content check. Must now be rejected fail-closed by the identifier-denylist procedural layer (lib/identifier-denylist.mjs), independent of the schema layer.",
+  "sourceAttestation": {
+    "ref": "synthetic-generation-note-009",
+    "provenanceClass": "synthetic"
+  },
+  "cases": [
+    {
+      "caseId": "case-001",
+      "provenance": "synthetic",
+      "input": {
+        "patient": { "ageMonths": 12 }
+      }
+    }
+  ]
+}

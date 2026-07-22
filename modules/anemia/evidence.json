@@ -20,6 +20,31 @@
         "Microcytic differentiation among iron deficiency, thalassemia, and anemia of inflammation",
         "Severe iron deficiency anemia category at hemoglobin <7 g/dL (not a universal transfusion threshold)"
       ],
+      "access_basis": "institutional_subscription",
+      "license": {
+        "status": "copyrighted",
+        "rights_holder": "American Academy of Pediatrics",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "restricted_without_written_approval",
+        "adaptation": "restricted_without_written_approval",
+        "commercial_use": "not_granted_by_subscription",
+        "redistribution": "restricted",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "captured",
+        "locator": "https://publications.aap.org/pediatriccare/pages/terms",
+        "sha256": null,
+        "retrieved_at": "2026-07-21"
+      },
       "passages": [
         {
           "id": "AAP2026_IDA#ev_001",
@@ -34,6 +59,40 @@
           },
           "exactPassage": "AAP names the CBC (Hb, MCV, RDW) plus serum ferritin as the two core laboratory tests for identifying iron deficiency and IDA, with both performed together.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": "Screening — Laboratory Screening",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "CBC (Hb, MCV, RDW) and serum ferritin immunoassay",
+            "population_or_scope": "infants, children, and adolescents screened for ID/IDA",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "American Academy of Pediatrics",
+              "abbreviation": "AAP"
+            },
+            "restatement": "The AAP recommends a complete blood count (haemoglobin, MCV, and RDW) together with serum ferritin as the core laboratory tests for identifying iron deficiency and iron deficiency anaemia.",
+            "scope_or_population": "infants, children, and adolescents screened for iron deficiency or IDA"
+          },
           "reviewFlags": [
             "source-not-independently-retrievable"
           ],
@@ -68,6 +127,40 @@
           },
           "exactPassage": "Table 1 provides age- and sex-specific normal Hb (g/dL), MCV (fL), and RDW (%) intervals spanning 6–24 months through 12–<18 years, used as the KB fallback CBC reference intervals.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "reference_interval_value",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "reference_interval_values",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": null,
+            "table": "Table 1",
+            "row": null,
+            "column": null,
+            "assay_or_method": "automated CBC analyzer",
+            "population_or_scope": "age and sex bands 6–24 mo through 12–<18 y",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": [
+              "row",
+              "column"
+            ]
+          },
+          "not_captured": [
+            {
+              "kind": "table_structure",
+              "rationale": "The table layout and cells are not reproduced, and no per-value atoms could be captured — the AAP source is independently unretrievable (REG-002 uncleared, HTTP 403), so numeric_recapture resolves to no_reported_value_available (EPR3-T6). No verbatim reuse is cleared."
+            },
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            }
+          ],
+          "numeric_recapture": {
+            "resolution": "no_reported_value_available",
+            "reason": "The age- and sex-specific Hb, MCV, and RDW reference intervals from AAP Table 1 are absent from the retrievable in-repo provenance, and the AAP source is independently unretrievable (HTTP 403 / subscription-required per RF-EV-002 / REG-002; reviewFlag source-not-independently-retrievable). No interval value is authored or interpolated here (no invented thresholds). Per-value atoms cannot be captured without a rights-cleared, independently retrievable AAP artifact; the table structure remains recorded as not_captured.",
+            "atoms": []
+          },
           "reviewFlags": [
             "adds-claim-not-in-located-passage",
             "source-not-independently-retrievable"
@@ -104,6 +197,40 @@
           },
           "exactPassage": "AAP sets serum ferritin ≤20 ng/mL as indicating ID for young and school-aged children and ≤30 ng/mL for adolescents and all menstruating individuals.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": "Diagnosis — Iron Studies",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "serum ferritin immunoassay",
+            "population_or_scope": "young and school-aged children; adolescents and menstruating individuals",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "American Academy of Pediatrics",
+              "abbreviation": "AAP"
+            },
+            "restatement": "The AAP recommends serum ferritin thresholds that mark iron deficiency, set lower for younger and school-aged children than for adolescents and menstruating individuals.",
+            "scope_or_population": "young and school-aged children versus adolescents and menstruating individuals"
+          },
           "reviewFlags": [
             "source-not-independently-retrievable"
           ],
@@ -138,6 +265,32 @@
           },
           "exactPassage": "Ferritin is an acute-phase reactant; an elevated CRP in an ill or inflamed child means SF cannot be treated as a reliable ID marker, while CRP is unnecessary in a clinically well child.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": "Diagnosis — Iron Studies",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "serum ferritin interpreted with C-reactive protein",
+            "population_or_scope": "children with acute or chronic inflammation or illness",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [
             "adds-claim-not-in-located-passage",
             "source-not-independently-retrievable"
@@ -174,6 +327,28 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "equation_or_method",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": "Diagnosis — Iron Studies (soluble transferrin receptor)",
+            "table": "Table 4",
+            "row": null,
+            "column": null,
+            "assay_or_method": "soluble transferrin receptor assay; index = sTfR / log10(ferritin)",
+            "population_or_scope": "children with chronic inflammation and ID risk",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights",
             "source-not-independently-retrievable"
@@ -210,6 +385,40 @@
           },
           "exactPassage": "Microcytic anemia with reduced MCV and elevated RDW is most consistent with IDA, but thalassemia trait and chronic inflammation can also cause microcytic anemia and must be differentiated (Table 3).",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": "Laboratory Diagnosis of IDA — Complete Blood Cell Count",
+            "table": "Table 3",
+            "row": null,
+            "column": null,
+            "assay_or_method": "CBC (MCV, RDW) with iron studies; Hb A2 on hemoglobin analysis",
+            "population_or_scope": "children with microcytic anemia",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "American Academy of Pediatrics",
+              "abbreviation": "AAP"
+            },
+            "restatement": "The AAP recommends distinguishing iron deficiency anaemia from thalassaemia trait and anaemia of inflammation when a child presents with microcytic anaemia, rather than attributing microcytosis to iron deficiency by default.",
+            "scope_or_population": "children and adolescents with microcytic anaemia"
+          },
           "reviewFlags": [
             "source-not-independently-retrievable"
           ],
@@ -244,6 +453,40 @@
           },
           "exactPassage": "AAP defines severe IDA as confirmed IDA with Hb <7 g/dL, and notes some such children are minimally symptomatic — transfusion is reserved for clinical instability, not triggered by the Hb value alone.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": "2026 clinical report; Pediatrics 2026;158(1):e2026077414",
+            "section": "Treatment of Severe or Refractory IDA — Severe IDA",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "hemoglobin from CBC",
+            "population_or_scope": "children and adolescents with confirmed IDA",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "American Academy of Pediatrics",
+              "abbreviation": "AAP"
+            },
+            "restatement": "The AAP recommends that transfusion for severe iron deficiency anaemia be reserved for clinical instability rather than driven by the haemoglobin value alone.",
+            "scope_or_population": "children and adolescents with confirmed severe IDA"
+          },
           "reviewFlags": [
             "adds-claim-not-in-located-passage",
             "source-not-independently-retrievable"
@@ -280,6 +523,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "AAP2026_IDA",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -312,6 +572,31 @@
         "Recognition that physiologic and contextual factors affect hemoglobin interpretation",
         "Need for transparent cutoff provenance rather than a single universal pediatric threshold"
       ],
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": "World Health Organization",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "WHO2024_HB#ev_001",
@@ -326,6 +611,177 @@
           },
           "exactPassage": "WHO 2024 defines anaemia with age/population-specific haemoglobin cutoffs, including four distinct pediatric bands from 6 months to 14 years.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "reference_interval_value",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "reference_interval_values",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+            "section": "Executive summary (p. xi)",
+            "table": "Table 2",
+            "row": null,
+            "column": null,
+            "assay_or_method": "haemoglobin concentration; 5th-percentile cutoff derivation",
+            "population_or_scope": "children 6 mo–14 y, age and sex bands",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": [
+              "row",
+              "column"
+            ]
+          },
+          "not_captured": [
+            {
+              "kind": "table_structure",
+              "rationale": "The table layout and cells are not reproduced; per-value atoms are captured under EPR3-T6, and REG-002 has cleared no verbatim reuse."
+            },
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            }
+          ],
+          "numeric_recapture": {
+            "resolution": "per_value_atoms",
+            "reason": "Four WHO 2024 pediatric haemoglobin anaemia cutoffs (<105, <110, <115, and <120 g/L) are recorded in the retrievable in-repo provenance (EP3-T5 fidelity finding EP3T5-F04) and are each transcribed here as a per-value atom with its unit. The value-to-band mapping is not present in that provenance, so each atom leaves its table row (age/sex band) and column explicitly unresolved rather than guessing it (no invented thresholds). The cutoff table's structure is recorded as not_captured; no table is reproduced (D1, REG-002 uncleared).",
+            "atoms": [
+              {
+                "label": "A WHO 2024 haemoglobin concentration cutoff for defining anaemia, transcribed as a single reported value; the age/sex band it applies to is not resolved in the captured provenance.",
+                "value": "<105 g/L",
+                "unit": "g/L",
+                "evidence_item_type": "reference_interval_value",
+                "rights_component_class": "reference_interval_values",
+                "judgment_basis": "unassessed",
+                "judgment_basis_attestation": null,
+                "structured_locator": {
+                  "source": "WHO2024_HB",
+                  "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+                  "section": "Executive summary (p. xi)",
+                  "table": "Table 2",
+                  "row": null,
+                  "column": null,
+                  "assay_or_method": "haemoglobin concentration; 5th-percentile cutoff derivation",
+                  "population_or_scope": "children 6 mo-14 y; the specific age/sex band for this value is unresolved",
+                  "retrieved_at": "2026-07-18",
+                  "unresolved_components": [
+                    "row",
+                    "column"
+                  ]
+                },
+                "not_captured": [
+                  {
+                    "kind": "table_structure",
+                    "rationale": "Only this single cutoff value is captured as an atom; the cutoff table's rows, columns, and band-to-value layout are not reproduced (D1, REG-002 uncleared)."
+                  },
+                  {
+                    "kind": "other",
+                    "rationale": "The specific age/sex band this cutoff applies to is absent from the captured in-repo provenance and is not inferred here (no invented thresholds)."
+                  }
+                ]
+              },
+              {
+                "label": "A WHO 2024 haemoglobin concentration cutoff for defining anaemia, transcribed as a single reported value; the age/sex band it applies to is not resolved in the captured provenance.",
+                "value": "<110 g/L",
+                "unit": "g/L",
+                "evidence_item_type": "reference_interval_value",
+                "rights_component_class": "reference_interval_values",
+                "judgment_basis": "unassessed",
+                "judgment_basis_attestation": null,
+                "structured_locator": {
+                  "source": "WHO2024_HB",
+                  "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+                  "section": "Executive summary (p. xi)",
+                  "table": "Table 2",
+                  "row": null,
+                  "column": null,
+                  "assay_or_method": "haemoglobin concentration; 5th-percentile cutoff derivation",
+                  "population_or_scope": "children 6 mo-14 y; the specific age/sex band for this value is unresolved",
+                  "retrieved_at": "2026-07-18",
+                  "unresolved_components": [
+                    "row",
+                    "column"
+                  ]
+                },
+                "not_captured": [
+                  {
+                    "kind": "table_structure",
+                    "rationale": "Only this single cutoff value is captured as an atom; the cutoff table's rows, columns, and band-to-value layout are not reproduced (D1, REG-002 uncleared)."
+                  },
+                  {
+                    "kind": "other",
+                    "rationale": "The specific age/sex band this cutoff applies to is absent from the captured in-repo provenance and is not inferred here (no invented thresholds)."
+                  }
+                ]
+              },
+              {
+                "label": "A WHO 2024 haemoglobin concentration cutoff for defining anaemia, transcribed as a single reported value; the age/sex band it applies to is not resolved in the captured provenance.",
+                "value": "<115 g/L",
+                "unit": "g/L",
+                "evidence_item_type": "reference_interval_value",
+                "rights_component_class": "reference_interval_values",
+                "judgment_basis": "unassessed",
+                "judgment_basis_attestation": null,
+                "structured_locator": {
+                  "source": "WHO2024_HB",
+                  "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+                  "section": "Executive summary (p. xi)",
+                  "table": "Table 2",
+                  "row": null,
+                  "column": null,
+                  "assay_or_method": "haemoglobin concentration; 5th-percentile cutoff derivation",
+                  "population_or_scope": "children 6 mo-14 y; the specific age/sex band for this value is unresolved",
+                  "retrieved_at": "2026-07-18",
+                  "unresolved_components": [
+                    "row",
+                    "column"
+                  ]
+                },
+                "not_captured": [
+                  {
+                    "kind": "table_structure",
+                    "rationale": "Only this single cutoff value is captured as an atom; the cutoff table's rows, columns, and band-to-value layout are not reproduced (D1, REG-002 uncleared)."
+                  },
+                  {
+                    "kind": "other",
+                    "rationale": "The specific age/sex band this cutoff applies to is absent from the captured in-repo provenance and is not inferred here (no invented thresholds)."
+                  }
+                ]
+              },
+              {
+                "label": "A WHO 2024 haemoglobin concentration cutoff for defining anaemia, transcribed as a single reported value; the age/sex band it applies to is not resolved in the captured provenance.",
+                "value": "<120 g/L",
+                "unit": "g/L",
+                "evidence_item_type": "reference_interval_value",
+                "rights_component_class": "reference_interval_values",
+                "judgment_basis": "unassessed",
+                "judgment_basis_attestation": null,
+                "structured_locator": {
+                  "source": "WHO2024_HB",
+                  "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+                  "section": "Executive summary (p. xi)",
+                  "table": "Table 2",
+                  "row": null,
+                  "column": null,
+                  "assay_or_method": "haemoglobin concentration; 5th-percentile cutoff derivation",
+                  "population_or_scope": "children 6 mo-14 y; the specific age/sex band for this value is unresolved",
+                  "retrieved_at": "2026-07-18",
+                  "unresolved_components": [
+                    "row",
+                    "column"
+                  ]
+                },
+                "not_captured": [
+                  {
+                    "kind": "table_structure",
+                    "rationale": "Only this single cutoff value is captured as an atom; the cutoff table's rows, columns, and band-to-value layout are not reproduced (D1, REG-002 uncleared)."
+                  },
+                  {
+                    "kind": "other",
+                    "rationale": "The specific age/sex band this cutoff applies to is absent from the captured in-repo provenance and is not inferred here (no invented thresholds)."
+                  }
+                ]
+              }
+            ]
+          },
           "reviewFlags": [
             "omits-source-numerics"
           ],
@@ -360,6 +816,40 @@
           },
           "exactPassage": "The 2024 revision modified the haemoglobin cutoff for exactly one pediatric group -- children 6-23 months -- rather than applying a single universal pediatric threshold.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+            "section": "Executive summary (p. xi), Normative statement 1.a",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "haemoglobin concentration; 5th-percentile cutoff",
+            "population_or_scope": "children 6–23 months",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "World Health Organization",
+              "abbreviation": "WHO"
+            },
+            "restatement": "The WHO adopted, in its 2024 revision, an anaemia-defining haemoglobin cutoff changed for one paediatric age group rather than a single universal paediatric threshold.",
+            "scope_or_population": "children 6-23 months"
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -390,6 +880,40 @@
           },
           "exactPassage": "WHO states physiological, environmental, and genetic factors and lifecycle variation must be considered when defining haemoglobin cutoffs -- supporting contextual, non-universal interpretation.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+            "section": "Section 1 (what should be the haemoglobin cutoffs)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": "all age and lifecycle groups including children",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "World Health Organization",
+              "abbreviation": "WHO"
+            },
+            "restatement": "The WHO recommends accounting for physiological, environmental, genetic, and lifecycle factors when defining and interpreting haemoglobin cutoffs, supporting context-specific rather than universal interpretation.",
+            "scope_or_population": "all age and lifecycle groups, including children"
+          },
           "reviewFlags": [
             "overclaims-source-modality"
           ],
@@ -424,6 +948,44 @@
           },
           "exactPassage": "WHO recommends adjusting haemoglobin to define anaemia for elevation of residence, via a stated increment table and quadratic equation -- a contextual/physiologic modifier of interpretation.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "equation_or_method",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "table",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+            "section": "Executive summary (p. xii–xiii), Normative statement 2.a.1",
+            "table": "Table 4",
+            "row": null,
+            "column": null,
+            "assay_or_method": "elevation-of-residence adjustment applied to haemoglobin",
+            "population_or_scope": "all groups including children, especially below 2500 m",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": [
+              "row",
+              "column"
+            ]
+          },
+          "not_captured": [
+            {
+              "kind": "table_structure",
+              "rationale": "The table layout and cells are not reproduced; per-value atoms are captured under EPR3-T6, and REG-002 has cleared no verbatim reuse."
+            },
+            {
+              "kind": "other",
+              "rationale": "The elevation-adjustment equation, its coefficients, and its increment-table values are not carried here: they are absent from the retrievable in-repo provenance, so numeric_recapture resolves to no_reported_value_available rather than to atoms (EPR3-T6; no invented thresholds)."
+            },
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            }
+          ],
+          "numeric_recapture": {
+            "resolution": "no_reported_value_available",
+            "reason": "The elevation-of-residence adjustment's quadratic-equation coefficients and its haemoglobin-increment table values are absent from the retrievable in-repo provenance: the source is quarantined and not independently retrievable, and the EP3-T5 extraction retained no numeric value for them (finding EP3T5-F05 records only that they were dropped, not the values). No coefficient or increment is authored, adjusted, or interpolated here (no invented thresholds). The qualitative fact — that WHO specifies an elevation adjustment applied to haemoglobin, with the direction and scope recorded on the parent passage — is all that remains capturable.",
+            "atoms": []
+          },
           "reviewFlags": [
             "omits-source-numerics"
           ],
@@ -458,6 +1020,40 @@
           },
           "exactPassage": "WHO explicitly recommends that haemoglobin NOT be adjusted for infection/inflammation -- a contextual caveat distinguishing haemoglobin interpretation from inflammation-adjusted iron markers.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+            "section": "Executive summary (p. xiv), Normative statement 2.b",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "haemoglobin, not inflammation-adjusted",
+            "population_or_scope": "all groups including children in infection or inflammation settings",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "World Health Organization",
+              "abbreviation": "WHO"
+            },
+            "restatement": "The WHO recommends that haemoglobin not be adjusted for infection or inflammation when interpreting anaemia cutoffs.",
+            "scope_or_population": "all groups, including children in infection- or inflammation-affected settings"
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -488,6 +1084,32 @@
           },
           "exactPassage": "WHO documents that the 2024 cutoffs update and consolidate a traceable lineage of prior WHO guidance (1968-2005), giving transparent provenance for the thresholds.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": "2024 guideline; ISBN 978-92-4-008854-2",
+            "section": "Introduction / methods narrative",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -518,6 +1140,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "WHO2024_HB",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -553,6 +1192,31 @@
         "Peripheral smear and multi-lineage cytopenia interpretation",
         "Hemolysis, marrow production failure, nutritional, renal, endocrine, infectious, and inherited causes"
       ],
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": "American Society of Hematology",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "BLOOD2022_PED_ANEMIA#ev_001",
@@ -567,6 +1231,32 @@
           },
           "exactPassage": "The review's core framework classifies pediatric anemia first by MCV (microcytic/normocytic/macrocytic) then refines by reticulocyte count — the morphology-first, reticulocyte-response approach the KB relies on.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BLOOD2022_PED_ANEMIA",
+            "edition_or_version": "2022; Blood 2022;140(6):571-593",
+            "section": "Classification of anemia (Figure 2)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "automated analyzer MCV with reticulocyte count",
+            "population_or_scope": "infants and children with anemia",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "figure",
+              "rationale": "The figure itself is not reproduced; the finding is restated in independent prose."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -597,6 +1287,32 @@
           },
           "exactPassage": "The review anchors the normocytic band at MCV 80-100 fL, the only explicit numeric MCV range stated in the source.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BLOOD2022_PED_ANEMIA",
+            "edition_or_version": "2022; Blood 2022;140(6):571-593",
+            "section": "Normocytic anemia",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "automated analyzer MCV",
+            "population_or_scope": "pediatric patients, age band not sub-specified",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -627,6 +1343,32 @@
           },
           "exactPassage": "Reticulocyte count direction (elevated vs low relative to anemia severity) distinguishes an adequate erythropoietic response to blood loss/hemolysis from inadequate marrow production.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BLOOD2022_PED_ANEMIA",
+            "edition_or_version": "2022; Blood 2022;140(6):571-593",
+            "section": "Laboratory investigation",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "reticulocyte count",
+            "population_or_scope": "infants and children with anemia",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -657,6 +1399,32 @@
           },
           "exactPassage": "Peripheral smear morphology (spherocytes, elliptocytes, schistocytes/helmet cells) points to specific hemolytic mechanisms — supporting the KB's smear-interpretation use of this source.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BLOOD2022_PED_ANEMIA",
+            "edition_or_version": "2022; Blood 2022;140(6):571-593",
+            "section": "Laboratory investigation (peripheral blood smear)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "peripheral blood smear microscopy",
+            "population_or_scope": "infants and children with anemia",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -687,6 +1455,32 @@
           },
           "exactPassage": "Multilineage cytopenia — pancytopenia with relative reticulocytopenia, teardrop RBCs, giant platelets, and immature leukocytes — signals marrow replacement, backing the KB's multi-lineage-cytopenia escalation.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BLOOD2022_PED_ANEMIA",
+            "edition_or_version": "2022; Blood 2022;140(6):571-593",
+            "section": "BM replacement syndromes",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "CBC differential with peripheral blood smear",
+            "population_or_scope": "infants and children with anemia plus another cytopenia",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -717,6 +1511,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "BLOOD2022_PED_ANEMIA",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -750,6 +1561,31 @@
         "Urgency tiers and confirmation timelines for higher blood lead levels",
         "Assessment and treatment of coexisting iron deficiency"
       ],
+      "access_basis": "unknown",
+      "license": {
+        "status": "us_federal_government_work",
+        "rights_holder": "US Centers for Disease Control and Prevention",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": true,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "CDC2025_LEAD#ev_001",
@@ -764,6 +1600,36 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "CDC2025_LEAD",
+            "edition_or_version": "clinical guidance updated 2025-08-21",
+            "section": "Initial screening blood lead level",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "blood lead level, capillary or venous",
+            "population_or_scope": "children screened for lead",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Centers for Disease Control and Prevention",
+              "abbreviation": "CDC"
+            },
+            "restatement": "The CDC issues a recommended clinical action for a child whose initial blood lead screening result reaches the reference value, keyed to that lead level.",
+            "scope_or_population": "children whose initial blood lead screening result is at or above the reference value"
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -798,6 +1664,40 @@
           },
           "exactPassage": "A capillary screening result at or above the BLRV must be confirmed with a venous sample before further action.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "CDC2025_LEAD",
+            "edition_or_version": "clinical guidance updated 2025-08-21",
+            "section": "Initial screening blood lead level",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "capillary screen with venous confirmation",
+            "population_or_scope": "children undergoing initial lead screening",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Centers for Disease Control and Prevention",
+              "abbreviation": "CDC"
+            },
+            "restatement": "The CDC recommends confirming a capillary lead screening result at or above the blood lead reference value with a venous sample before further action.",
+            "scope_or_population": "children undergoing initial blood lead screening"
+          },
           "reviewFlags": [
             "overclaims-source-modality"
           ],
@@ -832,6 +1732,43 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "table",
+          "structured_locator": {
+            "source": "CDC2025_LEAD",
+            "edition_or_version": "clinical guidance updated 2025-08-21",
+            "section": null,
+            "table": "Table 1",
+            "row": null,
+            "column": null,
+            "assay_or_method": "confirmatory venous sampling schedule keyed to initial capillary BLL",
+            "population_or_scope": "children with an elevated initial capillary BLL",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": [
+              "row",
+              "column"
+            ]
+          },
+          "not_captured": [
+            {
+              "kind": "table_structure",
+              "rationale": "The table layout and cells are not reproduced; per-value atoms are captured under EPR3-T6, and REG-002 has cleared no verbatim reuse."
+            },
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Centers for Disease Control and Prevention",
+              "abbreviation": "CDC"
+            },
+            "restatement": "The CDC recommends a schedule for obtaining a confirmatory venous sample after an elevated initial capillary blood lead result, with timing keyed to that result.",
+            "scope_or_population": "children with an elevated initial capillary blood lead level"
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -866,6 +1803,40 @@
           },
           "exactPassage": "For a confirmed BLL of 3.5-19 µg/dL, CDC directs providers to test for and treat iron deficiency per AAP guidelines.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "CDC2025_LEAD",
+            "edition_or_version": "clinical guidance updated 2025-08-21",
+            "section": "BLL 3.5–19 micrograms per deciliter, iron-deficiency bullet",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "iron-deficiency testing deferred to AAP guidance",
+            "population_or_scope": "children with confirmed BLL 3.5–19 µg/dL",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Centers for Disease Control and Prevention",
+              "abbreviation": "CDC"
+            },
+            "restatement": "The CDC recommends testing for and treating iron deficiency, following AAP guidance, for a child with a confirmed blood lead level in the lower elevated range.",
+            "scope_or_population": "children with a confirmed blood lead level of 3.5-19 ug/dL"
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -896,6 +1867,40 @@
           },
           "exactPassage": "CDC defines escalating action tiers at 20-44 µg/dL (history/physical, environmental investigation, PEHSU/Poison Control contact) and ≥45 µg/dL (highest tier: detailed neuro exam, possible hospital admission, toxicologist consult for chelation).",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "CDC2025_LEAD",
+            "edition_or_version": "clinical guidance updated 2025-08-21",
+            "section": "BLL 20–44 and ≥45 micrograms per deciliter action tiers",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "action tiers keyed to confirmed venous BLL",
+            "population_or_scope": "children with confirmed BLL 20–44 or ≥45 µg/dL",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Centers for Disease Control and Prevention",
+              "abbreviation": "CDC"
+            },
+            "restatement": "The CDC recommends escalating tiers of clinical and environmental action at successively higher confirmed blood lead levels, up to a highest tier with specialist consultation and possible chelation.",
+            "scope_or_population": "children with a confirmed blood lead level of 20-44 ug/dL or of 45 ug/dL or higher"
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -926,6 +1931,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "CDC2025_LEAD",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -958,6 +1980,31 @@
         "Need for a health care professional to independently review the basis of recommendations",
         "Regulatory importance of intended use, time criticality, and specificity of outputs"
       ],
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": "US Food and Drug Administration",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "FDA2026_CDS#ev_001",
@@ -972,6 +2019,40 @@
           },
           "exactPassage": "FDA states a CDS software function is excluded from the device definition under section 520(o)(1)(E) only if it meets all four listed non-device CDS criteria.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "FDA2026_CDS",
+            "edition_or_version": "final guidance, January 2026",
+            "section": "II (Background), four-criteria enumeration (pp. 5–6)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Food and Drug Administration",
+              "abbreviation": "FDA"
+            },
+            "restatement": "The FDA states that a clinical-decision-support software function falls outside the medical-device definition only when it satisfies all four of the enumerated non-device CDS criteria.",
+            "scope_or_population": null
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -1002,6 +2083,36 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "FDA2026_CDS",
+            "edition_or_version": "final guidance, January 2026",
+            "section": "II (Background), Criterion 4 (p. 6); IV(4) (pp. 14–15)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Food and Drug Administration",
+              "abbreviation": "FDA"
+            },
+            "restatement": "The FDA sets out the fourth of its four non-device clinical-decision-support criteria.",
+            "scope_or_population": null
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1036,6 +2147,36 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "FDA2026_CDS",
+            "edition_or_version": "final guidance, January 2026",
+            "section": "IV(3) Interpretation of Criterion 3 (pp. 10–11)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Food and Drug Administration",
+              "abbreviation": "FDA"
+            },
+            "restatement": "The FDA gives its interpretation of the third non-device clinical-decision-support criterion.",
+            "scope_or_population": null
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1070,6 +2211,36 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "FDA2026_CDS",
+            "edition_or_version": "final guidance, January 2026",
+            "section": "IV(4)(a) Interpretation of Criterion 4 (p. 14)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Food and Drug Administration",
+              "abbreviation": "FDA"
+            },
+            "restatement": "The FDA gives its interpretation of the fourth non-device clinical-decision-support criterion.",
+            "scope_or_population": null
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1104,6 +2275,36 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "FDA2026_CDS",
+            "edition_or_version": "final guidance, January 2026",
+            "section": "IV(4) Interpretation of Criterion 4 (p. 15)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Food and Drug Administration",
+              "abbreviation": "FDA"
+            },
+            "restatement": "The FDA further interprets the fourth non-device clinical-decision-support criterion.",
+            "scope_or_population": null
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1138,6 +2339,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "FDA2026_CDS",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1171,6 +2389,31 @@
         "Repeat testing when clinical suspicion remains"
       ],
       "recencyNote": "Retained as a foundational laboratory guideline because no newer replacement was identified in the prioritized review set.",
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": "British Society for Haematology",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "BSH2020_G6PD#ev_001",
@@ -1185,6 +2428,40 @@
           },
           "exactPassage": "G6PD deficiency should be diagnosed by measuring enzyme activity directly with a quantitative spectrophotometric assay, and a quantitative assay must follow any abnormal or borderline screening test.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": "Recommendations: Laboratory diagnosis (p. 5)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "quantitative spectrophotometric G6PD activity assay",
+            "population_or_scope": "patients suspected of G6PD deficiency, all ages",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "British Society for Haematology",
+              "abbreviation": "BSH"
+            },
+            "restatement": "The BSH recommends diagnosing G6PD deficiency by directly measuring enzyme activity with a quantitative spectrophotometric assay, with a quantitative assay following any abnormal or borderline screening test.",
+            "scope_or_population": "patients of any age suspected of G6PD deficiency"
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -1215,6 +2492,28 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": "Factors affecting clinical interpretation (p. 6)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "quantitative G6PD assay read with the reticulocyte count",
+            "population_or_scope": "patients tested during or after acute hemolysis, all ages",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1249,6 +2548,36 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": "Factors affecting clinical interpretation (p. 6); Recommendations: Laboratory diagnosis (p. 5)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "repeat quantitative G6PD assay after reticulocytosis resolves",
+            "population_or_scope": "patients with normal or equivocal initial assay, all ages",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "British Society for Haematology",
+              "abbreviation": "BSH"
+            },
+            "restatement": "The BSH addresses factors affecting clinical interpretation of a G6PD assay when an initial result is normal or equivocal in a patient with unexplained haemolysis.",
+            "scope_or_population": "patients of any age with a normal or equivocal initial G6PD assay"
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1283,6 +2612,40 @@
           },
           "exactPassage": "In a recently transfused patient a G6PD deficiency may be masked, so molecular analysis should be considered when a precise diagnosis is needed.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "guideline_recommendation",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": "Molecular diagnosis (p. 7)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "molecular or DNA analysis where enzyme assay is unreliable",
+            "population_or_scope": "recently transfused patients or heterozygous females, all ages",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "prose",
+              "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
+            }
+          ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "British Society for Haematology",
+              "abbreviation": "BSH"
+            },
+            "restatement": "The BSH recommends considering molecular analysis when a precise G6PD diagnosis is needed and recent transfusion may mask the deficiency.",
+            "scope_or_population": "recently transfused patients or heterozygous females, any age"
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -1313,6 +2676,35 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "reference_interval_value",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "table",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": null,
+            "table": "Table I",
+            "row": null,
+            "column": null,
+            "assay_or_method": "residual G6PD activity as percentage of normal, quantitative assay",
+            "population_or_scope": "hemizygous males",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": [
+              "row",
+              "column"
+            ]
+          },
+          "not_captured": [
+            {
+              "kind": "table_structure",
+              "rationale": "The table layout and cells are not reproduced; per-value atoms are captured under EPR3-T6, and REG-002 has cleared no verbatim reuse."
+            },
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1347,6 +2739,37 @@
           },
           "exactPassage": "The guideline gives adult normal-range G6PD activity reference values in international units per gram of haemoglobin at 30 C and 37 C.",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": "Normal values, adult reference values (p. 6)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "quantitative spectrophotometric assay at 30 °C and 37 °C, per gram haemoglobin",
+            "population_or_scope": "adults",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Only an independently worded paraphrase is stored; the exact source phrasing is not retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "The reported numeric G6PD reference values are not carried on this summary record: they are absent from the retrievable in-repo provenance, so numeric_recapture resolves to no_reported_value_available rather than to atoms (EPR3-T6; no invented thresholds)."
+            }
+          ],
+          "numeric_recapture": {
+            "resolution": "no_reported_value_available",
+            "reason": "The adult G6PD-activity reference values at 30 C and 37 C (expressed per gram haemoglobin) are absent from the retrievable in-repo provenance: the source is quarantined and the EP3-T5 extraction retained no numeric value for them (finding EP3T5-F06 records only that they were dropped). No value is authored or interpolated here (no invented thresholds). The qualitative facts — adult-only applicability, temperature dependence, the 6-PGD-correction distinction, and the units — remain on the parent passage.",
+            "atoms": []
+          },
           "reviewFlags": [
             "omits-source-numerics"
           ],
@@ -1381,6 +2804,28 @@
           },
           "exactPassage": "[withheld pending REG-002 content-rights clearance]",
           "passageFidelity": "withheld",
+          "evidence_item_type": "observed_finding",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "prose",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": "2020; Br J Haematol 2020;189(1):24-38",
+            "section": "Normal values, newborn and premature (p. 6)",
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": "quantitative G6PD assay; adult ranges do not apply to neonates",
+            "population_or_scope": "newborns and premature infants 29–32 weeks gestation",
+            "retrieved_at": "2026-07-18",
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
+            }
+          ],
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1415,6 +2860,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "BSH2020_G6PD",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1434,5 +2896,6 @@
         }
       ]
     }
-  ]
+  ],
+  "derived_syntheses": []
 }

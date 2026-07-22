@@ -1,0 +1,43 @@
+{
+  "cases": [
+    {
+      "caseId": "e0-dangerous-miss-marrow-redflag-vs-benign-neutropenia",
+      "input": {
+        "cbc": {
+          "hemoglobin": 9.5,
+          "localFlags": {
+            "neutropenia": true
+          }
+        },
+        "patient": {
+          "ageMonths": 24,
+          "sexAtBirth": "male"
+        }
+      },
+      "provenance": "synthetic",
+      "referenceLabels": {
+        "candidatePatternIds": [
+          "benign-ethnic-neutropenia-differential-pattern"
+        ],
+        "dangerousMissExpected": true,
+        "missingDataPromptIds": [],
+        "safetyFlagIds": [
+          "CBC-MARROW-REDFLAG-001"
+        ]
+      },
+      "sourceRef": "tests/ef-cbc_suite_v1-dangerous-miss.test.mjs#dangerousMissInput",
+      "tags": [
+        "dangerous-miss-regression",
+        "e0-adapter",
+        "cbc_suite_v1"
+      ]
+    }
+  ],
+  "corpusId": "e0-dangerous-miss-cbc-suite-v1",
+  "description": "P4-T8 (FR-26, PRD OQ-6) deterministic promotion of E0's tests/ef-cbc_suite_v1-dangerous-miss.test.mjs dangerous-miss fixture into the retro-validate harness's fixture-corpus envelope. Zero content mutation: `input` below is extracted verbatim from the E0 source's own dangerousMissInput() literal, not re-derived or hand-copied -- the E0 test file remains the single source of truth. Proves the marrow-red-flag safety alert (CBC-MARROW-REDFLAG-001) activates and is not suppressed by a co-occurring benign neutropenia-differential candidate match (benign-ethnic-neutropenia-differential-pattern) -- the \"benign high-scoring candidate distracting from a higher-severity alert\" hazard (`02 §5.4`).",
+  "schemaVersion": 1,
+  "sourceAttestation": {
+    "provenanceClass": "synthetic",
+    "ref": "tests/ef-cbc_suite_v1-dangerous-miss.test.mjs"
+  }
+}

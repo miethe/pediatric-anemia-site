@@ -1,0 +1,24 @@
+# tests/fixtures/ef-review-record-cli/modules/fixture_module_v1/reviews/rr-0001-clinical-1.yaml
+#
+# P2-T1 CLI-test fixture ONLY -- hand-authored to exercise `tools/review-record/cli.mjs list`
+# against a valid, well-formed chain. Lives entirely under tests/fixtures/, never under a real
+# modules/<id>/reviews/ path, so it can never be mistaken for a real review act and never fires
+# scripts/validate-kb.mjs's runtime modules/<id>/reviews/*.yaml scan. synthetic: true throughout --
+# not a real, gate-cleared clinical review act; "fixture_module_v1" is not a real module id.
+
+schemaVersion: 1
+review_id: rr-0001-clinical-1
+role: clinical-1
+moduleId: fixture_module_v1
+subjectContentHash: sha256:537d2dcf29f8e2871a4b91129ec3da3d0012d48ee90af0784ea8c93db7398c6d
+previousRecordHash: null
+supersedes: null
+reviewerId: synthetic-reviewer-1
+decision: approve
+rationale: Synthetic dry-run fixture exercising the P2-T1 list verb only -- not a real clinical review act.
+reviewedAt: 2026-01-01T00:00:00Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-ef-e1-p2t1-fixture-clinical-1
+  value: ZmFrZS1zaWduYXR1cmUtZml4dHVyZS0x

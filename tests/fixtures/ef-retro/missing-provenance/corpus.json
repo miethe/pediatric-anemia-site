@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ef-retro-missing-provenance",
+  "description": "R-P2 seeded violation: a case lacking the required `provenance` marker (FR-20). Must be rejected fail-closed.",
+  "sourceAttestation": {
+    "ref": "synthetic-generation-note-002",
+    "provenanceClass": "synthetic"
+  },
+  "cases": [
+    {
+      "caseId": "case-001",
+      "input": {
+        "patient": { "ageMonths": 12 },
+        "cbc": { "hemoglobin": 10.1 }
+      }
+    }
+  ]
+}

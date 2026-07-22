@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ef-retro-identifier-input-patient-nested",
+  "description": "Seeded P4 fix-cycle violation (BLOCKER b, Codex second-opinion review): a case whose nested `input.patient` clinical sub-object carries an identifier-shaped field (`name`) that the top-level `case` property whitelist cannot see, because `input` is opaque to it. Previously validated cleanly because `clinicalInput.properties.patient` was `true` (unrestricted). Must now be rejected fail-closed by the schema layer's closed, patient-input-mirrored `clinicalPatient` shape.",
+  "sourceAttestation": {
+    "ref": "synthetic-generation-note-010",
+    "provenanceClass": "synthetic"
+  },
+  "cases": [
+    {
+      "caseId": "case-001",
+      "provenance": "synthetic",
+      "input": {
+        "patient": { "ageMonths": 12, "name": "Jane Q. Testcase" }
+      }
+    }
+  ]
+}

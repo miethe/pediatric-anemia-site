@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "version": "0.1.0-fixture",
+      "moduleId": "not_a_real_module",
+      "packDigest": "sha256:ef1adfb4d4e2640812f9d1de363c68c979c9c159b60ede121376e1befbe7212c",
+      "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": null,
+      "signedAt": null,
+      "supersedes": null,
+      "withdrawalState": "none",
+      "withdrawnAt": null,
+      "withdrawalReason": null
+    }
+  ]
+}

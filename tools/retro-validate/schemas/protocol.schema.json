@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/tools/retro-validate/schemas/protocol.schema.json",
+  "title": "Retrospective Validation Prespecified Protocol — Human-Only Thresholds",
+  "description": "Evidence Foundry E1 Phase 4 (FR-24, OQ-5, ADR-0006). TOOL-LOCAL BY DESIGN, same posture as fixture-corpus.schema.json (tools/retro-validate/schemas/, not schemas/, so no wave-2 phase touches scripts/validate-kb.mjs). Shapes the ONE kind of prespecified validation protocol document `report --protocol <path>` may ever accept: every threshold-bearing field below is `const: null` -- structurally TBD-by-named-humans. This is not a placeholder default that happens to be null today; there is no value other than `null` that satisfies this schema for any threshold field, in Evidence Foundry E1. A document that declares a real (non-null) dangerous-miss rate, utility-measure, or per-stratum threshold FAILS this schema and is rejected fail-closed by `lib/protocol.mjs#assertProtocolShape` before `report` computes or writes anything. Populating a real threshold, and rendering any report software-qualifying against one, are human governance acts entirely outside this schema and this tool (see `lib/metrics.mjs#evaluateProtocolQualification`, which independently never returns `qualifying: true` regardless of this schema's own gate). Passing this schema is a STRUCTURAL claim only -- it never certifies clinical validity, statistical power, IRB/DUA compliance, or that any named human has actually reviewed or pinned real values (this schema cannot, and does not try to, verify that `authoredBy` entries are real people).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "protocolId", "authoredBy", "thresholds"],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "REQUIRED, non-null. Integer protocol-document-shape version, bumped only when this schema's own shape changes. The one metadata field `lib/metrics.mjs#findPopulatedProtocolFields` allowlists as not counting toward a document's own \"populated\" detection."
+    },
+    "protocolId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Stable slug identifying this protocol document (e.g. for future run-provenance cross-reference). Never a patient identifier."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Free-text human summary of this protocol's intended scope (e.g. which module/candidate it will eventually apply to). Must never declare, imply, or approximate a real threshold value in prose -- that would defeat the structural `const: null` guarantee below by smuggling a number into free text; this field is not, and cannot be, schema-checked against that."
+    },
+    "authoredBy": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/namedHumanAuthor" },
+      "description": "REQUIRED, non-empty. The named human(s) who own this protocol document -- FR-24's \"TBD-by-named-humans\" is an authorship requirement, not merely a null-threshold requirement: a protocol with no named human owner still cannot ever be treated as prespecified by anyone. This schema cannot verify these are real people; it only enforces the shape."
+    },
+    "thresholds": { "$ref": "#/$defs/thresholds" }
+  },
+  "$defs": {
+    "namedHumanAuthor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "role"],
+      "description": "One named human protocol owner/author. Never a synthetic or software-generated identity in a real (non-fixture) protocol document -- this schema cannot enforce that distinction structurally, so it remains a human/governance obligation, exactly like `sourceAttestation` in fixture-corpus.schema.json.",
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "role": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dangerousMissRateThreshold", "utilityMeasures", "strata"],
+      "description": "REQUIRED. Every leaf threshold value under this object is `const: null` in Evidence Foundry E1 -- software never invents or defaults a clinical threshold. A future, out-of-repo human governance act (gate G3 and beyond, never a task in this plan) is the only way any of these fields could ever carry a real value, and even then, honoring it against a report is a human verdict, never something this tool or schema performs.",
+      "properties": {
+        "dangerousMissRateThreshold": {
+          "const": null,
+          "description": "The maximum acceptable dangerous-miss rate a future human-authored protocol would pin. `const: null` in E1: TBD-by-named-humans, never software-set."
+        },
+        "utilityMeasures": { "$ref": "#/$defs/utilityMeasures" },
+        "strata": { "$ref": "#/$defs/strata" }
+      }
+    },
+    "utilityMeasures": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sensitivityThreshold",
+        "specificityThreshold",
+        "positivePredictiveValueThreshold",
+        "negativePredictiveValueThreshold"
+      ],
+      "description": "REQUIRED. Slots for the clinical-utility thresholds a future human-authored protocol would pin (never computed, claimed, or defaulted by this tool -- see `lib/metrics.mjs`'s own header for where the line between software-agreement measures and these human-only thresholds sits). Every field is `const: null` in E1.",
+      "properties": {
+        "sensitivityThreshold": { "const": null, "description": "`const: null` in E1: TBD-by-named-humans." },
+        "specificityThreshold": { "const": null, "description": "`const: null` in E1: TBD-by-named-humans." },
+        "positivePredictiveValueThreshold": { "const": null, "description": "`const: null` in E1: TBD-by-named-humans." },
+        "negativePredictiveValueThreshold": { "const": null, "description": "`const: null` in E1: TBD-by-named-humans." }
+      }
+    },
+    "strata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subgroup", "analyzer", "site"],
+      "description": "REQUIRED object naming the three stratification axes a future human-authored protocol may define per-stratum thresholds against (subgroup, analyzer/instrument, and originating site). Each axis is an array (possibly empty in a not-yet-fully-specified protocol) of `$defs/stratumThreshold` entries -- every entry's own threshold field is `const: null`, exactly like the top-level thresholds above.",
+      "properties": {
+        "subgroup": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/stratumThreshold" },
+          "description": "Patient-subgroup strata (e.g. an age band or clinical presentation group a future protocol would stratify on)."
+        },
+        "analyzer": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/stratumThreshold" },
+          "description": "Analyzer/instrument strata (e.g. a specific hematology analyzer model a future protocol would stratify on)."
+        },
+        "site": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/stratumThreshold" },
+          "description": "Originating clinical-site strata a future protocol would stratify on."
+        }
+      }
+    },
+    "stratumThreshold": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stratumName", "dangerousMissRateThreshold"],
+      "description": "One named stratum within a `strata` axis, carrying its own `const: null` dangerous-miss-rate threshold slot -- a per-stratum threshold is exactly as human-only as the top-level one.",
+      "properties": {
+        "stratumName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "description": "Human-readable name of this stratum (e.g. \"age 6-24mo\", \"Sysmex XN-1000\", \"site-b\"). Never a patient identifier."
+        },
+        "dangerousMissRateThreshold": {
+          "const": null,
+          "description": "`const: null` in E1: TBD-by-named-humans for this specific stratum."
+        }
+      }
+    }
+  }
+}

@@ -288,6 +288,53 @@ today, §6) and a distinct impact-analysis field beyond `changeRationale`.
 
 Avoid executable code inside clinical rules. Calculated facts should be a small, reviewed, unit-tested library.
 
+### Rights and evidence provenance (Phase EP-R0)
+
+**Shipped (Phase EP-R0).** The repository's rights position is machine-checkable via a dedicated,
+top-level `rights/` tree — a rights record is never inlined into any clinical KB JSON file
+(`rules.json`, `candidates.json`, `evidence.json`, `reference-ranges.json`); the only link between a
+clinical identifier and a rights record is the join ledger below (D4 of this feature's decisions
+block). The tree holds addressable provenance and structured locators only — never third-party full
+text, tables, figures, or brand assets (D1).
+
+- `rights/release-context.json` — the single declared scope of what this platform currently claims
+  for itself: `commercial: false`, `use_type: internal_research`, US-only, internal-engineering-
+  channel-only. Every future requested use is checked for *containment* within this declared scope;
+  the file is never widened to fit a request.
+- `rights/rights-records.json` — one `rights_record` per cited source (today: 6, one per
+  `modules/anemia/evidence.json` source), each seeded at `overall_status: UNKNOWN` and
+  `review.review_status: agent_triage_only`. No source in this knowledge base has been cleared,
+  licensed, or approved for any use; no agent-writable path may ever assign a `CLEARED_*` status,
+  and `review.human_reviewer`/`review.counsel_reviewer` are schema-forced `null` (D6 — no clinical
+  or rights sign-off exists in this project and none may be manufactured).
+- `rights/rights-failures.json` — cross-linked, pre-existing open rights problems (the REG-002
+  content-rights review, and the EP3-T5 passage-fidelity audit's near-verbatim-span and
+  source-unretrievable findings), never a newly agent-invented finding; every `review.reviewed_by`
+  stays schema-forced empty.
+- `rights/rights-ledger.json` — the sole bidirectional join between a clinical KB identifier and a
+  `rights/` record.
+- `schemas/rights/*.schema.json` — the five Research Foundry Rights Governance Spec v1.0 schemas,
+  vendored byte-for-byte, with every subsequent divergence recorded as a **declared amendment**
+  (`schemas/rights/VENDORING.md`) rather than a silent edit.
+
+`scripts/validate-rights.mjs` (wired into `npm run validate`) ships four gates: bidirectional
+clinical-identifier ↔ rights-record coverage, closed-enum membership on the fields that govern
+release-blocking behaviour, open-failure cross-link presence, and release-context set-containment.
+Every gate is **coverage- or consistency-shaped only** (D7) — none of them reads *which* legitimate
+value a clearance-relevant field holds and fails because of it; a record sitting at
+`overall_status: UNKNOWN` passes every gate exactly as a record at `PROHIBITED` would. No gate in
+this repository ever approves, licenses, or clears a source — that determination has no automated
+path here and requires a named human rights owner who does not yet exist (open question OQ-2).
+
+**Residual gap R-1 (open, not closed).** Prohibited-excerpt detection — proving no restricted
+source text has entered the repository — is **not fully deterministic**: a sound comparison would
+require holding the restricted source text in-repo, which the no-third-party-text rule (D1) forbids
+doing in the first place. The interim substitute is the existing `passageFidelity !== 'verbatim'`
+policy check plus a structural negative-asset check over the working tree (no reproduced table,
+figure, image, or brand asset). That substitute is a *positive* structural proof, not a guarantee
+that every possible verbatim reuse is caught, and is recorded here as an open gap, not a closed one
+(`.claude/findings/rights-governance-spec-v1.0-review-findings.md` §5).
+
 ## 8. FHIR integration proposal
 
 Potential read resources:
@@ -341,3 +388,102 @@ loudly (`server.mjs` logs a warning at startup); `null` must never be read as "c
 or as "never expires."
 
 A failed system displays a clear "no assessment produced"/refusal-to-start state, not stale or partially calculated advice.
+
+## 11. Review workflow (Evidence Foundry E1)
+
+**Status: unvalidated research prototype.** Every act described in this section is machinery that
+records or renders a human decision — it never makes, substitutes for, or implies one. No human
+clinician review has occurred; nothing here is or may be read as clinical sign-off.
+
+`tools/review-record/` implements ADR-0004's recommended default (`docs/adr/0004-clinical-approval-identity-adjudication.md`,
+`status: proposed` — not yet ratified, gate G0) as the software machinery for the five-role review
+record chain: `clinical-1`, `clinical-2`, `lab`, `adjudication`, `release-auth`, one append-only
+`modules/<module_id>/reviews/rr-<seq4>-<role>.yaml` file per review act, never mutated in place —
+corrections are new superseding records. `scaffold` builds a draft; `validate` fail-closes on schema
+shape, roster resolution, chain linkage, and signature verification; `dry-run` composes all three
+into a single synthetic end-to-end pass; `render` writes a self-contained, read-only static HTML
+view (`build/review-render/`, git-ignored) — explicitly not a portal: no server, no auth, no write
+path back into `modules/`. Full mechanism detail (store layout, chain hashing, signature binding,
+adjudication/release-authorization rules, the two append-only enforcement layers) lives in
+`tools/review-record/README.md`; this section only orients where the tool sits architecturally.
+
+**Roster and independence.** Reviewer identity resolves against `governance/reviewer-roster.yaml`,
+which ships with zero real (`synthetic: false`) entries — every entry usable today is a labeled
+synthetic dry-run persona, and no roster content can currently satisfy a release-authorization
+check (`docs/governance/gates-registry.md`, gate G1). Reviewer-2 independence is enforced both
+structurally (the scaffold path never reads a sibling record's content) and by a supplementary
+textual-overlap heuristic; append-only history is enforced by both an in-record hash chain and an
+opt-in git-history walk.
+
+**Human gates.** Clearing G1 (naming a real, credentialed reviewer roster) and G4 (a signed
+release-authorization record from an authorized role) are external human acts this codebase cannot
+perform for itself — see `docs/governance/gates-registry.md` for the full owner-role, entry-criteria,
+and schema-forced-inert mechanism for each. No task, agent, or plan in this repository clears a
+gate; the schema-forced-empty roster and the `unsigned-stub → release-ready` transition being
+schema-impossible pre-G1/G4 hold that boundary today, independent of anyone remembering to enforce
+it by convention.
+
+## 12. Release signing & registry (Evidence Foundry E1)
+
+**Status: unvalidated research prototype.** A structurally valid signature or registry entry
+produced by this machinery never implies clinical validity, safety, or release authorization — see
+`docs/adr/0005-kb-serialization-signing-key-custody.md`.
+
+`tools/release-sign/` signs, registers, and verifies release candidates built by the E0 converter
+(`tools/rf-bundle-to-kb-pack`) — it never authors or re-serializes clinical content. Its binding
+constraint (ADR-0005): the signing preimage is always the exact canonical bytes E0's `propose` verb
+already wrote to `release-manifest.unsigned.json`, read back verbatim and never re-parsed or
+re-ordered — "signing anything other than the exact canonical bytes already hashed... would
+silently reopen the non-deterministic-serialization risk." `register` appends a candidate to the
+append-only `releases/registry.json` (seeded empty, `schemaVersion: 1, entries: []`), re-deriving
+its digests from a fresh disk read rather than trusting the candidate document, and rejecting any
+non-dry-run candidate carrying a populated signature, a duplicate module/version entry, or a
+mutation of an existing entry.
+
+**CI posture is verify-only.** `verify` is the sole CI/agent-reachable surface of this tool — it
+never imports a signing primitive, only read-only verification, and fails closed across a
+documented multi-class exit-code taxonomy (byte drift, digest mismatch, unknown `keyId`, registry
+inconsistency, nested-manifest laundering). `sign`'s `--dry-run` mode is the only mode any automated
+check may invoke: it generates a fresh, in-memory-only Ed25519 keypair, forces a `TESTKEY-`-prefixed
+`keyId`, and discards the private key before returning. Real (non-dry-run) signing is designed for
+human offline execution only, at gate G2's signing ceremony (`docs/governance/signing-ceremony-runbook.md`),
+and is never exercised by any automated check in this repository.
+
+**G2 custody boundary (per gates-registry.md adjudication A2).** `schemas/release-manifest.schema.json`'s
+`signature` slot and `schemas/release-registry.schema.json`'s `signature`/`signedAt` fields are
+`const null` on every real candidate — populated only under the structural dry-run marker, and even
+then only with a `TESTKEY-`-prefixed `keyId`. The named signing custodian who would hold a real key
+must be a role structurally distinct from whoever authors or proposes the release content, and
+neither this repository's CI pipeline nor any agent running inside it may ever hold, generate for
+persistent use, or access that key — the SPIKE-006 finding this reconciliation exists to close.
+Raising either forced-empty ceiling outside a real G2 clearance is a defect, never a feature.
+Full verb-level detail (module boundary, exit-code taxonomy, usage examples) lives in
+`tools/release-sign/README.md`.
+
+## 13. Retrospective validation harness (Evidence Foundry E1)
+
+**Status: unvalidated research prototype.** Every metric this harness emits is a **software-agreement**
+measure — agreement between a pinned engine build's output and a fixture's own reference labels —
+never sensitivity, specificity, clinical performance, or any other clinical-validity claim.
+
+`tools/retro-validate/` implements ADR-0006: replaying a version-pinned candidate build against a
+fixtures-only corpus. Its input boundary (`check-fixtures`, called first by every other verb,
+never bypassable) is a two-layer, fail-closed de-identification gate — a JSON-schema structural
+check plus a procedural identifier-denylist scan — that structurally rejects any fixture lacking a
+synthetic/de-identified provenance marker. `run` resolves the candidate build exclusively via a
+registry-entry `packDigest` match (never "the current tree") and replays every corpus case through
+the deterministic engine, writing canonical, timestamp-free output; two runs over an identical
+input triple are byte-identical. `report` reads that output and computes exactly the five OQ-5
+software-agreement measures, plus a structurally-always-non-qualifying protocol banner — no
+`--protocol` document can ever flip a report to "qualifying." `lib/discordance.mjs` offline-converts
+a disagreeing case into an adjudication-ready record consumable by `tools/review-record`'s own
+`scaffold --role adjudication` verb, closing the loop back into §11's review chain. Full mechanism
+and verb-level detail lives in `tools/retro-validate/README.md`.
+
+**G3 boundary.** Real, patient-derived case data entering this harness, this repository, or any
+build output is blocked behind gate G3 — a data-source SPIKE go/no-go verdict plus an executed
+data-use agreement with an external, pre-de-identifying data partner, both named human acts
+(`docs/governance/gates-registry.md`). `docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md`
+is the charter for that future work — authored, explicitly not run. Clearing G3 does not, by
+itself, flip the harness's structural fixture-only rejection off; that remains a separate,
+independently reviewed implementation change this repository has not made.

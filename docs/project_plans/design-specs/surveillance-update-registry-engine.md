@@ -5,7 +5,7 @@ title: "Evidence Foundry: Surveillance/Update/Registry Engine (DF-E2-01)"
 status: draft
 maturity: shaping
 created: 2026-07-21
-updated: 2026-07-21
+updated: 2026-07-22
 feature_slug: evidence-foundry-buildout
 prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md
@@ -69,6 +69,22 @@ produced by this feature is clinically released), and no monitoring surface. `rf
 already has a catalog (`GET $RF_API_URL/api/catalog/search`) that can answer "does a verified claim
 already exist," but nothing polls it on a cadence, diffs new editions against an active bundle, or
 classifies the result.
+
+## E1 State (Phase 5, 2026-07-22)
+
+`evidence-foundry-e1-v1` (the plan that follows this one) built the two pieces of machinery this
+engine's promotion trigger names, but did not clear that trigger. `ADR-0005`'s signing/registry shape
+now has real code: `tools/release-sign` implements `manifest`/`sign`/`verify`/`register`, and
+`releases/registry.json` exists as a committed, schema-valid registry file — but it ships with
+**zero entries** (`{"schemaVersion": 1, "entries": []}`), matching this row's own deferred-items
+characterization ("E1 ships only the registry seed"). No entry in it is, or can yet be, a real signed
+release: `schemas/release-manifest.schema.json`'s signature slot stays `const null` outside a
+structurally-marked dry-run entry (`TESTKEY-` prefix only) pre-**G2** (signing custodian + offline key
+ceremony, `docs/governance/gates-registry.md`), and no `release-auth` review record can exist
+pre-**G1** (reviewer-roster credentialing). This engine's promotion trigger — "E1 signed release +
+registry exist" — therefore remains unmet: the registry *shape* exists and is exercised end-to-end by
+E1's own dry-run integration test (`tests/ef-e2e-dryrun.test.mjs`), but a first *real* signed release
+does not, and this spec stays `maturity: shaping` until one does.
 
 ## Design Sketch
 

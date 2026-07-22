@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "id": "RR-2026-003",
+  "changeProposal": {
+    "proposalId": "CP-2026-003",
+    "title": "Poisoned fixture -- D-4 violation, must fail closed",
+    "summary": "A decided reviewer entry whose reviewerType is not \"human\" (an automated/ARC/model source). This fixture exists ONLY to prove tools/review-record/lib/wave0-migration.mjs refuses to map it -- it must never validate against any canonical schema and must never be treated as a real proposal.",
+    "targetArtifacts": ["modules/anemia/candidates.json"],
+    "proposedBy": "test fixture (P1-T3)",
+    "proposedAt": "2026-07-08T10:00:00Z",
+    "rationale": "Exists to exercise the fail-closed path of the migration mapper; not a real change proposal."
+  },
+  "workflowState": "approved",
+  "reviewers": [
+    {
+      "reviewerId": "REV-901",
+      "name": "council-run-901",
+      "credential": "N/A",
+      "reviewerType": "automated",
+      "role": "primary-reviewer",
+      "decision": "approve",
+      "attestedHuman": false,
+      "comment": "D-4 poison: this entry must never be accepted as a reviewer or approver by any consumer of this schema.",
+      "decidedAt": "2026-07-08T12:00:00Z"
+    },
+    {
+      "reviewerId": "REV-002",
+      "name": "Dr. B. Okonkwo",
+      "credential": "DO, General Pediatrics",
+      "reviewerType": "human",
+      "role": "secondary-reviewer",
+      "decision": "approve",
+      "attestedHuman": true,
+      "comment": "Placeholder second reviewer -- irrelevant, the mapper must fail closed on REV-901 before this entry is ever reached.",
+      "decidedAt": "2026-07-08T13:00:00Z"
+    }
+  ],
+  "conflictResolution": null,
+  "approvedBy": ["council-run-901", "Dr. B. Okonkwo"],
+  "history": [
+    {
+      "state": "proposed",
+      "enteredAt": "2026-07-08T10:00:00Z",
+      "actor": "system:proposal-intake",
+      "note": "Change proposal CP-2026-003 filed."
+    },
+    {
+      "state": "approved",
+      "enteredAt": "2026-07-08T13:00:00Z",
+      "actor": "system:review-assignment",
+      "note": "Poisoned fixture: an automated reviewerType reached an approve decision. Never a legitimate wave0 record."
+    }
+  ],
+  "createdAt": "2026-07-08T10:00:00Z",
+  "updatedAt": "2026-07-08T13:00:00Z"
+}

@@ -1,0 +1,24 @@
+# tests/fixtures/ef-review-record-cli/modules/nonroster_reviewer_v1/reviews/rr-0001-clinical-1.yaml
+#
+# P2-T2 CLI-test fixture ONLY -- SEEDED VIOLATION. `reviewerId` below ("not-a-roster-reviewer") does
+# not appear anywhere in tests/fixtures/ef-review-record-cli/governance/reviewer-roster.yaml
+# (sibling fixture root), exercising `cli.mjs validate --module nonroster_reviewer_v1`'s D-4 roster
+# resolution check (FR-3: unknown identity fails closed). This record is otherwise fully schema-
+# shaped and self-consistent -- the ONLY violation this fixture is meant to trigger is the roster one.
+
+schemaVersion: 1
+review_id: rr-0001-clinical-1
+role: clinical-1
+moduleId: nonroster_reviewer_v1
+subjectContentHash: sha256:537d2dcf29f8e2871a4b91129ec3da3d0012d48ee90af0784ea8c93db7398c6d
+previousRecordHash: null
+supersedes: null
+reviewerId: not-a-roster-reviewer
+decision: approve
+rationale: "Seeded-violation fixture: this reviewerId is deliberately absent from the fixture roster."
+reviewedAt: 2026-01-01T00:00:00Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-ef-e1-p2t2-fixture-nonroster-clinical-1
+  value: ZmFrZS1zaWduYXR1cmUtbm9ucm9zdGVyLTE=

@@ -47,8 +47,9 @@ patient JSON → deriveFacts() (src/facts.js, shim over modules/anemia/facts.ane
   (`clinicalApprovers[]`/`approvedBy[]` stay schema-forced empty; no clinical sign-off exists).
 - Module package architecture: see `docs/architecture.md` §2a.
 - API: `GET /health`, `GET /api/v1/knowledge-base`, `POST /api/v1/assess` (`server.mjs`, `openapi.yaml`).
-- **Gate before commit:** `npm run check` (= `npm test` + `npm run validate` + `npm run build` +
-  `npm run check:imports` + `npm run smoke`). All must pass. Node ≥ 20.
+- **Gate before commit:** `npm run check` (= `npm test && npm run validate && npm run coverage:rules && npm run build && npm run verify:d4 && npm run check:imports && npm run smoke:browser && npm run smoke`).
+  All must pass. Node ≥ 20. `package.json`'s `scripts.check` is authoritative — this string is
+  copied verbatim from it and a doc-truth test (`tests/claudemd-check-gate.test.mjs`) fails on drift.
 
 ## Where the plan lives
 
@@ -85,6 +86,23 @@ when-to-reach-for-what, honesty boundaries). Linked handoff docs there are canon
   show `not_started`) — verify against git log / `rf-handoff/RESULTS.md` before trusting `itt`.
 - `rf` API reach: `http://10.42.10.76:7432`; creds at `~/.config/research-foundry/serve.env`
   (`RF_API_URL` + `RF_TOKEN_AGENT`).
+
+## Evidence grounding — corrected blocking picture
+
+**0 of 91 rules remain grounded** (bound to a `status: source-supported` passage in
+`evidence-packs/passage-attestations.json`, which ships empty by design). The prior project belief —
+that this gap is wholly a licensing problem — is **corrected** by
+`.claude/findings/rights-governance-spec-v1.0-review-findings.md` §3: measured from code, the gap is
+**~2/3 attestation-shaped (60 rules)** — their sentinel's primary source already has ≥1 bindable
+passage, so the only mechanical blocker is the empty ledger — and **~1/3 licensing-shaped (31 rules)**
+— all bound to `AAP2026_IDA`, whose 7 passages are quarantined `source-not-independently-retrievable`.
+The same review records that **13 passages are already bindable today** (BLOOD 5, WHO 3, CDC 2, BSH 2,
+FDA 1) — a fact recorded nowhere before this note. None of the 13 has been bound; binding requires a
+named credentialed clinician attesting each rule individually (60 separate records from a 13-passage
+pool), and the 13 survivors are the numerics-light paraphrases — the threshold-bearing passages were
+quarantined for `omits-source-numerics`, so attesting them grounds rules to thin framework claims
+rather than to the cutoffs those rules encode. See the findings doc for the full picture, including
+why the Rights Governance Spec v1.0 does not unblock most of the 31.
 
 ## Program tracking
 

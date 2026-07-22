@@ -1,0 +1,7 @@
+{
+  "_fixtureNotice": "P2-T6 render-golden fixture ONLY -- lives entirely under tests/fixtures/, never a real module-manifest document, never read by scripts/validate-kb.mjs. Deliberately NOT schema-shaped as a full modules/<id>/module.json (schemas/module-manifest.schema.json) -- tools/review-record/lib/render.mjs reads only title/status/knowledgeBaseVersion, existence-gated, and tolerates a minimal or absent module.json.",
+  "id": "render_fixture_v1",
+  "title": "EF Render Fixture (NOT a real module)",
+  "status": "unsigned-stub",
+  "knowledgeBaseVersion": "0.0.0-fixture"
+}

@@ -50,6 +50,22 @@ function basePassage(overrides = {}) {
     supersedes: null,
     surveillanceQuery: 'q',
     provenance: { runId: 'r', sourceCardId: 's', evidenceId: 'ev_001' },
+    // EPR3-T2 (FR-WP3-01/02/03): the three axis fields are REQUIRED on every passage record.
+    // Structurally-legal fixture values on a synthetic record — not a classification of any real
+    // source content (the KB backfill is EPR3-T5's).
+    evidence_item_type: 'observed_finding',
+    judgment_basis: 'unassessed',
+    judgment_basis_attestation: null,
+    rights_component_class: 'atomic_facts_and_methods',
+    // EPR3-T4 (FR-WP3-04/06): structured_locator + not_captured are also REQUIRED. Default is a
+    // located record, so not_captured is non-empty (a paraphrase always withheld the verbatim
+    // wording); sentinel variants built via overrides remain valid (non-empty is allowed there too).
+    structured_locator: {
+      source: 'FAKE_SRC', edition_or_version: null, section: null, table: null, row: null,
+      column: null, assay_or_method: null, population_or_scope: null, retrieved_at: null,
+      unresolved_components: [],
+    },
+    not_captured: [{ kind: 'verbatim_wording', rationale: 'paraphrased; exact wording not stored' }],
     ...overrides,
   };
 }

@@ -1,0 +1,7 @@
+{
+  "_provenance": "tests/fixtures/ef-release/laundered-nested-manifest-content-swap.json — seeded laundering fixture (P3 fix, Codex second-opinion review). The digest-mismatch companion case: a nested manifest that stays INDIVIDUALLY schema-valid (TESTKEY--marked dryRun:true, signature identical to the wrapper's own already-verified top-level signature) but whose CONTENT was swapped away from what the wrapper's own signature actually covers — testCorpusHash/traceabilityHash changed while moduleId/packVersion stay identical (so a registry lookup would still resolve, making this the more insidious variant: identity fields match, evidentiary content does not). Consumed by tests/ef-release-verify-wrapper-binding.test.mjs, which shallow-merges the `contentOverride` object below onto a genuinely-signed candidate's `manifest` field (leaving dryRun/signature/moduleId/packVersion untouched) and asserts `verify` fails closed with WrapperManifestMismatchError/EXIT_WRAPPER_MANIFEST_MISMATCH — proving the digest-binding check catches a laundering attempt that nested-manifest schema validation alone (class 6) would NOT catch, because this document is, on its own, perfectly schema-valid.",
+  "contentOverride": {
+    "testCorpusHash": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "traceabilityHash": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  }
+}

@@ -10,15 +10,15 @@ execution_model: sequential
 phase: EP-R0
 created: '2026-07-21'
 title: 'EP-R0: Rights Substrate (WP0)'
-status: not_started
+status: completed
 started: null
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 0
+completed_tasks: 6
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0

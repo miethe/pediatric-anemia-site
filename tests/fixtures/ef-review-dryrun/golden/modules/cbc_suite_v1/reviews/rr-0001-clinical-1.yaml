@@ -1,0 +1,16 @@
+schemaVersion: 1
+review_id: rr-0001-clinical-1
+role: clinical-1
+moduleId: cbc_suite_v1
+subjectContentHash: sha256:0a91991b6fd8b2480fed14625c461ba09d8eb4c9e4ba022c19e8fb72257103b2
+previousRecordHash: null
+supersedes: null
+reviewerId: "dryrun-cbc-suite-clinical-1"
+decision: approve
+rationale: "SYNTHETIC PERSONA -- NOT A CREDENTIALED REVIEWER. This is a workflow-mechanics exercise of the review-record chain (task P2-T8, FR-11); no clinician evaluated cbc_suite_v1 clinical content here, and this approve decision is a structural marker only, never a clinical-validity or safety claim."
+reviewedAt: 2026-07-22T06:54:36.648Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-s8_DPJkIvmSgo4MCw-U5XjacrB4wZlt0umubQz9UL3Q
+  value: "X2ECrEYSpiCcrsbsYCfkDWVmDWEW9n8DxjWlZM9nqpRXXBwRmgkdLq+m825DM2vA7M0Xc8EcBo/H41MZSWxnCQ=="

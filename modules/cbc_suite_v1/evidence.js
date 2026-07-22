@@ -11,11 +11,19 @@
 // (src/engine.js), for every rule, matched or not, regardless of rule content. No prior test had
 // exercised that path (P4-T5 is the first).
 //
-// Only the two accessors src/evidence/registry.js actually calls are implemented here
-// (passageById, passagesFor) — deliberately the minimal seam, not a duplicate of every helper in
-// src/evidence.js (passageLocatorText/passageExactText/passageApplicability/
-// isBindableAsSourceSupported have no cbc_suite_v1 caller yet).
+// Originally only the two accessors src/evidence/registry.js's passage lookups called were
+// implemented here (passageById, passagesFor) — deliberately the minimal seam, not a duplicate of
+// every helper in src/evidence.js. rights-aware-evidence-capture's cbc_suite_v1 rights-metadata
+// backfill (integration follow-up to EP-R2/EP-R3) adds `sourceRightsPositionById`: EPR2-T6 wired
+// src/engine.js#assess to call `sourceRightsPositionForModule(moduleId, ...)` unconditionally, for
+// EVERY registered module, not only anemia — so this module needs the same accessor anemia's
+// src/evidence.js already exports, or every `assess(input, 'cbc_suite_v1', ...)` call throws via
+// src/evidence/registry.js#accessorsFor. Reuses src/evidence.js's own `sourceRightsPosition` label
+// function (the render-safe degrade-to-"rights position unassessed" logic) rather than
+// re-deriving it — this module supplies only its own EVIDENCE lookup, never a second
+// implementation of the label rule itself (DEF-1).
 import evidenceData from './evidence.json' with { type: 'json' };
+import { sourceRightsPosition } from '../../src/evidence.js';
 
 const EVIDENCE = Object.freeze(
   Object.fromEntries(evidenceData.sources.map((source) => [source.id, source])),
@@ -35,4 +43,15 @@ export function passageById(passageId) {
     if (match) return match;
   }
   return null;
+}
+
+/**
+ * Same contract as src/evidence.js#sourceRightsPositionById: render-safe rights-position label
+ * resolved by source id against this module's OWN EVIDENCE registry (never anemia's). An unknown
+ * id, or a source with no assessed `license.status`, degrades to
+ * src/evidence.js#RIGHTS_POSITION_UNASSESSED via the shared `sourceRightsPosition` label function
+ * — never throws, never fabricates "unrestricted" from absence.
+ */
+export function sourceRightsPositionById(sourceId) {
+  return sourceRightsPosition(EVIDENCE[sourceId]);
 }

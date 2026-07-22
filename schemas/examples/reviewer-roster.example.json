@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "reviewers": [
+    {
+      "reviewerId": "synth-clinical-1",
+      "name": "Synthetic Dry-Run Clinician 1",
+      "credentialRef": "SYNTHETIC-NO-CREDENTIAL",
+      "moduleScopes": ["cbc_suite_v1"],
+      "synthetic": true
+    },
+    {
+      "reviewerId": "example-real-clinical-1",
+      "name": "Example Real Reviewer (schema round-trip fixture only, never shipped)",
+      "credentialRef": "credential-registry:EXAMPLE-0001",
+      "moduleScopes": ["anemia", "cbc_suite_v1"],
+      "synthetic": false,
+      "verificationRef": "gate-g1-verification-log:EXAMPLE-0001"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "protocolId": "ef-e1-retro-validation-protocol-unpinned",
+  "description": "SYNTHETIC FIXTURE ONLY -- P4-T6, FR-24. Every threshold below is null (TBD-by-named-humans); this document is used to prove the FR-24 gate ACCEPTS an all-null-threshold protocol. It is not a real, human-pinned validation protocol and confers no clinical-validity, statistical-power, or IRB/DUA-compliance claim of any kind.",
+  "authoredBy": [
+    {
+      "name": "SYNTHETIC-FIXTURE — no real human protocol owner has been named yet (FR-24)",
+      "role": "SYNTHETIC-FIXTURE — placeholder role, not a real assignment"
+    }
+  ],
+  "thresholds": {
+    "dangerousMissRateThreshold": null,
+    "utilityMeasures": {
+      "sensitivityThreshold": null,
+      "specificityThreshold": null,
+      "positivePredictiveValueThreshold": null,
+      "negativePredictiveValueThreshold": null
+    },
+    "strata": {
+      "subgroup": [
+        { "stratumName": "SYNTHETIC-FIXTURE age-band placeholder", "dangerousMissRateThreshold": null }
+      ],
+      "analyzer": [],
+      "site": []
+    }
+  }
+}

@@ -5,7 +5,7 @@ title: "Evidence Foundry: Property/Mutation/Semantic-Diff CI Expansion (DF-E1-07
 status: draft
 maturity: shaping
 created: 2026-07-21
-updated: 2026-07-21
+updated: 2026-07-22
 feature_slug: evidence-foundry-buildout
 prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md
@@ -151,6 +151,18 @@ ADR-0001 (`docs/adr/0001-canonical-authoring-model-rule-schema-v2.md`) names thi
 before ADR-0001 (or its successor) is accepted and a second module's rule authoring makes the
 converter's semantic diff non-trivial; starting early risks building property/mutation coverage
 against a schema surface ADR-0001's own "Considered Alternatives" §3 expects to change shape.
+
+## E1 State (evidence-foundry-e1-v1)
+
+`evidence-foundry-e1-v1` left `ADR-0001` at `status: proposed` and its own PRD's `OQ-7` unresolved
+("TBD (G0/orchestrator)" — does the sibling `DF-E1-08` CBC Suite authoring workstream trip
+ADR-0001's "before multi-module E1 scale" trigger, thereby re-triggering this item?). The same task
+that updated this pointer (`P5-T9`) also authored the `DF-E1-08` stub
+(`docs/project_plans/design-specs/cbc-suite-full-authoring.md`), which names that identical open
+`OQ-7` reading as its own blocking open question rather than deciding it — the orchestrator ruling
+`OQ-7` calls for remains pending. `tools/rf-bundle-to-kb-pack/lib/semantic-diff.mjs` and
+`tests/ef-converter-invariants.test.mjs` are unchanged by E1; the Current State section above
+remains accurate as written.
 
 ## Open Questions
 

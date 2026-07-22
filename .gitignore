@@ -7,6 +7,12 @@ dist/
 # Committed golden/fixture outputs for converter tests live under tests/fixtures/ instead (OQ-6).
 build/
 
+# Evidence Foundry retrospective-validation access log (tools/retro-validate/, FR-22, P4-T7):
+# runtime-generated audit trail from real invocations, never committed. Tests exercise the
+# access-log module against isolated tmp paths (see tests/ef-retro-access-log.test.mjs), never this
+# path, so this file should never actually be produced by `npm test`/`npm run check`.
+tools/retro-validate/access-log.jsonl
+
 # AOS local state (deploy tracking + writeback markers + operator run records); keep committed
 # workflow artifacts under .claude/, ignore local/runtime state. Run IDs are referenced in the docs.
 .claude/.aos-writeback-state
@@ -16,3 +22,4 @@ __pycache__/
 
 # git worktrees created by EnterWorktree / dev-execution protocol
 .claude/worktrees/
+.claude/agent-memory/

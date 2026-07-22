@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "moduleId": "cbc_suite_v1",
+  "packVersion": "0.1.0-proposal",
+  "rfInputs": [
+    {
+      "runId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+      "bundleSha256": "sha256:9167e325a18fbcf0cad424f64c40585df9b513e8dd13d977f79ef4f98abd31ae",
+      "claimLedgerSha256": "sha256:ace45e9e0956700e9355db4d42a43c5a83dcf88c889703617acff92327018f4f",
+      "verificationExitCode": 0
+    }
+  ],
+  "converter": {
+    "name": "rf-bundle-to-kb-pack",
+    "version": "0.1.0",
+    "configSha256": "sha256:75f74b05ee1281b04c607f01c7283eb709ebee4607d911ba7713cc2e3f991412"
+  },
+  "testCorpusHash": "sha256:77724550bf925778aa0dbe7df7bb8b78cbdea9083a25e2928301e01815c66fad",
+  "traceabilityHash": "sha256:199a7b89366385ee135a2332312b02e1329c2aec936911774440763cb52b02ab"
+}

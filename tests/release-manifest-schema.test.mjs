@@ -239,10 +239,23 @@ test('validateReleaseManifest() flags a packVersion disagreeing with the expecte
   assert.ok(errors.some((e) => e.includes('packVersion') && e.includes('0.1.0-proposal') && e.includes('0.2.0-proposal')));
 });
 
-test('validateReleaseManifest() rejects additionalProperties (e.g. a `signature` block — this manifest is unsigned)', async () => {
+test('validateReleaseManifest() rejects a populated `signature` on a real (non-dry-run) candidate (P1-T5/FR-16: this manifest is unsigned)', async () => {
+  // schemas/release-manifest.schema.json now DECLARES `signature` (P1-T5, ADR-0005) rather than
+  // rejecting it outright as an unknown property -- but a real candidate (no `dryRun: true`
+  // marker) is still schema-forced to `signature: null`. Populating it with an object here fails
+  // closed via the type check, not `additionalProperties`, which is the FR-16 proof this task's
+  // own acceptance criteria requires.
   const schema = await loadJson(SCHEMA_PATH);
   const doc = cloneValidDoc();
   doc.signature = { algorithm: 'ed25519', keyId: 'k1', value: 'x' };
   const { errors } = validateReleaseManifest(doc, schema);
-  assert.ok(errors.some((e) => e.includes('$.signature') && e.includes('additional property is not permitted')));
+  assert.ok(errors.some((e) => e.includes('$.signature') && e.includes('expected type null, got object')));
+});
+
+test('validateReleaseManifest() rejects additionalProperties outside the schema-declared field list', async () => {
+  const schema = await loadJson(SCHEMA_PATH);
+  const doc = cloneValidDoc();
+  doc.knowledgeBaseVersion = '1.0.0';
+  const { errors } = validateReleaseManifest(doc, schema);
+  assert.ok(errors.some((e) => e.includes('$.knowledgeBaseVersion') && e.includes('additional property is not permitted')));
 });

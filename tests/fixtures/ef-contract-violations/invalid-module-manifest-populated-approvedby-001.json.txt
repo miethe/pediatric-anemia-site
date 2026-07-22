@@ -1,0 +1,16 @@
+{
+  "id": "cbc_suite_v1",
+  "title": "SYNTHETIC-INVALID fixture (P1-T7, tests/ef-contract-forced-empty.test.mjs): a populated approvedBy[] must be rejected — no credentialed human clinician has approved this knowledge base (D-4/AC-D4). This fixture is never a real module manifest.",
+  "schemaVersion": 1,
+  "status": "unsigned-stub",
+  "knowledgeBaseVersion": "0.0.0-seeded-bad",
+  "evidenceReviewedThrough": "2026-07-21",
+  "engineLabel": "Synthetic Seeded-Bad Test Engine",
+  "supportedAgeMonths": { "min": 0, "max": 216 },
+  "clinicalContentHash": null,
+  "governanceHash": null,
+  "approvedBy": ["Dr. Jane Doe, MD (fabricated approval — must be rejected by maxItems: 0)"],
+  "validationRunId": null,
+  "supersedes": null,
+  "releasedAt": null
+}

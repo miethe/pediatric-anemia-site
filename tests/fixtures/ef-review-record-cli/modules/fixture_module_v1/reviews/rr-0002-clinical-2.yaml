@@ -1,0 +1,24 @@
+# tests/fixtures/ef-review-record-cli/modules/fixture_module_v1/reviews/rr-0002-clinical-2.yaml
+#
+# P2-T1 CLI-test fixture ONLY -- see rr-0001-clinical-1.yaml's header for the full disclaimer.
+# previousRecordHash below is the real sha256:<64 hex> canonical-record hash of rr-0001-clinical-1
+# as computed by tools/review-record/lib/chain.mjs's canonicalRecordHash -- this pair is a valid,
+# chain-linked pair on purpose, used by tests/ef-review-record-cli.test.mjs to assert `list` reports
+# chainLinkage: ok.
+
+schemaVersion: 1
+review_id: rr-0002-clinical-2
+role: clinical-2
+moduleId: fixture_module_v1
+subjectContentHash: sha256:537d2dcf29f8e2871a4b91129ec3da3d0012d48ee90af0784ea8c93db7398c6d
+previousRecordHash: sha256:06f14f31928bef471f2f8e794bf86c3d5691d22566083b8fa6c9d9baf2831589
+supersedes: null
+reviewerId: synthetic-reviewer-2
+decision: approve
+rationale: Synthetic dry-run fixture exercising the P2-T1 list verb only -- not a real clinical review act. Hand-authored independently of the clinical-1 fixture's content (this fixture set predates the scaffold verb, P2-T2).
+reviewedAt: 2026-01-02T00:00:00Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-ef-e1-p2t1-fixture-clinical-2
+  value: ZmFrZS1zaWduYXR1cmUtZml4dHVyZS0y

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "version": "1.0.0",
+      "moduleId": "cbc_suite_v1",
+      "packDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "manifestDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "signature": {
+        "algorithm": "ed25519",
+        "keyId": "TESTKEY-should-not-be-here",
+        "value": "x"
+      },
+      "signedAt": null,
+      "supersedes": null,
+      "withdrawalState": "none",
+      "withdrawnAt": null,
+      "withdrawalReason": null
+    }
+  ]
+}

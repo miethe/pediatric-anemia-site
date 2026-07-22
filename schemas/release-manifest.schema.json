@@ -2,12 +2,35 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/pediatric-anemia/schemas/release-manifest.schema.json",
   "title": "Evidence Foundry Unsigned Release Manifest",
-  "description": "Validates build/kb-pack/<moduleId>/<packVersion>/release-manifest.unsigned.json (evidence-foundry-buildout P5-T1, FR-18, `02 §4.18` MINUS the `signature` block). This is the E0 unsigned manifest only: it binds exactly the fields this task's own acceptance criteria names -- `rfInputs[].{runId, bundleSha256, claimLedgerSha256, verificationExitCode}`, `converter.{name, version, configSha256}`, `testCorpusHash`, `traceabilityHash` -- and rejects everything else via `additionalProperties: false`. `02 §4.18`'s full production manifest ALSO carries `knowledgeBaseVersion`, `clinicalContentHash`, `approvedBy[]`, `validationRunId`, `releasedAt`, and `signature`; none of those belong on THIS document, because none of them are true yet for a staged, unsigned, unreviewed proposal (CLAUDE.md: no artifact is described as clinically validated or release-ready before the real validation/signing gates run) -- inventing those fields here would misrepresent an unsigned stub as release-ready. Structural validity here never implies clinical validity, safety, or that a named human clinician reviewed anything. scripts/validate-kb.mjs wires this schema in as an EXISTENCE-GATED check across the whole build/kb-pack/ tree (gitignored/ephemeral per P1-T7): the directory usually does not exist at all in a clean checkout, and its absence -- or the absence of a given pack-version's own release-manifest.unsigned.json -- is not itself an error.",
+  "description": "Validates build/kb-pack/<moduleId>/<packVersion>/release-manifest.unsigned.json (evidence-foundry-buildout P5-T1, FR-18, `02 §4.18` MINUS the `signature` block) AND the same document once P3-T1/T2's `tools/release-sign/` tooling (evidence-foundry-e1, not yet built) has run over it. It binds exactly the fields this task's own acceptance criteria names -- `rfInputs[].{runId, bundleSha256, claimLedgerSha256, verificationExitCode}`, `converter.{name, version, configSha256}`, `testCorpusHash`, `traceabilityHash` -- plus (P1-T5, ADR-0005, FR-14/FR-16) an OPTIONAL `dryRun`/`signature` pair that stays absent on the E0 unsigned stub this task's converter emits today and is schema-forced-empty on any real (non-dry-run) candidate once `tools/release-sign` exists -- and rejects everything else via `additionalProperties: false`. `02 §4.18`'s full production manifest ALSO carries `knowledgeBaseVersion`, `clinicalContentHash`, `approvedBy[]`, `validationRunId`, `releasedAt`; none of those belong on THIS document, because none of them are true yet for a staged, unsigned, unreviewed proposal (CLAUDE.md: no artifact is described as clinically validated or release-ready before the real validation/signing gates run) -- inventing those fields here would misrepresent an unsigned stub as release-ready. `signature` is the sole exception, and only because P1-T5's own acceptance criteria requires the slot to exist NOW, forced structurally empty, so no later task can introduce it un-gated (mirrors `schemas/module-manifest.schema.json`'s `approvedBy` / `schemas/rule.schema.json`'s `clinicalApprovers` `maxItems: 0` idiom for an array field, using the object-typed equivalent -- `type: \"null\"` -- for this object-typed field, per the `$defs/signature` `if`/`then`/`else` below). A populated `signature` is legal ONLY when `dryRun` is present and `true` AND `signature.keyId` carries the structural `TESTKEY-` marker (OQ-6 ephemeral test-key convention) -- there is no schema branch under which a real (non-dry-run) candidate's `signature` can be anything but `null`. Structural validity here never implies clinical validity, safety, release authorization, or that any human signing custodian (gate G2) has acted. scripts/validate-kb.mjs wires this schema in as an EXISTENCE-GATED check across the whole build/kb-pack/ tree (gitignored/ephemeral per P1-T7): the directory usually does not exist at all in a clean checkout, and its absence -- or the absence of a given pack-version's own release-manifest.unsigned.json -- is not itself an error.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "moduleId", "packVersion", "rfInputs", "converter", "testCorpusHash", "traceabilityHash"],
+  "allOf": [
+    {
+      "if": {
+        "required": ["dryRun"],
+        "properties": { "dryRun": { "const": true } }
+      },
+      "then": {
+        "required": ["signature"],
+        "properties": { "signature": { "$ref": "#/$defs/dryRunSignature" } }
+      },
+      "else": {
+        "properties": { "signature": { "type": "null" } }
+      }
+    }
+  ],
   "properties": {
     "schemaVersion": { "type": "string", "minLength": 1 },
+    "dryRun": {
+      "type": "boolean",
+      "description": "OPTIONAL. ADR-0005/OQ-6's structural dry-run marker, absent on every manifest E0's converter emits today (this key does not exist in that pipeline's output, and its absence is the honest, unsigned default -- see `signature`'s own description). `tools/release-sign` (P3-T2, not yet built) sets this to `true` ONLY on ephemeral, in-memory-keypair test-key candidates it produces for its own dry-run mode; it never sets `true` on a real signing-ceremony (G2) candidate. `false` and absent are treated identically by the `allOf` conditional below -- both route to the `signature: null` branch -- so a future writer cannot launder a real candidate through an explicit `dryRun: false` past the forced-empty check."
+    },
+    "signature": {
+      "type": ["object", "null"],
+      "description": "OPTIONAL key; REQUIRED to be `null` whenever present unless `dryRun` is also present and `true` (enforced by the top-level `allOf`/`if`/`then`/`else`, not expressible with `type` alone). Detached Ed25519 shape (`{algorithm, keyId, value}`, ADR-0005 mechanism, same object shape the OQ-2 review-record `signature` slot uses) once populated on a `dryRun: true` test-key candidate; `keyId` MUST carry the `TESTKEY-` prefix in that case (OQ-6). No real signing-custodian key (gate G2) is ever legal here -- this schema has no branch that admits one, by design, until a future, separately gated schema revision explicitly raises this ceiling."
+    },
     "moduleId": {
       "type": "string",
       "pattern": "^[a-z][a-z0-9_]*$",
@@ -75,6 +98,21 @@
           "pattern": "^sha256:[0-9a-f]{64}$",
           "description": "SHA-256 over every .mjs source file this converter build ships (tools/rf-bundle-to-kb-pack/**/*.mjs, name + content, sorted) -- an automatic, content-derived cross-check on top of the manually-bumped `version` string: any change to this tool's own code changes this hash, whether or not `version` was remembered to be bumped."
         }
+      }
+    },
+    "dryRunSignature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "value"],
+      "description": "The ONLY legal non-null shape of `signature`, and only reachable when `dryRun: true` -- P3-T2's ephemeral test-key dry-run mode (OQ-6). Mirrors `schemas/review-record.schema.json`'s OQ-2 synthetic-signature shape byte-for-byte (same `algorithm`/`keyId`/`value` fields, same `TESTKEY-` marker convention) so both signature slots share one mental model.",
+      "properties": {
+        "algorithm": { "const": "ed25519", "description": "ADR-0005's recommended algorithm. Fixed literal -- no other value is legal, dry-run or otherwise." },
+        "keyId": {
+          "type": "string",
+          "pattern": "^TESTKEY-",
+          "description": "MUST carry the structural `TESTKEY-` prefix (OQ-6) -- the schema-level proof that this key is an ephemeral, in-memory, never-written-to-disk test key, never a real signing-custodian (G2) identity. A real `keyId` cannot appear here because `dryRun: true` is itself schema-impossible on anything other than a test-key candidate under this project's own tooling contract (P3-T2); this pattern is the second, independent, schema-enforced guarantee."
+        },
+        "value": { "type": "string", "minLength": 1, "description": "Base64/hex detached-signature bytes over the canonicalized manifest bytes minus this `signature` object itself (same ADR-0005 mechanism the OQ-2 review-record signature slot uses)." }
       }
     }
   }

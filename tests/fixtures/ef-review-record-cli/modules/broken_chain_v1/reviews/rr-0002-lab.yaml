@@ -1,0 +1,24 @@
+# tests/fixtures/ef-review-record-cli/modules/broken_chain_v1/reviews/rr-0002-lab.yaml
+#
+# P2-T1 CLI-test fixture ONLY -- see rr-0001-clinical-1.yaml (same directory) for the full
+# disclaimer. previousRecordHash below is DELIBERATELY WRONG (does not match the recomputed hash of
+# rr-0001-clinical-1) -- this pair exercises `list`'s informational chainLinkage: BROKEN reporting
+# path in tests/ef-review-record-cli.test.mjs. This is a read-only reporting test only; it does not
+# exercise (and P2-T1 does not implement) fail-closed chain enforcement -- that is P2-T3's job.
+
+schemaVersion: 1
+review_id: rr-0002-lab
+role: lab
+moduleId: broken_chain_v1
+subjectContentHash: sha256:537d2dcf29f8e2871a4b91129ec3da3d0012d48ee90af0784ea8c93db7398c6d
+previousRecordHash: sha256:f7896d106ceed99d7743d8bae56f7fd5726522658e199a99e0d9d8aa0acbdf75
+supersedes: null
+reviewerId: synthetic-reviewer-lab
+decision: approve
+rationale: Synthetic dry-run fixture exercising the P2-T1 list verb broken-chain case -- not a real clinical review act.
+reviewedAt: 2026-01-02T00:00:00Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-ef-e1-p2t1-fixture-broken-lab
+  value: ZmFrZS1zaWduYXR1cmUtYnJva2VuLTI=

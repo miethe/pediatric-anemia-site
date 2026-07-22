@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "discordanceId": "ef-retro-discordance-fixture__case-fixture-1__safety-flag-mismatch",
+  "corpusId": "ef-retro-discordance-fixture",
+  "moduleId": "anemia",
+  "caseRef": "case-fixture-1",
+  "candidateDigest": "sha256:ef1adfb4d4e2640812f9d1de363c68c979c9c159b60ede121376e1befbe7212c",
+  "disagreementClass": "safety-flag-mismatch",
+  "engineOutputSet": {
+    "candidatePatternIds": [],
+    "safetyFlagIds": [],
+    "missingDataPromptIds": []
+  },
+  "referenceLabelSet": {
+    "candidatePatternIds": [],
+    "safetyFlagIds": ["FIX-IRON-RISK-ALERT-001"],
+    "missingDataPromptIds": []
+  }
+}

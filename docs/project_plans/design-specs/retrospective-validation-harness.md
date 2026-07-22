@@ -5,7 +5,7 @@ title: "Evidence Foundry: Retrospective Validation Harness"
 status: draft
 maturity: shaping
 created: 2026-07-21
-updated: 2026-07-21
+updated: 2026-07-22
 feature_slug: "evidence-foundry-buildout"
 prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md
@@ -26,6 +26,55 @@ explored_alternatives:
 ---
 
 # Retrospective Validation Harness (DF-E1-04)
+
+## E1 State (Phase 5, 2026-07-22) — DF-E1-04 landed; DF-E1-09 remains deferred
+
+**This spec now serves two deferred items.** It was originally seeded for `DF-E1-04` (build the
+harness), whose promotion trigger — "a signed E1 release candidate exists" — is satisfied: the
+`evidence-foundry-e1-v1` plan's Phase 4 built the harness machinery for real, as
+`tools/retro-validate` (`cli.mjs` verbs `check-fixtures`/`run`/`report`). It enforces the
+fixtures-only boundary this spec's Design Sketch called for as a two-layer gate (schema shape +
+procedural identifier-denylist scan, `lib/boundary.mjs`), replays a version-pinned candidate build
+resolved exclusively via a `releases/registry.json` digest match (never "current tree",
+`lib/replay.mjs`, FR-19), computes exactly the five OQ-5 **software-agreement** measures (never
+sensitivity/specificity/clinical-performance framing, `lib/metrics.mjs`, FR-21), bridges disagreeing
+cases into `tools/review-record`'s adjudication scaffold (`lib/discordance.mjs`, FR-23), and
+access-logs every invocation (`lib/access-log.mjs`, FR-22). Every one of the Design Sketch bullets
+below is now built, not merely sketched, for the **synthetic/de-identified fixture** case — see
+`tools/retro-validate/README.md` for the authoritative as-built description.
+
+What the harness still cannot do — and structurally refuses to do — is run against real,
+patient-derived case data. That is `DF-E1-09` (real-data retrospective run), a *separate* deferred
+item this spec now also tracks. Per Ruling R6 (`evidence-foundry-e1-v1` PRD) and gate **G3**
+(`docs/governance/gates-registry.md` — "G3: Data-source SPIKE verdict + data-partner DUA"),
+`DF-E1-09`'s remaining scope is exactly:
+
+1. **Gate G3 clearance** — both, independently: (a) the data-source SPIKE
+   (`docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md`, "SPIKE-007") reaching a
+   recorded, explicit GO/NO-GO verdict — the charter is authored but the SPIKE has **not been run**;
+   and (b) an executed data-use agreement (DUA) with an external data partner supplying
+   already-de-identified data. Neither is a task any agent in this plan performs; both are named-human
+   acts.
+2. **Human-set protocol thresholds** (FR-24) — `tools/retro-validate report --protocol <doc>` accepts
+   only a document conforming to `schemas/protocol.schema.json`, whose every leaf threshold
+   (`dangerousMissRateThreshold`, `utilityMeasures`, per-stratum values) is `const: null` in this
+   plan: software never invents or defaults a clinical threshold. Populating a real threshold, and
+   deciding whether any report is honored against one, is a human governance act entirely outside
+   this schema and this tool — `lib/metrics.mjs#evaluateProtocolQualification` never returns
+   `qualifying: true` regardless of the schema's own gate, so every `agreement-report.json` carries
+   the FR-24 "non-qualifying — protocol not prespecified by humans" banner unconditionally.
+3. **Retention period and deletion trigger — flagged must-fix per ADR-0006.** ADR-0006 explicitly
+   declines to name either value (`docs/adr/0006-validation-data-boundary-deidentification.md`) and
+   this spec's own "Retention & Audit" section below has carried that gap open since it was authored.
+   It is **not resolved by Phase 4's harness build** — the harness's fixture-corpus schema and
+   identifier-denylist scan enforce the input *boundary* (synthetic/de-identified only), which is a
+   different concern from how long an externally-held real dataset may be retained and what triggers
+   its deletion once one exists. SPIKE-007's RQ3 is where the concrete framework and (once a partner
+   is named) concrete values get produced; until then, this remains an open must-fix, not a design
+   choice deferred by convenience.
+
+None of the above changes this spec's `maturity: shaping` — `DF-E1-09` cannot enter implementation
+planning until G3 clears and thresholds are set, exactly as this section states.
 
 ## Problem / Context
 
@@ -134,3 +183,14 @@ review audit trail (ADR-4) per ADR-6's explicit instruction not to conflate the 
   Items Triage Table, row `DF-E1-04`.
 - CLAUDE.md validation ladder (content → technical → retrospective → silent-mode → human-factors →
   interventional) and "No PHI in the public microsite" hard guardrail.
+- `tools/retro-validate/README.md` — the as-built harness (Phase 4 of `evidence-foundry-e1-v1`):
+  `check-fixtures`/`run`/`report` verbs, the two-layer fixtures-only boundary, version-pinned replay,
+  software-agreement metrics, discordance/adjudication bridge, access log, and the FR-24 human-only
+  protocol schema.
+- `docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md` ("SPIKE-007") — the chartered,
+  not-yet-run data-source SPIKE that `DF-E1-09`'s G3 clearance and this spec's open retention/
+  deletion-trigger question both resolve into.
+- `docs/governance/gates-registry.md` — gate **G3** ("Data-source SPIKE verdict + data-partner DUA"),
+  the external human-blocked state gating `DF-E1-09`.
+- `docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1.md` Deferred Items
+  Triage Table, row `DF-E1-09` (this row points back to this spec for the real-data-run update).
