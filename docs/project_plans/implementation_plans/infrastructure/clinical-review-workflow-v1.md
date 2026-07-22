@@ -43,7 +43,7 @@ adr_refs:
 - docs/adr/0004-clinical-approval-identity-adjudication.md
 - docs/adr/0005-kb-serialization-signing-key-custody.md
 deferred_items_spec_refs: []
-findings_doc_ref: null
+findings_doc_ref: .claude/findings/clinical-review-workflow-findings.md
 charter_ref: null
 changelog_ref: null
 test_plan_ref: null
