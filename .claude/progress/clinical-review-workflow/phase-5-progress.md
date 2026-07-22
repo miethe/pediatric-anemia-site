@@ -9,17 +9,17 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/clinical-review
 execution_model: batch-parallel
 phase: 5
 title: "Clinical Review Workflow v1 \u2014 Phase 5: Hardening, Docs & Deferred Items"
-status: in_progress
+status: pending
 created: '2026-07-22'
 updated: '2026-07-22'
 started: 2026-07-22T17:55Z
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 70
 completion_estimate: on-track
 total_tasks: 7
-completed_tasks: 0
+completed_tasks: 5
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -48,7 +48,7 @@ tasks:
     \ + non-zero exit wherever validate rejects (FR-28). Also drive the frozen scaffold\
     \ --draft -> sign --draft -> validate command flow end-to-end (F9) through the\
     \ real CLI."
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -63,6 +63,12 @@ tasks:
   acceptance_criteria: 7/7 adversarial/fail-closed classes produce the expected non-zero
     fail-closed result on status, sign, and validate; the four F8 classes each yield
     status's invalid state; zero fixture causes a silent pass.
+  started: 2026-07-22T17:56Z
+  completed: 2026-07-22T18:25Z
+  evidence:
+  - commit: 12bee10
+  verified_by:
+  - P5-GATE1
 - id: P5-T2
   description: "CLI/render smoke + npm run check wiring + determinism/zero-dep gates\
     \ (FR-20/21/22, R-P4, F10). This repo has no *.tsx; the render target surface\
@@ -76,7 +82,7 @@ tasks:
     \ one of those two globs. Add determinism tests (status --json byte-stable; sign's\
     \ non-signature fields byte-stable). Extend zero-new-deps and zero-network grep\
     \ tests to cover every new lib/*.mjs file."
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -95,6 +101,12 @@ tasks:
     byte-diff across two invocations on unchanged input is empty; sign's non-signature
     fields are byte-stable across invocations; zero-new-deps grep test is green with
     no package.json dependency additions.
+  started: 2026-07-22T18:26Z
+  completed: 2026-07-22T18:45Z
+  evidence:
+  - commit: e39246c
+  verified_by:
+  - P5-GATE1
 - id: P5-T3
   description: "docs/architecture.md \xA711 + README update (FR-18/19). Update docs/architecture.md\
     \ \xA711 (Review workflow, Evidence Foundry E1) to document the new verbs (status,\
@@ -102,7 +114,7 @@ tasks:
     \ Update tools/review-record/README.md naming both new verbs, the incremental\
     \ validate path, the derived-state library, and linking the runbook and the portal-promotion\
     \ framework."
-  status: pending
+  status: completed
   assigned_to:
   - documentation-writer
   dependencies:
@@ -119,6 +131,12 @@ tasks:
     \ both status and sign, links docs/governance/reviewer-runbook.md, and restates\
     \ the honesty boundary; tools/review-record/README.md names both verbs, the incremental\
     \ path, and links the runbook + friction-observations.md."
+  started: 2026-07-22T17:56Z
+  completed: 2026-07-22T18:15Z
+  evidence:
+  - commit: cf5c7e1
+  verified_by:
+  - P5-GATE1
 - id: P5-T4
   description: '(DOC-006) Deferred-items design-spec stubs. Per the Deferred Items
     Triage Table: (a) confirm docs/project_plans/design-specs/clinical-review-portal-workflow.md
@@ -127,7 +145,7 @@ tasks:
     G1 and the runbook''s post-G1 track) for DF-CRW-02; (c) author docs/project_plans/design-specs/df-e1-04-retrospective-validation-linkage.md
     (maturity: shaping) for DF-CRW-03, cross-referencing ADR-0004''s unblocks field.
     Append all three paths to this plan''s deferred_items_spec_refs frontmatter.'
-  status: pending
+  status: completed
   assigned_to:
   - documentation-writer
   dependencies:
@@ -140,10 +158,17 @@ tasks:
   - docs/project_plans/design-specs/
   acceptance_criteria: Three spec paths exist (1 confirmed existing + 2 newly authored),
     each with correct maturity/prd_ref; deferred_items_spec_refs has 3 entries.
+  started: 2026-07-22T17:56Z
+  completed: 2026-07-22T18:24Z
+  evidence:
+  - commit: 7f6e6d2,ea088ed,f08b43a
+  - finding: CRW-F12
+  verified_by:
+  - P5-GATE1
 - id: P5-GATE1
   description: "task-completion-validator gate: verify Phase 5 exit gate \u2014 npm\
     \ run check green; full adversarial sweep passes; deferred-items table fully covered."
-  status: pending
+  status: completed
   assigned_to:
   - task-completion-validator
   dependencies:
@@ -156,6 +181,13 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   acceptance_criteria: All exit-gate criteria pass; recorded in phase progress note.
+  started: 2026-07-22T18:45Z
+  completed: 2026-07-22T18:55Z
+  evidence:
+  - workflow: wf_855e4819-856 validator approved; 1 non-blocking comment-ref sweep
+      dispatched
+  verified_by:
+  - P5-GATE2
 - id: P5-GATE2
   description: 'karen feature-end review. Independently re-check against the actual
     full-feature diff (not the plan''s description): every Hard Guardrail holds byte-for-byte;
@@ -252,6 +284,7 @@ notes: "Wave 4, final \u2014 depends on Phases 2, 3, and 4 all completing. This 
   \ findings_doc_ref is non-null, that doc is status: accepted. Wrap-up (feature guide\
   \ + PR) is triggered automatically after P5-GATE2 (karen feature-end) passes \u2014\
   \ see plan's Wrap-Up section."
+progress: 71
 ---
 
 # clinical-review-workflow — Phase 5: Hardening, Docs & Deferred Items
