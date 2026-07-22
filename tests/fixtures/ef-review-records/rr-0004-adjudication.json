@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "review_id": "rr-0004-adjudication",
+  "role": "adjudication",
+  "moduleId": "cbc_suite_v1",
+  "subjectContentHash": "sha256:b9b8b64fae56f3a3c9e6b03fb38413c76439d80d73532675695f06543c544cf8",
+  "previousRecordHash": "sha256:0bbbfff09853918a693e4a41d616deb6d453aeffb01d4fd9dc5ae954cd2d9004",
+  "supersedes": null,
+  "reviewerId": "synthetic-reviewer-adjudication-01",
+  "decision": "approve",
+  "rationale": "Synthetic dry-run fixture (P1-T2) exercising the adjudication role act shape; not a real dispute resolution.",
+  "reviewedAt": "2026-07-21T14:15:00Z",
+  "synthetic": true,
+  "signature": {
+    "algorithm": "ed25519",
+    "keyId": "TESTKEY-ef-e1-p1t2-0004",
+    "value": "ZmFrZS1zaWduYXR1cmUtdmFsdWUtcnItMDAwNC1hZGp1ZGljYXRpb24="
+  }
+}

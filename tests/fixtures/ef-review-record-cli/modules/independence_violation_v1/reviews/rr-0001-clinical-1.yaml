@@ -1,0 +1,24 @@
+# tests/fixtures/ef-review-record-cli/modules/independence_violation_v1/reviews/rr-0001-clinical-1.yaml
+#
+# P2-T2 CLI-test fixture ONLY -- see fixture_module_v1's rr-0001-clinical-1.yaml (sibling directory)
+# for the full disclaimer. Paired with rr-0002-clinical-2.yaml (same directory) as a SEEDED
+# VIOLATION fixture for tests/ef-review-workflow.test.mjs: rr-0002's rationale deliberately quotes a
+# verbatim substring of THIS record's rationale, exercising `tools/review-record/lib/independence.mjs`'s
+# heuristic FR-4 reviewer-2-independence check via `cli.mjs validate --module independence_violation_v1`.
+
+schemaVersion: 1
+review_id: rr-0001-clinical-1
+role: clinical-1
+moduleId: independence_violation_v1
+subjectContentHash: sha256:537d2dcf29f8e2871a4b91129ec3da3d0012d48ee90af0784ea8c93db7398c6d
+previousRecordHash: null
+supersedes: null
+reviewerId: synthetic-reviewer-1
+decision: approve
+rationale: "Approved on the basis of a normocytic anemia pattern with reticulocyte response consistent with the fixture's synthetic subject profile."
+reviewedAt: 2026-01-01T00:00:00Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-ef-e1-p2t2-fixture-independence-violation-clinical-1
+  value: ZmFrZS1zaWduYXR1cmUtaW5kZXBlbmRlbmNlLXZpb2xhdGlvbi0x

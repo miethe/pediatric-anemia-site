@@ -113,6 +113,17 @@ async function collectJsonFiles(entryPath) {
  * runs each through assessPediatricAnemia(), and unions the resulting
  * provenance.matchedRuleIds against modules/anemia/rules.json.
  *
+ * `excludeDirs` (relative to `rootDir`, same resolution rules as
+ * `fixtureDirs`) prunes specific subtrees back out of a broad `fixtureDirs`
+ * sweep (e.g. `tests/fixtures` as a whole) without having to enumerate every
+ * *other* subdirectory by hand. This exists for schema-conformance fixture
+ * trees that happen to live under a swept directory but are not
+ * patient-assessment activation witnesses at all (see
+ * scripts/evidence/backfill-rule-governance.mjs's Evidence Foundry `ef-*`
+ * exclusions) — feeding them through `assessFn` would silently perturb
+ * `requiredTestCaseIds`/coverage counts with fixtures that were never meant
+ * to be scored as rule witnesses.
+ *
  * Fails loudly (throws) if any fixture fails to parse, if assess() throws, or
  * if a matched rule id isn't found in rules.json — a silently-skipped
  * fixture would silently *lower* the measured coverage, which is exactly the
@@ -123,6 +134,7 @@ async function collectJsonFiles(entryPath) {
 export async function computeCoverage({
   rootDir = root,
   fixtureDirs = ['examples', 'tests/witness'],
+  excludeDirs = [],
   // Injectable purely so tests/rule-coverage.test.mjs can deterministically
   // exercise the "assess() throws" fail-loud path without depending on
   // finding a real fixture that defeats the engine's (deliberately
@@ -132,10 +144,18 @@ export async function computeCoverage({
   const rules = await readJson(path.join(rootDir, 'modules/anemia/rules.json'));
   const candidates = await readJson(path.join(rootDir, 'modules/anemia/candidates.json'));
 
+  const excludeAbsDirs = excludeDirs.map((relDir) =>
+    path.isAbsolute(relDir) ? relDir : path.join(rootDir, relDir),
+  );
+  const isExcluded = (absFilePath) =>
+    excludeAbsDirs.some(
+      (excludedDir) => absFilePath === excludedDir || absFilePath.startsWith(excludedDir + path.sep),
+    );
+
   const fixtureFiles = [];
   for (const relDir of fixtureDirs) {
     const absPath = path.isAbsolute(relDir) ? relDir : path.join(rootDir, relDir);
-    fixtureFiles.push(...(await collectJsonFiles(absPath)));
+    fixtureFiles.push(...(await collectJsonFiles(absPath)).filter((filePath) => !isExcluded(filePath)));
   }
   fixtureFiles.sort();
 

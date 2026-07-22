@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ef-retro-identifier-ssn-pattern",
+  "description": "Seeded identifier-field-denylist violation: class 'SSN-like pattern' -- a value-pattern check, distinct from the other five field-name-based classes. An SSN-shaped value (###-##-####) is smuggled into an otherwise-permitted field (caseId) to prove the denylist is not solely keyed on field name. Must be rejected fail-closed (FR-20).",
+  "sourceAttestation": {
+    "ref": "synthetic-generation-note-008",
+    "provenanceClass": "synthetic"
+  },
+  "cases": [
+    {
+      "caseId": "case-123-45-6789",
+      "provenance": "synthetic",
+      "input": {
+        "patient": { "ageMonths": 12 }
+      }
+    }
+  ]
+}

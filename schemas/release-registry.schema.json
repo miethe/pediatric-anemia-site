@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/release-registry.schema.json",
+  "title": "Evidence Foundry Release Registry",
+  "description": "Validates releases/registry.json (evidence-foundry-e1 P1-T5/OQ-4/FR-14, ADR-0005). The registry itself does not ship in this task -- P3-T4 creates the seed file (`{ \"schemaVersion\": 1, \"entries\": [] }`) and its `register` append-only writer; this task ships only the schema and its fixtures, per this task's own acceptance criteria. Document shape is deliberately `{ schemaVersion, entries[] }`, not a bare array, so the document itself can be schema-versioned independently of its entry shape. Each entry binds EXACTLY the OQ-4 field list -- `version`, `moduleId`, `packDigest`, `manifestDigest`, `signature`, `signedAt`, `supersedes`, `withdrawalState`, `withdrawnAt`, `withdrawalReason` -- nothing more: `additionalProperties: false` on `$defs/registryEntry` makes any surveillance/re-verify-cadence/materiality-class/signer-identity field (ADR-0007's unaccepted taxonomy, DF-E2-01/DF-E2-03 territory) a structural rejection, not a documentation omission. `signature`/`signedAt`/`supersedes`/`withdrawnAt`/`withdrawalReason` are `type: \"null\"` -- always exactly `null` under this schema version, because no E1 code path may ever populate them (a real signature only ever lives on the release-manifest's own signature slot, schemas/release-manifest.schema.json, gated per P1-T5's `dryRun`/`signature` mechanism and ultimately gate G2; a registry entry is an integrity record ABOUT a signed candidate, never the candidate's own signature bearer). `withdrawalState` is `const: \"none\"` -- E1 never sets any other value; DF-E2-03 extends this field family later, not this plan. Append-only-ness (no entry may ever be mutated or removed once written) is a cross-record, git-history-level invariant this single-document schema cannot express (no keyword here compares this document to its own prior committed state) -- `tools/release-sign`'s `register` verb (P3-T4) enforces it procedurally, the same two-layer approach P2-T3's review-record hash-chain validator uses. Structural validity here never implies clinical validity, safety, or that any human signing custodian (gate G2) or release authorizer (gate G4) has acted -- every entry this schema accepts has `signature: null`.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "entries"],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "REQUIRED, non-null. Integer registry-document-shape version, bumped only when this schema's own shape changes (mirrors schemas/review-record.schema.json's `schemaVersion` convention)."
+    },
+    "entries": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/registryEntry" },
+      "description": "REQUIRED, non-null. Append-only per FR-14: `[]` is legal (the P3-T4 seed file's own initial state, and the state of any module with no registered release yet); every element must independently satisfy `$defs/registryEntry`. This schema does not, and cannot, enforce ordering, uniqueness, or that no prior entry has been mutated/removed -- those are P3-T4's `register` writer's and its append-only validator's job, exercised against this document's git history, not this document's instantaneous shape."
+    }
+  },
+  "$defs": {
+    "registryEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version", "moduleId", "packDigest", "manifestDigest", "signature",
+        "signedAt", "supersedes", "withdrawalState", "withdrawnAt", "withdrawalReason"
+      ],
+      "description": "Exactly the OQ-4 field list -- no field outside this list is legal (`additionalProperties: false`). Every REQUIRED key here must be present as a key, even when its value is legitimately/structurally always `null` under this schema version -- an omitted key is a schema violation, not a shorthand for `null` (matches schemas/module-manifest.schema.json's `approvedBy: []`-must-be-present convention for the same D-4-adjacent honesty reason: a missing key cannot be told apart from a validator bug, an explicit `null` can only be told apart from a deliberate design decision).",
+      "properties": {
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "REQUIRED, non-null. The registered module release's own version string (matches the release-manifest's `packVersion`, once a real, non-`-proposal` release version exists -- E1 never registers one; see this schema's top-level description)."
+        },
+        "moduleId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "REQUIRED, non-null. Same pattern as schemas/release-manifest.schema.json's `moduleId` and schemas/module-manifest.schema.json's module identity field -- must equal a real `MODULE_IDS` entry (src/modules/registry.js), not schema-enforced here (this schema validates the document in isolation)."
+        },
+        "packDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "REQUIRED, non-null. SHA-256 of the canonicalized kb-pack contents this registry entry attests to -- same `sha256:<64 hex>` pattern schemas/release-manifest.schema.json's `testCorpusHash`/`traceabilityHash` already use, not invented ad hoc."
+        },
+        "manifestDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "REQUIRED, non-null. SHA-256 of the canonicalized release-manifest bytes (P5-T5's canonical serialization, the same bytes `tools/release-sign`'s `sign`/`verify` verbs operate over) this registry entry attests to."
+        },
+        "signature": {
+          "type": "null",
+          "description": "REQUIRED key, and under this schema version it MUST be exactly `null` -- E1 registers no signed release (no code path may populate this; a real signature, once G2 clears, lives on the release-manifest's own `signature` slot, never here). Mirrors schemas/module-manifest.schema.json's `approvedBy` `maxItems: 0` idiom for an object-typed field: forced-empty by `type`, not merely by convention. Raising this from `\"null\"` to admit a real value is the deliberate, reviewable, separately-gated act (post-G2) that this schema does not perform."
+        },
+        "signedAt": {
+          "type": "null",
+          "description": "REQUIRED key, always `null` in E1 -- no signature exists to timestamp yet (see `signature`)."
+        },
+        "supersedes": {
+          "type": "null",
+          "description": "REQUIRED key, always `null` in E1 -- E1 registers at most a first entry per module; a prior-version supersession chain is E2/DF-E2-01 territory (surveillance/update/registry engine), not this plan."
+        },
+        "withdrawalState": {
+          "const": "none",
+          "description": "REQUIRED key, pinned to the single legal value `\"none\"` in E1 -- `const`, not `enum`, so a `\"withdrawn\"` (or any other) value is a hard schema violation, not merely a policy violation. DF-E2-03 (withdraw/rollback machinery) is the future, separately-gated extension point for this field; E1 ships no code path that can set anything else."
+        },
+        "withdrawnAt": {
+          "type": "null",
+          "description": "REQUIRED key, always `null` in E1 -- reinforces `withdrawalState: \"none\"` (a withdrawal timestamp cannot exist without a withdrawal)."
+        },
+        "withdrawalReason": {
+          "type": "null",
+          "description": "REQUIRED key, always `null` in E1 -- reinforces `withdrawalState: \"none\"` (a withdrawal reason cannot exist without a withdrawal)."
+        }
+      }
+    }
+  }
+}

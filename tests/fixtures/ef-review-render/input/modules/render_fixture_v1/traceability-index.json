@@ -1,0 +1,49 @@
+{
+  "_fixtureNotice": "P2-T6 render-golden fixture ONLY -- lives entirely under tests/fixtures/, never a real modules/<id>/traceability-index.json, never read by scripts/validate-kb.mjs. Mirrors modules/cbc_suite_v1/traceability-index.json's real shape (source -> passage -> claim -> decision -> rule -> test -> output) at minimal scale: one rule, two passages (one rights-restricted, one inline-eligible), two test references.",
+  "schemaVersion": "1.0",
+  "moduleId": "render_fixture_v1",
+  "description": "Fixture-only source -> passage -> claim -> decision -> rule -> test -> output traceability index exercising tools/review-record/lib/render.mjs's rule-chain section (P2-T6). Carries no clinical validity, safety, or sign-off claim of any kind.",
+  "rules": {
+    "FIXTURE-RULE-001": {
+      "ruleId": "FIXTURE-RULE-001",
+      "outputId": "fixture-interpretive-note",
+      "outputType": "note",
+      "category": "interpretive-note",
+      "safetyClass": "informational",
+      "decisionId": "dec_fixture_render_p2t6_001",
+      "reviewStatus": "draft",
+      "reviewBy": "2027-07-21",
+      "claimIds": ["clm_fixture_01", "clm_fixture_02"],
+      "leafClaimIds": ["clm_fixture_01", "clm_fixture_02"],
+      "evidenceAssertionIds": ["evas_fixture_restricted_001", "evas_fixture_inline_001"],
+      "passages": [
+        {
+          "assertionId": "evas_fixture_restricted_001",
+          "rfClaimId": "clm_fixture_01",
+          "passageId": "psg_e9e6fd825c37789caf2bda62fa503b579e6eaab6f2d9984cb8f344da9c7da58d",
+          "exactPassageSha256": "sha256:e9e6fd825c37789caf2bda62fa503b579e6eaab6f2d9984cb8f344da9c7da58d",
+          "sourceId": "FIXTURE_SOURCE_ONE"
+        },
+        {
+          "assertionId": "evas_fixture_inline_001",
+          "rfClaimId": "clm_fixture_02",
+          "passageId": "psg_5be36090c906b5f51c519ec7a350487e7e7955b3616e41373083c627d90eaaaa",
+          "exactPassageSha256": "sha256:5be36090c906b5f51c519ec7a350487e7e7955b3616e41373083c627d90eaaaa",
+          "sourceId": "FIXTURE_SOURCE_TWO"
+        }
+      ],
+      "sourceIds": ["FIXTURE_SOURCE_ONE", "FIXTURE_SOURCE_TWO"],
+      "testRefs": [
+        {
+          "file": "ef-fixture-example.test.mjs",
+          "testName": "fixture: rule fires under the fixture's positive condition"
+        },
+        {
+          "file": "ef-fixture-example.test.mjs",
+          "testName": "fixture: rule does not fire under the fixture's negative condition"
+        }
+      ]
+    }
+  },
+  "sources": {}
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/reviewer-roster.schema.json",
+  "title": "Pediatric CDS Reviewer Roster",
+  "description": "P1-T4 (Evidence Foundry E1 Phase 1, PRD OQ-1/FR-3). Validates governance/reviewer-roster.yaml, parsed to a plain JS object via tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs's parseYamlDocument (the same dependency-free YAML-subset parser schemas/authoring-decisions.schema.json already relies on). This roster is the ONE place a review-record's `reviewerId` (schemas/review-record.schema.json's canonical `reviewerId` field, per the P1-T1 contracts-design note §(a.2)) can resolve to a named human identity plus credential/scope facts -- the canonical review-record schema deliberately carries no inline `name`/`credential` (DRY: those facts live once, here). Per FR-3, this roster file SHIPS EMPTY (zero entries) through this task and stays that way until gate G1 (docs/governance/gates-registry.md, a human-owned external gate) is independently cleared by the program owner: G1 requires the owner to recruit and out-of-band verify 2 named credentialed clinical reviewers, a lab reviewer, an adjudicator, and a release authorizer, and to COMMIT the resulting roster entries as a human act. No task or agent in this repository ever adds a `synthetic: false` (real) roster entry -- doing so without a completed G1 verification would be a defect, not a feature. `synthetic: true` entries (added only by later dry-run tasks, e.g. the P2-T8 five-role synthetic dry-run) are clearly-labeled test personas: this schema makes it structurally impossible for a synthetic entry to also carry `verificationRef` (the field that marks a completed G1 human verification act), and the review-record schema's own `synthetic` flag plus the P2-T4 release-authorization validator independently and structurally reject any synthetic-sourced record from ever satisfying release-authorization validity (D-4; docs/architecture.md §6/§7/§10). Structural presence of an entry here -- real or synthetic -- is never itself a clinical-validity, credentialing, or safety claim; it records that a name/credential-reference/module-scope tuple exists, nothing more.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "reviewers"],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "REQUIRED, non-null. Integer roster-shape version, bumped only when this schema's own shape changes."
+    },
+    "reviewers": {
+      "type": "array",
+      "minItems": 0,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/reviewerEntry" },
+      "description": "REQUIRED key. `minItems: 0` is deliberate and load-bearing, not a placeholder: FR-3 requires this roster to ship empty (or synthetic-only) until gate G1 clears. A populated array of ONLY `synthetic: true` entries is legal at any time (dry-run personas); a populated array containing any `synthetic: false` entry is legal only once G1 has actually been cleared by a human -- a fact this schema cannot itself verify (it has no notion of whether G1 has cleared), so that boundary is enforced procedurally (no task performs the act) and by the downstream release-authorization validator (P2-T4), never by a schema constraint alone."
+    }
+  },
+  "$defs": {
+    "reviewerEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewerId", "name", "credentialRef", "moduleScopes", "synthetic"],
+      "description": "One roster entry: a reviewerId a review-record file may reference, plus the identity/credential/scope facts D-4 needs kept out of every individual review-record file. `synthetic: false` (\"real\") entries additionally require `verificationRef` (see below); `synthetic: true` entries must NOT carry `verificationRef` at all (enforced by the `allOf`/`if`/`then` pair below) -- a synthetic test persona can never be made to look like it underwent the G1 out-of-band credential verification only a human can perform.",
+      "properties": {
+        "reviewerId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "minLength": 1,
+          "description": "REQUIRED, non-null. Stable lowercase-kebab identity referenced verbatim by a review-record file's own top-level `reviewerId` field (schemas/review-record.schema.json). Unique per entry (enforced by this array's `uniqueItems`, which compares whole entries -- true cross-entry `reviewerId`-only uniqueness is a P1-T7/P2-T2 validator-wiring concern, since this repo's zero-dependency validator, scripts/lib/json-schema-lite.mjs, has no `$data`/per-field-uniqueness support)."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "REQUIRED, non-null. The reviewer's real full name for a real entry, or a clearly-fictional/clearly-labeled persona name for a synthetic entry (e.g. \"Synthetic Dry-Run Clinician 1\") -- never a system, tool, run, or model identifier. Structural non-emptiness only; this schema cannot verify a name is genuinely a human's name."
+        },
+        "credentialRef": {
+          "type": "string",
+          "minLength": 1,
+          "description": "REQUIRED, non-null. A reference to the reviewer's professional credential/license (e.g. a credential-registry id, license number, or pointer to an out-of-band record) -- a REFERENCE, not the raw credential text itself, so the roster does not become the system of record for licensure data. For a synthetic entry this is a clearly-labeled placeholder reference, never a real credential reference."
+        },
+        "moduleScopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "description": "REQUIRED, non-empty. Module ids (mirrors release-manifest.schema.json's `moduleId` pattern) this reviewer is authorized to review. A reviewer entry with zero module scopes could never legitimately review anything, so `minItems: 1` is enforced structurally."
+        },
+        "synthetic": {
+          "type": "boolean",
+          "description": "REQUIRED, non-null. PRD OQ-1/FR-3. `true` marks a clearly-labeled dry-run test persona; `false` marks a real reviewer whose credential has been verified out-of-band by a human (G1) and whose `verificationRef` is populated (see the `allOf`/`if`/`then` pair below). This flag alone never authorizes anything -- P2-T4's release-authorization validator independently and structurally rejects any synthetic-sourced review record from satisfying release-authorization validity, so a `synthetic: true` roster entry can never be laundered into a real approval by any downstream consumer of this file."
+        },
+        "verificationRef": {
+          "type": "string",
+          "minLength": 1,
+          "description": "A reference to the OUT-OF-BAND credential-verification record for this reviewer -- e.g. a pointer to a verification log, ticket, or attestation document. Populating this field is itself a G1 human act (recruiting + verifying a real reviewer's credential); no task or tool in this repository ever writes this field for a `synthetic: false` entry, and no entry with `synthetic: true` may carry this field at all (enforced below) -- an in-progress or automated verification is not a completed one, and a synthetic persona cannot be verified because there is no real credential behind it to verify."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "synthetic": { "const": false } } },
+          "then": { "required": ["verificationRef"] }
+        },
+        {
+          "if": { "properties": { "synthetic": { "const": true } } },
+          "then": { "not": { "required": ["verificationRef"] } }
+        }
+      ]
+    }
+  }
+}

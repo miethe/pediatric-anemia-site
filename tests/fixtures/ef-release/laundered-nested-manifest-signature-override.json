@@ -1,0 +1,8 @@
+{
+  "_provenance": "tests/fixtures/ef-release/laundered-nested-manifest-signature-override.json — seeded laundering fixture (P3 fix, Codex second-opinion review). The EXACT crafted case Codex described: a genuinely valid, TESTKEY--marked dry-run WRAPPER (whose own top-level signature verifies cleanly against fresh on-disk bytes) embeds a NESTED manifest.signature populated with a non-TESTKEY value that was never cryptographically checked by anything. Consumed by tests/ef-release-verify-wrapper-binding.test.mjs, which overwrites a genuinely-signed candidate's `manifest.signature` field with the `signatureOverride` object below (top-level wrapper fields — packDir/manifestPath/preimageSha256/signature/signerPublicKey — stay genuine and untouched) and asserts `verify` fails closed with NestedManifestInvalidError/EXIT_NESTED_MANIFEST_INVALID before any cryptographic check ever runs. `keyId` deliberately lacks the `TESTKEY-` prefix and `value` is not a real Ed25519 signature — this document is fail-closed test data, never real key material.",
+  "signatureOverride": {
+    "algorithm": "ed25519",
+    "keyId": "REALKEY-laundered-signer-2026",
+    "value": "ZmFrZS1sYXVuZGVyZWQtc2lnbmF0dXJlLXZhbHVlLW5ldmVyLWNoZWNrZWQ="
+  }
+}

@@ -1,0 +1,24 @@
+# tests/fixtures/ef-retro/discordance-adjudication-scaffold/governance/reviewer-roster.yaml
+#
+# P4-T5 integration-test fixture ONLY -- a throwaway `tools/review-record` `--root` tree exercising
+# the FR-23 "structurally consumable by Workstream A" bridge
+# (tools/retro-validate/lib/discordance.mjs#toAdjudicationScaffoldInput feeding
+# tools/review-record/lib/verbs/scaffold.mjs#run directly). This is NOT
+# governance/reviewer-roster.yaml (the real, committed, empty-by-design roster) and is never read
+# by scripts/validate-kb.mjs or any real workflow -- it lives entirely under tests/fixtures/, and is
+# file-disjoint from tests/fixtures/ef-review-record-cli/ (P2's own fixture root) per this plan's
+# parallel-workstream file-ownership rule.
+#
+# `synthetic: true`, matching the repository-wide rule that no task or agent ever creates a
+# `synthetic: false` ("real," out-of-band-verified) roster entry -- not even in a throwaway test
+# fixture. The name is deliberately, unambiguously a fictional test-persona label, never a real
+# person's name.
+
+schemaVersion: 1
+reviewers:
+  - reviewerId: synthetic-discordance-adjudicator
+    name: "SYNTHETIC -- NOT A CREDENTIALED REVIEWER (P4-T5 discordance-adjudication-bridge fixture persona)"
+    credentialRef: fixture-placeholder-credential-p4t5-adjudicator
+    moduleScopes:
+      - anemia
+    synthetic: true

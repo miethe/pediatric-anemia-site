@@ -5,7 +5,7 @@ title: "Evidence Foundry Buildout: Full CBC 12-Angle Live Research Operation (DF
 status: draft
 maturity: shaping
 created: 2026-07-21
-updated: 2026-07-21
+updated: 2026-07-22
 feature_slug: "evidence-foundry-buildout"
 prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md
@@ -108,6 +108,18 @@ measured against that estimate).
 
 Per the Deferred Items Triage Table (`docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md`,
 row `DF-E1-02`): **ADR-8 resolved (moved to `accepted`) + E1 plan approved.**
+
+## E1 State (evidence-foundry-e1-v1)
+
+`evidence-foundry-e1-v1` — the plan that immediately followed this one — did not touch this
+workstream. `ADR-0008` remains `status: proposed`, not `accepted`
+(`docs/adr/0008-pathb-hardening-vs-native-adapter.md`), so the Promotion Trigger above is still
+unmet. E1 shipped a disjoint triad instead — the review-record workflow, signed-release machinery,
+and retrospective-validation harness (`tools/review-record/`, `tools/release-sign/`,
+`tools/retro-validate/`) — and made zero changes to `.claude/workflows/rf-run-execute.js`, ran zero
+additional Path-B angles, and added zero new modules; the module count stayed at two
+(`modules/anemia/`, `modules/cbc_suite_v1/`) throughout E1. Nothing in the Current State or Design
+Sketch sections above is stale as a result of E1 landing.
 
 ## Open Questions
 

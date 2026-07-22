@@ -6,6 +6,84 @@ Wave-0 Safety Foundation program (EP-1 through EP-6). This is still an unvalidat
 prototype: the items below describe software behavior only and prove nothing about clinical
 validity, safety, diagnostic performance, or regulatory status.
 
+### Evidence Foundry E1: Clinical Governance Triad (Review Workflow · Signed Release · Retrospective Validation)
+
+Three new offline Node ESM CLIs implement the Evidence Foundry E1 clinical-governance machinery,
+all following this repository's zero-dependencies, fail-closed design (node:crypto only, no
+network calls, no generative models). Every capability ships schema-forced inert: approval slots
+carry only empty arrays or null signatures; reviewer rosters are synthetic-only; all test signatures
+carry the `TESTKEY-` prefix; and real release-path transitions remain blocked at gate G0.
+
+- **`tools/review-record/`** — Five-role append-only review-record workflow (ADR-0004). Implements
+  `scaffold` (draft-building from a roster-resolved reviewer identity), `validate` (schema shape,
+  roster resolution, reviewer-2 independence heuristic, two-layer append-only enforcement via
+  `previousRecordHash` chain + optional git-history check, Ed25519 signature verification on
+  synthetic records, and adjudication/release-authorization eligibility checks), `list`
+  (informational chain-linkage reporting), `render` (deterministic read-only static HTML over a
+  module's committed review chain, with rights-posture display), and `dry-run` (end-to-end five-role
+  synthetic pass composing scaffold → sign → chain-validate). The E1 integration dry-run (P5-T1)
+  exercises this tool's full synthetic workflow over `modules/cbc_suite_v1`; its five committed
+  review records (`rr-0001-clinical-1.yaml` through `rr-0005-release-auth.yaml`) are the sole
+  real invocation, still carrying `synthetic: true` markers and binding to the rule-proposal state.
+
+- **`tools/release-sign/`** — Signed-release manifest / registry / sign / verify machinery (ADR-0005).
+  Implements `manifest` (reads or builds a release-candidate pack and reports its canonical signing
+  preimage via `node:crypto` SHA-256, never re-serializing E0's bytes), `sign` (Ed25519 detached
+  signature, ephemeral in-memory keypair in `--dry-run` mode with `TESTKEY-` self-certifying
+  keyId; offline human mode structurally guarded against by in-repo `--key` path rejection),
+  `register` (appends exactly one inert registry entry to `releases/registry.json`, enforcing
+  append-only via in-process comparison + git-history walk), and `verify` (fail-closed cryptographic
+  verification with a 7-class documented exit-code taxonomy, never invoked by CI, plaintext
+  output on success only). The dry-run registry seed (`releases/registry.json`: schemaVersion 1,
+  empty entries list) is a minimal P1-T5 schema fixture; `npm run validate` gates registry shape
+  and append-only history, but does not invoke cryptographic `verify` (that remains a deliberate
+  later-stage CLI verb, not a side effect of every validation run).
+
+- **`tools/retro-validate/`** — Retrospective validation harness over synthetic/de-identified
+  fixtures only (ADR-0006, ruling R6). Implements `check-fixtures` (two-layer de-identification
+  gate: schema structural validation + procedural identifier-denylist scan), `run` (version-pinned
+  deterministic replay of every corpus case through the engine, resolving the candidate build
+  exclusively via registry `packDigest` match, never "current tree"; strips non-deterministic
+  timestamps; writes canonical sorted-key `replay-output.json`), `report` (reads already-written
+  replay-output, computes exactly 5 OQ-5 software-agreement measures each labeled "software
+  agreement", applies a structurally-incapable-of-qualifying protocol shape gate with all
+  threshold fields `const: null`, writes deterministic `agreement-report.json` + timestamped
+  `run-provenance.json` sidecar), and `check-fixtures` (boundary validation). An access-log
+  (`access-log.jsonl`) records invocation metadata (actor, purpose, corpus id, verb) with a
+  per-entry hash chain (layer (b) append-only enforcement) across all three verbs. Every output
+  artifact is deterministic byte-for-byte across re-runs over identical `(corpus, candidate-digest,
+  registry)` tuples. The harness accepts only `provenance: {synthetic, deidentified}` cases and
+  rejects identifier-bearing content fail-closed; running this harness against real, identified
+  patient data remains structurally blocked and is gate **G3** (data-source SPIKE verdict + partner
+  DUA), per `docs/governance/gates-registry.md`.
+
+- **Canonical review-record schema unification (P1-T4–P1-T7)**: `schemas/review-record.schema.json`
+  (P1-T4), `schemas/reviewer-roster.schema.json` (P1-T5), and `schemas/release-manifest.schema.json`
+  (P1-T5) codify the review-record model, roster binding (reviewer identity, synthetic flag,
+  module scope, role eligibility), and release-manifest shape (canonical content hash, dryRun
+  boolean, detached Ed25519 signature, zero real-approval-path population). Every approval and
+  signature slot ships with `maxItems: 0` (arrays) or `type: "null"` (signature objects), enforced
+  by `scripts/validate-kb.mjs` at `npm run validate` time. No schema path, no task automation,
+  and no test ever populates these slots with non-empty values — they exist for future gates G1/G2's
+  human-credentialed sign-off, not E1.
+
+- **Documented gates G0–G4 as external blocked states** (P5-T5): `docs/governance/gates-registry.md`
+  records the five human-gated decision points this plan names but does not clear — G0 (ADR
+  acceptance), G1 (named credentialed reviewer roster, cleared only by a named human's out-of-band
+  credential verification, never a software check), G2 (release signing ceremony + custodian key
+  generation), G3 (data-source SPIKE verdict + partner DUA), G4 (release authorizer — the human
+  role whose signed review record is the only thing that may flip a module's status toward
+  release-ready). Every gate is externally-blocked and human-owned, never software-clearable;
+  each is modeled as an external, owner-blocked state in `.claude/progress/evidence-foundry-e1/`,
+  never as a task, never with an automated completion path.
+
+- **SPIKE-007 charter** (`docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md`, FR-25,
+  ruling R6): Authored (not run) as the charter for future gate G3's retrospective data-source
+  selection (partner identity, DUA terms, retention period, deletion trigger, de-identification
+  standard evidence). Running this SPIKE, negotiating with external partners, or moving patient
+  data into the harness is out of scope for Evidence Foundry E1; the charter poses the research
+  questions and exit criteria a future run must satisfy before G3 can be considered for clearance.
+
 ### Changed
 
 - Replaced the boolean/unknown intake shape with an explicit four-state model

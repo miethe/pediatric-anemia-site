@@ -1,0 +1,37 @@
+# tests/fixtures/ef-review-record-cli/modules/chain_isolation_v1/reviews/rr-0001-clinical-1.yaml
+#
+# P2-fix CLI-test fixture ONLY -- see fixture_module_v1's rr-0001-clinical-1.yaml (sibling
+# directory tree) for the full disclaimer. This file is deliberately, permanently UNPARSEABLE by
+# tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs: `rationale:`'s value opens with `|`, a block-scalar
+# indicator that parser's header explicitly documents as outside its supported subset and always
+# throws YamlParseError on sight.
+#
+# This is the "booby trap" tests/ef-review-workflow.test.mjs uses to prove, structurally rather
+# than contractually, that `lib/chain.mjs`'s `nextChainLink` never reads/parses any sibling record
+# OTHER than the single immediate predecessor of a new draft. rr-0002-lab.yaml (this module's real,
+# parseable immediate predecessor) sits ahead of this file in sequence; if `nextChainLink` (or
+# anything `scaffold --role clinical-2` calls) ever iterated over and parsed EVERY prior record --
+# the pre-fix behavior this fixture exists to catch a regression of -- loading THIS file would
+# throw before scaffold could ever produce rr-0003-clinical-2. It does not throw: only rr-0002 (the
+# immediately preceding filename) is ever opened by the scaffold path.
+#
+# Content below past `rationale:` is intentionally malformed YAML, not a real review-record
+# document -- do not "fix" this file's YAML shape; breaking parseability on this exact field is the
+# whole point.
+
+schemaVersion: 1
+review_id: rr-0001-clinical-1
+role: clinical-1
+moduleId: chain_isolation_v1
+subjectContentHash: sha256:537d2dcf29f8e2871a4b91129ec3da3d0012d48ee90af0784ea8c93db7398c6d
+previousRecordHash: null
+supersedes: null
+reviewerId: synthetic-reviewer-1
+decision: approve
+rationale: |
+  BOOBYTRAP-SENTINEL-8f3e1c2b -- if this string, or the fact that this file was parsed at all,
+  ever surfaces anywhere, the scaffold-facing chain-link path has regressed to reading sibling
+  record content again.
+reviewedAt: 2026-01-01T00:00:00Z
+synthetic: true
+signature: null

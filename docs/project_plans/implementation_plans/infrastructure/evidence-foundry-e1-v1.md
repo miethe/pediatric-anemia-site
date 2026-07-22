@@ -3,9 +3,9 @@ title: "Implementation Plan: Evidence Foundry E1 \u2014 Review Workflow, Signed 
   \ Release, Retrospective Validation"
 schema_version: 2
 doc_type: implementation_plan
-status: draft
+status: completed
 created: '2026-07-21'
-updated: '2026-07-21'
+updated: '2026-07-22'
 feature_slug: evidence-foundry-e1
 feature_version: v1
 prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-e1-v1.md
@@ -47,10 +47,21 @@ adr_refs:
 - docs/adr/0004-clinical-approval-identity-adjudication.md
 - docs/adr/0005-kb-serialization-signing-key-custody.md
 - docs/adr/0006-validation-data-boundary-deidentification.md
-deferred_items_spec_refs: []
+deferred_items_spec_refs:
+- docs/project_plans/design-specs/retrospective-validation-harness.md
+- docs/project_plans/design-specs/surveillance-update-registry-engine.md
+- docs/project_plans/design-specs/production-monitoring-telemetry.md
+- docs/project_plans/design-specs/clinical-review-portal-workflow.md
+- docs/project_plans/design-specs/cbc-12-angle-research-operation.md
+- docs/project_plans/design-specs/upstream-rf-validators-pediatric.md
+- docs/project_plans/design-specs/fhir-terminology-emitters.md
+- docs/project_plans/design-specs/property-mutation-semantic-diff-ci.md
+- docs/project_plans/design-specs/cbc-suite-full-authoring.md
+- docs/project_plans/design-specs/signed-release-key-custody.md
+- docs/project_plans/design-specs/withdraw-rollback-machinery.md
 findings_doc_ref: null
 charter_ref: null
-changelog_ref: null
+changelog_ref: CHANGELOG.md
 changelog_required: true
 test_plan_ref: null
 plan_structure: independent
@@ -85,6 +96,8 @@ files_affected:
 - schemas/release-manifest.schema.json
 - schemas/release-registry.schema.json
 - scripts/validate-kb.mjs
+- scripts/rule-coverage.mjs
+- scripts/evidence/backfill-rule-governance.mjs
 - docs/governance/gates-registry.md
 - docs/governance/signing-ceremony-runbook.md
 - docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md

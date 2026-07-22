@@ -1,0 +1,70 @@
+{
+  "_fixtureNotice": "P2-T6 render-golden fixture ONLY -- lives entirely under tests/fixtures/, never a real modules/<id>/evidence-assertions.json, never read by scripts/validate-kb.mjs. Deliberately carries two contrasting assertions: evas_fixture_restricted_001 (displayPolicy hash_and_selector_only, exactPassage null -- FR-31's rights-restricted case) and evas_fixture_inline_001 (displayPolicy public_short_excerpt, exactPassage populated -- the one case tools/review-record/lib/render.mjs is allowed to inline). Neither passage is derived from any real source; FIXTURE_SOURCE_ONE/FIXTURE_SOURCE_TWO are not real sources.",
+  "schemaVersion": "1",
+  "moduleId": "render_fixture_v1",
+  "rfProvenance": {
+    "rfRunId": "rf_run_fixture_render_p2t6",
+    "rfBundleId": "bundle_fixture_render_p2t6",
+    "fixturePath": "tests/fixtures/ef-review-render/input/"
+  },
+  "assertions": [
+    {
+      "assertionId": "evas_fixture_restricted_001",
+      "rfRunId": "rf_run_fixture_render_p2t6",
+      "rfSourceCardId": "src_fixture_render_p2t6_01",
+      "sourceId": "FIXTURE_SOURCE_ONE",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_fixture_01",
+      "passageId": "psg_e9e6fd825c37789caf2bda62fa503b579e6eaab6f2d9984cb8f344da9c7da58d",
+      "locator": {
+        "raw": "Table 2 -- fixture locator",
+        "page": null,
+        "section": null,
+        "table": "Table 2",
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:e9e6fd825c37789caf2bda62fa503b579e6eaab6f2d9984cb8f344da9c7da58d",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "6-216 months (fixture)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": null
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_fixture_inline_001",
+      "rfRunId": "rf_run_fixture_render_p2t6",
+      "rfSourceCardId": "src_fixture_render_p2t6_02",
+      "sourceId": "FIXTURE_SOURCE_TWO",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_fixture_02",
+      "passageId": "psg_5be36090c906b5f51c519ec7a350487e7e7955b3616e41373083c627d90eaaaa",
+      "locator": {
+        "raw": "Section 3.1 -- fixture locator",
+        "page": null,
+        "section": "Section 3.1",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": "Fixture-only paraphrase demonstrating an inline-eligible passage under displayPolicy public_short_excerpt; not derived from any real source.",
+      "exactPassageSha256": "sha256:5be36090c906b5f51c519ec7a350487e7e7955b3616e41373083c627d90eaaaa",
+      "displayPolicy": "public_short_excerpt",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "6-216 months (fixture)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": null
+      },
+      "reviewBy": "2027-07-21"
+    }
+  ]
+}

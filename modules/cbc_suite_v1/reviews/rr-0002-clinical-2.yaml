@@ -1,0 +1,16 @@
+schemaVersion: 1
+review_id: rr-0002-clinical-2
+role: clinical-2
+moduleId: cbc_suite_v1
+subjectContentHash: sha256:0a91991b6fd8b2480fed14625c461ba09d8eb4c9e4ba022c19e8fb72257103b2
+previousRecordHash: sha256:415c4fe4ec342cd6b0b085035f38fc46261f0c7b31383195af866c5b9e116a9f
+supersedes: null
+reviewerId: "dryrun-cbc-suite-clinical-2"
+decision: approve
+rationale: "DRY-RUN TEST IDENTITY, NON-CREDENTIALED. Composed without reading the sibling clinical record's content, per FR-4's structural independence guarantee; like it, this record only exercises workflow mechanics (P2-T8) and makes no clinical assessment of the cbc_suite_v1 proposal."
+reviewedAt: 2026-07-22T06:55:37.115Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-zvcvD0lP_nkfT5ZQ20oAfSC3sW6VG_O9yJLOEQymLEA
+  value: "duB6ICDWrzC95H4Pu0iRty7jhkSqyOPa3XC4P7KLri+QmOi/zkjMKprAbo1MbZZ5e8zqyDjq+4QTQmmrUdLhCA=="

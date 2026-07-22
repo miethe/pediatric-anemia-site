@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "version": "0.1.0-2026-07-21-fixture",
+      "moduleId": "cbc_suite_v1",
+      "packDigest": "sha256:f1a885677a377bd31cf91ab4f55be096599a6812a27a234ef07a52dbda975975",
+      "manifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": null,
+      "signedAt": null,
+      "supersedes": null,
+      "withdrawalState": "none",
+      "withdrawnAt": null,
+      "withdrawalReason": null
+    }
+  ]
+}

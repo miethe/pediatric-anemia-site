@@ -1,0 +1,7 @@
+{
+  "iron-deficiency-anemia-fixture": {
+    "id": "iron-deficiency-anemia-fixture",
+    "label": "Fixture: iron-deficiency-anemia pattern",
+    "summary": "Deterministic replay fixture pattern (tools/retro-validate, P4-T3) -- not clinical content, used only to exercise the retrospective validation harness's replay path against src/engine.js#assess()."
+  }
+}

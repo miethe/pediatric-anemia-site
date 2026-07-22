@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "review_id": "rr-0001-clinical-1",
+  "role": "clinical-1",
+  "moduleId": "cbc_suite_v1",
+  "subjectContentHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "previousRecordHash": null,
+  "supersedes": null,
+  "reviewerId": "seeded-bad-unknown-reviewer-005",
+  "decision": "approve",
+  "rationale": "SYNTHETIC-INVALID fixture (P1-T7 fix, D-4 layer 3 cross-check): this reviewerId does not resolve to any entry in governance/reviewer-roster.yaml and must be rejected — this closes the gap a codex second-opinion review found (scripts/validate-kb.mjs validated review records and the roster independently, with no cross-check, so an unknown reviewerId previously passed npm run validate).",
+  "reviewedAt": "2026-07-21T14:00:00Z",
+  "synthetic": true,
+  "signature": {
+    "algorithm": "ed25519",
+    "keyId": "TESTKEY-p1t7-fix-005",
+    "value": "ZmFrZS1zaWduYXR1cmU="
+  }
+}

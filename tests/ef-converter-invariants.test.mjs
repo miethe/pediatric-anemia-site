@@ -522,26 +522,41 @@ test('Invariant 13: identical input bytes produce byte-identical inspect output 
 // Invariant 14 — converter output is a proposal, never a released KB
 // ================================================================================================
 
-test('Invariant 14: the converter never produces a released/signed KB — propose still requires its full argument set, and neither this converter nor its manifest schema ever accepts a `signature` block', async () => {
+test('Invariant 14: the converter never produces a released/signed KB — propose still requires its full argument set, and its manifest schema forces `signature` empty on every candidate this converter produces', async () => {
   // `propose` still refuses to run without its full, explicit argument set (unchanged since
   // Phase 2) -- there is no implicit/default-args code path that could emit anything.
   await assert.rejects(() => runPropose({}), UsageError);
 
   // P5-T1 closed `verify`'s former "never content-validate the manifest" stub, but closing that
   // stub is a STRENGTHENING of this invariant, not a violation of it: `verify` can now certify
-  // that a manifest is *structurally a well-formed UNSIGNED proposal* (schemas/release-manifest.
-  // schema.json has no `signature` property at all, and `additionalProperties: false` rejects one
-  // outright) -- it still can never certify a pack as *released/signed*, because the schema this
-  // converter validates against literally has no slot for a signature to live in.
+  // that a manifest is *structurally a well-formed UNSIGNED proposal* -- it still can never
+  // certify a pack as *released/signed*. evidence-foundry-e1 P1-T5 (ADR-0005, FR-14/FR-16)
+  // extended schemas/release-manifest.schema.json to DECLARE a `dryRun`/`signature` pair (the
+  // schema now HAS a `signature` property, unlike when this invariant test was first written) --
+  // but the slot is schema-forced empty (`type: "null"`) on every candidate this converter's own
+  // `propose`/`verify` verbs ever touch, because neither verb ever sets `dryRun: true` (that flag
+  // is exclusively `tools/release-sign`'s dry-run-mode territory, P3-T2, a different tool this
+  // converter never invokes). The invariant this test protects -- this converter never produces,
+  // and its schema never silently accepts, a *populated* signature -- still holds; it is now
+  // proven by the type-forcing conditional rather than by the property's total absence.
   const releaseManifestSchema = JSON.parse(await readFile(RELEASE_MANIFEST_SCHEMA_PATH, 'utf8'));
+  assert.equal(
+    releaseManifestSchema.properties?.signature?.type?.[0] ?? releaseManifestSchema.properties?.signature?.type,
+    'object',
+    'sanity: schemas/release-manifest.schema.json must still admit an object-shaped signature somewhere (else this test would be checking nothing)',
+  );
   assert.ok(
-    !Object.hasOwn(releaseManifestSchema.properties ?? {}, 'signature'),
-    'schemas/release-manifest.schema.json must have no `signature` property -- this manifest is always unsigned',
+    !Object.hasOwn(releaseManifestSchema.properties ?? {}, 'dryRun') || releaseManifestSchema.properties.dryRun.type === 'boolean',
+    'schemas/release-manifest.schema.json\'s dryRun marker must be a plain boolean, not something richer that could carry release authority',
   );
   assert.equal(
     releaseManifestSchema.additionalProperties, false,
-    'schemas/release-manifest.schema.json must reject additional properties -- a caller cannot smuggle a `signature` (or `approvedBy`/`releasedAt`) field past it',
+    'schemas/release-manifest.schema.json must reject additional properties -- a caller cannot smuggle an `approvedBy`/`releasedAt`/`knowledgeBaseVersion` field past it',
   );
+  // The load-bearing check: this converter's own `propose` output never sets `dryRun`, so a
+  // populated `signature` on that output is still rejected fail-closed by the schema's own
+  // if/then/else conditional -- proven functionally, not just by inspecting the shape, in the
+  // `dirWithSignature` block below.
 
   const validUnsignedManifest = {
     schemaVersion: '1.0',

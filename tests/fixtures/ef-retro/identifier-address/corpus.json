@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ef-retro-identifier-address",
+  "description": "Seeded identifier-field-denylist violation: class 'address'. Must be rejected fail-closed (FR-20).",
+  "sourceAttestation": {
+    "ref": "synthetic-generation-note-006",
+    "provenanceClass": "synthetic"
+  },
+  "cases": [
+    {
+      "caseId": "case-001",
+      "provenance": "synthetic",
+      "address": "123 Fixture Street, Testville",
+      "input": {
+        "patient": { "ageMonths": 12 }
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+# tests/fixtures/ef-review-record-cli/modules/independence_violation_v1/reviews/rr-0002-clinical-2.yaml
+#
+# P2-T2 CLI-test fixture ONLY -- SEEDED VIOLATION, hand-built (NOT produced by `scaffold`, which is
+# structurally incapable of producing this shape -- see lib/independence.mjs's header). This
+# record's rationale deliberately quotes a verbatim substring of rr-0001-clinical-1.yaml's own
+# rationale (same directory), simulating a reviewer-2 who read reviewer-1's decision content before
+# writing their own -- exactly the FR-4 violation `cli.mjs validate --module
+# independence_violation_v1` must reject. previousRecordHash below is the real canonical-record hash
+# of rr-0001-clinical-1.yaml (tools/review-record/lib/chain.mjs's canonicalRecordHash).
+
+schemaVersion: 1
+review_id: rr-0002-clinical-2
+role: clinical-2
+moduleId: independence_violation_v1
+subjectContentHash: sha256:537d2dcf29f8e2871a4b91129ec3da3d0012d48ee90af0784ea8c93db7398c6d
+previousRecordHash: sha256:0b4ccfe2a8d40d2645dcc3bb6856e9ec6c9f6fb565d70eca2930511d1c0a3ec9
+supersedes: null
+reviewerId: synthetic-reviewer-2
+decision: approve
+rationale: "Agree with clinical-1: normocytic anemia pattern with reticulocyte response supports the same conclusion."
+reviewedAt: 2026-01-02T00:00:00Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-ef-e1-p2t2-fixture-independence-violation-clinical-2
+  value: ZmFrZS1zaWduYXR1cmUtaW5kZXBlbmRlbmNlLXZpb2xhdGlvbi0y

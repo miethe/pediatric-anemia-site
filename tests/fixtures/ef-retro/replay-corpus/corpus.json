@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ef-retro-replay-fixture",
+  "description": "Synthetic fixture corpus for P4-T3 (FR-19) deterministic-replay tests -- exercises the tools/retro-validate/lib/replay.mjs REPLAY module against the pinned tests/fixtures/ef-retro/registries/valid candidate. Cases are declared out of caseId order deliberately, to prove the runner sorts before replay. No real patient data.",
+  "sourceAttestation": {
+    "ref": "synthetic-generation-note-p4-t3-replay-001",
+    "provenanceClass": "synthetic"
+  },
+  "cases": [
+    {
+      "caseId": "case-zzz-candidate",
+      "provenance": "synthetic",
+      "sourceRef": "batch-replay-1",
+      "input": {
+        "patient": { "ageMonths": 24, "sexAtBirth": "female" },
+        "cbc": { "hemoglobin": 6.0, "mcv": 50 }
+      },
+      "referenceLabels": {
+        "candidatePatternIds": ["iron-deficiency-anemia-fixture"],
+        "safetyFlagIds": [],
+        "missingDataPromptIds": [],
+        "dangerousMissExpected": false
+      },
+      "tags": ["replay-fixture", "candidate-case"]
+    },
+    {
+      "caseId": "case-aaa-alert",
+      "provenance": "synthetic",
+      "sourceRef": "batch-replay-1",
+      "input": {
+        "patient": { "ageMonths": 30 },
+        "history": { "excessCowMilk": true }
+      },
+      "referenceLabels": {
+        "candidatePatternIds": [],
+        "safetyFlagIds": ["FIX-IRON-RISK-ALERT-001"],
+        "missingDataPromptIds": ["FIX-INDETERMINATE-Q-001"],
+        "dangerousMissExpected": false
+      },
+      "tags": ["replay-fixture", "alert-case"]
+    },
+    {
+      "caseId": "case-mmm-question",
+      "provenance": "synthetic",
+      "sourceRef": "batch-replay-1",
+      "input": {
+        "patient": { "ageMonths": 18 }
+      },
+      "referenceLabels": {
+        "candidatePatternIds": [],
+        "safetyFlagIds": [],
+        "missingDataPromptIds": ["FIX-INDETERMINATE-Q-001"],
+        "dangerousMissExpected": false
+      },
+      "tags": ["replay-fixture", "question-case"]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "protocolId": "ef-e1-retro-validation-protocol-populated-REJECTED",
+  "description": "SYNTHETIC FIXTURE ONLY -- P4-T6, FR-24 REJECTION-CLASS FIXTURE. This document deliberately declares a real (non-null) dangerous-miss-rate threshold. It exists to prove `lib/protocol.mjs#assertProtocolShape` (and the `report` verb's own `--protocol` handling) rejects it fail-closed -- it must NEVER be accepted, and no test may treat its presence as a valid protocol.",
+  "authoredBy": [
+    {
+      "name": "SYNTHETIC-FIXTURE — no real human protocol owner has been named yet (FR-24)",
+      "role": "SYNTHETIC-FIXTURE — placeholder role, not a real assignment"
+    }
+  ],
+  "thresholds": {
+    "dangerousMissRateThreshold": 0.02,
+    "utilityMeasures": {
+      "sensitivityThreshold": null,
+      "specificityThreshold": null,
+      "positivePredictiveValueThreshold": null,
+      "negativePredictiveValueThreshold": null
+    },
+    "strata": {
+      "subgroup": [],
+      "analyzer": [],
+      "site": []
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ef-retro-metrics-fixture",
+  "description": "Synthetic fixture corpus for P4-T4 (FR-21, OQ-5) software-agreement metrics tests -- exercises tools/retro-validate/lib/metrics.mjs against the pinned tests/fixtures/ef-retro/registries/valid candidate (the same fixture rules P4-T3's replay-corpus already proved). Cases are deliberately engineered, by referenceLabels choice (not by input variety), to cover every agreement/disagreement/discordance branch each of the 5 OQ-5 measures computes -- see tests/ef-retro-metrics.test.mjs for the hand-derived expected values. No real patient data.",
+  "sourceAttestation": {
+    "ref": "synthetic-generation-note-p4-t4-metrics-001",
+    "provenanceClass": "synthetic"
+  },
+  "cases": [
+    {
+      "caseId": "case-a-agree-candidate",
+      "provenance": "synthetic",
+      "sourceRef": "batch-metrics-1",
+      "input": {
+        "patient": { "ageMonths": 24, "sexAtBirth": "female" },
+        "cbc": { "hemoglobin": 6.0, "mcv": 50 }
+      },
+      "referenceLabels": {
+        "candidatePatternIds": ["iron-deficiency-anemia-fixture"],
+        "safetyFlagIds": [],
+        "missingDataPromptIds": [],
+        "dangerousMissExpected": false
+      },
+      "tags": ["metrics-fixture", "exact-agreement", "candidate-agree"]
+    },
+    {
+      "caseId": "case-b-disagree-candidate",
+      "provenance": "synthetic",
+      "sourceRef": "batch-metrics-1",
+      "input": {
+        "patient": { "ageMonths": 24, "sexAtBirth": "female" },
+        "cbc": { "hemoglobin": 6.0, "mcv": 50 }
+      },
+      "referenceLabels": {
+        "candidatePatternIds": [],
+        "safetyFlagIds": [],
+        "missingDataPromptIds": [],
+        "dangerousMissExpected": false
+      },
+      "tags": ["metrics-fixture", "candidate-disagree"]
+    },
+    {
+      "caseId": "case-c-agree-alert-question-concordant-dangerous-miss",
+      "provenance": "synthetic",
+      "sourceRef": "batch-metrics-1",
+      "input": {
+        "patient": { "ageMonths": 30 },
+        "history": { "excessCowMilk": true }
+      },
+      "referenceLabels": {
+        "candidatePatternIds": [],
+        "safetyFlagIds": ["FIX-IRON-RISK-ALERT-001"],
+        "missingDataPromptIds": ["FIX-INDETERMINATE-Q-001"],
+        "dangerousMissExpected": true
+      },
+      "tags": ["metrics-fixture", "exact-agreement", "dangerous-miss-concordant"]
+    },
+    {
+      "caseId": "case-d-disagree-alert-discordant-dangerous-miss",
+      "provenance": "synthetic",
+      "sourceRef": "batch-metrics-1",
+      "input": {
+        "patient": { "ageMonths": 18 }
+      },
+      "referenceLabels": {
+        "candidatePatternIds": [],
+        "safetyFlagIds": ["FIX-IRON-RISK-ALERT-001"],
+        "missingDataPromptIds": ["FIX-INDETERMINATE-Q-001"],
+        "dangerousMissExpected": true
+      },
+      "tags": ["metrics-fixture", "alert-disagree", "dangerous-miss-discordant"]
+    },
+    {
+      "caseId": "case-e-disagree-question",
+      "provenance": "synthetic",
+      "sourceRef": "batch-metrics-1",
+      "input": {
+        "patient": { "ageMonths": 18 }
+      },
+      "referenceLabels": {
+        "candidatePatternIds": [],
+        "safetyFlagIds": [],
+        "missingDataPromptIds": [],
+        "dangerousMissExpected": false
+      },
+      "tags": ["metrics-fixture", "question-disagree"]
+    },
+    {
+      "caseId": "case-f-agree-empty",
+      "provenance": "synthetic",
+      "sourceRef": "batch-metrics-1",
+      "input": {
+        "patient": { "ageMonths": 24, "sexAtBirth": "male" },
+        "cbc": { "hemoglobin": 13, "mcv": 80 }
+      },
+      "referenceLabels": {
+        "candidatePatternIds": [],
+        "safetyFlagIds": [],
+        "missingDataPromptIds": [],
+        "dangerousMissExpected": false
+      },
+      "tags": ["metrics-fixture", "exact-agreement", "true-negative"]
+    },
+    {
+      "caseId": "case-g-unlabeled",
+      "provenance": "synthetic",
+      "sourceRef": "batch-metrics-1",
+      "input": {
+        "patient": { "ageMonths": 6 }
+      },
+      "tags": ["metrics-fixture", "unlabeled-excluded"]
+    },
+    {
+      "caseId": "case-h-fallback-discordant-dangerous-miss",
+      "provenance": "synthetic",
+      "sourceRef": "batch-metrics-1",
+      "input": {
+        "patient": { "ageMonths": 24, "sexAtBirth": "male" },
+        "cbc": { "hemoglobin": 13, "mcv": 80 }
+      },
+      "referenceLabels": {
+        "candidatePatternIds": [],
+        "safetyFlagIds": [],
+        "missingDataPromptIds": [],
+        "dangerousMissExpected": true
+      },
+      "tags": ["metrics-fixture", "exact-agreement", "dangerous-miss-discordant-fallback"]
+    }
+  ]
+}

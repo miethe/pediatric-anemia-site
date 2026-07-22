@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "RR-2026-002",
+  "changeProposal": {
+    "proposalId": "CP-2026-002",
+    "title": "Lower the ferritin cutoff on candidate CAND-IRON-005",
+    "summary": "Proposes lowering the ferritin threshold referenced by candidate CAND-IRON-005 without a cited source supporting the new value.",
+    "targetArtifacts": ["modules/anemia/candidates.json"],
+    "proposedBy": "scripts/evidence/backfill-candidate-governance.mjs (automated codemod, human-reviewed mapping)",
+    "proposedAt": "2026-07-05T10:00:00Z",
+    "rationale": "Proposed as a candidate threshold tightening; no evidence source was attached at filing time."
+  },
+  "workflowState": "rejected",
+  "reviewers": [
+    {
+      "reviewerId": "REV-001",
+      "name": "Dr. A. Ibarra",
+      "credential": "MD, Pediatric Hematology",
+      "reviewerType": "human",
+      "role": "primary-reviewer",
+      "decision": "reject",
+      "attestedHuman": true,
+      "comment": "No cited evidence source supports the new ferritin cutoff; cannot approve an unsupported threshold change.",
+      "decidedAt": "2026-07-06T09:00:00Z"
+    },
+    {
+      "reviewerId": "REV-002",
+      "name": "Dr. B. Okonkwo",
+      "credential": "DO, General Pediatrics",
+      "reviewerType": "human",
+      "role": "secondary-reviewer",
+      "decision": "reject",
+      "attestedHuman": true,
+      "comment": "Concur with primary reviewer -- this needs an evidence citation before it can be reconsidered.",
+      "decidedAt": "2026-07-06T11:30:00Z"
+    }
+  ],
+  "conflictResolution": null,
+  "approvedBy": [],
+  "history": [
+    {
+      "state": "proposed",
+      "enteredAt": "2026-07-05T10:00:00Z",
+      "actor": "system:proposal-intake",
+      "note": "Change proposal CP-2026-002 filed."
+    },
+    {
+      "state": "under-review",
+      "enteredAt": "2026-07-05T15:00:00Z",
+      "actor": "system:review-assignment",
+      "note": "Dual review assigned to REV-001 (primary) and REV-002 (secondary)."
+    },
+    {
+      "state": "rejected",
+      "enteredAt": "2026-07-06T11:30:00Z",
+      "actor": "system:review-assignment",
+      "note": "Both reviewers rejected on the same unsupported-threshold ground; no dispute -- rejection is unanimous."
+    }
+  ],
+  "createdAt": "2026-07-05T10:00:00Z",
+  "updatedAt": "2026-07-06T11:30:00Z"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "cbc_suite_v1",
+  "title": "SYNTHETIC-INVALID fixture (P1-T7, tests/ef-contract-forced-empty.test.mjs): an attempted unsigned-stub -> \"release-ready\" status transition. SPIKE-006 RQ4's closed lifecycle enum (unsigned-stub -> integrity-recorded -> superseded/revoked) has no \"release-ready\" value -- this fixture must be rejected structurally, not merely by policy.",
+  "schemaVersion": 1,
+  "status": "release-ready",
+  "knowledgeBaseVersion": "0.0.0-seeded-bad",
+  "evidenceReviewedThrough": "2026-07-21",
+  "engineLabel": "Synthetic Seeded-Bad Test Engine",
+  "supportedAgeMonths": { "min": 0, "max": 216 },
+  "clinicalContentHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "governanceHash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "approvedBy": [],
+  "validationRunId": null,
+  "supersedes": null,
+  "releasedAt": null
+}
