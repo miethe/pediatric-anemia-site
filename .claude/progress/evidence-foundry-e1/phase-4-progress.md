@@ -168,7 +168,7 @@ tasks:
     — E0 fixtures remain the single source of truth). Adapter output lands in the
     harness regression lane; a stability test pins adapter output bytes so E0-corpus
     drift is caught, not absorbed.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -177,6 +177,10 @@ tasks:
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
+  completed: 2026-07-22T00:00Z
+  evidence:
+  - test: tests/ef-retro-e0-adapter.test.mjs
+  - commit: ef-e1(P4-T8)
 - id: P4-T9
   description: 'Retrospective data-source SPIKE charter (FR-25), ruling R6: author
     docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md — charter only,
