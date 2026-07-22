@@ -37,7 +37,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
-import { spawnSync } from 'node:child_process';
+import { spawnSync, execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -56,8 +56,17 @@ import { parseYamlDocument } from '../tools/rf-bundle-to-kb-pack/lib/yaml-lite.m
 import { loadRosterIndex, resolveReviewer, buildRosterIndex } from '../tools/review-record/lib/roster.mjs';
 import { checkReviewerIndependence, longestCommonSubstringLength } from '../tools/review-record/lib/independence.mjs';
 import { computeModuleContentHash } from '../tools/review-record/lib/subject.mjs';
+import { signRecordDryRun } from '../tools/review-record/lib/signature.mjs';
 import { buildDraftRecord, run as runScaffold } from '../tools/review-record/lib/verbs/scaffold.mjs';
 import { run as runValidate } from '../tools/review-record/lib/verbs/validate.mjs';
+import {
+  ACTS_COMPLETE_UNAUTHORIZED,
+  REDACTED_MARKER,
+  applyRedaction,
+  computeEffectiveRecordsByRole,
+  computeTurnState,
+  run as runStatus,
+} from '../tools/review-record/lib/verbs/status.mjs';
 import {
   RecordAlreadyExistsError,
   ReviewerNotInScopeError,
@@ -694,5 +703,572 @@ test('lib/verbs/validate.mjs contains zero duplicated derived-state logic -- it 
       `lib/verbs/validate.mjs must not directly call/import ${pattern} -- that reasoning now lives ` +
         'solely in lib/derived-state.mjs (computeDerivedReviewState), P1-T1',
     );
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// P1-T2 (clinical-review-workflow-v1, FR-1/FR-2/FR-27/FR-28/FR-29, OQ-2) — `status` verb: frozen
+// --json shape, redaction-by-default (FR-27), fail-closed `invalid` state (FR-28), non-authorizing
+// terminal-state naming (FR-29), human output naming the next-expected role/terminal state.
+//
+// This "committed JSON-shape fixture" (STATUS_JSON_TOP_LEVEL_KEYS/STATUS_RECORD_KEYS/
+// STATUS_DERIVED_STATE_ENUM below) is defined inline in this file rather than as a separate fixture
+// file: this task's declared target surfaces are exactly cli.mjs, lib/verbs/status.mjs, and this
+// test file.
+// -------------------------------------------------------------------------------------------
+
+const STATUS_JSON_TOP_LEVEL_KEYS = [
+  'moduleId', 'subjectContentHash', 'records', 'derivedState', 'nextExpectedRole', 'blockers',
+].sort();
+const STATUS_RECORD_KEYS = [
+  'role', 'review_id', 'reviewerId', 'decision', 'rationale', 'synthetic', 'supersedes', 'chainLinkage',
+].sort();
+/** OQ-2/FR-29: the frozen derivedState enum. NEVER a `release-ready`-like value pre-G0/G1/G2/G4. */
+const STATUS_DERIVED_STATE_ENUM = Object.freeze([
+  'not-started',
+  'in-progress',
+  'disputed',
+  'structurally-non-qualifying',
+  ACTS_COMPLETE_UNAUTHORIZED,
+  'invalid',
+]);
+
+/**
+ * Asserts `parsed` (an already-`JSON.parse`d `status --json` body) matches the frozen OQ-2 shape:
+ * exactly the six named top-level keys (no more, no fewer), correct per-key types, a `derivedState`
+ * drawn from the frozen enum, and every `records[]` entry carrying exactly the eight named fields.
+ *
+ * @param {object} parsed
+ */
+function assertStatusJsonShape(parsed) {
+  assert.deepEqual(Object.keys(parsed).sort(), STATUS_JSON_TOP_LEVEL_KEYS, 'unexpected top-level key set');
+  assert.equal(typeof parsed.moduleId, 'string');
+  assert.ok(
+    parsed.subjectContentHash === null || typeof parsed.subjectContentHash === 'string',
+    'subjectContentHash must be a string or null',
+  );
+  assert.ok(Array.isArray(parsed.records));
+  assert.ok(
+    STATUS_DERIVED_STATE_ENUM.includes(parsed.derivedState),
+    `derivedState "${parsed.derivedState}" is not one of the frozen enum values`,
+  );
+  assert.ok(
+    parsed.nextExpectedRole === null || REVIEW_ROLES.includes(parsed.nextExpectedRole),
+    'nextExpectedRole must be null or one of the five REVIEW_ROLES',
+  );
+  assert.ok(Array.isArray(parsed.blockers));
+  for (const record of parsed.records) {
+    assert.deepEqual(Object.keys(record).sort(), STATUS_RECORD_KEYS, 'unexpected records[] entry key set');
+  }
+}
+
+function runStatusCli(args) {
+  const result = spawnSync(process.execPath, [CLI_PATH, 'status', ...args], { encoding: 'utf8' });
+  assert.equal(result.error, undefined, `spawnSync itself failed: ${result.error}`);
+  return { status: result.status, stdout: result.stdout, stderr: result.stderr };
+}
+
+// -------------------------------------------------------------------------------------------
+// --help lists status with the exact frozen command signature
+// -------------------------------------------------------------------------------------------
+
+test('cli.mjs --help lists status with the exact frozen command signature', () => {
+  const { status, stdout, stderr } = runCli(['--help']);
+  assert.equal(status, EXIT_OK, stderr);
+  assert.match(stdout, /status --module <id> \[--root <dir>\] \[--json\] \[--history\] \[--unredacted\]/);
+});
+
+// -------------------------------------------------------------------------------------------
+// Frozen --json shape (OQ-2) against the committed cbc_suite_v1 dry-run set
+// -------------------------------------------------------------------------------------------
+
+test('status --module cbc_suite_v1 --json validates against the frozen JSON-shape contract and reports the correct terminal state', () => {
+  const { status, stdout, stderr } = runStatusCli(['--module', 'cbc_suite_v1', '--json']);
+  assert.equal(status, EXIT_OK, stderr);
+  const parsed = JSON.parse(stdout);
+  assertStatusJsonShape(parsed);
+  assert.equal(parsed.moduleId, 'cbc_suite_v1');
+  assert.equal(parsed.derivedState, 'structurally-non-qualifying');
+  assert.equal(parsed.nextExpectedRole, null);
+  assert.equal(parsed.records.length, 5);
+  assert.equal(parsed.blockers.length, 1);
+  assert.match(parsed.blockers[0], /release-authorization is not valid/);
+  // Terminal state -- FR-27 redaction lifts automatically; records show their real (committed)
+  // content rather than the redaction marker.
+  assert.equal(parsed.records[0].reviewerId, 'dryrun-cbc-suite-clinical-1');
+});
+
+test('status --module <not-started fixture> --json reports not-started with nextExpectedRole clinical-1', () => {
+  const { status, stdout, stderr } = runStatusCli(['--module', 'scaffold_target_v1', '--root', FIXTURES_ROOT, '--json']);
+  assert.equal(status, EXIT_OK, stderr);
+  const parsed = JSON.parse(stdout);
+  assertStatusJsonShape(parsed);
+  assert.equal(parsed.derivedState, 'not-started');
+  assert.equal(parsed.nextExpectedRole, 'clinical-1');
+  assert.deepEqual(parsed.records, []);
+  assert.deepEqual(parsed.blockers, []);
+});
+
+// -------------------------------------------------------------------------------------------
+// FR-29 (F4): non-authorizing terminal-state naming -- no release-ready-like label, ever.
+// -------------------------------------------------------------------------------------------
+
+test('the frozen derivedState enum contains acts-complete-unauthorized and invalid, and lib/verbs/status.mjs never emits a release-ready-like label anywhere in its source', async () => {
+  assert.ok(STATUS_DERIVED_STATE_ENUM.includes('acts-complete-unauthorized'));
+  assert.ok(STATUS_DERIVED_STATE_ENUM.includes('invalid'));
+  const statusSource = await readFile(
+    path.join(REPO_ROOT, 'tools', 'review-record', 'lib', 'verbs', 'status.mjs'),
+    'utf8',
+  );
+  assert.doesNotMatch(statusSource, /release-ready/i);
+  assert.doesNotMatch(statusSource, /"approved"|'approved'/);
+});
+
+// -------------------------------------------------------------------------------------------
+// Human output names the next-expected role or the terminal state (this task's own AC)
+// -------------------------------------------------------------------------------------------
+
+test('status human (non-json) output names the next-expected role for an in-progress module', () => {
+  const { status, stdout, stderr } = runStatusCli(['--module', 'scaffold_target_v1', '--root', FIXTURES_ROOT]);
+  assert.equal(status, EXIT_OK, stderr);
+  assert.match(stdout, /derivedState: not-started/);
+  assert.match(stdout, /Next expected role: clinical-1/);
+});
+
+test('status human (non-json) output names the terminal state for cbc_suite_v1', () => {
+  const { status, stdout, stderr } = runStatusCli(['--module', 'cbc_suite_v1']);
+  assert.equal(status, EXIT_OK, stderr);
+  assert.match(stdout, /derivedState: structurally-non-qualifying/);
+  assert.match(stdout, /Terminal state reached \(structurally-non-qualifying\)/);
+});
+
+// -------------------------------------------------------------------------------------------
+// Integration fixtures: a valid, disputed (agree/disagree, FR-26) pair and a fully agreeing,
+// adjudication-skipped, all-real terminal set -- built via throwaway tmp dirs (never the real
+// modules/ or governance/reviewer-roster.yaml trees).
+// -------------------------------------------------------------------------------------------
+
+const SENTINEL_CLINICAL1_RATIONALE = 'SENTINEL-STATUS-P1T2-CLINICAL1-TOKEN-3d8f1a';
+
+/**
+ * Builds a throwaway (non-git) tmp root with a small fixture roster and a synthetic, validly
+ * TESTKEY--signed clinical-1/clinical-2/lab chain whose clinical-1/clinical-2 decisions DISAGREE
+ * (no adjudication record) -- exercises the `disputed` derived state end to end, including FR-26's
+ * `isAdjudicationRequired` integration. clinical-1's rationale carries a unique sentinel string,
+ * used by the FR-27 redaction tests below.
+ *
+ * @returns {Promise<string>} the tmp root
+ */
+async function makeDisputedFixture() {
+  const dir = await mkdtemp(path.join(tmpdir(), 'ef-status-disputed-'));
+  await mkdir(path.join(dir, 'governance'), { recursive: true });
+  await writeFile(
+    path.join(dir, 'governance', 'reviewer-roster.yaml'),
+    'schemaVersion: 1\n' +
+      'reviewers:\n' +
+      '  - reviewerId: disputed-clinical-1\n' +
+      '    name: "Fixture Disputed Clinical One"\n' +
+      '    credentialRef: fixture-placeholder\n' +
+      '    moduleScopes:\n' +
+      '      - disputed_pair_v1\n' +
+      '    synthetic: true\n' +
+      '  - reviewerId: disputed-clinical-2\n' +
+      '    name: "Fixture Disputed Clinical Two"\n' +
+      '    credentialRef: fixture-placeholder\n' +
+      '    moduleScopes:\n' +
+      '      - disputed_pair_v1\n' +
+      '    synthetic: true\n' +
+      '  - reviewerId: disputed-lab\n' +
+      '    name: "Fixture Disputed Lab"\n' +
+      '    credentialRef: fixture-placeholder\n' +
+      '    moduleScopes:\n' +
+      '      - disputed_pair_v1\n' +
+      '    synthetic: true\n',
+    'utf8',
+  );
+
+  async function writeRole(role, reviewerId, decision, rationale) {
+    const { seq, previousRecordHash } = await nextChainLink(dir, 'disputed_pair_v1');
+    const reviewId = buildReviewId(seq, role);
+    const draft = {
+      schemaVersion: 1,
+      review_id: reviewId,
+      role,
+      moduleId: 'disputed_pair_v1',
+      subjectContentHash: SUBJECT_HASH,
+      previousRecordHash,
+      supersedes: null,
+      reviewerId,
+      decision,
+      rationale,
+      reviewedAt: '2026-02-06T00:00:00Z',
+      synthetic: true,
+      signature: null,
+    };
+    const signed = signRecordDryRun(draft);
+    await writeNewReviewRecordFile(dir, 'disputed_pair_v1', reviewId, signed);
+  }
+
+  await writeRole('clinical-1', 'disputed-clinical-1', 'approve', SENTINEL_CLINICAL1_RATIONALE);
+  await writeRole(
+    'clinical-2',
+    'disputed-clinical-2',
+    'reject',
+    'Findings instead suggest a distinct differential, formed independently of any sibling record.',
+  );
+  await writeRole(
+    'lab',
+    'disputed-lab',
+    'approve',
+    'Laboratory values confirm assay validity and specimen integrity for this panel run today.',
+  );
+  return dir;
+}
+
+/**
+ * Builds a throwaway git-initialized tmp root with a real, resolvable authorship union (a single
+ * commit introducing `modules/<moduleId>/module.json` under an identity distinct from every roster
+ * reviewer below) and a fully agreeing, `synthetic: false`, four-record (adjudication SKIPPED, FR-26
+ * agreement path) chain: clinical-1/clinical-2/lab/release-auth, all `approve`, roster-verified,
+ * chain-valid. Exercises `acts-complete-unauthorized` (FR-29) end to end.
+ *
+ * @returns {Promise<string>} the tmp root
+ */
+async function makeActsCompleteFixture() {
+  const dir = await mkdtemp(path.join(tmpdir(), 'ef-status-acu-'));
+  const git = (args) => execFileSync('git', args, { cwd: dir, stdio: ['ignore', 'ignore', 'ignore'] });
+  git(['init', '--quiet']);
+  git(['config', 'user.email', 'acu-fixture-committer@example.test']);
+  git(['config', 'user.name', 'ACU Fixture Committer']);
+  git(['config', 'commit.gpgsign', 'false']);
+
+  await mkdir(path.join(dir, 'modules', 'acu_agree_v1'), { recursive: true });
+  await writeFile(path.join(dir, 'modules', 'acu_agree_v1', 'module.json'), '{}\n', 'utf8');
+  git(['add', 'modules/acu_agree_v1/module.json']);
+  git(['commit', '--quiet', '--author', 'Module Author <module-author@example.test>', '-m', 'introduce module']);
+
+  await mkdir(path.join(dir, 'governance'), { recursive: true });
+  await writeFile(
+    path.join(dir, 'governance', 'reviewer-roster.yaml'),
+    'schemaVersion: 1\n' +
+      'reviewers:\n' +
+      '  - reviewerId: acu-clinical-1\n' +
+      '    name: "Fixture ACU Clinical One"\n' +
+      '    credentialRef: fixture-placeholder\n' +
+      '    moduleScopes:\n' +
+      '      - acu_agree_v1\n' +
+      '    synthetic: false\n' +
+      '  - reviewerId: acu-clinical-2\n' +
+      '    name: "Fixture ACU Clinical Two"\n' +
+      '    credentialRef: fixture-placeholder\n' +
+      '    moduleScopes:\n' +
+      '      - acu_agree_v1\n' +
+      '    synthetic: false\n' +
+      '  - reviewerId: acu-lab\n' +
+      '    name: "Fixture ACU Lab"\n' +
+      '    credentialRef: fixture-placeholder\n' +
+      '    moduleScopes:\n' +
+      '      - acu_agree_v1\n' +
+      '    synthetic: false\n' +
+      '  - reviewerId: acu-release-auth\n' +
+      '    name: "Fixture ACU Release Auth"\n' +
+      '    credentialRef: fixture-placeholder\n' +
+      '    moduleScopes:\n' +
+      '      - acu_agree_v1\n' +
+      '    synthetic: false\n',
+    'utf8',
+  );
+
+  async function writeRole(role, reviewerId, rationale) {
+    const { seq, previousRecordHash } = await nextChainLink(dir, 'acu_agree_v1');
+    const reviewId = buildReviewId(seq, role);
+    const record = {
+      schemaVersion: 1,
+      review_id: reviewId,
+      role,
+      moduleId: 'acu_agree_v1',
+      subjectContentHash: SUBJECT_HASH,
+      previousRecordHash,
+      supersedes: null,
+      reviewerId,
+      decision: 'approve',
+      rationale,
+      reviewedAt: '2026-02-06T00:00:00Z',
+      synthetic: false,
+      signature: null,
+    };
+    await writeNewReviewRecordFile(dir, 'acu_agree_v1', reviewId, record);
+  }
+
+  await writeRole('clinical-1', 'acu-clinical-1', 'Clinical review one rationale of sufficient length here today.');
+  await writeRole('clinical-2', 'acu-clinical-2', 'Clinical review two rationale, independently formed and phrased.');
+  await writeRole('lab', 'acu-lab', 'Laboratory review rationale confirming assay validity for this panel.');
+  await writeRole('release-auth', 'acu-release-auth', 'Release authorization rationale over the complete set.');
+  return dir;
+}
+
+test('status reports disputed with nextExpectedRole adjudication over a clinical-1/clinical-2 disagreement (FR-26 integration)', async () => {
+  const dir = await makeDisputedFixture();
+  try {
+    const code = await runStatus({ module: 'disputed_pair_v1', root: dir, json: true });
+    assert.equal(code, EXIT_OK);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('status --json reports acts-complete-unauthorized (never a release-ready-like label) over a complete, agreeing, adjudication-skipped, all-real chain (FR-26/FR-29 integration)', async () => {
+  const dir = await makeActsCompleteFixture();
+  try {
+    const { status, stdout, stderr } = runStatusCli(['--module', 'acu_agree_v1', '--root', dir, '--json']);
+    assert.equal(status, EXIT_OK, stderr);
+    const parsed = JSON.parse(stdout);
+    assertStatusJsonShape(parsed);
+    assert.equal(parsed.derivedState, ACTS_COMPLETE_UNAUTHORIZED);
+    assert.equal(parsed.nextExpectedRole, null);
+    assert.deepEqual(parsed.blockers, []);
+    assert.equal(parsed.records.length, 4, 'adjudication is skipped on the agreement path (FR-26)');
+    // Terminal state -- redaction lifts automatically; the real reviewerId is visible by default.
+    assert.equal(parsed.records[0].reviewerId, 'acu-clinical-1');
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// FR-27 (F7) — independence-preserving redaction by default; --unredacted lifts it with a warning.
+// -------------------------------------------------------------------------------------------
+
+test('status default (redacted) output never surfaces clinical-1\'s reviewerId/decision/rationale sentinel while the record set is not yet terminal (FR-27)', async () => {
+  const dir = await makeDisputedFixture();
+  try {
+    const jsonResult = runStatusCli(['--module', 'disputed_pair_v1', '--root', dir, '--json']);
+    assert.doesNotMatch(jsonResult.stdout, new RegExp(SENTINEL_CLINICAL1_RATIONALE));
+    assert.doesNotMatch(jsonResult.stderr, new RegExp(SENTINEL_CLINICAL1_RATIONALE));
+    const parsed = JSON.parse(jsonResult.stdout);
+    const clinical1 = parsed.records.find((r) => r.role === 'clinical-1');
+    assert.equal(clinical1.reviewerId, REDACTED_MARKER);
+    assert.equal(clinical1.decision, REDACTED_MARKER);
+    assert.equal(clinical1.rationale, REDACTED_MARKER);
+
+    const humanResult = runStatusCli(['--module', 'disputed_pair_v1', '--root', dir]);
+    assert.doesNotMatch(humanResult.stdout, new RegExp(SENTINEL_CLINICAL1_RATIONALE));
+    assert.match(humanResult.stdout, /redacted by default while independence still matters/);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('status --unredacted lifts redaction (sentinel becomes visible) and prints a visible independence-risk warning banner to stderr', async () => {
+  const dir = await makeDisputedFixture();
+  try {
+    const { status, stdout, stderr } = runStatusCli(['--module', 'disputed_pair_v1', '--root', dir, '--json', '--unredacted']);
+    assert.equal(status, EXIT_OK, stderr);
+    assert.match(stdout, new RegExp(SENTINEL_CLINICAL1_RATIONALE));
+    assert.match(stderr, /WARNING: --unredacted lifts FR-27 independence-preserving redaction/);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// FR-28 (F8) — status exits non-zero with derivedState "invalid" whenever validate would reject
+// the same input: malformed YAML, roster resolution failure, chain break, signature tamper, and
+// (with --history) an append-only git-history failure. status never reports a next-role or
+// terminal disposition over any of these (risk R13).
+// -------------------------------------------------------------------------------------------
+
+test('status reports derivedState invalid + non-zero exit on a malformed review-record filename (F8)', () => {
+  const { status, stdout, stderr } = runStatusCli(['--module', 'malformed_v1', '--root', FIXTURES_ROOT, '--json']);
+  assert.equal(status, EXIT_USAGE, stderr);
+  const parsed = JSON.parse(stdout);
+  assertStatusJsonShape(parsed);
+  assert.equal(parsed.derivedState, 'invalid');
+  assert.equal(parsed.nextExpectedRole, null);
+  assert.ok(parsed.blockers.length > 0);
+});
+
+test('status reports derivedState invalid + non-zero exit on a non-roster reviewerId (F8)', () => {
+  const { status, stdout, stderr } = runStatusCli(['--module', 'nonroster_reviewer_v1', '--root', FIXTURES_ROOT, '--json']);
+  assert.equal(status, EXIT_USAGE, stderr);
+  const parsed = JSON.parse(stdout);
+  assertStatusJsonShape(parsed);
+  assert.equal(parsed.derivedState, 'invalid');
+  assert.equal(parsed.nextExpectedRole, null);
+  assert.ok(parsed.blockers.some((b) => b.includes('does not resolve to any entry in governance/reviewer-roster.yaml')));
+});
+
+test('status reports derivedState invalid + non-zero exit on a broken hash-chain (F8)', () => {
+  const { status, stdout, stderr } = runStatusCli(['--module', 'broken_chain_v1', '--root', FIXTURES_ROOT, '--json']);
+  assert.equal(status, EXIT_USAGE, stderr);
+  const parsed = JSON.parse(stdout);
+  assertStatusJsonShape(parsed);
+  assert.equal(parsed.derivedState, 'invalid');
+  assert.equal(parsed.nextExpectedRole, null);
+  assert.ok(parsed.blockers.some((b) => b.startsWith('chain:')));
+});
+
+test('status reports derivedState invalid + non-zero exit on a signature-tampered record (F8)', async () => {
+  const dir = await mkdtemp(path.join(tmpdir(), 'ef-status-tamper-'));
+  try {
+    await mkdir(path.join(dir, 'governance'), { recursive: true });
+    await writeFile(
+      path.join(dir, 'governance', 'reviewer-roster.yaml'),
+      'schemaVersion: 1\n' +
+        'reviewers:\n' +
+        '  - reviewerId: tamper-clinical-1\n' +
+        '    name: "Fixture Tamper Clinical One"\n' +
+        '    credentialRef: fixture-placeholder\n' +
+        '    moduleScopes:\n' +
+        '      - tamper_target_v1\n' +
+        '    synthetic: true\n',
+      'utf8',
+    );
+
+    const reviewId = buildReviewId(1, 'clinical-1');
+    const draft = {
+      schemaVersion: 1,
+      review_id: reviewId,
+      role: 'clinical-1',
+      moduleId: 'tamper_target_v1',
+      subjectContentHash: SUBJECT_HASH,
+      previousRecordHash: null,
+      supersedes: null,
+      reviewerId: 'tamper-clinical-1',
+      decision: 'approve',
+      rationale: 'Genuine TESTKEY--signed record, about to be tampered with on disk after signing.',
+      reviewedAt: '2026-02-07T00:00:00Z',
+      synthetic: true,
+      signature: null,
+    };
+    const signed = signRecordDryRun(draft);
+    const filePath = await writeNewReviewRecordFile(dir, 'tamper_target_v1', reviewId, signed);
+
+    // Tamper: flip the committed decision AFTER signing, without re-signing -- invalidates the
+    // Ed25519 signature (the preimage no longer matches `value`) while leaving every other field,
+    // including the signature block itself, byte-identical to what was actually signed.
+    const rawYaml = await readFile(filePath, 'utf8');
+    assert.match(rawYaml, /^decision: approve$/m);
+    const tampered = rawYaml.replace(/^decision: approve$/m, 'decision: reject');
+    assert.notEqual(tampered, rawYaml);
+    await writeFile(filePath, tampered, 'utf8');
+
+    const { status, stdout, stderr } = runStatusCli(['--module', 'tamper_target_v1', '--root', dir, '--json']);
+    assert.equal(status, EXIT_USAGE, stderr);
+    const parsed = JSON.parse(stdout);
+    assertStatusJsonShape(parsed);
+    assert.equal(parsed.derivedState, 'invalid');
+    assert.equal(parsed.nextExpectedRole, null);
+    assert.ok(parsed.blockers.some((b) => b.includes('cryptographic verification failed')));
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('status --history reports derivedState invalid + non-zero exit when --root is not a git working tree (F8, parity with validate)', async () => {
+  const dir = await mkdtemp(path.join(tmpdir(), 'ef-status-nogit-'));
+  try {
+    const { status, stdout, stderr } = runStatusCli(['--module', 'no_history_target_v1', '--root', dir, '--json', '--history']);
+    assert.equal(status, EXIT_USAGE, stderr);
+    const parsed = JSON.parse(stdout);
+    assert.equal(parsed.derivedState, 'invalid');
+    assert.ok(parsed.blockers.some((b) => b.includes('is not inside a git working tree')));
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('status does not run history validation by default (parity with validate\'s own opt-in default)', async () => {
+  const dir = await mkdtemp(path.join(tmpdir(), 'ef-status-nogit-default-'));
+  try {
+    // The same non-git root that fails closed under --history above must NOT fail closed without
+    // it -- a plain `status` call never performs the git-history walk (matches `validate`'s own
+    // opt-in-only posture).
+    const code = await runStatus({ module: 'no_history_target_v1', root: dir, json: true });
+    assert.equal(code, EXIT_OK);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// Pure-logic unit coverage for the turn-taking helpers (no CLI subprocess needed)
+// -------------------------------------------------------------------------------------------
+
+test('computeEffectiveRecordsByRole excludes a superseded record and keeps the correcting one', () => {
+  const original = { reviewId: 'rr-0001-clinical-1', seq: 1, role: 'clinical-1', record: { supersedes: null } };
+  const correction = {
+    reviewId: 'rr-0002-clinical-1',
+    seq: 2,
+    role: 'clinical-1',
+    record: { supersedes: 'rr-0001-clinical-1' },
+  };
+  const effective = computeEffectiveRecordsByRole([original, correction]);
+  assert.equal(effective.size, 1);
+  assert.equal(effective.get('clinical-1').reviewId, 'rr-0002-clinical-1');
+});
+
+test('computeTurnState reports not-started for an empty record set, in-progress role-by-role otherwise', () => {
+  assert.deepEqual(computeTurnState(new Map(), []), { derivedState: 'not-started', nextExpectedRole: 'clinical-1' });
+
+  const clinical1 = { reviewId: 'rr-0001-clinical-1', seq: 1, role: 'clinical-1', record: { decision: 'approve' } };
+  const byRoleOne = new Map([['clinical-1', clinical1]]);
+  assert.deepEqual(computeTurnState(byRoleOne, [clinical1]), { derivedState: 'in-progress', nextExpectedRole: 'clinical-2' });
+});
+
+test('applyRedaction is a no-op for a terminal derivedState and for --unredacted, and redacts otherwise', () => {
+  const base = {
+    moduleId: 'm', subjectContentHash: 'sha256:x', nextExpectedRole: null, blockers: [],
+    records: [{ role: 'clinical-1', review_id: 'rr-0001-clinical-1', reviewerId: 'r1', decision: 'approve', rationale: 'x', synthetic: true, supersedes: null, chainLinkage: null }],
+  };
+  const inProgress = { ...base, derivedState: 'in-progress' };
+  const redacted = applyRedaction(inProgress, false);
+  assert.equal(redacted.records[0].reviewerId, REDACTED_MARKER);
+
+  const stillReal = applyRedaction(inProgress, true);
+  assert.equal(stillReal.records[0].reviewerId, 'r1');
+
+  const terminal = { ...base, derivedState: ACTS_COMPLETE_UNAUTHORIZED };
+  const terminalProjected = applyRedaction(terminal, false);
+  assert.equal(terminalProjected.records[0].reviewerId, 'r1');
+});
+
+// -------------------------------------------------------------------------------------------
+// status consumes the ONE shared computeDerivedReviewState result -- no forked module-wide logic
+// (mirrors the P1-T1 drift test above for validate.mjs).
+// -------------------------------------------------------------------------------------------
+
+test('lib/verbs/status.mjs imports and calls computeDerivedReviewState (shared derived-state library) and isExpectedTerminalNonQualifyingViolations (shared dry-run terminal-shape check) rather than reimplementing either', async () => {
+  const statusSource = await readFile(
+    path.join(REPO_ROOT, 'tools', 'review-record', 'lib', 'verbs', 'status.mjs'),
+    'utf8',
+  );
+  assert.match(
+    statusSource,
+    /import\s*\{[^}]*computeDerivedReviewState[^}]*\}\s*from\s*['"]\.\.\/derived-state\.mjs['"]/,
+  );
+  assert.match(statusSource, /computeDerivedReviewState\(/);
+  assert.match(
+    statusSource,
+    /import\s*\{[^}]*isExpectedTerminalNonQualifyingViolations[^}]*\}\s*from\s*['"]\.\/dry-run\.mjs['"]/,
+  );
+  for (const pattern of [/checkReviewerIndependence\(/, /checkModuleChainLinkage\(/, /evaluateReleaseAuthorization\(/]) {
+    assert.doesNotMatch(statusSource, pattern);
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// Zero network calls (status), matching this file's existing scaffold/validate pattern.
+// -------------------------------------------------------------------------------------------
+
+test('status makes zero network calls at runtime (patched global fetch throws if invoked)', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => {
+    throw new Error('network call attempted during a status verb invocation');
+  };
+  try {
+    await assert.doesNotReject(() => runStatus({ module: 'cbc_suite_v1', root: REPO_ROOT, json: true }));
+  } finally {
+    globalThis.fetch = originalFetch;
   }
 });

@@ -23,6 +23,10 @@
 //   dry-run   — full five-role synthetic dry-run cycle. IMPLEMENTED (P2-T8) — see
 //               lib/verbs/dry-run.mjs for the scaffold -> sign -> chain-validate composition and
 //               the expected structural FR-6 non-qualifying terminal state.
+//   status    — derived review-chain state + next-expected role/terminal disposition. IMPLEMENTED
+//               (Clinical Review Workflow v1, Phase 1, P1-T2, FR-1/FR-27/FR-28/FR-29) — see
+//               lib/verbs/status.mjs for the frozen --json shape, the independence-preserving
+//               redaction default (FR-27), and the fail-closed `invalid` state (FR-28).
 //
 // Zero network calls, zero LLM/generative-model invocations, ever (FR-7). No file in this tool
 // imports `node:http`, `node:https`, `node:dgram`, `fetch`, or any AI/model SDK — see
@@ -33,6 +37,7 @@ import { run as runValidate } from './lib/verbs/validate.mjs';
 import { run as runList } from './lib/verbs/list.mjs';
 import { run as runRender } from './lib/verbs/render.mjs';
 import { run as runDryRun } from './lib/verbs/dry-run.mjs';
+import { run as runStatus } from './lib/verbs/status.mjs';
 import { CliError, EXIT_OK, EXIT_USAGE } from './lib/errors.mjs';
 
 const VERB_HANDLERS = Object.freeze({
@@ -41,6 +46,7 @@ const VERB_HANDLERS = Object.freeze({
   list: runList,
   render: runRender,
   'dry-run': runDryRun,
+  status: runStatus,
 });
 
 const HELP_TEXT = `review-record — offline, deterministic CLI for the ADR-0004 five-role
@@ -94,6 +100,22 @@ Verbs:
       finding ("this entire record set is synthetic:true") — this is the correct terminal state,
       not a dry-run failure; any OTHER validation finding at any step still fails closed.
       IMPLEMENTED (P2-T8).
+
+  status --module <id> [--root <dir>] [--json] [--history] [--unredacted]
+      Derived review-chain state + next-expected role from a module's committed records, computed
+      via the ONE shared derived-state library (lib/derived-state.mjs). --json emits the frozen
+      shape { moduleId, subjectContentHash, records[], derivedState, nextExpectedRole, blockers[] }
+      whose derivedState enum is not-started | in-progress | disputed | structurally-non-qualifying
+      | acts-complete-unauthorized | invalid -- NEVER a release-ready-like label (FR-29): the
+      all-real terminal state names only that the five-role act set is structurally complete,
+      chain-valid, and roster-verified, not that any release authorization occurred. By default,
+      reviewerId/decision/rationale of an independence-sensitive sibling record are REDACTED in both
+      human and --json output while independence still matters (FR-27); --unredacted lifts this and
+      prints a visible warning (adjudicator/release-authorizer use only). status exits non-zero with
+      derivedState "invalid" whenever validate would reject the same input (FR-28) -- schema shape,
+      D-4 roster resolution, chain break, signature tamper, or (with --history) an append-only
+      git-history failure; --history is opt-in, matching validate's own default. IMPLEMENTED
+      (Clinical Review Workflow v1, Phase 1, P1-T2).
 
 Global:
   -h, --help    Show this help and exit 0.

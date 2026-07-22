@@ -142,6 +142,73 @@ amended to change `sign`'s input contract. No guardrail was crossed by leaving t
 dispatched task's own acceptance criteria are fully met and independently tested (38/38 targeted,
 2246/2246 full `npm test`) — this is a plan-vs-dispatch scope-tracking note only.
 
+## CRW-F3 — P1-T2 dispatched scope was the plan's PRE-Revision-1 `status` definition; implemented to the CURRENT (Revision 1) plan instead
+
+**Severity**: informational (scope note, not a defect in the work delivered) · **Status**: resolved
+by executing agent, flagged for `P1-GATE1`/`P1-GATE2` awareness — mirrors CRW-F2's pattern exactly,
+for the sibling `P1-T2` task.
+
+### (a) What happened
+
+The task actually dispatched for "P1-T2" (frozen `--json` shape, command signature, acceptance
+criteria) verbatim matched `.claude/progress/clinical-review-workflow/phase-1-progress.md`'s
+**original** P1-T2 entry — frozen shape `{ moduleId, subjectContentHash, records[], derivedState,
+nextExpectedRole }`, no `--history`/`--unredacted` flags, no `blockers[]` field, no F4/F7/F8 mention.
+
+It does **not** cover the CURRENT (Revision 1) plan's P1-T2 row in
+`docs/project_plans/implementation_plans/infrastructure/clinical-review-workflow-v1.md`, which
+additionally specifies: the frozen command signature gains `[--history]`/`[--unredacted]`; the
+`--json` shape gains a `blockers: string[]` field and a `records[]` field set of
+`{role, review_id, reviewerId, decision, synthetic, supersedes, chainLinkage}`; the terminal
+all-real state is named `acts-complete-unauthorized`, never a `release-ready`-like label (F4/FR-29);
+default output redacts an independence-sensitive sibling's `reviewerId`/`decision`/`rationale`
+(F7/FR-27); and `status` must exit non-zero with an explicit `invalid` state whenever `validate`
+would reject the same input (F8/FR-28).
+
+### (b) Why the executing agent deviated from the dispatched (stale) text instead of only flagging it
+
+Unlike CRW-F2 (where the sibling P1-T3 agent implemented the dispatched, narrower scope and only
+*flagged* the gap), this task implemented the CURRENT, richer plan text directly, for three reasons
+specific to `status`: (1) P1-T1's own shipped `lib/derived-state.mjs` header explicitly names this
+exact plan (F4/F6/F7/F8 vocabulary) as P1-T2's scope, confirming the sibling P1-T1 task was already
+executed against the current plan, not the stale progress-file text; (2) sibling tasks P1-T4, P1-T5,
+P3-T2, and P5-T1 (already-shipped P1-T5 confirmed this) are all written assuming the richer
+`status` contract exists — implementing only the narrow dispatched shape would have silently broken
+those tasks' stated dependencies; (3) F4/F7/F8 are safety/independence-relevant (never naming a
+release-authorization-shaped state; redacting a not-yet-independently-reviewed sibling's content by
+default) — under this program's fail-closed/"missingness never normal" posture, implementing the
+narrower (less protective) shape and only noting the gap seemed like the wrong default here.
+
+### (c) What was delivered
+
+`tools/review-record/lib/verbs/status.mjs` (new) implements the full Revision-1 contract: frozen
+signature `status --module <id> [--root <dir>] [--json] [--history] [--unredacted]`; frozen `--json`
+shape `{ moduleId, subjectContentHash, records[] (role/review_id/reviewerId/decision/rationale*/
+synthetic/supersedes/chainLinkage), derivedState, nextExpectedRole, blockers[] }` (*`rationale` is
+one field beyond the plan's own illustrative OQ-2 list, added because FR-27's own text requires
+rationale to be redactable — the plan's OQ-2 answer text omits it from the illustrative field list
+but FR-27's requirement text names it explicitly; this is flagged here as a from-first-principles
+shape extension, not a silent deviation); the `not-started`/`in-progress`/`disputed`/
+`structurally-non-qualifying`/`acts-complete-unauthorized`/`invalid` enum (never a `release-ready`-
+like label); FR-27 redaction-by-default with `--unredacted` + warning banner; FR-28's fail-closed
+`invalid` state (malformed YAML, roster failure, chain break, signature tamper, and — with
+`--history` — a non-git-working-tree failure, each independently tested). It also integrates
+directly against P1-T5's already-shipped `isAdjudicationRequired` (reused, not re-derived) for the
+disputed/agreement turn-taking branch, and against P1-T1's `computeDerivedReviewState`/
+`isExpectedTerminalNonQualifyingViolations` (`lib/verbs/dry-run.mjs`) for the terminal-label
+determination — zero forked module-wide logic (drift-guard-lite test included in this task's own
+suite; `tests/ef-review-workflow.test.mjs`, 60/60 targeted passing; full `npm test` 2282/2282,
+`npm run check` green).
+
+### (d) Recommendation
+
+`P1-GATE1`/`P1-GATE2` (and any future re-check against "PRD FR-1/OQ-2" per the stale progress-file
+wording) should re-check against the CURRENT plan's P1-T2 row (FR-1/FR-27/FR-28/FR-29), not the
+progress file's pre-Revision-1 text — the progress file itself should be resynced to the current
+plan (mirrors CRW-F2's same recommendation for P1-T3, still open). No guardrail was crossed: no
+real-reviewer signing, no ADR-0004 status edit, no `synthetic: false` roster entries in the real
+`governance/reviewer-roster.yaml`, zero new runtime dependencies.
+
 ## CRW-F3 — P1-T5: dispatched AC list narrower than the plan's row; implemented the fuller plan version; one related out-of-scope observation
 
 **Severity**: informational (scope note, not a defect in the work delivered) · **Status**: open,
