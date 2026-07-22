@@ -1,0 +1,28 @@
+# governance/reviewer-roster.yaml
+#
+# Task: P1-T4 (Evidence Foundry E1, Phase 1 -- Contracts & Gates)
+# PRD OQ-1 / FR-3: the roster of individuals a review-record file's `reviewerId`
+# (schemas/review-record.schema.json) may reference. Validated by schemas/reviewer-roster.schema.json.
+#
+# THIS FILE SHIPS EMPTY -- zero entries -- BY DESIGN. FR-3 requires the roster to ship "empty or
+# synthetic-only" until gate G1 clears; this task (P1-T4) ships the schema + this empty seed only.
+#
+# GATE G1 (docs/governance/gates-registry.md; human-owned, external to any task in this repo):
+# any `synthetic: false` ("real") entry requires the program owner to RECRUIT and independently,
+# OUT-OF-BAND verify a named, credentialed reviewer's credential (2 named clinical reviewers, a
+# lab reviewer, an adjudicator, and a release authorizer per the PRD's G1 row) and to COMMIT the
+# resulting entry -- with `verificationRef` populated -- as a human act. No task, tool, or agent in
+# this repository performs that verification or adds a `synthetic: false` entry; doing so without
+# a completed G1 verification is a defect, not a feature.
+#
+# SYNTHETIC ENTRIES CAN NEVER SATISFY RELEASE-AUTHORIZATION. A `synthetic: true` entry (added only
+# by a later dry-run task, e.g. the P2-T8 five-role synthetic dry-run) is a clearly-labeled test
+# persona. schemas/reviewer-roster.schema.json structurally forbids a synthetic entry from also
+# carrying `verificationRef`, and the review-record schema's own `synthetic` flag plus the
+# downstream release-authorization validator (P2-T4) structurally and independently reject any
+# synthetic-sourced review record from ever satisfying release-authorization validity -- see D-4
+# and docs/architecture.md §6/§7/§10. Structural presence of an entry here -- real or synthetic
+# -- is never itself a clinical-validity, credentialing, licensure, or safety claim.
+
+schemaVersion: 1
+reviewers: []
