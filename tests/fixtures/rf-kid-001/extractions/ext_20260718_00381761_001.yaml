@@ -1,0 +1,91 @@
+id: ext_20260718_00381761_001
+source_card_id: src_20260718_rfkid001_07
+created_at: '2026-07-18T16:10:11-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: Urine dipstick color grades map to protein concentrations trace=15, 1+=30, 2+=100, 3+=300, 4+>=1,000
+    mg/dL, and a reading of 1+ or more is considered abnormal.
+  locator: Laboratory Testing / Urine dipstick paragraph ("The intensity of color changes...")
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: A spot first-morning urine protein-to-creatinine ratio of 0.2 or less (0.5 or less at six to 24
+    months of age) with normal urinalysis indicates likely transient or orthostatic proteinuria.
+  locator: Evaluation / spot UPr/Cr paragraph ("If the UPr/Cr ratio is 0.2 or less...")
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: In children the normal amount of protein excreted is less than 100 mg per m2 per day on 24-hour
+    quantitation.
+  locator: Laboratory Testing / 24-hour excretion paragraph ("In children, the normal amount of protein...")
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Nephrotic-range (heavy) proteinuria is defined as more than 1,000 mg per m2 per day, or a urine
+    protein-to-creatinine ratio of more than 2.
+  locator: Nephrotic syndrome paragraph ("Nephrotic syndrome is characterized by heavy proteinuria...")
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: A high urine protein-to-creatinine ratio (>2 in nonglomerular disease, >0.5 in glomerular disease)
+    predicts significant CKD progression in children.
+  locator: Introduction / CKD risk paragraph ("The Chronic Kidney Disease in Children study demonstrated...")
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: Depressed GFR is characterized as less than 60 mL per minute per 1.73 m2 for more than three months
+    and is among the criteria prompting pediatric-nephrology referral and renal biopsy.
+  locator: Referral / nephrology criteria paragraph ("...renal insufficiency with depressed glomerular
+    filtration rate...")
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: Orthostatic proteinuria is the most common type in children (especially adolescent males) and
+    is benign; referral and biopsy are reserved for red-flag features such as active sediment, hematuria,
+    hypertension, hypocomplementemia, or depressed GFR.
+  locator: Abstract / Orthostatic proteinuria and Referral sections
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Laboratory Testing / Urine dipstick paragraph ("The intensity of color changes...")
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Evaluation / spot UPr/Cr paragraph ("If the UPr/Cr ratio is 0.2 or less...")
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Laboratory Testing / 24-hour excretion paragraph ("In children, the normal amount of protein...")
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Nephrotic syndrome paragraph ("Nephrotic syndrome is characterized by heavy proteinuria...")
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Introduction / CKD risk paragraph ("The Chronic Kidney Disease in Children study demonstrated...")
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Referral / nephrology criteria paragraph ("...renal insufficiency with depressed glomerular
+    filtration rate...")
+contradictions_or_cautions: []

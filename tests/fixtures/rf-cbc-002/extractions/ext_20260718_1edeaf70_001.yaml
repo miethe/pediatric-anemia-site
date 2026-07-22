@@ -1,0 +1,46 @@
+id: ext_20260718_1edeaf70_001
+source_card_id: src_20260718_rfcbc002_04
+created_at: '2026-07-18T15:42:52-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: Severe aplastic anemia (SAA) is a rare, potentially fatal hematologic disorder for which overall
+    treatment outcomes are excellent, though management approaches vary and differ between adult and pediatric
+    patients.
+  locator: Abstract (PMID 38757488), sentences 1-2
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Certain aspects of pediatric SAA treatment remain under active investigation in clinical trials,
+    so recommendations are not fully settled.
+  locator: Abstract (PMID 38757488), sentence 3
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: Because SAA is rare, some pediatric hematologists have relatively limited experience with its
+    complex management — the rationale for these consolidated recommendations.
+  locator: Abstract (PMID 38757488), sentence 4
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The panel's recommendations are framed as an up-to-date, evidence-based approach specifically
+    for children with newly diagnosed SAA.
+  locator: Abstract (PMID 38757488), sentence 5
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics: []
+contradictions_or_cautions:
+- text: Full text behind Wiley paywall; only the abstract was retrievable verbatim (PubMed).
+  locator: card/trust
+- text: Treatment-recommendations paper, not a laboratory reference-interval source — no lab reference
+    intervals to extract.
+  locator: card/trust
+- text: Numeric diagnostic thresholds (modified Camitta SAA/vSAA criteria) are referenced by the panel
+    but were NOT locatable in accessible text; recorded as GAPs, not asserted.
+  locator: card/trust

@@ -1,0 +1,917 @@
+{
+  "knowledgeBaseVersion": "0.1.0-2026-07-22",
+  "reviewedThrough": "2026-07-22",
+  "sources": [
+    {
+      "id": "CKID_U25_GFR_EQUATIONS_2021",
+      "priority": "foundational-outside-five-year-window",
+      "year": 2021,
+      "title": "Age- and sex-dependent clinical equations to estimate glomerular filtration rates in children and young adults with chronic kidney disease",
+      "authors": [
+        "Pierce CB",
+        "Muñoz A",
+        "Ng DK",
+        "Warady BA",
+        "Furth SL",
+        "Schwartz GJ"
+      ],
+      "organization": "Kidney International (Elsevier / International Society of Nephrology)",
+      "journal": "Kidney Int 99(4):948-956",
+      "doi": "10.1016/j.kint.2020.10.047",
+      "url": "https://doi.org/10.1016/j.kint.2020.10.047",
+      "limitations": [
+        "Internal validation only (CKiD subset), no external validation performed by the authors",
+        "Population is mild-to-moderate CKD (median mGFR ~48); not validated in healthy children or for screening",
+        "sCr-based equations require patient height"
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "The U25 equations take the form eGFR = K x (height/serum creatinine) or eGFR = K x (1/cystatin C), reported in mL/min per 1.73 m2, with two variants (sex-dependent K, or sex-and-age-dependent K) per biomarker. (clm_051).",
+        "The sex-specific (age-independent) creatinine K constant is 41.8 for males and 37.6 for females. (clm_052).",
+        "In the age-dependent creatinine model, K rises monotonically from age 1 to 18 then stays constant to 25; males 35.7 (age 1) to 50.8 (>=18), females 33.1 to 41.4. (clm_053).",
+        "The constant cystatin C K is 81.9 for males and 74.9 for females (eGFR = K x 1/cysC, cysC in mg/L). (clm_054).",
+        "In the age-dependent cystatin C model K is non-monotonic, peaking at age 15 for males (K=87.2, rising from 74.8) and age 12 for females (K=79.9, rising from 76.5). (clm_055).",
+        "The K constants are assay-specific: serum creatinine was assayed enzymatically on an Advia 2400 (Siemens) and IDMS-standardized, and cystatin C nephelometrically (Siemens) and calibrated to IFCC standards; using differently calibrated assays can invalidate the constants. (clm_056).",
+        "Developed/internally validated on 2655 iohexol-mGFR observations from 928 CKiD participants; among 13 equations compared, only the two U25 age-dependent equations achieved non-significant bias and P30 accuracy >85% in both children (<18 y) and young adults (>=18 y); the equations contain no race coefficient. (clm_057)."
+      ],
+      "reviewBy": "2031-07-21",
+      "surveillanceQuery": "Age- and sex-dependent clinical equations to estimate glomerular filtration rates in children and young adults with chronic kidney disease — pediatric nephrology/CKD update after 2021",
+      "supersessionStatus": "not_superseded",
+      "recencyNote": "Retained per module.json evidence_policy.older_source_rule (\"foundational_not_superseded_with_reason\"): published 2021-04 is outside the module's 1825-day (five-year) recent-source window (evidence_policy.recent_window_days), but it is the RF-KID-001 fixture's grounding for the claims this source supports; no more recent equivalent-scope study is present in this bundle.",
+      "rfSourceCardId": "src_20260718_rfkid001_00",
+      "publicationDate": "2021-04",
+      "passages": [
+        {
+          "id": "CKID_U25_GFR_EQUATIONS_2021#implementation-proposal",
+          "sourceId": "CKID_U25_GFR_EQUATIONS_2021",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/kidney_suite_v1/evidence.json for this source. Exact-passage traceability for kidney_suite_v1 is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3 convention) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file’s passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-22",
+          "supersedes": null,
+          "surveillanceQuery": "Age- and sex-dependent clinical equations to estimate glomerular filtration rates in children and young adults with chronic kidney disease — pediatric nephrology/CKD update after 2021",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfkid001_00",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "CKID_RACE_CR_CYSC_GFR_2021",
+      "priority": "primary-current",
+      "year": 2021,
+      "title": "Self-reported Race, Serum Creatinine, Cystatin C, and GFR in Children and Young Adults With Pediatric Kidney Diseases: A Report From the Chronic Kidney Disease in Children (CKiD) Study",
+      "authors": [
+        "Derek K Ng",
+        "Susan L Furth",
+        "Bradley A Warady",
+        "Deidra C Crews",
+        "Jesse C Seegmiller",
+        "George J Schwartz"
+      ],
+      "organization": "American Journal of Kidney Diseases (National Kidney Foundation) / Elsevier",
+      "journal": "Am J Kidney Dis (AJKD), 2021-12; PMC9243196",
+      "doi": "10.1053/j.ajkd.2021.10.013",
+      "url": "https://doi.org/10.1053/j.ajkd.2021.10.013",
+      "limitations": [
+        "All participants have a CKD diagnosis; may not generalize to children free of kidney disease",
+        "Small subgroup <6 years (n=46 person-visits)",
+        "Estimated lean body mass proxy; no directly measured muscle mass or genetic ancestry",
+        "Abstract and Results body report slightly different cohort counts (see Limitations)"
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "In internal validation, the U25 creatinine-only eGFR significantly underestimated measured GFR in self-reported Black participants (bias -3.37 mL/min/1.73 m2), whereas the cystatin C-only U25 eGFR showed no significant bias across race groups. (clm_068).",
+        "In unadjusted models, self-reported Black race was associated with 12.8% higher measured GFR after adjusting for serum creatinine. (clm_069).",
+        "Adjusting for cystatin C, self-reported Black race was associated with 3.5% lower measured GFR overall, an effect that attenuated and became non-significant in older age groups. (clm_070).",
+        "The average of the creatinine-based and cystatin C-based U25 equations yielded unbiased GFR estimates and had the highest proportions within 30% and within 10% of mGFR and the lowest RMSE among the three U25 forms. (clm_071).",
+        "Measured GFR was obtained by plasma iohexol disappearance and BSA-standardized with the Haycock formula; serum creatinine (mg/dL) and cystatin C (mg/L) were centrally measured with IFCC-calibrated methods. (clm_072).",
+        "The analytic cohort comprised 190 self-reported Black participants (473 person-visits) and 675 non-Black participants (1,897 person-visits), median age 9 years; median SCr was 1.2 mg/dL in both groups while median cystatin C and mGFR differed by group. (clm_073)."
+      ],
+      "reviewBy": "2031-07-21",
+      "surveillanceQuery": "Self-reported Race, Serum Creatinine, Cystatin C, and GFR in Children and Young Adults With Pediatric Kidney Diseases: A Report From the Chronic Kidney Disease in Children (CKiD) Study — pediatric nephrology/CKD update after 2021",
+      "supersessionStatus": "not_superseded",
+      "rfSourceCardId": "src_20260718_rfkid001_01",
+      "publicationDate": "2021-12",
+      "passages": [
+        {
+          "id": "CKID_RACE_CR_CYSC_GFR_2021#implementation-proposal",
+          "sourceId": "CKID_RACE_CR_CYSC_GFR_2021",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/kidney_suite_v1/evidence.json for this source. Exact-passage traceability for kidney_suite_v1 is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3 convention) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file’s passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-22",
+          "supersedes": null,
+          "surveillanceQuery": "Self-reported Race, Serum Creatinine, Cystatin C, and GFR in Children and Young Adults With Pediatric Kidney Diseases: A Report From the Chronic Kidney Disease in Children (CKiD) Study — pediatric nephrology/CKD update after 2021",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfkid001_01",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "priority": "foundational-outside-five-year-window",
+      "year": 2017,
+      "title": "Clinical Practice Guideline for Screening and Management of High Blood Pressure in Children and Adolescents",
+      "authors": [
+        "Flynn JT",
+        "Kaelber DC",
+        "Baker-Smith CM",
+        "Blowey D",
+        "Carroll AE",
+        "Daniels SR",
+        "de Ferranti SD",
+        "Dionne JM",
+        "Falkner B",
+        "Flinn SK",
+        "Gidding SS",
+        "Goodwin C",
+        "Leu MG",
+        "Powers ME",
+        "Rea C",
+        "Samuels J",
+        "Simasek M",
+        "Thaker VV",
+        "Urbina EM",
+        "Subcommittee on Screening and Management of High Blood Pressure in Children"
+      ],
+      "organization": "American Academy of Pediatrics (Pediatrics)",
+      "journal": "Pediatrics 140(3):e20171904",
+      "doi": "10.1542/peds.2017-1904",
+      "url": "https://doi.org/10.1542/peds.2017-1904",
+      "limitations": [
+        "Static adolescent cut points (>=13y) adopt adult 2017 ACC/AHA thresholds; not derived from pediatric outcome data (subcommittee retained a statistical, not outcome-based, definition).",
+        "Normative percentile tables derived from auscultatory data; oscillometric/ABPM devices may yield different values."
+      ],
+      "conflictsWith": [
+        "2004 Fourth Report (superseded; different staging and 'prehypertension' terminology, tables included overweight/obese children)",
+        "European (ESH) and Hoshide/other national pediatric BP definitions retain percentile-only schemes for adolescents rather than static adult cut points"
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "The guideline replaces the term 'prehypertension' with 'elevated blood pressure', aligning pediatric terminology with the 2017 AHA/ACC adult guideline. (clm_031).",
+        "For children aged 1 to <13 years, BP categories are percentile-based with a static-mmHg upper bound applied by 'whichever is lower': Normal <90th pct; Elevated >=90th to <95th pct (or 120/80); Stage 1 >=95th to <95th+12 mmHg (or 130/80-139/89); Stage 2 >=95th+12 mmHg (or >=140/90). (clm_032).",
+        "For adolescents >=13 years, BP is classified by static adult-style mmHg cut points: Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80-139/89; Stage 2 >=140/90 mm Hg. (clm_033).",
+        "HTN is diagnosed when a child/adolescent has auscultatory-confirmed BP readings >=95th percentile at 3 different visits (grade C, moderate). (clm_034).",
+        "Left ventricular hypertrophy is defined as LV mass >51 g/m2.7 (boys and girls) for children/adolescents older than 8 y, and as LV mass >115 g/BSA for boys and >95 g/BSA for girls. (clm_035).",
+        "New normative BP tables are based on normal-weight children only; the 50th/90th/95th percentiles were derived by quantile regression on normal-weight children (BMI <85th percentile). (clm_036).",
+        "BP should be measured annually in children and adolescents >=3 y of age, and at every health care encounter for those with obesity, BP-raising medications, renal disease, aortic arch obstruction/coarctation, or diabetes (both grade C, moderate). (clm_037)."
+      ],
+      "reviewBy": "2031-07-21",
+      "surveillanceQuery": "Clinical Practice Guideline for Screening and Management of High Blood Pressure in Children and Adolescents — pediatric nephrology/CKD update after 2017",
+      "supersessionStatus": "not_superseded",
+      "recencyNote": "Retained per module.json evidence_policy.older_source_rule (\"foundational_not_superseded_with_reason\"): published 2017-08 is outside the module's 1825-day (five-year) recent-source window (evidence_policy.recent_window_days), but it is the RF-KID-001 fixture's grounding for the claims this source supports; no more recent equivalent-scope study is present in this bundle.",
+      "rfSourceCardId": "src_20260718_rfkid001_02",
+      "publicationDate": "2017-08",
+      "passages": [
+        {
+          "id": "AAP_PEDIATRIC_HTN_GUIDELINE_2017#implementation-proposal",
+          "sourceId": "AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/kidney_suite_v1/evidence.json for this source. Exact-passage traceability for kidney_suite_v1 is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3 convention) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file’s passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-22",
+          "supersedes": null,
+          "surveillanceQuery": "Clinical Practice Guideline for Screening and Management of High Blood Pressure in Children and Adolescents — pediatric nephrology/CKD update after 2017",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfkid001_02",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "KDIGO_CKD_GUIDELINE_2024",
+      "priority": "primary-current",
+      "year": 2024,
+      "title": "KDIGO 2024 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease",
+      "authors": [
+        "Kidney Disease: Improving Global Outcomes (KDIGO) CKD Work Group"
+      ],
+      "organization": "Kidney International (Elsevier) — official journal of the International Society of Nephrology",
+      "journal": "Kidney Int (2024) 105 (Suppl 4S), S117-S314",
+      "doi": "10.1016/j.kint.2023.10.018",
+      "url": "https://doi.org/10.1016/j.kint.2023.10.018",
+      "limitations": [
+        "Guideline scope is primarily adult with an explicit pediatric-considerations subsection; it is not a dedicated pediatric reference-interval source.",
+        "Table 1 (CKD diagnostic criteria, incl. the '<60 mL/min/1.73 m2' defining threshold) renders as a graphic and was not extractable as verbatim text from the PDF."
+      ],
+      "conflictsWith": [
+        "KDIGO 2012 CKD guideline (used a 60 mL/min/1.73 m2 'low GFR' cutoff for children; 2024 raises it to 90)"
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "KDIGO 2024 defines CKD as abnormalities of kidney structure or function present for a minimum of 3 months with implications for health, applied to children and adults. (clm_008).",
+        "For children and adolescents over age 2, KDIGO 2024 advises flagging eGFRcr <90 mL/min/1.73 m2 as 'low' — a higher cutoff than the adult threshold and than the 2012 pediatric cutoff of 60. (clm_009).",
+        "KDIGO GFR categories span G1 (>=90) to G5 (<15) mL/min/1.73 m2, with G3 split into G3a and G3b; these category boundaries are population-general staging, not the pediatric 'low' flag. (clm_010).",
+        "KDIGO albuminuria categories are A1 <30 mg/g, A2 30-300 mg/g, A3 >300 mg/g by urine albumin-to-creatinine ratio (with mg/mmol equivalents). (clm_011).",
+        "KDIGO 2024 directs that GFR in children be estimated with equations validated in comparable populations, naming the CKiD U25 2021 creatinine equation (ages 1-25; uses age, sex, height) as a preferred example. (clm_012).",
+        "KDIGO 2024 flags creatinine-assay dependence in children: labs must QC the lowest end of the expected range, and enzymatic (not Jaffe) creatinine assays are preferred because non-creatinine chromogens contribute more in children and neonatal samples are frequently icteric/hemolyzed. (clm_013)."
+      ],
+      "reviewBy": "2031-07-21",
+      "surveillanceQuery": "KDIGO 2024 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease — pediatric nephrology/CKD update after 2024",
+      "supersessionStatus": "not_superseded",
+      "rfSourceCardId": "src_20260718_rfkid001_03",
+      "publicationDate": "2024-04",
+      "passages": [
+        {
+          "id": "KDIGO_CKD_GUIDELINE_2024#implementation-proposal",
+          "sourceId": "KDIGO_CKD_GUIDELINE_2024",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/kidney_suite_v1/evidence.json for this source. Exact-passage traceability for kidney_suite_v1 is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3 convention) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file’s passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-22",
+          "supersedes": null,
+          "surveillanceQuery": "KDIGO 2024 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease — pediatric nephrology/CKD update after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfkid001_03",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+      "priority": "primary-current",
+      "year": 2024,
+      "title": "Utility of Cystatin C-based Equation for the Estimation of Glomerular Filtration Rate in a Pediatric Population",
+      "authors": [
+        "Ridwan B Ibrahim",
+        "Poyyapakkam Srivaths",
+        "Estella Tam",
+        "Sridevi Devaraj"
+      ],
+      "organization": "The Journal of Applied Laboratory Medicine (Oxford University Press / AACC)",
+      "journal": "J Appl Lab Med 2024;9(4):803-808",
+      "doi": "10.1093/jalm/jfae034",
+      "url": "https://doi.org/10.1093/jalm/jfae034",
+      "limitations": [
+        "Small single-center cohort (N=57)",
+        "Abstract-only access — full Results/Methods tables not verifiable",
+        "Performance metrics are cohort-specific, not universal clinical cutoffs"
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "In this pediatric/young-adult cohort the average measured GFR (mGFR by Tc-99m DTPA) was 84.1 mL/min/1.73 m2. (clm_063).",
+        "Non-race-corrected creatinine equations overestimated eGFR in all groups; CKiD U25-creatinine had the lowest bias at 22.59 mL/min/1.73 m2. (clm_064).",
+        "CKiD U25-CysC and Schwartz CysC gave the best correlation, P30, and lowest bias; CKiD U25-CysC = correlation 0.6281, P30 80.7%, bias 3.72 mL/min/1.73 m2, and Schwartz CysC = 0.6372, 77.2%, -4.68 mL/min/1.73 m2. (clm_065).",
+        "mGFR was measured by intravenous Tc-99m DTPA tracer and retrospectively compared with equation-based eGFR in 57 patients aged 6 months to 22 years of different races/ethnicities. (clm_066).",
+        "The authors conclude that both CKiD U25-CysC and Schwartz CysC estimate mGFR well, with CKiD U25-CysC having the overall best performance in this cohort. (clm_067)."
+      ],
+      "reviewBy": "2031-07-21",
+      "surveillanceQuery": "Utility of Cystatin C-based Equation for the Estimation of Glomerular Filtration Rate in a Pediatric Population — pediatric nephrology/CKD update after 2024",
+      "supersessionStatus": "not_superseded",
+      "rfSourceCardId": "src_20260718_rfkid001_04",
+      "publicationDate": "2024-07",
+      "passages": [
+        {
+          "id": "CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024#implementation-proposal",
+          "sourceId": "CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/kidney_suite_v1/evidence.json for this source. Exact-passage traceability for kidney_suite_v1 is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3 convention) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file’s passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-22",
+          "supersedes": null,
+          "surveillanceQuery": "Utility of Cystatin C-based Equation for the Estimation of Glomerular Filtration Rate in a Pediatric Population — pediatric nephrology/CKD update after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfkid001_04",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "priority": "primary-current",
+      "year": 2025,
+      "title": "Comparison of different equations for estimating the glomerular filtration rate in pediatric kidney transplant recipients",
+      "authors": [
+        "Sukboonthong P",
+        "Pooliam J",
+        "Jantongsree M",
+        "Sumboonnanonda A",
+        "Pattaragarn A",
+        "Supavekin S",
+        "Piyaphanee N",
+        "Lomjansook K",
+        "Thunsiribuddhichai Y",
+        "Tinnabut I",
+        "Khueankong N",
+        "Chaiyapak T"
+      ],
+      "organization": "Pediatric Nephrology (Berlin, Germany) — Springer",
+      "journal": "Pediatric Nephrology (Berlin, Germany), 2025-09",
+      "doi": "10.1007/s00467-025-06942-8",
+      "url": "https://doi.org/10.1007/s00467-025-06942-8",
+      "limitations": [
+        "Small cohort (n=23 patients, 120 samples), single center",
+        "No measured-GFR gold standard — comparisons are equation-vs-equation",
+        "Thai cohort with common post-transplant growth retardation may not generalize",
+        "Reference CKiD 2012 equation derived in CKD stage >=3 children, may not reflect near-normal-GFR transplant recipients"
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "ROC analysis identified eGFR-equation agreement thresholds vs the CKiD 2012 reference of <70 mL/min/1.73 m2 for Schwartz-Lyon, U25, and FAS-height, and <60 mL/min/1.73 m2 for Bedside Schwartz, beyond which bias increased. (clm_019).",
+        "Among plasma-creatinine-only equations, Schwartz-Lyon had the highest agreement with the CKiD 2012 reference (ICC 0.913, CCC 0.911, TDI 14.0 mL/min/1.73 m2, P30 99.2%). (clm_020).",
+        "The U25 combined PCr-CystC equation showed excellent agreement with the CKiD 2012 combined reference (ICC 0.993, CCC 0.990, TDI 3.9 mL/min/1.73 m2, P30 100%), and is preferred where cystatin C is feasible. (clm_021).",
+        "The plasma-creatinine-only U25 equation achieved ICC 0.922, CCC 0.882, TDI 20.0 mL/min/1.73 m2, and P30 93.3% against the CKiD 2012 combined reference. (clm_022).",
+        "Plasma creatinine was measured by an enzymatic method and cystatin C by a particle-enhanced immunoturbidimetric assay, applied throughout the study — a documented assay-method dependence for any derived threshold. (clm_023).",
+        "The study cohort comprised 120 eGFR measurements from 23 pediatric kidney transplant recipients (mean age 14.2 +/- 3.4 years) who received adult-donor kidneys (donor mean age 31.7 +/- 10.0 years). (clm_024)."
+      ],
+      "reviewBy": "2031-07-21",
+      "surveillanceQuery": "Comparison of different equations for estimating the glomerular filtration rate in pediatric kidney transplant recipients — pediatric nephrology/CKD update after 2025",
+      "supersessionStatus": "not_superseded",
+      "rfSourceCardId": "src_20260718_rfkid001_05",
+      "publicationDate": "2025-09",
+      "passages": [
+        {
+          "id": "PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025#implementation-proposal",
+          "sourceId": "PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/kidney_suite_v1/evidence.json for this source. Exact-passage traceability for kidney_suite_v1 is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3 convention) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file’s passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-22",
+          "supersedes": null,
+          "surveillanceQuery": "Comparison of different equations for estimating the glomerular filtration rate in pediatric kidney transplant recipients — pediatric nephrology/CKD update after 2025",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfkid001_05",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "priority": "foundational-outside-five-year-window",
+      "year": 2018,
+      "title": "Hematuria and Proteinuria in Children",
+      "authors": [
+        "Viteri, Bernarda",
+        "Reid-Adam, Jessica"
+      ],
+      "organization": "American Academy of Pediatrics (Pediatrics in Review)",
+      "journal": "Pediatr Rev. 2018;39(12):573-587",
+      "doi": "10.1542/pir.2017-0300",
+      "url": "https://publications.aap.org/pediatricsinreview/article/39/12/573/35104/Hematuria-and-Proteinuria-in-Children",
+      "limitations": [
+        "Definitions are review-level syntheses; some ranges (e.g., microscopic hematuria 1-10 RBC/HPF in the literature) are explicitly heterogeneous",
+        "mg/m2 superscripts were lost in machine text extraction and reconstructed from the published print convention"
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "The authors define microscopic hematuria as >5 RBC/mm3 uncentrifuged or >5 RBC/HPF centrifuged on at least 2-3 occasions, while noting literature definitions range 1-10 RBC/HPF. (clm_025).",
+        "Persistent hematuria is defined as >4-6 weeks of UA showing >5 RBC/HPF absent exercise, menses, or trauma. (clm_026).",
+        "Hypercalciuria in children >2 years is a urine calcium/creatinine ratio >0.2 mg/mg; infant acceptable thresholds are higher (<0.8 under 6 months, <0.6 for 6-12 months). (clm_027).",
+        "Proteinuria is defined as >100 mg/m2 per day or U p/c >0.2 mg/mg on a spot sample; neonates/infants allowed up to 300 mg/m2, and normal U p/c is <0.5 mg/mg for infants 6-24 months. (clm_028).",
+        "Nephrotic-range proteinuria is defined as >1,000 mg/m2 per day, or >50 mg/kg per day, or a spot U p/c >2. (clm_029).",
+        "Orthostatic proteinuria is diagnosed when a first-morning U p/c is <=0.2 mg/mg with a random-sample U p/c >0.2 (or positive dipstick); it is one of the most common causes of proteinuria in adolescents and has a benign course. (clm_030)."
+      ],
+      "reviewBy": "2031-07-21",
+      "surveillanceQuery": "Hematuria and Proteinuria in Children — pediatric nephrology/CKD update after 2018",
+      "supersessionStatus": "not_superseded",
+      "recencyNote": "Retained per module.json evidence_policy.older_source_rule (\"foundational_not_superseded_with_reason\"): published 2018-12 is outside the module's 1825-day (five-year) recent-source window (evidence_policy.recent_window_days), but it is the RF-KID-001 fixture's grounding for the claims this source supports; no more recent equivalent-scope study is present in this bundle.",
+      "rfSourceCardId": "src_20260718_rfkid001_06",
+      "publicationDate": "2018-12",
+      "passages": [
+        {
+          "id": "HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018#implementation-proposal",
+          "sourceId": "HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/kidney_suite_v1/evidence.json for this source. Exact-passage traceability for kidney_suite_v1 is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3 convention) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file’s passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-22",
+          "supersedes": null,
+          "surveillanceQuery": "Hematuria and Proteinuria in Children — pediatric nephrology/CKD update after 2018",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfkid001_06",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "priority": "foundational-outside-five-year-window",
+      "year": 2017,
+      "title": "Proteinuria in Children: Evaluation and Differential Diagnosis",
+      "authors": [
+        "Alexander K. C. Leung",
+        "Alex H. C. Wong",
+        "Stefani S. N. Barg"
+      ],
+      "organization": "American Academy of Family Physicians (American Family Physician)",
+      "journal": "Am Fam Physician 2017;95(4):248-254",
+      "url": "https://www.aafp.org/pubs/afp/issues/2017/0215/p248.html",
+      "limitations": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Urine dipstick color grades map to protein concentrations trace=15, 1+=30, 2+=100, 3+=300, 4+>=1,000 mg/dL, and a reading of 1+ or more is considered abnormal. (clm_001).",
+        "A spot first-morning urine protein-to-creatinine ratio of 0.2 or less (0.5 or less at six to 24 months of age) with normal urinalysis indicates likely transient or orthostatic proteinuria. (clm_002).",
+        "In children the normal amount of protein excreted is less than 100 mg per m2 per day on 24-hour quantitation. (clm_003).",
+        "Nephrotic-range (heavy) proteinuria is defined as more than 1,000 mg per m2 per day, or a urine protein-to-creatinine ratio of more than 2. (clm_004).",
+        "A high urine protein-to-creatinine ratio (>2 in nonglomerular disease, >0.5 in glomerular disease) predicts significant CKD progression in children. (clm_005).",
+        "Depressed GFR is characterized as less than 60 mL per minute per 1.73 m2 for more than three months and is among the criteria prompting pediatric-nephrology referral and renal biopsy. (clm_006).",
+        "Orthostatic proteinuria is the most common type in children (especially adolescent males) and is benign; referral and biopsy are reserved for red-flag features such as active sediment, hematuria, hypertension, hypocomplementemia, or depressed GFR. (clm_007)."
+      ],
+      "reviewBy": "2031-07-21",
+      "surveillanceQuery": "Proteinuria in Children: Evaluation and Differential Diagnosis — pediatric nephrology/CKD update after 2017",
+      "supersessionStatus": "not_superseded",
+      "recencyNote": "Retained per module.json evidence_policy.older_source_rule (\"foundational_not_superseded_with_reason\"): published 2017-02-15 is outside the module's 1825-day (five-year) recent-source window (evidence_policy.recent_window_days), but it is the RF-KID-001 fixture's grounding for the claims this source supports; no more recent equivalent-scope study is present in this bundle.",
+      "rfSourceCardId": "src_20260718_rfkid001_07",
+      "publicationDate": "2017-02-15",
+      "passages": [
+        {
+          "id": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017#implementation-proposal",
+          "sourceId": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/kidney_suite_v1/evidence.json for this source. Exact-passage traceability for kidney_suite_v1 is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3 convention) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file’s passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-22",
+          "supersedes": null,
+          "surveillanceQuery": "Proteinuria in Children: Evaluation and Differential Diagnosis — pediatric nephrology/CKD update after 2017",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfkid001_07",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "priority": "peer-reviewed-recent",
+      "year": 2022,
+      "title": "Evaluation of Proteinuria and Hematuria in Ambulatory Setting",
+      "authors": [
+        "Imam, Abubakr A",
+        "Saadeh, Sermin A"
+      ],
+      "organization": "Pediatric Clinics of North America (Elsevier)",
+      "journal": "Pediatric Clinics of North America 69(6):1037-1049",
+      "doi": "10.1016/j.pcl.2022.07.002",
+      "url": "https://doi.org/10.1016/j.pcl.2022.07.002",
+      "limitations": [
+        "Full text paywalled (no PMC copy; Elsevier returned 403) — only the published abstract was accessible verbatim, so numeric cutoffs stated in the body could not be locator-verified and are logged as GAPs.",
+        "Narrative review — thresholds it cites are themselves derived from other guidelines/sources."
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Proteinuria in children can be glomerular and/or tubular in origin and is temporally categorized as transient, orthostatic, or persistent. (clm_045).",
+        "Persistent proteinuria may indicate serious underlying kidney pathology and warrants further evaluation. (clm_046).",
+        "Hematuria is defined as an increased number of red blood cells in the urine and may be gross or microscopic. (clm_047).",
+        "Hematuria in children can originate from the glomeruli or from other sites in the urinary tract. (clm_048).",
+        "Asymptomatic isolated microscopic hematuria or mild proteinuria in an otherwise healthy child is less likely to be clinically significant. (clm_049).",
+        "The co-occurrence of both hematuria and proteinuria requires further workup and careful monitoring. (clm_050)."
+      ],
+      "reviewBy": "2031-07-21",
+      "surveillanceQuery": "Evaluation of Proteinuria and Hematuria in Ambulatory Setting — pediatric nephrology/CKD update after 2022",
+      "supersessionStatus": "not_superseded",
+      "rfSourceCardId": "src_20260718_rfkid001_08",
+      "publicationDate": "2022-10",
+      "passages": [
+        {
+          "id": "PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022#implementation-proposal",
+          "sourceId": "PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/kidney_suite_v1/evidence.json for this source. Exact-passage traceability for kidney_suite_v1 is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3 convention) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file’s passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-22",
+          "supersedes": null,
+          "surveillanceQuery": "Evaluation of Proteinuria and Hematuria in Ambulatory Setting — pediatric nephrology/CKD update after 2022",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfkid001_08",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+      "priority": "peer-reviewed-recent",
+      "year": 2023,
+      "title": "Application of GFR estimating equations to children with normal, near-normal, or discordant GFR",
+      "authors": [
+        "Andrew L Schwaderer",
+        "Paula Maier",
+        "Larry A Greenbaum",
+        "Susan L Furth",
+        "George J Schwartz"
+      ],
+      "organization": "Pediatric Nephrology (Springer)",
+      "journal": "Pediatr Nephrol 38(12):4051-4059",
+      "doi": "10.1007/s00467-023-06045-2",
+      "url": "https://doi.org/10.1007/s00467-023-06045-2",
+      "limitations": [
+        "Small sample (n=29)",
+        "Normal/near-normal GFR range only",
+        "Full text not accessible; body-of-paper numbers not verifiable here"
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "In 29 children with mild CKD, 22 had creatinine- vs cystatin-C-based eGFR that differed by at least 15 mL/min/1.73 m2, establishing that threshold as the study's definition of clinically meaningful discordance. (clm_058).",
+        "The CKiD U25 equation most accurately identified children with an eGFR below 90 mL/min/1.73 m2, the threshold this study used to flag low/near-normal GFR. (clm_059).",
+        "The direction of discordance dictated which equation best matched measured GFR: when creatinine-eGFR exceeded cystatin-C-eGFR by at least 15 mL/min the U25 creatinine formula was closest to 4-point iohexol GFR, and when cystatin-C-eGFR was higher the U25-combined was closest. (clm_060).",
+        "The authors recommend the CKiD U25-combined (creatinine + cystatin-C) formula to screen children for a low GFR, and either U25-combined or FAS-combined for tracking eGFR change longitudinally. (clm_061).",
+        "All six equations disagreed with 4-point measured iohexol GFR in more than one-third of participants, showing pediatric eGFR formulas remain unreliable at the normal/near-normal range and need refinement. (clm_062)."
+      ],
+      "reviewBy": "2031-07-21",
+      "surveillanceQuery": "Application of GFR estimating equations to children with normal, near-normal, or discordant GFR — pediatric nephrology/CKD update after 2023",
+      "supersessionStatus": "not_superseded",
+      "rfSourceCardId": "src_20260718_rfkid001_09",
+      "publicationDate": "2023-07",
+      "passages": [
+        {
+          "id": "PEDIATRIC_EGFR_DISCORDANT_GFR_2023#implementation-proposal",
+          "sourceId": "PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/kidney_suite_v1/evidence.json for this source. Exact-passage traceability for kidney_suite_v1 is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3 convention) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file’s passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-22",
+          "supersedes": null,
+          "surveillanceQuery": "Application of GFR estimating equations to children with normal, near-normal, or discordant GFR — pediatric nephrology/CKD update after 2023",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfkid001_09",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+      "priority": "foundational-outside-five-year-window",
+      "year": 2020,
+      "title": "Diagnostic utility of protein to creatinine ratio (P/C ratio) in spot urine sample within routine clinical practice",
+      "authors": [
+        "Kaminska J",
+        "Dymicka-Piekarska V",
+        "Tomaszewska J",
+        "Matowicka-Karna J",
+        "Koper-Lenkiewicz OM"
+      ],
+      "organization": "Taylor & Francis (Critical Reviews in Clinical Laboratory Sciences)",
+      "journal": "Crit Rev Clin Lab Sci 2020;57(5):345-364",
+      "doi": "10.1080/10408363.2020.1723487",
+      "url": "https://doi.org/10.1080/10408363.2020.1723487",
+      "limitations": [
+        "Full text not accessible (HTTP 403 / paywall); pediatric-specific numeric thresholds not present in the abstract",
+        "Narrative review, not a primary diagnostic-accuracy study or reference-interval derivation"
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "A spot urine P/C ratio above 20 mg/mmol (0.2 mg/mg) is the most commonly reported cutoff for detecting proteinuria. (clm_014).",
+        "A spot urine P/C ratio above 350 mg/mmol (3.5 mg/mg) confirms nephrotic-range proteinuria. (clm_015).",
+        "The ISSHP recommends a P/C ratio of 30 mg/mmol (0.3 mg/mg) to classify proteinuria in pregnant women at risk of preeclampsia. (clm_016).",
+        "The P/C ratio cutoff should be established per laboratory because it depends on the patient population and the laboratory methodologies. (clm_017).",
+        "A high degree of correlation was observed between spot P/C ratio values and protein concentration in 24-hour urine collections, supporting P/C as a substitute for 24-h collection. (clm_018)."
+      ],
+      "reviewBy": "2031-07-21",
+      "surveillanceQuery": "Diagnostic utility of protein to creatinine ratio (P/C ratio) in spot urine sample within routine clinical practice — pediatric nephrology/CKD update after 2020",
+      "supersessionStatus": "not_superseded",
+      "recencyNote": "Retained per module.json evidence_policy.older_source_rule (\"foundational_not_superseded_with_reason\"): published 2020-02 is outside the module's 1825-day (five-year) recent-source window (evidence_policy.recent_window_days), but it is the RF-KID-001 fixture's grounding for the claims this source supports; no more recent equivalent-scope study is present in this bundle.",
+      "rfSourceCardId": "src_20260718_rfkid001_10",
+      "publicationDate": "2020-02",
+      "passages": [
+        {
+          "id": "SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020#implementation-proposal",
+          "sourceId": "SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/kidney_suite_v1/evidence.json for this source. Exact-passage traceability for kidney_suite_v1 is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3 convention) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file’s passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-22",
+          "supersedes": null,
+          "surveillanceQuery": "Diagnostic utility of protein to creatinine ratio (P/C ratio) in spot urine sample within routine clinical practice — pediatric nephrology/CKD update after 2020",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfkid001_10",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "priority": "peer-reviewed-recent",
+      "year": 2024,
+      "title": "Comparison of estimated GFR using cystatin C versus creatinine in pediatric kidney transplant recipients",
+      "authors": [
+        "Pizzo H",
+        "Nguyen J",
+        "Schwartz GJ",
+        "Wesseling-Perry K",
+        "Ettenger R",
+        "Chambers ET",
+        "Weng P"
+      ],
+      "organization": "Pediatric Nephrology (Springer / IPNA)",
+      "journal": "Pediatr Nephrol 39(7):2177-2186",
+      "doi": "10.1007/s00467-024-06316-6",
+      "url": "https://doi.org/10.1007/s00467-024-06316-6",
+      "limitations": [
+        "Single center, n=45, selection bias (biopsy-triggered enrollment)",
+        "Cohort skewed to mGFR>60; poor generalizability to advanced CKD",
+        "CysC assay/equation heterogeneity limits head-to-head comparison",
+        "Full-text-to-markdown conversion dropped several equation exponents (see Limitations)"
+      ],
+      "conflictsWith": [
+        "de Souza et al. (CysC formulas not superior to Cr in pediatric Tx on low-dose steroids)",
+        "Selistre et al. (Cr-based preferred in pediatric Tx)"
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "In 45 pediatric kidney transplant recipients aged 1-18, median measured (iohexol) GFR was 93.3 mL/min/1.73 m2, with 57.8% >=90, 33.3% between 60-89, and 8.9% between 30-59. (clm_038).",
+        "Among the whole cohort, the U25-CysC equation had the highest accuracy, with 88.9% of estimates within 30% (P30) and 37.8% within 10% (P10) of measured GFR. (clm_039).",
+        "The Gentian CysC equation had the smallest mean bias in the whole cohort at 0.1 mL/min/1.73 m2 (IQR -16.6 to 12.9). (clm_040).",
+        "The CAPA equation misclassified K/DOQI CKD stage the least — 24.4% of the whole cohort and 33.3% of the histological-change subgroup — versus roughly 40-50% for most equations. (clm_041).",
+        "Bland-Altman analysis showed Bedside Schwartz, Gentian CysC, CAPA, and U25-CysC tended to overestimate GFR in patients with GFR above 100 mL/min/1.73 m2. (clm_042).",
+        "The study applied the Bedside Schwartz creatinine-based equation eGFR = 0.413 x (height/Cr), with height in cm and Cr in mg/dL. (clm_043).",
+        "CysC was measured by turbidimetric assay (Gentian AS) standardized to IFCC reference material; for the pre-IFCC CKiD Cr-CysC equation the Gentian CysC value was divided by 1.17. (clm_044)."
+      ],
+      "reviewBy": "2031-07-21",
+      "surveillanceQuery": "Comparison of estimated GFR using cystatin C versus creatinine in pediatric kidney transplant recipients — pediatric nephrology/CKD update after 2024",
+      "supersessionStatus": "not_superseded",
+      "rfSourceCardId": "src_20260718_rfkid001_11",
+      "publicationDate": "2024-07",
+      "passages": [
+        {
+          "id": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024#implementation-proposal",
+          "sourceId": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/kidney_suite_v1/evidence.json for this source. Exact-passage traceability for kidney_suite_v1 is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3 convention) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file’s passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-22",
+          "supersedes": null,
+          "surveillanceQuery": "Comparison of estimated GFR using cystatin C versus creatinine in pediatric kidney transplant recipients — pediatric nephrology/CKD update after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfkid001_11",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    }
+  ]
+}

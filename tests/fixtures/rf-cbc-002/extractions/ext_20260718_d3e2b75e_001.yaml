@@ -1,0 +1,90 @@
+id: ext_20260718_d3e2b75e_001
+source_card_id: src_20260718_rfcbc002_00
+created_at: '2026-07-18T15:42:52-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: 'Severe aplastic anemia (SAA) is defined by marrow cellularity <25% (or 25%-50% with <30% residual
+    hematopoietic cells) plus at least 2 of: neutrophils <0.5 x10^9/L, platelets <20 x10^9/L, reticulocytes
+    <60 x10^9/L.'
+  locator: Introduction — SAA classification paragraph (modified Camitta criteria)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Very severe aplastic anemia fulfills the same criteria as SAA except that neutrophils are <0.2
+    x10^9/L.
+  locator: Introduction — very severe AA definition (sentence following SAA criteria)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: A complete hematologic response is defined as neutrophils >1 x10^9/L (1.5 x10^9/L in some trials),
+    platelets >100 x10^9/L, and Hgb >100 g/L.
+  locator: Subsequent management — hematologic response definition paragraph
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: A PNH granulocyte clone >1% has ~100% positive predictive value for acquired AA; a clone >0.1%
+    has ~95% specificity and 91% PPV, while clones <0.1% are less specific and seen in confirmed IBMF.
+  locator: Tests to diagnose acquired SAA — PNH flow cytometry paragraph
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: For IBMF exclusion, patients aged <=40 years are recommended to have chromosome breakage analysis
+    (Fanconi anemia) and telomere length analysis (telomere biology disorders); age 41-60 case-by-case;
+    >60 with prior normal counts not recommended.
+  locator: Tests to diagnose acquired SAA and rule out IBMF syndromes — IBMF testing paragraph
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: 'Descriptive supportive-care thresholds stated by the source: RBC transfusion at Hgb <7 g/L (verbatim;
+    probable source typo for 7 g/dL / 70 g/L) or symptomatic anemia, and platelet transfusion at <10 x10^9/L
+    (or <50 x10^9/L if bleeding or planned procedure).'
+  locator: Supportive care before and during first-line therapy — transfusion paragraph
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Introduction — SAA classification paragraph (modified Camitta criteria)
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Introduction — very severe AA definition (sentence following SAA criteria)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Subsequent management — hematologic response definition paragraph
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Tests to diagnose acquired SAA — PNH flow cytometry paragraph
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Tests to diagnose acquired SAA and rule out IBMF syndromes — IBMF testing paragraph
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Supportive care before and during first-line therapy — transfusion paragraph
+contradictions_or_cautions:
+- text: US-only 11-expert panel; may not generalize internationally
+  locator: card/trust
+- text: Consensus method (not GRADE evidence grading)
+  locator: card/trust
+- text: Absolute count cutoffs apply across all ages — NOT pediatric age/sex-specific reference intervals
+  locator: card/trust

@@ -1,0 +1,889 @@
+[
+  {
+    "kind": "named_conflict",
+    "conflictId": "conflict_who_vs_cdc_growth_standard",
+    "name": "WHO-vs-CDC growth-standard conflict",
+    "description": "RF-GRO-002 carries two structurally different, actively-used pediatric growth references — the WHO Child Growth Standards (a prescriptive STANDARD of optimal growth, birth-<24 months) and the CDC 2000 Growth Reference (a descriptive REFERENCE of how a past US population grew, 2-19 years) — plus a mechanical WHO->CDC chart-set switch at 24 months that itself changes screening yield: the CDC 5th/95th-percentile convention flags 7-11% of children 6-23 months as low weight-for-age, while the WHO 2.3rd/97.7th convention (numerically equivalent to +/-2 SD) flags <3% of the SAME population; misapplying the CDC percentile pair to a WHO chart mislabels 10% of an all-healthy reference population. Independently, an abrupt CDC-recommended chart switch at exactly 24 months produces a materially larger mean z-score drop and a higher rate of large single-visit BMIz/weight-z declines (BMIz 28.3% large-drop rate) than a gradual, weighted-average transition chart (11.6%) in the same real-world cohort (n=7429) — i.e. part of any observed \"growth faltering\" near 24 months is a chart-transition artifact, not a biological change. Per FR-11/FR-12 (seam invariant 8): this is preserved as ONE explicit, named, multi-source conflict object — the WHO and CDC conventions are never averaged, blended into a single cutoff, or silently resolved to whichever source this converter pass happened to read first.",
+    "representation": "conflict_visible_multi_source",
+    "resolutionPolicy": "never_averaged_or_resolved_to_one_source",
+    "contributingSourceIds": [
+      "CDC2010_WHO_CDC_CHART_USE_REC",
+      "WHO2006_WFL_WFH_STANDARD",
+      "AFP2023_GROWTH_FALTERING_REVIEW",
+      "PEDS2025_GRADUAL_TRANSITION_CHART"
+    ],
+    "contributingClaimIds": [
+      "clm_036",
+      "clm_046",
+      "clm_047",
+      "clm_048",
+      "clm_049",
+      "clm_050",
+      "clm_051",
+      "clm_059",
+      "clm_060",
+      "clm_061",
+      "clm_062",
+      "clm_063",
+      "clm_064",
+      "clm_inf04"
+    ],
+    "reason": "No modules/growth_suite_v1/authoring-decisions.yaml exists (Deferred Item DF-E1-M1) to route this conflict into a rule/candidate draft, and even once one does, seam invariant 8 forbids collapsing a conflict-visible claim set into a single-sided rule — this object is the durable, governance-visible record of the conflict pending that future authoring pass."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_001",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_001",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_002",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_002",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_003",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_003",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_004",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_004",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_005",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_005",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_006",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_006",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_007",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_007",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_008",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_008",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_009",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_009",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_010",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_010",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_011",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_011",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_012",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_012",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_013",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_013",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_014",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_014",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_015",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_015",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_016",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_016",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_017",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_017",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_018",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_018",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_019",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_019",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_020",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_020",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_021",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_021",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_022",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_022",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_023",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_023",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_024",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_024",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_025",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_025",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_026",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_026",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_027",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_027",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_028",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_028",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_029",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_029",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_030",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_030",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_031",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_031",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_032",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_032",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_033",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_033",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_034",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_034",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_035",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_035",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_036",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_036",
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_037",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_037",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_038",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_038",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_039",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_039",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_040",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_040",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_041",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_041",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_042",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_042",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_043",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_043",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_044",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_044",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_045",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_045",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_046",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_046",
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_047",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_047",
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_048",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_048",
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_049",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_049",
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_050",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_050",
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_051",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_051",
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_052",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_052",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_053",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_053",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_054",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_054",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_055",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_055",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_056",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_056",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_057",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_057",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_058",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_058",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_059",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_059",
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_060",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_060",
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_061",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_061",
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_062",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_062",
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_063",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_063",
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_064",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_064",
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_065",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_065",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_066",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_066",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_067",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_067",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_068",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_068",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_069",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_069",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_070",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_070",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_071",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_071",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_072",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_072",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_073",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_073",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_074",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_074",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_075",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_075",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_076",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_076",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_077",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_077",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_078",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_078",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_079",
+    "status": "supported",
+    "basisKind": "source_supported_fact",
+    "assertionId": "evas_gro_clm_079",
+    "conflictRef": null,
+    "reason": "Evidence-eligible (status=supported, exact passage resolved in evidence-assertions.json) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_inf01",
+    "status": "inference",
+    "basisKind": "implementation_proposal",
+    "assertionId": null,
+    "inferenceBasis": [
+      "clm_001",
+      "clm_002",
+      "clm_004",
+      "clm_052"
+    ],
+    "conflictRef": null,
+    "reason": "Evidence-eligible as an implementation-proposal input (status=inference with a populated inference_basis.from_claims) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_inf02",
+    "status": "inference",
+    "basisKind": "implementation_proposal",
+    "assertionId": null,
+    "inferenceBasis": [
+      "clm_003",
+      "clm_053",
+      "clm_001"
+    ],
+    "conflictRef": null,
+    "reason": "Evidence-eligible as an implementation-proposal input (status=inference with a populated inference_basis.from_claims) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_inf03",
+    "status": "inference",
+    "basisKind": "implementation_proposal",
+    "assertionId": null,
+    "inferenceBasis": [
+      "clm_022",
+      "clm_050",
+      "clm_051",
+      "clm_058"
+    ],
+    "conflictRef": null,
+    "reason": "Evidence-eligible as an implementation-proposal input (status=inference with a populated inference_basis.from_claims) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_inf04",
+    "status": "inference",
+    "basisKind": "implementation_proposal",
+    "assertionId": null,
+    "inferenceBasis": [
+      "clm_046",
+      "clm_063",
+      "clm_074",
+      "clm_024"
+    ],
+    "conflictRef": "conflict_who_vs_cdc_growth_standard",
+    "reason": "Evidence-eligible as an implementation-proposal input (status=inference with a populated inference_basis.from_claims) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_inf05",
+    "status": "inference",
+    "basisKind": "implementation_proposal",
+    "assertionId": null,
+    "inferenceBasis": [
+      "clm_009",
+      "clm_010",
+      "clm_014"
+    ],
+    "conflictRef": null,
+    "reason": "Evidence-eligible as an implementation-proposal input (status=inference with a populated inference_basis.from_claims) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_inf06",
+    "status": "inference",
+    "basisKind": "implementation_proposal",
+    "assertionId": null,
+    "inferenceBasis": [
+      "clm_038",
+      "clm_010"
+    ],
+    "conflictRef": null,
+    "reason": "Evidence-eligible as an implementation-proposal input (status=inference with a populated inference_basis.from_claims) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_inf07",
+    "status": "inference",
+    "basisKind": "implementation_proposal",
+    "assertionId": null,
+    "inferenceBasis": [
+      "clm_066",
+      "clm_067",
+      "clm_068",
+      "clm_004"
+    ],
+    "conflictRef": null,
+    "reason": "Evidence-eligible as an implementation-proposal input (status=inference with a populated inference_basis.from_claims) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_inf08",
+    "status": "inference",
+    "basisKind": "implementation_proposal",
+    "assertionId": null,
+    "inferenceBasis": [
+      "clm_004",
+      "clm_070",
+      "clm_067",
+      "clm_001"
+    ],
+    "conflictRef": null,
+    "reason": "Evidence-eligible as an implementation-proposal input (status=inference with a populated inference_basis.from_claims) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_inf09",
+    "status": "inference",
+    "basisKind": "implementation_proposal",
+    "assertionId": null,
+    "inferenceBasis": [
+      "clm_058",
+      "clm_036",
+      "clm_052"
+    ],
+    "conflictRef": null,
+    "reason": "Evidence-eligible as an implementation-proposal input (status=inference with a populated inference_basis.from_claims) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  },
+  {
+    "kind": "deferred_claim",
+    "claimId": "clm_inf10",
+    "status": "inference",
+    "basisKind": "implementation_proposal",
+    "assertionId": null,
+    "inferenceBasis": [
+      "clm_015",
+      "clm_016",
+      "clm_017",
+      "clm_019"
+    ],
+    "conflictRef": null,
+    "reason": "Evidence-eligible as an implementation-proposal input (status=inference with a populated inference_basis.from_claims) but not yet routed to a rule/candidate-drafting decision: modules/growth_suite_v1/authoring-decisions.yaml does not exist (Deferred Item DF-E1-M1 — per-module rule-authoring workflow not yet run for this module)."
+  }
+]

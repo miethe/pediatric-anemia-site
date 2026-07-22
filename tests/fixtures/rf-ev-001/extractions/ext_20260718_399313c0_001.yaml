@@ -1,0 +1,97 @@
+id: ext_20260718_399313c0_001
+source_card_id: src_20260718_rfev001_05
+created_at: '2026-07-18T14:34:59-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: G6PD deficiency should be diagnosed by measuring enzyme activity directly with a quantitative
+    spectrophotometric assay, and a quantitative assay must follow any abnormal or borderline screening
+    test.
+  locator: 'Page 5, ''Recommendations: Laboratory diagnosis'' (first two bullets)'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Because reticulocytes and young red cells have much higher G6PD activity than mature cells, an
+    assay run during or soon after a hemolytic episode can give a false-normal result.
+  locator: Page 6, 'Factors affecting clinical interpretation' (opening paragraph)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: When G6PD deficiency is still suspected and no other cause of hemolysis is found, the assay should
+    be repeated at least 2-3 months after the hemolytic episode resolves so a deficiency is not missed.
+  locator: 'Page 6, ''Factors affecting clinical interpretation''; corroborated by Page 5, ''Recommendations:
+    Laboratory diagnosis'' (third bullet)'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: In a recently transfused patient a G6PD deficiency may be masked, so molecular analysis should
+    be considered when a precise diagnosis is needed.
+  locator: Page 7, 'Molecular diagnosis' (opening paragraph)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: The guideline classifies G6PD variants by residual enzyme activity as a percentage of normal —
+    Class I and II below 10%, Class III 10-60%, Class IV 100%, Class V above 100%.
+  locator: Page 3, Table I 'Classification of G6PD variants' (Class / Residual G6PD activity (% of normal))
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: The guideline gives adult normal-range G6PD activity reference values in international units per
+    gram of haemoglobin at 30 C and 37 C.
+  locator: Page 6, 'Normal values' (adult reference values paragraph)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: 'Newborns and infants have G6PD activities that deviate appreciably from the adult value (one
+    study: newborn mean ~150% of adult mean), and activity is higher in premature infants born at 29-32
+    weeks gestation than in term neonates.'
+  locator: Page 6, 'Normal values' (newborn/premature paragraph)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: 'Page 5, ''Recommendations: Laboratory diagnosis'' (first two bullets)'
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Page 6, 'Factors affecting clinical interpretation' (opening paragraph)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: 'Page 6, ''Factors affecting clinical interpretation''; corroborated by Page 5, ''Recommendations:
+    Laboratory diagnosis'' (third bullet)'
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Page 7, 'Molecular diagnosis' (opening paragraph)
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Page 3, Table I 'Classification of G6PD variants' (Class / Residual G6PD activity (% of normal))
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Page 6, 'Normal values' (adult reference values paragraph)
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: Page 6, 'Normal values' (newborn/premature paragraph)
+contradictions_or_cautions: []

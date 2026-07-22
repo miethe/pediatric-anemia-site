@@ -31,8 +31,25 @@ import { parseYamlDocument, parseYamlFrontmatter } from '../tools/rf-bundle-to-k
 import { validateEvidenceDocument } from '../scripts/validate-kb.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const FIXTURE_DIR = path.join(REPO_ROOT, 'tests', 'fixtures', 'rf-cbc-001');
+// multi-bundle-conversion-e1, P4-T5: modules/cbc_suite_v1/evidence.json now carries sources
+// projected from TWO fixture bundles (RF-CBC-001 -- the original P3-T2 vertical slice this file
+// was written for -- and RF-CBC-002, appended by P4-T5), each in its own `tests/fixtures/rf-cbc-00N/`
+// directory. `rfSourceCardId` embeds which bundle a card came from verbatim (e.g.
+// "src_..._rfcbc001_01" vs "src_..._rfcbc002_01" -- see scripts/evidence/lib/cbc-002-projection.mjs's
+// header comment on why that makes the id space naturally disjoint), so the fixture directory a
+// given card resolves against is derived from that embedded marker rather than a single
+// hardcoded constant.
+const FIXTURE_DIRS = {
+  rfcbc001: path.join(REPO_ROOT, 'tests', 'fixtures', 'rf-cbc-001'),
+  rfcbc002: path.join(REPO_ROOT, 'tests', 'fixtures', 'rf-cbc-002'),
+};
 const MODULE_DIR = path.join(REPO_ROOT, 'modules', 'cbc_suite_v1');
+
+function fixtureDirForSourceCardId(rfSourceCardId) {
+  const match = /_(rfcbc00[12])_/.exec(rfSourceCardId ?? '');
+  assert.ok(match, `rfSourceCardId "${rfSourceCardId}" does not embed a known bundle marker (rfcbc001/rfcbc002)`);
+  return FIXTURE_DIRS[match[1]];
+}
 
 async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, 'utf8'));
@@ -48,13 +65,16 @@ async function loadDecisions() {
 }
 
 async function loadClaimLedger() {
-  const text = await readFile(path.join(FIXTURE_DIR, 'claims', 'claim_ledger.yaml'), 'utf8');
+  // P3-T2's own test scope (authoring-decisions.yaml's basis.rf_claim_ids) only ever cites
+  // RF-CBC-001 claims -- no approved decision exists for any RF-CBC-002 claim (P4-T5's own
+  // constraint) -- so this stays scoped to the RF-CBC-001 claim ledger, unchanged from before.
+  const text = await readFile(path.join(FIXTURE_DIRS.rfcbc001, 'claims', 'claim_ledger.yaml'), 'utf8');
   const doc = parseYamlDocument(text);
   return new Map(doc.claims.map((claim) => [claim.claim_id, claim]));
 }
 
 async function loadSourceCard(sourceCardId) {
-  const text = await readFile(path.join(FIXTURE_DIR, 'sources', `${sourceCardId}.md`), 'utf8');
+  const text = await readFile(path.join(fixtureDirForSourceCardId(sourceCardId), 'sources', `${sourceCardId}.md`), 'utf8');
   return parseYamlFrontmatter(text).frontmatter;
 }
 

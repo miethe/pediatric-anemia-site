@@ -1,0 +1,69 @@
+id: ext_20260718_a5b87292_001
+source_card_id: src_20260718_rfev001_04
+created_at: '2026-07-18T14:34:59-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: FDA states a CDS software function is excluded from the device definition under section 520(o)(1)(E)
+    only if it meets all four listed non-device CDS criteria.
+  locator: Section II (Background), four-criteria enumeration (pp. 5-6)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Criterion 4 requires the software be intended to enable the health care professional to independently
+    review the basis for the recommendations so the HCP does not rely primarily on them.
+  locator: Section II (Background), Criterion (4) verbatim (p. 6); also Section IV(4), pp. 14-15
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: A software function that provides a specific preventive, diagnostic, or treatment output or directive
+    fails Criterion 3, making specificity of the output a decisive regulatory factor.
+  locator: Section IV(3) (Interpretation of Criterion 3), pp. 10-11
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: FDA recommends the software/labeling state the intended use, and does not consider software intended
+    for a critical, time-sensitive task or decision to meet Criterion 4 because the HCP lacks time for
+    independent review.
+  locator: Section IV(4)(a) (Interpretation of Criterion 4), p. 14
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: FDA weighs both the level of software automation and the time-critical nature of the HCP's decision
+    making (automation bias) when deciding whether a function permits independent review.
+  locator: Section IV(4) (Interpretation of Criterion 4), p. 15
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Section II (Background), four-criteria enumeration (pp. 5-6)
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Section II (Background), Criterion (4) verbatim (p. 6); also Section IV(4), pp. 14-15
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Section IV(3) (Interpretation of Criterion 3), pp. 10-11
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Section IV(4)(a) (Interpretation of Criterion 4), p. 14
+contradictions_or_cautions:
+- text: Nonbinding guidance — describes FDA's current thinking, not statutory text itself.
+  locator: card/trust
+- text: No numeric clinical/lab cutoffs present; not a source for any pediatric threshold.
+  locator: card/trust

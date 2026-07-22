@@ -3,7 +3,7 @@ title: "Research Foundry handoff — RESULTS (all 7 pediatric-CDS evidence runs 
 description: "Completion record for the 7 rf evidence runs. All verified (rf verify exit 0, 0 unsupported), landed on the agentic node + runs-viewer, cross-model audited with gpt-5.6, and independently reconfirmed against the live RF API during P0 truth reconciliation (2026-07-19). Handoff to the CDS rf-bundle → kb-pack converter (EF-WP0)."
 status: complete
 created: 2026-07-18
-updated: 2026-07-19
+updated: 2026-07-22
 owner: Nick Miethe
 project: pediatric-cds-platform
 supersedes_status_of: README.md §2 (runs were `planned`; now `verified`)
@@ -175,15 +175,69 @@ authoring, release, or activation on its own.
 
 ## 7. Next steps (owner)
 
-1. **Converter (EF-WP0):** run each `evidence_bundle.yaml` through the CDS `rf-bundle → kb-pack` converter to
-   emit rule *proposals*; `EF-WP1` enforces the `pediatric_cds` extension is present (it is, on every card).
-   **Status: not started** — no converter code exists in this repo as of 2026-07-19.
+> **Update (2026-07-22, `multi-bundle-conversion-e1` Phase 7, task P7-T7).** Item 1 below was last
+> written 2026-07-19 as "not started." That is now out of date — but the corrected status is
+> **partial, not "implemented,"** across a specific, load-bearing split. Do not read the update
+> below as "EF-WP1 done for all 4 bundles"; it is not. See
+> `.claude/findings/multi-bundle-conversion-e1-findings.md` for the full finding this update
+> summarizes, and the **IntentTree caveat** at the end of this section before trusting `itt` state
+> for this program.
+
+1. **Converter (EF-WP0/EF-WP1): partially implemented — 1 of 4 bundles completes the pipeline, the
+   other 3 do not.** The `multi-bundle-conversion-e1` feature (this repo, Phases 1-7) built the
+   `rf-bundle → kb-pack` converter (`tools/rf-bundle-to-kb-pack/`) and ran it against all 4 clinical
+   evidence bundles named in this handoff. The outcome is a hard split, by design (FR-14 module
+   scoping) and Deferred Item **DF-E1-M1** (per-module `authoring-decisions.yaml` gap), not a bug:
+   - **`RF-CBC-002` → `modules/cbc_suite_v1/` is the only bundle that completes `inspect → verify →
+     propose` end to end.** It is the one module with a committed `authoring-decisions.yaml`, so it
+     is the only one `propose.mjs` (hardwired to `cbc_suite_v1`'s own drafting content) can run
+     against. Its `evidence.json`/`evidence-assertions.json` are genuine converter output,
+     SHA-256-byte-identical across repeated runs (Phase 6, P6-T3).
+   - **`RF-EV-001` → `modules/anemia/`, `RF-KID-001` → `modules/kidney_suite_v1/`, and `RF-GRO-002` →
+     `modules/growth_suite_v1/` all halt at `inspect` with `DecisionsNotFoundError`** (no
+     `authoring-decisions.yaml` exists for any of the three) and the converter emits nothing for
+     them — no `rules.json`/`candidates.json` entries, by the same design constraint. The
+     `evidence.json`/`evidence-assertions.json`/`unresolved.json` files committed for these three
+     modules were **not produced by the converter**. They were hand-produced by bespoke, per-module
+     one-off generator scripts written outside the converter pipeline; only one of the three
+     generators (`modules/anemia/`'s) still exists anywhere in this repo, and it **is** committed,
+     at `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py` — the kidney/growth-suite
+     generators are not present in the repo or its history at all. Its committed form had a
+     path-resolution bug that made every invocation fail; this has been fixed, and the corrected
+     script now manually reproduces `modules/anemia/evidence-assertions.json` byte-for-byte, but it
+     is **not** wired into `npm run check` or any test (unlike `cbc_suite_v1`'s
+     `backfill-cbc-002-evidence.mjs`, which is imported and exercised by the test suite). This is a
+     real, currently unremediated provenance gap for the other two: **`kidney_suite_v1`'s and
+     `growth_suite_v1`'s evidence-layer artifacts are not regenerable from committed code at all
+     today** — `anemia`'s is regenerable only via a manual, uncovered script run, never via
+     `npm run check` or any automated test. Full detail, including the two named remediation
+     options, is in `.claude/findings/multi-bundle-conversion-e1-findings.md`.
+   - **`approvedBy` is `[]` and zero new rules were emitted to any module's `rules.json` by this
+     feature** — evidence projected is never "module complete" or clinically ready,
+     converter-produced or not. Module status is not uniform across the four: `anemia`'s
+     `module.json.status` is `"integrity-recorded"` (`clinicalContentHash`/`governanceHash`
+     populated and verified at server startup, per Wave-0/EP-5); `cbc_suite_v1`,
+     `kidney_suite_v1`, and `growth_suite_v1` all stay `"unsigned-stub"`
+     (`clinicalContentHash`/`governanceHash: null`). See `docs/architecture.md` §2a's module
+     inventory for the full per-module breakdown.
+   - **Status: EF-WP0/EF-WP1 partial — `cbc_suite_v1` only.** DF-E1-M1 (authoring-decisions for the
+     other 3 modules) remains the open blocker to close this gap for `anemia`/`kidney_suite_v1`/
+     `growth_suite_v1`; see `docs/project_plans/design-specs/rule-authoring-workflow-per-module.md`.
 2. **Legal:** route REG-001 + REG-004 memos to legal review. **Status: `not_executed_owner_held`.**
 3. **Data-plane push (optional):** the run data is already committed locally at `4144634` in the
    data-plane repo (`research-foundry/.git-data`, private remote `research-foundry-data`). Once that
    repo's unrelated in-flight drift is reconciled (`rf-data status` currently reports `ahead 1,
    behind 2`), run `./scripts/rf-data push` then `./scripts/rf-data pull` on the node to publish it.
    The runs are live on the node's working tree + viewer regardless.
+
+> **IntentTree caveat (2026-07-22).** This repo's `CLAUDE.md` records that **IntentTree tree
+> `tree_01KXQ7WC1HQE2GKZSCNDVXA9G7`'s node status is known-stale** — it still shows the merged P0
+> work and all 7 verified `rf` runs as `not_started`. That staleness caveat applies here too: do not
+> assume any `itt`-reported status for the `EF-WP0`/`EF-WP1` nodes (or any other node this program
+> touches) reflects the partial-converter reality recorded above. Verify against this repo's git log
+> and this file — starting with the commit that lands this update — before trusting `itt` state for
+> this program, and reconcile the tree itself as a separate follow-up; that reconciliation is not
+> performed by this update.
 
 ## 8. How they were driven (for reproducibility)
 

@@ -377,9 +377,14 @@ test('P3-T7: assertNoSoleConflictedBasis does NOT throw for the real RULE_PROPOS
   const loaded = await loadBundle({ runDir: FIXTURE_DIR, modulePath: REAL_MODULE_PATH });
   const pinned = await pinArtifacts(loaded);
   const evidenceAssertionsDoc = await loadJson(path.join(REAL_MODULE_DIR, 'evidence-assertions.json'));
+  // rfRunId-scoped (multi-bundle-conversion-e1, P4-T5): matches propose.mjs's own now-corrected
+  // call site -- modules/cbc_suite_v1/evidence-assertions.json holds RF-CBC-001 + RF-CBC-002
+  // assertions sharing one clm_NNN namespace, so this RF-CBC-001-fixture-driven routing must be
+  // scoped to RF-CBC-001's own rfRunId, never left to match any bundle's assertions.
   const routingReport = routeClaims(
     pinned.artifacts.claimLedger.parsed.claims,
     evidenceAssertionsDoc.assertions,
+    { rfRunId: pinned.runId },
   );
   assert.doesNotThrow(() => assertNoSoleConflictedBasis(RULE_PROPOSALS, routingReport));
 });

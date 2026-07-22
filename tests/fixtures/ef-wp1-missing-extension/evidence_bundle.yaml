@@ -1,0 +1,43 @@
+# tests/fixtures/ef-wp1-missing-extension/evidence_bundle.yaml — synthetic, test-only fixture
+# (P2-T2, FR-16, EF-WP1 fail-closed test). NOT derived from a real `rf` run — this whole tree
+# exists solely so tests/ef-wp1-eligibility.test.mjs can exercise the real
+# loader -> hashing -> eligibility (-> propose) pipeline end to end against a bundle that is
+# structurally verified/well-formed in every respect EXCEPT that one of its two source cards
+# (sources/src_ef_wp1_missing_ext_001.md) is deliberately seeded WITHOUT a `pediatric_cds`
+# evidence-card extension block on its one extracted point. See eligibility.mjs's
+# `checkPediatricCdsExtensionPresence` (stage 0 of `checkEligibility`).
+id: bundle_synthetic_ef_wp1_missing_extension
+intent_id: intent_synthetic_ef_wp1_missing_extension
+run_id: run_synthetic_ef_wp1_missing_extension
+created_at: '2026-07-21T00:00:00-04:00'
+status: verified
+artifacts:
+  research_brief: research_brief.md
+  swarm_plan: swarm_plan.yaml
+  source_cards_dir: sources/
+  extraction_cards_dir: extractions/
+  claim_ledger: claims/claim_ledger.yaml
+  report: reports/report_draft.md
+  verification: reviews/verification.yaml
+  ccdash_event: writebacks/ccdash_event.yaml
+counts:
+  source_cards: 2
+  extraction_cards: 0
+  claims_total: 0
+  claims_supported: 0
+  claims_mixed: 0
+  claims_contradicted: 0
+  claims_inference: 0
+  claims_speculation: 0
+  claims_unsupported: 0
+governance:
+  sensitivity: personal
+  approved_for_writeback: true
+  approved_by: null
+  approval_timestamp: null
+lineage:
+  raw_idea_ids: []
+  intent_id: intent_synthetic_ef_wp1_missing_extension
+  ibom_id: ''
+  intenttree_node_id: ''
+  skillbom_ids_used: []

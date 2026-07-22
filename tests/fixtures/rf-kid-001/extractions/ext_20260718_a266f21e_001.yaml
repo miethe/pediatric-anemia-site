@@ -1,0 +1,53 @@
+id: ext_20260718_a266f21e_001
+source_card_id: src_20260718_rfkid001_08
+created_at: '2026-07-18T16:10:11-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: Proteinuria in children can be glomerular and/or tubular in origin and is temporally categorized
+    as transient, orthostatic, or persistent.
+  locator: Abstract (published abstract, PubMed/ScienceDirect)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Persistent proteinuria may indicate serious underlying kidney pathology and warrants further evaluation.
+  locator: Abstract (published abstract, PubMed/ScienceDirect)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: Hematuria is defined as an increased number of red blood cells in the urine and may be gross or
+    microscopic.
+  locator: Abstract (published abstract, PubMed/ScienceDirect)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Hematuria in children can originate from the glomeruli or from other sites in the urinary tract.
+  locator: Abstract (published abstract, PubMed/ScienceDirect)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: Asymptomatic isolated microscopic hematuria or mild proteinuria in an otherwise healthy child
+    is less likely to be clinically significant.
+  locator: Abstract (published abstract, PubMed/ScienceDirect)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: The co-occurrence of both hematuria and proteinuria requires further workup and careful monitoring.
+  locator: Abstract (published abstract, PubMed/ScienceDirect)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics: []
+contradictions_or_cautions:
+- text: Full text paywalled (no PMC copy; Elsevier returned 403) — only the published abstract was accessible
+    verbatim, so numeric cutoffs stated in the body could not be locator-verified and are logged as GAPs.
+  locator: card/trust
+- text: Narrative review — thresholds it cites are themselves derived from other guidelines/sources.
+  locator: card/trust

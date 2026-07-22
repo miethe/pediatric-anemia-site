@@ -1,0 +1,101 @@
+id: ext_20260718_6cebd14c_001
+source_card_id: src_20260718_rfcbc002_07
+created_at: '2026-07-18T15:42:52-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: The cohort comprised 231 individuals with dyskeratosis congenita/telomere biology disorders, 144
+    male, median age at diagnosis 19.4 years (range 0-71.6).
+  locator: Abstract; also Table 1 (cohort description)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: At last follow-up 42% of patients were deceased, with a median overall survival of 52.8 years
+    (95% CI 45.5-57.6).
+  locator: Abstract (Results summary)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: Transplant-free (HCT or solid-organ) median survival was 45.3 years, and overall survival was
+    significantly better for autosomal-dominant vs AR/XLR/TINF2 disease (P<.01).
+  locator: Abstract (Results summary)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Severe bone marrow failure developed in 111 (48.1%) patients, and 70 (30.3%) underwent HCT at
+    a median age of 15.4 years (range 0.9-63.1).
+  locator: Results (bone marrow failure); Table 3
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: After adjustment for sex and pediatric-vs-adult diagnosis, AR/XLR patients had a hazard ratio
+    for any cancer of 8 (95% CI 1.93-33.51) versus autosomal-dominant disease.
+  locator: Results (cancer risk / Cox model)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: 'Median age at diagnosis differed sharply by inheritance mode: AD 36.1 years, AR/XLR 11.3 years,
+    and TINF2 8.1 years.'
+  locator: Results (age at diagnosis by inheritance group); Table 1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: Pulmonary fibrosis developed predominantly in adults with autosomal-dominant disease (19.6%),
+    versus 9.5% in AR/XLR (P=.09) and 8% in TINF2 (P=.25).
+  locator: Results (pulmonary fibrosis); Table 3
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract; also Table 1 (cohort description)
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Abstract (Results summary)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Abstract (Results summary)
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Results (bone marrow failure); Table 3
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Results (cancer risk / Cox model)
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Results (age at diagnosis by inheritance group); Table 1
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: Results (pulmonary fibrosis); Table 3
+contradictions_or_cautions:
+- text: Single-registry referral cohort (NCI IBMFS) — possible ascertainment/selection bias toward more
+    severe disease
+  locator: card/trust
+- text: Reports epidemiological survival/prevalence outcomes, NOT laboratory assay reference intervals
+    or CBC thresholds
+  locator: card/trust
+- text: Median survival estimates are cohort-level, not individual pediatric decision cutoffs
+  locator: card/trust

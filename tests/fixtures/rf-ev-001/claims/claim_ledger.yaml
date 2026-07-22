@@ -1,0 +1,859 @@
+id: claims_20260718_rf_run_20260717_rf_ev_001
+intent_id: intent_research_20260717_rf_ev_001_pediatric_cds_backfill
+report_ref: reports/report_draft.md
+verification_status: passed
+claims:
+- claim_id: clm_001
+  text: WHO 2024 defines anaemia with age/population-specific haemoglobin cutoffs, including four distinct
+    pediatric bands from 6 months to 14 years.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_01
+    evidence_id: ev_001
+    relation: supports
+    locator: Executive summary, p.xi, Table 2 (Haemoglobin cutoffs to define anaemia in individuals and
+      populations)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_002
+  text: The 2024 revision modified the haemoglobin cutoff for exactly one pediatric group -- children
+    6-23 months -- rather than applying a single universal pediatric threshold.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_01
+    evidence_id: ev_002
+    relation: supports
+    locator: Executive summary, p.xi, Normative statement 1.a (Haemoglobin cutoffs to define any anaemia)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_003
+  text: WHO states physiological, environmental, and genetic factors and lifecycle variation must be considered
+    when defining haemoglobin cutoffs -- supporting contextual, non-universal interpretation.
+  materiality: background
+  claim_type: attribution
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_01
+    evidence_id: ev_003
+    relation: supports
+    locator: Section 1 (What should be the haemoglobin cutoffs...), scope/definitions narrative, para
+      'Physiological, environmental, and genetic factors...'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_004
+  text: WHO recommends adjusting haemoglobin to define anaemia for elevation of residence, via a stated
+    increment table and quadratic equation -- a contextual/physiologic modifier of interpretation.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_01
+    evidence_id: ev_004
+    relation: supports
+    locator: Executive summary, p.xii-xiii, Normative statement 2.a.1 (Elevation of residence) + Table
+      4 and equation footnote b
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_005
+  text: WHO explicitly recommends that haemoglobin NOT be adjusted for infection/inflammation -- a contextual
+    caveat distinguishing haemoglobin interpretation from inflammation-adjusted iron markers.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_01
+    evidence_id: ev_005
+    relation: supports
+    locator: Executive summary, p.xiv, Normative statement 2.b (Infection and inflammation)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_006
+  text: WHO documents that the 2024 cutoffs update and consolidate a traceable lineage of prior WHO guidance
+    (1968-2005), giving transparent provenance for the thresholds.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_01
+    evidence_id: ev_006
+    relation: supports
+    locator: Introduction / methods narrative, para 'This guideline updates and complements previous recommendations...'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_007
+  text: G6PD deficiency should be diagnosed by measuring enzyme activity directly with a quantitative
+    spectrophotometric assay, and a quantitative assay must follow any abnormal or borderline screening
+    test.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_05
+    evidence_id: ev_001
+    relation: supports
+    locator: 'Page 5, ''Recommendations: Laboratory diagnosis'' (first two bullets)'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_008
+  text: Because reticulocytes and young red cells have much higher G6PD activity than mature cells, an
+    assay run during or soon after a hemolytic episode can give a false-normal result.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_05
+    evidence_id: ev_002
+    relation: supports
+    locator: Page 6, 'Factors affecting clinical interpretation' (opening paragraph)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_009
+  text: When G6PD deficiency is still suspected and no other cause of hemolysis is found, the assay should
+    be repeated at least 2-3 months after the hemolytic episode resolves so a deficiency is not missed.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_05
+    evidence_id: ev_003
+    relation: supports
+    locator: 'Page 6, ''Factors affecting clinical interpretation''; corroborated by Page 5, ''Recommendations:
+      Laboratory diagnosis'' (third bullet)'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_010
+  text: In a recently transfused patient a G6PD deficiency may be masked, so molecular analysis should
+    be considered when a precise diagnosis is needed.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_05
+    evidence_id: ev_004
+    relation: supports
+    locator: Page 7, 'Molecular diagnosis' (opening paragraph)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_011
+  text: The guideline classifies G6PD variants by residual enzyme activity as a percentage of normal —
+    Class I and II below 10%, Class III 10-60%, Class IV 100%, Class V above 100%.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_05
+    evidence_id: ev_005
+    relation: supports
+    locator: Page 3, Table I 'Classification of G6PD variants' (Class / Residual G6PD activity (% of normal))
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_012
+  text: The guideline gives adult normal-range G6PD activity reference values in international units per
+    gram of haemoglobin at 30 C and 37 C.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_05
+    evidence_id: ev_006
+    relation: supports
+    locator: Page 6, 'Normal values' (adult reference values paragraph)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_013
+  text: 'Newborns and infants have G6PD activities that deviate appreciably from the adult value (one
+    study: newborn mean ~150% of adult mean), and activity is higher in premature infants born at 29-32
+    weeks gestation than in term neonates.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_05
+    evidence_id: ev_007
+    relation: supports
+    locator: Page 6, 'Normal values' (newborn/premature paragraph)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_014
+  text: CDC's Blood Lead Reference Value (BLRV) is 3.5 µg/dL; a BLL at or above this value triggers the
+    recommended-action pathway.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_03
+    evidence_id: ev_001
+    relation: supports
+    locator: Section 'Initial screening blood lead level' / heading 'If the patient's BLL is ≥ 3.5 micrograms
+      per deciliter'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_015
+  text: A capillary screening result at or above the BLRV must be confirmed with a venous sample before
+    further action.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_03
+    evidence_id: ev_002
+    relation: supports
+    locator: Section 'Initial screening blood lead level', first paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_016
+  text: 'CDC Table 1 sets confirmatory-venous-sample timelines that shorten as the initial capillary BLL
+    rises: ≥3.5-9 within 3 months, 10-19 within 1 month, 20-44 within 2 weeks, ≥45 within 48 hours.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_03
+    evidence_id: ev_003
+    relation: supports
+    locator: Table 1 — 'Recommended schedule for obtaining a confirmatory venous sample'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_017
+  text: For a confirmed BLL of 3.5-19 µg/dL, CDC directs providers to test for and treat iron deficiency
+    per AAP guidelines.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_03
+    evidence_id: ev_004
+    relation: supports
+    locator: Section 'If the patient's BLL is 3.5-19 micrograms per deciliter', iron-deficiency bullet
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_018
+  text: 'CDC defines escalating action tiers at 20-44 µg/dL (history/physical, environmental investigation,
+    PEHSU/Poison Control contact) and ≥45 µg/dL (highest tier: detailed neuro exam, possible hospital
+    admission, toxicologist consult for chelation).'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_03
+    evidence_id: ev_005
+    relation: supports
+    locator: Headings 'If the patient's BLL is 20-44 micrograms per deciliter' and 'If the patient's BLL
+      is ≥ 45 micrograms per deciliter'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_019
+  text: The review's core framework classifies pediatric anemia first by MCV (microcytic/normocytic/macrocytic)
+    then refines by reticulocyte count — the morphology-first, reticulocyte-response approach the KB relies
+    on.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_02
+    evidence_id: ev_001
+    relation: supports
+    locator: Section 'Classification of anemia' (refers to Figure 2)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_020
+  text: The review anchors the normocytic band at MCV 80-100 fL, the only explicit numeric MCV range stated
+    in the source.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_02
+    evidence_id: ev_002
+    relation: supports
+    locator: Section 'Normocytic anemia' (first sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_021
+  text: Reticulocyte count direction (elevated vs low relative to anemia severity) distinguishes an adequate
+    erythropoietic response to blood loss/hemolysis from inadequate marrow production.
+  materiality: background
+  claim_type: comparative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_02
+    evidence_id: ev_003
+    relation: supports
+    locator: Section 'Laboratory investigation'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_022
+  text: Peripheral smear morphology (spherocytes, elliptocytes, schistocytes/helmet cells) points to specific
+    hemolytic mechanisms — supporting the KB's smear-interpretation use of this source.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_02
+    evidence_id: ev_004
+    relation: supports
+    locator: Section 'Laboratory investigation' (peripheral blood smear)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_023
+  text: Multilineage cytopenia — pancytopenia with relative reticulocytopenia, teardrop RBCs, giant platelets,
+    and immature leukocytes — signals marrow replacement, backing the KB's multi-lineage-cytopenia escalation.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_02
+    evidence_id: ev_005
+    relation: supports
+    locator: Section 'BM replacement syndromes'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_024
+  text: FDA states a CDS software function is excluded from the device definition under section 520(o)(1)(E)
+    only if it meets all four listed non-device CDS criteria.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_04
+    evidence_id: ev_001
+    relation: supports
+    locator: Section II (Background), four-criteria enumeration (pp. 5-6)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_025
+  text: Criterion 4 requires the software be intended to enable the health care professional to independently
+    review the basis for the recommendations so the HCP does not rely primarily on them.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_04
+    evidence_id: ev_002
+    relation: supports
+    locator: Section II (Background), Criterion (4) verbatim (p. 6); also Section IV(4), pp. 14-15
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_026
+  text: A software function that provides a specific preventive, diagnostic, or treatment output or directive
+    fails Criterion 3, making specificity of the output a decisive regulatory factor.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_04
+    evidence_id: ev_003
+    relation: supports
+    locator: Section IV(3) (Interpretation of Criterion 3), pp. 10-11
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_027
+  text: FDA recommends the software/labeling state the intended use, and does not consider software intended
+    for a critical, time-sensitive task or decision to meet Criterion 4 because the HCP lacks time for
+    independent review.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_04
+    evidence_id: ev_004
+    relation: supports
+    locator: Section IV(4)(a) (Interpretation of Criterion 4), p. 14
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_028
+  text: FDA weighs both the level of software automation and the time-critical nature of the HCP's decision
+    making (automation bias) when deciding whether a function permits independent review.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_04
+    evidence_id: ev_005
+    relation: supports
+    locator: Section IV(4) (Interpretation of Criterion 4), p. 15
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_029
+  text: AAP names the CBC (Hb, MCV, RDW) plus serum ferritin as the two core laboratory tests for identifying
+    iron deficiency and IDA, with both performed together.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_00
+    evidence_id: ev_001
+    relation: supports
+    locator: Screening > Laboratory Screening (paragraph beginning 'Screening to identify children and
+      adolescents with ID and IDA includes')
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_030
+  text: Table 1 provides age- and sex-specific normal Hb (g/dL), MCV (fL), and RDW (%) intervals spanning
+    6–24 months through 12–<18 years, used as the KB fallback CBC reference intervals.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_00
+    evidence_id: ev_002
+    relation: supports
+    locator: Table 1 — 'Normal Hematologic Parameters in Infants, Children, and Adolescents by Age and
+      Sex, From Age 9 Months to 18 Years' (ref 42), Hemoglobin / MCV / RDW rows; columns 6–24 mo, 2–6
+      y, 6–12 y, 12–<18 y (Females, Males)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_031
+  text: AAP sets serum ferritin ≤20 ng/mL as indicating ID for young and school-aged children and ≤30
+    ng/mL for adolescents and all menstruating individuals.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_00
+    evidence_id: ev_003
+    relation: supports
+    locator: Diagnosis > Iron Studies (final sentence of paragraph reviewing SF thresholds, following
+      WHO and ASH threshold discussion)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_032
+  text: Ferritin is an acute-phase reactant; an elevated CRP in an ill or inflamed child means SF cannot
+    be treated as a reliable ID marker, while CRP is unnecessary in a clinically well child.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_00
+    evidence_id: ev_004
+    relation: supports
+    locator: Diagnosis > Iron Studies (paragraph beginning 'In most otherwise healthy children without
+      evidence of acute infection or chronic disease')
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_033
+  text: The sTfR-ferritin index (sTfR/log10 ferritin) is elevated (>2) in iron deficiency and <1 in anemia
+    of chronic inflammation without concomitant ID, helping distinguish the two.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_00
+    evidence_id: ev_005
+    relation: supports
+    locator: Diagnosis > Iron Studies (paragraph on soluble transferrin receptor); corroborated by Table
+      4 (sTfR1) row
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_034
+  text: Microcytic anemia with reduced MCV and elevated RDW is most consistent with IDA, but thalassemia
+    trait and chronic inflammation can also cause microcytic anemia and must be differentiated (Table
+    3).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_00
+    evidence_id: ev_006
+    relation: supports
+    locator: Laboratory Diagnosis of IDA > Complete Blood Cell Count (paragraph beginning 'The most valuable
+      laboratory test'); Table 3 'Differential Diagnosis of Children With Microcytic Anemia'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_035
+  text: AAP defines severe IDA as confirmed IDA with Hb <7 g/dL, and notes some such children are minimally
+    symptomatic — transfusion is reserved for clinical instability, not triggered by the Hb value alone.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfev001_00
+    evidence_id: ev_007
+    relation: supports
+    locator: Treatment of Severe or Refractory IDA > Severe IDA (opening sentences)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf01
+  text: WHO's 6-23 mo anaemia cutoff of <105 g/L (=<10.5 g/dL) sits BELOW the AAP Table 1 normal-Hb lower
+    bound of 11.0 g/dL for age 6-24 mo, so a Hb of 10.5-11.0 g/dL reads 'below AAP normal interval' yet
+    'not anaemic' by WHO -- two different constructs (WHO 5th-percentile anaemia cutoff vs AAP reference
+    interval) that must be preserved, not conflated or averaged.
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_001
+    - clm_030
+    reasoning_summary: clm_001 gives WHO 6-23 mo <105 g/L (10.5 g/dL after the /10 g/L->g/dL conversion
+      the WHO card leaves to the converter); clm_030 gives AAP 6-24 mo normal Hb interval 11.0-13.5 g/dL.
+      The WHO anaemia cutoff lies below the AAP normal-interval floor, creating a 10.5-11.0 g/dL discordance
+      zone; the two are distinct statistical constructs and the CDS must not merge them.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf02
+  text: AAP 2026 ferritin ID thresholds (<=20 ng/mL young/school-aged children; <=30 ng/mL adolescents
+    and all menstruating individuals) are markedly higher than the WHO <12/<15 ng/mL provenance cited
+    within the same AAP source, an unresolved cross-standard ferritin conflict the CDS must carry as two
+    named provenances rather than reconcile.
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_031
+    reasoning_summary: clm_031 asserts the AAP <=20/<=30 ng/mL thresholds; the src_00 card (ev_003 + Limitations)
+      records that AAP aligns with ASH and diverges from WHO 2020 <12/<15 ng/mL. Divergent provenances
+      for the same analyte must be preserved as a conflict, not averaged, per the preserve-conflicts directive.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf03
+  text: The AAP ferritin ID cutoffs (<=20 / <=30 ng/mL) are uninterpretable when CRP is elevated because
+    serum ferritin is an acute-phase reactant; in that setting the sTfR-ferritin index (>2 = iron deficiency;
+    <1 = anaemia of chronic inflammation) should replace ferritin as the ID discriminator.
+  materiality: material
+  claim_type: causal
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_031
+    - clm_032
+    - clm_033
+    reasoning_summary: clm_032 states an elevated CRP renders SF unreliable (may be falsely normalized);
+      clm_031 supplies the ferritin cutoffs that thereby become invalid; clm_033 supplies the inflammation-robust
+      sTfR/log10-ferritin index (>2 / <1) as the substitute discriminator. The chain yields an explicit
+      inflammation gate on ferritin interpretation.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf04
+  text: 'Inflammation logic must be applied asymmetrically across analytes: WHO directs that haemoglobin
+    NOT be adjusted for infection/inflammation, whereas AAP treats serum ferritin as inflammation-confounded
+    -- so the CDS should inflammation-gate iron-store markers (ferritin) but leave the Hb anaemia cutoff
+    unadjusted.'
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_005
+    - clm_032
+    reasoning_summary: 'clm_005 = WHO: do not adjust Hb for infection/inflammation; clm_032 = AAP: ferritin
+      is unreliable when CRP elevated. The two together prescribe different handling of Hb vs ferritin
+      under inflammation, an asymmetry the converter must encode.'
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf05
+  text: The BSH adult G6PD reference values (8.7+/-1.7 iu/g Hb at 30 C; 12.1+/-2.09 iu/g Hb at 37 C uncorrected)
+    cannot be applied to neonates and infants, whose activity runs ~150% of the adult mean and is higher
+    still in 29-32-week premature infants; NO numeric pediatric/neonatal G6PD reference value is located
+    in any of the six sources (GAP).
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_012
+    - clm_013
+    reasoning_summary: clm_012 gives the explicitly adult reference values; clm_013 states newborn/infant
+      activity deviates appreciably (~150% of adult mean) and is elevated in 29-32-week premature infants.
+      Applying the adult range to neonates would misclassify; and no source provides a neonatal numeric
+      reference range, so the pediatric G6PD reference value is a documented gap, not to be fabricated.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf06
+  text: A normal quantitative G6PD assay drawn during or soon after a haemolytic episode can be false-normal
+    (young red cells/reticulocytes carry higher activity), so the CDS must not exclude G6PD deficiency
+    on such a result and should flag re-assay at least 2-3 months after the episode resolves when suspicion
+    persists.
+  materiality: material
+  claim_type: causal
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_008
+    - clm_009
+    reasoning_summary: 'clm_008 establishes the false-normal mechanism during/after hemolysis; clm_009
+      establishes the >=2-3-month repeat-assay remedy. Together they define a timing-dependent interpretation
+      gate: a normal assay in the acute window is non-excluding.'
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf07
+  text: Only the normocytic MCV band 80-100 fL is source-supported (Gallagher 2022); the microcytic (<80
+    fL) and macrocytic (>100 fL) bounds are inferred complements NOT stated verbatim and must be flagged
+    as GAPS, and even the 80-100 fL anchor is analyzer-dependent and age-varying in children rather than
+    a fixed pediatric cutoff.
+  materiality: material
+  claim_type: quantitative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_020
+    reasoning_summary: clm_020 states the only verbatim MCV range is the normocytic 80-100 fL band; the
+      src_02 card explicitly records that microcytic <80 fL and macrocytic >100 fL cutoffs are NOT locatable
+      in Gallagher and that pediatric MCV limits are age-dependent. The complementary bounds are therefore
+      inference-level gaps, not source-supported facts.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf08
+  text: 'Lead and iron pathways are coupled: CDC routes a confirmed BLL of 3.5-19 ug/dL to AAP iron-deficiency
+    testing/treatment, so an elevated confirmed BLL in that band should co-trigger the AAP CBC (Hb/MCV/RDW)
+    + serum-ferritin iron workup in the anemia CDS.'
+  materiality: material
+  claim_type: causal
+  status: inference
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_017
+    - clm_029
+    reasoning_summary: clm_017 = CDC directs iron-deficiency testing/treatment (per AAP) for confirmed
+      BLL 3.5-19 ug/dL; clm_029 = AAP's core ID tests are CBC + serum ferritin. Composing them, an elevated
+      BLL 3.5-19 ug/dL should launch the CBC+ferritin workup -- a cross-source co-trigger.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec01
+  text: 'Implementation boundary: under FDA Criteria 3-4 the pediatric anemia CDS must present non-specific,
+    independently-reviewable recommendations with a stated intended use and must NOT emit a specific preventive/diagnostic/treatment
+    directive or serve a critical/time-sensitive decision, or it risks meeting the device definition --
+    so every located threshold ships as a reviewable proposal, not an auto-directive.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: Forward-looking design boundary derived from clm_024 (all four 520(o)(1)(E) criteria
+      required), clm_026 (a specific directive fails Criterion 3), clm_025 and clm_027 (Criterion 4 =
+      enable independent review; time-critical tasks do not qualify). This constrains how the CDS surfaces
+      the thresholds; it is an implementation proposal, not a source-stated clinical fact.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec02
+  text: 'Scope-exit trigger (proposal): confirmed severe IDA (Hb <7 g/dL) accompanied by hemodynamic instability,
+    poor intake, heart failure, or uncontrolled blood loss is an acute-care referral event -- but Hb <7
+    g/dL ALONE is a severity classification, not a transfusion directive, since AAP notes some such children
+    are minimally symptomatic.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: Implementation boundary built on clm_035 (severe IDA = confirmed IDA with Hb <7
+      g/dL; transfusion reserved for clinical instability, not the number alone). Naming the instability
+      set as a scope-exit is a proposal layered atop the fact, so it is classified speculation rather
+      than a source-supported directive.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec03
+  text: 'Scope-exit / referral triggers (proposal): a confirmed venous BLL >=45 ug/dL is a highest-tier
+    event (possible hospital admission, medical-toxicology consult, detailed neuro exam), and 20-44 ug/dL
+    triggers PEHSU/Poison Control contact plus environmental investigation; both are urgency escalations
+    the CDS should surface, not silently store.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: Derived from clm_018 (CDC tiers 20-44 and >=45 ug/dL with their actions) and clm_016
+      (confirmation timelines shorten as BLL rises, e.g. >=45 within 48 hours). Casting the tiers as CDS
+      referral/escalation triggers is an implementation proposal, hence speculation.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec04
+  text: 'Scope boundary (proposal): WHO 2024 provides NO haemoglobin anaemia cutoff below 6 months of
+    age, so infants <6 months and neonates fall outside the WHO age-banded cutoff logic and require a
+    separate neonatal pathway rather than extrapolation of the 6-23 mo <105 g/L value downward.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: Missingness-based boundary from clm_001 (WHO pediatric bands begin at 6-23 months).
+      The absence of any <6-month cutoff is stated in the src_01 card as supporting a neonatal scope boundary;
+      proposing that boundary is an implementation step, so it is speculation not a source-supported fact.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec05
+  text: 'Referral trigger (proposal): a marrow-replacement smear pattern -- pancytopenia with relative
+    reticulocytopenia, teardrop RBCs, giant platelets, and immature leukocytes/blasts -- should escalate
+    to hematology/oncology and exit isolated-nutritional-anemia logic.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: Built on clm_023 (multilineage cytopenia / marrow-replacement pattern signals marrow
+      replacement) and clm_022 (smear morphology points to specific mechanisms). Gallagher frames these
+      as diagnostic signals; converting them into an explicit hematology/oncology referral trigger is
+      an implementation proposal, so speculation.
+  report_locations: []
+  reviewer_notes: ''
+unresolved_questions: []

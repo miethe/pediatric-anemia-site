@@ -1,0 +1,104 @@
+id: ext_20260718_49c30082_001
+source_card_id: src_20260718_rfcbc002_10
+created_at: '2026-07-18T15:42:52-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: In 417 samples, the targeted-proteomic SBDS screen had 85.7% sensitivity / 93.4% specificity and
+    the ADH5 screen 100.0% sensitivity / 97.5% specificity for SDS and ADH5/ALDH2 deficiency respectively.
+  locator: Results — 'Establishment of a rapid diagnostic system for SDS and ADH5/ALDH2 deficiency', final
+    paragraph
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: The SBDS and ADH5 protein-expression cutoffs were defined as the cohort mean minus two standard
+    deviations, computed on the 417 samples excluding confirmed SDS and ADH5/ALDH2 cases.
+  locator: Results — 'Establishment of a rapid diagnostic system for SDS and ADH5/ALDH2 deficiency', final
+    paragraph
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: Six of six SDS patients showed significantly decreased SBDS protein, and two of them were not
+    diagnosed by DNA sequencing alone (monoallelic on short-read DNA-seq, second variant recovered by
+    RNA-seq).
+  locator: Abstract; Results — 'Diagnosis of IBMFS through proteomic analysis', paragraph 1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The discovery cohort of 60 IBMFS patients had a median age at disease onset of 3 years (range
+    0-23) and included 27 men.
+  locator: Results — 'Clinical and genetic diagnoses of the discovery cohort', paragraph 1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: The study's 'IBMFS not otherwise specified' operational definition uses early onset (<2 years)
+    and short telomere length (<2.0 SD) among its clinical criteria when no IBMFS pathogenic variant is
+    found.
+  locator: Materials and methods — 'Patients and samples', paragraph 1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: SDS carries a 15-30% risk of progression to myelodysplastic syndrome and acute myeloid leukemia,
+    motivating early identification.
+  locator: Introduction, paragraph 2
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: The ADH5/ALDH2-deficiency-associated ALDH2 variant (c.1510G>A, p.E504K [rs671]) is a common SNP
+    present in 25.5% of East Asians, so ADH5 proteomics should be paired with genotyping in Asian IBMFS
+    work-ups.
+  locator: Introduction, paragraph 3
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Results — 'Establishment of a rapid diagnostic system for SDS and ADH5/ALDH2 deficiency', final
+    paragraph
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Results — 'Establishment of a rapid diagnostic system for SDS and ADH5/ALDH2 deficiency', final
+    paragraph
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Results — 'Clinical and genetic diagnoses of the discovery cohort', paragraph 1
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Materials and methods — 'Patients and samples', paragraph 1
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Introduction, paragraph 2
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: Introduction, paragraph 3
+contradictions_or_cautions:
+- text: Small per-disorder discovery cohort (SDS n=6, ADH5/ALDH2 n=4)
+  locator: card/trust
+- text: Multicenter stored specimens; protein-mRNA correlation low
+  locator: card/trust
+- text: Assay cutoffs are GAPDH-normalized MS ratios, not a standardized clinical assay
+  locator: card/trust
+- text: SBDS/ADH5 numeric cutoff magnitudes were exponent-stripped in the retrieved full text and are
+    not reliably transcribable
+  locator: card/trust

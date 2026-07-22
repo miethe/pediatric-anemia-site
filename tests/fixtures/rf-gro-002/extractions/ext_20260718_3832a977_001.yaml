@@ -1,0 +1,79 @@
+id: ext_20260718_3832a977_001
+source_card_id: src_20260718_rfgro002_10
+created_at: '2026-07-18T16:33:56-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: Growth faltering is diagnosed when weight, weight-for-length, or BMI is persistently below the
+    5th percentile, or when any of these drops by two percentile lines over time.
+  locator: 'Section: Diagnosis'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: A z-score that decreases by 1 or more predicts likely growth faltering, unless the decrease is
+    compensatory (e.g., large for gestational age at birth).
+  locator: 'Section: Diagnosis'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: For children younger than two years, measurements are adjusted for gestational age and plotted
+    on WHO growth charts; CDC growth charts are used for ages two to 20 years.
+  locator: 'Section: Diagnosis'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Close monitoring continues until the child reaches a z-score of -2 to -1 without additional dietary
+    supplementation (recovery target).
+  locator: 'Section: Further Evaluation and Treatment'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: Growth is generally monitored weekly for infants one to six months of age and every other week
+    for infants six to 12 months of age.
+  locator: 'Section: Further Evaluation and Treatment'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: Negative z-scores represent lower growth percentiles, with lower negative values signifying more
+    severe malnutrition (directional convention, not a numeric cutoff).
+  locator: 'Section: Diagnosis'
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: 'Section: Diagnosis'
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: 'Section: Diagnosis'
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: 'Section: Diagnosis'
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: 'Section: Further Evaluation and Treatment'
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: 'Section: Further Evaluation and Treatment'
+contradictions_or_cautions:
+- text: Malnutrition severity z-score cutoffs live in Figure 1, which is not reproduced as text on the
+    HTML page — those numeric ranges are NOT verbatim-locatable here.
+  locator: card/trust

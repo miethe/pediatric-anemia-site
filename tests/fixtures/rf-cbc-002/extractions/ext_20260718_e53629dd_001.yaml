@@ -1,0 +1,97 @@
+id: ext_20260718_e53629dd_001
+source_card_id: src_20260718_rfcbc002_01
+created_at: '2026-07-18T15:42:52-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: AA diagnosis requires pancytopenia with hypocellular marrow plus at least two of three peripheral-count
+    thresholds (Hb, platelets, neutrophils).
+  locator: 'Section: Diagnosis / Introduction, para ''Aplastic anaemia (AA) is a rare and heterogeneous
+    disorder...'''
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Severe AA (Camitta) is defined by marrow cellularity <25% (or 25–50% with <30% residual haematopoiesis)
+    plus at least two of neutrophils <0.5, platelets <20, reticulocytes <60 ×10⁹/L.
+  locator: 'Section: Assessment of severity — ''Severe AA (SAA):'' definition line'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: Very severe AA is defined identically to SAA except the neutrophil threshold is lowered to <0.2
+    ×10⁹/L.
+  locator: 'Section: Assessment of severity — ''Very severe AA (VSAA):'' definition line'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The Camitta reticulocyte severity criterion has been modified from manual percentage to an absolute
+    count <60 ×10⁹/L when measured by automated analyzers, which over-estimate reticulocytes relative
+    to manual counts.
+  locator: Table (Investigations) — Reticulocyte count row / footnote on automated counting
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: Where marrow cellularity is patchy, an overall average cellularity of <30% (excluding lymphocytes
+    and plasma cells) should be ascertained to support the AA diagnosis.
+  locator: 'Section: Bone marrow examination / trephine biopsy morphology paragraph'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: AA incidence shows a biphasic age distribution with a first peak at 10–25 years (relevant to older
+    children/adolescents) and a second peak over 60 years; incidence is 2–3 per million per year in Europe.
+  locator: 'Section: Introduction / epidemiology, para ''Aplastic anaemia (AA) is a rare and heterogeneous
+    disorder...'''
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: Given the rarity and management complexity of AA, the guideline strongly recommends multidisciplinary
+    discussion and involvement of expert centres to improve outcomes — a referral/escalation trigger.
+  locator: 'Section: Introduction / overall recommendations (mirrored in Abstract) — MDT and expert-centre
+    statement'
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: 'Section: Assessment of severity — ''Severe AA (SAA):'' definition line'
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: 'Section: Assessment of severity — ''Very severe AA (VSAA):'' definition line'
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Table (Investigations) — Reticulocyte count row / footnote on automated counting
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: 'Section: Bone marrow examination / trephine biopsy morphology paragraph'
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: 'Section: Introduction / epidemiology, para ''Aplastic anaemia (AA) is a rare and heterogeneous
+    disorder...'''
+contradictions_or_cautions:
+- text: Scope is ADULT acquired aplastic anaemia; the guideline does not define pediatric age-specific
+    CBC reference intervals
+  locator: card/trust
+- text: Camitta severity cutoffs are fixed absolute-count disease-severity thresholds applied irrespective
+    of patient age — they are NOT age/sex-adjusted reference intervals
+  locator: card/trust
+- text: Paywalled version of record (Wiley); quotes sourced from the accepted-manuscript .docx which may
+    differ typographically from the final published copy-edit
+  locator: card/trust

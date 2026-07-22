@@ -1,0 +1,72 @@
+id: ext_20260718_1911b6c8_001
+source_card_id: src_20260718_rfgro002_11
+created_at: '2026-07-18T16:33:56-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: For a single available data point, the recommended pediatric undernutrition indicators are z-scores
+    for weight-for-height/length, BMI-for-age, length/height-for-age, or mid-upper arm circumference (MUAC).
+  locator: Abstract (author summary), recommended-indicators sentence
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: When 2 or more data points are available, indicators additionally include weight-gain velocity
+    (applies age <2 years), weight loss (applies age 2-20 years), deceleration in weight-for-length/height
+    z-score, and inadequate nutrient intake.
+  locator: Abstract (author summary), two-or-more-data-points sentence
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: The indicator set is intended to diagnose and document undernutrition across the pediatric population
+    ages 1 month to 18 years.
+  locator: Abstract (author summary), purpose/scope sentence
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The indicators are intended for use across multiple care settings — acute, ambulatory/outpatient,
+    and residential care.
+  locator: Abstract (author summary), settings sentence
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: The statement defines diagnostic/documentation indicators, not nutritional-risk screening criteria;
+    screening is explicitly out of scope.
+  locator: Abstract (author summary), scope-exclusion sentence
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: Clinicians are directed to use as many data points as are available when identifying and documenting
+    malnutrition (favoring multi-datapoint over single-datapoint indicators where possible).
+  locator: Abstract (author summary), clinician-guidance sentence
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Abstract (author summary), two-or-more-data-points sentence
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Abstract (author summary), purpose/scope sentence
+contradictions_or_cautions:
+- text: Publisher full text (both NCP and JAND twin) is paywalled; the severity-cutoff table (z-score
+    bands and percentage cutoffs) could not be retrieved as a verbatim passage on access 2026-07-18, so
+    those numeric thresholds are recorded as GAPs, not asserted.
+  locator: card/trust
+- text: z-score-based indicators are growth-reference-standard dependent (WHO vs CDC growth charts); the
+    specific reference-per-age mapping is stated in the full-text body, not in the accessed abstract,
+    so it is not asserted here.
+  locator: card/trust
+- text: Consensus (expert-derived) framework, not an outcome-validated diagnostic rule.
+  locator: card/trust

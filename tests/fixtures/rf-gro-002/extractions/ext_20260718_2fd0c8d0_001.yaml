@@ -1,0 +1,63 @@
+id: ext_20260718_2fd0c8d0_001
+source_card_id: src_20260718_rfgro002_01
+created_at: '2026-07-18T16:33:56-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: The WHO weight-for-length indicator is the standard applied from birth to 2 years of age.
+  locator: 'Download section labels — ''Weight-for-length: Birth to 2 years'' subsections (Charts / Tables)'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: The WHO weight-for-height indicator is the standard applied from 2 to 5 years of age.
+  locator: 'Download section labels — ''Weight-for-height: 2 to 5 years'' subsections (Charts / Tables)'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: The combined weight-for-length/height standard spans birth to 5 years, joining the length-based
+    (birth-2y) and height-based (2-5y) segments.
+  locator: Download section labels — combined 'Birth to 5 years' weight-for-length/height subsections
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The standard is published in both z-score and percentile form, provided separately for girls and
+    boys.
+  locator: 'Charts and Tables sections — ''z-scores: girls'', ''Percentiles: girls'', ''z-scores: boys'',
+    ''Percentiles: boys'''
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: WHO distributes the standard in multiple derived formats (charts, full tables, simplified field
+    tables, and expanded national-health-card tables), each split by sex and z-score vs percentile.
+  locator: Resource-category headings — 'Charts', 'Tables', 'Simplified field tables', 'Expanded tables
+    for constructing national health cards'
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: 'Download section labels — ''Weight-for-length: Birth to 2 years'' subsections (Charts / Tables)'
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: 'Download section labels — ''Weight-for-height: 2 to 5 years'' subsections (Charts / Tables)'
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Download section labels — combined 'Birth to 5 years' weight-for-length/height subsections
+contradictions_or_cautions:
+- text: Page does not publish the z-score classification cutoffs (e.g. wasting/severe wasting) or the
+    length-vs-height measurement adjustment; those live in the WHO methodology report / training modules,
+    not on this portal page.
+  locator: card/trust

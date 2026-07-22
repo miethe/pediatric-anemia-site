@@ -1,0 +1,76 @@
+id: ext_20260718_e0ba0cfe_001
+source_card_id: src_20260718_rfkid001_04
+created_at: '2026-07-18T16:10:10-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: In this pediatric/young-adult cohort the average measured GFR (mGFR by Tc-99m DTPA) was 84.1 mL/min/1.73
+    m2.
+  locator: Abstract — Results sentence
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Non-race-corrected creatinine equations overestimated eGFR in all groups; CKiD U25-creatinine
+    had the lowest bias at 22.59 mL/min/1.73 m2.
+  locator: Abstract — Results sentence (creatinine equations)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: CKiD U25-CysC and Schwartz CysC gave the best correlation, P30, and lowest bias; CKiD U25-CysC
+    = correlation 0.6281, P30 80.7%, bias 3.72 mL/min/1.73 m2, and Schwartz CysC = 0.6372, 77.2%, -4.68
+    mL/min/1.73 m2.
+  locator: Abstract — Results sentence (cystatin C equations)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: mGFR was measured by intravenous Tc-99m DTPA tracer and retrospectively compared with equation-based
+    eGFR in 57 patients aged 6 months to 22 years of different races/ethnicities.
+  locator: Abstract — Methods sentence
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: The authors conclude that both CKiD U25-CysC and Schwartz CysC estimate mGFR well, with CKiD U25-CysC
+    having the overall best performance in this cohort.
+  locator: Abstract — Conclusion sentence
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract — Results sentence
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Abstract — Results sentence (creatinine equations)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Abstract — Results sentence (cystatin C equations)
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Abstract — Methods sentence
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Abstract — Conclusion sentence
+contradictions_or_cautions:
+- text: Small single-center cohort (N=57)
+  locator: card/trust
+- text: Abstract-only access — full Results/Methods tables not verifiable
+  locator: card/trust
+- text: Performance metrics are cohort-specific, not universal clinical cutoffs
+  locator: card/trust

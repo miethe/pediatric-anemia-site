@@ -1,0 +1,64 @@
+id: ext_20260718_4044dba1_001
+source_card_id: src_20260718_rfcbc002_11
+created_at: '2026-07-18T15:42:52-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: The IAP consensus states a bone marrow biopsy is mandatory to establish a diagnosis of acquired
+    aplastic anemia in children.
+  locator: Abstract — Key recommendations, item (i)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Before diagnosing acquired AA, the consensus requires excluding inherited bone marrow failure
+    syndromes, connective tissue disorders, viral infections, PNH, and drug/heavy-metal marrow suppression
+    in all cases.
+  locator: Abstract — Key recommendations, item (ii)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: For pediatric AA, the consensus recommends a conservative transfusion approach targeting hemoglobin
+    above 6 g/dL in children with no co-morbidities.
+  locator: Abstract — Key recommendations, item (iii)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: After immunosuppressive therapy, the consensus advises waiting 3-6 months before assessing response
+    and considering next-line therapy.
+  locator: Abstract — Key recommendations, item (vii)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: The consensus names HLA-matched sibling donor HSCT as the preferred first-line treatment for newly
+    diagnosed very severe/severe AA, and horse ATG plus cyclosporine as the recommended immunosuppressive
+    therapy.
+  locator: Abstract — Key recommendations, items (iv) and (vii)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Abstract — Key recommendations, item (iii)
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Abstract — Key recommendations, item (vii)
+contradictions_or_cautions:
+- text: Full text paywalled (Springer/Indian Pediatrics); only the PubMed abstract recommendations were
+    locatable verbatim
+  locator: card/trust
+- text: No PMC full text available — laboratory severity-count criteria (severe/very-severe ANC, platelet,
+    reticulocyte cutoffs) could not be located in an accessible verbatim passage
+  locator: card/trust
+- text: India-specific consensus; resource-availability caveats may not generalize
+  locator: card/trust
