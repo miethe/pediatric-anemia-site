@@ -42,7 +42,10 @@ spike_ref: null
 adr_refs:
 - docs/adr/0004-clinical-approval-identity-adjudication.md
 - docs/adr/0005-kb-serialization-signing-key-custody.md
-deferred_items_spec_refs: []
+deferred_items_spec_refs:
+- docs/project_plans/design-specs/clinical-review-portal-workflow.md
+- docs/project_plans/design-specs/real-reviewer-onboarding-g1.md
+- docs/project_plans/design-specs/df-e1-04-retrospective-validation-linkage.md
 findings_doc_ref: .claude/findings/clinical-review-workflow-findings.md
 charter_ref: null
 changelog_ref: null
