@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 2
+completed_tasks: 3
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -76,7 +76,7 @@ tasks:
     Update every wave0-schema consumer identified in P1-T1(e) so npm run check stays
     green. AC: migration test green for all 5 wave0 states; unmappable fixture fails
     closed; zero remaining wave0 5-state references outside the migration helper/fixtures.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -85,6 +85,17 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  note: 5/5 wave0 states migrate cleanly + validate against canonical schema; unmappable
+    (D-4-violating) fixture fails closed; wave0 test+example retired/relocated; zero
+    remaining wave0 workflowState/conflictResolution references outside the migration
+    helper/fixtures (grep-guarded). Pre-existing (P1-T2-introduced) tests/rule-governance.test.mjs
+    backfill --check drift flagged for P1-T7/P1-GATE1, not fixed here (out of P1-T3
+    file scope; npm run validate/coverage:rules/check:imports/smoke all green).
+  started: 2026-07-22T02:00Z
+  completed: 2026-07-22T03:00Z
+  evidence:
+  - test: tests/ef-review-record-migration.test.mjs
+  - commit: 642c250
 - id: P1-T4
   description: 'Reviewer roster schema + empty roster, PRD OQ-1/FR-3: create schemas/reviewer-roster.schema.json
     and empty governance/reviewer-roster.yaml. Entry shape: reviewerId, name, credentialRef,
@@ -288,7 +299,7 @@ files_modified:
 - tests/ef-contract-forced-empty.test.mjs
 - tests/fixtures/**
 - .claude/worknotes/evidence-foundry-e1-v1/contracts-design.md
-progress: 22
+progress: 33
 updated: '2026-07-22'
 ---
 
