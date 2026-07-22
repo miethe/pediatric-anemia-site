@@ -2,12 +2,15 @@
 doc_type: design_spec
 title: "Public `moduleId` API Surface"
 status: draft
-maturity: shaping
+maturity: promoted
 created: 2026-07-18
-updated: 2026-07-21
-feature_slug: platform-foundation-p0
-prd_ref: docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
-plan_ref: docs/project_plans/implementation_plans/refactors/platform-foundation-p0-v1.md
+updated: 2026-07-22
+feature_slug: module-switcher
+prd_ref: docs/project_plans/PRDs/features/module-switcher-v1.md
+plan_ref: null
+related_documents:
+  - docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
+  - docs/project_plans/implementation_plans/refactors/platform-foundation-p0-v1.md
 ---
 
 # Public `moduleId` API Surface (DEF-6)
