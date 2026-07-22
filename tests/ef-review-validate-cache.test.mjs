@@ -134,6 +134,11 @@ async function buildSignedChain(tmp, moduleId, roles) {
       reviewedAt: `2026-03-0${seq}T00:00:00Z`,
       root: tmp,
       draft: true,
+      // CRW-F5 revision (BLOCKER 2): this throwaway tmp root carries a fixture roster but no
+      // modules/<moduleId>/ content -- F5 now hard-fails by default on that "uncomputable module
+      // content hash" shape. This suite is about the validate cache, not F5, so the loud, explicit
+      // escape hatch is used (see findings doc CRW-F5(e)).
+      allowHistoricalSubject: true,
     });
     assert.equal(scaffoldCode, EXIT_OK);
 
@@ -512,6 +517,9 @@ test('a warm per-record cache never masks a module-wide (FR-4 reviewer-2 indepen
       module: moduleId, role: 'clinical-1', reviewerId: 'cache-mw-clinical-1',
       decision: 'approve', rationale: 'Independent first assessment, formed without reading any prior act.',
       subject: SUBJECT_HASH, reviewedAt: '2026-03-10T00:00:00Z', root: tmp, draft: true,
+      // CRW-F5 revision (BLOCKER 2): no modules/<moduleId>/ content under this tmp root -- see the
+      // comment on buildSignedChain's own scaffold call above.
+      allowHistoricalSubject: true,
     });
     assert.equal(scaffold1, EXIT_OK);
     const draft1 = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
@@ -524,6 +532,9 @@ test('a warm per-record cache never masks a module-wide (FR-4 reviewer-2 indepen
       module: moduleId, role: 'clinical-2', reviewerId: 'cache-mw-clinical-2',
       decision: 'approve', rationale: 'Per cache-mw-clinical-1 I independently agree with this assessment.',
       subject: SUBJECT_HASH, reviewedAt: '2026-03-10T00:05:00Z', root: tmp, draft: true,
+      // CRW-F5 revision (BLOCKER 2): same reason as scaffold1 above -- no modules/<moduleId>/
+      // content under this tmp root.
+      allowHistoricalSubject: true,
     });
     assert.equal(scaffold2, EXIT_OK);
     const draft2 = draftFilePathFor(tmp, moduleId, 'rr-0002-clinical-2');

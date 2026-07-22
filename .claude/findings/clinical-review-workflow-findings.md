@@ -443,6 +443,30 @@ integrator reconciling both fix cycles) sees the exact, minimal fix needed and d
 resulting failures for a new regression in `validate-cache.mjs` itself — they are the direct,
 expected, and correctly-attributed consequence of BLOCKER 2's security fix landing in `scaffold.mjs`.
 
+## CRW-F9 — Validate-cache entry trust hardening
+
+**Severity**: informational (fix-cycle gate finding, adjudicated BLOCKER 3) · **Status**: resolved
+by executing agent (P2-T3 fix cycle, Wave-2 codex gate).
+
+Fixed (Wave-2 gate BLOCKER 3): `validate-cache.mjs`'s `getCachedRecordResult` previously returned a
+matching entry's `result` verbatim once its composite key matched, and `readCacheFile` only
+validated the top-level `{cacheFormatVersion, root, moduleId, records}` envelope — never any
+individual entry. A well-formed-JSON but malformed-shaped entry could crash `validate.mjs`'s
+downstream consumption, or an injected all-clear result under correct composite-key values could
+suppress a record's real per-record findings.
+
+Fix: `getCachedRecordResult` now runs strict structural validation (exact key sets, exact types,
+zero extra properties) against both the entry's stored `key` and `result` before calling
+`keysMatch` — any deviation is a cache MISS forcing recompute, never a crash, never a partial trust.
+
+Threat-model adjudication (documented in the module header, not hedged): a perfectly-shaped forged
+entry under correct composite-key values is explicitly OUTSIDE this tool's threat model — a
+same-user attacker with cache-directory write access could already replace the CLI or `node` binary
+itself, so defending against a flawless same-user forgery adds nothing. This fix defends against
+corruption, truncation, format drift, and accidental-or-hostile malformed content — a materially
+cheaper-to-trigger failure mode. Per-record cached results remain integrity-bounded by the same
+trust boundary as the working tree itself.
+
 ## CRW-F6 — `writeFile` structural invariant (owned by a non-target-surface test file) required a
 small, additive `lib/store.mjs` change outside this task's declared target surfaces
 
