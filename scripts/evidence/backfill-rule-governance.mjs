@@ -58,9 +58,22 @@
 //   requiredTestCaseIds — mechanically discovered via scripts/rule-coverage.mjs's computeCoverage()
 //   restricted to fixtureDirs: ['tests/witness', 'tests/fixtures'] (per FR-WP4-02 — deliberately
 //   excludes examples/*.json, which is a published clinician-facing surface, not a test-case
-//   registry). A rule's requiredTestCaseIds is the sorted, deterministic list of relative fixture
-//   paths whose activation witness (assessPediatricAnemia()'s provenance.matchedRuleIds) includes
-//   this rule id; `[]` when no such fixture exists yet. Never hand-curated.
+//   registry), minus EXCLUDED_FIXTURE_DIRS (below). A rule's requiredTestCaseIds is the sorted,
+//   deterministic list of relative fixture paths whose activation witness (assessPediatricAnemia()'s
+//   provenance.matchedRuleIds) includes this rule id; `[]` when no such fixture exists yet. Never
+//   hand-curated.
+//
+//   EXCLUDED_FIXTURE_DIRS — Evidence Foundry E1 (P1) added tests/fixtures/ef-review-records/,
+//   tests/fixtures/ef-release/, tests/fixtures/ef-review-record-migration/, and
+//   tests/fixtures/ef-contract-violations/ under the tests/fixtures/ subtree this script sweeps.
+//   Those are schema-conformance fixtures for review-record/roster/release-manifest/release-
+//   registry JSON — not patient-assessment activation witnesses for the anemia rule set — but
+//   several of them are plain *.json (not the *.json.txt this repo's existing "invalid-*" fixture
+//   dirs use to opt out of JSON-fixture scanners), so computeCoverage() was feeding them through
+//   assessFn() and perturbing every rule's requiredTestCaseIds vs. the byte-committed rules.json
+//   snapshot (`--check` drift). They are excluded here by path rather than renamed, so the four
+//   ef-* dirs keep the plain .json extension their own consumers (tests/ef-review-record-
+//   migration.test.mjs, tests/ef-contract-forced-empty.test.mjs, etc.) expect.
 //
 //   sourcePassageId — D-EP3-6's fail-safe, non-optimistic binder. For each rule:
 //     1. primarySourceId = rule.evidence[0] ("the rule's first cited source").
@@ -115,6 +128,16 @@ const MAPPING_DOC_PATH = path.join(
 
 const GOVERNANCE_VERSION = '1.0.0';
 const OWNER = 'team:pediatric-cds-kb-maintainers';
+
+// Evidence Foundry E1 (P1) schema-conformance fixture dirs — see the header comment's
+// EXCLUDED_FIXTURE_DIRS section. Excluded from the tests/fixtures sweep below: they are not
+// activation-witness fixtures for the anemia rule set.
+const EXCLUDED_FIXTURE_DIRS = [
+  'tests/fixtures/ef-review-records',
+  'tests/fixtures/ef-release',
+  'tests/fixtures/ef-review-record-migration',
+  'tests/fixtures/ef-contract-violations',
+];
 const CHANGE_RATIONALE =
   'EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): '
   + 'mechanically populates required rule-governance metadata across all 91 rules in one '
@@ -234,7 +257,11 @@ function computeSourcePassageId(rule) {
 }
 
 async function buildGovernedRules(rules) {
-  const coverage = await computeCoverage({ rootDir: REPO_ROOT, fixtureDirs: ['tests/witness', 'tests/fixtures'] });
+  const coverage = await computeCoverage({
+    rootDir: REPO_ROOT,
+    fixtureDirs: ['tests/witness', 'tests/fixtures'],
+    excludeDirs: EXCLUDED_FIXTURE_DIRS,
+  });
 
   const governed = [];
   const mappingRows = [];
