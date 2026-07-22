@@ -9,17 +9,17 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/clinical-review
 execution_model: batch-parallel
 phase: 5
 title: "Clinical Review Workflow v1 \u2014 Phase 5: Hardening, Docs & Deferred Items"
-status: pending
+status: completed
 created: '2026-07-22'
 updated: '2026-07-22'
 started: 2026-07-22T17:55Z
-completed: null
+completed: 2026-07-22T19:05Z
 commit_refs: []
 pr_refs: []
-overall_progress: 70
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 7
-completed_tasks: 5
+completed_tasks: 7
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -196,7 +196,7 @@ tasks:
     paths without ADR-0004 status mutation; the three deferred-item design-specs exist
     with correct maturity; npm run check green end-to-end. Feature may not be marked
     status: completed without this sign-off.'
-  status: pending
+  status: completed
   assigned_to:
   - karen
   dependencies:
@@ -207,11 +207,18 @@ tasks:
   model_effort: adaptive
   acceptance_criteria: 'karen sign-off recorded; feature may not be marked status:
     completed without it.'
+  started: 2026-07-22T18:25Z
+  completed: 2026-07-22T18:40Z
+  evidence:
+  - karen APPROVED feature-end: self-ran npm run check (2415/2415, 8/8 sub-steps),
+      10-FR sample verified, guardrails byte-for-byte, 5 owner items for PR body
+  verified_by:
+  - P5-GATE2
 - id: P5-GATE3
   description: "codex gpt-5.6-terra read-only second-opinion diff review. Full-feature\
     \ read-only diff review across all five phases \u2014 final fail-closed-gap sweep\
     \ before the feature guide/PR wrap-up."
-  status: pending
+  status: completed
   assigned_to:
   - codex (read-only)
   dependencies:
@@ -222,6 +229,13 @@ tasks:
   model_effort: high
   acceptance_criteria: Review recorded; any flagged gap becomes a task before the
     PR opens.
+  started: 2026-07-22T18:30Z
+  completed: 2026-07-22T19:00Z
+  evidence:
+  - codex: 'gpt-5.6-terra FAIL(2 MAJOR,1 MINOR)->fixes 3750d92,939d92b,d7476e0,77d18ac,91427a9->M1/M4/MIN2
+      CLOSED (MIN2 mutation-proven), NEW: none'
+  verified_by:
+  - P5-GATE3
 parallelization:
   batch_1:
   - P5-T1
@@ -246,27 +260,27 @@ blockers: []
 success_criteria:
 - id: SC-1
   description: npm run check green end-to-end
-  status: pending
+  status: completed
 - id: SC-2
   description: 'Full 7-class adversarial + fail-closed sweep (FR-28/F8: transposed
     hash, out-of-order, supersedes, malformed YAML, roster failure, signature tampering,
     history failure) passes on status/sign/validate'
-  status: pending
+  status: completed
 - id: SC-3
   description: All 29 PRD FRs (incl. FR-25..29 from Revision 1) have a passing test
     or docs-truth check
-  status: pending
+  status: completed
 - id: SC-4
   description: "Deferred-items triage table fully covered \u2014 3 spec paths + 3\
     \ N/A rows with rationale"
-  status: pending
+  status: completed
 - id: SC-5
   description: "docs/architecture.md \xA711 and tools/review-record/README.md updated"
-  status: pending
+  status: completed
 - id: SC-6
   description: Every Hard Guardrail holds byte-for-byte (no ADR-0004 status edit,
     no real roster entries, D-4 untouched)
-  status: pending
+  status: completed
 files_modified:
 - tests/ef-review-workflow.test.mjs
 - tests/fixtures/clinical-review-workflow/
@@ -284,7 +298,7 @@ notes: "Wave 4, final \u2014 depends on Phases 2, 3, and 4 all completing. This 
   \ findings_doc_ref is non-null, that doc is status: accepted. Wrap-up (feature guide\
   \ + PR) is triggered automatically after P5-GATE2 (karen feature-end) passes \u2014\
   \ see plan's Wrap-Up section."
-progress: 71
+progress: 100
 ---
 
 # clinical-review-workflow — Phase 5: Hardening, Docs & Deferred Items
