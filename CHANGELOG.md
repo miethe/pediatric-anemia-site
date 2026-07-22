@@ -69,11 +69,13 @@ carry the `TESTKEY-` prefix; and real release-path transitions remain blocked at
 
 - **Documented gates G0–G4 as external blocked states** (P5-T5): `docs/governance/gates-registry.md`
   records the five human-gated decision points this plan names but does not clear — G0 (ADR
-  acceptance), G1 (first synthetic-roster reviewer credentialed), G2 (release signing ceremony +
-  custodian key generation), G3 (data-source SPIKE verdict + partner DUA), G4 (silent-mode
-  transition). Every gate is modeled as an external, owner-blocked state in
-  `.claude/progress/evidence-foundry-e1/`, never as a task, never with an automated completion
-  path.
+  acceptance), G1 (named credentialed reviewer roster, cleared only by a named human's out-of-band
+  credential verification, never a software check), G2 (release signing ceremony + custodian key
+  generation), G3 (data-source SPIKE verdict + partner DUA), G4 (release authorizer — the human
+  role whose signed review record is the only thing that may flip a module's status toward
+  release-ready). Every gate is externally-blocked and human-owned, never software-clearable;
+  each is modeled as an external, owner-blocked state in `.claude/progress/evidence-foundry-e1/`,
+  never as a task, never with an automated completion path.
 
 - **SPIKE-007 charter** (`docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md`, FR-25,
   ruling R6): Authored (not run) as the charter for future gate G3's retrospective data-source
