@@ -7,11 +7,13 @@ replaying a version-pinned candidate build against a **fixtures-only** corpus (s
 de-identified content ONLY, structurally enforced) and emitting **software-agreement** metrics --
 never sensitivity, specificity, clinical performance, or any other clinical-validity claim.
 
-**Status (as of P4-T1)**: `check-fixtures` is real -- it validates a corpus against
-`schemas/fixture-corpus.schema.json`. `run` and `report` are scaffold-only (`NotImplementedError`
-stubs) until P4-T3 (FR-19, deterministic replay) and P4-T4 (FR-21, software-agreement metrics)
-land. Nothing in this tool is, or may be read as, a clinical-validity, safety, diagnostic-
-performance, or IRB/DUA-compliance claim.
+**Status (as of P4-T2)**: `check-fixtures` is real -- it validates a corpus against
+`schemas/fixture-corpus.schema.json`. `run` and `report` now call that same boundary check FIRST,
+unconditionally, and refuse to proceed on an unchecked (no `--corpus`) or failing corpus -- but
+beyond that gate they remain scaffold-only (`NotImplementedError` stubs) until P4-T3 (FR-19,
+deterministic replay) and P4-T4 (FR-21, software-agreement metrics) land. Nothing in this tool is,
+or may be read as, a clinical-validity, safety, diagnostic-performance, or IRB/DUA-compliance
+claim.
 
 ## Ruling R6 -- what this tool is not
 
@@ -35,9 +37,17 @@ node tools/retro-validate/cli.mjs check-fixtures \
   --corpus tests/fixtures/ef-retro/identifier-name
 # -> exit 2 (EXIT_BOUNDARY); fail-closed, no output artifact, error names the rejected field
 
-# Scaffold-only until P4-T3/P4-T4 land (exit 1, NotImplementedError):
-node tools/retro-validate/cli.mjs run --corpus <dir> --candidate-digest <digest> --registry <path>
-node tools/retro-validate/cli.mjs report --corpus <dir> --run <dir> --protocol <doc>
+# `run`/`report` call check-fixtures FIRST (ADR-0006 binding clause, hardened P4-T2). A
+# failing/unchecked corpus never reaches either verb's own logic:
+node tools/retro-validate/cli.mjs run --corpus tests/fixtures/ef-retro/identifier-name ...
+# -> exit 2 (EXIT_BOUNDARY), same as check-fixtures -- refuses to start
+node tools/retro-validate/cli.mjs run --corpus <dir>
+# -> exit 1 (EXIT_USAGE); --corpus is required, "unchecked" corpus refused before any other work
+
+# Once a corpus PASSES the boundary check, both verbs remain scaffold-only until P4-T3/P4-T4 land
+# (exit 1, NotImplementedError):
+node tools/retro-validate/cli.mjs run --corpus <valid-dir> --candidate-digest <digest> --registry <path>
+node tools/retro-validate/cli.mjs report --corpus <valid-dir> --run <dir> --protocol <doc>
 ```
 
 ## Module boundary
@@ -51,7 +61,7 @@ same pattern `tools/rf-bundle-to-kb-pack/` already established for this repo's E
 | CLI dispatch | `cli.mjs` | Arg parsing, `--help`, verb routing, top-level exit-code forwarding | P4-T1 (this task) | -- |
 | Error taxonomy | `lib/errors.mjs` | 3-code exit taxonomy (OK/USAGE/BOUNDARY) + one error class per code | P4-T1 (this task) | -- |
 | **Corpus** | `lib/corpus.mjs` | Reads/parses `<dir>/corpus.json`; loads (and caches) the fixture-corpus schema. Pure I/O + parse, no validation, no writes. | **P4-T1** (this task) | errors |
-| **Boundary** | `lib/boundary.mjs` | `checkFixtures(corpusDir)` -- the schema-enforced (not procedural) de-identification gate (FR-20). Real schema-validation as of P4-T1; **P4-T2** hardens it into the gate `run`/`report` call first and refuse to proceed past. | P4-T1 (initial), **P4-T2** (enforcement + hardening) | corpus, errors |
+| **Boundary** | `lib/boundary.mjs` | `checkFixtures(corpusDir)` -- the schema-enforced (not procedural) de-identification gate (FR-20). Real schema-validation as of P4-T1; **P4-T2** hardened `run`/`report` (`lib/verbs/run.mjs`, `lib/verbs/report.mjs`) to call it FIRST, unconditionally, and refuse to proceed past an unchecked/failing corpus. | P4-T1 (initial), **P4-T2** (enforcement + hardening, landed) | corpus, errors |
 | **Replay** | `lib/replay.mjs` (P4-T3) | Version-pinned deterministic engine replay (FR-19) -- resolves the candidate build via a registry digest, never "current tree"; canonical serialization; byte-identical double-run output. | **P4-T3** | boundary, corpus, errors |
 | **Metrics** | `lib/metrics.mjs` (P4-T4), plus the discordance/adjudication model (P4-T5, FR-23) and the human-only protocol schema (P4-T6, FR-24) | Software-agreement `agreement-report.json` (5 OQ-5 measures) + `run-provenance.json` sidecar; discordance records; protocol-threshold gating. | **P4-T4** / **P4-T5** / **P4-T6** | replay, errors |
 | **Access log** | `lib/access-log.mjs`, `access-log.jsonl` (P4-T7) | Append-only, structured audit trail of every `check-fixtures`/`run`/`report` invocation (FR-22) -- distinct from the review-record chain (no shared files, no shared schema). | **P4-T7** | boundary, errors |
@@ -64,8 +74,8 @@ verbatim -- it never remaps it. A non-`RetroValidateError` throw (a genuine bug)
 
 ```
 lib/verbs/check-fixtures.mjs  -- real (P4-T1): runs boundary.checkFixtures, prints a JSON summary
-lib/verbs/run.mjs              -- scaffold (P4-T1) -> real (P4-T3)
-lib/verbs/report.mjs            -- scaffold (P4-T1) -> real (P4-T4)
+lib/verbs/run.mjs              -- boundary-gated (P4-T2: calls checkFixtures first) -> scaffold (P4-T1) -> real (P4-T3)
+lib/verbs/report.mjs            -- boundary-gated (P4-T2: calls checkFixtures first) -> scaffold (P4-T1) -> real (P4-T4)
 ```
 
 **Data flow** (once every module lands):
@@ -75,8 +85,8 @@ corpus.loadCorpusDocument()  ->  boundary.checkFixtures()  ->  replay (P4-T3)  -
         (P4-T1)                        (P4-T1/P4-T2)               (P4-T3)              (P4-T4..T6)
 ```
 
-`run` and `report` will each call `boundary.checkFixtures()` first and refuse to proceed on an
-unchecked or failing corpus (ADR-0006 binding clause, hardened by P4-T2) -- `check-fixtures` is
+`run` and `report` each call `boundary.checkFixtures()` first and refuse to proceed on an
+unchecked or failing corpus (ADR-0006 binding clause, hardened by P4-T2, landed) -- `check-fixtures` is
 never bypassable by a later verb.
 
 ## The fixture-corpus schema (`schemas/fixture-corpus.schema.json`)
@@ -146,9 +156,14 @@ tools/retro-validate/
     access-log.mjs                         ACCESS-LOG module (P4-T7; does not exist until then)
     verbs/
       check-fixtures.mjs                    `check-fixtures` verb (P4-T1, real)
-      run.mjs                                 `run` verb (P4-T1 scaffold -> P4-T3 real)
-      report.mjs                               `report` verb (P4-T1 scaffold -> P4-T4 real)
+      run.mjs                                 `run` verb (P4-T2: boundary-gated) -> scaffold (P4-T1) -> real (P4-T3)
+      report.mjs                               `report` verb (P4-T2: boundary-gated) -> scaffold (P4-T1) -> real (P4-T4)
 ```
 
 Corpus fixtures for tests live under `tests/fixtures/ef-retro/<corpus-name>/corpus.json` (never
 committed real patient data -- synthetic content only, per this repo's own hard guardrails).
+Seeded rejection-class fixtures (P4-T1/P4-T2): `identifier-name` / `identifier-mrn` /
+`identifier-dob` / `identifier-address` / `identifier-contact` / `identifier-ssn-pattern`
+(identifier-bearing case, >=6 classes), `missing-provenance` (case lacking its provenance marker),
+`missing-source-attestation` (corpus lacking corpus-level `sourceAttestation`, P4-T2) -- each fails
+closed with a distinct, class-identifiable error (`tests/ef-retro-boundary.test.mjs`).

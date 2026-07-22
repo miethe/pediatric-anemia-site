@@ -175,12 +175,17 @@ for (const { name, dir } of IDENTIFIER_FIXTURE_CLASSES) {
 }
 
 // -------------------------------------------------------------------------------------------
-// Scaffold-only verbs (`run`, `report`) throw NotImplementedError, not a silent no-op.
+// Scaffold-only verbs (`run`, `report`): given a corpus that PASSES the FR-20 boundary check,
+// both still throw NotImplementedError, not a silent no-op -- the real replay/metrics logic
+// lands in P4-T3/P4-T4 respectively. Their P4-T2 boundary-first hardening (call-order proof,
+// refusal on a missing/failing corpus, all 3 rejection classes) is this phase's own AC and is
+// exercised in full by tests/ef-retro-boundary.test.mjs; this file only proves the scaffold
+// still reaches its placeholder once a valid corpus clears the gate.
 // -------------------------------------------------------------------------------------------
 
-test('`run` verb is scaffold-only in this task: throws NotImplementedError (exit 1)', async () => {
+test('`run` verb: given a corpus that passes the boundary check, still throws NotImplementedError (exit 1)', async () => {
   await assert.rejects(
-    () => runRunVerb({}),
+    () => runRunVerb({ corpus: fixtureDir('valid-synthetic') }),
     (err) => {
       assert.ok(err instanceof NotImplementedError);
       assert.ok(err instanceof UsageError);
@@ -190,9 +195,9 @@ test('`run` verb is scaffold-only in this task: throws NotImplementedError (exit
   );
 });
 
-test('`report` verb is scaffold-only in this task: throws NotImplementedError (exit 1)', async () => {
+test('`report` verb: given a corpus that passes the boundary check, still throws NotImplementedError (exit 1)', async () => {
   await assert.rejects(
-    () => runReportVerb({}),
+    () => runReportVerb({ corpus: fixtureDir('valid-synthetic') }),
     (err) => {
       assert.ok(err instanceof NotImplementedError);
       assert.equal(err.exitCode, EXIT_USAGE);

@@ -14,9 +14,13 @@
 // any output artifact, so there is no "partial output" for a rejection to leave behind.
 //
 // P4-T1 scope: real schema-validation enforcement, reachable via the `check-fixtures` verb.
-// P4-T2 scope (per phase-4-progress.md): wire this as the gate `run`/`report` call FIRST and
-// refuse to proceed past an unchecked/failing corpus (call-order test), plus seeded fixtures
-// proving each of the 3 rejection classes fails closed with a distinct, class-identifiable error.
+// P4-T2 scope (landed): `lib/verbs/run.mjs` and `lib/verbs/report.mjs` now call this function
+// FIRST, unconditionally, and refuse to proceed past an unchecked/failing corpus -- see those
+// files' headers. Seeded fixtures proving each of the 3 rejection classes (identifier-bearing
+// case, case missing `provenance`, corpus missing `sourceAttestation`) fail closed with a
+// distinct, class-identifiable error live under `tests/fixtures/ef-retro/` and are exercised by
+// `tests/ef-retro-boundary.test.mjs` (call-order + rejection-class proofs) and
+// `tests/ef-retro-corpus.test.mjs` (schema/CORPUS-module-level proofs).
 
 import { validate } from '../../../scripts/lib/json-schema-lite.mjs';
 import { loadFixtureCorpusSchema, loadCorpusDocument } from './corpus.mjs';

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ef-retro-missing-source-attestation",
+  "description": "P4-T2 seeded violation: the corpus document omits the required corpus-level `sourceAttestation` (FR-20 / ADR-0006). Must be rejected fail-closed -- a corpus with no source attestation can never satisfy the structural de-identification boundary, independent of any individual case's own provenance marker.",
+  "cases": [
+    {
+      "caseId": "case-001",
+      "provenance": "synthetic",
+      "input": {
+        "patient": { "ageMonths": 12 },
+        "cbc": { "hemoglobin": 10.1 }
+      }
+    }
+  ]
+}
