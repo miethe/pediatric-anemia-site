@@ -9,17 +9,17 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/clinical-review
 execution_model: batch-parallel
 phase: 3
 title: "Clinical Review Workflow v1 \u2014 Phase 3: Render Queue View & Reviewer Runbook"
-status: in_progress
+status: pending
 created: '2026-07-22'
 updated: '2026-07-22'
 started: 2026-07-22T16:25Z
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 85
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 0
+completed_tasks: 5
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -41,7 +41,7 @@ tasks:
     existing committed-record link, plus a NEXT or TERMINAL marker sourced from P1-T1''s
     derived-state library. No <script>, no <a href> (existing constraint unchanged);
     semantic HTML headings for screen-reader navigation of the five roles.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -59,12 +59,18 @@ tasks:
     updated to include the queue section; grep test confirms zero <script and zero
     <a href in the new section; tests/ef-review-render-smoke.test.mjs continues to
     pass via the real CLI entry point.
+  started: 2026-07-22T16:30Z
+  completed: 2026-07-22T16:55Z
+  evidence:
+  - commit: 9add168
+  verified_by:
+  - P3-GATE1
 - id: P3-T2
   description: "Terminal-state messaging fix (FR-12). On the structurally-non-qualifying\
     \ derived state, validate, status, and render each emit an explicit sentence naming\
     \ this as the correct, by-design terminus for any synthetic: true set \u2014 not\
     \ a defect."
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -81,6 +87,12 @@ tasks:
   acceptance_criteria: A shared-string test asserts the exact sentence (or agreed
     canonical substring) appears in validate's CLI output, status's human companion
     text, and render's HTML output on the committed cbc_suite_v1 synthetic set.
+  started: 2026-07-22T16:56Z
+  completed: 2026-07-22T17:15Z
+  evidence:
+  - commit: 43c018d
+  verified_by:
+  - P3-GATE1
 - id: P3-T3
   description: "Author docs/governance/reviewer-runbook.md (FR-13, OQ-3, OQ-7). Guided\
     \ git walkthrough of the five-role sequence against the committed cbc_suite_v1\
@@ -89,7 +101,7 @@ tasks:
     \ sign is visible only on this track \u2014 and post-G1 real reviewer (ends at\
     \ scaffold-writes-the-file; real reviewers never run sign). Linked from README\
     \ and architecture \xA711."
-  status: pending
+  status: completed
   assigned_to:
   - documentation-writer
   - general-purpose
@@ -103,12 +115,19 @@ tasks:
   acceptance_criteria: Runbook covers all five roles end-to-end; both labeled tracks
     present; docs-truth test asserts required section headers exist and that sign
     appears only under the exercise track.
+  started: 2026-07-22T16:30Z
+  completed: 2026-07-22T16:54Z
+  evidence:
+  - commit: b9cbfad
+  - ica-draft: haiku routing CRW-P3-T3-runbook-draft, 2 draft bugs caught in-session
+  verified_by:
+  - P3-GATE1
 - id: P3-T4
   description: Honesty-language pass (FR-14, R4). Review every user-visible surface
     this phase touches (runbook, render's new section, README pointer) for language
     implying clinical validity, real sign-off, or a non-synthetic roster; confirm
     each carries or links one hop to the boundary statement.
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -126,11 +145,18 @@ tasks:
     the render's queue-section HTML, and tools/review-record/README.md each contain
     at least one of 'unvalidated research prototype' / 'roster is synthetic-only'
     / 'no clinical sign-off exists' (or agreed equivalent).
+  started: 2026-07-22T16:56Z
+  completed: 2026-07-22T17:12Z
+  evidence:
+  - commit: 6cc8288,3ad3568
+  - finding: CRW-F10
+  verified_by:
+  - P3-GATE1
 - id: P3-GATE1
   description: "task-completion-validator gate: verify Phase 3 exit gate \u2014 render\
     \ stays <script>-free/static; runbook covers all 5 roles end-to-end against the\
     \ dry-run fixture; npm run check green."
-  status: pending
+  status: completed
   assigned_to:
   - task-completion-validator
   dependencies:
@@ -143,6 +169,12 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   acceptance_criteria: All exit-gate criteria pass; recorded in phase progress note.
+  started: 2026-07-22T17:15Z
+  completed: 2026-07-22T17:22Z
+  evidence:
+  - workflow: wf_3b501ec4-5a1 validator approved 0 fixes, npm run check green 2391/2391
+  verified_by:
+  - P3-GATE2
 - id: P3-GATE2
   description: "codex gpt-5.6-terra read-only second-opinion diff review of the full\
     \ P3 changeset against R4/R6 and FR-11..14 \u2014 checks the render section stays\
@@ -208,6 +240,7 @@ notes: "Wave 3 (per the computed wave split \u2014 depends only on Phase 1, but 
   \ concurrent-write collision; this is a scheduling fact, not a P2 scope dependency).\
   \ Render \u2225 runbook fully parallel within the phase; runbook draft goes haiku\
   \ (ICA-eligible free-tier draft) \u2192 sonnet honesty/structure pass in-session."
+progress: 83
 ---
 
 # clinical-review-workflow — Phase 3: Render Queue View & Reviewer Runbook
