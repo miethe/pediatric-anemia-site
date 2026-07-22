@@ -15,18 +15,26 @@
 // Until P4-T4 lands the real metrics logic, a corpus that PASSES the boundary check still throws
 // `NotImplementedError` -- this verb performs no replay/metrics work, no I/O beyond the boundary
 // check, and writes no artifact.
+//
+// P4-T7 (FR-22, ADR-0006 audit clause): the FIRST statement of `run()` below unconditionally
+// appends one entry to the access log (`../access-log.mjs#logAccessAttempt`) -- BEFORE even the
+// boundary gate, so an unchecked/failing/scaffold-blocked invocation is audited exactly like a
+// successful one. This does not move the boundary gate's own call-site -- see
+// `tests/ef-retro-boundary.test.mjs` for the call-order proof that remains true unchanged.
 
 import { checkFixtures } from '../boundary.mjs';
+import { logAccessAttempt } from '../access-log.mjs';
 import { NotImplementedError, UsageError } from '../errors.mjs';
 
 /**
- * @param {{ corpus?: string }} options
+ * @param {{ corpus?: string, actor?: string, purpose?: string, accessLogPath?: string }} options
  * @returns {Promise<never>}
  * @throws {UsageError} no `--corpus` given
  * @throws {import('../errors.mjs').BoundaryError} the corpus fails the FR-20 boundary (checked FIRST)
  * @throws {NotImplementedError} the corpus passed the boundary check, but metrics reporting itself is not yet built (lands in P4-T4)
  */
 export async function run(options) {
+  await logAccessAttempt('report', options);
   const corpusDir = options?.corpus;
   if (!corpusDir || typeof corpusDir !== 'string') {
     throw new UsageError('report requires --corpus <dir>');

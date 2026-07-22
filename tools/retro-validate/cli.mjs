@@ -50,6 +50,14 @@ Verbs:
       Scaffold only in this task (P4-T1) -- lands in P4-T4. Will emit agreement-report.json (5
       OQ-5 software-agreement measures) + run-provenance.json.
 
+Access log (FR-22, ADR-0006 audit clause -- P4-T7): every check-fixtures/run/report invocation,
+successful or not, appends one structured entry to tools/retro-validate/access-log.jsonl. Optional
+flags, never required (an unresolved value is logged explicitly, never silently omitted):
+  --actor <id>              Who ran it. Falls back to RETRO_VALIDATE_ACTOR, then "unknown".
+  --purpose <text>          Why it was run. Falls back to RETRO_VALIDATE_PURPOSE, then "unspecified".
+  --access-log-path <file>  Overrides the log location. Falls back to RETRO_VALIDATE_ACCESS_LOG_PATH,
+                             then the default path above. Test/tooling isolation only.
+
 Global:
   -h, --help    Show this help and exit 0.
 

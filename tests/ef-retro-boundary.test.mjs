@@ -26,8 +26,9 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile, readdir, mkdtemp } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -44,6 +45,14 @@ const CLI_PATH = path.join(RETRO_VALIDATE_ROOT, 'cli.mjs');
 function fixtureDir(name) {
   return path.join(FIXTURES_ROOT, name);
 }
+
+// P4-T7 (FR-22): `run`/`report` now access-log every invocation. This file's own AC is the
+// boundary-gate call-order/refusal contract, not the access log itself (that is
+// tests/ef-retro-access-log.test.mjs's job) -- so every verb call/CLI subprocess below is pointed
+// at an isolated tmp log path, never the real committed tools/retro-validate/access-log.jsonl.
+const ACCESS_LOG_TMP_DIR = await mkdtemp(path.join(os.tmpdir(), 'ef-retro-boundary-test-access-log-'));
+const ACCESS_LOG_PATH = path.join(ACCESS_LOG_TMP_DIR, 'access-log.jsonl');
+const ACCESS_LOG_ENV = { ...process.env, RETRO_VALIDATE_ACCESS_LOG_PATH: ACCESS_LOG_PATH };
 
 // The 3 rejection classes named in this task's own AC wording. `identifier-name` stands in for
 // the full identifier-field-denylist enumeration (>=6 classes, proven exhaustively in
@@ -104,7 +113,7 @@ for (const { name: verbName, run: verbRun } of VERBS_UNDER_TEST) {
   for (const { name: className, dir } of REJECTION_CLASSES) {
     test(`\`${verbName}\` verb refuses to start on a failing corpus (${className}): throws BoundaryError, not NotImplementedError`, async () => {
       await assert.rejects(
-        () => verbRun({ corpus: fixtureDir(dir) }),
+        () => verbRun({ corpus: fixtureDir(dir), accessLogPath: ACCESS_LOG_PATH }),
         (err) => {
           assert.ok(err instanceof BoundaryError, `expected BoundaryError, got ${err?.constructor?.name}: ${err?.message}`);
           assert.ok(!(err instanceof NotImplementedError));
@@ -117,7 +126,7 @@ for (const { name: verbName, run: verbRun } of VERBS_UNDER_TEST) {
 
   test(`\`${verbName}\` verb refuses to start on an UNCHECKED corpus (no --corpus given): throws UsageError, not NotImplementedError`, async () => {
     await assert.rejects(
-      () => verbRun({}),
+      () => verbRun({ accessLogPath: ACCESS_LOG_PATH }),
       (err) => {
         assert.ok(err instanceof UsageError);
         assert.ok(!(err instanceof NotImplementedError), 'a missing --corpus must not fall through to the scaffold placeholder');
@@ -129,7 +138,7 @@ for (const { name: verbName, run: verbRun } of VERBS_UNDER_TEST) {
 
   test(`\`${verbName}\` verb refuses to start on a nonexistent corpus directory: throws UsageError (no corpus.json found)`, async () => {
     await assert.rejects(
-      () => verbRun({ corpus: fixtureDir('does-not-exist') }),
+      () => verbRun({ corpus: fixtureDir('does-not-exist'), accessLogPath: ACCESS_LOG_PATH }),
       (err) => {
         assert.ok(err instanceof UsageError);
         assert.equal(err.exitCode, EXIT_USAGE);
@@ -140,7 +149,7 @@ for (const { name: verbName, run: verbRun } of VERBS_UNDER_TEST) {
 
   test(`\`${verbName}\` verb: once a corpus PASSES the boundary check, it proceeds past the gate to its own (currently scaffold) logic`, async () => {
     await assert.rejects(
-      () => verbRun({ corpus: fixtureDir('valid-synthetic') }),
+      () => verbRun({ corpus: fixtureDir('valid-synthetic'), accessLogPath: ACCESS_LOG_PATH }),
       (err) => {
         // Reaching NotImplementedError (rather than BoundaryError/UsageError) is itself the proof
         // that the boundary gate was cleared -- this verb's ONLY logic before its scaffold
@@ -164,7 +173,7 @@ for (const verb of ['run', 'report']) {
     const result = spawnSync(
       process.execPath,
       [CLI_PATH, verb, '--corpus', fixtureDir('identifier-name')],
-      { encoding: 'utf8' },
+      { encoding: 'utf8', env: ACCESS_LOG_ENV },
     );
     assert.equal(result.status, EXIT_BOUNDARY, `stderr: ${result.stderr}`);
     assert.equal(result.stdout, '', 'no partial output on a fail-closed boundary rejection');
@@ -175,7 +184,7 @@ for (const verb of ['run', 'report']) {
     const result = spawnSync(
       process.execPath,
       [CLI_PATH, verb, '--corpus', fixtureDir('missing-source-attestation')],
-      { encoding: 'utf8' },
+      { encoding: 'utf8', env: ACCESS_LOG_ENV },
     );
     assert.equal(result.status, EXIT_BOUNDARY, `stderr: ${result.stderr}`);
     assert.equal(result.stdout, '', 'no partial output on a fail-closed boundary rejection');
@@ -186,7 +195,7 @@ for (const verb of ['run', 'report']) {
     const result = spawnSync(
       process.execPath,
       [CLI_PATH, verb, '--corpus', fixtureDir('valid-synthetic')],
-      { encoding: 'utf8' },
+      { encoding: 'utf8', env: ACCESS_LOG_ENV },
     );
     assert.equal(result.status, EXIT_USAGE, `stderr: ${result.stderr}`);
     assert.equal(result.stdout, '');

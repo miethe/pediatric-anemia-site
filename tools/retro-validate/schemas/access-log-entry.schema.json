@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/tools/retro-validate/schemas/access-log-entry.schema.json",
+  "title": "Retrospective Validation Access-Log Entry",
+  "description": "Evidence Foundry E1 Phase 4 (FR-22, ADR-0006 audit clause). Shape of ONE line of tools/retro-validate/access-log.jsonl -- validated per-entry, not as a whole-file document. This is a validation-DATA-ACCESS audit trail, distinct from the review-record chain (schemas/review-record.schema.json / modules/<id>/reviews/*.yaml, tools/review-record/): no shared file, no shared schema, no cross-$ref in either direction (test-asserted, tests/ef-retro-access-log.test.mjs). Closed property set (additionalProperties:false) structurally forbids case-level data -- there is no key here that could carry a caseId, clinical input, or reference label; every field is a corpus-level or invocation-level reference only. `prevEntryHash` chains each entry to the exact bytes of the immediately preceding line in the SAME file (sha256 of that raw JSON line, no re-canonicalization) -- the same tamper-evidence shape schemas/review-record.schema.json's own `previousRecordHash` field uses for its per-file chain, applied here within one file instead of across many. Recomputing and comparing this chain (tools/retro-validate/lib/access-log.mjs#verifyAccessLogChain) detects any mutation of an already-written line; it does NOT by itself detect truncation/replacement of the file's final line -- that residual gap is the same one schemas/review-record.schema.json's own header documents for git-history-level enforcement, and is why this file, like that one, is meant to be git-tracked (append-only-by-convention at the VCS layer too), never .gitignore'd once real entries exist. A structurally valid entry is a STRUCTURAL claim only: it proves an invocation of this exact shape happened, at this exact chain position. It is never a clinical-validity, safety, diagnostic-performance, or compliance claim, and it never certifies who a claimed `actor` string really is (no authentication mechanism backs it) -- see tools/retro-validate/README.md for that standing caveat.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "timestamp", "actor", "purpose", "corpusId", "verb", "prevEntryHash"],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "REQUIRED, non-null. Integer access-log-entry-shape version, bumped only when this schema's own shape changes."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "REQUIRED, non-null. UTC ISO-8601 instant the invocation was recorded, sourced from the process clock at append time -- the ONE timestamp source in this tool's log (mirrors run-provenance.json's own sole-timestamp-location design, FR-21/P4-T4, once that lands)."
+    },
+    "actor": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "not": { "type": "string", "pattern": "\\d{3}-\\d{2}-\\d{4}" },
+      "description": "REQUIRED, non-null. Actor identity, resolved from --actor / RETRO_VALIDATE_ACTOR (flag wins), or the literal string \"unknown\" when neither is supplied -- never silently omitted. This is a self-reported, unauthenticated string, not a verified human identity; do not read it as an authentication claim. Structurally rejected if it contains an SSN-like value (defense in depth; this field should never carry patient-identifying content in the first place)."
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "description": "REQUIRED, non-null. Free-text reason for the invocation, resolved from --purpose / RETRO_VALIDATE_PURPOSE (flag wins), or the literal string \"unspecified\" when neither is supplied -- never silently omitted. Authors MUST NOT place case-level or patient-identifying detail here; this field is not schema-checked against an identifier denylist (unstructured prose cannot be), so it is a documented human obligation, exactly like fixture-corpus.schema.json's own `description` field caveat."
+    },
+    "corpusId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "not": { "type": "string", "pattern": "\\d{3}-\\d{2}-\\d{4}" },
+      "description": "REQUIRED, non-null. Corpus-level reference ONLY -- the raw --corpus directory argument the invocation was given (or the literal string \"unspecified\" when no --corpus was given at all), never the corpus's parsed contents. Deliberately not required to match fixture-corpus.schema.json's own stricter `corpusId` slug pattern: this field records what the CALLER asked for, including invocations that never got far enough to parse a corpus document (e.g. a missing/unreadable --corpus is itself an auditable event). Structurally rejected if it contains an SSN-like value."
+    },
+    "verb": {
+      "type": "string",
+      "enum": ["check-fixtures", "run", "report"],
+      "description": "REQUIRED, non-null. Which of this tool's three data-touching verbs was invoked. `--help`/an unknown verb never reaches this log -- only the three verbs ADR-0006's boundary clause gates are audited here."
+    },
+    "prevEntryHash": {
+      "type": ["string", "null"],
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "REQUIRED. `sha256:<64 hex>` of the exact raw bytes (no trailing newline) of the immediately preceding line in this same access-log.jsonl file, or `null` for the file's very first entry. Forms a within-file hash chain (see this schema's own top-level description) -- append-only enforcement, not a case-level field."
+    }
+  }
+}

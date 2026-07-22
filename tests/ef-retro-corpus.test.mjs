@@ -19,10 +19,11 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readdir, readFile } from 'node:fs/promises';
+import { readdir, readFile, mkdtemp } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import http from 'node:http';
 import https from 'node:https';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -41,6 +42,13 @@ const FIXTURES_ROOT = path.join(REPO_ROOT, 'tests', 'fixtures', 'ef-retro');
 function fixtureDir(name) {
   return path.join(FIXTURES_ROOT, name);
 }
+
+// P4-T7 (FR-22): every check-fixtures/run/report invocation now appends to the access log. This
+// file's own AC is the CORPUS/BOUNDARY-module shape, not the access log (that is
+// tests/ef-retro-access-log.test.mjs's job) -- so every verb call/CLI subprocess below is pointed
+// at an isolated tmp log path, never the real committed tools/retro-validate/access-log.jsonl.
+const ACCESS_LOG_TMP_DIR = await mkdtemp(path.join(os.tmpdir(), 'ef-retro-corpus-test-access-log-'));
+const ACCESS_LOG_PATH = path.join(ACCESS_LOG_TMP_DIR, 'access-log.jsonl');
 
 async function collectSourceFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -83,7 +91,7 @@ test('a valid fixture-shaped de-identified corpus passes schema validation with 
 });
 
 test('check-fixtures verb accepts a valid synthetic corpus (in-process, exit 0)', async () => {
-  const exitCode = await runCheckFixtures({ corpus: fixtureDir('valid-synthetic') });
+  const exitCode = await runCheckFixtures({ corpus: fixtureDir('valid-synthetic'), accessLogPath: ACCESS_LOG_PATH });
   assert.equal(exitCode, EXIT_OK);
 });
 
@@ -91,7 +99,7 @@ test('CLI: `check-fixtures --corpus <valid-synthetic>` exits 0 and prints a JSON
   const result = spawnSync(
     process.execPath,
     [path.join(RETRO_VALIDATE_ROOT, 'cli.mjs'), 'check-fixtures', '--corpus', fixtureDir('valid-synthetic')],
-    { encoding: 'utf8' },
+    { encoding: 'utf8', env: { ...process.env, RETRO_VALIDATE_ACCESS_LOG_PATH: ACCESS_LOG_PATH } },
   );
   assert.equal(result.status, EXIT_OK, `stderr: ${result.stderr}`);
   const summary = JSON.parse(result.stdout);
@@ -105,7 +113,7 @@ test('CLI: `check-fixtures --corpus <identifier-name>` exits 2 (boundary) and pr
   const result = spawnSync(
     process.execPath,
     [path.join(RETRO_VALIDATE_ROOT, 'cli.mjs'), 'check-fixtures', '--corpus', fixtureDir('identifier-name')],
-    { encoding: 'utf8' },
+    { encoding: 'utf8', env: { ...process.env, RETRO_VALIDATE_ACCESS_LOG_PATH: ACCESS_LOG_PATH } },
   );
   assert.equal(result.status, EXIT_BOUNDARY, `stderr: ${result.stderr}`);
   assert.equal(result.stdout, '');
@@ -129,7 +137,7 @@ test('a case missing the required `provenance` marker is rejected by the schema 
 
 test('check-fixtures verb fail-closed rejects a corpus with a case missing `provenance` (exit 2, no summary)', async () => {
   await assert.rejects(
-    () => runCheckFixtures({ corpus: fixtureDir('missing-provenance') }),
+    () => runCheckFixtures({ corpus: fixtureDir('missing-provenance'), accessLogPath: ACCESS_LOG_PATH }),
     (err) => {
       assert.ok(err instanceof BoundaryError);
       assert.equal(err.exitCode, EXIT_BOUNDARY);
@@ -185,7 +193,7 @@ for (const { name, dir } of IDENTIFIER_FIXTURE_CLASSES) {
 
 test('`run` verb: given a corpus that passes the boundary check, still throws NotImplementedError (exit 1)', async () => {
   await assert.rejects(
-    () => runRunVerb({ corpus: fixtureDir('valid-synthetic') }),
+    () => runRunVerb({ corpus: fixtureDir('valid-synthetic'), accessLogPath: ACCESS_LOG_PATH }),
     (err) => {
       assert.ok(err instanceof NotImplementedError);
       assert.ok(err instanceof UsageError);
@@ -197,7 +205,7 @@ test('`run` verb: given a corpus that passes the boundary check, still throws No
 
 test('`report` verb: given a corpus that passes the boundary check, still throws NotImplementedError (exit 1)', async () => {
   await assert.rejects(
-    () => runReportVerb({ corpus: fixtureDir('valid-synthetic') }),
+    () => runReportVerb({ corpus: fixtureDir('valid-synthetic'), accessLogPath: ACCESS_LOG_PATH }),
     (err) => {
       assert.ok(err instanceof NotImplementedError);
       assert.equal(err.exitCode, EXIT_USAGE);

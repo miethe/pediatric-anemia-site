@@ -7,13 +7,15 @@ replaying a version-pinned candidate build against a **fixtures-only** corpus (s
 de-identified content ONLY, structurally enforced) and emitting **software-agreement** metrics --
 never sensitivity, specificity, clinical performance, or any other clinical-validity claim.
 
-**Status (as of P4-T2)**: `check-fixtures` is real -- it validates a corpus against
+**Status (as of P4-T7)**: `check-fixtures` is real -- it validates a corpus against
 `schemas/fixture-corpus.schema.json`. `run` and `report` now call that same boundary check FIRST,
 unconditionally, and refuse to proceed on an unchecked (no `--corpus`) or failing corpus -- but
 beyond that gate they remain scaffold-only (`NotImplementedError` stubs) until P4-T3 (FR-19,
-deterministic replay) and P4-T4 (FR-21, software-agreement metrics) land. Nothing in this tool is,
-or may be read as, a clinical-validity, safety, diagnostic-performance, or IRB/DUA-compliance
-claim.
+deterministic replay) and P4-T4 (FR-21, software-agreement metrics) land. All three verbs now also
+access-log every invocation, success or not (FR-22, `lib/access-log.mjs`, see below) -- this is a
+side audit channel, not a change to any verb's own primary output/error contract. Nothing in this
+tool is, or may be read as, a clinical-validity, safety, diagnostic-performance, or IRB/DUA-
+compliance claim.
 
 ## Ruling R6 -- what this tool is not
 
@@ -48,6 +50,11 @@ node tools/retro-validate/cli.mjs run --corpus <dir>
 # (exit 1, NotImplementedError):
 node tools/retro-validate/cli.mjs run --corpus <valid-dir> --candidate-digest <digest> --registry <path>
 node tools/retro-validate/cli.mjs report --corpus <valid-dir> --run <dir> --protocol <doc>
+
+# Every invocation above -- success, boundary rejection, or usage rejection -- also appends one
+# entry to the access log (FR-22, P4-T7). --actor/--purpose are optional (never required); an
+# unresolved value logs explicitly as "unknown"/"unspecified", never silently:
+node tools/retro-validate/cli.mjs check-fixtures --corpus <dir> --actor nick --purpose "spot-check"
 ```
 
 ## Module boundary
@@ -64,7 +71,14 @@ same pattern `tools/rf-bundle-to-kb-pack/` already established for this repo's E
 | **Boundary** | `lib/boundary.mjs` | `checkFixtures(corpusDir)` -- the schema-enforced (not procedural) de-identification gate (FR-20). Real schema-validation as of P4-T1; **P4-T2** hardened `run`/`report` (`lib/verbs/run.mjs`, `lib/verbs/report.mjs`) to call it FIRST, unconditionally, and refuse to proceed past an unchecked/failing corpus. | P4-T1 (initial), **P4-T2** (enforcement + hardening, landed) | corpus, errors |
 | **Replay** | `lib/replay.mjs` (P4-T3) | Version-pinned deterministic engine replay (FR-19) -- resolves the candidate build via a registry digest, never "current tree"; canonical serialization; byte-identical double-run output. | **P4-T3** | boundary, corpus, errors |
 | **Metrics** | `lib/metrics.mjs` (P4-T4), plus the discordance/adjudication model (P4-T5, FR-23) and the human-only protocol schema (P4-T6, FR-24) | Software-agreement `agreement-report.json` (5 OQ-5 measures) + `run-provenance.json` sidecar; discordance records; protocol-threshold gating. | **P4-T4** / **P4-T5** / **P4-T6** | replay, errors |
-| **Access log** | `lib/access-log.mjs`, `access-log.jsonl` (P4-T7) | Append-only, structured audit trail of every `check-fixtures`/`run`/`report` invocation (FR-22) -- distinct from the review-record chain (no shared files, no shared schema). | **P4-T7** | boundary, errors |
+| **Access log** | `lib/access-log.mjs`, `access-log.jsonl` (generated, not committed) | Append-only, structured audit trail of every `check-fixtures`/`run`/`report` invocation (FR-22) -- distinct from the review-record chain (no shared files, no shared schema, no cross-import; test-asserted). Landed, P4-T7. | **P4-T7** (landed) | errors |
+
+**Access-log call sites**: every file under `lib/verbs/` calls `access-log.mjs#logAccessAttempt` as
+the FIRST statement of its own `run()` -- unconditionally, before the `--corpus` usage check and
+before the boundary gate, so a rejected/malformed invocation is audited exactly like a successful
+one. This does not move the boundary gate's own call-site (`checkFixtures` remains the first REAL
+logic after the usage check, ADR-0006's binding clause, P4-T2) -- it is a second, independent, side
+audit channel with its own write path and its own failure mode.
 
 **Verb-handler contract**: every file under `lib/verbs/` exports `async function run(options)` that
 either resolves to a numeric process exit code (see `EXIT_*` in `lib/errors.mjs`) or throws a
@@ -121,6 +135,39 @@ already documents for this zero-runtime-dependency repo.
 **E1 corpus content is synthetic + de-identified only.** There is no schema path, CLI flag, or code
 path in this tool that admits real, identified patient data.
 
+## The access-log-entry schema (`schemas/access-log-entry.schema.json`, FR-22)
+
+Also tool-local, same rationale as the fixture-corpus schema above. Validates ONE line of
+`access-log.jsonl` at a time (the file itself is not a single JSON document, it is one JSON object
+per line). Closed property set (`additionalProperties: false`): `schemaVersion`, `timestamp`,
+`actor`, `purpose`, `corpusId`, `verb`, `prevEntryHash` -- nothing else, which is what structurally
+forbids case-level data from ever occupying an entry (there is no key it could occupy).
+
+- `actor` / `purpose` are self-reported, unauthenticated strings resolved from `--actor`/`--purpose`
+  CLI flags or `RETRO_VALIDATE_ACTOR`/`RETRO_VALIDATE_PURPOSE` env vars (flag wins); an unresolved
+  value logs explicitly as `"unknown"`/`"unspecified"` -- never silently omitted, and never blocks
+  the invocation from proceeding.
+- `corpusId` is the raw `--corpus` argument string as given (or `"unspecified"` if omitted), NOT the
+  corpus document's own parsed `corpusId` field -- this lets a rejected/unparseable-corpus
+  invocation still be logged with whatever reference the caller supplied, and keeps this module
+  decoupled from `boundary.mjs`'s own validation outcome.
+- `prevEntryHash` is `sha256:<hex>` of the exact raw bytes of the immediately preceding line in the
+  SAME file (or `null` for the first entry) -- a within-file hash chain, append-only enforcement
+  mirroring the SHAPE `tools/review-record/lib/chain.mjs` documents for its own per-file OQ-2 chain
+  (P2-T1 scaffold), adapted to one file instead of many. `lib/access-log.mjs#verifyAccessLogChain`
+  recomputes and compares it, fail-closed (`AccessLogChainError`) on the first line that does not
+  agree -- proven against seeded mutation/deletion fixtures in
+  `tests/ef-retro-access-log.test.mjs`.
+- **Distinct from the review-record chain, by construction, not by convention alone**: different
+  schema file, different `$id`, no `$ref` in either direction, no cross-import between
+  `tools/retro-validate/` and `tools/review-record/`, different on-disk path
+  (`tools/retro-validate/access-log.jsonl` vs. `modules/<id>/reviews/*.yaml`) -- all four dimensions
+  are test-asserted in `tests/ef-retro-access-log.test.mjs`.
+- **Generated, not committed**: `access-log.jsonl` itself is a runtime artifact of real invocations
+  (`.gitignore`d), exactly like `tools/rf-bundle-to-kb-pack/`'s own converter output. Tests exercise
+  the module against isolated tmp paths (`--access-log-path` flag / `RETRO_VALIDATE_ACCESS_LOG_PATH`
+  env var) so `npm test` never mutates a real, tracked file.
+
 ## Design decisions
 
 ### No `yaml`/JSON-Schema npm dependency
@@ -143,9 +190,10 @@ No file in this tool imports `node:http`, `node:https`, `node:dgram`, `fetch`, o
 tools/retro-validate/
   cli.mjs                        verb dispatch, --help, top-level exit-code handling
   README.md                      this file
-  access-log.jsonl                 append-only audit trail (P4-T7; does not exist until then)
+  access-log.jsonl                 generated, .gitignore'd -- append-only audit trail from real invocations only
   schemas/
     fixture-corpus.schema.json      tool-local fixture-corpus schema (P4-T1, FR-20)
+    access-log-entry.schema.json     tool-local access-log-entry schema (P4-T7, FR-22)
     protocol.schema.json             human-only prespecified-protocol schema (P4-T6; does not exist until then)
   lib/
     errors.mjs                        3-code exit taxonomy (P4-T1)
@@ -153,11 +201,11 @@ tools/retro-validate/
     boundary.mjs                        BOUNDARY module: schema-enforced gate (P4-T1 / P4-T2)
     replay.mjs                           REPLAY module (P4-T3; does not exist until then)
     metrics.mjs                           METRICS module (P4-T4/T5/T6; does not exist until then)
-    access-log.mjs                         ACCESS-LOG module (P4-T7; does not exist until then)
+    access-log.mjs                         ACCESS-LOG module: append/verify hash chain (P4-T7, landed)
     verbs/
-      check-fixtures.mjs                    `check-fixtures` verb (P4-T1, real)
-      run.mjs                                 `run` verb (P4-T2: boundary-gated) -> scaffold (P4-T1) -> real (P4-T3)
-      report.mjs                               `report` verb (P4-T2: boundary-gated) -> scaffold (P4-T1) -> real (P4-T4)
+      check-fixtures.mjs                    `check-fixtures` verb (P4-T1, real; access-logged P4-T7)
+      run.mjs                                 `run` verb (P4-T2: boundary-gated) -> scaffold (P4-T1) -> real (P4-T3); access-logged P4-T7
+      report.mjs                               `report` verb (P4-T2: boundary-gated) -> scaffold (P4-T1) -> real (P4-T4); access-logged P4-T7
 ```
 
 Corpus fixtures for tests live under `tests/fixtures/ef-retro/<corpus-name>/corpus.json` (never
@@ -167,3 +215,12 @@ Seeded rejection-class fixtures (P4-T1/P4-T2): `identifier-name` / `identifier-m
 (identifier-bearing case, >=6 classes), `missing-provenance` (case lacking its provenance marker),
 `missing-source-attestation` (corpus lacking corpus-level `sourceAttestation`, P4-T2) -- each fails
 closed with a distinct, class-identifiable error (`tests/ef-retro-boundary.test.mjs`).
+
+## Test coverage index
+
+- `tests/ef-retro-corpus.test.mjs` (P4-T1) -- CORPUS + BOUNDARY module correctness in isolation.
+- `tests/ef-retro-boundary.test.mjs` (P4-T2) -- `run`/`report` call-order/refusal contract.
+- `tests/ef-retro-access-log.test.mjs` (P4-T7) -- one-entry-per-invocation proof (success/boundary/
+  usage paths), hash-chain append-only enforcement (clean chain + seeded mutation/deletion
+  rejection), actor/purpose/path resolution order, and the 4-dimension distinctness proof against
+  `tools/review-record/`.
