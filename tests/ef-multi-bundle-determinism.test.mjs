@@ -38,11 +38,13 @@
 //      including `evidence.json`/`evidence-assertions.json`, across all runs; the 3 pairs that
 //      halt are proven to halt identically (same stage, same cause, same message) across runs,
 //      with zero partial output in every run.
-//   3. The REAL, COMMITTED per-bundle `evidence.json`/`evidence-assertions.json`/`unresolved.json`
-//      for ALL 4 modules — the actual "per bundle" artifacts named by this task's own AC text —
-//      are proven byte-stable at rest via two independent reads each (Section 3), and (for
-//      `cbc_suite_v1`, the one live-executable pair) proven identical to what a fresh `propose`
-//      run emits.
+//   3. Section 3 is an AT-REST INTEGRITY CHECK, NOT a determinism proof: the REAL, COMMITTED
+//      per-bundle `evidence.json`/`evidence-assertions.json`/`unresolved.json` for ALL 4 modules
+//      are confirmed non-corrupt/non-truncated via two reads each (reading an unmodified file
+//      twice in one process is tautologically identical and proves nothing about the converter's
+//      determinism). The one genuinely determinism-relevant check in this section is for
+//      `cbc_suite_v1` (the one live-executable pair): its committed files are proven identical to
+//      what a fresh, live `propose` run emits.
 //   4. The aggregate `multi-bundle-conversion-report.json` (`./multi-bundle-report.mjs`'s
 //      `aggregate` verb) is proven SHA-256-identical across repeated runs (Section 4) — it reads
 //      each pair's real, committed `unresolved.json` (`modules/<id>/unresolved.json`) plus
@@ -304,30 +306,34 @@ test('P6-T3: a third independent isolated run of the one live-succeeding pair (c
 });
 
 // =================================================================================================
-// Section 3: the REAL, COMMITTED per-bundle evidence.json / evidence-assertions.json /
-// unresolved.json for ALL 4 modules — the literal "per bundle" artifacts this task's own AC names
-// — are byte-stable at rest (two independent reads each), and (for cbc_suite_v1) cross-checked
-// against what a fresh, live `propose` run emits.
+// Section 3: at-rest integrity check — NOT a determinism proof. Reading an unmodified, committed
+// file twice in the same process is tautologically identical and proves nothing about the
+// converter's determinism (a determinism proof requires two independent RUNS producing the same
+// output, which is what Sections 1/2/4 actually do). This section only guards against accidental
+// corruption/truncation of the REAL, COMMITTED per-bundle evidence.json / evidence-assertions.json
+// / unresolved.json for ALL 4 modules at rest, and (for cbc_suite_v1) cross-checks the committed
+// files against what a fresh, live `propose` run emits — that cross-check IS a real determinism-
+// relevant proof (Section 3's final test, below); the "read twice" checks are not.
 // =================================================================================================
 
 for (const [moduleId, moduleDir] of Object.entries(MODULE_DIRS)) {
-  test(`P6-T3: modules/${moduleId}/'s committed evidence.json and evidence-assertions.json are byte-stable across two independent reads`, async () => {
+  test(`P6-T3: at-rest integrity check (NOT a determinism proof) -- modules/${moduleId}/'s committed evidence.json and evidence-assertions.json read back identically twice`, async () => {
     for (const filename of ['evidence.json', 'evidence-assertions.json']) {
       const filePath = path.join(moduleDir, filename);
       const first = await readFile(filePath);
       const second = await readFile(filePath);
-      assert.equal(sha256Hex(first), sha256Hex(second), `${moduleId}/${filename} must be SHA-256-identical across two independent reads`);
+      assert.equal(sha256Hex(first), sha256Hex(second), `${moduleId}/${filename} must read back identically twice (at-rest integrity, not a determinism proof)`);
       assert.ok(first.length > 0, `${moduleId}/${filename} must not be empty`);
     }
   });
 
-  test(`P6-T3: modules/${moduleId}/'s unresolved.json is byte-stable (or consistently, explicitly absent per R-P2) across two independent reads`, async () => {
+  test(`P6-T3: at-rest integrity check (NOT a determinism proof) -- modules/${moduleId}/'s unresolved.json is stable (or consistently, explicitly absent per R-P2) across two reads`, async () => {
     const filePath = path.join(moduleDir, 'unresolved.json');
     const first = await readRawOrMissing(filePath);
     const second = await readRawOrMissing(filePath);
     assert.equal(first.missing, second.missing, `${moduleId}/unresolved.json's presence/absence must itself be stable across two reads`);
     if (!first.missing) {
-      assert.equal(sha256Hex(first.raw), sha256Hex(second.raw), `${moduleId}/unresolved.json must be SHA-256-identical across two independent reads`);
+      assert.equal(sha256Hex(first.raw), sha256Hex(second.raw), `${moduleId}/unresolved.json must read back identically twice (at-rest integrity, not a determinism proof)`);
       const parsed = JSON.parse(first.raw.toString('utf8'));
       assert.ok(Array.isArray(parsed), `${moduleId}/unresolved.json must be a top-level JSON array`);
     }
