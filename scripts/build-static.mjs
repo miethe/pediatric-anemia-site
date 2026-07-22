@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { cp, copyFile, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { MODULE_IDS } from '../src/modules/registry.js';
+import { MODULE_IDS, DEFAULT_MODULE_ID } from '../src/modules/registry.js';
 import { verifyManifest, SUPPORTED_SCHEMA_VERSIONS } from '../src/kbVerify.js';
 import { EVIDENCE_STALENESS_POLICY } from '../src/evidenceStalenessPolicy.js';
 import { validate as validateManifestSchema } from './lib/json-schema-lite.mjs';
@@ -30,6 +30,16 @@ function discloseEvidenceStaleness(moduleId, verdict) {
 // tampered/incompatible-schemaVersion/expired manifest) must never reach a Pages upload. Mirrors
 // server.mjs's startup verification exactly (both call the same src/kbVerify.js#verifyManifest),
 // but exits the build rather than refusing to start a server.
+//
+// evidence-foundry-buildout P1-T3 (in-flight finding, same root cause and same fix shape as
+// server.mjs's startup loop): only DEFAULT_MODULE_ID — the module the static build actually
+// serves and reports flat top-level fields for below — is fatal-on-failure. A second registered
+// module (e.g. `cbc_suite_v1`, a deliberate `unsigned-stub` scaffold with no client-facing
+// moduleId surface, R-P4/PRD §6.1) legitimately fails this gate until it is reviewed and signed;
+// that failure is loudly disclosed but the module's KB data and manifest verdict are still
+// recorded (`dist/build-info.json`'s per-module breakdown discloses it exactly as read, matching
+// server.mjs's GET /api/v1/knowledge-base — see readModuleBuildInfo below), never silently
+// dropped and never fatal to the build.
 const manifestsById = {};
 for (const moduleId of MODULE_IDS) {
   const moduleDir = path.join(root, 'modules', moduleId);
@@ -54,11 +64,16 @@ for (const moduleId of MODULE_IDS) {
   });
   discloseEvidenceStaleness(moduleId, verdict);
   if (!verdict.servable) {
-    console.error(
-      `Fatal: module "${moduleId}" manifest failed verification — refusing to build dist/ `
-        + `(SPIKE-006 RQ4): ${verdict.reasons.join('; ')}`,
+    if (moduleId === DEFAULT_MODULE_ID) {
+      console.error(
+        `Fatal: module "${moduleId}" manifest failed verification — refusing to build dist/ `
+          + `(SPIKE-006 RQ4): ${verdict.reasons.join('; ')}`,
+      );
+      process.exit(1);
+    }
+    console.warn(
+      `Module "${moduleId}": manifest not servable (disclosed in build-info.json, not fatal) — ${verdict.reasons.join('; ')}`,
     );
-    process.exit(1);
   }
   manifestsById[moduleId] = { manifest, verdict };
 }

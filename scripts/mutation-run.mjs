@@ -75,7 +75,9 @@ const BASELINE_PATH = path.join(REPO_ROOT, 'tests/mutation-baseline.json');
 // coverage gate), and tests/candidate-governance.test.mjs (a VICTIM_TEST_FILES entry below) calls
 // validateModule() directly. Without it here, that read ENOENTs inside every sandbox copy and the
 // fidelity self-check below fails for the wrong reason (a missing sandboxed file, not a real mutant).
-const SANDBOX_ENTRIES = ['src', 'modules', 'scripts', 'tests', 'schemas', 'examples', 'docs', 'evidence-packs', 'rights', 'package.json', 'server.mjs'];
+// 'tools' added by evidence-foundry-buildout (P3-T4): validate-kb.mjs imports
+// tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs, which must exist inside each sandbox copy too.
+const SANDBOX_ENTRIES = ['src', 'modules', 'scripts', 'tests', 'schemas', 'examples', 'docs', 'evidence-packs', 'rights', 'tools', 'package.json', 'server.mjs'];
 
 // Targeted victim-test subset (NOT the whole suite -- see the runtime-budget note in the task
 // brief). Chosen to cover, between them, every layer a rules.json/facts.anemia.js/ranges.js defect

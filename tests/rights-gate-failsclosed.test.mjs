@@ -32,7 +32,7 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 // tree — only the module registry's disjoint chain (src/, modules/) plus the substrate itself
 // (rights/, schemas/) and the script (scripts/) are needed; no package manifest or lockfile is
 // required because the project ships zero runtime dependencies.
-const DIRS_TO_COPY = ['src', 'modules', 'schemas', 'rights', 'scripts'];
+const DIRS_TO_COPY = ['src', 'modules', 'schemas', 'rights', 'scripts', 'tools'];
 
 function makeSubstrateCopy() {
   // realpathSync matters on macOS: os.tmpdir() returns a /var/... path that is itself a symlink

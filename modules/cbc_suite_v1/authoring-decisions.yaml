@@ -1,0 +1,213 @@
+# modules/cbc_suite_v1/authoring-decisions.yaml
+#
+# Task: P3-T1 (Evidence Foundry Buildout, Phase 3 -- Projection & Drafting)
+# Per FR-14 / 02 section 4.12: the converter (tools/rf-bundle-to-kb-pack/) MUST NOT infer clinical
+# Boolean logic from prose. This file is the explicit, hand-authored, human-reviewed bridge between
+# rf claims and a rule/candidate draft -- one dec_*-ID record per FR-16 slice rule. status:
+# approved_for_rule_draft means the DECISION is ready to inform a drafted rule proposal; it is NOT
+# clinical sign-off. Every review.* field below is pending -- no named clinical reviewer has
+# evaluated any of this. modules/cbc_suite_v1/module.json.status stays "unsigned-stub".
+#
+# Evidentiary source: the P1-T6 fixture at tests/fixtures/rf-cbc-001/ (rf run
+# rf_run_20260717_rf_cbc_001_pediatric_cds_establish, bundle
+# bundle_20260718_intent_research_20260717_rf_cbc_001, status verified), per this plan's binding
+# OQ-2 resolution (RF-CBC-001, not REG-001/REG-004). Every basis.rf_claim_ids entry below is a real
+# claim_id copied verbatim from tests/fixtures/rf-cbc-001/claims/claim_ledger.yaml.
+#
+# KNOWN LIMITATION -- surfaced, not silently resolved (see the P3-T1 task-completion summary):
+# RF-CBC-001's research brief scopes it to "the neutropenia scope-exit / red-flag evidence base"
+# (tests/fixtures/rf-cbc-001/research_brief.md); it contains zero ferritin/iron claims. FR-16(c)
+# originally named the third slice rule "iron-deficiency-anemia candidate pattern rule" -- the same
+# candidate identity already evidenced separately in modules/anemia/candidates.json from
+# anemia-specific sources outside this bundle. Because this decision record's basis must cite real
+# RF-CBC-001 claim IDs (P3-T1's binding acceptance criteria), and no RF-CBC-001 claim supports
+# iron/ferritin content, dec_cbc_benign_neutropenia_differential_pattern_001 below is authored as
+# the genuinely evidenced RF-CBC-001 analog of that slice role -- a benign-vs-referral differential
+# candidate pattern (Duffy-null/benign-ethnic neutropenia vs. red-flag features) -- under a
+# decision ID that names what it actually is, rather than mislabeling neutropenia evidence as
+# iron-deficiency evidence.
+#
+# RESOLVED (P3-GATE remediation): the parent implementation plan's binding "FR-16(c) candidate
+# identity" decision (docs/project_plans/implementation_plans/infrastructure/
+# evidence-foundry-buildout-v1.md) formally re-scopes FR-16(c) to this benign-ethnic/Duffy-null
+# neutropenia differential identity. No iron-deficiency candidate is authored, migrated, or
+# referenced anywhere in the E0 vertical slice; Phase 4's P4-T3 migrates a candidate under this
+# identity only.
+
+schemaVersion: "1.0"
+moduleId: cbc_suite_v1
+rfProvenance:
+  rfRunId: rf_run_20260717_rf_cbc_001_pediatric_cds_establish
+  rfBundleId: bundle_20260718_intent_research_20260717_rf_cbc_001
+  fixturePath: tests/fixtures/rf-cbc-001/
+
+decisions:
+  # FR-16(a): young-infant / age-under-6-months scope-abstention
+  - decision_id: dec_cbc_young_infant_scope_abstention_001
+    module_id: cbc_suite_v1
+    status: approved_for_rule_draft
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_018
+        - clm_inf02
+      exact_assertion_ids:
+        - evas_cbc_young_infant_anc_001
+        - evas_cbc_young_infant_anc_002
+      reasoning: clm_018 establishes that neutropenia is defined by distinct age-banded ANC cutoffs
+        (neonates/infants below 2500 x10^9/L vs. toddlers/older children/adults below 1500 x10^9/L),
+        and clm_inf02 draws the explicit safety inference that applying the older-child cutoff to a
+        neonate or young infant would under-flag neutropenia: age-partitioned cutoffs are required
+        and adult/older-child cutoffs must not be reused for young children. cbc_suite_v1's declared
+        supported age range begins at 6 months (module.json supportedAgeMonths.min, with
+        explicit_exclusions listing neonate_or_age_under_6_months). Rather than infer an
+        age-appropriate young-infant interpretation pathway the converter has no reviewed basis for,
+        the module abstains below 6 months and routes to a missing-data/out-of-scope prompt,
+        consistent with modules/anemia's existing SCOPE-001 pattern for the same age boundary in
+        the anemia domain.
+    conflicts:
+      visible: true
+      representation: abstain_below_supported_age
+    clinical_effect:
+      intended_output: scope_exit_alert
+      prohibited_effects:
+        - interpret_result_below_supported_age
+        - infer_normal_from_missing_young_infant_range
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending
+
+  # FR-16(b): local-lab-range-precedence-over-universal-threshold
+  - decision_id: dec_cbc_local_range_precedence_001
+    module_id: cbc_suite_v1
+    status: approved_for_rule_draft
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_009
+        - clm_027
+        - clm_inf07
+        - clm_inf01
+      exact_assertion_ids:
+        - evas_cbc_age_interval_001
+        - evas_cbc_analyzer_specificity_001
+        - evas_cbc_unit_normalization_001
+      reasoning: clm_009 and clm_027, two independently reported CALIPER cohorts, each find
+        age-specific reference-interval differences statistically significant for 39 of 47
+        hematologic parameters, confirming pediatric intervals cannot rely on a single universal
+        cutoff. clm_inf07 draws the cross-source inference that reference intervals are
+        analyzer-specific (Beckman Coulter DxH 900 vs. Mindray BC-6800Plus in this bundle) and
+        therefore cannot be ported across analyzers without local verification. clm_inf01
+        separately identifies a unit-rendering hazard across sources (an ANC of 500, nominally
+        labeled x10^9/L in one source, is numerically cells per microliter and equals 0.5 x10^9/L)
+        that any local-range comparison must normalize before a threshold compare. Prefer a
+        configured local pediatric/analyzer-specific reference interval; abstain, do not silently
+        apply a universal cutoff, when no compatible local profile exists -- the same precedence
+        modules/anemia's existing SCOPE-002/SCOPE-003 rules already apply for hemoglobin/MCV
+        ranges.
+    conflicts:
+      visible: true
+      representation: local_profile_or_abstain
+    clinical_effect:
+      intended_output: interpretive_note
+      prohibited_effects:
+        - infer_normal_from_missing_range
+        - silent_unit_conversion
+        - cross_analyzer_interval_reuse_without_verification
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending
+
+  # FR-16(c) role (re-scoped, see RESOLVED note above): differential candidate pattern, "pattern"
+  # not diagnostic certainty. RF-CBC-001 has no iron/ferritin claims, so this decision is authored
+  # under its own honest identity (benign-vs-referral neutropenia differential) rather than
+  # mislabeled as iron-deficiency-anemia. This is the identity P4-T3 migrates.
+  - decision_id: dec_cbc_benign_neutropenia_differential_pattern_001
+    module_id: cbc_suite_v1
+    status: approved_for_rule_draft
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_039
+        - clm_040
+        - clm_041
+        - clm_074
+        - clm_043
+        - clm_inf05
+      exact_assertion_ids:
+        - evas_cbc_benign_neutropenia_differential_001
+        - evas_cbc_benign_neutropenia_differential_002
+      reasoning: clm_039 through clm_041 establish Duffy-null-phenotype-associated, benign ethnic,
+        neutropenia as the dominant etiology of pediatric neutropenia referrals (77.7 percent
+        overall; up to 96.6 percent and 91 percent in ancestrally relevant subgroups), clm_074
+        links Black children specifically to persistent mild neutropenia, and clm_043 names
+        absence of recurrent, frequent, or serious infection as the clinician-usable discriminator
+        between benign and pathologic neutropenia. clm_inf05 draws the composite inference that
+        mild neutropenia in an ancestrally relevant child without an infection history has high
+        pretest probability of being benign and does not by itself warrant escalation. This
+        supports a pattern-not-diagnosis candidate: an ordinal, reviewable signal toward a benign
+        etiology, always conflict-visible against the red-flag features in
+        dec_cbc_marrow_red_flag_001, never an assertion of confirmed diagnosis, and never a basis
+        to suppress a co-occurring red-flag alert.
+    conflicts:
+      visible: true
+      representation: pattern_with_referral_features_visible
+    clinical_effect:
+      intended_output: reviewable_pattern
+      prohibited_effects:
+        - assert_diagnostic_certainty
+        - suppress_cooccurring_red_flag_alert
+        - infer_etiology_from_single_measurement
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending
+
+  # FR-16(d): marrow-red-flag safety rule
+  - decision_id: dec_cbc_marrow_red_flag_001
+    module_id: cbc_suite_v1
+    status: approved_for_rule_draft
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_004
+        - clm_005
+        - clm_053
+        - clm_inf04
+      exact_assertion_ids:
+        - evas_cbc_marrow_malignancy_risk_001
+        - evas_cbc_marrow_malignancy_risk_002
+      reasoning: clm_005 finds MDS/AML occurred in 4.4 percent of all SCNIR patients but
+        concentrated at 11.3 percent in the congenital-neutropenia subgroup defined by clm_004
+        (early-childhood onset and/or genetic result, ANC persistently below 0.5 x10^9/L beyond
+        infancy). clm_053, in a second independent SCNIR cohort, found 16 percent of severe
+        congenital neutropenia patients, 30 of 187, developed MDS/AML versus 0 percent of cyclic
+        neutropenia patients, p less than 0.0001, with every frame-shift ELANE mutation occurring
+        in the SCN group. clm_inf04 draws the composite, cross-source inference that
+        myeloid-malignancy, marrow failure/infiltration, risk concentrates specifically in the
+        persistent congenital neutropenia pattern and is a hematology/oncology referral trigger,
+        distinct from the favorable-prognosis autoimmune/idiopathic and benign-ethnic etiologies.
+        This is the module's safety-critical red flag: it must activate and dominate ranking over
+        any co-occurring benign differential candidate, per
+        dec_cbc_benign_neutropenia_differential_pattern_001, never be silently suppressed by it,
+        and must never itself assert a diagnosis, treatment, or dosing directive, only a
+        referral/urgent-evaluation prompt.
+    conflicts:
+      visible: true
+      representation: alert_dominates_cooccurring_candidate_ranking
+    clinical_effect:
+      intended_output: safety_caution
+      prohibited_effects:
+        - diagnose_marrow_failure_etiology
+        - recommend_treatment_or_dosing
+        - suppress_alert_for_cooccurring_benign_candidate
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending

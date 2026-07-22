@@ -1,0 +1,1578 @@
+{
+  "redactions": [
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:9bf3fcac382590ded311de98a598898c8807b3e6b5bb02165c579e9a5c6ca668",
+      "length": 207
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:3d62a8fc5d728632ee5bf61a00ffff04aedcfef7722c94766213ba67d05105ba",
+      "length": 227
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:15a083b119d6bba08ebb9ba55341260814a75140f239a6bd58312b35776d5158",
+      "length": 152
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:65c88fe1db0ca78d48700dfb5390b1af0ac33977991632453c447ce7ce0adfe2",
+      "length": 121
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:15a083b119d6bba08ebb9ba55341260814a75140f239a6bd58312b35776d5158",
+      "length": 152
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:d81e85bd2e8dcdc53b4ddfaa8a4585cc12b83d49b431612f9c75c59d28291783",
+      "length": 69
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:40901d2fe15c33fed186a58925c9ecca5350461e7865bba35734cbda32dd3e25",
+      "length": 265
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:4db8d18ea64e358204267929a9d7fa89f7e8092d8734983b9ab6ca3d2c5fb834",
+      "length": 192
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:742a5319acccbf53a03bc2f9b771c83390215110c64dcfb1ca466807f13964cc",
+      "length": 235
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 93,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:9bf3fcac382590ded311de98a598898c8807b3e6b5bb02165c579e9a5c6ca668",
+      "length": 207
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 94,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:3918473b63bab41c1014b47bb701608109f36a3d5b94e960022f6cbeae8e3029",
+      "length": 101
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 95,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:3df45edddd7f3e4ec35c3c8dd413a4d23402c8360953e33ad01a3892e22a4905",
+      "length": 49
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 96,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:40901d2fe15c33fed186a58925c9ecca5350461e7865bba35734cbda32dd3e25",
+      "length": 265
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 97,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:4db8d18ea64e358204267929a9d7fa89f7e8092d8734983b9ab6ca3d2c5fb834",
+      "length": 192
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_00.md",
+      "line": 98,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:742a5319acccbf53a03bc2f9b771c83390215110c64dcfb1ca466807f13964cc",
+      "length": 235
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_01.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:c98a1b5948731db5187e3d416e5502a818096a7c51224b8d28e8e8ceed411593",
+      "length": 207
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_01.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:a6783b241b4c4c150f30930a0efaa55dd98fe17b5c1341aeab5cd095360f9841",
+      "length": 88
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_01.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+      "length": 209
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_01.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:9fd3ea588d0ef87bfac0aa496d1f0b1aaa0d20aea1ecaf719efc0eb95b996e4a",
+      "length": 93
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_01.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:633f5761a10a075005be3bbdde35e67b571b48fc1ab7bfd89ff47223d027884d",
+      "length": 113
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_01.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:eb89b87ddc6f5aba52a90ca60b007472e83e1aa74b2a7913f2cefc1ec86c46ad",
+      "length": 123
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_01.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:de59d84d0b09e9e7863bc79e0823cc75ce240d58e1d2dd876a25a886d768b09a",
+      "length": 274
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_01.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:eef4e1f1a2ba953e22c3c43fe3f33ed18d26bcf2a557232b281631f9bff9dce9",
+      "length": 72
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_01.md",
+      "line": 71,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:c98a1b5948731db5187e3d416e5502a818096a7c51224b8d28e8e8ceed411593",
+      "length": 207
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_01.md",
+      "line": 72,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:343c1b2f03e1a3a644a88c3bfc6cdaa987120c5ba7cf40b3990ac905a14d8659",
+      "length": 83
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_01.md",
+      "line": 73,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:633f5761a10a075005be3bbdde35e67b571b48fc1ab7bfd89ff47223d027884d",
+      "length": 113
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_01.md",
+      "line": 74,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:ba6a009354f173c174212040a6a925741a30e591d0c7aef96638d12487979d03",
+      "length": 126
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:5d31434561e5439f2d61117bd0e969443e395c9abe612a39e7ffc99b9026cf3c",
+      "length": 98
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:55ba1e74aa31ebdd80bdda762459e9110c70ffb63fa0bad171812382e5019fdc",
+      "length": 55
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:b2a08558c3733f1409d0f808d1a77ef0fc0f1cecccee4b5ee12f49e099b89195",
+      "length": 114
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:d9cdab9e3d89ead1455639b002f14ae50d0d87b40733a3a52cf5a53b936a2eb6",
+      "length": 94
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:2e7a6450329e8b3389cb30340ca7493adf3c16ef261bb79d1c90717f7218ef45",
+      "length": 67
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:1e56dd7de38330acd20e22a042cfb5238f8643746aa4eb80c418090ed5658b78",
+      "length": 350
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:1b90b322cb23e2965a0153c6e9d5e5fc06430993fffcfb1231b61e49f5659651",
+      "length": 79
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:ecb22c299444f7c4a2aaf712d716635aa67b62cbd77dc7111d1d3dca52124166",
+      "length": 120
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:f9741aa6b4c6846b929ef80c5fa56c897152f181865f82c52d78b5cd16b02f40",
+      "length": 103
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:ea9debf8bd82aaab8f36c3e1752a17912ba0113d328a2e02d9260f66b4e89e41",
+      "length": 82
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 93,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:5d31434561e5439f2d61117bd0e969443e395c9abe612a39e7ffc99b9026cf3c",
+      "length": 98
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 94,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:b2a08558c3733f1409d0f808d1a77ef0fc0f1cecccee4b5ee12f49e099b89195",
+      "length": 114
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 95,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:d9cdab9e3d89ead1455639b002f14ae50d0d87b40733a3a52cf5a53b936a2eb6",
+      "length": 94
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 96,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:ab6922c4acdc20e4b80aec4761d8471a5bd0939631306a7c5958c343ab59bbb1",
+      "length": 184
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 97,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:ecb22c299444f7c4a2aaf712d716635aa67b62cbd77dc7111d1d3dca52124166",
+      "length": 120
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_02.md",
+      "line": 98,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:f9741aa6b4c6846b929ef80c5fa56c897152f181865f82c52d78b5cd16b02f40",
+      "length": 103
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:31d4902ddcec248537b05b814ab0ca36855d7b84f53766d98662afd5ad4f02dd",
+      "length": 163
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:40ccdb2f0d55b81fa5871db0e8a48e95cfa84f97843376a122507c1fdf25723d",
+      "length": 130
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:4912f006897886e736c25d5892a8ea37f14a721b9dc7a21354f47bb3bb2048e6",
+      "length": 129
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:59936d71fff53a5f20500c04b3a52415f91d3a415c05851c755625ca40c47c58",
+      "length": 142
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:ea1a31af01c4c3e9d925032ec3a4e30d6d07a3da9490aaa9ae9a3f53b93a825f",
+      "length": 165
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:27faaa1d89d76f2e034228873a9b85bb1d2b686b923ed1a1569e36049f37f996",
+      "length": 181
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:2e5a11b769788a66726b6291b11638d1bac6d88552a44eb491bc9b2eacc3984b",
+      "length": 213
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:1c7196f92641e393502655b45adbd3cd15718c61d7c7404efb30ac6461cce524",
+      "length": 121
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:a2faf26fba24dac41a1c20f0f7c12c165db914fc387835ad6b7368b4386b1ca6",
+      "length": 296
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:aad6f6cb06213aaf13f0f7d01f2cbfc845902272811e3fed10847a5671fd4c66",
+      "length": 212
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:e88e55a34920ec07879a3175a2bb9d673b7e2928e74dffd016c481f35b04c951",
+      "length": 145
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:6b0dc4668fb2c7ba0ed4c09fe856918a0104dcbbe54eb952a5defcb37115e21a",
+      "length": 121
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 89,
+      "field": "quote",
+      "sha256": "sha256:af1f8af40d12969fbc9d41b20b96bd9a96aa32e7ef673114345d26d4c027a2eb",
+      "length": 189
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 104,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:546c959651480f51efa08ecd2f4672488dbeb51abddbf5eb19ef7283f2f3d9fe",
+      "length": 141
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 105,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:9be85f40fefda6725d04b0ba8c63231c23a3bf2e93d5552bd12700df87da4d3e",
+      "length": 100
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 106,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:f3d189ae4a5867cf0a106a31a207ced36bb46d3389c31e56cfb857faab5c1c6f",
+      "length": 91
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 107,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:dbc12d0e6fc02f36cd7ee3fb921811c38aa96150a4348c45856171131f7c10b2",
+      "length": 119
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 108,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:e5cc8c5fa4abc32350e794aa82f5613a0ba3c4dda70f46d7c9e9f801af27ff10",
+      "length": 210
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 109,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:79027bd928b7e0b24d68c4a9b21b0dabafded16c042203e3a56c2737f6300e96",
+      "length": 97
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_03.md",
+      "line": 110,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:3f9618f765eee2fb471b323817af7d5d7db48835a382c2b742980d7f5420041b",
+      "length": 112
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:d5c5540e5107f1fe10febaacd5c2ceb3aa3b54fc07d22f0c402a8f2566e36747",
+      "length": 183
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:f290f1c93a5c033ca3ead6d2c5e2d6120b0e0e8c6d3bf9874472fe8733f71a18",
+      "length": 149
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:8923f94b4c43d9f8768efea66a09252f9d096d4200e3bd49d2de30067a8c7520",
+      "length": 97
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:7a07368eac1894b97d9aea2bacfde609ef5165509c37a1eb6a739a621d68849c",
+      "length": 89
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:4c86e8c22c497a0bda509a15e16f5e1c8f1a1a5982801fecbae8ed89e4485ced",
+      "length": 117
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:00385ad08236a5d1ba1ec8465e380794b0f32b1ce1d95a0c02996383f4510a08",
+      "length": 134
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:9cdc8f25afcfa60228e53be080de8e15fc9b590407c1d7c548777aa888def5b5",
+      "length": 133
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:e30f8064d29a960a6649cac1e012bd1d331c6ca41cd828689a6f19c04e7db4a4",
+      "length": 124
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:ca3683bb471e005788b3cf5d55318a2f3c1ddeb44626aef657c1f01fca0ae53a",
+      "length": 205
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:1491b08f1a7b8ff517115be6bbeb3385e676431e197ee2fd5064ee14dcb4f3f0",
+      "length": 190
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:5dcc9aa2aecde93ce285c87e1349cc6857e17726ed06bd88a9f513b6113d9e98",
+      "length": 100
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:d58936df84a348c29dd6a5fb3873769c339afb1678c1c77db15474b4a02cec83",
+      "length": 118
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 93,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:f790a646797ddda8bfc421f99227529abd702e4a2aba4a3eefc6576b8efbf16b",
+      "length": 146
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 94,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:8923f94b4c43d9f8768efea66a09252f9d096d4200e3bd49d2de30067a8c7520",
+      "length": 97
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 95,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:4c86e8c22c497a0bda509a15e16f5e1c8f1a1a5982801fecbae8ed89e4485ced",
+      "length": 117
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 96,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:eb62211768414da75b41c3dc73c7815a6af988da11abb06b974820411356b0c8",
+      "length": 106
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 97,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:72d25848ddd3b905664120ea4cd532717d7ef74268cb302fc2d8e7c8e33237d6",
+      "length": 125
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_04.md",
+      "line": 98,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:5dcc9aa2aecde93ce285c87e1349cc6857e17726ed06bd88a9f513b6113d9e98",
+      "length": 100
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:895abbec2c92daa950c3d603e174c37d64982a709486bc7e0b11b573bba56473",
+      "length": 150
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:68f2af63953be4adf36e3b4594f56a686df8943c04b67b0c1f1382e34bca4f6a",
+      "length": 140
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:a6cca4e3495b9e956cb9981bb23990bb75a3464e232a8b633a4a992292fb9b7c",
+      "length": 181
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:2a0391d46bef963a5a4b41bb4546e0b3d1f54e40d57a2b4b7505429e5e0d5454",
+      "length": 88
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:cf0eac2fa8219ade4f854355bcfd3f9e268b5cbafc585096874d21c14c9cd30b",
+      "length": 195
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:aeceb67b67efc05b08b0218c75fd336553a7a4484a0a68b6a4eee3a81913c173",
+      "length": 229
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:a710ee344bae834b893fe912c35a17e0d85232c9eaa3e8382d496ff5bbdaf2fe",
+      "length": 73
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:e88b86bd01df9bef70f1025960f613a1aba5d1deafa5ad12c634774de1d8f734",
+      "length": 75
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 93,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:895abbec2c92daa950c3d603e174c37d64982a709486bc7e0b11b573bba56473",
+      "length": 150
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 94,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:8860dc6d25a058fb30ff4888fba0ca5e4cea261a3987400f0d265fa7a42599a2",
+      "length": 104
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 95,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:cf0eac2fa8219ade4f854355bcfd3f9e268b5cbafc585096874d21c14c9cd30b",
+      "length": 195
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 96,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:aeceb67b67efc05b08b0218c75fd336553a7a4484a0a68b6a4eee3a81913c173",
+      "length": 229
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 97,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:a710ee344bae834b893fe912c35a17e0d85232c9eaa3e8382d496ff5bbdaf2fe",
+      "length": 73
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_05.md",
+      "line": 98,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:e88b86bd01df9bef70f1025960f613a1aba5d1deafa5ad12c634774de1d8f734",
+      "length": 75
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:a725ce24ee3c573e87dc0618898b169ab74d8869f0d03c5ea22ff9389a960518",
+      "length": 147
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:f3922bf1d1d7e4eb0b98166d9899d364ecaf72c7bd17d4c041ae70d830489395",
+      "length": 121
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:d2bd93b2c98834314ee3a22b6610abd285b34209d6f3f17c06b1489be1376931",
+      "length": 82
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:77e9ae02afca50b2bc0b54ff79f4e8e7a437d7bf06fb3a6b09320002baa6a2c8",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:ebece1b2d9296e741e6aefa77e4219c50955e2829f27a26bcebaf794457c6ec7",
+      "length": 75
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:a52279fea9deee4a0e5de7f6709717141021b7a89fdca2ec7d63120b92becd01",
+      "length": 159
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:2e061dd812ff9efa72ca48ceb93304aafb5e04cd389c146998022e2996aaafd2",
+      "length": 136
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:62b585b972c43b0e56c4c1ad2dcb63618c533cb8c38d028da039b642c6293eed",
+      "length": 85
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 93,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:a725ce24ee3c573e87dc0618898b169ab74d8869f0d03c5ea22ff9389a960518",
+      "length": 147
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 94,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:d2bd93b2c98834314ee3a22b6610abd285b34209d6f3f17c06b1489be1376931",
+      "length": 82
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 95,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:77e9ae02afca50b2bc0b54ff79f4e8e7a437d7bf06fb3a6b09320002baa6a2c8",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 96,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:a52279fea9deee4a0e5de7f6709717141021b7a89fdca2ec7d63120b92becd01",
+      "length": 159
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 97,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:2e061dd812ff9efa72ca48ceb93304aafb5e04cd389c146998022e2996aaafd2",
+      "length": 136
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_06.md",
+      "line": 98,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:62b585b972c43b0e56c4c1ad2dcb63618c533cb8c38d028da039b642c6293eed",
+      "length": 85
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_07.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:b0ad4acd7c37242283dbd6938b56da062eaf73548d87de7bc3c79554578e04dd",
+      "length": 159
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_07.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:396ff7f263e038c65b4b8a9609fb5e52a58cbb2eb43608333b252493d47dcaec",
+      "length": 206
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_07.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:7d69b1669d64f774f81f9217680ba06d763aa414df35c730bae84f96c99b8092",
+      "length": 152
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_07.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:a7bd612c49bd1e620af5b545736f4e939ac99699667245e0fd3826ec3f2bed2b",
+      "length": 211
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_07.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:455fab1194dd485049ec9405a975f64782e74e41af6a7a1b7f82a8fe68ca813c",
+      "length": 218
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_07.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:0756465bbc19ed733a239ff23b70edc5be41d2405c8e80a9d133621ae978e1e4",
+      "length": 221
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_07.md",
+      "line": 93,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:b0ad4acd7c37242283dbd6938b56da062eaf73548d87de7bc3c79554578e04dd",
+      "length": 159
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_07.md",
+      "line": 94,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:396ff7f263e038c65b4b8a9609fb5e52a58cbb2eb43608333b252493d47dcaec",
+      "length": 206
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_07.md",
+      "line": 95,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:7d69b1669d64f774f81f9217680ba06d763aa414df35c730bae84f96c99b8092",
+      "length": 152
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_07.md",
+      "line": 96,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:a7bd612c49bd1e620af5b545736f4e939ac99699667245e0fd3826ec3f2bed2b",
+      "length": 211
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_07.md",
+      "line": 97,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:455fab1194dd485049ec9405a975f64782e74e41af6a7a1b7f82a8fe68ca813c",
+      "length": 218
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_07.md",
+      "line": 98,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:0756465bbc19ed733a239ff23b70edc5be41d2405c8e80a9d133621ae978e1e4",
+      "length": 221
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:7fb82392dd4f00e8727805747bbb9609fc5431d9a8f74f88e0275792ba2bf310",
+      "length": 188
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:bda24390a583d3d82c770d83c2fcc020d0e7e8e95d29d12e8add13e9ee00264f",
+      "length": 67
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:8b839c90f5ca899edaed8e7447d14c9dece5e310bc82ccc6da707cc9c3e2c024",
+      "length": 49
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:10db5a1b6a15f76bae826d2cad537ffd2367c3791e7a6c216b0407504a82f7a3",
+      "length": 72
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:7e4eebc0a49f4962a1d6b9f3fca45923a77b7e9768c8dddb4b186777d10951ab",
+      "length": 152
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:0c0d73ad8a41159aab64195d90045f9784c498ebb135784069a7ab940a2ac908",
+      "length": 107
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:ff2928acf51095774b2b11c1dd3dd26296b7aed50074c54ff3087d3304b1c9a4",
+      "length": 157
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:ab8458dfbc2d430716bc94b69e7751b57c8489e47e8d5a817f327695db932fa0",
+      "length": 58
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:63ac429aebb102e07036be7845a73bef614770d0ba2eec04024d21823b9d69bb",
+      "length": 138
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:f8232093f94f9139fe9e7fc059f3018baaf75bd7a0609700460dce8b7cb9bc7f",
+      "length": 101
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:c98dbc0ff8a7f342f1fecc85f8e50c148c3f5feda65a1c98c06453e96c87daa5",
+      "length": 172
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:db79cd2d30bdcd21be5224aed41f82589eae470d774e380c6b1fd84efea699c3",
+      "length": 105
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 89,
+      "field": "quote",
+      "sha256": "sha256:9cca0c52b88175081dd8328df08c38b476bd1653e7f3f9b10ac09aaf643807ce",
+      "length": 123
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 94,
+      "field": "passage_locator",
+      "sha256": "sha256:1126202957dc6854f4258f9ba702f8c0a679faa79b5130a217cabc2094ae59a3",
+      "length": 211
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 104,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:7fb82392dd4f00e8727805747bbb9609fc5431d9a8f74f88e0275792ba2bf310",
+      "length": 188
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 105,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:8b839c90f5ca899edaed8e7447d14c9dece5e310bc82ccc6da707cc9c3e2c024",
+      "length": 49
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 106,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:7e4eebc0a49f4962a1d6b9f3fca45923a77b7e9768c8dddb4b186777d10951ab",
+      "length": 152
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 107,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:ff2928acf51095774b2b11c1dd3dd26296b7aed50074c54ff3087d3304b1c9a4",
+      "length": 157
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 108,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:63ac429aebb102e07036be7845a73bef614770d0ba2eec04024d21823b9d69bb",
+      "length": 138
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 109,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:c98dbc0ff8a7f342f1fecc85f8e50c148c3f5feda65a1c98c06453e96c87daa5",
+      "length": 172
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_08.md",
+      "line": 110,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:9cca0c52b88175081dd8328df08c38b476bd1653e7f3f9b10ac09aaf643807ce",
+      "length": 123
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:d58b5d6e7b4a805ac0492d8860472938a8ed51b3eb8b450ce51a4905377d5667",
+      "length": 257
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:1eec2d44d2fa663860a048c4b81669c2fbe507aa92fe156ee16dcd88add865c2",
+      "length": 203
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:f14c0a62dfe6af11bdb8d5eb7fdd71dca14376475ffd34589bf99f830e71dc59",
+      "length": 177
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:632e8e5ccca2ea3858ca6eb949a35a6f79d41d325b80b022b3ac4fb491dd0c43",
+      "length": 116
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:bbc6f94a620cb97103c2d8e924c3196e2a2caf858898e4c4c4c38df5aca4a05b",
+      "length": 206
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:63e9d978c4fce966f86772fc012e80c1a60b37bb89b027cae94d3a94b452939d",
+      "length": 104
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:cc99e45d10f28f8ef518a3bd22fddacd85d18139646252d98075e6a962275b74",
+      "length": 191
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:c933e2cc36aa03cef3149bc9ff9446046cfb11bec131982fa02082dcc17ed09e",
+      "length": 48
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:489f3e4643f1bb43ce965131e68dae46e98b415dee09e18710148caa8a9dd213",
+      "length": 282
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:c5b16a9d001c767341c5a05908df26aa764f6487d3b2e22dff54e73a739cdb71",
+      "length": 140
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:5249132aaa8f46e1fdb36822a01d346508483c440f21a5b7225dde6cc693ea7d",
+      "length": 242
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:fdb15ae7966fc5a929eef1b0bbdb3d9f98f820463da9f297d2ddbdab1e8a1630",
+      "length": 167
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 89,
+      "field": "quote",
+      "sha256": "sha256:a0a17c37a4ab2528f137ebfd72cc1858638e1c641a00d10ac78c77a4558e9af8",
+      "length": 419
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 104,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:d58b5d6e7b4a805ac0492d8860472938a8ed51b3eb8b450ce51a4905377d5667",
+      "length": 257
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 105,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:35f6649a4eae8d13fa0f918447f1fad882c202ba3c951a1ed2c30b64c5766d83",
+      "length": 103
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 106,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:11a41e7414baf9f7757185b4399b3ba2d3bca24cc7d94de3aa47264a7aaedde7",
+      "length": 117
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 107,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:005fde9b9905a8e6c73e1e0fae2d0284549ad19c82d34e6f6b9f86b5d5d8bf42",
+      "length": 102
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 108,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:8bb95ededc3d341b39a5b2d6d7af27e49fdfba799bc0a2785e625d54ff08b11e",
+      "length": 127
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 109,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:864dd284c94a04bd76b4e6f7b51e2d270f32f5b00aed93506c26f2baea6d943e",
+      "length": 152
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_09.md",
+      "line": 110,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:9ac2145d7dab435118f28483b7835599888b7b2fa278e5109661dec9a1cc9f6a",
+      "length": 190
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:c98a1b5948731db5187e3d416e5502a818096a7c51224b8d28e8e8ceed411593",
+      "length": 207
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:6a7d1311f9abd40d23b88db00c36c982b5f5d66a7ac997cd49c3ebe47fa51894",
+      "length": 108
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:cf4e3d93e062cb140741566729c64db9ea4e90105011c1f2e4a4cae6e21801ca",
+      "length": 127
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:f5499c75db74c5f074d33064291a4c4c721be4aaa9df5a236a3b825a1d40a403",
+      "length": 209
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:9fd3ea588d0ef87bfac0aa496d1f0b1aaa0d20aea1ecaf719efc0eb95b996e4a",
+      "length": 93
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:633f5761a10a075005be3bbdde35e67b571b48fc1ab7bfd89ff47223d027884d",
+      "length": 113
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:eb89b87ddc6f5aba52a90ca60b007472e83e1aa74b2a7913f2cefc1ec86c46ad",
+      "length": 123
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:d56e9edb1eb69ee1935efc30bcab2ab29456b727b586862a4ce3bfb454c1789f",
+      "length": 230
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:23f6064b6530b0e00a0049d938763b870c603875a1fd2392c1613cc8d22bde7e",
+      "length": 123
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:02ae938ca9011e59f65d82ef42671f7d5e73f80238c2d21581a64d97cd91786c",
+      "length": 90
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 89,
+      "field": "quote",
+      "sha256": "sha256:565ebe73e002ee4f7c2e440b97122f9bbd721d1fb303426e248b194480281ab1",
+      "length": 93
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 94,
+      "field": "passage_locator",
+      "sha256": "sha256:b2fc3a73ceb30fd8db938130c9a284ef85664c9927628925efcd8d3c6fc82168",
+      "length": 87
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 100,
+      "field": "quote",
+      "sha256": "sha256:83faba057b28ac074d9d1eebe0812b9da248d93a842e1a093a94e346a51ca30d",
+      "length": 89
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 105,
+      "field": "passage_locator",
+      "sha256": "sha256:12f19dbc93b13b2a46440c30922417227a0daac92cb6b459d8cf0d4e89e75db0",
+      "length": 83
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 115,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:1d1f36d65f7378490bc0ced57bcc4dd6c7953e15ef0d4ee54b1c47dc72710539",
+      "length": 183
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 116,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:6a7d1311f9abd40d23b88db00c36c982b5f5d66a7ac997cd49c3ebe47fa51894",
+      "length": 108
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 117,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:343c1b2f03e1a3a644a88c3bfc6cdaa987120c5ba7cf40b3990ac905a14d8659",
+      "length": 83
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 118,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:633f5761a10a075005be3bbdde35e67b571b48fc1ab7bfd89ff47223d027884d",
+      "length": 113
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 119,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:1039db4f0174a05769338d9d51cf37198f43f7c5ce65e613f471307f128934ce",
+      "length": 161
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 120,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:57b0ba12892578cc521365d7e4d7952b75f53931605de68e6ae4f1f38aadceff",
+      "length": 58
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 121,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:c54d86d2769e37435675065c5658f2b4e22b02b492c37d1cbacc0b41697bd5cc",
+      "length": 49
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_10.md",
+      "line": 122,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:0295e6638c498a4b878495064f70f4c491b31365b7161de85497e8f4a39ba262",
+      "length": 50
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:4c3f13fb9c3f701f2fc5e91eb83f1dba9f90b2c55b39f0e8673246f2bf876699",
+      "length": 125
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:493f3a85e4f4bce428b76bb32de7e744bd04d693416c7b131bb7b1f8a29b52b0",
+      "length": 81
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:da64b3368c0e927d170e5fd10b666cb8a2aec6d83bd8f2136eb1b2ba4d4d93a4",
+      "length": 112
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:98e0e3a14ca72bcf22f7bd25d0f67b9b77141f0188215f9dd5b26e46fc184d85",
+      "length": 46
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:da64b3368c0e927d170e5fd10b666cb8a2aec6d83bd8f2136eb1b2ba4d4d93a4",
+      "length": 112
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:35b69c47ae1adc1629ea6b890a481be232b6ba4535d5883ef5e8f1a447ca621c",
+      "length": 35
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:da64b3368c0e927d170e5fd10b666cb8a2aec6d83bd8f2136eb1b2ba4d4d93a4",
+      "length": 112
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:06169ae7bec3a33286cd5eba73fd53e6c7ec5e320a4b4a1fd8730af435855198",
+      "length": 46
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:98bcac91cca14bc0ff9d601b26ac09358b42ff4c80c0caa661a421815804f7f4",
+      "length": 184
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 82,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:4c3f13fb9c3f701f2fc5e91eb83f1dba9f90b2c55b39f0e8673246f2bf876699",
+      "length": 125
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 83,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:da64b3368c0e927d170e5fd10b666cb8a2aec6d83bd8f2136eb1b2ba4d4d93a4",
+      "length": 112
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 84,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:763b90b2fa752932851722b4253e93d55dd64158c33c2e726c9738d8ab989533",
+      "length": 22
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 85,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:46486d14b825b3a1273b7b12b446593a703d46c8dbd25f0850b2a152b74c82da",
+      "length": 33
+    },
+    {
+      "file": "sources/src_20260718_rfcbc001_11.md",
+      "line": 86,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:98bcac91cca14bc0ff9d601b26ac09358b42ff4c80c0caa661a421815804f7f4",
+      "length": 184
+    }
+  ],
+  "files": [
+    {
+      "path": "evidence_bundle.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:9167e325a18fbcf0cad424f64c40585df9b513e8dd13d977f79ef4f98abd31ae",
+      "fixtureSha256": "sha256:9167e325a18fbcf0cad424f64c40585df9b513e8dd13d977f79ef4f98abd31ae"
+    },
+    {
+      "path": "research_brief.md",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:2dfe3c874c51b137c7a3f4e9013df2f273668799c317795604da73e5277d713a",
+      "fixtureSha256": "sha256:2dfe3c874c51b137c7a3f4e9013df2f273668799c317795604da73e5277d713a"
+    },
+    {
+      "path": "swarm_plan.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:af170a49509f5c8eb78855fca6d1282eeb6d5fc3a15c0a3e278fb3b4f7b71682",
+      "fixtureSha256": "sha256:af170a49509f5c8eb78855fca6d1282eeb6d5fc3a15c0a3e278fb3b4f7b71682"
+    },
+    {
+      "path": "claims/claim_ledger.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:ace45e9e0956700e9355db4d42a43c5a83dcf88c889703617acff92327018f4f",
+      "fixtureSha256": "sha256:ace45e9e0956700e9355db4d42a43c5a83dcf88c889703617acff92327018f4f"
+    },
+    {
+      "path": "reports/report_draft.md",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:e8927845b0d9b12156353be2499d5af1974c8d3c0c5b473c93ed4dc19c74ca24",
+      "fixtureSha256": "sha256:e8927845b0d9b12156353be2499d5af1974c8d3c0c5b473c93ed4dc19c74ca24"
+    },
+    {
+      "path": "reviews/verification.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:4f9bf1c09a370052347f7bd8fa4b8882b83281680a82e86aa5c75431f54d4c11",
+      "fixtureSha256": "sha256:4f9bf1c09a370052347f7bd8fa4b8882b83281680a82e86aa5c75431f54d4c11"
+    },
+    {
+      "path": "writebacks/ccdash_event.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:651d9206a57c5f2009a041efbec44f5c9e523f39954fbab3d1023d0c954813b4",
+      "fixtureSha256": "sha256:651d9206a57c5f2009a041efbec44f5c9e523f39954fbab3d1023d0c954813b4"
+    },
+    {
+      "path": "sources/src_20260718_rfcbc001_00.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:fe1a382627fc356a6062bb02b1f42432d06d035fc34bb860b4c9f2e3666db312",
+      "fixtureSha256": "sha256:1a9a20293d83b7f2dfe9b2dd20900cf25c610e985256ac7fb94685092f82d570"
+    },
+    {
+      "path": "sources/src_20260718_rfcbc001_01.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:8ac832f93ca106fe6bea95af461d4a57e1c986f923c0dfc6984c0f52ecd89e2c",
+      "fixtureSha256": "sha256:ccd33f29e751249df5b85b2eadc240f62301aeb9a1b385580064955635792028"
+    },
+    {
+      "path": "sources/src_20260718_rfcbc001_02.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:a5de3e641c5ed23497a40cc5f2f4eeceb4abbf6e71599967af3f7f4cc86e32f6",
+      "fixtureSha256": "sha256:5d570858290849df3bb4db0c5de281e928e946bb15cd2d5aa99e7e356e67131c"
+    },
+    {
+      "path": "sources/src_20260718_rfcbc001_03.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:48326fa4af5fde372baf5cc137f347b539d92d0db701cfc5e0b12ef0bf3899ad",
+      "fixtureSha256": "sha256:bfa37d4336ae03b795b358db2388b151a7dc293f2f25bc4c16b5a6dead4dbf51"
+    },
+    {
+      "path": "sources/src_20260718_rfcbc001_04.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:67d7552acc763078bb8cb82519d36739aa0ccbc2ae88a863c921d96aa5b5bdaf",
+      "fixtureSha256": "sha256:445b0018669e5e36da461cff2b2f4366fb371d1b57f602c6a5928514b7cccec0"
+    },
+    {
+      "path": "sources/src_20260718_rfcbc001_05.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:dd0ecbd78dc3bad2682e9144b3e2134c3d905a276c0d25daa4315ad7802677a9",
+      "fixtureSha256": "sha256:e89566a0e9fb34a5dd9aff712645b4891df2e77cf82f56cd5ab379a40a49519a"
+    },
+    {
+      "path": "sources/src_20260718_rfcbc001_06.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:7f44e00c3d4d9d9f27858362bf5bfcd16256a9de9dc682f643bb167dc5a9d0c9",
+      "fixtureSha256": "sha256:77038eabc8be14289229ffda7862ebba3588c9840eaf41ab5147a6071eaf3b96"
+    },
+    {
+      "path": "sources/src_20260718_rfcbc001_07.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:35aabf8a5ff728afdf76767c1ca207fb7112f06bc76b5df7c0726c3285a24fdd",
+      "fixtureSha256": "sha256:1637bd6e098d1452d07bb79b78a81f60e158b8daa7d7dc0fa61c7e897f898df9"
+    },
+    {
+      "path": "sources/src_20260718_rfcbc001_08.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:e6020e47772dd88927033ae138aacb187f63f88801b97d095c94af5a398f68c2",
+      "fixtureSha256": "sha256:073e90460b0eb273236a74270c2d7c5a020069b5f5eacf3de70ae49b8f69fdec"
+    },
+    {
+      "path": "sources/src_20260718_rfcbc001_09.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:20eea87706569e62d9ce94de43826b34e574b2d84087f7a811b35e44b69a274c",
+      "fixtureSha256": "sha256:fa4892caded584e8a0bdd73bcec7f51be374483c268cede0edcc08f1678f0921"
+    },
+    {
+      "path": "sources/src_20260718_rfcbc001_10.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:9aef8d4a72037da0f9f78186ff11d9ecb19d79f24a9842b2462e27df36c7aadf",
+      "fixtureSha256": "sha256:c261c4718c46f9987a891fd3c30c1d40714d5aa0b4a98329bf06e32aaaabad7c"
+    },
+    {
+      "path": "sources/src_20260718_rfcbc001_11.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:67bd05ffbf0f536b149b42d90cda435dffa1d1ce99c788b9e9abb6d7556812f5",
+      "fixtureSha256": "sha256:41c43b56338f99879928a96800d73931d919a459eeb17fea62e8d826a93d3303"
+    },
+    {
+      "path": "extractions/ext_20260718_31316046_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:0d9944728ba187d8a38619f6e677893815bab2c98e18ea755e15161f706338e0",
+      "fixtureSha256": "sha256:0d9944728ba187d8a38619f6e677893815bab2c98e18ea755e15161f706338e0"
+    },
+    {
+      "path": "extractions/ext_20260718_4bc626f6_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:6bbdc7eb9965b2c3934cde83fa50f6c411f70526582ffab52bb7b68e549690dd",
+      "fixtureSha256": "sha256:6bbdc7eb9965b2c3934cde83fa50f6c411f70526582ffab52bb7b68e549690dd"
+    },
+    {
+      "path": "extractions/ext_20260718_5a95f420_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:34114bcf19f7b4a0938c2b6d06b32a9e29b3f9d082d7926e75c5f9692984efa1",
+      "fixtureSha256": "sha256:34114bcf19f7b4a0938c2b6d06b32a9e29b3f9d082d7926e75c5f9692984efa1"
+    },
+    {
+      "path": "extractions/ext_20260718_7db26631_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:0518d36e9fd92c94493154ca58b4ea435a15a276d2e7e962251f7e12c3070db1",
+      "fixtureSha256": "sha256:0518d36e9fd92c94493154ca58b4ea435a15a276d2e7e962251f7e12c3070db1"
+    },
+    {
+      "path": "extractions/ext_20260718_84fc2ecd_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:6e3513722225435ffceeac5b1ee507eb3697fa6cfc483e40d9e52b3dc61c5bb6",
+      "fixtureSha256": "sha256:6e3513722225435ffceeac5b1ee507eb3697fa6cfc483e40d9e52b3dc61c5bb6"
+    },
+    {
+      "path": "extractions/ext_20260718_8947b7b1_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:ebcb9fcbb2b70aa96c97b54eb71d913a3e146e956446d4dcf949124aaf95934d",
+      "fixtureSha256": "sha256:ebcb9fcbb2b70aa96c97b54eb71d913a3e146e956446d4dcf949124aaf95934d"
+    },
+    {
+      "path": "extractions/ext_20260718_91ca35b7_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:4349b1c6792f5be2b72c73211c9b67d644fa4d3d5a7fe498c9dd40b60e5f1cb9",
+      "fixtureSha256": "sha256:4349b1c6792f5be2b72c73211c9b67d644fa4d3d5a7fe498c9dd40b60e5f1cb9"
+    },
+    {
+      "path": "extractions/ext_20260718_a47ba6a1_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:da57e35773c69e5b9a630220d5d176875ed59a59fec012e375152a650c9df0cd",
+      "fixtureSha256": "sha256:da57e35773c69e5b9a630220d5d176875ed59a59fec012e375152a650c9df0cd"
+    },
+    {
+      "path": "extractions/ext_20260718_b4d03713_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:81d5805ed2202210a611ab8d9d5e8c94ada78a40a6cf79536e3c9fb5b947ca3b",
+      "fixtureSha256": "sha256:81d5805ed2202210a611ab8d9d5e8c94ada78a40a6cf79536e3c9fb5b947ca3b"
+    },
+    {
+      "path": "extractions/ext_20260718_c78d6089_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:6ae34ce1768e9e6f3dacd412226ec0a14bf29f17128544fab818127bad537820",
+      "fixtureSha256": "sha256:6ae34ce1768e9e6f3dacd412226ec0a14bf29f17128544fab818127bad537820"
+    },
+    {
+      "path": "extractions/ext_20260718_cef54695_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:e6fdd958373b52dfde6f23235de3c5c537ba13b5519052d31674abd1c4689bf7",
+      "fixtureSha256": "sha256:e6fdd958373b52dfde6f23235de3c5c537ba13b5519052d31674abd1c4689bf7"
+    },
+    {
+      "path": "extractions/ext_20260718_ee4f6611_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:7c2e5815f54dd5b11cdea0ed2da55eceb3a18dc4b0f6cdfd3c8c428829c1ed8a",
+      "fixtureSha256": "sha256:7c2e5815f54dd5b11cdea0ed2da55eceb3a18dc4b0f6cdfd3c8c428829c1ed8a"
+    }
+  ]
+}

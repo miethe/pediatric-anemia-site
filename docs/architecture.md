@@ -33,6 +33,48 @@ Three registries dispatch module behavior: `src/facts/registry.js` (fact-derivat
 
 `modules/anemia/module.json` is no longer a stub: Wave-0 (EP-5) shipped the two-part signed-manifest scheme described in §6, and the anemia module's manifest is currently `status: "integrity-recorded"` — its `clinicalContentHash`/`governanceHash` are populated and verified at server startup. Its `approvedBy` is still schema-forced to `[]`: no credentialed clinical approver has signed off on this content.
 
+## 2b. Converter (`rf-bundle-to-kb-pack`)
+
+`tools/rf-bundle-to-kb-pack/` is the deterministic, offline seam between a **verified** Research
+Foundry (`rf`) evidence bundle and a staged CDS knowledge-base authoring proposal ("kb-pack"). It
+is EF-WP0 of the Evidence Foundry buildout. The full contract — bundle schema, per-field
+converter-eligibility rules, the 15 seam invariants, and the exact output file list — is specified
+in `docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md` §4 (the "02 doc"); this
+subsection only orients where the seam sits in this repo's architecture and does not restate that
+contract. Tool-level detail (module boundary, error taxonomy, design decisions) lives in
+`tools/rf-bundle-to-kb-pack/README.md`.
+
+**Input contract**: a read-only `rf` run directory (e.g. `tests/fixtures/rf-cbc-001/`) whose
+`evidence_bundle.yaml` reports `status: verified`. The converter never writes into the run
+directory (seam invariant 6) and never opens a network socket or calls a generative model —
+structurally true by import surface, asserted by `tests/ef-converter-invariants.test.mjs`.
+
+**Verb sequence**: `inspect` -> `verify` -> `propose`, each running the same
+`loader.loadBundle() -> hashing.pinArtifacts() -> checkEligibility()` pipeline before diverging:
+
+- `inspect` — read-only eligibility/hash summary; emits no pack output.
+- `verify` — structural pre-check of loader output or a staged pack.
+- `propose` — the only verb that writes a kb-pack: it continues past eligibility through
+  claim-routing and rule/candidate drafting to assemble the full staged pack described in 02 §4.4.
+
+**Output staging**: `propose` writes exclusively under `build/kb-pack/<module_id>/<pack_version>/`
+(e.g. `build/kb-pack/cbc_suite_v1/0.1.0-proposal/`). `build/` is git-ignored — nothing under it is
+ever committed; golden/fixture outputs for converter tests live under `tests/fixtures/` instead.
+
+**Module-package vs. staging distinction (OQ-1/OQ-3)**: the converter's `build/kb-pack/` output is
+an ephemeral *proposal* — ordinary generated build output, ungoverned and never authoritative. The
+committed module package under `modules/cbc_suite_v1/` (§2a's package shape: `rules.json`,
+`candidates.json`, `evidence.json`, `evidence-assertions.json`, `rule-provenance.json`,
+`authoring-decisions.yaml`, `reference-ranges.json`, `module.json`, `index.js`) is a *separate*,
+hand-reviewed, version-controlled artifact that a human copies content into after inspecting a
+`propose` run — the converter does not write into `modules/` and no `build/kb-pack/` path is ever a
+runtime load path. New per-module projections introduced by this seam (`evidence-assertions.json`,
+`rule-provenance.json`) land under `modules/<module_id>/` once accepted, not under `data/` and not
+directly out of `build/kb-pack/` — matching this section's existing rule that a module is "a
+self-contained package" resolved exclusively under `modules/<id>/`. Nothing this tool produces is
+signed, released, or clinically approved; its only output authority is a proposal (02 §4.1,
+"Release authority: None").
+
 ## 3. Recommended production deployment
 
 ```mermaid

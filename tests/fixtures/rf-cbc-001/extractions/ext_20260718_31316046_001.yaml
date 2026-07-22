@@ -1,0 +1,101 @@
+id: ext_20260718_31316046_001
+source_card_id: src_20260718_rfcbc001_08
+created_at: '2026-07-18T15:17:45-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: Severe chronic neutropenia (SCN) is defined as blood neutrophils below 0.5 x 10^9/L persisting
+    for more than 3 months.
+  locator: Abstract (opening sentence)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: SCNIR operational enrollment criterion required ANC below 0.5 x 10^9/L on at least 3 occasions
+    over at least 3 months.
+  locator: Methods > Enrollment criteria > Neutropenia
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: Cyclic neutropenia required 2 ANC cycles with nadir below 0.2 x 10^9/L rising usually above 1.0
+    x 10^9/L at roughly 3-week intervals.
+  locator: Methods > Enrollment criteria (cyclic neutropenia definition)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Congenital neutropenia was defined by early-childhood onset and/or genetic results with ANC remaining
+    below 0.5 x 10^9/L beyond age 0.25 to 1.0 years.
+  locator: Methods > Enrollment criteria (congenital neutropenia definition)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: MDS/AML occurred in 4.4% of all SCNIR patients (77/1752) but in 11.3% of the 670 congenital-neutropenia
+    patients, concentrating myeloid risk in the congenital etiology.
+  locator: 'Results > Outcomes: myeloid malignancies; and Table 6'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: No autoimmune/idiopathic-group patient (0 of 816) evolved to a myeloid malignancy, supporting
+    a favorable myeloid prognosis for that etiology.
+  locator: 'Results > Outcomes: lymphoid malignancies (closing sentence)'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: Lymphoid malignancies developed in 1.5% (12/816) of autoimmune/idiopathic patients, at a median
+    age of 46.9 years (adult-predominant, T-cell primary).
+  locator: 'Results > Outcomes: lymphoid malignancies'
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract (opening sentence)
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Methods > Enrollment criteria > Neutropenia
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Methods > Enrollment criteria (cyclic neutropenia definition)
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Methods > Enrollment criteria (congenital neutropenia definition)
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: 'Results > Outcomes: myeloid malignancies; and Table 6'
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: 'Results > Outcomes: lymphoid malignancies (closing sentence)'
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: 'Results > Outcomes: lymphoid malignancies'
+contradictions_or_cautions:
+- text: Registry enrollment criteria, not a formal age-banded reference-interval study
+  locator: card/trust
+- text: No sex- or gestational/postnatal-age-specific ANC cutoffs given
+  locator: card/trust
+- text: BM examination timing/reading not standardized; genetic testing incomplete
+  locator: card/trust
+- text: ANC assay method (analyzer vs manual differential) not stated
+  locator: card/trust

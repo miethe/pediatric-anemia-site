@@ -17,7 +17,7 @@ import { readFile, access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { MODULE_IDS } from '../src/modules/registry.js';
+import { MODULE_IDS, DEFAULT_MODULE_ID } from '../src/modules/registry.js';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const exists = async (p) => access(p).then(() => true, () => false);
@@ -45,8 +45,26 @@ for (const moduleId of MODULE_IDS) {
     continue;
   }
 
-  if (!Array.isArray(rules) || rules.length === 0) {
-    errors.push(`${moduleId}: built rules.json is empty or not an array — this gate would be vacuous`);
+  if (!Array.isArray(rules)) {
+    errors.push(`${moduleId}: built rules.json is not an array`);
+    continue;
+  }
+
+  // evidence-foundry-buildout P1-T3 (in-flight finding): a registered module other than
+  // DEFAULT_MODULE_ID may legitimately ship ZERO rules — e.g. `cbc_suite_v1`, an E0 scaffold
+  // populated in Phase 4, not yet. That is a real, disclosed "nothing to check yet" state, not
+  // vacuity, AS LONG AS this gate still checks a non-zero number of rules SOMEWHERE overall (the
+  // `checkedRules > 0` assertion after the loop) — DEFAULT_MODULE_ID is guaranteed non-empty
+  // below, so the overall guarantee this gate exists for can never be silently satisfied by zero
+  // real checks. Only DEFAULT_MODULE_ID itself being empty is still treated as this gate going
+  // vacuous, because that IS the module actually shipped.
+  if (rules.length === 0) {
+    if (moduleId === DEFAULT_MODULE_ID) {
+      errors.push(`${moduleId}: built rules.json is empty — this gate would be vacuous for the served module`);
+      continue;
+    }
+    console.log(`${moduleId}: built rules.json is empty (not yet populated) — 0 rules checked, skipped, not an error.`);
+    checkedModules += 1;
     continue;
   }
 
@@ -60,6 +78,15 @@ for (const moduleId of MODULE_IDS) {
     }
   }
   checkedModules += 1;
+}
+
+// Overall non-vacuity guarantee: at least one rule was actually checked SOMEWHERE across all
+// registered modules. Per-module zero-rule scaffolds are tolerated above precisely because this
+// still holds (DEFAULT_MODULE_ID always carries real rules) — if it ever stopped holding, this
+// gate would have silently become a no-op, which is exactly the failure mode this file exists to
+// prevent.
+if (checkedRules === 0) {
+  errors.push('no rules were checked across ANY registered module — this gate would be entirely vacuous');
 }
 
 if (errors.length > 0) {

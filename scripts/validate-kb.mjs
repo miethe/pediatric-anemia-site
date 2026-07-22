@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir, access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { evaluateCondition } from '../src/ruleEngine.js';
@@ -6,8 +6,24 @@ import { MODULE_IDS } from '../src/modules/registry.js';
 import { isBindableAsSourceSupported } from '../src/evidence.js';
 import { loadAttestationLedger, validateBindingsAgainstLedger } from './evidence/lib/attested-passage-map.mjs';
 import { validate } from './lib/json-schema-lite.mjs';
+// P3-T4: modules/<id>/authoring-decisions.yaml is YAML, not JSON — reuse the converter's own
+// dependency-free YAML-subset parser (tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs, P2-T2) rather
+// than adding a `yaml` dependency just for this validator. tests/authoring-decisions-schema.test.mjs
+// already establishes this same cross-import for the equivalent test-side check.
+import { parseYamlDocument } from '../tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+// P3-T3: modules/<id>/evidence-assertions.json is a NEW, optional-per-module artifact (OQ-3/OQ-7)
+// — existence-gated, since it postdates modules/anemia/ and no task requires backfilling it there.
+async function fileExists(filePath) {
+  try {
+    await access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 // REG-002 (content-rights review, launched EP-0-T8) has NOT cleared verbatim reuse of AAP/AAFP
 // guideline text (D-EP3-4). Every passage record minted by scripts/evidence/build-evidence-pack.mjs
@@ -225,6 +241,49 @@ export function validateSourceRightsCoverage(evidenceData, moduleId, { rightsLed
   return errors;
 }
 
+// P1-T2 (evidence-foundry-buildout Phase 1): the 8 module-variable-envelope fields every
+// module manifest must declare — the scoping contract (who the module is for, which patients,
+// what it outputs, what it explicitly refuses to do, where it applies, what surfaces it
+// targets, and its evidence-recency policy). Per the OQ-7 ruling (binding), this is a
+// field-presence + non-empty check ONLY — deliberately NOT a new JSON Schema file; shape/type
+// governance of these fields is deferred until the envelope design stabilizes.
+const MODULE_VARIABLE_ENVELOPE_FIELDS = [
+  'module_topic',
+  'intended_hcp_users',
+  'patient_population',
+  'intended_output',
+  'explicit_exclusions',
+  'jurisdictions',
+  'integration_targets',
+  'evidence_policy',
+];
+
+/**
+ * P1-T2: checks that `manifest` carries every module-variable-envelope field, present and
+ * non-empty (non-empty string / non-empty array / object with at least one key). Pure function
+ * over the in-memory manifest (mirrors validateEvidenceDocument/validateCandidates above) so it
+ * is independently unit-testable against a mutated manifest without touching disk. Returns one
+ * specific error per missing/empty field, naming the field.
+ */
+export function validateModuleVariableEnvelope(manifest, moduleId) {
+  const errors = [];
+  for (const field of MODULE_VARIABLE_ENVELOPE_FIELDS) {
+    const value = manifest?.[field];
+    const missingOrEmpty =
+      value === undefined
+      || value === null
+      || (typeof value === 'string' && value.trim() === '')
+      || (Array.isArray(value) && value.length === 0)
+      || (typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === 0);
+    if (missingOrEmpty) {
+      errors.push(
+        `${moduleId}/module.json: module-variable-envelope field "${field}" is missing or empty (all 8 envelope fields are required, P1-T2)`,
+      );
+    }
+  }
+  return errors;
+}
+
 function collectBooleanFactPaths(condition, paths = new Set()) {
   if (Array.isArray(condition)) {
     for (const child of condition) collectBooleanFactPaths(child, paths);
@@ -328,6 +387,229 @@ export function validateEvidenceDocument(evidenceData, moduleId, evidenceSchema)
   }
 
   return { errors, warnings, passageIndex, sourcesWithPassages };
+}
+
+/**
+ * P3-T3 (FR-12 second half, `02 §4.10`, OQ-3/OQ-7): validate modules/<moduleId>/evidence-assertions.json
+ * against schemas/evidence-assertions.schema.json, plus the cross-record invariants the schema
+ * cannot express on its own: assertionId uniqueness across the array, per-assertion `rfRunId`
+ * agreement with the document's own `rfProvenance.rfRunId` (the schema validates each assertion in
+ * isolation and cannot see its siblings or the parent), and `passageId`/`exactPassageSha256`
+ * mutual agreement (`psg_<hash>` must be minted from the same digest, never a stray value).
+ * Pure function over in-memory data (mirrors validateEvidenceDocument/validateCandidates above),
+ * so it is independently unit-testable against a tampered/seeded-bad fixture without touching disk.
+ */
+export function validateEvidenceAssertions(assertionsData, moduleId, assertionsSchema) {
+  const errors = [];
+
+  for (const schemaError of validate(assertionsSchema, assertionsData)) {
+    errors.push(`${moduleId}/evidence-assertions.json: evidence-assertions.schema.json ${schemaError.path}: ${schemaError.message}`);
+  }
+
+  const assertions = Array.isArray(assertionsData?.assertions) ? assertionsData.assertions : [];
+  const documentRfRunId = assertionsData?.rfProvenance?.rfRunId;
+  const seenAssertionIds = new Set();
+
+  for (const assertion of assertions) {
+    const label = assertion?.assertionId ?? '<missing-assertionId>';
+
+    if (assertion?.assertionId !== undefined) {
+      if (seenAssertionIds.has(assertion.assertionId)) {
+        errors.push(`${moduleId}/evidence-assertions.json#${label}: duplicate assertionId`);
+      }
+      seenAssertionIds.add(assertion.assertionId);
+    }
+
+    if (documentRfRunId !== undefined && assertion?.rfRunId !== undefined && assertion.rfRunId !== documentRfRunId) {
+      errors.push(`${moduleId}/evidence-assertions.json#${label}: rfRunId "${assertion.rfRunId}" does not match the document's rfProvenance.rfRunId "${documentRfRunId}"`);
+    }
+
+    if (typeof assertion?.passageId === 'string' && typeof assertion?.exactPassageSha256 === 'string') {
+      const expectedPassageId = `psg_${assertion.exactPassageSha256.replace(/^sha256:/, '')}`;
+      if (assertion.passageId !== expectedPassageId) {
+        errors.push(`${moduleId}/evidence-assertions.json#${label}: passageId "${assertion.passageId}" is not minted from exactPassageSha256 (expected "${expectedPassageId}")`);
+      }
+    }
+  }
+
+  return { errors, assertionCount: assertions.length };
+}
+
+/**
+ * P3-T4 (FR-13/FR-14, `02 §4.11`/`02 §4.12`): validate modules/<moduleId>/authoring-decisions.yaml
+ * (already parsed to a plain JS object, per parseYamlDocument) against
+ * schemas/authoring-decisions.schema.json, plus the one cross-record invariant the schema cannot
+ * express on its own: decision_id uniqueness across the array, and each decision's own `module_id`
+ * agreeing with the document's own top-level `moduleId` (the schema validates each decision in
+ * isolation and cannot see its siblings or the parent — same shape of gap
+ * validateEvidenceAssertions closes for evidence-assertions.json above). Pure function over
+ * in-memory data, so it is independently unit-testable against a tampered/seeded-bad fixture
+ * without touching disk.
+ */
+export function validateAuthoringDecisions(decisionsData, moduleId, decisionsSchema) {
+  const errors = [];
+
+  for (const schemaError of validate(decisionsSchema, decisionsData)) {
+    errors.push(`${moduleId}/authoring-decisions.yaml: authoring-decisions.schema.json ${schemaError.path}: ${schemaError.message}`);
+  }
+
+  const decisions = Array.isArray(decisionsData?.decisions) ? decisionsData.decisions : [];
+  const documentModuleId = decisionsData?.moduleId;
+  const seenDecisionIds = new Set();
+
+  for (const decision of decisions) {
+    const label = decision?.decision_id ?? '<missing-decision_id>';
+
+    if (decision?.decision_id !== undefined) {
+      if (seenDecisionIds.has(decision.decision_id)) {
+        errors.push(`${moduleId}/authoring-decisions.yaml#${label}: duplicate decision_id`);
+      }
+      seenDecisionIds.add(decision.decision_id);
+    }
+
+    if (documentModuleId !== undefined && decision?.module_id !== undefined && decision.module_id !== documentModuleId) {
+      errors.push(`${moduleId}/authoring-decisions.yaml#${label}: module_id "${decision.module_id}" does not match the document's top-level moduleId "${documentModuleId}"`);
+    }
+  }
+
+  return { errors, decisionCount: decisions.length };
+}
+
+/**
+ * P3-T6 (FR-15, `02 §4.13`): validate modules/<moduleId>/rule-provenance.json against
+ * schemas/rule-provenance.schema.json, plus the cross-record invariants the schema cannot express
+ * on its own: `ruleId` uniqueness across the array, and each entry's own `moduleId` agreeing with
+ * the document's own top-level `moduleId` (same shape of gap validateEvidenceAssertions/
+ * validateAuthoringDecisions close for their own artifacts above). Pure function over in-memory
+ * data, so it is independently unit-testable against a tampered/seeded-bad fixture without
+ * touching disk.
+ */
+export function validateRuleProvenance(provenanceData, moduleId, provenanceSchema) {
+  const errors = [];
+
+  for (const schemaError of validate(provenanceSchema, provenanceData)) {
+    errors.push(`${moduleId}/rule-provenance.json: rule-provenance.schema.json ${schemaError.path}: ${schemaError.message}`);
+  }
+
+  const entries = Array.isArray(provenanceData?.entries) ? provenanceData.entries : [];
+  const documentModuleId = provenanceData?.moduleId;
+  const seenRuleIds = new Set();
+
+  for (const entry of entries) {
+    const label = entry?.ruleId ?? '<missing-ruleId>';
+
+    if (entry?.ruleId !== undefined) {
+      if (seenRuleIds.has(entry.ruleId)) {
+        errors.push(`${moduleId}/rule-provenance.json#${label}: duplicate ruleId`);
+      }
+      seenRuleIds.add(entry.ruleId);
+    }
+
+    if (documentModuleId !== undefined && entry?.moduleId !== undefined && entry.moduleId !== documentModuleId) {
+      errors.push(`${moduleId}/rule-provenance.json#${label}: moduleId "${entry.moduleId}" does not match the document's top-level moduleId "${documentModuleId}"`);
+    }
+  }
+
+  return { errors, entryCount: entries.length };
+}
+
+/**
+ * P5-T1 (FR-18, `02 §4.18` minus the `signature` block): validate one already-parsed
+ * `release-manifest.unsigned.json` document against `schemas/release-manifest.schema.json`, plus
+ * the two cross-record invariants the schema cannot express on its own: the document's own
+ * `moduleId`/`packVersion` must agree with the `build/kb-pack/<moduleId>/<packVersion>/` directory
+ * it was actually found under (the schema validates the document in isolation and has no
+ * filesystem access — same shape of gap `validateEvidenceAssertions`/`validateAuthoringDecisions`/
+ * `validateRuleProvenance` close for their own artifacts above). Pure function over in-memory
+ * data, so it is independently unit-testable against a tampered/seeded-bad fixture without
+ * touching disk.
+ */
+export function validateReleaseManifest(manifestData, manifestSchema, { expectedModuleId, expectedPackVersion } = {}) {
+  const errors = [];
+
+  for (const schemaError of validate(manifestSchema, manifestData)) {
+    errors.push(`release-manifest.unsigned.json: release-manifest.schema.json ${schemaError.path}: ${schemaError.message}`);
+  }
+
+  if (
+    expectedModuleId !== undefined
+    && manifestData?.moduleId !== undefined
+    && manifestData.moduleId !== expectedModuleId
+  ) {
+    errors.push(
+      `release-manifest.unsigned.json: moduleId "${manifestData.moduleId}" does not match its own ` +
+        `build/kb-pack/ directory "${expectedModuleId}"`,
+    );
+  }
+  if (
+    expectedPackVersion !== undefined
+    && manifestData?.packVersion !== undefined
+    && manifestData.packVersion !== expectedPackVersion
+  ) {
+    errors.push(
+      `release-manifest.unsigned.json: packVersion "${manifestData.packVersion}" does not match its own ` +
+        `build/kb-pack/ pack-version directory "${expectedPackVersion}"`,
+    );
+  }
+
+  return { errors };
+}
+
+/**
+ * P5-T1: existence-gated across the ENTIRE `build/kb-pack/` tree, not per registered module (unlike
+ * `evidence-assertions.json`/`authoring-decisions.yaml`/`rule-provenance.json` above) — this
+ * artifact lives at `build/kb-pack/<moduleId>/<packVersion>/`, not `modules/<moduleId>/`, because
+ * `build/kb-pack/` is gitignored/ephemeral staging output (P1-T7). In a clean checkout the whole
+ * directory usually does not exist at all, and that absence is not itself an error; when a
+ * `propose` run HAS populated it, every `release-manifest.unsigned.json` found under it is fully
+ * schema- and cross-record-validated (never silently skipped just because it postdates a clean
+ * checkout).
+ *
+ * @param {string} rootDir
+ * @returns {Promise<Array<{ manifestPath: string, errors: string[] }>>}
+ */
+export async function validateKbPackReleaseManifests(rootDir) {
+  const kbPackRoot = path.join(rootDir, 'build', 'kb-pack');
+  const results = [];
+  if (!(await fileExists(kbPackRoot))) return results;
+
+  // Lazily loaded on first ACTUAL manifest found — a build/kb-pack/ tree with directories but zero
+  // release-manifest.unsigned.json files anywhere (e.g. mid-propose, or a caller's synthetic test
+  // fixture that never populates schemas/) must not require schemas/release-manifest.schema.json
+  // to exist just to conclude "there was nothing to validate."
+  let manifestSchema;
+
+  let moduleDirEntries;
+  try {
+    moduleDirEntries = await readdir(kbPackRoot, { withFileTypes: true });
+  } catch {
+    return results;
+  }
+
+  for (const moduleDirEntry of moduleDirEntries) {
+    if (!moduleDirEntry.isDirectory()) continue;
+    const moduleId = moduleDirEntry.name;
+    const moduleDir = path.join(kbPackRoot, moduleId);
+    const packVersionEntries = await readdir(moduleDir, { withFileTypes: true });
+
+    for (const packVersionEntry of packVersionEntries) {
+      if (!packVersionEntry.isDirectory()) continue;
+      const packVersion = packVersionEntry.name;
+      const manifestPath = path.join(moduleDir, packVersion, 'release-manifest.unsigned.json');
+      if (!(await fileExists(manifestPath))) continue; // per-pack existence gate too — a
+      // legitimately-not-yet-`propose`d pack-version directory has no manifest yet.
+
+      manifestSchema ??= await readJson(path.join(rootDir, 'schemas', 'release-manifest.schema.json'));
+      const manifestData = await readJson(manifestPath);
+      const { errors } = validateReleaseManifest(manifestData, manifestSchema, {
+        expectedModuleId: moduleId,
+        expectedPackVersion: packVersion,
+      });
+      results.push({ manifestPath: path.relative(rootDir, manifestPath), errors });
+    }
+  }
+
+  return results;
 }
 
 function setsEqual(a, b) {
@@ -488,9 +770,22 @@ export async function validateModule(moduleId, rootDir) {
   // record via EP-R1's exported `resolveRightsRecordsForIdentifier` helper (call site only, helper
   // unmodified). rights/ is a top-level tree shared across modules, not a per-module artifact
   // (D4), so it is read fresh here alongside this module's other cross-file inputs.
-  const rightsLedger = await readJson(path.join(rootDir, 'rights', 'rights-ledger.json'));
-  const rightsRecords = await readJson(path.join(rootDir, 'rights', 'rights-records.json'));
-  errors.push(...validateSourceRightsCoverage(evidenceData, moduleId, { rightsLedger, rightsRecords }));
+  //
+  // Integration resilience (R-P2 "consumer handles absence"): the source->rights-record coverage
+  // gate applies only where a rights/ tree actually exists under rootDir. In the real repo it always
+  // does (committed), so the gate always runs and still fails closed on a missing record — the
+  // rights-coverage / gate-failsclosed suites prove that. A SYNTHETIC rootDir built by a test to
+  // exercise an unrelated gate (e.g. tests/rule-schema-seeded-invalid.test.mjs seeds only
+  // schemas/ + modules/<id>/) legitimately has no rights/ tree; skipping there validates nothing
+  // that isn't present rather than ENOENT-ing on an absent shared substrate. This narrows nothing in
+  // production: deleting rights/ from the real repo breaks the rights-substrate suite loudly.
+  const rightsLedgerPath = path.join(rootDir, 'rights', 'rights-ledger.json');
+  const rightsRecordsPath = path.join(rootDir, 'rights', 'rights-records.json');
+  if ((await fileExists(rightsLedgerPath)) && (await fileExists(rightsRecordsPath))) {
+    const rightsLedger = await readJson(rightsLedgerPath);
+    const rightsRecords = await readJson(rightsRecordsPath);
+    errors.push(...validateSourceRightsCoverage(evidenceData, moduleId, { rightsLedger, rightsRecords }));
+  }
 
   // EP3-T5: fidelity-findings.json is specific to the RF-EV-001 bundle backing the anemia
   // module's evidence.json (mirrors src/modules/registry.js's own "revisit the day a second
@@ -500,6 +795,49 @@ export async function validateModule(moduleId, rootDir) {
     const fidelityFindingsPath = path.join(rootDir, 'evidence-packs', 'rf-ev-001', 'fidelity-findings.json');
     const fidelityFindings = await readJson(fidelityFindingsPath);
     errors.push(...validateFidelityFindings(evidenceData, fidelityFindings, moduleId));
+  }
+
+  // P3-T3: existence-gated — modules/anemia/ predates this artifact type and has no
+  // evidence-assertions.json; its absence there is not an error. Any module directory that DOES
+  // carry the file (modules/cbc_suite_v1/ onward) gets full schema + cross-record validation.
+  let evidenceAssertionsCount = 0;
+  const evidenceAssertionsPath = path.join(moduleDir, 'evidence-assertions.json');
+  if (await fileExists(evidenceAssertionsPath)) {
+    const evidenceAssertionsSchema = await readJson(path.join(rootDir, 'schemas', 'evidence-assertions.schema.json'));
+    const evidenceAssertionsData = await readJson(evidenceAssertionsPath);
+    const assertionValidation = validateEvidenceAssertions(evidenceAssertionsData, moduleId, evidenceAssertionsSchema);
+    errors.push(...assertionValidation.errors);
+    evidenceAssertionsCount = assertionValidation.assertionCount;
+  }
+
+  // P3-T4: existence-gated, same rationale as evidence-assertions.json above — modules/anemia/
+  // predates authoring-decisions.yaml and has no such file; its absence there is not an error.
+  // Any module directory that DOES carry the file (modules/cbc_suite_v1/ onward) gets full
+  // schema + cross-record validation, parsed via the converter's own yaml-lite parser.
+  let authoringDecisionsCount = 0;
+  const authoringDecisionsPath = path.join(moduleDir, 'authoring-decisions.yaml');
+  if (await fileExists(authoringDecisionsPath)) {
+    const authoringDecisionsSchema = await readJson(path.join(rootDir, 'schemas', 'authoring-decisions.schema.json'));
+    const authoringDecisionsRaw = await readFile(authoringDecisionsPath, 'utf8');
+    const authoringDecisionsData = parseYamlDocument(authoringDecisionsRaw);
+    const decisionsValidation = validateAuthoringDecisions(authoringDecisionsData, moduleId, authoringDecisionsSchema);
+    errors.push(...decisionsValidation.errors);
+    authoringDecisionsCount = decisionsValidation.decisionCount;
+  }
+
+  // P3-T6: existence-gated, same rationale as evidence-assertions.json/authoring-decisions.yaml
+  // above — modules/anemia/ predates rule-provenance.json and has no such file; its absence there
+  // is not an error. Phase 3 stages this file only under build/kb-pack/ (P3-T7's `propose` verb);
+  // Phase 4 (P4-T1..T4) migrates it into modules/cbc_suite_v1/ itself, at which point this block
+  // starts exercising it for real without any further wiring changes.
+  let ruleProvenanceCount = 0;
+  const ruleProvenancePath = path.join(moduleDir, 'rule-provenance.json');
+  if (await fileExists(ruleProvenancePath)) {
+    const ruleProvenanceSchema = await readJson(path.join(rootDir, 'schemas', 'rule-provenance.schema.json'));
+    const ruleProvenanceData = await readJson(ruleProvenancePath);
+    const ruleProvenanceValidation = validateRuleProvenance(ruleProvenanceData, moduleId, ruleProvenanceSchema);
+    errors.push(...ruleProvenanceValidation.errors);
+    ruleProvenanceCount = ruleProvenanceValidation.entryCount;
   }
 
   errors.push(...validateBooleanFactPathAllowList(rules, moduleId));
@@ -615,6 +953,16 @@ export async function validateModule(moduleId, rootDir) {
     errors.push(`${moduleId}/module.json: id "${manifest.id}" does not match directory name "${moduleId}"`);
   }
 
+  // P1-T2 (evidence-foundry-buildout Phase 1): every module manifest must carry the 8
+  // module-variable-envelope fields — EXCEPT modules/anemia, whose module.json predates the
+  // envelope (legacy pre-envelope shape, explicitly exempt and must remain valid as-is). Every
+  // FUTURE module (cbc_suite_v1 onward) must declare the full envelope; a missing/empty field is
+  // a hard validation error naming that field. Field-presence + non-empty only, per the OQ-7
+  // ruling (binding) — no new schema file governs these fields yet.
+  if (moduleId !== 'anemia') {
+    errors.push(...validateModuleVariableEnvelope(manifest, moduleId));
+  }
+
   // DEF-1 resolved (docs/project_plans/design-specs/evidence-dual-source-unification.md): the
   // P6-T2 drift check that used to live here — asserting module.json's version fields matched
   // src/evidence.js's exported consts — is removed, not left passing-but-vacuous. It existed to
@@ -641,6 +989,9 @@ export async function validateModule(moduleId, rootDir) {
     passageCount,
     rulePassageStatusCounts,
     candidatePassageStatusCounts,
+    evidenceAssertionsCount,
+    authoringDecisionsCount,
+    ruleProvenanceCount,
   };
 }
 
@@ -648,7 +999,14 @@ const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPat
 
 if (isMain) {
   const results = await Promise.all(MODULE_IDS.map((moduleId) => validateModule(moduleId, root)));
-  const allErrors = results.flatMap((result) => result.errors);
+  // P5-T1: existence-gated across build/kb-pack/ as a whole (see validateKbPackReleaseManifests's
+  // own doc comment) — this is NOT one of the MODULE_IDS-scoped checks above because the artifact
+  // it validates does not live under modules/<id>/ at all.
+  const kbPackManifestResults = await validateKbPackReleaseManifests(root);
+  const allErrors = [
+    ...results.flatMap((result) => result.errors),
+    ...kbPackManifestResults.flatMap((result) => result.errors),
+  ];
   const allWarnings = results.flatMap((result) => result.warnings);
 
   // Warnings never gate `npm run validate` (AC-WP3-RESIL: a legacy-shape record degrades, it does
@@ -664,10 +1022,18 @@ if (isMain) {
     const summary = results
       .map(
         (result) =>
-          `${result.moduleId} (${result.ruleCount} rules, ${result.candidateCount} candidates, ${result.evidenceCount} evidence records, ${result.passageCount} passage records)`,
+          `${result.moduleId} (${result.ruleCount} rules, ${result.candidateCount} candidates, ${result.evidenceCount} evidence records, ${result.passageCount} passage records`
+          + `${result.evidenceAssertionsCount ? `, ${result.evidenceAssertionsCount} evidence-assertions` : ''}`
+          + `${result.authoringDecisionsCount ? `, ${result.authoringDecisionsCount} authoring-decisions` : ''}`
+          + `${result.ruleProvenanceCount ? `, ${result.ruleProvenanceCount} rule-provenance entries` : ''})`,
       )
       .join(', ');
     console.log(`Validated modules: ${summary}.`);
+    if (kbPackManifestResults.length > 0) {
+      console.log(
+        `build/kb-pack/: validated ${kbPackManifestResults.length} release-manifest.unsigned.json file(s).`,
+      );
+    }
 
     // Reviewer-gate fix-5: report the RESOLVED sourcePassageId status split (not just "resolves to
     // some passage") so a reviewer can see at a glance how many rules actually claim source-supported

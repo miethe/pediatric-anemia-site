@@ -25,12 +25,27 @@ import {
   passagesFor as anemiaPassagesFor,
   sourceRightsPositionById as anemiaSourceRightsPositionById,
 } from '../evidence.js';
+// The second module has registered (P4-T5) — its own evidence.js-shaped loader over its own
+// evidence.json, exactly the extension this file's header comment anticipated. Never anemia's.
+// cbc_suite_v1 rights-metadata backfill (integration follow-up to EP-R2/EP-R3): its evidence.js
+// now also exports its own sourceRightsPositionById (mirroring anemiaSourceRightsPositionById
+// above), so this entry is complete the same way the anemia entry is.
+import {
+  passageById as cbcSuiteV1PassageById,
+  passagesFor as cbcSuiteV1PassagesFor,
+  sourceRightsPositionById as cbcSuiteV1SourceRightsPositionById,
+} from '../../modules/cbc_suite_v1/evidence.js';
 
 const REGISTRY = new Map([
   ['anemia', {
     passageById: anemiaPassageById,
     passagesFor: anemiaPassagesFor,
     sourceRightsPositionById: anemiaSourceRightsPositionById,
+  }],
+  ['cbc_suite_v1', {
+    passageById: cbcSuiteV1PassageById,
+    passagesFor: cbcSuiteV1PassagesFor,
+    sourceRightsPositionById: cbcSuiteV1SourceRightsPositionById,
   }],
 ]);
 

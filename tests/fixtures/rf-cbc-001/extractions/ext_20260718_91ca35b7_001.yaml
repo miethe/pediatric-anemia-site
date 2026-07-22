@@ -1,0 +1,64 @@
+id: ext_20260718_91ca35b7_001
+source_card_id: src_20260718_rfcbc001_11
+created_at: '2026-07-18T15:17:45-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: Duffy-null phenotype-associated neutropenia accounted for 77.7% of leukopenia/neutropenia referrals
+    at a Detroit tertiary children's hospital.
+  locator: Abstract (first sentence)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Among Yemeni pediatric referrals, Duffy-null phenotype-associated neutropenia prevalence was 96.6%.
+  locator: Abstract (first sentence)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: Among African American pediatric referrals, Duffy-null phenotype-associated neutropenia prevalence
+    was 91%.
+  locator: Abstract (first sentence)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Among non-Yemeni Middle Eastern pediatric referrals, Duffy-null phenotype-associated neutropenia
+    prevalence was 52.9%.
+  locator: Abstract (first sentence)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: The authors propose that wider Duffy typing in neutropenia WITHOUT recurrent/frequent/serious
+    infections could reduce unnecessary consultations and investigations — framing absence of such infection
+    as the discriminator between benign and pathologic neutropenia.
+  locator: Abstract (second sentence)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract (first sentence)
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Abstract (first sentence)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Abstract (first sentence)
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Abstract (first sentence)
+contradictions_or_cautions: []

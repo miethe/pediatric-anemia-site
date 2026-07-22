@@ -40,7 +40,7 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 // Everything scripts/validate-rights.mjs's import graph and file reads can reach — identical set to
 // tests/rights-gate-failsclosed.test.mjs, for the same reason: a fixture edit never has to be
 // re-diagnosed against a partial tree.
-const DIRS_TO_COPY = ['src', 'modules', 'schemas', 'rights', 'scripts'];
+const DIRS_TO_COPY = ['src', 'modules', 'schemas', 'rights', 'scripts', 'tools'];
 
 function makeSubstrateCopy() {
   // realpathSync matters on macOS: os.tmpdir() returns a /var/... path that is itself a symlink to

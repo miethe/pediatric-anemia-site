@@ -8,7 +8,9 @@
       "source_id": "AAP2026_IDA",
       "source_version": null,
       "record_scope": "source",
-      "jurisdictions": ["US"],
+      "jurisdictions": [
+        "US"
+      ],
       "access": {
         "basis": "unknown",
         "platform": "American Academy of Pediatrics — publications.aap.org",
@@ -63,7 +65,11 @@
       "overall_status": "UNKNOWN",
       "recommended_action": null,
       "permission_record_ids": [],
-      "rights_failure_ids": ["RF-REG-002-CONTENT-RIGHTS-001", "RF-EP3T5-F01-NEAR-VERBATIM-001", "RF-EP3T5-F02-SOURCE-UNRETRIEVABLE-001"],
+      "rights_failure_ids": [
+        "RF-REG-002-CONTENT-RIGHTS-001",
+        "RF-EP3T5-F01-NEAR-VERBATIM-001",
+        "RF-EP3T5-F02-SOURCE-UNRETRIEVABLE-001"
+      ],
       "review": {
         "assessed_by_agent": "epr0-t4-triage-seed",
         "human_reviewer": null,
@@ -71,7 +77,10 @@
         "reviewed_at": "2026-07-21T00:00:00Z",
         "review_status": "agent_triage_only",
         "next_review_at": null,
-        "change_triggers": ["REG-002 content-rights review completes", "an independently retrievable AAP artifact is located"],
+        "change_triggers": [
+          "REG-002 content-rights review completes",
+          "an independently retrievable AAP artifact is located"
+        ],
         "notes": "Triage-only seed (EPR0-T4, FR-WP0-04). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2 source-rights metadata work. Known, already-tracked context (not an assessed determination made by this record): RF-EV-002/REG-002 recorded HTTP 403/subscription-required for this source (see docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md and evidence-packs/rf-ev-001/fidelity-findings.json finding EP3T5-F02); RF-EV-003 separately evaluated open-access substitutes for this source without altering this record's status (docs/project_plans/expansion/rf-handoff/rf-ev-003-oa-substitute-discovery.md)."
       },
       "extensions": {}
@@ -82,7 +91,9 @@
       "source_id": "WHO2024_HB",
       "source_version": null,
       "record_scope": "source",
-      "jurisdictions": ["international"],
+      "jurisdictions": [
+        "international"
+      ],
       "access": {
         "basis": "unknown",
         "platform": "World Health Organization — who.int",
@@ -145,7 +156,9 @@
         "reviewed_at": "2026-07-21T00:00:00Z",
         "review_status": "agent_triage_only",
         "next_review_at": null,
-        "change_triggers": ["a formal source-rights assessment is run for this source"],
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
         "notes": "Triage-only seed (EPR0-T4, FR-WP0-04). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2 source-rights metadata work. RF-EV-003's discovery synthesis separately observed a WHO 2024 haemoglobin guideline in the open-access substitute landscape as CC BY-NC-SA 3.0 IGO (docs/project_plans/expansion/rf-handoff/rf-ev-003-oa-substitute-discovery.md §4b) — that observation has not been verified against this specific KB source record and is recorded here only as unassessed context, not a determination."
       },
       "extensions": {}
@@ -156,7 +169,9 @@
       "source_id": "BLOOD2022_PED_ANEMIA",
       "source_version": null,
       "record_scope": "source",
-      "jurisdictions": ["US"],
+      "jurisdictions": [
+        "US"
+      ],
       "access": {
         "basis": "unknown",
         "platform": "American Society of Hematology — Blood (doi.org/10.1182)",
@@ -219,7 +234,9 @@
         "reviewed_at": "2026-07-21T00:00:00Z",
         "review_status": "agent_triage_only",
         "next_review_at": null,
-        "change_triggers": ["a formal source-rights assessment is run for this source"],
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
         "notes": "Triage-only seed (EPR0-T4, FR-WP0-04). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2 source-rights metadata work."
       },
       "extensions": {}
@@ -230,7 +247,9 @@
       "source_id": "CDC2025_LEAD",
       "source_version": null,
       "record_scope": "source",
-      "jurisdictions": ["US"],
+      "jurisdictions": [
+        "US"
+      ],
       "access": {
         "basis": "unknown",
         "platform": "US Centers for Disease Control and Prevention — cdc.gov",
@@ -285,7 +304,9 @@
       "overall_status": "UNKNOWN",
       "recommended_action": null,
       "permission_record_ids": [],
-      "rights_failure_ids": ["RF-EP3T5-F01-NEAR-VERBATIM-001"],
+      "rights_failure_ids": [
+        "RF-EP3T5-F01-NEAR-VERBATIM-001"
+      ],
       "review": {
         "assessed_by_agent": "epr0-t4-triage-seed",
         "human_reviewer": null,
@@ -293,7 +314,9 @@
         "reviewed_at": "2026-07-21T00:00:00Z",
         "review_status": "agent_triage_only",
         "next_review_at": null,
-        "change_triggers": ["a formal source-rights assessment is run for this source"],
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
         "notes": "Triage-only seed (EPR0-T4, FR-WP0-04). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2 source-rights metadata work. evidence-packs/rf-ev-001/fidelity-findings.json finding EP3T5-F01 flags a near-verbatim span in a passage citing this source; that finding is an unresolved fidelity-audit flag, not a rights determination."
       },
       "extensions": {}
@@ -304,7 +327,9 @@
       "source_id": "FDA2026_CDS",
       "source_version": null,
       "record_scope": "source",
-      "jurisdictions": ["US"],
+      "jurisdictions": [
+        "US"
+      ],
       "access": {
         "basis": "unknown",
         "platform": "US Food and Drug Administration — fda.gov",
@@ -359,7 +384,9 @@
       "overall_status": "UNKNOWN",
       "recommended_action": null,
       "permission_record_ids": [],
-      "rights_failure_ids": ["RF-EP3T5-F01-NEAR-VERBATIM-001"],
+      "rights_failure_ids": [
+        "RF-EP3T5-F01-NEAR-VERBATIM-001"
+      ],
       "review": {
         "assessed_by_agent": "epr0-t4-triage-seed",
         "human_reviewer": null,
@@ -367,7 +394,9 @@
         "reviewed_at": "2026-07-21T00:00:00Z",
         "review_status": "agent_triage_only",
         "next_review_at": null,
-        "change_triggers": ["a formal source-rights assessment is run for this source"],
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
         "notes": "Triage-only seed (EPR0-T4, FR-WP0-04). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2 source-rights metadata work. evidence-packs/rf-ev-001/fidelity-findings.json finding EP3T5-F01 flags near-verbatim spans in passages citing this source; that finding is an unresolved fidelity-audit flag, not a rights determination."
       },
       "extensions": {}
@@ -378,7 +407,9 @@
       "source_id": "BSH2020_G6PD",
       "source_version": null,
       "record_scope": "source",
-      "jurisdictions": ["UK"],
+      "jurisdictions": [
+        "UK"
+      ],
       "access": {
         "basis": "unknown",
         "platform": "British Society for Haematology — pubmed.ncbi.nlm.nih.gov",
@@ -433,7 +464,9 @@
       "overall_status": "UNKNOWN",
       "recommended_action": null,
       "permission_record_ids": [],
-      "rights_failure_ids": ["RF-EP3T5-F01-NEAR-VERBATIM-001"],
+      "rights_failure_ids": [
+        "RF-EP3T5-F01-NEAR-VERBATIM-001"
+      ],
       "review": {
         "assessed_by_agent": "epr0-t4-triage-seed",
         "human_reviewer": null,
@@ -441,7 +474,9 @@
         "reviewed_at": "2026-07-21T00:00:00Z",
         "review_status": "agent_triage_only",
         "next_review_at": null,
-        "change_triggers": ["a formal source-rights assessment is run for this source"],
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
         "notes": "Triage-only seed (EPR0-T4, FR-WP0-04). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2 source-rights metadata work. evidence-packs/rf-ev-001/fidelity-findings.json finding EP3T5-F01 flags near-verbatim spans in passages citing this source; that finding is an unresolved fidelity-audit flag, not a rights determination."
       },
       "extensions": {}
@@ -452,8 +487,12 @@
       "source_id": "AAP2026_IDA",
       "source_version": null,
       "record_scope": "source_component",
-      "component_scope": ["modules/anemia/reference-ranges.json"],
-      "jurisdictions": ["US"],
+      "component_scope": [
+        "modules/anemia/reference-ranges.json"
+      ],
+      "jurisdictions": [
+        "US"
+      ],
       "access": {
         "basis": "unknown",
         "platform": "American Academy of Pediatrics — publications.aap.org",
@@ -528,6 +567,630 @@
           "OQ-1 (decisions-block.md) resolves whether reference-interval thresholds are measured/facts-strong or committee-judged"
         ],
         "notes": "Triage-only record (EPR1-T1, FR-WP1-01). Names the derived-fact channel explicitly: modules/anemia/reference-ranges.json -> deriveFacts() (modules/anemia/facts.anemia.js) -> all 91 rules in modules/anemia/rules.json. This channel sits outside the passage-level gating that covers the 32 AAP-citing rules gated via modules/anemia/evidence.json (findings §4, .claude/findings/rights-governance-spec-v1.0-review-findings.md — \"the single most actionable technical finding in this review\"). modules/anemia/reference-ranges.json also ships byte-identical to the browser SPA build (dist/modules/anemia/reference-ranges.json) — same content, two distribution surfaces (findings §4). No rights assessment has been performed; access basis and copyright status are unknown pending EP-R2. This record changes no value in reference-ranges.json and does not alter deriveFacts() behaviour (FR-WP1-04). record_scope: source_component — this record assesses reference-ranges.json as a component derived from the AAP2026_IDA source already tracked by RR-AAP2026_IDA; it does not replace or restate that source-level record."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-CALIPER2020_HEMATOLOGY_I",
+      "source_id": "CALIPER2020_HEMATOLOGY_I",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "US"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": "American Journal of Clinical Pathology (Oxford University Press)",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": "Canadian Laboratory Initiative on Pediatric Reference Intervals (CALIPER)",
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (cbc_suite_v1 rights-metadata backfill, integration follow-up to EP-R2/EP-R3)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "cbc-suite-v1-rights-metadata-backfill",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "EP-R2-shaped source-rights metadata work formally assesses this source's access basis and copyright status"
+        ],
+        "notes": "Triage-only record (cbc_suite_v1 rights-metadata backfill). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-CALIPER2023_MINDRAY_79PARAM",
+      "source_id": "CALIPER2023_MINDRAY_79PARAM",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "US"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": "International Journal of Laboratory Hematology (Wiley)",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": "Canadian Laboratory Initiative on Pediatric Reference Intervals (CALIPER)",
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (cbc_suite_v1 rights-metadata backfill, integration follow-up to EP-R2/EP-R3)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "cbc-suite-v1-rights-metadata-backfill",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "EP-R2-shaped source-rights metadata work formally assesses this source's access basis and copyright status"
+        ],
+        "notes": "Triage-only record (cbc_suite_v1 rights-metadata backfill). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-COH2015_ELANE_MUTATIONS",
+      "source_id": "COH2015_ELANE_MUTATIONS",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "US"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": "Current Opinion in Hematology (Wolters Kluwer)",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (cbc_suite_v1 rights-metadata backfill, integration follow-up to EP-R2/EP-R3)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "cbc-suite-v1-rights-metadata-backfill",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "EP-R2-shaped source-rights metadata work formally assesses this source's access basis and copyright status"
+        ],
+        "notes": "Triage-only record (cbc_suite_v1 rights-metadata backfill). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-BJHAEM2010_SCNIR_LEUKEMIA_RISK",
+      "source_id": "BJHAEM2010_SCNIR_LEUKEMIA_RISK",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "US"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": "British Journal of Haematology (Wiley)",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (cbc_suite_v1 rights-metadata backfill, integration follow-up to EP-R2/EP-R3)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "cbc-suite-v1-rights-metadata-backfill",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "EP-R2-shaped source-rights metadata work formally assesses this source's access basis and copyright status"
+        ],
+        "notes": "Triage-only record (cbc_suite_v1 rights-metadata backfill). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES",
+      "source_id": "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "US"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": "Pediatrics (American Academy of Pediatrics)",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (cbc_suite_v1 rights-metadata backfill, integration follow-up to EP-R2/EP-R3)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "cbc-suite-v1-rights-metadata-backfill",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "EP-R2-shaped source-rights metadata work formally assesses this source's access basis and copyright status"
+        ],
+        "notes": "Triage-only record (cbc_suite_v1 rights-metadata backfill). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-SCNIR2022_GCSF_OUTCOMES",
+      "source_id": "SCNIR2022_GCSF_OUTCOMES",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "US"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": "Blood Advances (American Society of Hematology)",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (cbc_suite_v1 rights-metadata backfill, integration follow-up to EP-R2/EP-R3)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "cbc-suite-v1-rights-metadata-backfill",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "EP-R2-shaped source-rights metadata work formally assesses this source's access basis and copyright status"
+        ],
+        "notes": "Triage-only record (cbc_suite_v1 rights-metadata backfill). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-HEMATOLREP2024_NEUTROPENIA_REVIEW",
+      "source_id": "HEMATOLREP2024_NEUTROPENIA_REVIEW",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "US"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": "MDPI (Hematology Reports)",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (cbc_suite_v1 rights-metadata backfill, integration follow-up to EP-R2/EP-R3)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "cbc-suite-v1-rights-metadata-backfill",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "EP-R2-shaped source-rights metadata work formally assesses this source's access basis and copyright status"
+        ],
+        "notes": "Triage-only record (cbc_suite_v1 rights-metadata backfill). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "rights_record_id": "RR-JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "source_id": "JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "US"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": "The Journal of Pediatrics (Elsevier)",
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-21T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (cbc_suite_v1 rights-metadata backfill, integration follow-up to EP-R2/EP-R3)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "cbc-suite-v1-rights-metadata-backfill",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-21T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "EP-R2-shaped source-rights metadata work formally assesses this source's access basis and copyright status"
+        ],
+        "notes": "Triage-only record (cbc_suite_v1 rights-metadata backfill). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
       },
       "extensions": {}
     }

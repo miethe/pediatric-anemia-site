@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "1.0",
+  "moduleId": "cbc_suite_v1",
+  "rfProvenance": {
+    "rfRunId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+    "rfBundleId": "bundle_20260718_intent_research_20260717_rf_cbc_001",
+    "fixturePath": "tests/fixtures/rf-cbc-001/"
+  },
+  "entries": [
+    {
+      "ruleId": "CBC-NEUT-YOUNGINF-001",
+      "moduleId": "cbc_suite_v1",
+      "basis": {
+        "kind": "implementation_proposal",
+        "decisionId": "dec_cbc_young_infant_scope_abstention_001",
+        "rfClaimIds": [
+          "clm_018",
+          "clm_inf02"
+        ],
+        "evidenceAssertionIds": [
+          "evas_cbc_young_infant_anc_001",
+          "evas_cbc_young_infant_anc_002"
+        ]
+      },
+      "missingness": "scope.neonatalOrYoungInfant is a plain boolean derived from patient.ageMonths (modules/anemia/facts.anemia.js): when ageMonths is absent it resolves to false, not to a missing/unknown state, so this rule does NOT fire and does NOT abstain when age is unrecorded. This vertical slice carries no missing-age question rule of its own in modules/cbc_suite_v1/rules.json (unlike modules/anemia's committed Q-001) — an unrecorded age is silently treated as \"not a young infant\" rather than prompted for. Flagged as a known E1 gap (`02 §7.3` item 7), not silently treated as safe.",
+      "localProfileRequirement": null,
+      "testIds": [],
+      "reviewStatus": "draft",
+      "reviewBy": "2027-07-21",
+      "supersedes": null,
+      "authoringNotes": "Reuses the existing `scope.neonatalOrYoungInfant` fact — already derived by modules/anemia/facts.anemia.js for the same age-6-months boundary and delegated to cbc_suite_v1 per OQ-1 — no new fact is required for this rule."
+    },
+    {
+      "ruleId": "CBC-NEUT-LOCALRANGE-001",
+      "moduleId": "cbc_suite_v1",
+      "basis": {
+        "kind": "implementation_proposal",
+        "decisionId": "dec_cbc_local_range_precedence_001",
+        "rfClaimIds": [
+          "clm_009",
+          "clm_027",
+          "clm_inf07",
+          "clm_inf01"
+        ],
+        "evidenceAssertionIds": [
+          "evas_cbc_age_interval_001",
+          "evas_cbc_analyzer_specificity_001",
+          "evas_cbc_unit_normalization_001"
+        ]
+      },
+      "missingness": "cbc.neutropenia is a tri-state fact derived by modules/anemia/facts.anemia.js's cytopeniaTri(localFlags.neutropenia, anc, cbc.localRanges?.ancLower): it resolves 'unknown' precisely when an ANC value is present but neither cbc.localFlags.neutropenia nor cbc.localRanges.ancLower was supplied — exactly the 'no compatible local profile exists' case this rule targets, and it does NOT fall back to any universal ANC cutoff (no such cutoff exists anywhere in this module's fact derivation or rule set). When cbc.anc itself is absent, this rule's `exists` guard does not match and the rule stays silent — a separate absent-ANC missing-data prompt is out of scope for this vertical slice, the same class of E1 gap (`02 §7.3` item 7) already flagged in CBC-NEUT-YOUNGINF-001's provenance entry above for age.",
+      "localProfileRequirement": "cbc_local_analyzer_specific_anc_reference_range_or_flag",
+      "testIds": [],
+      "reviewStatus": "draft",
+      "reviewBy": "2027-07-21",
+      "supersedes": null,
+      "authoringNotes": "Reuses the existing `cbc.neutropenia` tri-state fact and `cbc.anc` raw value — already derived by modules/anemia/facts.anemia.js and delegated to cbc_suite_v1 per OQ-1 — no new fact is required. This rule deliberately never asserts a neutropenia status itself; it only surfaces that local-range interpretation is required before any threshold-style conclusion is drawn, matching dec_cbc_local_range_precedence_001's fail-closed (abstain, don't apply a universal cutoff) intent."
+    },
+    {
+      "ruleId": "CBC-MARROW-REDFLAG-001",
+      "moduleId": "cbc_suite_v1",
+      "basis": {
+        "kind": "implementation_proposal",
+        "decisionId": "dec_cbc_marrow_red_flag_001",
+        "rfClaimIds": [
+          "clm_004",
+          "clm_005",
+          "clm_053",
+          "clm_inf04"
+        ],
+        "evidenceAssertionIds": [
+          "evas_cbc_marrow_malignancy_risk_001",
+          "evas_cbc_marrow_malignancy_risk_002"
+        ]
+      },
+      "missingness": "cbc.multilineageCytopenia is a tri-state fact delegated from modules/anemia/facts.anemia.js: triAll([anemiaPresentTri, triAny([leukopeniaTri, neutropeniaTri, thrombocytopeniaTri])]). It resolves 'unknown' whenever any contributing tri-state input cannot be fully assessed (e.g. hemoglobin absent, or a cytopenia count present with no compatible local lower bound/local flag) rather than defaulting to 'false'/not-flagged; this rule's `is-present` check only fires on the resolved-true state, so an unknown/missing input neither fires this alert nor is silently treated as ruled out. This vertical slice carries no dedicated missing-data question rule for this specific fact combination — the same class of known E1 gap (`02 §7.3` item 7) already flagged in CBC-NEUT-YOUNGINF-001's and CBC-NEUT-LOCALRANGE-001's provenance entries above.",
+      "localProfileRequirement": null,
+      "testIds": [],
+      "reviewStatus": "draft",
+      "reviewBy": "2027-07-21",
+      "supersedes": null,
+      "authoringNotes": "Reuses modules/anemia's existing `cbc.multilineageCytopenia` tri-state fact and ALERT-004's exact condition/severity pairing (`is-present` / `urgent`) — the same fact already evidenced in modules/anemia/rules.json for `02 §5.4`'s named dangerous-miss hazard \"multilineage cytopenia and marrow failure/infiltration\" — rather than authoring a new fact or drafting an ANC<0.5x10^9/L numeric threshold directly into the strict rule's `when` clause, which dec_cbc_marrow_red_flag_001's basis has no reviewed authority to do (its evidence grounds a referral-urgency rationale in `output.detail`, not a standalone numeric gate). Per the decision's `conflicts.representation` (`alert_dominates_cooccurring_candidate_ranking`), this alert must activate and dominate ranking over any co-occurring benign differential candidate from dec_cbc_benign_neutropenia_differential_pattern_001 — proven by P4-T8's dangerous-miss test, not asserted here."
+    },
+    {
+      "ruleId": "CBC-NEUT-BENIGNDIFF-001",
+      "moduleId": "cbc_suite_v1",
+      "basis": {
+        "kind": "implementation_proposal",
+        "decisionId": "dec_cbc_benign_neutropenia_differential_pattern_001",
+        "rfClaimIds": [
+          "clm_039",
+          "clm_040",
+          "clm_041",
+          "clm_074",
+          "clm_043",
+          "clm_inf05"
+        ],
+        "evidenceAssertionIds": [
+          "evas_cbc_benign_neutropenia_differential_001",
+          "evas_cbc_benign_neutropenia_differential_002"
+        ]
+      },
+      "missingness": "cbc.neutropenia is the same tri-state fact CBC-NEUT-LOCALRANGE-001's provenance entry above describes, derived by modules/anemia/facts.anemia.js's cytopeniaTri(localFlags.neutropenia, anc, cbc.localRanges?.ancLower): it resolves 'unknown' whenever neutropenia status cannot be fully assessed (e.g. no ANC value and no local-lab flag supplied, or an ANC value present with no compatible local lower bound). This rule's `is-present` check fires ONLY on the resolved-true state — an 'unknown' or 'false' neutropenia status does not fire this candidate, and is never silently treated as a positive pattern match.",
+      "localProfileRequirement": "cbc_local_analyzer_specific_anc_reference_range_or_flag",
+      "testIds": [],
+      "reviewStatus": "draft",
+      "reviewBy": "2027-07-21",
+      "supersedes": null,
+      "authoringNotes": "RESOLVED IDENTITY (P3-GATE remediation, parent implementation plan's binding \"FR-16(c) candidate identity\" decision): FR-16(c) originally named this slice role \"iron-deficiency-anemia candidate pattern,\" but the RF-CBC-001 fixture (this plan's binding OQ-2 evidentiary source) is scoped to neutropenia/marrow-failure evidence and contains zero ferritin/iron claims — inventing an iron-deficiency threshold or pattern from prose the converter never read would itself violate the CLAUDE.md \"no invented thresholds\" guardrail. FR-16(c) is re-scoped to this candidate's true evidentiary identity (benign-ethnic/Duffy-null neutropenia differential), joined to dec_cbc_benign_neutropenia_differential_pattern_001 — no iron-deficiency candidate is authored, migrated, or referenced anywhere in this slice. Reuses the existing `cbc.neutropenia` tri-state fact — already derived by modules/anemia/facts.anemia.js and delegated to cbc_suite_v1 per OQ-1 — as the rule's sole `when` gate; the infection-history-absence and ancestry/Duffy-context refinements named in the evidence (clm_043, clm_inf05) are not yet derivable facts in this module (still-open E1 item, `02 §7.3` item 7), so `output.cautions`/`nextSteps` name them as clinician follow-up rather than folding them into the Boolean gate. This candidate is always conflict-visible against, and per dec_cbc_marrow_red_flag_001 must never suppress or downrank, the CBC-MARROW-REDFLAG-001 safety alert — proven by P4-T8's dangerous-miss test, not asserted here."
+    }
+  ]
+}

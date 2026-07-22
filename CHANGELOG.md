@@ -60,6 +60,14 @@ open findings — see `.claude/findings/wave0-ep6-validation-corpus-findings.md`
 - The severe-anemia alert can be suppressed when sex-at-birth is not provided.
 - A classic acute-leukemia presentation can currently return an empty assessment.
 
+### Evidence Foundry Buildout (E0): Converter & Module Scaffold
+
+- Added `tools/rf-bundle-to-kb-pack/`, a deterministic Node ESM CLI converter that transforms verified Research Foundry evidence bundles into candidate knowledge-base package proposals. The converter accepts an `rf` run with `status: verified` and produces a gitignored staging directory (`build/kb-pack/`) containing module artifacts (rules, candidates, evidence records, governance metadata, and test traces) that require clinical review before being committed to a versioned module package. It is offline and deterministic: zero network calls and zero generative-model calls in any verb (test-enforced), byte-identical output across clean re-runs.
+- Added `modules/cbc_suite_v1/`, a new module package holding a 4-rule vertical slice migrated through the converter. The package follows the same structure as `modules/anemia/` (module.json, index.js delegating fact derivation to the anemia module, rules.json, candidates.json, evidence.json, reference-ranges.json, plus new rule-provenance.json and evidence-assertions.json sidecars) and is registered in `src/modules/registry.js` and `src/facts/registry.js` (deliberately not `src/ranges/registry.js` — range resolution flows through the delegated anemia call; `DEFAULT_MODULE_ID` stays `anemia`). The module is unsigned and shipped as a proposal only — `module.json.status: "unsigned-stub"`, `approvedBy: []`; no rule is clinically approved and every rule's provenance is explicitly marked `implementation-proposal`.
+- Added module-variable-envelope validation to `scripts/validate-kb.mjs` (the 8 §3.2 envelope fields are presence-checked for every module except the legacy pre-envelope `anemia` manifest) alongside real draft-2020-12 JSON-Schema validation of every module's rules.json, proven by a seeded-invalid fixture that fails `npm run validate` with a specific schema-violation message.
+- Added 8 pre-E1 Architecture Decision Records (`docs/adr/0001`–`0008`), all at `status: proposed` — none accepted; they document deferred decisions (authoring model, passage licensing, terminology ownership, approval identity, signing/key custody, validation data boundary, surveillance cadence, discovery-lane hardening), not made ones.
+- Added 10 deferred-item design specs plus a consolidated RFUP upstream-routing note, closing the plan's deferral-triage table.
+
 ## 0.3.1 — 2026-07-15
 
 - Selecting a stage now folds the six-stage grid down to that stage so the decision specification becomes the focus; the grid re-expands from the collapsed card or the "Show all six steps" control.
