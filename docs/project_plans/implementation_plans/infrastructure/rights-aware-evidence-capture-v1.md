@@ -1,53 +1,63 @@
 ---
-title: "Implementation Plan: Rights-Aware Evidence Capture & Taxonomy"
+title: 'Implementation Plan: Rights-Aware Evidence Capture & Taxonomy'
 schema_version: 2
 doc_type: implementation_plan
-status: draft
+status: completed
 created: 2026-07-21
-updated: 2026-07-21
-feature_slug: "rights-aware-evidence-capture"
-feature_version: "v1"
+updated: '2026-07-22'
+feature_slug: rights-aware-evidence-capture
+feature_version: v1
 prd_ref: docs/project_plans/PRDs/infrastructure/rights-aware-evidence-capture-v1.md
 plan_ref: null
-scope: "Make the repo's rights position machine-checkable and rebuild the evidence archive as addressable provenance: a top-level rights/ tree with a join ledger, licence/access/terms on evidence sources, a three-axis evidence-item taxonomy with structured locators, re-capture of stripped numerics as per-value atoms, and a clean-room brief generator. Zero clearances, zero attestations, zero grounded rules, zero clinical-meaning changes."
-effort_estimate: "29 pts"
-architecture_summary: "EP-R0 lays the rights/ substrate and lands all package.json gate wiring once, while EP-R5 (spec + doc truth) floats beside it; EP-R1 (derived-fact coverage) and EP-R2 (source rights metadata) parallelize on disjoint records but share scripts/validate-kb.mjs; EP-R3 (taxonomy, locators, numerics re-capture) branches strictly after EP-R2's schemas/evidence.schema.json migration merges; EP-R4 (clean-room workflow) consumes EP-R3's taxonomy and ships plumbing only."
+scope: 'Make the repo''s rights position machine-checkable and rebuild the evidence
+  archive as addressable provenance: a top-level rights/ tree with a join ledger,
+  licence/access/terms on evidence sources, a three-axis evidence-item taxonomy with
+  structured locators, re-capture of stripped numerics as per-value atoms, and a clean-room
+  brief generator. Zero clearances, zero attestations, zero grounded rules, zero clinical-meaning
+  changes.'
+effort_estimate: 29 pts
+architecture_summary: EP-R0 lays the rights/ substrate and lands all package.json
+  gate wiring once, while EP-R5 (spec + doc truth) floats beside it; EP-R1 (derived-fact
+  coverage) and EP-R2 (source rights metadata) parallelize on disjoint records but
+  share scripts/validate-kb.mjs; EP-R3 (taxonomy, locators, numerics re-capture) branches
+  strictly after EP-R2's schemas/evidence.schema.json migration merges; EP-R4 (clean-room
+  workflow) consumes EP-R3's taxonomy and ships plumbing only.
 related_documents:
-  - docs/project_plans/PRDs/infrastructure/rights-aware-evidence-capture-v1.md
-  - .claude/worknotes/rights-aware-evidence-capture/decisions-block.md
-  - .claude/findings/rights-governance-spec-v1.0-review-findings.md
-  - .claude/findings/rf-ev-003-oa-substitute-findings.md
-  - docs/project_plans/research/research-foundry-rights-entity-model-handoff-v1.md
-  - docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/Research_Foundry_Source_Reuse_and_Rights_Governance_Spec_v1.0.md
-  - docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md
-  - docs/project_plans/implementation_plans/infrastructure/wave0-safety-foundation-v1.md
+- docs/project_plans/PRDs/infrastructure/rights-aware-evidence-capture-v1.md
+- .claude/worknotes/rights-aware-evidence-capture/decisions-block.md
+- .claude/findings/rights-governance-spec-v1.0-review-findings.md
+- .claude/findings/rf-ev-003-oa-substitute-findings.md
+- docs/project_plans/research/research-foundry-rights-entity-model-handoff-v1.md
+- docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/Research_Foundry_Source_Reuse_and_Rights_Governance_Spec_v1.0.md
+- docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md
+- docs/project_plans/implementation_plans/infrastructure/wave0-safety-foundation-v1.md
 references:
   user_docs:
-    - NOTICE.md
+  - NOTICE.md
   context:
-    - .claude/worknotes/rights-aware-evidence-capture/decisions-block.md
-    - .claude/findings/rights-governance-spec-v1.0-review-findings.md
-    - docs/project_plans/research/research-foundry-rights-entity-model-handoff-v1.md
+  - .claude/worknotes/rights-aware-evidence-capture/decisions-block.md
+  - .claude/findings/rights-governance-spec-v1.0-review-findings.md
+  - docs/project_plans/research/research-foundry-rights-entity-model-handoff-v1.md
   specs:
-    - schemas/evidence.schema.json
-    - schemas/reference-range.schema.json
-    - schemas/module-manifest.schema.json
-    - docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/schemas/rights_record.schema.json
-    - docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/schemas/content_reuse_assessment.schema.json
-    - docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/schemas/permission_record.schema.json
-    - docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/schemas/rights_failure.schema.json
-    - docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/schemas/rights_extension.schema.json
+  - schemas/evidence.schema.json
+  - schemas/reference-range.schema.json
+  - schemas/module-manifest.schema.json
+  - docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/schemas/rights_record.schema.json
+  - docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/schemas/content_reuse_assessment.schema.json
+  - docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/schemas/permission_record.schema.json
+  - docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/schemas/rights_failure.schema.json
+  - docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/schemas/rights_extension.schema.json
   related_prds:
-    - docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
-    - docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
+  - docs/project_plans/PRDs/infrastructure/wave0-safety-foundation-v1.md
+  - docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
 spike_ref: []
 adr_refs: []
 deferred_items_spec_refs:
-  - docs/project_plans/design-specs/rights-clearance-workflow.md
-  - docs/project_plans/design-specs/rights-release-gate.md
-  - docs/project_plans/design-specs/single-source-rule-reanchoring.md
-  - docs/project_plans/design-specs/first-party-rights-record.md
-  - docs/project_plans/design-specs/near-verbatim-span-reauthoring.md
+- docs/project_plans/design-specs/rights-clearance-workflow.md
+- docs/project_plans/design-specs/rights-release-gate.md
+- docs/project_plans/design-specs/single-source-rule-reanchoring.md
+- docs/project_plans/design-specs/first-party-rights-record.md
+- docs/project_plans/design-specs/near-verbatim-span-reauthoring.md
 findings_doc_ref: null
 charter_ref: null
 changelog_ref: null
@@ -59,89 +69,105 @@ owner: nick
 contributors: []
 priority: high
 risk_level: high
-category: "infrastructure"
-tags: [implementation, rights, licensing, provenance, evidence, taxonomy, governance, infrastructure]
+category: infrastructure
+tags:
+- implementation
+- rights
+- licensing
+- provenance
+- evidence
+- taxonomy
+- governance
+- infrastructure
 tier: 3
 estimated_points: 29
 milestone: null
 commit_refs: []
 pr_refs: []
 files_affected:
-  - rights/release-context.json
-  - rights/rights-records.json
-  - rights/rights-failures.json
-  - rights/rights-ledger.json
-  - schemas/rights/rights_record.schema.json
-  - schemas/rights/content_reuse_assessment.schema.json
-  - schemas/rights/permission_record.schema.json
-  - schemas/rights/rights_failure.schema.json
-  - schemas/rights/rights_extension.schema.json
-  - schemas/rights/VENDORING.md
-  - schemas/evidence.schema.json
-  - scripts/validate-rights.mjs
-  - scripts/validate-kb.mjs
-  - scripts/evidence/build-evidence-pack.mjs
-  - scripts/rights/build-decision-brief.mjs
-  - modules/anemia/evidence.json
-  - modules/anemia/reference-ranges.json
-  - package.json
-  - CLAUDE.md
-  - NOTICE.md
-  - docs/architecture.md
-  - docs/workflows/clean-room-authoring.md
-  - tests/rights-coverage.test.mjs
-  - tests/rights-negative-invariant.test.mjs
-  - tests/rights-axis-separation.test.mjs
-  - tests/rights-gate-failsclosed.test.mjs
-  - tests/rights-brief-contamination.test.mjs
+- rights/release-context.json
+- rights/rights-records.json
+- rights/rights-failures.json
+- rights/rights-ledger.json
+- schemas/rights/rights_record.schema.json
+- schemas/rights/content_reuse_assessment.schema.json
+- schemas/rights/permission_record.schema.json
+- schemas/rights/rights_failure.schema.json
+- schemas/rights/rights_extension.schema.json
+- schemas/rights/VENDORING.md
+- schemas/evidence.schema.json
+- scripts/validate-rights.mjs
+- scripts/validate-kb.mjs
+- scripts/evidence/build-evidence-pack.mjs
+- scripts/rights/build-decision-brief.mjs
+- modules/anemia/evidence.json
+- modules/anemia/reference-ranges.json
+- package.json
+- CLAUDE.md
+- NOTICE.md
+- docs/architecture.md
+- docs/workflows/clean-room-authoring.md
+- tests/rights-coverage.test.mjs
+- tests/rights-negative-invariant.test.mjs
+- tests/rights-axis-separation.test.mjs
+- tests/rights-gate-failsclosed.test.mjs
+- tests/rights-brief-contamination.test.mjs
 wave_plan:
   serialization_barriers:
-    - schemas/evidence.schema.json   # EP-R2 then EP-R3, strictly ordered; EP-R3 branches from EP-R2's merge
-    - scripts/validate-kb.mjs        # EP-R1 and EP-R2; same wave, disjoint hunks, integration_owner = EP-R1
-    - scripts/validate-rights.mjs    # EP-R0, EP-R1, EP-R2, EP-R3 all add gates here; EP-R1 and EP-R2 share a wave. integration_owner = EP-R0 (creates the module and its exported-gate contract); later phases append gates and never restructure the module or re-signature an existing gate
-    - package.json                   # EP-R0 only — all gate wiring lands once
-    - CLAUDE.md                      # EP-R5 only
+  - schemas/evidence.schema.json
+  - scripts/validate-kb.mjs
+  - scripts/validate-rights.mjs
+  - package.json
+  - CLAUDE.md
   intra_wave_ordering:
-    # Ordered dependencies between phases that share a wave. The wave may still run
-    # concurrently, but the named task pairs are strictly sequenced.
-    - wave: 2
-      before: EPR1-T2   # lands the exported ledger-resolution helper in scripts/validate-kb.mjs
-      after: EPR2-T5    # adds a call site to that helper; must not start before it exists
-      reason: "EPR2-T5 consumes EPR1-T2's helper unchanged (R-P3). If EP-R2 reaches T5 before EPR1-T2 has merged, it blocks rather than writing its own resolver."
-    - wave: 1
-      before: EP-R0     # the phase; EPR5-T7 documents the rights/ substrate *as shipped*
-      after: EPR5-T7    # single task, not the phase; EPR5-T1..T6 are independent of EP-R0
-      reason: "Only EPR5-T7 depends on EP-R0. Declaring the dependency at phase level would serialize wave 1 and destroy the EP-R0 ∥ EP-R5 parallelism; the constraint is task-scoped — EP-R5 starts immediately and holds T7 until EP-R0 merges."
+  - wave: 2
+    before: EPR1-T2
+    after: EPR2-T5
+    reason: EPR2-T5 consumes EPR1-T2's helper unchanged (R-P3). If EP-R2 reaches T5
+      before EPR1-T2 has merged, it blocks rather than writing its own resolver.
+  - wave: 1
+    before: EP-R0
+    after: EPR5-T7
+    reason: "Only EPR5-T7 depends on EP-R0. Declaring the dependency at phase level\
+      \ would serialize wave 1 and destroy the EP-R0 \u2225 EP-R5 parallelism; the\
+      \ constraint is task-scoped \u2014 EP-R5 starts immediately and holds T7 until\
+      \ EP-R0 merges."
   phases:
-    - id: EP-R0
-      depends_on: []
-      isolation: shared
-      parallelizable: true
-    - id: EP-R5
-      depends_on: []   # no phase-level dependency — EPR5-T1..T6 are independent of EP-R0. The single real constraint (EPR5-T7 ← EP-R0) is declared in intra_wave_ordering so wave 1 stays parallel.
-      isolation: shared
-      parallelizable: true
-    - id: EP-R1
-      depends_on: [EP-R0]
-      isolation: shared
-      parallelizable: true
-    - id: EP-R2
-      depends_on: [EP-R0]
-      isolation: shared
-      parallelizable: true
-    - id: EP-R3
-      depends_on: [EP-R2]
-      isolation: shared
-      parallelizable: false
-    - id: EP-R4
-      depends_on: [EP-R3]
-      isolation: shared
-      parallelizable: false
+  - id: EP-R0
+    depends_on: []
+    isolation: shared
+    parallelizable: true
+  - id: EP-R5
+    depends_on: []
+    isolation: shared
+    parallelizable: true
+  - id: EP-R1
+    depends_on:
+    - EP-R0
+    isolation: shared
+    parallelizable: true
+  - id: EP-R2
+    depends_on:
+    - EP-R0
+    isolation: shared
+    parallelizable: true
+  - id: EP-R3
+    depends_on:
+    - EP-R2
+    isolation: shared
+    parallelizable: false
+  - id: EP-R4
+    depends_on:
+    - EP-R3
+    isolation: shared
+    parallelizable: false
   waves:
-    - [EP-R0, EP-R5]
-    - [EP-R1, EP-R2]
-    - [EP-R3]
-    - [EP-R4]
+  - - EP-R0
+    - EP-R5
+  - - EP-R1
+    - EP-R2
+  - - EP-R3
+  - - EP-R4
 ---
 
 # Implementation Plan: Rights-Aware Evidence Capture & Taxonomy
