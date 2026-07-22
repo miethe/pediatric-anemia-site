@@ -18,7 +18,7 @@ commit_refs: []
 pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
-total_tasks: 6
+total_tasks: 7
 completed_tasks: 0
 in_progress_tasks: 0
 blocked_tasks: 0
@@ -113,13 +113,42 @@ tasks:
   - tests/fixtures/clinical-review-workflow/
   acceptance_criteria: "3/3 drift-comparison fixtures agree between status and validate;\
     \ chain_isolation_v1 stays green; ADR-status and roster-content grep checks pass."
+- id: P1-T5
+  description: "Adjudication conditional-completeness reconciliation (FR-26, R2/R7, F2) —\
+    \ governance-sensitive. Update computeDerivedReviewState (P1-T1) and\
+    \ evaluateReleaseAuthorization (lib/adjudication.mjs) so a release-auth record's\
+    \ completeness check requires the adjudication role IFF the resolved clinical-1 and\
+    \ clinical-2 decision fields disagree; on documented agreement, the four remaining roles\
+    \ (clinical-1, clinical-2, lab, release-auth) are sufficient. Encodes ADR-0004 decision\
+    \ item 5 into code — does NOT touch ADR-0004's status field (stays proposed, G0). Flagged\
+    \ for the P1 validator gate + codex per-wave review as a governance-sensitive behavior\
+    \ change."
+  status: pending
+  assigned_to: [general-purpose]
+  dependencies: [P1-T1]
+  estimated_effort: "1.0 pts"
+  priority: critical
+  assigned_model: sonnet
+  model_effort: extended
+  governance_sensitive: true
+  target_surfaces:
+  - tools/review-record/lib/adjudication.mjs
+  - tools/review-record/lib/derived-state.mjs
+  - tests/ef-review-adjudication.test.mjs
+  acceptance_criteria: "Fixtures on BOTH paths: an agree-path five-record set MINUS\
+    \ adjudication evaluates as complete (no missing-role blocker); a disagree-path set\
+    \ MINUS adjudication reports the adjudication-missing blocker; the committed cbc_suite_v1\
+    \ dry-run fixture's existing terminal behavior is unchanged; a grep test confirms\
+    \ ADR-0004 status is untouched."
 - id: P1-GATE1
   description: "task-completion-validator gate: verify Phase 1 exit gate — status\
     \ --json matches validate's derived semantics on the committed cbc_suite_v1 set + 2\
-    \ adversarial fixtures; zero new runtime dependencies; npm run check green."
+    \ adversarial fixtures; zero new runtime dependencies; explicitly re-check FR-26's\
+    \ governance-sensitive adjudication change against ADR-0004 decision item 5 on both\
+    \ agree/disagree paths; npm run check green."
   status: pending
   assigned_to: [task-completion-validator]
-  dependencies: [P1-T1, P1-T2, P1-T3, P1-T4]
+  dependencies: [P1-T1, P1-T2, P1-T3, P1-T4, P1-T5]
   estimated_effort: "—"
   priority: critical
   assigned_model: sonnet
@@ -140,7 +169,7 @@ tasks:
 
 parallelization:
   batch_1: [P1-T1, P1-T3]
-  batch_2: [P1-T2]
+  batch_2: [P1-T2, P1-T5]
   batch_3: [P1-T4]
   batch_4: [P1-GATE1]
   batch_5: [P1-GATE2]
@@ -168,14 +197,19 @@ files_modified:
 - tools/review-record/lib/verbs/status.mjs
 - tools/review-record/lib/verbs/scaffold.mjs
 - tools/review-record/lib/verbs/validate.mjs
+- tools/review-record/lib/adjudication.mjs
 - tools/review-record/cli.mjs
 - tests/ef-review-workflow.test.mjs
+- tests/ef-review-adjudication.test.mjs
 - tests/fixtures/clinical-review-workflow/roster-with-real-entry.yaml
 - tests/fixtures/clinical-review-workflow/
 
 notes: "Wave 1 (no dependencies) — opens the critical path. Hard guardrails apply\
   \ verbatim (see .claude/worknotes/clinical-review-workflow/context.md). P1-T1's derived-state\
-  \ library is the single source of truth P2/P3 both consume — do not fork the logic."
+  \ library is the single source of truth P2/P3 both consume — do not fork the logic.\
+  \ Revision 1 added P1-T5 (FR-26 adjudication conditional-completeness reconciliation) —\
+  \ governance-sensitive: touches lib/adjudication.mjs's completeness policy without ratifying\
+  \ ADR-0004; flagged for both P1-GATE1 and P1-GATE2 review."
 ---
 
 # clinical-review-workflow — Phase 1: Derived Status & Scaffold Ergonomics
@@ -197,11 +231,15 @@ Ship a derived `status` verb (backed by a new shared `lib/derived-state.mjs`) pl
 ergonomics (auto-derived `subjectContentHash`, real-identity write path against a fixture
 roster only) — the foundation Phase 2 (sign/validate-cache), Phase 3 (render/runbook), and
 Phase 4 (portal-promotion framework) all build on. No portal, no real signing, no roster
-changes. See PRD FR-1..5/FR-24 and decisions block §3 risks R2/R3/R7/R8.
+changes. **Revision 1** adds P1-T5: a governance-sensitive reconciliation of `lib/adjudication.mjs`'s
+completeness policy against ADR-0004 decision item 5 (adjudication required only on
+clinical-1/clinical-2 disagreement). See PRD FR-1..5/FR-24/FR-26 and decisions block §3 risks
+R2/R3/R7/R8.
 
 **Duration**: ~2 engineer-days · **Dependencies**: None (wave 1) · **Exit gate**:
 `status --json` matches `validate`'s derived semantics on the committed `cbc_suite_v1` set +
-2 adversarial fixtures; zero new runtime dependencies; `npm run check` green.
+2 adversarial fixtures; FR-26 adjudication policy passes on both agree/disagree fixtures; zero
+new runtime dependencies; `npm run check` green.
 
 ---
 
@@ -213,7 +251,8 @@ changes. See PRD FR-1..5/FR-24 and decisions block §3 risks R2/R3/R7/R8.
 | P1-T2 | `status` verb + frozen `--json` shape | general-purpose | sonnet/adaptive | pending | P1-T1 |
 | P1-T3 | Scaffold ergonomics (auto-subject + real-identity write path) | general-purpose | sonnet/adaptive | pending | none |
 | P1-T4 | Drift guard + independence-unchanged tests | general-purpose | sonnet/adaptive | pending | P1-T1, P1-T2, P1-T3 |
-| P1-GATE1 | `task-completion-validator` gate | task-completion-validator | sonnet/adaptive | pending | P1-T1..T4 |
+| P1-T5 | Adjudication conditional-completeness reconciliation (FR-26, governance-sensitive) | general-purpose | sonnet/extended | pending | P1-T1 |
+| P1-GATE1 | `task-completion-validator` gate | task-completion-validator | sonnet/adaptive | pending | P1-T1..T5 |
 | P1-GATE2 | codex `gpt-5.6-terra` read-only second-opinion | codex (read-only) | gpt-5.6-terra/high | pending | P1-GATE1 |
 
 ---
@@ -246,6 +285,16 @@ to cli.mjs dispatch + new lib/verbs/status.mjs consuming P1-T1's derived-state l
 Freeze --json shape: { moduleId, subjectContentHash, records[], derivedState,
 nextExpectedRole }. Human output names next-expected role/terminal state. See plan §Phase 1,
 P1-T2.")
+
+Task("general-purpose", "P1-T5: Adjudication conditional-completeness reconciliation (FR-26,
+R2/R7, F2) — GOVERNANCE-SENSITIVE. Update computeDerivedReviewState (P1-T1) and
+evaluateReleaseAuthorization (lib/adjudication.mjs) so a release-auth record's completeness
+check requires the adjudication role IFF clinical-1 and clinical-2 decisions disagree; on
+agreement, the four remaining roles suffice. Encodes ADR-0004 decision item 5 into code —
+does NOT edit ADR-0004's status field (stays proposed, G0). Fixture-test BOTH the agree path
+(adjudication-optional) and disagree path (adjudication-required). This task is explicitly
+flagged for extra scrutiny at P1-GATE1 and the codex P1-GATE2 review. See plan §Phase 1,
+P1-T5.")
 ```
 
 ### Batch 3 (after P1-T1, P1-T2, P1-T3)
@@ -263,7 +312,9 @@ See plan §Phase 1, P1-T4.")
 ```
 Task("task-completion-validator", "P1-GATE1: Verify Phase 1 exit gate for
 clinical-review-workflow — status --json matches validate's derived semantics on
-cbc_suite_v1 + 2 adversarial fixtures; zero new runtime deps; npm run check green.")
+cbc_suite_v1 + 2 adversarial fixtures; zero new runtime deps; explicitly re-check P1-T5's
+FR-26 governance-sensitive adjudication change against ADR-0004 decision item 5 on both
+agree/disagree paths; npm run check green.")
 ```
 
 codex `gpt-5.6-terra` read-only second-opinion (not a `Task()` subagent call — invoke via the
@@ -271,8 +322,9 @@ codex `gpt-5.6-terra` read-only second-opinion (not a `Task()` subagent call —
 
 ```
 codex exec --read-only "Diff-review the full Phase 1 changeset for clinical-review-workflow
-against decisions block R2/R3/R7/R8 and PRD FR-1..5/FR-24. Flag any fail-closed gap or drift
-risk the automated suite missed."
+against decisions block R2/R3/R7/R8 and PRD FR-1..5/FR-24/FR-26..29. Flag any fail-closed gap
+or drift risk the automated suite missed. Specifically scrutinize P1-T5's FR-26
+adjudication-policy change (governance-sensitive) for fail-closed gaps."
 ```
 
 ### Status updates
@@ -300,6 +352,10 @@ incremental `validate` cache, and Phase 3's render queue section, all consume.
   the real `governance/reviewer-roster.yaml` is a hard guardrail violation.
 - `nextChainLink`'s single-file-touch semantics (reviewer-2 structural independence, FR-24)
   must not be touched by any scaffold/status change.
+- P1-T5 (Revision 1 addition) touches `lib/adjudication.mjs`'s completeness policy — a
+  governance-sensitive file. It encodes ADR-0004 decision item 5 (adjudication required only
+  on clinical-1/clinical-2 disagreement) but must NOT edit ADR-0004's own `status` field; both
+  the agree-path and disagree-path fixtures are required, not just one.
 
 ---
 
