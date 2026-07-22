@@ -69,13 +69,16 @@ test('seeded-bad evidence-assertions fixture violates evidence-assertions.schema
   );
 });
 
-test('all 19 committed modules/cbc_suite_v1/evidence-assertions.json records validate cleanly against evidence-assertions.schema.json', async () => {
+test('all 94 committed modules/cbc_suite_v1/evidence-assertions.json records (19 RF-CBC-001 + 75 RF-CBC-002, multi-bundle-conversion-e1 P4-T5) validate cleanly against evidence-assertions.schema.json', async () => {
   const schema = await loadJson(SCHEMA_PATH);
   const doc = await loadJson(path.join(REPO_ROOT, 'modules', 'cbc_suite_v1', 'evidence-assertions.json'));
-  assert.equal(doc.assertions.length, 19);
+  assert.equal(doc.assertions.length, 94, 'expected the original 19 RF-CBC-001 assertions plus 75 RF-CBC-002 assertions appended by P4-T5');
   assert.deepEqual(validate(schema, doc), [], 'the committed document should validate with zero errors');
+  const rfCbc001Count = doc.assertions.filter((a) => a.rfRunId === doc.rfProvenance.rfRunId).length;
+  assert.equal(rfCbc001Count, 19, 'the original RF-CBC-001 assertion count must be unchanged by the P4-T5 append');
+  assert.equal(doc.additionalRfProvenance?.length, 1, 'P4-T5 records exactly one additionalRfProvenance entry (RF-CBC-002)');
   for (const assertion of doc.assertions) {
-    assert.equal(assertion.exactPassage, null, `${assertion.assertionId}: OQ-2 rights-restricted fallback means exactPassage must be null for every RF-CBC-001 passage`);
+    assert.equal(assertion.exactPassage, null, `${assertion.assertionId}: OQ-2 rights-restricted fallback means exactPassage must be null for every RF-CBC-001/RF-CBC-002 passage`);
     assert.match(assertion.exactPassageSha256, /^sha256:[0-9a-f]{64}$/, `${assertion.assertionId}: must carry an immutable passage hash`);
     assert.equal(assertion.passageId, `psg_${assertion.exactPassageSha256.replace('sha256:', '')}`, `${assertion.assertionId}: passageId must be minted from exactPassageSha256`);
   }
@@ -123,7 +126,7 @@ test('validateModule() validates the real, P4-T2-backfilled modules/anemia/evide
 test('validateModule() validates the real modules/cbc_suite_v1/evidence-assertions.json cleanly and reports its count', async () => {
   const result = await validateModule('cbc_suite_v1', REPO_ROOT);
   assert.deepEqual(result.errors, [], `validateModule('cbc_suite_v1', ...) should report zero errors: ${JSON.stringify(result.errors)}`);
-  assert.equal(result.evidenceAssertionsCount, 19);
+  assert.equal(result.evidenceAssertionsCount, 94, '19 RF-CBC-001 + 75 RF-CBC-002 (multi-bundle-conversion-e1 P4-T5)');
 });
 
 test('validateModule() — the exact function npm run validate calls per module — fails closed on a seeded-bad evidence-assertions.json with a specific evidence-assertions.schema.json message', async () => {

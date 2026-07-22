@@ -203,11 +203,29 @@ export function routeClaim(claim, { hasResolvedExactPassage = false } = {}) {
  * @param {object[]} [assertions] `evidence-assertions.json.assertions[]` (P3-T3); defaults to `[]`
  *   so a caller with no assertions yet (e.g. mid-fixture-authoring) still gets a well-formed,
  *   all-`supported`-claims-rejected report rather than a crash.
+ * @param {{ rfRunId?: string }} [options] `rfRunId` (multi-bundle-conversion-e1, P4-T5, FR-7/FR-8):
+ *   when given, `assertions` is first filtered to only records whose own `rfRunId` equals this
+ *   value before `resolvedClaimIds` is built. THIS MATTERS once `evidence-assertions.json` holds
+ *   more than one upstream `rf` run's assertions (`modules/cbc_suite_v1/evidence-assertions.json`,
+ *   after P4-T5's RF-CBC-002 append): every `rf` bundle numbers its own claims `clm_001`, `clm_002`,
+ *   ... from a fresh per-bundle namespace (see `../../../../scripts/evidence/lib/
+ *   cbc-002-projection.mjs`'s header comment for the full rationale), so an UNSCOPED bare-string
+ *   `rfClaimId` membership check would treat, say, RF-CBC-002's own `clm_009` assertion as if it
+ *   resolved RF-CBC-001's entirely different `clm_009` claim — a silent cross-bundle
+ *   misattribution, not a real match. Every caller routing a SPECIFIC bundle's claim ledger
+ *   against a (potentially multi-bundle) assertions file MUST pass this bundle's own `rfRunId`
+ *   (`pinned.runId` in `../verbs/propose.mjs`) to stay correctly scoped. Omitted (`undefined`),
+ *   this function behaves exactly as before — unscoped — which remains correct for any
+ *   single-bundle assertions file (every module except `cbc_suite_v1` as of this addition).
  * @returns {RoutingReport}
  */
-export function routeClaims(claims, assertions = []) {
+export function routeClaims(claims, assertions = [], { rfRunId } = {}) {
+  const scopedAssertions = rfRunId === undefined
+    ? (assertions ?? [])
+    : (assertions ?? []).filter((assertion) => assertion?.rfRunId === rfRunId);
+
   const resolvedClaimIds = new Set(
-    (assertions ?? [])
+    scopedAssertions
       .map((assertion) => assertion?.rfClaimId)
       .filter((rfClaimId) => typeof rfClaimId === 'string' && rfClaimId !== ''),
   );

@@ -294,11 +294,15 @@ export function validateEvidenceDocument(evidenceData, moduleId, evidenceSchema)
  * P3-T3 (FR-12 second half, `02 §4.10`, OQ-3/OQ-7): validate modules/<moduleId>/evidence-assertions.json
  * against schemas/evidence-assertions.schema.json, plus the cross-record invariants the schema
  * cannot express on its own: assertionId uniqueness across the array, per-assertion `rfRunId`
- * agreement with the document's own `rfProvenance.rfRunId` (the schema validates each assertion in
- * isolation and cannot see its siblings or the parent), and `passageId`/`exactPassageSha256`
- * mutual agreement (`psg_<hash>` must be minted from the same digest, never a stray value).
- * Pure function over in-memory data (mirrors validateEvidenceDocument/validateCandidates above),
- * so it is independently unit-testable against a tampered/seeded-bad fixture without touching disk.
+ * agreement with the document's own `rfProvenance.rfRunId` OR one of its `additionalRfProvenance[]`
+ * entries (multi-bundle-conversion-e1, P4-T5, FR-7/FR-8 -- see schemas/evidence-assertions.schema.json's
+ * own `additionalRfProvenance` description: a later pass may append a SECOND bundle's assertions
+ * without ever overwriting the document's original `rfProvenance`, recording the additional bundle's
+ * identity in this array instead; a per-assertion `rfRunId` is legal when it matches EITHER
+ * provenance record, never only the first), and `passageId`/`exactPassageSha256` mutual agreement
+ * (`psg_<hash>` must be minted from the same digest, never a stray value). Pure function over
+ * in-memory data (mirrors validateEvidenceDocument/validateCandidates above), so it is
+ * independently unit-testable against a tampered/seeded-bad fixture without touching disk.
  */
 export function validateEvidenceAssertions(assertionsData, moduleId, assertionsSchema) {
   const errors = [];
@@ -309,6 +313,12 @@ export function validateEvidenceAssertions(assertionsData, moduleId, assertionsS
 
   const assertions = Array.isArray(assertionsData?.assertions) ? assertionsData.assertions : [];
   const documentRfRunId = assertionsData?.rfProvenance?.rfRunId;
+  const additionalRfRunIds = new Set(
+    (Array.isArray(assertionsData?.additionalRfProvenance) ? assertionsData.additionalRfProvenance : [])
+      .map((entry) => entry?.rfRunId)
+      .filter((rfRunId) => typeof rfRunId === 'string' && rfRunId !== ''),
+  );
+  const knownRfRunIds = new Set([documentRfRunId, ...additionalRfRunIds].filter((rfRunId) => rfRunId !== undefined));
   const seenAssertionIds = new Set();
 
   for (const assertion of assertions) {
@@ -321,8 +331,8 @@ export function validateEvidenceAssertions(assertionsData, moduleId, assertionsS
       seenAssertionIds.add(assertion.assertionId);
     }
 
-    if (documentRfRunId !== undefined && assertion?.rfRunId !== undefined && assertion.rfRunId !== documentRfRunId) {
-      errors.push(`${moduleId}/evidence-assertions.json#${label}: rfRunId "${assertion.rfRunId}" does not match the document's rfProvenance.rfRunId "${documentRfRunId}"`);
+    if (knownRfRunIds.size > 0 && assertion?.rfRunId !== undefined && !knownRfRunIds.has(assertion.rfRunId)) {
+      errors.push(`${moduleId}/evidence-assertions.json#${label}: rfRunId "${assertion.rfRunId}" does not match the document's rfProvenance.rfRunId "${documentRfRunId}"${additionalRfRunIds.size > 0 ? ` or any additionalRfProvenance entry (${[...additionalRfRunIds].join(', ')})` : ''}`);
     }
 
     if (typeof assertion?.passageId === 'string' && typeof assertion?.exactPassageSha256 === 'string') {

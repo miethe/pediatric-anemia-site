@@ -580,6 +580,1014 @@
           }
         }
       ]
+    },
+    {
+      "id": "ADVCLINEXPMED2024_FA_CYTOGENETICS",
+      "rfSourceCardId": "src_20260718_rfcbc002_09",
+      "priority": "primary-current",
+      "year": 2024,
+      "publicationDate": "2024-04",
+      "title": "Cytogenetic findings in Polish patients with suspected Fanconi anemia",
+      "authors": [
+        "Repczyńska A",
+        "Julga K",
+        "Lorenc A",
+        "Skalska-Sadowska J",
+        "Wysocki M",
+        "Zaucha-Praźmo A",
+        "Drabko K",
+        "Bossowski A",
+        "Dembowska-Bagińska B",
+        "Wachowiak J",
+        "Buciński A",
+        "Haus O"
+      ],
+      "organization": "Advances in Clinical and Experimental Medicine (Wroclaw Medical University)",
+      "journal": "Adv Clin Exp Med. 2024;33(4):361-368",
+      "doi": "10.17219/acem/168825",
+      "url": "https://advances.umw.edu.pl/en/article/2024/33/4/361/",
+      "limitations": [
+        "No explicit numeric break/cell cutoff for FA vs mosaic vs non-FA in the passages retrieved",
+        "Cohort spans age at diagnosis 1 month to 32 years — not purely pediatric",
+        "Single-center/national cohort, Polish population"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Mean mitomycin C (MMC)-induced chromosome breaks per cell were far higher in FA patients (6.67 ±3.92) than in non-FA patients (0.23 ±0.18). (clm_025).",
+        "Of 100 children with suspected FA, 13 (13%) had a true FA cellular phenotype, 27 had possible mosaic FA, and the remainder were classified non-FA. (clm_026).",
+        "Lymphocyte cultures were incubated for 72 h with MMC at 0, 50, 150, or 300 nM to induce clastogenic breakage. (clm_027).",
+        "The percentage of cells with spontaneous (baseline, non-MMC) chromosome aberrations was more than 9 times higher in FA than in non-FA patients. (clm_028).",
+        "The MMC sensitivity test discriminates FA, possible somatic mosaicism, and non-FA marrow failure at the first diagnostic step, but definitive diagnosis still requires follow-up mutation testing and fibroblast chromosome breakage analysis. (clm_029)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "Fanconi anemia cytogenetic (MMC chromosome-breakage) diagnostic cohort update after 2024",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "ADVCLINEXPMED2024_FA_CYTOGENETICS#implementation-proposal",
+          "sourceId": "ADVCLINEXPMED2024_FA_CYTOGENETICS",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Fanconi anemia cytogenetic (MMC chromosome-breakage) diagnostic cohort update after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc002_09",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ASTCT2024_SAA_HCT_GUIDELINE",
+      "rfSourceCardId": "src_20260718_rfcbc002_06",
+      "priority": "primary-current",
+      "year": 2024,
+      "publicationDate": "2024-09",
+      "title": "Allogeneic Hematopoietic Cell Transplantation for the Treatment of Severe Aplastic Anemia: Evidence-Based Guidelines From the American Society for Transplantation and Cellular Therapy",
+      "authors": [
+        "Iftikhar R",
+        "DeFilipp Z",
+        "DeZern AE",
+        "Pulsipher MA",
+        "Bejanyan N",
+        "Burroughs LM",
+        "Kharfan-Dabaja MA",
+        "Arai S",
+        "Kassim A",
+        "Nakamura R",
+        "Saldana BJD",
+        "Aljurf M",
+        "Hamadani M",
+        "Carpenter PA",
+        "Antin JH"
+      ],
+      "organization": "Transplantation and Cellular Therapy (American Society for Transplantation and Cellular Therapy)",
+      "journal": "ASTCT SAA HCT guideline (Transplant Cell Ther 2024;30(12):1155-1170)",
+      "doi": "10.1016/j.jtct.2024.09.017",
+      "url": "https://doi.org/10.1016/j.jtct.2024.09.017",
+      "limitations": [
+        "Full-text PDF paywalled; graded statement wording verified via Guideline Central digest of the primary guideline, not the primary PDF.",
+        "HCT-specific scope only; does not cover non-transplant SAA diagnosis/monitoring thresholds.",
+        "Age thresholds are adult-facing eligibility criteria; guideline provides no numeric ATG dose or graft cell-dose cutoffs."
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "The ASTCT panel preferentially recommends bone marrow (not peripheral blood) as the graft source for allogeneic HCT in severe aplastic anemia. (clm_049).",
+        "The panel recommends rabbit ATG over horse ATG as part of the HCT conditioning regimen for severe aplastic anemia. (clm_050).",
+        "The panel does not endorse the historical 40-year age cutoff for upfront HCT in adults with SAA, holding that fit older patients may also benefit. (clm_051).",
+        "The panel positively frames upfront HCT / MRD-HCT eligibility as extending up to 50 years of age or beyond for suitable patients, replacing the historical 40-year threshold. (clm_052).",
+        "Fludarabine-containing conditioning regimens are preferred for patients at high risk of graft failure and for matched-unrelated or haploidentical donor transplants. (clm_053).",
+        "For children and adults lacking a matched related donor, the panel prioritizes matched-unrelated or haploidentical donor HCT over immunosuppressive therapy. (clm_054)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "ASTCT allogeneic HCT for severe aplastic anemia guideline update after 2024",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "ASTCT2024_SAA_HCT_GUIDELINE#implementation-proposal",
+          "sourceId": "ASTCT2024_SAA_HCT_GUIDELINE",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "ASTCT allogeneic HCT for severe aplastic anemia guideline update after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc002_06",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "BCMD2024_AIEOP_AA_GUIDELINE",
+      "rfSourceCardId": "src_20260718_rfcbc002_03",
+      "priority": "primary-current",
+      "year": 2024,
+      "publicationDate": "2024-05",
+      "title": "Diagnosis and management of acquired aplastic anemia in childhood. Guidelines from the Marrow Failure Study Group of the Pediatric Haemato-Oncology Italian Association (AIEOP)",
+      "authors": [
+        "Guarina A",
+        "Farruggia P",
+        "Mariani E",
+        "Saracco P",
+        "Barone A",
+        "Onofrillo D",
+        "Cesaro S",
+        "Fioredda F",
+        "Dufour C"
+      ],
+      "organization": "Elsevier (Blood Cells, Molecules & Diseases, vol. 108, article 102860)",
+      "journal": "AIEOP Marrow Failure Study Group consensus, 2024",
+      "doi": "10.1016/j.bcmd.2024.102860",
+      "url": "https://doi.org/10.1016/j.bcmd.2024.102860",
+      "limitations": [
+        "Full text not open-access (isOpenAccess=N, not in PMC/EPMC); severity-classification thresholds not extractable",
+        "National (Italian) consensus scope"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Acquired aplastic anemia incidence is 2-3 per million population per year in the Western world and about three times higher in East Asia. (clm_037).",
+        "Acquired aplastic anemia is defined as pancytopenia with a hypoplastic bone marrow, framing the diagnostic construct for the guideline. (clm_038).",
+        "The guideline states that in severe aplastic anemia, matched-sibling-donor HSCT is the first-line treatment (reported as guideline content, not an executable directive). (clm_039).",
+        "If no matched sibling donor is available, the guideline lists immunosuppressive therapy, matched-unrelated-donor HSCT, or haploidentical HSCT as options (reported as guideline content). (clm_040).",
+        "The document is an AIEOP Bone Marrow Failure Study Group evidence-based consensus practice guideline, developed through consensus conferences and validated by the AIEOP Board of Directors. (clm_041)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "AIEOP pediatric acquired aplastic anemia guideline update after 2024",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "BCMD2024_AIEOP_AA_GUIDELINE#implementation-proposal",
+          "sourceId": "BCMD2024_AIEOP_AA_GUIDELINE",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "AIEOP pediatric acquired aplastic anemia guideline update after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc002_03",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "BJHAEM2024_BSH_AA_GUIDELINE",
+      "rfSourceCardId": "src_20260718_rfcbc002_01",
+      "priority": "primary-current",
+      "year": 2024,
+      "publicationDate": "2024-01",
+      "title": "Guidelines for the diagnosis and management of adult aplastic anaemia: A British Society for Haematology Guideline",
+      "authors": [
+        "Kulasekararaj A",
+        "Cavenagh J",
+        "Dokal I",
+        "Foukaneli T",
+        "Gandhi S",
+        "Garg M",
+        "Griffin M",
+        "Hillmen P",
+        "Ireland R",
+        "Killick S",
+        "Mansour S",
+        "Mufti G",
+        "Potter V",
+        "Snowden J",
+        "Stanworth S",
+        "Zuha R",
+        "Marsh J"
+      ],
+      "organization": "British Journal of Haematology (British Society for Haematology)",
+      "journal": "BSH 2024 (Br J Haematol 204(3):784-804)",
+      "doi": "10.1111/bjh.19236",
+      "url": "https://doi.org/10.1111/bjh.19236",
+      "limitations": [
+        "Scope is ADULT acquired aplastic anaemia; the guideline does not define pediatric age-specific CBC reference intervals",
+        "Camitta severity cutoffs are fixed absolute-count disease-severity thresholds applied irrespective of patient age — they are NOT age/sex-adjusted reference intervals",
+        "Paywalled version of record (Wiley); quotes sourced from the accepted-manuscript .docx which may differ typographically from the final published copy-edit"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "AA diagnosis requires pancytopenia with hypocellular marrow plus at least two of three peripheral-count thresholds (Hb, platelets, neutrophils). (clm_061).",
+        "Severe AA (Camitta) is defined by marrow cellularity <25% (or 25–50% with <30% residual haematopoiesis) plus at least two of neutrophils <0.5, platelets <20, reticulocytes <60 ×10⁹/L. (clm_062).",
+        "Very severe AA is defined identically to SAA except the neutrophil threshold is lowered to <0.2 ×10⁹/L. (clm_063).",
+        "The Camitta reticulocyte severity criterion has been modified from manual percentage to an absolute count <60 ×10⁹/L when measured by automated analyzers, which over-estimate reticulocytes relative to manual counts. (clm_064).",
+        "Where marrow cellularity is patchy, an overall average cellularity of <30% (excluding lymphocytes and plasma cells) should be ascertained to support the AA diagnosis. (clm_065).",
+        "AA incidence shows a biphasic age distribution with a first peak at 10–25 years (relevant to older children/adolescents) and a second peak over 60 years; incidence is 2–3 per million per year in Europe. (clm_066).",
+        "Given the rarity and management complexity of AA, the guideline strongly recommends multidisciplinary discussion and involvement of expert centres to improve outcomes — a referral/escalation trigger. (clm_067)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "British Society for Haematology adult aplastic anaemia guideline update after 2024",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "BJHAEM2024_BSH_AA_GUIDELINE#implementation-proposal",
+          "sourceId": "BJHAEM2024_BSH_AA_GUIDELINE",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "British Society for Haematology adult aplastic anaemia guideline update after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc002_01",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "BLOOD2022_TBD_OUTCOMES",
+      "rfSourceCardId": "src_20260718_rfcbc002_07",
+      "priority": "primary-current",
+      "year": 2022,
+      "publicationDate": "2022-03",
+      "title": "Disease progression and clinical outcomes in telomere biology disorders",
+      "authors": [
+        "Niewisch MR",
+        "Giri N",
+        "McReynolds LJ",
+        "Alsaggaf R",
+        "Bhala S",
+        "Alter BP",
+        "Savage SA"
+      ],
+      "organization": "Blood (American Society of Hematology)",
+      "journal": "Blood 139(12):1807-1819",
+      "doi": "10.1182/blood.2021013523",
+      "url": "https://doi.org/10.1182/blood.2021013523",
+      "limitations": [
+        "Single-registry referral cohort (NCI IBMFS) — possible ascertainment/selection bias toward more severe disease",
+        "Reports epidemiological survival/prevalence outcomes, NOT laboratory assay reference intervals or CBC thresholds",
+        "Median survival estimates are cohort-level, not individual pediatric decision cutoffs"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "The cohort comprised 231 individuals with dyskeratosis congenita/telomere biology disorders, 144 male, median age at diagnosis 19.4 years (range 0-71.6). (clm_030).",
+        "At last follow-up 42% of patients were deceased, with a median overall survival of 52.8 years (95% CI 45.5-57.6). (clm_031).",
+        "Transplant-free (HCT or solid-organ) median survival was 45.3 years, and overall survival was significantly better for autosomal-dominant vs AR/XLR/TINF2 disease (P<.01). (clm_032).",
+        "Severe bone marrow failure developed in 111 (48.1%) patients, and 70 (30.3%) underwent HCT at a median age of 15.4 years (range 0.9-63.1). (clm_033).",
+        "After adjustment for sex and pediatric-vs-adult diagnosis, AR/XLR patients had a hazard ratio for any cancer of 8 (95% CI 1.93-33.51) versus autosomal-dominant disease. (clm_034).",
+        "Median age at diagnosis differed sharply by inheritance mode: AD 36.1 years, AR/XLR 11.3 years, and TINF2 8.1 years. (clm_035).",
+        "Pulmonary fibrosis developed predominantly in adults with autosomal-dominant disease (19.6%), versus 9.5% in AR/XLR (P=.09) and 8% in TINF2 (P=.25). (clm_036)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "telomere biology disorders disease progression and outcomes update after 2022",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "BLOOD2022_TBD_OUTCOMES#implementation-proposal",
+          "sourceId": "BLOOD2022_TBD_OUTCOMES",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "telomere biology disorders disease progression and outcomes update after 2022",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc002_07",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "BLOODADV2024_SAA_DELPHI_CONSENSUS",
+      "rfSourceCardId": "src_20260718_rfcbc002_00",
+      "priority": "primary-current",
+      "year": 2024,
+      "publicationDate": "2024-08",
+      "title": "Modified Delphi panel consensus recommendations for management of severe aplastic anemia",
+      "authors": [
+        "Babushok DV",
+        "DeZern AE",
+        "de Castro CM",
+        "Rogers ZR",
+        "Beenhouwer D",
+        "Broder MS",
+        "Fanning SR",
+        "Gibbs SN",
+        "Hanna R",
+        "Maciejewski JP",
+        "Scott BL",
+        "Tantravahi SK",
+        "Wlodarski MW",
+        "Yermilov I",
+        "Patel BJ"
+      ],
+      "organization": "American Society of Hematology (Blood Advances)",
+      "journal": "American Society of Hematology (Blood Advances)",
+      "doi": "10.1182/bloodadvances.2023011642",
+      "url": "https://doi.org/10.1182/bloodadvances.2023011642",
+      "limitations": [
+        "US-only 11-expert panel; may not generalize internationally",
+        "Consensus method (not GRADE evidence grading)",
+        "Absolute count cutoffs apply across all ages — NOT pediatric age/sex-specific reference intervals"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Severe aplastic anemia (SAA) is defined by marrow cellularity <25% (or 25%-50% with <30% residual hematopoietic cells) plus at least 2 of: neutrophils <0.5 x10^9/L, platelets <20 x10^9/L, reticulocytes <60 x10^9/L. (clm_055).",
+        "Very severe aplastic anemia fulfills the same criteria as SAA except that neutrophils are <0.2 x10^9/L. (clm_056).",
+        "A complete hematologic response is defined as neutrophils >1 x10^9/L (1.5 x10^9/L in some trials), platelets >100 x10^9/L, and Hgb >100 g/L. (clm_057).",
+        "A PNH granulocyte clone >1% has ~100% positive predictive value for acquired AA; a clone >0.1% has ~95% specificity and 91% PPV, while clones <0.1% are less specific and seen in confirmed IBMF. (clm_058).",
+        "For IBMF exclusion, patients aged <=40 years are recommended to have chromosome breakage analysis (Fanconi anemia) and telomere length analysis (telomere biology disorders); age 41-60 case-by-case; >60 with prior normal counts not recommended. (clm_059).",
+        "Descriptive supportive-care thresholds stated by the source: RBC transfusion at Hgb <7 g/L (verbatim; probable source typo for 7 g/dL / 70 g/L) or symptomatic anemia, and platelet transfusion at <10 x10^9/L (or <50 x10^9/L if bleeding or planned procedure). (clm_060)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "modified Delphi consensus severe aplastic anemia diagnostic/response criteria update after 2024",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "BLOODADV2024_SAA_DELPHI_CONSENSUS#implementation-proposal",
+          "sourceId": "BLOODADV2024_SAA_DELPHI_CONSENSUS",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "modified Delphi consensus severe aplastic anemia diagnostic/response criteria update after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc002_00",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+      "rfSourceCardId": "src_20260718_rfcbc002_02",
+      "priority": "primary-current",
+      "year": 2025,
+      "publicationDate": "2025-08",
+      "title": "Long-term outcomes of patients with refractory cytopenia of childhood under observation only",
+      "authors": [
+        "Beatrice Drexler",
+        "Stephan Schwarz-Furlan",
+        "Irith Baumann",
+        "Martina Rudelius",
+        "Peter Nöllke",
+        "Dirk Lebrecht",
+        "Senthilkumar Ramamoorthy",
+        "Natalia Rotari",
+        "Axel Karow",
+        "Shinsuke Hirabayashi",
+        "Fabian Beier",
+        "Yvonne Lisa Behrens",
+        "Gudrun Göhring",
+        "Reinhard Kalb",
+        "Marcin W Wlodarski",
+        "Brigitte Strahm",
+        "Miriam Erlacher",
+        "Charlotte M Niemeyer",
+        "Ayami Yoshimi"
+      ],
+      "organization": "Blood Advances (American Society of Hematology)",
+      "journal": "Blood Adv 2025;9(16):4279-4285",
+      "doi": "10.1182/bloodadvances.2025016136",
+      "url": "https://doi.org/10.1182/bloodadvances.2025016136",
+      "limitations": [
+        "Single observational cohort, normal-karyotype RCC only",
+        "PMC full-text extraction had dropped superscript '9' on the published ×10^9/L units; affected count-unit quotes re-verified against publisher JATS full text (Europe PMC PMC12395045) and corrected to the intact '× 10⁹/L' form"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "In this observed RCC cohort, 84% (84/100) presented with a hypocellular diagnostic bone marrow, consistent with the typical RCC presentation. (clm_001).",
+        "EWOG-MDS assigned early HSCT (scope-exit from observation) for RCC patients with transfusion dependency, ANC <1×10^9/L, monosomy 7, del(7q), or >=2 chromosomal aberrations; others were observed. (clm_002).",
+        "The authors categorized 'significant' blood-count abnormalities during follow-up as Hb <10 g/dL, ANC <1×10^9/L, and/or platelets <100×10^9/L. (clm_003).",
+        "The authors categorized 'mild' blood-count abnormalities during follow-up as Hb 10-12 g/dL, ANC 1.0-1.5×10^9/L, platelets 100-150×10^9/L, and/or persistently high MCV. (clm_004).",
+        "For observed normal-karyotype RCC without predisposition, 5- and 10-year transplant(HSCT)-free survival were 94% and 88%, with all patients alive at median 7.2-year follow-up. (clm_005).",
+        "Given low rates of clonal evolution/PNH, the authors state yearly bone-marrow exams can be omitted; peripheral blood counts every 3-6 months, with marrow study only if counts deviate from baseline. (clm_006).",
+        "Patients who later underwent HSCT had lower median diagnosis-time Hb (8.7 vs 10.6 g/dL) and platelets (30 vs 64 ×10^9/L) than those never transplanted. (clm_007).",
+        "Cohort median age at diagnosis was 10.9 years (range 1.4-17.3), slight male predominance (M/F 1.2); age-adjusted MCV was increased in ~half of patients. (clm_008)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "refractory cytopenia of childhood long-term observation-only outcomes update after 2025",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES#implementation-proposal",
+          "sourceId": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "refractory cytopenia of childhood long-term observation-only outcomes update after 2025",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc002_02",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+      "rfSourceCardId": "src_20260718_rfcbc002_08",
+      "priority": "primary-current",
+      "year": 2022,
+      "publicationDate": "2022-04",
+      "title": "Diagnostic Value of a Protocolized In-Depth Evaluation of Pediatric Bone Marrow Failure: A Multi-Center Prospective Cohort Study",
+      "authors": [
+        "Khaled Atmar",
+        "Claudia A L Ruivenkamp",
+        "Louise Hooimeijer",
+        "Esther A R Nibbeling",
+        "Corien L Eckhardt",
+        "Elise J Huisman",
+        "Arjan C Lankester",
+        "Marije Bartels",
+        "Gijs W E Santen",
+        "Frans J Smiers",
+        "Mirjam van der Burg",
+        "Alexander B Mohseny"
+      ],
+      "organization": "Frontiers in Immunology",
+      "journal": "Frontiers in Immunology",
+      "doi": "10.3389/fimmu.2022.883826",
+      "url": "https://doi.org/10.3389/fimmu.2022.883826",
+      "limitations": [
+        "Small cohort (n=50)",
+        "Netherlands academic centers only",
+        "No causative diagnosis in 60%",
+        "Cutoffs are enrollment/analysis criteria not population reference intervals"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Study enrollment defined neutropenia for suspected pediatric BMF as an absolute neutrophil count below 1.5 x10^9/L. (clm_068).",
+        "Study enrollment defined thrombocytopenia for suspected pediatric BMF as a platelet count below 150 x10^9/L. (clm_069).",
+        "In the WES variant-interpretation pipeline, sequence variants with a gnomAD population allele frequency above 5% were excluded from further interpretation. (clm_070).",
+        "A protocolized in-depth evaluation established a causative diagnosis in 40% (20/50) of pediatric BMF patients, 18 of them by genetic analysis (14 mutations, 4 chromosomal deletions). (clm_071).",
+        "The protocol's first diagnostic step is exclusion of malignant and transient/reversible causes of BMF — patients are screened for leukemia and referred to a pediatric oncology center if indicated — before extended genetic/functional workup begins. (clm_072).",
+        "The authors recommend full genome-wide genetic analysis (WES with CNV plus SNP-array) complemented by functional tests in all suspected BMF patients, because causative genetic defects occur even without typical syndromic features. (clm_073).",
+        "Median peripheral-blood NK-cell percentage of total lymphocytes was significantly lower in the SAA group than in the identified-cause (constitutional) group (3.0 vs 9.0; P<0.05). (clm_074).",
+        "The primary WES gene filter (BMF gene panel) contained 172 genes plus HPO-term-driven selection, expanded to PID genes / open-WES / Trio-WES when primary analysis was negative. (clm_075)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "protocolized pediatric bone marrow failure diagnostic evaluation update after 2022",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL#implementation-proposal",
+          "sourceId": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "protocolized pediatric bone marrow failure diagnostic evaluation update after 2022",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc002_08",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "INDIANPEDIATR2022_IAP_AA_CONSENSUS",
+      "rfSourceCardId": "src_20260718_rfcbc002_11",
+      "priority": "primary-current",
+      "year": 2022,
+      "publicationDate": "2022-02",
+      "title": "Diagnosis and Management of Acquired Aplastic Anemia: Consensus Statement of Indian Academy of Pediatrics",
+      "authors": [
+        "Danewa A",
+        "Kalra M",
+        "Sachdeva A",
+        "Sachdeva P",
+        "Bansal D",
+        "Bhat S",
+        "Sachdeva D",
+        "Rani S",
+        "Yadav SP",
+        "Katewa S",
+        "Kumar A",
+        "Muniratnam D",
+        "Agarwal BR",
+        "Seth T",
+        "Mahajan A",
+        "Dua V",
+        "Kharya G",
+        "Misra R",
+        "Desai D",
+        "Gunasekaran V",
+        "Srivastava V"
+      ],
+      "organization": "Indian Pediatrics (Indian Academy of Pediatrics)",
+      "journal": "IAP Consensus Statement; Indian Pediatr 2022;59(6):467-475",
+      "doi": "10.1007/s13312-022-2538-x",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35105820/",
+      "limitations": [
+        "Full text paywalled (Springer/Indian Pediatrics); only the PubMed abstract recommendations were locatable verbatim",
+        "No PMC full text available — laboratory severity-count criteria (severe/very-severe ANC, platelet, reticulocyte cutoffs) could not be located in an accessible verbatim passage",
+        "India-specific consensus; resource-availability caveats may not generalize"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "The IAP consensus states a bone marrow biopsy is mandatory to establish a diagnosis of acquired aplastic anemia in children. (clm_013).",
+        "Before diagnosing acquired AA, the consensus requires excluding inherited bone marrow failure syndromes, connective tissue disorders, viral infections, PNH, and drug/heavy-metal marrow suppression in all cases. (clm_014).",
+        "For pediatric AA, the consensus recommends a conservative transfusion approach targeting hemoglobin above 6 g/dL in children with no co-morbidities. (clm_015).",
+        "After immunosuppressive therapy, the consensus advises waiting 3-6 months before assessing response and considering next-line therapy. (clm_016).",
+        "The consensus names HLA-matched sibling donor HSCT as the preferred first-line treatment for newly diagnosed very severe/severe AA, and horse ATG plus cyclosporine as the recommended immunosuppressive therapy. (clm_017)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "Indian Academy of Pediatrics acquired aplastic anemia consensus update after 2022",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "INDIANPEDIATR2022_IAP_AA_CONSENSUS#implementation-proposal",
+          "sourceId": "INDIANPEDIATR2022_IAP_AA_CONSENSUS",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Indian Academy of Pediatrics acquired aplastic anemia consensus update after 2022",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc002_11",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "LANCETHAEM2024_DBA_CONSENSUS",
+      "rfSourceCardId": "src_20260718_rfcbc002_05",
+      "priority": "primary-current",
+      "year": 2024,
+      "publicationDate": "2024-05",
+      "title": "Diagnosis, treatment, and surveillance of Diamond-Blackfan anaemia syndrome: international consensus statement",
+      "authors": [
+        "Marcin W Wlodarski",
+        "Adrianna Vlachos",
+        "Jason E Farrar",
+        "Lydie M Da Costa",
+        "Antonis Kattamis",
+        "et al. (53-expert international panel)"
+      ],
+      "organization": "The Lancet Haematology (Elsevier)",
+      "journal": "2024 consensus (replaces 2008 guidelines)",
+      "doi": "10.1016/S2352-3026(24)00063-2",
+      "url": "https://doi.org/10.1016/S2352-3026(24)00063-2",
+      "limitations": [
+        "Level C evidence only; several thresholds are expert-consensus not trial-derived",
+        "Some numeric ranges reported without full consensus (noted per point)"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "The consensus sets the acceptable haemoglobin target for DBA syndrome patients of all ages at >=9-10 g/dL, individualized to keep the patient asymptomatic. (clm_042).",
+        "Erythrocyte adenosine deaminase (eADA) activity helps differentiate DBA syndrome from other anaemias/IBMFS with 84% sensitivity and 95% specificity, but must be measured pre-transfusion and a normal value does not rule out DBA. (clm_043).",
+        "The target liver iron concentration (LIC), measured by MRI T2*/R2 (FerriScan), for transfusion-dependent DBA syndrome patients is as close to normal as possible, i.e., lower than 3 mg Fe/g dry weight. (clm_044).",
+        "Cardiac iron by MRI T2* should stay as close to normal as possible with an acceptable range of 20-35 msec; T2* <20 ms associates with decreased cardiac function/worse survival and <10 ms with imminent heart-failure risk. (clm_045).",
+        "Panel lowered the prednisone maintenance ceiling to a maximum of 0.3 mg/kg/day; if Hb >=9 g/dL cannot be sustained at <=0.3 mg/kg/day, steroids should be discontinued (some panelists proposed a stricter 0.2 mg/kg/day, no consensus). (clm_046).",
+        "Iron chelation is generally initiated after ~10 transfusions or evidence of iron load defined as ferritin >500 ng/mL, transferrin saturation >60%, or elevated LIC. (clm_047).",
+        "Classic DBA presents with macrocytic anaemia and reticulocytopenia, with 90% of patients becoming symptomatic in the first year of life at a median age of 3 months (though presentation can range from in-utero hydrops to the sixth decade). (clm_048)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "Diamond-Blackfan anaemia international consensus statement update after 2024",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "LANCETHAEM2024_DBA_CONSENSUS#implementation-proposal",
+          "sourceId": "LANCETHAEM2024_DBA_CONSENSUS",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Diamond-Blackfan anaemia international consensus statement update after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc002_05",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "LEUKEMIA2024_IBMFS_PROTEOGENOMICS",
+      "rfSourceCardId": "src_20260718_rfcbc002_10",
+      "priority": "primary-current",
+      "year": 2024,
+      "publicationDate": "2024-05",
+      "title": "Integrated proteogenomic analysis for inherited bone marrow failure syndrome",
+      "authors": [
+        "Wakamatsu M",
+        "Muramatsu H",
+        "Sato H",
+        "Ishikawa M",
+        "Konno R",
+        "Nakajima D",
+        "Hamada M",
+        "Okuno Y",
+        "Kawashima Y",
+        "Hama A",
+        "Ito M",
+        "Iwafuchi H",
+        "Takahashi Y",
+        "Ohara O"
+      ],
+      "organization": "Leukemia (Nature Portfolio)",
+      "journal": "Leukemia 2024;38(6):1256-1265",
+      "doi": "10.1038/s41375-024-02263-1",
+      "url": "https://doi.org/10.1038/s41375-024-02263-1",
+      "limitations": [
+        "Small per-disorder discovery cohort (SDS n=6, ADH5/ALDH2 n=4)",
+        "Multicenter stored specimens; protein-mRNA correlation low",
+        "Assay cutoffs are GAPDH-normalized MS ratios, not a standardized clinical assay",
+        "SBDS/ADH5 numeric cutoff magnitudes were exponent-stripped in the retrieved full text and are not reliably transcribable"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "In 417 samples, the targeted-proteomic SBDS screen had 85.7% sensitivity / 93.4% specificity and the ADH5 screen 100.0% sensitivity / 97.5% specificity for SDS and ADH5/ALDH2 deficiency respectively. (clm_018).",
+        "The SBDS and ADH5 protein-expression cutoffs were defined as the cohort mean minus two standard deviations, computed on the 417 samples excluding confirmed SDS and ADH5/ALDH2 cases. (clm_019).",
+        "Six of six SDS patients showed significantly decreased SBDS protein, and two of them were not diagnosed by DNA sequencing alone (monoallelic on short-read DNA-seq, second variant recovered by RNA-seq). (clm_020).",
+        "The discovery cohort of 60 IBMFS patients had a median age at disease onset of 3 years (range 0-23) and included 27 men. (clm_021).",
+        "The study's 'IBMFS not otherwise specified' operational definition uses early onset (<2 years) and short telomere length (<2.0 SD) among its clinical criteria when no IBMFS pathogenic variant is found. (clm_022).",
+        "SDS carries a 15-30% risk of progression to myelodysplastic syndrome and acute myeloid leukemia, motivating early identification. (clm_023).",
+        "The ADH5/ALDH2-deficiency-associated ALDH2 variant (c.1510G>A, p.E504K [rs671]) is a common SNP present in 25.5% of East Asians, so ADH5 proteomics should be paired with genotyping in Asian IBMFS work-ups. (clm_024)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "inherited bone marrow failure syndrome proteogenomic diagnostic update after 2024",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "LEUKEMIA2024_IBMFS_PROTEOGENOMICS#implementation-proposal",
+          "sourceId": "LEUKEMIA2024_IBMFS_PROTEOGENOMICS",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "inherited bone marrow failure syndrome proteogenomic diagnostic update after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc002_10",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "PBC2024_PEDIATRIC_SAA_RECOMMENDATIONS",
+      "rfSourceCardId": "src_20260718_rfcbc002_04",
+      "priority": "primary-current",
+      "year": 2024,
+      "publicationDate": "2024-05",
+      "title": "Treatment of newly diagnosed severe aplastic anemia in children: Evidence-based recommendations",
+      "authors": [
+        "Shimano KA",
+        "Rothman JA",
+        "Allen SW",
+        "Castillo P",
+        "de Jong JLO",
+        "Dror Y",
+        "Geddis AE",
+        "Lau BW",
+        "McGuinn C",
+        "Narla A",
+        "Overholt K",
+        "Pereda MA",
+        "Sharathkumar A",
+        "Sasa G",
+        "Nakano TA",
+        "Myers K",
+        "Gloude NJ",
+        "Broglie L",
+        "Boklan J"
+      ],
+      "organization": "Pediatric Blood & Cancer (Wiley); Pediatr Blood Cancer 2024;71(8):e31070",
+      "journal": "Pediatr Blood Cancer 2024;71(8):e31070",
+      "doi": "10.1002/pbc.31070",
+      "url": "https://doi.org/10.1002/pbc.31070",
+      "limitations": [
+        "Full text behind Wiley paywall; only the abstract was retrievable verbatim (PubMed).",
+        "Treatment-recommendations paper, not a laboratory reference-interval source — no lab reference intervals to extract.",
+        "Numeric diagnostic thresholds (modified Camitta SAA/vSAA criteria) are referenced by the panel but were NOT locatable in accessible text; recorded as GAPs, not asserted."
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Severe aplastic anemia (SAA) is a rare, potentially fatal hematologic disorder for which overall treatment outcomes are excellent, though management approaches vary and differ between adult and pediatric patients. (clm_009).",
+        "Certain aspects of pediatric SAA treatment remain under active investigation in clinical trials, so recommendations are not fully settled. (clm_010).",
+        "Because SAA is rare, some pediatric hematologists have relatively limited experience with its complex management — the rationale for these consolidated recommendations. (clm_011).",
+        "The panel's recommendations are framed as an up-to-date, evidence-based approach specifically for children with newly diagnosed SAA. (clm_012)."
+      ],
+      "reviewBy": "2031-07-20",
+      "surveillanceQuery": "pediatric severe aplastic anemia evidence-based treatment recommendations update after 2024",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "PBC2024_PEDIATRIC_SAA_RECOMMENDATIONS#implementation-proposal",
+          "sourceId": "PBC2024_PEDIATRIC_SAA_RECOMMENDATIONS",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/cbc_suite_v1/evidence.json for this source. Exact-passage traceability for cbc_suite_v1's slice rules is recorded separately in modules/cbc_suite_v1/evidence-assertions.json (02 doc section 4.10, evidence-foundry-buildout P3-T3) rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "pediatric severe aplastic anemia evidence-based treatment recommendations update after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+            "sourceCardId": "src_20260718_rfcbc002_04",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
     }
   ]
 }

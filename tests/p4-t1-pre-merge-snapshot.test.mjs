@@ -105,17 +105,23 @@ test('every RF-CBC-001-era record hash is still present and byte-for-byte unchan
   }
 });
 
-test('right now (pre-Phase-4), the two append-only files have exactly the baseline record set', async () => {
-  // This assertion is specific to "before any propose run has landed" — once P4-T5 appends
-  // RF-CBC-002 records, the record counts here will legitimately grow and this specific equality
-  // is expected to be superseded by P4-T7's own comparison (which only requires the RF-CBC-001
-  // subset to survive, not that no other records exist). It is kept here to prove the baseline
-  // itself was captured cleanly, before this phase touched anything.
+test('post-P4-T5: the two append-only files retain the full baseline record set as a subset (never fewer, legitimately more)', async () => {
+  // Originally asserted exact equality ("before any propose run has landed"). P4-T5
+  // (multi-bundle-conversion-e1) has now appended 12 RF-CBC-002 sources / 75 RF-CBC-002 assertions
+  // alongside the RF-CBC-001 baseline captured here — record counts legitimately grew, so this is
+  // now a SUBSET check (every baseline id is still present) rather than exact-set equality. The
+  // stronger guarantee — every baseline record's hash is byte-for-byte unchanged, not merely
+  // present — is already proven by the preceding test; this one only guards against a baseline
+  // record being silently DROPPED, which subset-of would also catch. P4-T7 (this phase's own
+  // dedicated seam task) performs the authoritative RF-CBC-001-vs-current comparison once the
+  // rest of Phase 4 has landed.
   const fixture = await loadFixture();
   const current = await computeSnapshot(root);
   for (const target of RECORD_TARGETS) {
     const baselineIds = Object.keys(fixture.records[target.relPath].byId).sort();
-    const currentIds = Object.keys(current.records[target.relPath].byId).sort();
-    assert.deepEqual(currentIds, baselineIds, `${target.relPath}: unexpected records beyond the P4-T1 baseline`);
+    const currentIds = new Set(Object.keys(current.records[target.relPath].byId));
+    for (const id of baselineIds) {
+      assert.ok(currentIds.has(id), `${target.relPath}: baseline record "${id}" is missing from the current file — P4-T1 baseline records must never be dropped`);
+    }
   }
 });

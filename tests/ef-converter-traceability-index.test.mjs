@@ -14,10 +14,15 @@
 //   2. Query (1) `queryTraceabilityByOutput` succeeds for all 4 slice rules' rendered-output ids
 //      (ruleId for alert/note outputs, candidateId for the one candidate-type rule) with a
 //      non-empty decisionId/claims/passages/sources/reviewBy on every result — zero dangling edges.
-//   3. Query (2) `queryTraceabilityBySource` succeeds for every one of `evidence.json`'s 8 sources
+//   3. Query (2) `queryTraceabilityBySource` succeeds for every RULE-CITED evidence.json source
 //      with non-empty claims/rules/tests/outputs on every result — zero dangling edges — AND the
 //      union of every source's `ruleIds` covers all 4 slice rules (every rule is reachable from at
-//      least one source; no rule is an orphan the reverse query could never find).
+//      least one source; no rule is an orphan the reverse query could never find). This index is
+//      rooted at rules (`02 §4.16`'s "rule -> test -> output" chain runs FROM a rule), so a source
+//      with zero citing rules has no edge into the graph at all -- expected and asserted (not
+//      merely un-tested) for `modules/cbc_suite_v1/evidence.json`'s 12 RF-CBC-002 sources
+//      (multi-bundle-conversion-e1, P4-T5): no `authoring-decisions.yaml` record cites any of them,
+//      so they correctly carry zero rule edges, not a dangling/broken one.
 //   4. Both query functions fail closed (a named `TraceabilityNotFoundError`, never an empty/
 //      undefined result) for an unknown output/source id.
 //   5. `buildTraceabilityIndex` is a pure, deterministic function: building twice from the same
@@ -121,11 +126,23 @@ test('P5-T4: queryTraceabilityByOutput fails closed (named error, not empty resu
 
 // ---- (3) query 2: given a source, list claims/rules/tests/outputs potentially affected ----------
 
-test('P5-T4: queryTraceabilityBySource resolves every evidence.json source with zero dangling edges', async () => {
+test('P5-T4: queryTraceabilityBySource resolves every RULE-CITED evidence.json source with zero dangling edges', async () => {
   const index = await loadCommittedIndex();
   const evidenceDoc = JSON.parse(await readFile(path.join(MODULE_DIR, 'evidence.json'), 'utf8'));
-  const sourceIds = evidenceDoc.sources.map((source) => source.id);
-  assert.ok(sourceIds.length > 0, 'sanity: evidence.json must declare at least one source');
+  const allSourceIds = evidenceDoc.sources.map((source) => source.id);
+  assert.ok(allSourceIds.length > 0, 'sanity: evidence.json must declare at least one source');
+
+  // This traceability index is rule-rooted (`02 §4.16`): a source with zero rules citing it has
+  // no edge into the graph, by construction, not a dangling one. `index.sources` (the committed
+  // index's own key set) is exactly the rule-cited subset -- iterate that, not every
+  // evidence.json source, so a genuinely rule-less source (RF-CBC-002, P4-T5) is correctly
+  // excluded from this completeness check rather than failing it.
+  const sourceIds = Object.keys(index.sources);
+  assert.ok(sourceIds.length > 0, 'sanity: the committed index must declare at least one rule-cited source');
+  assert.ok(
+    sourceIds.every((id) => allSourceIds.includes(id)),
+    'every rule-cited source in the index must resolve to a real evidence.json source id',
+  );
 
   const ruleIdsSeen = new Set();
   for (const sourceId of sourceIds) {
@@ -141,6 +158,20 @@ test('P5-T4: queryTraceabilityBySource resolves every evidence.json source with 
     for (const testRef of result.testRefs) {
       assert.ok(testRef.file && testRef.testName, `${sourceId}: every testRef must name a file and testName`);
     }
+  }
+
+  // multi-bundle-conversion-e1, P4-T5: every RF-CBC-002 source (rule-less -- no
+  // authoring-decisions.yaml cites any of them) must be ABSENT from the index's rule-cited
+  // source set, not merely un-checked. A source silently regaining rule edges would be at least
+  // as surprising as one silently losing them.
+  const rf002OnlySourceIds = allSourceIds.filter((id) => !sourceIds.includes(id));
+  assert.ok(rf002OnlySourceIds.length > 0, 'sanity: expected at least one rule-less (RF-CBC-002) evidence.json source not covered by the traceability index');
+  for (const sourceId of rf002OnlySourceIds) {
+    assert.throws(
+      () => queryTraceabilityBySource(index, sourceId),
+      (err) => err instanceof TraceabilityNotFoundError && err.kind === 'source',
+      `${sourceId}: a rule-less evidence.json source must fail closed (TraceabilityNotFoundError), never silently resolve`,
+    );
   }
 
   // Completeness: every slice rule must be reachable from at least one source — otherwise this

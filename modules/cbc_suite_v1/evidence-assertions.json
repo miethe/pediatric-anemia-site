@@ -557,6 +557,2188 @@
         "assayMethod": null
       },
       "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_001",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_02",
+      "sourceId": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_001",
+      "passageId": "psg_7e0e21af3d421af2eb00d5af15033e170d0b0de05127477a8ad1060ace9264e4",
+      "locator": {
+        "raw": "Results — Patient characteristics at diagnosis (also Introduction: '~80% of RCC cases')",
+        "page": null,
+        "section": "Results — Patient characteristics at diagnosis (also Introduction: '~80% of RCC cases')",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:7e0e21af3d421af2eb00d5af15033e170d0b0de05127477a8ad1060ace9264e4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children/adolescents with refractory cytopenia of childhood (RCC), normal karyotype, no germline predisposition; median age 10.9 y (range 1.4-17.3); slight male predominance (M/F 1.2)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Central bone-marrow core-biopsy + aspirate review by EWOG-MDS reference pathologists (H&E, reticulin, naphthol AS-D chloroacetate esterase; immunostains CD42b, E-cadherin, MPO, TdT, CD20, CD3, CD123, CD34) per WHO 2008/2017 and 2022 ICC"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_002",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_02",
+      "sourceId": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_002",
+      "passageId": "psg_4415d8832591af50395f948626941d4fb046a5912574c1271f5e586f6fd5b6b4",
+      "locator": {
+        "raw": "Introduction — risk-adapted therapy approach (EWOG-MDS stratification)",
+        "page": null,
+        "section": "Introduction — risk-adapted therapy approach (EWOG-MDS stratification)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:4415d8832591af50395f948626941d4fb046a5912574c1271f5e586f6fd5b6b4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric RCC patients (all ages in cohort, 1.4-17.3 y); stratification applies at/near diagnosis",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "ANC from peripheral blood count; karyotype by cytogenetics; transfusion dependency clinical. ANC threshold is analyzer-agnostic absolute count"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_003",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_02",
+      "sourceId": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_003",
+      "passageId": "psg_aa793f52ffcdd65eafd4e32a2308ef685738ecaa95984d796636f5591be24a2a",
+      "locator": {
+        "raw": "Results — Hematological course (severity categorization of follow-up blood counts, n=74)",
+        "page": null,
+        "section": "Results — Hematological course (severity categorization of follow-up blood counts, n=74)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:aa793f52ffcdd65eafd4e32a2308ef685738ecaa95984d796636f5591be24a2a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Non-transplanted pediatric RCC patients with >=2 y follow-up blood-count data (n=74); values assessed over disease course, not neonatal/GA-specific",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Peripheral blood counts (Hb, ANC, platelets); analyzer-agnostic absolute values"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_004",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_02",
+      "sourceId": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_004",
+      "passageId": "psg_e499fd5da143e3e477827df277eba1ec39b8771cc6fd9716779cd33132d6980e",
+      "locator": {
+        "raw": "Results — Hematological course (mild-abnormality band, n=74)",
+        "page": null,
+        "section": "Results — Hematological course (mild-abnormality band, n=74)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:e499fd5da143e3e477827df277eba1ec39b8771cc6fd9716779cd33132d6980e",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Non-transplanted pediatric RCC patients with >=2 y follow-up blood-count data (n=74)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Peripheral blood counts (Hb, ANC, platelets, MCV); MCV interpreted age-adjusted per source"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_005",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_02",
+      "sourceId": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_005",
+      "passageId": "psg_976e974ab602bd6f0c64d4417525ae28c6e0af967ec4e94d656618fd95193235",
+      "locator": {
+        "raw": "Results — Clinical outcome (Kaplan-Meier transplant-free survival)",
+        "page": null,
+        "section": "Results — Clinical outcome (Kaplan-Meier transplant-free survival)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:976e974ab602bd6f0c64d4417525ae28c6e0af967ec4e94d656618fd95193235",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "100 pediatric RCC patients, normal karyotype, no germline predisposition, observation-only >=2 y from diagnosis",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (Kaplan-Meier outcome estimate)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_006",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_02",
+      "sourceId": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_006",
+      "passageId": "psg_16fe9e235a4bd017df006c504695a5b50b1781dd4add493f969c34c77ab25ecd",
+      "locator": {
+        "raw": "Discussion — surveillance recommendation",
+        "page": null,
+        "section": "Discussion — surveillance recommendation",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:16fe9e235a4bd017df006c504695a5b50b1781dd4add493f969c34c77ab25ecd",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Observed pediatric RCC patients (normal karyotype, no predisposition) in follow-up",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Peripheral blood count monitoring vs patient's own baseline (not a fixed reference interval)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_007",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_02",
+      "sourceId": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_007",
+      "passageId": "psg_2221ef601cf8f8bc6d0636e610a83ea695120c2c2e52aff5b9b2b30cd2554f2b",
+      "locator": {
+        "raw": "Results — Clinical outcome (baseline predictors of later HSCT)",
+        "page": null,
+        "section": "Results — Clinical outcome (baseline predictors of later HSCT)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2221ef601cf8f8bc6d0636e610a83ea695120c2c2e52aff5b9b2b30cd2554f2b",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric RCC observation cohort; comparison of 9 later-HSCT vs 91 non-HSCT patients, values at diagnosis",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Peripheral blood counts (Hb, platelets); median group values, descriptive (not a decision cutoff)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_008",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_02",
+      "sourceId": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+      "rfEvidenceId": "ev_008",
+      "rfClaimId": "clm_008",
+      "passageId": "psg_9153e7a37ec2079907b80623310d2c91cd3ed3224a006c678cb93770bfbd4d78",
+      "locator": {
+        "raw": "Results — Patient characteristics at diagnosis (age/sex/MCV)",
+        "page": null,
+        "section": "Results — Patient characteristics at diagnosis (age/sex/MCV)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:9153e7a37ec2079907b80623310d2c91cd3ed3224a006c678cb93770bfbd4d78",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric RCC cohort; age band 1.4-17.3 y (median 10.9); both sexes (M/F 1.2)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "MCV interpreted age-adjusted (explicitly not a fixed adult cutoff); analyzer-dependent CBC indices"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_009",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_04",
+      "sourceId": "PBC2024_PEDIATRIC_SAA_RECOMMENDATIONS",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_009",
+      "passageId": "psg_98ebf499b4dd9d9d5fe9e4e602a2a36ad937533e597788bd8b142579da4f25be",
+      "locator": {
+        "raw": "Abstract (PMID 38757488), sentences 1-2",
+        "page": null,
+        "section": "Abstract (PMID 38757488), sentences 1-2",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:98ebf499b4dd9d9d5fe9e4e602a2a36ad937533e597788bd8b142579da4f25be",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with newly diagnosed severe aplastic anemia (pediatric hematology population); sex not differentiated; not a neonatal GA/PNA-indexed source",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (narrative disease-severity/management statement, not a lab-analyzer threshold)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_010",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_04",
+      "sourceId": "PBC2024_PEDIATRIC_SAA_RECOMMENDATIONS",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_010",
+      "passageId": "psg_7bda7d394da98ad1e6f781ca2b2adab5e43230bff9cbe44a8a8a8986066a6663",
+      "locator": {
+        "raw": "Abstract (PMID 38757488), sentence 3",
+        "page": null,
+        "section": "Abstract (PMID 38757488), sentence 3",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:7bda7d394da98ad1e6f781ca2b2adab5e43230bff9cbe44a8a8a8986066a6663",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with newly diagnosed severe aplastic anemia",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_011",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_04",
+      "sourceId": "PBC2024_PEDIATRIC_SAA_RECOMMENDATIONS",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_011",
+      "passageId": "psg_b702b58a670e4a5f052824589191652b64c2ffd79b848b54837258c2a8697268",
+      "locator": {
+        "raw": "Abstract (PMID 38757488), sentence 4",
+        "page": null,
+        "section": "Abstract (PMID 38757488), sentence 4",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b702b58a670e4a5f052824589191652b64c2ffd79b848b54837258c2a8697268",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with severe aplastic anemia (rare-disease context)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_012",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_04",
+      "sourceId": "PBC2024_PEDIATRIC_SAA_RECOMMENDATIONS",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_012",
+      "passageId": "psg_2b8e6f563b0272f2a6538816e96c8699ef04628b886c4801b484241e884ec865",
+      "locator": {
+        "raw": "Abstract (PMID 38757488), sentence 5",
+        "page": null,
+        "section": "Abstract (PMID 38757488), sentence 5",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2b8e6f563b0272f2a6538816e96c8699ef04628b886c4801b484241e884ec865",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with newly diagnosed severe aplastic anemia",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_013",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_11",
+      "sourceId": "INDIANPEDIATR2022_IAP_AA_CONSENSUS",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_013",
+      "passageId": "psg_edea4879cff5fe27a83e56e01a24e4c43adfaeceb7bc5a7cd334602486745f7f",
+      "locator": {
+        "raw": "Abstract — Key recommendations, item (i)",
+        "page": null,
+        "section": "Abstract — Key recommendations, item (i)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:edea4879cff5fe27a83e56e01a24e4c43adfaeceb7bc5a7cd334602486745f7f",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with suspected acquired aplastic anemia (pediatric; age band not numerically specified in source)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Bone marrow biopsy (histopathology); not a numeric analyzer threshold"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_014",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_11",
+      "sourceId": "INDIANPEDIATR2022_IAP_AA_CONSENSUS",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_014",
+      "passageId": "psg_0eb7338f3db33cfb8501fe0edc678d8b2f606d18b822b2d5ff8c0b5a3d050bc2",
+      "locator": {
+        "raw": "Abstract — Key recommendations, item (ii)",
+        "page": null,
+        "section": "Abstract — Key recommendations, item (ii)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:0eb7338f3db33cfb8501fe0edc678d8b2f606d18b822b2d5ff8c0b5a3d050bc2",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "All pediatric cases of aplastic anemia (age band not numerically specified in source)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Differential diagnostic exclusion workup (IBMFS testing, PNH flow cytometry, viral serology, drug/exposure history); not a numeric analyzer threshold"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_015",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_11",
+      "sourceId": "INDIANPEDIATR2022_IAP_AA_CONSENSUS",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_015",
+      "passageId": "psg_c5a004730466a9fc3d0d1bf13146246b8d1965ef55a97345034c28c0ec64e045",
+      "locator": {
+        "raw": "Abstract — Key recommendations, item (iii)",
+        "page": null,
+        "section": "Abstract — Key recommendations, item (iii)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:c5a004730466a9fc3d0d1bf13146246b8d1965ef55a97345034c28c0ec64e045",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with acquired aplastic anemia and no co-morbidities (age band not numerically specified in source)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Hemoglobin measurement (automated hematology analyzer / CBC); threshold as stated is not qualified by analyzer/method in source"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_016",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_11",
+      "sourceId": "INDIANPEDIATR2022_IAP_AA_CONSENSUS",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_016",
+      "passageId": "psg_c3e7df8fd122f18176c0ecdd052577e4b62439fbc10ef521c2b7c3c6299d6679",
+      "locator": {
+        "raw": "Abstract — Key recommendations, item (vii)",
+        "page": null,
+        "section": "Abstract — Key recommendations, item (vii)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:c3e7df8fd122f18176c0ecdd052577e4b62439fbc10ef521c2b7c3c6299d6679",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with acquired AA receiving immunosuppressive therapy (age band not numerically specified in source)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Response assessment by clinical/hematologic parameters; timing threshold, not a numeric analyzer cutoff"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_017",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_11",
+      "sourceId": "INDIANPEDIATR2022_IAP_AA_CONSENSUS",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_017",
+      "passageId": "psg_5b998cf203c230637fd3a197101b1f66ec75002b452c9075d559288237a2d5fb",
+      "locator": {
+        "raw": "Abstract — Key recommendations, items (iv) and (vii)",
+        "page": null,
+        "section": "Abstract — Key recommendations, items (iv) and (vii)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:5b998cf203c230637fd3a197101b1f66ec75002b452c9075d559288237a2d5fb",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with newly diagnosed very severe / severe acquired AA (severity-count definitions not locatable in accessible source text)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (treatment-pathway recommendation, documented as source stance; not a CDS-executable rule)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_018",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_10",
+      "sourceId": "LEUKEMIA2024_IBMFS_PROTEOGENOMICS",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_018",
+      "passageId": "psg_24d561ee102e0c7b1b4559d312782bb7412a5547cec44cad1d205e0400e7d1b8",
+      "locator": {
+        "raw": "Results — 'Establishment of a rapid diagnostic system for SDS and ADH5/ALDH2 deficiency', final paragraph",
+        "page": null,
+        "section": "Results — 'Establishment of a rapid diagnostic system for SDS and ADH5/ALDH2 deficiency', final paragraph",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:24d561ee102e0c7b1b4559d312782bb7412a5547cec44cad1d205e0400e7d1b8",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Patients with IBMFS-related hematological disorders (n=390) + healthy controls (n=27), 417 samples total; pediatric-predominant Japanese registry (discovery cohort median age at onset 3 y, range 0-23 y); both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Method-dependent: SureQuant targeted proteomics (DDA-MS, Orbitrap Exploris 480, stable-isotope-labeled peptides); SBDS/ADH5 expression normalized to GAPDH protein. Not interchangeable with Western blot or a standardized clinical assay."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_019",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_10",
+      "sourceId": "LEUKEMIA2024_IBMFS_PROTEOGENOMICS",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_019",
+      "passageId": "psg_a19534a3ad7f5c3126fe93220b56484b99e4576f827158e069eff600db09df1c",
+      "locator": {
+        "raw": "Results — 'Establishment of a rapid diagnostic system for SDS and ADH5/ALDH2 deficiency', final paragraph",
+        "page": null,
+        "section": "Results — 'Establishment of a rapid diagnostic system for SDS and ADH5/ALDH2 deficiency', final paragraph",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:a19534a3ad7f5c3126fe93220b56484b99e4576f827158e069eff600db09df1c",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Reference set = 417 IBMFS/related-disorder + healthy-control samples excluding confirmed SDS and ADH5/ALDH2 deficiency cases; pediatric-predominant Japanese registry, both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Method-dependent: GAPDH-normalized SureQuant targeted MS protein ratios; cutoff is a data-derived mean-2SD rule specific to this assay/cohort, not a portable clinical threshold."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_020",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_10",
+      "sourceId": "LEUKEMIA2024_IBMFS_PROTEOGENOMICS",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_020",
+      "passageId": "psg_b146519f4a7e405f4e8b57cd91c84849f04250bbf89b794b9589d179bcc717a8",
+      "locator": {
+        "raw": "Abstract; Results — 'Diagnosis of IBMFS through proteomic analysis', paragraph 1",
+        "page": null,
+        "section": "Abstract; Results — 'Diagnosis of IBMFS through proteomic analysis', paragraph 1",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b146519f4a7e405f4e8b57cd91c84849f04250bbf89b794b9589d179bcc717a8",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Discovery cohort SDS patients (n=6) within 60 IBMFS patients + 14 healthy controls; pediatric-onset Japanese registry, both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Method-dependent: in-depth non-targeted DIA-MS proteomics (Q Exactive HF-X); complements short-read DNA-seq, which misses SBDS variants due to a 97%-homologous pseudogene."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_021",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_10",
+      "sourceId": "LEUKEMIA2024_IBMFS_PROTEOGENOMICS",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_021",
+      "passageId": "psg_a32fd138177306c0c416d35d438b05adbf62fe3dbe4a6d018d792e831ff54d3c",
+      "locator": {
+        "raw": "Results — 'Clinical and genetic diagnoses of the discovery cohort', paragraph 1",
+        "page": null,
+        "section": "Results — 'Clinical and genetic diagnoses of the discovery cohort', paragraph 1",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:a32fd138177306c0c416d35d438b05adbf62fe3dbe4a6d018d792e831ff54d3c",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "IBMFS discovery cohort (n=60): 27 male; median age at disease onset 3 y, range 0-23 y (pediatric-predominant, includes young adults)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (demographic description)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_022",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_10",
+      "sourceId": "LEUKEMIA2024_IBMFS_PROTEOGENOMICS",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_022",
+      "passageId": "psg_c817896259a2c1a4753553e3dba15bc419fcf3faabdba0165c2e421acc3afc79",
+      "locator": {
+        "raw": "Materials and methods — 'Patients and samples', paragraph 1",
+        "page": null,
+        "section": "Materials and methods — 'Patients and samples', paragraph 1",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:c817896259a2c1a4753553e3dba15bc419fcf3faabdba0165c2e421acc3afc79",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Suspected-IBMFS pediatric patients lacking a confirmed pathogenic variant (IBMFS-NOS working definition)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Telomere length measured as SD from age-adjusted normal (flow-FISH class assay); method/reference-lab dependent."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_023",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_10",
+      "sourceId": "LEUKEMIA2024_IBMFS_PROTEOGENOMICS",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_023",
+      "passageId": "psg_62c8770197c1b736135a66735a292ff421995ae6aa539ef87843932a35e6338e",
+      "locator": {
+        "raw": "Introduction, paragraph 2",
+        "page": null,
+        "section": "Introduction, paragraph 2",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:62c8770197c1b736135a66735a292ff421995ae6aa539ef87843932a35e6338e",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Patients with Shwachman-Diamond syndrome (pediatric-onset disorder); general SDS population, not cohort-specific",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (epidemiologic progression rate cited from literature)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_024",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_10",
+      "sourceId": "LEUKEMIA2024_IBMFS_PROTEOGENOMICS",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_024",
+      "passageId": "psg_9a776c1883ad4fa42179c11ae1fc80227affdf6243d1078267484b8ac99d337d",
+      "locator": {
+        "raw": "Introduction, paragraph 3",
+        "page": null,
+        "section": "Introduction, paragraph 3",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:9a776c1883ad4fa42179c11ae1fc80227affdf6243d1078267484b8ac99d337d",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "East Asian patients suspected of IBMFS (ADH5/ALDH2 deficiency is over-represented in Asian populations)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Genotyping of ALDH2 rs671 (SNP assay), used alongside ADH5 protein expression; digenic diagnosis requires both."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_025",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_09",
+      "sourceId": "ADVCLINEXPMED2024_FA_CYTOGENETICS",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_025",
+      "passageId": "psg_290d576124a2867081ba90843fa2b5d3c45686d8a65205d836bd50b0515e0635",
+      "locator": {
+        "raw": "Abstract (Results summary)",
+        "page": null,
+        "section": "Abstract (Results summary)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:290d576124a2867081ba90843fa2b5d3c45686d8a65205d836bd50b0515e0635",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children/young people with clinical suspicion of Fanconi anemia (hematological manifestations and/or congenital defects); age at diagnosis 1 month to 32 years, median 15.36 y; both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "MMC-induced chromosomal breakage test on PHA-stimulated peripheral blood lymphocytes (RPMI 1640 + 15% FBS); breaks scored per cell — method/scoring-dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_026",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_09",
+      "sourceId": "ADVCLINEXPMED2024_FA_CYTOGENETICS",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_026",
+      "passageId": "psg_525f311783addf10c7e96f79d83f2b9b18c7ce25182802d827f6336911efe67c",
+      "locator": {
+        "raw": "Results section + Patients section",
+        "page": null,
+        "section": "Results section + Patients section",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:525f311783addf10c7e96f79d83f2b9b18c7ce25182802d827f6336911efe67c",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "100 patients with clinical suspicion of FA; age at diagnosis 1 month to 32 years, median 15.36 y",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "MMC chromosomal breakage test; three-way classification (FA / possible mosaic FA / non-FA) — interpretation-dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_027",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_09",
+      "sourceId": "ADVCLINEXPMED2024_FA_CYTOGENETICS",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_027",
+      "passageId": "psg_cb4424ba9adb2723b925b1d0b0d59dea9a2e15ebd187a39462eb8a6a5942ac05",
+      "locator": {
+        "raw": "Materials and methods section",
+        "page": null,
+        "section": "Materials and methods section",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:cb4424ba9adb2723b925b1d0b0d59dea9a2e15ebd187a39462eb8a6a5942ac05",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Peripheral blood lymphocyte cultures from suspected-FA children and controls",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "72-hour MMC exposure at graded doses (0/50/150/300 nM); clastogen concentration is assay-defining and results are dose- and lab-protocol-dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_028",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_09",
+      "sourceId": "ADVCLINEXPMED2024_FA_CYTOGENETICS",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_028",
+      "passageId": "psg_0850d71476620ad4d1fdbe4ff88e6e3212e7a428b2caa0c1a88af5b92e0b898a",
+      "locator": {
+        "raw": "Abstract (Results summary)",
+        "page": null,
+        "section": "Abstract (Results summary)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:0850d71476620ad4d1fdbe4ff88e6e3212e7a428b2caa0c1a88af5b92e0b898a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Suspected-FA children classified FA vs non-FA by the MMC test",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Spontaneous (unstimulated by MMC) chromosome aberration scoring in cultured lymphocytes — ratio, scoring-dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_029",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_09",
+      "sourceId": "ADVCLINEXPMED2024_FA_CYTOGENETICS",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_029",
+      "passageId": "psg_92b89fab38f4223aa3c1f5e8a07e2021b8a44282eab3111673693f408daa31f3",
+      "locator": {
+        "raw": "Abstract / Conclusions",
+        "page": null,
+        "section": "Abstract / Conclusions",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:92b89fab38f4223aa3c1f5e8a07e2021b8a44282eab3111673693f408daa31f3",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with suspected FA undergoing first-line cytogenetic screening",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "MMC clastogen sensitivity test as a first-step screen; confirmatory tier = mutation testing + skin fibroblast breakage analysis (to catch mosaicism)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_030",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_07",
+      "sourceId": "BLOOD2022_TBD_OUTCOMES",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_030",
+      "passageId": "psg_fc170e6471370e8ea176ee7506aa3db7b2d45ea95aa92ed9e812f9a14a433326",
+      "locator": {
+        "raw": "Abstract; also Table 1 (cohort description)",
+        "page": null,
+        "section": "Abstract; also Table 1 (cohort description)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:fc170e6471370e8ea176ee7506aa3db7b2d45ea95aa92ed9e812f9a14a433326",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "DC/TBD patients across the lifespan (age at diagnosis range 0-71.6 y, median 19.4 y); mixed pediatric and adult, 144/231 male; not a healthy-reference population",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent — cohort demographic/epidemiological measure, not a laboratory assay"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_031",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_07",
+      "sourceId": "BLOOD2022_TBD_OUTCOMES",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_031",
+      "passageId": "psg_9c3f83d2306e7562d8c06663b520f14c9f6d5731b52f4ea82265ed1af265090c",
+      "locator": {
+        "raw": "Abstract (Results summary)",
+        "page": null,
+        "section": "Abstract (Results summary)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:9c3f83d2306e7562d8c06663b520f14c9f6d5731b52f4ea82265ed1af265090c",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Full DC/TBD cohort (n=231, all ages, both sexes); not pediatric-specific",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable — Kaplan-Meier overall-survival estimate"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_032",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_07",
+      "sourceId": "BLOOD2022_TBD_OUTCOMES",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_032",
+      "passageId": "psg_e37e844bee7159df028cda10753ff5fa07c3dba17d7cd2aae990d7ecfae60eb4",
+      "locator": {
+        "raw": "Abstract (Results summary)",
+        "page": null,
+        "section": "Abstract (Results summary)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:e37e844bee7159df028cda10753ff5fa07c3dba17d7cd2aae990d7ecfae60eb4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Full DC/TBD cohort stratified by inheritance mode (AD vs AR/XLR vs TINF2); all ages, both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable — transplant-free survival estimate and log-rank comparison"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_033",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_07",
+      "sourceId": "BLOOD2022_TBD_OUTCOMES",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_033",
+      "passageId": "psg_59749cbfa6d016fea87e240058eaa996526e57a4e8cf1021a90e65fa9499654d",
+      "locator": {
+        "raw": "Results (bone marrow failure); Table 3",
+        "page": null,
+        "section": "Results (bone marrow failure); Table 3",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:59749cbfa6d016fea87e240058eaa996526e57a4e8cf1021a90e65fa9499654d",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "DC/TBD cohort (n=231); HCT recipients had median age 15.4 y (range 0.9-63.1), i.e., predominantly pediatric/young-adult at transplant",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable — clinical event (severe bone marrow failure / transplant) counts, not a lab assay"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_034",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_07",
+      "sourceId": "BLOOD2022_TBD_OUTCOMES",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_034",
+      "passageId": "psg_256385862f982e64e3415a1cc0e059f2949bf0e3471db5687220a18b542b7371",
+      "locator": {
+        "raw": "Results (cancer risk / Cox model)",
+        "page": null,
+        "section": "Results (cancer risk / Cox model)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:256385862f982e64e3415a1cc0e059f2949bf0e3471db5687220a18b542b7371",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "DC/TBD cohort stratified by inheritance; Cox model adjusted for sex and pediatric-vs-adult status at diagnosis",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable — Cox proportional-hazards estimate"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_035",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_07",
+      "sourceId": "BLOOD2022_TBD_OUTCOMES",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_035",
+      "passageId": "psg_170e07ccbabf249f3f14a7d346354d9a523f4995fca0377915856c1e2bc27135",
+      "locator": {
+        "raw": "Results (age at diagnosis by inheritance group); Table 1",
+        "page": null,
+        "section": "Results (age at diagnosis by inheritance group); Table 1",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:170e07ccbabf249f3f14a7d346354d9a523f4995fca0377915856c1e2bc27135",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "DC/TBD by inheritance mode: AR/XLR (median 11.3 y) and TINF2 (median 8.1 y) present predominantly in the pediatric age band; AD (median 36.1 y) predominantly adult",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable — age-at-diagnosis demographic measure"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_036",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_07",
+      "sourceId": "BLOOD2022_TBD_OUTCOMES",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_036",
+      "passageId": "psg_a7dc5cd4bfab663de4827eac17198f1cae3882f4c8f01c4f3aa61f33b4d4ed39",
+      "locator": {
+        "raw": "Results (pulmonary fibrosis); Table 3",
+        "page": null,
+        "section": "Results (pulmonary fibrosis); Table 3",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:a7dc5cd4bfab663de4827eac17198f1cae3882f4c8f01c4f3aa61f33b4d4ed39",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Adults with DC/TBD without prior HCT, by inheritance mode; pulmonary fibrosis is an adult-predominant phenotype (not a pediatric finding here)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable — clinical phenotype prevalence"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_037",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_03",
+      "sourceId": "BCMD2024_AIEOP_AA_GUIDELINE",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_037",
+      "passageId": "psg_112abc9827a91caa99e28edf06b3374a1e8ffd389e522325ea588f018729f268",
+      "locator": {
+        "raw": "Abstract, sentence 2 (Blood Cells Mol Dis 2024;108:102860)",
+        "page": null,
+        "section": "Abstract, sentence 2 (Blood Cells Mol Dis 2024;108:102860)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:112abc9827a91caa99e28edf06b3374a1e8ffd389e522325ea588f018729f268",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Not age-stratified in the abstract; general population incidence (Western world vs East Asia geographic comparison), reported in a pediatric-focused guideline. Sex/GA-PNA not specified.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (epidemiologic incidence rate, not a laboratory measurement)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_038",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_03",
+      "sourceId": "BCMD2024_AIEOP_AA_GUIDELINE",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_038",
+      "passageId": "psg_aa89571e73682dcc6d5649cae3de6a4db5cc77c72a5eabe33c6a83da5f14db76",
+      "locator": {
+        "raw": "Abstract, sentence 1 (definition)",
+        "page": null,
+        "section": "Abstract, sentence 1 (definition)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:aa89571e73682dcc6d5649cae3de6a4db5cc77c72a5eabe33c6a83da5f14db76",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric (childhood) patients with acquired aplastic anemia; sex not specified; not neonatal/GA-PNA specific.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Peripheral blood cell counts (pancytopenia) plus bone marrow histology/cellularity assessment; analyzer/method not specified in accessible text."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_039",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_03",
+      "sourceId": "BCMD2024_AIEOP_AA_GUIDELINE",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_039",
+      "passageId": "psg_d6d7339c6d4f6d823f76d8792ed12a31a624e98c8daf8e6ce3dde7c68f31a820",
+      "locator": {
+        "raw": "Abstract, treatment sentences (first-line)",
+        "page": null,
+        "section": "Abstract, treatment sentences (first-line)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d6d7339c6d4f6d823f76d8792ed12a31a624e98c8daf8e6ce3dde7c68f31a820",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric patients with severe aplastic anemia (SAA); sex/GA-PNA not specified.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (management recommendation, not a measured threshold)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_040",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_03",
+      "sourceId": "BCMD2024_AIEOP_AA_GUIDELINE",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_040",
+      "passageId": "psg_58e0a699b284a4254d60a0b8b29cb7457106d9fb1ef2efa166a47fb033f16453",
+      "locator": {
+        "raw": "Abstract, treatment sentences (second-line options)",
+        "page": null,
+        "section": "Abstract, treatment sentences (second-line options)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:58e0a699b284a4254d60a0b8b29cb7457106d9fb1ef2efa166a47fb033f16453",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric patients with severe aplastic anemia lacking a matched sibling donor; sex/GA-PNA not specified.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (management options, not a measured threshold)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_041",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_03",
+      "sourceId": "BCMD2024_AIEOP_AA_GUIDELINE",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_041",
+      "passageId": "psg_aaa455cc4cc35b0524091f9d67e10a727693f5ac73e6bdb3f98b0e487e74700b",
+      "locator": {
+        "raw": "Abstract, closing sentence + PubMed article-type metadata (Practice Guideline)",
+        "page": null,
+        "section": "Abstract, closing sentence + PubMed article-type metadata (Practice Guideline)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:aaa455cc4cc35b0524091f9d67e10a727693f5ac73e6bdb3f98b0e487e74700b",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "not applicable (provenance/authority metadata)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_042",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_05",
+      "sourceId": "LANCETHAEM2024_DBA_CONSENSUS",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_042",
+      "passageId": "psg_09ca90a0f543de00dc01c857efc1021763ba90464897ba7e77491b127c8e175e",
+      "locator": {
+        "raw": "Section 9 THERAPY RECOMMENDATIONS, opening paragraph (primary goal)",
+        "page": null,
+        "section": "Section 9 THERAPY RECOMMENDATIONS, opening paragraph (primary goal)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:09ca90a0f543de00dc01c857efc1021763ba90464897ba7e77491b127c8e175e",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "DBA syndrome patients, all ages (children and adults); explicitly 'independent of age' per abstract/therapy section",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Peripheral blood haemoglobin (CBC); not analyzer-method-dependent for this target"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_043",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_05",
+      "sourceId": "LANCETHAEM2024_DBA_CONSENSUS",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_043",
+      "passageId": "psg_339c9b43d8cf4851281d490035b211f735c52ccc61f2d223ff2e506b63fb453a",
+      "locator": {
+        "raw": "Section 8 DIFFERENTIAL DIAGNOSES (eADA test performance)",
+        "page": null,
+        "section": "Section 8 DIFFERENTIAL DIAGNOSES (eADA test performance)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:339c9b43d8cf4851281d490035b211f735c52ccc61f2d223ff2e506b63fb453a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Patients (infants/children and adults) under evaluation for suspected DBA syndrome vs other causes of erythroid failure",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Erythrocyte adenosine deaminase (eADA) activity assay; MUST be drawn pre-transfusion (transfused donor RBCs confound the result)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_044",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_05",
+      "sourceId": "LANCETHAEM2024_DBA_CONSENSUS",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_044",
+      "passageId": "psg_d4a863051177e8a3c6728dc053363bed6b44068e6dd7d7683a66a4c4867d7fe1",
+      "locator": {
+        "raw": "Section 9 > Chelation therapy > Evaluation of iron overload (LIC target)",
+        "page": null,
+        "section": "Section 9 > Chelation therapy > Evaluation of iron overload (LIC target)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d4a863051177e8a3c6728dc053363bed6b44068e6dd7d7683a66a4c4867d7fe1",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Transfusion-dependent DBA syndrome patients (MRI-based iron assessment recommended by age 5 years at the latest, or earlier under sedation)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Liver iron concentration by MRI T2* or R2 (FerriScan); method-dependent (T2* vs R2). Serum ferritin explicitly stated NOT reliable for iron overload in DBA."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_045",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_05",
+      "sourceId": "LANCETHAEM2024_DBA_CONSENSUS",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_045",
+      "passageId": "psg_d61b2080e875ffca83be9f4aaf4a706616a6f8437f15b76e2244a994988d0406",
+      "locator": {
+        "raw": "Section 9 > Chelation therapy > Evaluation of iron overload (cardiac T2*)",
+        "page": null,
+        "section": "Section 9 > Chelation therapy > Evaluation of iron overload (cardiac T2*)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d61b2080e875ffca83be9f4aaf4a706616a6f8437f15b76e2244a994988d0406",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Chronically transfused DBA syndrome patients (cardiac MRI iron assessment recommended by age 5 years at latest, repeated yearly)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Cardiac MRI T2* (msec); method-specific. Panel notes healthy-volunteer mean T2* >40 ms considered normal; some panelists argued for stricter T2* >25 ms (no consensus)."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_046",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_05",
+      "sourceId": "LANCETHAEM2024_DBA_CONSENSUS",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_046",
+      "passageId": "psg_eeeabebf05730a43dbee60bf999063f084bbbaca3189e9325508b2c6bbe83efd",
+      "locator": {
+        "raw": "Section 9 > Oral steroids (maintenance dose ceiling / discontinuation rule)",
+        "page": null,
+        "section": "Section 9 > Oral steroids (maintenance dose ceiling / discontinuation rule)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:eeeabebf05730a43dbee60bf999063f084bbbaca3189e9325508b2c6bbe83efd",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Steroid-treated DBA syndrome patients >=1 year of age (children); adults capped separately at 10-15 mg/day)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not assay-dependent (weight-based dose threshold paired with Hb by CBC)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_047",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_05",
+      "sourceId": "LANCETHAEM2024_DBA_CONSENSUS",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_047",
+      "passageId": "psg_584b68ec7f3933e1a358922e1e34faffb9ceb34ed3f73a70dd8ed81ccd3b584f",
+      "locator": {
+        "raw": "Section 9 > Chelation therapy > Practical considerations (chelation start triggers)",
+        "page": null,
+        "section": "Section 9 > Chelation therapy > Practical considerations (chelation start triggers)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:584b68ec7f3933e1a358922e1e34faffb9ceb34ed3f73a70dd8ed81ccd3b584f",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Transfusion-dependent DBA syndrome children (and adults) beginning chronic transfusion",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Serum ferritin (ng/mL) + transferrin saturation (%) + LIC by MRI; ferritin alone flagged as unreliable for total iron burden in DBA"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_048",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_05",
+      "sourceId": "LANCETHAEM2024_DBA_CONSENSUS",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_048",
+      "passageId": "psg_869700c52e37b67cdc784cdc422c028fd514c998e3934fae565937f99770cd12",
+      "locator": {
+        "raw": "Section 4 CLINICAL PRESENTATION (age at presentation)",
+        "page": null,
+        "section": "Section 4 CLINICAL PRESENTATION (age at presentation)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:869700c52e37b67cdc784cdc422c028fd514c998e3934fae565937f99770cd12",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants/children with classic DBA syndrome (median onset 3 months; 90% within first year of life)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "CBC morphology (macrocytosis, reticulocytopenia); age-of-onset epidemiologic descriptor, not a lab cutoff"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_049",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_06",
+      "sourceId": "ASTCT2024_SAA_HCT_GUIDELINE",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_049",
+      "passageId": "psg_40f9e9e05bdc9336444f74839adf44b64007272982ceb0f7eeb8a2858c30e96a",
+      "locator": {
+        "raw": "Abstract (PubMed PMID 39307421); Recommendation — stem cell source (S, M)",
+        "page": null,
+        "section": "Abstract (PubMed PMID 39307421); Recommendation — stem cell source (S, M)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:40f9e9e05bdc9336444f74839adf44b64007272982ceb0f7eeb8a2858c30e96a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric, AYA, and adult patients with severe aplastic anemia undergoing allogeneic HCT (MRD, MUD, or haploidentical); not sex-specific; not gestational/postnatal-age specific.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (graft-source procedural recommendation, no laboratory threshold)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_050",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_06",
+      "sourceId": "ASTCT2024_SAA_HCT_GUIDELINE",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_050",
+      "passageId": "psg_12b939e9b3223887e62a589d2f111c730c7e8b0c5bbec3e97ce0ca5e1249c419",
+      "locator": {
+        "raw": "Abstract (PubMed PMID 39307421); Recommendation — ATG selection (S, L)",
+        "page": null,
+        "section": "Abstract (PubMed PMID 39307421); Recommendation — ATG selection (S, L)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:12b939e9b3223887e62a589d2f111c730c7e8b0c5bbec3e97ce0ca5e1249c419",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric, AYA, and adult SAA patients receiving allogeneic HCT conditioning; not sex/GA-PNA specific.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (conditioning-agent recommendation, no laboratory threshold)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_051",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_06",
+      "sourceId": "ASTCT2024_SAA_HCT_GUIDELINE",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_051",
+      "passageId": "psg_3565dbd6f08c4916b0740d04dbc1473cfc57ae5643f8c1eae0dcd5a6497cee3f",
+      "locator": {
+        "raw": "Abstract (PubMed PMID 39307421) — age-eligibility statement",
+        "page": null,
+        "section": "Abstract (PubMed PMID 39307421) — age-eligibility statement",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:3565dbd6f08c4916b0740d04dbc1473cfc57ae5643f8c1eae0dcd5a6497cee3f",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Adults with severe aplastic anemia considered for upfront allogeneic HCT (this threshold is adult-facing; it does NOT set a pediatric age boundary).",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not method-dependent (chronological-age eligibility criterion)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_052",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_06",
+      "sourceId": "ASTCT2024_SAA_HCT_GUIDELINE",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_052",
+      "passageId": "psg_c085897335cf78c0e763fa34a78bec2733ba93a4646e6f9cc2ea76384e16b296",
+      "locator": {
+        "raw": "Recommendation — age for upfront HCT (C, M) / MRD-HCT first-line (S, M) [Guideline Central digest of the primary guideline]",
+        "page": null,
+        "section": "Recommendation — age for upfront HCT (C, M) / MRD-HCT first-line (S, M) [Guideline Central digest of the primary guideline]",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:c085897335cf78c0e763fa34a78bec2733ba93a4646e6f9cc2ea76384e16b296",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Patients with severe aplastic anemia and severe cytopenias considered for upfront/MRD allogeneic HCT; threshold is an upper adult-age boundary, not a pediatric floor.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not method-dependent (chronological-age eligibility criterion)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_053",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_06",
+      "sourceId": "ASTCT2024_SAA_HCT_GUIDELINE",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_053",
+      "passageId": "psg_4e298c735e89d3e4f5c8ee12991ca16450121fcc218674ab4fcff7549d36a3ea",
+      "locator": {
+        "raw": "Abstract (PubMed PMID 39307421); Recommendation — conditioning (S, L)",
+        "page": null,
+        "section": "Abstract (PubMed PMID 39307421); Recommendation — conditioning (S, L)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:4e298c735e89d3e4f5c8ee12991ca16450121fcc218674ab4fcff7549d36a3ea",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric, AYA, and adult SAA HCT recipients at high graft-failure risk or receiving MUD/CBT/haploidentical grafts; Cy-ATG (not fludarabine) is the parallel recommendation for pediatric/AYA MRD-HCT.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (conditioning-regimen recommendation, no laboratory threshold)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_054",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_06",
+      "sourceId": "ASTCT2024_SAA_HCT_GUIDELINE",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_054",
+      "passageId": "psg_36a2b535bc48b036c606107dafc50c3f7b94bd79032a3311691810bd48079fc1",
+      "locator": {
+        "raw": "Abstract (PubMed PMID 39307421); Recommendation — donor selection vs IST (C, L)",
+        "page": null,
+        "section": "Abstract (PubMed PMID 39307421); Recommendation — donor selection vs IST (C, L)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:36a2b535bc48b036c606107dafc50c3f7b94bd79032a3311691810bd48079fc1",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children and adults with severe aplastic anemia who lack a matched related donor (MRD); explicitly includes the pediatric population.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (donor-selection / treatment-sequencing recommendation, no laboratory threshold)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_055",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_00",
+      "sourceId": "BLOODADV2024_SAA_DELPHI_CONSENSUS",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_055",
+      "passageId": "psg_d55718d1ec666eca393794844b19ec2182354ab7fa8a20c4190a1a26d2e63978",
+      "locator": {
+        "raw": "Introduction — SAA classification paragraph (modified Camitta criteria)",
+        "page": null,
+        "section": "Introduction — SAA classification paragraph (modified Camitta criteria)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d55718d1ec666eca393794844b19ec2182354ab7fa8a20c4190a1a26d2e63978",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Patients of all ages with suspected acquired aplastic anemia (explicitly including pediatric per Delphi scope); these are absolute diagnostic cutoffs, NOT age- or sex-specific pediatric reference intervals",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Automated CBC/differential for neutrophils and platelets; reticulocyte count (automated/manual, analyzer-dependent); marrow cellularity by bone marrow biopsy morphology"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_056",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_00",
+      "sourceId": "BLOODADV2024_SAA_DELPHI_CONSENSUS",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_056",
+      "passageId": "psg_626612d96768f33e479e2dc56f9b8ea6fcb5d01d2c203ea99955debc1608b90a",
+      "locator": {
+        "raw": "Introduction — very severe AA definition (sentence following SAA criteria)",
+        "page": null,
+        "section": "Introduction — very severe AA definition (sentence following SAA criteria)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:626612d96768f33e479e2dc56f9b8ea6fcb5d01d2c203ea99955debc1608b90a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Patients of all ages with acquired SAA (pediatric included); absolute cutoff, not a pediatric reference interval",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Automated CBC differential (absolute neutrophil count)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_057",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_00",
+      "sourceId": "BLOODADV2024_SAA_DELPHI_CONSENSUS",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_057",
+      "passageId": "psg_97e3e67a0a91caf97b89d0cafab55418aee768f5a7285dc669cc46caa209cb29",
+      "locator": {
+        "raw": "Subsequent management — hematologic response definition paragraph",
+        "page": null,
+        "section": "Subsequent management — hematologic response definition paragraph",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:97e3e67a0a91caf97b89d0cafab55418aee768f5a7285dc669cc46caa209cb29",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Patients of all ages with SAA on medical therapy (pediatric included); response endpoint, not a reference interval",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Automated CBC (ANC, platelets); hemoglobin by automated hematology analyzer"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_058",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_00",
+      "sourceId": "BLOODADV2024_SAA_DELPHI_CONSENSUS",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_058",
+      "passageId": "psg_3e40f8790c655512967da2e717878347246214edeeb26165469284e7503ce285",
+      "locator": {
+        "raw": "Tests to diagnose acquired SAA — PNH flow cytometry paragraph",
+        "page": null,
+        "section": "Tests to diagnose acquired SAA — PNH flow cytometry paragraph",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:3e40f8790c655512967da2e717878347246214edeeb26165469284e7503ce285",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Patients of all ages with suspected acquired AA undergoing diagnostic workup (pediatric included); diagnostic-performance thresholds",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Peripheral blood flow cytometry for PNH clone (granulocyte fraction); method/gating-dependent, clone-size sensitivity varies by assay"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_059",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_00",
+      "sourceId": "BLOODADV2024_SAA_DELPHI_CONSENSUS",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_059",
+      "passageId": "psg_ec9b029a4a6039487221902b392c87c3adc8cfbc5eb2ace638f9c01b65f09a80",
+      "locator": {
+        "raw": "Tests to diagnose acquired SAA and rule out IBMF syndromes — IBMF testing paragraph",
+        "page": null,
+        "section": "Tests to diagnose acquired SAA and rule out IBMF syndromes — IBMF testing paragraph",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:ec9b029a4a6039487221902b392c87c3adc8cfbc5eb2ace638f9c01b65f09a80",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Patients aged <=40 years with suspected SAA (fully encompasses the pediatric band, aged <=20 y); an age-threshold rule for reflex IBMF screening",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Chromosome breakage analysis (peripheral blood lymphocytes; skin fibroblasts if reversion mosaicism suspected) for FA; telomere length analysis for telomere biology disorders — functional/genetic assays, not CBC-derived"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_060",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_00",
+      "sourceId": "BLOODADV2024_SAA_DELPHI_CONSENSUS",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_060",
+      "passageId": "psg_ef391b6d1317844f85a1e61c9211e9d8f835eb4c219234e42f7079078c4a3566",
+      "locator": {
+        "raw": "Supportive care before and during first-line therapy — transfusion paragraph",
+        "page": null,
+        "section": "Supportive care before and during first-line therapy — transfusion paragraph",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:ef391b6d1317844f85a1e61c9211e9d8f835eb4c219234e42f7079078c4a3566",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Patients of all ages with SAA before/during first-line therapy (pediatric included); supportive-care reference thresholds, recorded as descriptive source content ONLY — not emitted as an executable transfusion directive",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Hemoglobin and platelet count by automated hematology analyzer"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_061",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_01",
+      "sourceId": "BJHAEM2024_BSH_AA_GUIDELINE",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_061",
+      "passageId": "psg_8e52946d9bf3e0e3a048aaa72964e70de4e54f905108dc6f8a00887fdc7062bf",
+      "locator": {
+        "raw": "Section: Diagnosis / Introduction, para 'Aplastic anaemia (AA) is a rare and heterogeneous disorder...'",
+        "page": null,
+        "section": "Section: Diagnosis / Introduction, para 'Aplastic anaemia (AA) is a rare and heterogeneous disorder...'",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:8e52946d9bf3e0e3a048aaa72964e70de4e54f905108dc6f8a00887fdc7062bf",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Adults with acquired aplastic anaemia (BSH adult guideline scope); thresholds are fixed absolute-count diagnostic cutoffs stated without age/sex adjustment — not pediatric age-specific reference intervals. Applicability to children not established by this source.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Automated full blood count (haematology analyzer) for Hb, platelet, and neutrophil counts; not described as method-dependent in this passage."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_062",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_01",
+      "sourceId": "BJHAEM2024_BSH_AA_GUIDELINE",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_062",
+      "passageId": "psg_694ff16580e4d3737071472a6e0ac621f43d443a052699b38de81357a2fdc466",
+      "locator": {
+        "raw": "Section: Assessment of severity — 'Severe AA (SAA):' definition line",
+        "page": null,
+        "section": "Section: Assessment of severity — 'Severe AA (SAA):' definition line",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:694ff16580e4d3737071472a6e0ac621f43d443a052699b38de81357a2fdc466",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Acquired aplastic anaemia, adult guideline scope; Camitta severity cutoffs are age-independent absolute-count thresholds (the same Camitta framework is used in pediatric AA, but this source does not restate pediatric-specific values).",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Neutrophil/platelet by automated FBC; reticulocyte count by AUTOMATED analyzer (criterion explicitly specified for automated counting); marrow cellularity by trephine biopsy histology."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_063",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_01",
+      "sourceId": "BJHAEM2024_BSH_AA_GUIDELINE",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_063",
+      "passageId": "psg_6c2db93b7549369d14fd64dec14654d2386ce8c7c23c1903cd72b789b97cc9b6",
+      "locator": {
+        "raw": "Section: Assessment of severity — 'Very severe AA (VSAA):' definition line",
+        "page": null,
+        "section": "Section: Assessment of severity — 'Very severe AA (VSAA):' definition line",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:6c2db93b7549369d14fd64dec14654d2386ce8c7c23c1903cd72b789b97cc9b6",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Acquired aplastic anaemia, adult guideline scope; absolute neutrophil cutoff applied irrespective of age (not an age-specific reference interval).",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Automated full blood count neutrophil (absolute) count; not otherwise described as method-dependent."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_064",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_01",
+      "sourceId": "BJHAEM2024_BSH_AA_GUIDELINE",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_064",
+      "passageId": "psg_85f43507cc0c9c166156a0faa3cbc680831ab64475e5ea44b8bd801179ea2de5",
+      "locator": {
+        "raw": "Table (Investigations) — Reticulocyte count row / footnote on automated counting",
+        "page": null,
+        "section": "Table (Investigations) — Reticulocyte count row / footnote on automated counting",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:85f43507cc0c9c166156a0faa3cbc680831ab64475e5ea44b8bd801179ea2de5",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Acquired aplastic anaemia, adult guideline scope; the assay-method caveat is population-independent.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "METHOD-DEPENDENT: automated reticulocyte analyzers over-estimate vs manual counts; the <60 ×10⁹/L absolute cutoff is defined FOR automated technologies (the original Camitta manual-percentage cutoff differs)."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_065",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_01",
+      "sourceId": "BJHAEM2024_BSH_AA_GUIDELINE",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_065",
+      "passageId": "psg_190e0e40837597dc7ba2e9091531989b3aeba8b7d76b5ecb7de204bbd4bb8748",
+      "locator": {
+        "raw": "Section: Bone marrow examination / trephine biopsy morphology paragraph",
+        "page": null,
+        "section": "Section: Bone marrow examination / trephine biopsy morphology paragraph",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:190e0e40837597dc7ba2e9091531989b3aeba8b7d76b5ecb7de204bbd4bb8748",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Acquired aplastic anaemia, adult guideline scope; normal marrow cellularity is itself age-dependent in children, so this fixed <30% morphological cutoff is not a pediatric-adjusted value and should be interpreted with age caution.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Trephine biopsy histology (specimen ≥2 cm), morphological cellularity assessment; explicitly excludes lymphocytes and plasma cells."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_066",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_01",
+      "sourceId": "BJHAEM2024_BSH_AA_GUIDELINE",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_066",
+      "passageId": "psg_12cd29998b5aa492e34952f656c87c35d90e60f4c4035f81d7e24f44d1143527",
+      "locator": {
+        "raw": "Section: Introduction / epidemiology, para 'Aplastic anaemia (AA) is a rare and heterogeneous disorder...'",
+        "page": null,
+        "section": "Section: Introduction / epidemiology, para 'Aplastic anaemia (AA) is a rare and heterogeneous disorder...'",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:12cd29998b5aa492e34952f656c87c35d90e60f4c4035f81d7e24f44d1143527",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Age distribution — first incidence peak 10–25 years spans the older-pediatric/adolescent band; both sexes; epidemiological (not a lab threshold).",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (epidemiological incidence, not a laboratory measurement)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_067",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_01",
+      "sourceId": "BJHAEM2024_BSH_AA_GUIDELINE",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_067",
+      "passageId": "psg_90aa5993038d17b48c0de191b812dc31fd93fdf2b2ac3dcf3694b273394c59d3",
+      "locator": {
+        "raw": "Section: Introduction / overall recommendations (mirrored in Abstract) — MDT and expert-centre statement",
+        "page": null,
+        "section": "Section: Introduction / overall recommendations (mirrored in Abstract) — MDT and expert-centre statement",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:90aa5993038d17b48c0de191b812dc31fd93fdf2b2ac3dcf3694b273394c59d3",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "All patients with suspected/confirmed AA (adult guideline scope); referral principle is population-independent.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_068",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_08",
+      "sourceId": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_068",
+      "passageId": "psg_85b7806cf8cb02c71e53a4c7252628f3b840b3e3882861b108d0530e4b32df4d",
+      "locator": {
+        "raw": "Materials and Methods > Patients (para 2)",
+        "page": null,
+        "section": "Materials and Methods > Patients (para 2)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:85b7806cf8cb02c71e53a4c7252628f3b840b3e3882861b108d0530e4b32df4d",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric patients aged 0-18 years (median 8 y), both sexes (29 male / 21 female), with suspected bone marrow failure after exclusion of malignant and transient causes; term/postnatal age not stratified",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Automated full blood cell count including reticulocyte count and indices; not stated as analyzer-specific"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_069",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_08",
+      "sourceId": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_069",
+      "passageId": "psg_85b7806cf8cb02c71e53a4c7252628f3b840b3e3882861b108d0530e4b32df4d",
+      "locator": {
+        "raw": "Materials and Methods > Patients (para 2)",
+        "page": null,
+        "section": "Materials and Methods > Patients (para 2)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:85b7806cf8cb02c71e53a4c7252628f3b840b3e3882861b108d0530e4b32df4d",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric patients aged 0-18 years (median 8 y), both sexes, with suspected bone marrow failure after exclusion of malignant and transient causes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Automated full blood cell count; not stated as analyzer-specific"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_070",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_08",
+      "sourceId": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_070",
+      "passageId": "psg_a86b08f3630de5f68ff306cbe941debfc38513c8fd3b54a44e9457f7f6d324d2",
+      "locator": {
+        "raw": "Materials and Methods > Whole Exome Sequencing (para 1)",
+        "page": null,
+        "section": "Materials and Methods > Whole Exome Sequencing (para 1)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:a86b08f3630de5f68ff306cbe941debfc38513c8fd3b54a44e9457f7f6d324d2",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric BMF cohort undergoing whole exome sequencing (all 50 patients); not age-band specific — a bioinformatic filter",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "WES: Agilent SureSelect Human All Exon V7 capture + Illumina NovaSeq 6000; MAGPIE/BWA-MEM/GATK pipeline; Variant Effect Predictor annotation; ACMG classification — method-dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_071",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_08",
+      "sourceId": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_071",
+      "passageId": "psg_03f9e07ae9508cc4d36763f15dd1da055e87dabd5ee26481539661c041d1f7bc",
+      "locator": {
+        "raw": "Results > (Cyto)Genetic and Functional Analysis (para 1) / Abstract",
+        "page": null,
+        "section": "Results > (Cyto)Genetic and Functional Analysis (para 1) / Abstract",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:03f9e07ae9508cc4d36763f15dd1da055e87dabd5ee26481539661c041d1f7bc",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "50 pediatric BMF patients aged 0-18 years, four Dutch academic centers, 2017-2021",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Bone marrow analysis + WES with CNV analysis + SNP array + functional tests (MMC chromosome breakage, Flow-FISH telomere length)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_072",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_08",
+      "sourceId": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_072",
+      "passageId": "psg_8a9d9499ffa69ebd1a93a66f07f5b952977e3345963a8c487342ffa6af7721f1",
+      "locator": {
+        "raw": "Materials and Methods > Patients / Figure 1 (Diagnostic Flowchart)",
+        "page": null,
+        "section": "Materials and Methods > Patients / Figure 1 (Diagnostic Flowchart)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:8a9d9499ffa69ebd1a93a66f07f5b952977e3345963a8c487342ffa6af7721f1",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric patients aged 0-18 years presenting with cytopenia suspected for BMF",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "First-line local diagnostic approach (blood tests, morphology) to exclude malignant and transient causes; not a single-analyzer threshold"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_073",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_08",
+      "sourceId": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_073",
+      "passageId": "psg_b73f60f967cb3212c325f1db891d5fc93ff12239c06124765ea750439ca7895f",
+      "locator": {
+        "raw": "Conclusion / Abstract > Conclusion",
+        "page": null,
+        "section": "Conclusion / Abstract > Conclusion",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b73f60f967cb3212c325f1db891d5fc93ff12239c06124765ea750439ca7895f",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "All pediatric patients aged 0-18 years with suspected BMF, with or without extra-hematological abnormalities",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Genome-wide WES + CNV analysis and/or SNP array + functional analyses; centre-of-expertise recommendation"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_074",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_08",
+      "sourceId": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_074",
+      "passageId": "psg_0eeb514b4697811612d4731e80041d56d674c337b6a68e2ffec22f49dc6a2edd",
+      "locator": {
+        "raw": "Results > Immunological Screening (para 2)",
+        "page": null,
+        "section": "Results > Immunological Screening (para 2)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:0eeb514b4697811612d4731e80041d56d674c337b6a68e2ffec22f49dc6a2edd",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric BMF patients — constitutional/identified-cause group (N=14, median age 7.0 y) vs SAA group (N=21, median age 10.3 y)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Lymphocyte immune-phenotypic subset quantification (flow cytometry); Mann-Whitney U comparison — descriptive statistic, not a decision cutoff"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_cbc002_clm_075",
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfSourceCardId": "src_20260718_rfcbc002_08",
+      "sourceId": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+      "rfEvidenceId": "ev_008",
+      "rfClaimId": "clm_075",
+      "passageId": "psg_f0c924396ddfdebd1d77747bda4be09c163ca7117f99b31dd54db8dd1a51968a",
+      "locator": {
+        "raw": "Materials and Methods > Whole Exome Sequencing (para 2)",
+        "page": null,
+        "section": "Materials and Methods > Whole Exome Sequencing (para 2)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:f0c924396ddfdebd1d77747bda4be09c163ca7117f99b31dd54db8dd1a51968a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "All pediatric BMF patients (N=50) undergoing WES; not age-band specific — a panel definition",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "BMF gene panel filter applied to WES data with HPO terms (Moon software, Diploid); expandable to PID filter, Trio-WES, open-WES"
+      },
+      "reviewBy": "2027-07-21"
+    }
+  ],
+  "additionalRfProvenance": [
+    {
+      "rfRunId": "rf_run_20260717_rf_cbc_002_pediatric_cds_establish",
+      "rfBundleId": "bundle_20260718_intent_research_20260717_rf_cbc_002",
+      "fixturePath": "tests/fixtures/rf-cbc-002/"
     }
   ]
 }
