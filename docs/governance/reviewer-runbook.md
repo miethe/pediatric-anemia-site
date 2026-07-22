@@ -20,7 +20,12 @@ A few terms used throughout, defined once here:
   this is the "Terminal" application; on other systems it may be called a shell or console.
 - **git commit** — a permanent, timestamped snapshot of file changes, saved to the project's
   history along with who made it. Once made, a commit is not silently edited — later work adds
-  new commits on top; it does not rewrite old ones.
+  new commits on top; it does not rewrite old ones. **This is a separate, explicit act from
+  running a `review-record` command below.** Every verb this tool has (`scaffold`, `sign`, and so
+  on) only writes a plain file to disk — none of them runs `git commit` for you. Turning a
+  written record file into a durable, attributable part of this repository's history is a manual
+  step — `git add <path>` then `git commit` — that you take yourself, shown explicitly at the
+  point in each track's walkthrough below where it belongs.
 - **YAML file** — a plain-text way of writing structured information as indented `key: value`
   lines. Every review record is one YAML file.
 - **Hash** — a long string of letters and numbers (for example
@@ -141,8 +146,13 @@ writes one self-contained HTML page you can open in a browser (no server, no log
 internet connection involved) showing the same chain laid out for reading. Every page it produces
 carries an unvalidated-research-prototype banner and labels every synthetic record as such.
 
-All four commands above are entirely read-only and safe to run against the real repository exactly
-as shown.
+All four commands above are read-only **with respect to review records and module content** — none
+of them can add, change, or delete anything under `modules/cbc_suite_v1/reviews/` or the module's
+own source files. The one partial exception is `render`: its whole job is to write a new,
+self-contained HTML page into the `--out` directory you give it (creating that directory if it does
+not already exist yet) — that output lives entirely outside `modules/`, and writing it is the only
+filesystem change any of these four commands makes. All four remain safe to run against the real
+repository exactly as shown.
 
 ## Exercise track (synthetic personas)
 
@@ -189,7 +199,10 @@ You should see `derivedState: not-started` and `Next expected role: clinical-1`.
 
 ### Role 1 — `clinical-1`
 
-Building a record is two steps: `scaffold` drafts it, `sign` finalizes and commits it.
+Building a record is two steps: `scaffold` drafts it, `sign` writes the finished, signed record
+file. **Neither step runs `git commit`.** Both only write plain files to disk; turning the signed
+record into an actual git commit — the durable, attributable act the rest of this document assumes
+— is a separate step you take yourself, shown right after `sign` below.
 
 ```
 node tools/review-record/cli.mjs scaffold \
@@ -199,7 +212,7 @@ node tools/review-record/cli.mjs scaffold \
   --draft --root /tmp/review-practice
 ```
 
-This writes a **staged draft** — a preview, not yet a committed record — to
+This writes a **staged draft** — a preview, not yet the finished record filed under `reviews/` — to
 `/tmp/review-practice/.review-drafts/cbc_suite_v1/rr-0001-clinical-1.draft.yaml` and prints that
 exact path. Nothing under `reviews/` has changed yet. You can open the draft file and read it: it
 is a plain YAML file with your reviewer ID, decision, rationale, a timestamp, and (for now)
@@ -211,11 +224,28 @@ node tools/review-record/cli.mjs sign \
   --module cbc_suite_v1 --root /tmp/review-practice
 ```
 
-`sign` reads only that staged draft file — never a file already committed under `reviews/`. Because
+`sign` reads only that staged draft file — never a file already filed under `reviews/`. Because
 this draft is a labeled synthetic (practice) record, `sign` generates a temporary practice
 signing key, uses it once, and immediately discards it (it is never saved to disk). It then writes
 the finished, signed record to `modules/cbc_suite_v1/reviews/rr-0001-clinical-1.yaml` inside your
-practice copy — the record's one and only committed write. Check the new state:
+practice copy — the record's one and only write to disk.
+
+That file is not yet part of your practice copy's `git` history — `sign` never runs `git` for you.
+Make it a real, durable commit yourself, the same way a reviewer would in the real repository:
+
+```
+git -C /tmp/review-practice add modules/cbc_suite_v1/reviews/rr-0001-clinical-1.yaml
+git -C /tmp/review-practice commit -q -m "clinical-1 review: cbc_suite_v1 rr-0001 (exercise, synthetic)"
+```
+
+That `git commit` — not the `sign` command that preceded it — is the actual git commit this
+document's terminology section defined at the top: a permanent, attributable, append-only-checkable
+snapshot. **Repeat this same `git add` + `git commit` pair after every `sign` command later in this
+walkthrough**, before moving on to the next role: it is what lets `validate --history` (described
+above) see the record at all, since that check reads `git`'s own commit history, not just the files
+sitting on disk.
+
+Check the new state:
 
 ```
 node tools/review-record/cli.mjs status --module cbc_suite_v1 --root /tmp/review-practice
@@ -251,6 +281,19 @@ node tools/review-record/cli.mjs sign \
 (The exact file name the second command needs will match whatever `review_id` the `scaffold`
 step printed — it continues the module's own running sequence number, so it may not literally be
 `rr-0003` if you had already filed other records first; always use the path `scaffold` gives you.)
+
+As with Role 1 above, `sign` here only wrote the file — make it a real commit yourself before
+moving on:
+
+```
+git -C /tmp/review-practice add modules/cbc_suite_v1/reviews/rr-0003-clinical-2.yaml
+git -C /tmp/review-practice commit -q -m "clinical-2 review (correction): cbc_suite_v1 rr-0003 supersedes rr-0002 (exercise, synthetic)"
+```
+
+(Substitute the actual file name if your sequence number differed, per the note above — and if you
+signed and committed an original, uncorrected `clinical-2` record first, that file needs the same
+`git add` + `git commit` pair too, before you file its replacement.)
+
 `status` afterward will show *both* `rr-0002-clinical-2` and its replacement, with the
 replacement's `supersedes` field naming the original — the original stays on disk, unedited, as
 the permanent record of what happened.
@@ -261,12 +304,16 @@ Continue the same scaffold-then-sign pattern for `lab` (`--reviewer-id dryrun-cb
 Once `clinical-1` and `clinical-2`'s *effective* (non-superseded) decisions agree, `status` will
 report `nextExpectedRole: release-auth` — `adjudication` is skipped entirely, exactly as role 4's
 description above says it should be. Finish with `release-auth`
-(`--reviewer-id dryrun-cbc-suite-release-auth`).
+(`--reviewer-id dryrun-cbc-suite-release-auth`). **As with every role above, run the same `git add`
++ `git commit` pair after each `sign` here too, before moving to the next role** — `sign` never
+commits anything on its own, in this section any more than in Role 1's.
 
-After all five roles are filed, `status --module cbc_suite_v1 --root /tmp/review-practice` reports
-the same terminal state described earlier: `structurally-non-qualifying`. That is the correct,
-expected ending for a practice run built entirely from synthetic identities — you have exercised
-every mechanical step of the real workflow without making any real clinical claim.
+After all five roles are filed *and committed*, `status --module cbc_suite_v1 --root
+/tmp/review-practice` reports the same terminal state described earlier:
+`structurally-non-qualifying`. That is the correct, expected ending for a practice run built
+entirely from synthetic identities — you have exercised every mechanical step of the real workflow,
+including making the actual `git` commits a real reviewer would make, without making any real
+clinical claim.
 
 When you are done, delete the practice copy — it was never inside the repository and `git` never
 saw it:
@@ -306,10 +353,18 @@ node tools/review-record/cli.mjs scaffold \
 
 Because the roster resolves your `reviewer-id` to a real (non-synthetic) entry, `scaffold` does not
 build a preview draft — it writes the finished record directly to
-`modules/<module_id>/reviews/rr-<seq>-<role>.yaml`, still with `signature: null`. **The `git`
-commit that adds this file to the repository is your attributable review act** — your name, the
-date, and the file's exact content are permanently tied together in that commit, the same way a
-signed paper form permanently ties a decision to a name and date.
+`modules/<module_id>/reviews/rr-<seq>-<role>.yaml`, still with `signature: null`. That write is only
+a file on disk; `scaffold` itself never runs `git` and never creates a commit. **You must then make
+it a git commit yourself** — the same explicit act shown in the exercise track above:
+
+```
+git add modules/<module_id>/reviews/rr-<seq>-<role>.yaml
+git commit -m "<role> review: <module_id> rr-<seq> -- <your name>"
+```
+
+**That `git commit` — not the `scaffold` command that preceded it — is your attributable review
+act** — your name, the date, and the file's exact content are permanently tied together in that
+commit, the same way a signed paper form permanently ties a decision to a name and date.
 
 A real reviewer's record is never run through the practice signing step used in the exercise track
 above. That step exists only to exercise the synthetic path safely; it has no role here. The
@@ -317,8 +372,9 @@ cryptographic sealing of a real release is a separate act, performed later by a 
 role — a **signing custodian** — who, per `docs/adr/0005-kb-serialization-signing-key-custody.md`
 and gate **G2**, signs the overall release manifest offline, using keys that never touch this
 repository's automation. That is not something a reviewer does, and it does not happen until G2 has
-separately cleared. As a reviewer, your part of the workflow ends the moment your `scaffold`
-command's commit lands: build your record, let the commit record it, and you are done.
+separately cleared. As a reviewer, your part of the workflow ends the moment you make that `git
+commit` yourself: run `scaffold` to build your record, then separately run `git add` and `git
+commit` yourself to make it durable, and you are done.
 
 ## The honesty boundary
 

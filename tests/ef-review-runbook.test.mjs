@@ -172,3 +172,106 @@ test('honesty boundary: the closing section restates the unvalidated-research-pr
 test('"unvalidated research prototype" appears near the top of the document (FR-14/R4)', () => {
   assert.match(runbookText, /unvalidated research prototype/i);
 });
+
+// --- P3-GATE2 fix-cycle additions (codex second-opinion review) -----------------------------
+//
+// MAJOR finding fixed: the runbook conflated the CLI's record-file WRITE (`scaffold`/`sign`) with
+// creating a git commit -- it claimed `sign` "finalizes and commits" a record and that a reviewer's
+// "`scaffold` command's commit lands," neither of which is true; both verbs only write a plain file
+// to disk (verified against the real CLI: `git status --short` shows the written file as untracked
+// immediately after `sign` returns). The required human `git add` + `git commit` act was omitted
+// while being implicitly claimed. The two tests below regression-guard that fix: presence of the
+// explicit git step in both tracks' walkthroughs, and absence of any sentence attributing
+// git-committing to the verbs themselves.
+//
+// MINOR finding fixed: "All four commands above are entirely read-only" was false for the displayed
+// `render --out /tmp/...` (verified against the real CLI: it creates its own `--out` directory tree
+// and writes an `index.html` into it). The third test below checks the corrected, precisely-scoped
+// claim.
+
+test('P3-GATE2 fix-cycle: both tracks show an explicit `git add` + `git commit` step (a written record file is not yet a git commit)', () => {
+  const exerciseSection = sectionText(runbookText, 'Exercise track (synthetic personas)');
+  const postG1Section = sectionText(runbookText, 'Post-G1 real-reviewer track');
+  assert.ok(exerciseSection, 'expected a "## Exercise track (synthetic personas)" section');
+  assert.ok(postG1Section, 'expected a "## Post-G1 real-reviewer track" section');
+
+  // Exercise track: every command in that track's practice-copy walkthrough uses the
+  // `git -C /tmp/review-practice ...` convention (never `cd`), matching the rest of that track's
+  // own commands (the tool invocations all take `--root /tmp/review-practice` instead of a `cd`).
+  assert.match(
+    exerciseSection,
+    /\bgit -C \/tmp\/review-practice add\b/,
+    'expected an explicit "git -C /tmp/review-practice add" step in the exercise track walkthrough',
+  );
+  assert.match(
+    exerciseSection,
+    /\bgit -C \/tmp\/review-practice commit\b/,
+    'expected an explicit "git -C /tmp/review-practice commit" step in the exercise track walkthrough',
+  );
+
+  // Post-G1 track: a real reviewer runs the tool from the repository root (no --root/-C), so the
+  // commit step there is plain `git add` / `git commit`.
+  assert.match(
+    postG1Section,
+    /\bgit add modules\/<module_id>\/reviews\//,
+    'expected an explicit "git add" step in the post-G1 track walkthrough',
+  );
+  assert.match(
+    postG1Section,
+    /\bgit commit\b/,
+    'expected an explicit "git commit" step in the post-G1 track walkthrough',
+  );
+});
+
+test('P3-GATE2 fix-cycle: no sentence attributes git-committing to the `sign`/`scaffold` verbs themselves', () => {
+  // Deliberately SHORT-RANGE and NEGATION-AWARE rather than a general sentence-level linter (the
+  // over-matching risk this task's own instructions warned against): it flags a backtick-quoted
+  // `sign`/`scaffold` mention only when a form of "commit(s)" follows within 20 non-period/newline
+  // characters with no intervening period or negation ("never", "itself never", "is never", "does
+  // not", "doesn't") -- exactly the shape of the two original bad phrases ("`sign` finalizes and
+  // commits it", "`scaffold` command's commit lands"), confirmed below. This correctly leaves alone
+  // unrelated nearby uses of "commit" this fix-cycle's own corrected prose now contains, e.g. "not
+  // the `sign` command that preceded it -- is the actual git commit" (negation precedes the verb;
+  // "commit" itself is far outside the 20-char window) and "`sign` never commits anything on its
+  // own" (negation immediately follows the verb).
+  const ATTRIBUTES_COMMIT_TO_VERB =
+    /`(sign|scaffold)`(?!\s+(?:never|itself never|is never|does not|doesn['’]?t))[^.\n]{0,20}?\bcommits?\b/i;
+
+  const match = runbookText.match(ATTRIBUTES_COMMIT_TO_VERB);
+  assert.equal(
+    match,
+    null,
+    'expected no sentence to attribute git-committing to `sign`/`scaffold` themselves' +
+      (match ? ` (found: ${JSON.stringify(match[0])})` : ''),
+  );
+
+  // Confirm the guard is not vacuous: it must actually catch the two original bad phrasings.
+  assert.match(
+    "Building a record is two steps: `scaffold` drafts it, `sign` finalizes and commits it.",
+    ATTRIBUTES_COMMIT_TO_VERB,
+  );
+  assert.match(
+    "your part of the workflow ends the moment your `scaffold` command's commit lands",
+    ATTRIBUTES_COMMIT_TO_VERB,
+  );
+});
+
+test('P3-GATE2 fix-cycle: the read-only claim over the committed-example commands is precisely qualified', () => {
+  const section = sectionText(runbookText, 'Reading the committed `cbc_suite_v1` example');
+  assert.ok(section, 'expected a \'## Reading the committed `cbc_suite_v1` example\' section');
+  assert.match(
+    section,
+    /read-only\s+\*\*with respect to review records and module content\*\*/i,
+    'expected the read-only claim to be scoped to "review records and module content"',
+  );
+  assert.match(
+    section,
+    /render.{0,200}--out.{0,80}directory/is,
+    'expected an explicit carve-out noting `render` writes its own --out directory',
+  );
+  assert.doesNotMatch(
+    section,
+    /all four commands above are entirely read-only/i,
+    'expected the old, unqualified "entirely read-only" claim to be gone',
+  );
+});
