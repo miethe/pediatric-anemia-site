@@ -11,8 +11,8 @@
 //   manifest  — build/locate a staged kb-pack's release-manifest.unsigned.json (delegating to
 //               E0's rf-bundle-to-kb-pack propose verb, never re-implementing it) and report its
 //               canonical signing preimage: SHA-256 over the exact bytes E0 wrote. (P3-T1)
-//   register  — append a release candidate to the append-only releases/registry.json. (P3-T4, not
-//               yet implemented — this verb currently fails closed with a NotImplementedError)
+//   register  — append a release candidate to the append-only releases/registry.json, rejecting
+//               any mutation/removal of an existing entry (FR-14/OQ-4). (Implemented P3-T4.)
 //   sign      — detached Ed25519 signature over the manifest digest, human-offline by design; a
 //               --dry-run mode is the only path any automated check may exercise (OQ-6).
 //               (Implemented P3-T2.)
@@ -52,8 +52,14 @@ Verbs:
       rf-bundle-to-kb-pack propose verb (never re-implementing its canonicalization):
   manifest --run-dir <rf run dir> --module <module.json> --decisions <authoring-decisions.yaml> --out <dir>
 
-  register --candidate <manifest digest output> --registry releases/registry.json
-      Append a release candidate to the append-only registry. (P3-T4, not yet implemented)
+  register --candidate <manifest/sign reporting-object JSON> --registry releases/registry.json
+      Append a release candidate to the append-only registry (FR-14/OQ-4). --candidate accepts
+      either "manifest"'s bare reporting object (a fully unsigned, pre-G2 real candidate) or
+      "sign"'s full reporting object (typically a --dry-run --out-candidate output). Every check
+      re-reads the pack's canonical manifest bytes fresh, never trusting the candidate document's
+      own claims. Rejects a non-dry-run candidate carrying a populated signature, a duplicate
+      moduleId/version entry, and any attempt to mutate or remove an existing entry (append-only).
+      The appended entry's own signature is always null — see README.md's "register verb usage".
 
   sign --candidate <pack dir with release-manifest.unsigned.json> --dry-run \
        [--key-id <label>] [--out <path>] [--out-public-key <path>] [--out-candidate <path>]

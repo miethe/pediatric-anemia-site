@@ -1,8 +1,9 @@
 # `tools/release-sign` — signed-release manifest / registry / sign / verify tooling
 
-**Status**: `manifest` (P3-T1), `sign` (P3-T2), and `verify` (P3-T3) are implemented; `register` is
-structurally dispatched but not yet implemented (P3-T4). **Structural validity produced by
-this tool never implies clinical validity, safety, or release authorization.** No signature
+**Status**: `manifest` (P3-T1), `sign` (P3-T2), `verify` (P3-T3), and `register` (P3-T4) are all
+implemented — every verb in this tool's dispatch table now has a real implementation.
+**Structural validity produced by this tool never implies clinical validity, safety, or release
+authorization.** No signature
 minted by this tool (dry-run or otherwise) confers clinical standing — see
 `docs/adr/0005-kb-serialization-signing-key-custody.md` and the forthcoming
 `docs/governance/signing-ceremony-runbook.md` (P3-T7).
@@ -42,11 +43,12 @@ impossible for them to diverge from E0's output by convention alone.
 | Module | Verb | Responsibility |
 |---|---|---|
 | `lib/canonical-bytes.mjs` | *(shared, not a verb)* | Reads `<packDir>/release-manifest.unsigned.json` verbatim; computes its SHA-256 (`node:crypto`). The single place every other module gets the signing preimage from. Owns nothing about signing, registration, or verification. |
+| `lib/pack-digest.mjs` | *(shared, not a verb)* | Computes `packDigest` — a SHA-256 over every file under a staged pack directory (relative path + content, sorted), distinct from `manifestDigest`'s single-file signing preimage. Used only by `register`. **Implemented in P3-T4.** |
 | `lib/manifest.mjs` | `manifest` | Locates or builds a pack's manifest (delegating construction to E0's `propose` verb, never re-implementing it) and reports its canonical signing preimage as a small "release-candidate hash manifest" summary object. **Implemented in P3-T1.** |
-| `lib/registry.mjs` | `register` | Appends a release candidate to the append-only `releases/registry.json` (FR-14, OQ-4). Rejects any mutation/removal of an existing entry. **Not yet implemented — P3-T4.** |
+| `lib/registry.mjs` | `register` | Appends a release candidate to the append-only `releases/registry.json` (FR-14, OQ-4). Re-derives `moduleId`/`packDigest`/`manifestDigest` from a fresh disk read (never trusts the candidate document), rejects a non-dry-run candidate carrying a populated signature, rejects a duplicate moduleId/version entry, and rejects any mutation/removal of an existing entry via a two-layer append-only check (in-process + git-history walk). **Implemented in P3-T4.** |
 | `lib/sign.mjs` | `sign` | Detached Ed25519 signature over the manifest digest (FR-12/FR-15, ruling R3). Designed for human offline execution at signing-ceremony time (gate G2, real mode, never exercised by any automated check in E1); carries an OQ-6 `--dry-run` mode (ephemeral in-memory keypair, `TESTKEY-`-forced `keyId`, private key discarded at process exit) that is the only path any automated check may invoke. **Implemented in P3-T2.** |
 | `lib/verify.mjs` | `verify` | Fail-closed verification of a signed/dry-run candidate against the registry, with a documented 5-class exit-code taxonomy (FR-13). The sole CI/agent-reachable surface of this tool — CI can never sign (ruling R3). **Implemented in P3-T3.** |
-| `lib/errors.mjs` | *(shared, not a verb)* | `ReleaseSignError` taxonomy — `0` OK / `1` USAGE, plus `verify`'s own 5 documented failure-class codes `2`-`6` (P3-T3, FR-13; see "Exit codes" below). `GoldenDriftError` — a signing preimage disagreeing with a pinned golden-bytes fixture; never silently caught and re-baselined. `NotImplementedError` — the `register` (P3-T4) stub marker. |
+| `lib/errors.mjs` | *(shared, not a verb)* | `ReleaseSignError` taxonomy — `0` OK / `1` USAGE, plus `verify`'s own 5 documented failure-class codes `2`-`6` (P3-T3, FR-13; see "Exit codes" below). `GoldenDriftError` — a signing preimage disagreeing with a pinned golden-bytes fixture; never silently caught and re-baselined. `register`'s own distinctly-NAMED (but all `EXIT_USAGE`-coded) failure classes (P3-T4): `RegisterByteDriftError`, `RegisterRealCandidateSignedError`, `RegistrySchemaInvalidError`, `RegistryDuplicateEntryError`, `RegistryAppendOnlyViolationError`. `NotImplementedError` — the documented pattern for any future scaffolded-but-unimplemented verb (unused today; every verb in this tool is implemented). |
 
 Every verb-handler module exports a single `run(options)` async function; `cli.mjs` is the sole
 dispatcher (`manifest \| register \| sign \| verify` → the matching module's `run`), mirroring
@@ -221,6 +223,115 @@ signing-key registry in E1, carrying the (non-secret) public key alongside the s
 self-contained document is what lets a later, separate `verify` process check a signature produced
 by a key nobody kept (see `signerPublicKey`'s own note above).
 
+## `register` verb usage (P3-T4, FR-14/OQ-4)
+
+`register` appends exactly one entry to the append-only `releases/registry.json` (the seed file
+this task ships at repo root: `{ "schemaVersion": 1, "entries": [] }`). It never creates or
+overwrites the registry file's own existence — `--registry` must already point at a valid,
+schema-conformant document.
+
+```bash
+# 1. Register a dry-run signed candidate — the typical E1 flow (sign --dry-run --out-candidate
+#    produces the self-contained document register reads):
+node tools/release-sign/cli.mjs sign \
+  --candidate build/kb-pack/cbc_suite_v1/0.1.0-proposal \
+  --dry-run --key-id ef-release-demo \
+  --out-candidate build/kb-pack/cbc_suite_v1/0.1.0-proposal/release-candidate.dryrun.json
+
+node tools/release-sign/cli.mjs register \
+  --candidate build/kb-pack/cbc_suite_v1/0.1.0-proposal/release-candidate.dryrun.json \
+  --registry releases/registry.json
+
+# 2. Or register a fully unsigned, pre-G2 real candidate straight from "manifest" (no sign step
+#    at all — E1 never actually signs for real; see docs/governance/signing-ceremony-runbook.md):
+node tools/release-sign/cli.mjs manifest \
+  --pack build/kb-pack/cbc_suite_v1/0.1.0-proposal \
+  > /tmp/manifest-candidate.json
+
+node tools/release-sign/cli.mjs register \
+  --candidate /tmp/manifest-candidate.json \
+  --registry releases/registry.json
+
+# 3. Then verify (P3-T3) against the same registry — "register the candidate first" is exactly
+#    what step 1/2 above did:
+node tools/release-sign/cli.mjs verify \
+  --candidate build/kb-pack/cbc_suite_v1/0.1.0-proposal/release-candidate.dryrun.json \
+  --registry releases/registry.json
+```
+
+Output (printed to stdout only after the registry file has been written successfully):
+
+```json
+{
+  "schemaVersion": "1.0",
+  "registryPath": "/abs/path/releases/registry.json",
+  "candidatePath": "/abs/path/release-candidate.dryrun.json",
+  "dryRun": true,
+  "entry": {
+    "version": "0.1.0-proposal",
+    "moduleId": "cbc_suite_v1",
+    "packDigest": "sha256:<64 hex>",
+    "manifestDigest": "sha256:<64 hex>",
+    "signature": null,
+    "signedAt": null,
+    "supersedes": null,
+    "withdrawalState": "none",
+    "withdrawnAt": null,
+    "withdrawalReason": null
+  },
+  "entryIndex": 0,
+  "totalEntries": 1
+}
+```
+
+**Never trusts the candidate document.** Like `verify`, `register` re-reads `<packDir>/release-
+manifest.unsigned.json` fresh (`./lib/canonical-bytes.mjs#readCanonicalManifestBytes`) and
+independently recomputes both digests — `manifestDigest` from those fresh bytes, `packDigest`
+(`./lib/pack-digest.mjs`) over every file in the pack directory. `moduleId`/`version` come from
+that same fresh read, never from a candidate document's own (possibly stale or hand-edited)
+claims. A candidate whose recorded `preimageSha256` disagrees with the fresh re-read fails closed
+(`RegisterByteDriftError`).
+
+**The appended entry's own `signature` is always `null`** — regardless of whether the candidate
+was dry-run signed (`TESTKEY-` keyId) or fully unsigned (no `sign` step run at all): see
+`schemas/release-registry.schema.json`'s own top-level description for why the registry never
+bears a real signature (that lives on the release-manifest's own `signature` slot once gate G2
+clears). A non-dry-run candidate that DOES carry a populated signature is rejected outright
+(`RegisterRealCandidateSignedError`) — E1 has no gate-G2 signing-custodian authority yet, so
+`register` refuses to build an entry from one rather than silently discarding it.
+
+**Rejected outright, always fail-closed, no partial write:**
+- a malformed/unreadable `--candidate` or `--registry` (`UsageError`);
+- a candidate whose `preimageSha256` disagrees with a fresh re-read (`RegisterByteDriftError`);
+- a non-dry-run candidate with a populated signature (`RegisterRealCandidateSignedError`);
+- a `--registry` document that is already schema-invalid (`RegistrySchemaInvalidError`);
+- a duplicate `moduleId`/`version` entry already present (`RegistryDuplicateEntryError`);
+- any attempt to mutate, remove, or reorder an existing entry, or to change `schemaVersion`, in
+  the document about to be written (`RegistryAppendOnlyViolationError`, layer 1 of 2 below).
+
+### Append-only enforcement — two layers
+
+Mirrors `tools/review-record`'s OQ-2 append-only design (a `previousRecordHash` chain checked
+in-process, plus a git-history validator) applied to a flat, single-document registry instead of
+one-file-per-record:
+
+1. **In-process (every `register` call)** — `assertRegisterAppendsExactlyOne` compares the
+   registry document `register` just read against the one it is about to write: every existing
+   entry must be present, unchanged, at the same index, with exactly one new entry appended and
+   `schemaVersion` unchanged.
+2. **Git-history walk (`checkRegistryHistoryAppendOnly`, exported, not called by `register`
+   itself)** — walks every git-committed revision of a registry file (`git log`/`git show`, read-
+   only, no network) and asserts each is entry-prefix-compatible with its predecessor. This is the
+   layer that would catch a hand-edited, directly-committed mutation that never went through
+   `register` at all — something an in-process, working-tree-only check cannot see. A future
+   structural wire-in of this function into `npm run validate` is P3-T6's scope, not this task's;
+   `register` itself only enforces layer 1 at write time, and `tests/ef-release-registry.test.mjs`
+   exercises layer 2 directly against a throwaway git repo.
+
+Both layers reduce to one comparison primitive, `assertEntriesPrefixPreserving` (structural,
+key-order-independent equality via a self-contained `stableStringify` — not a cross-tool import of
+`tools/review-record/lib/chain.mjs`'s own copy, which owns a disjoint file set in this same wave).
+
 ## Golden-bytes regression pin (P3-T1)
 
 `tests/fixtures/ef-release/golden-canonical-bytes/release-manifest.unsigned.json` is a byte-exact
@@ -267,7 +378,7 @@ this per failure class, not just narratively).
 | Code | Name | Meaning | Verbs that can raise it |
 |---:|---|---|---|
 | 0 | OK | Verb succeeded. | all |
-| 1 | USAGE | Malformed invocation — missing/unreadable pack or manifest, golden-bytes drift (`manifest`), a `sign`-verb usage/guard failure (missing/invalid `--key`/`--key-id`, `TESTKEY-` on a real keyId, in-repo `--key` path, `--dry-run`+`--key` combined), a `verify`-verb malformed invocation (missing/unreadable `--candidate`/`--registry` path, unparseable JSON, a candidate document missing a field this tool's own shape contract requires), or an unimplemented verb (`register` today, P3-T4). | `manifest`, `sign`, `verify`, `register` |
+| 1 | USAGE | Malformed invocation — missing/unreadable pack or manifest, golden-bytes drift (`manifest`), a `sign`-verb usage/guard failure (missing/invalid `--key`/`--key-id`, `TESTKEY-` on a real keyId, in-repo `--key` path, `--dry-run`+`--key` combined), a `verify`-verb malformed invocation (missing/unreadable `--candidate`/`--registry` path, unparseable JSON, a candidate document missing a field this tool's own shape contract requires), or any `register`-verb failure (P3-T4: malformed candidate/registry, byte drift against a fresh re-read, a non-dry-run candidate carrying a populated signature, an already-invalid registry document, a duplicate moduleId/version entry, or an append-only violation — see "register verb usage" above; distinctly NAMED errors, not distinctly CODED — `register` is not part of FR-13's 5-class taxonomy). | `manifest`, `sign`, `verify`, `register` |
 | 2 | BYTE_DRIFT | `verify` class (1): the candidate's recorded preimage digest disagrees with a fresh re-read of its own canonical manifest bytes off disk. | `verify` |
 | 3 | DIGEST_MISMATCH | `verify` class (2): the embedded signature does not cryptographically verify against those fresh canonical bytes. | `verify` |
 | 4 | UNKNOWN_KEYID | `verify` class (3): the signature's `keyId` is not an identity this tool recognizes in E1 — a dry-run `keyId` lacking the `TESTKEY-` marker, or ANY non-dry-run `keyId` (no signing-custodian roster exists pre-gate-G2). | `verify` |

@@ -613,9 +613,14 @@ test('loadAndValidateReviewerRoster() on the real committed governance/reviewer-
   assert.equal(result.reviewerCount, 0);
 });
 
-test('loadAndValidateReleaseRegistry() on the real repo (releases/registry.json does not yet exist -- ships in P3-T4) passes with present:false, never a crash', async () => {
+test('loadAndValidateReleaseRegistry() on the real repo (releases/registry.json now shipped -- P3-T4 seed) passes with present:true, zero entries, never a crash', async () => {
+  // Updated for P3-T4: the P1-T7-era assumption this test originally encoded ("the registry does
+  // not exist yet, existence-gated absence is not an error") was true only pre-P3-T4. The seed
+  // file this task ships (`{schemaVersion: 1, entries: []}`) now exists, is schema-valid, and
+  // fires this existence-gated wiring's "present" path for the first time -- mirrors the P1-T7
+  // watch-for pattern already seen for governance/reviewer-roster.yaml (phase-1-completion.md).
   const result = await loadAndValidateReleaseRegistry(REPO_ROOT);
-  assert.deepEqual(result, { errors: [], entryCount: 0, present: false });
+  assert.deepEqual(result, { errors: [], entryCount: 0, present: true });
 });
 
 test('scripts/validate-kb.mjs (the real, committed file) exits 0 when run as npm run validate\'s CLI entrypoint against the real repo tree', async () => {
@@ -626,5 +631,9 @@ test('scripts/validate-kb.mjs (the real, committed file) exits 0 when run as npm
   });
   assert.equal(result.status, 0, `expected exit 0, got ${result.status}: stdout=${result.stdout} stderr=${result.stderr}`);
   assert.match(result.stdout, /governance\/reviewer-roster\.yaml: validated 0 reviewer\(s\)\./);
-  assert.match(result.stdout, /releases\/registry\.json: not yet seeded \(absent\)/);
+  // Updated for P3-T4: releases/registry.json now ships seeded (0 entries), so the CLI reports
+  // it as validated rather than "not yet seeded (absent)" — that absent-path message stays exact
+  // and unit-tested elsewhere in this same file for the case where the file genuinely is missing
+  // (existence-gated, not this real-repo-tree scenario anymore).
+  assert.match(result.stdout, /releases\/registry\.json: validated 0 entrie\(s\)\./);
 });

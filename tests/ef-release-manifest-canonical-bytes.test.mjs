@@ -250,15 +250,18 @@ test('manifest verb fails closed (UsageError) when --pack has no release-manifes
 });
 
 // =================================================================================================
-// register/verify remain scaffolded (dispatchable) but not yet implemented — P3-T3/T4. `sign` was
-// implemented in P3-T2: calling it with no options now fails closed with its own UsageError
-// (missing --candidate) rather than the P3-T1-era NotImplementedError stub — updated here because
-// P3-T2 depends on, and supersedes, this scaffold-only assertion. See
-// tests/ef-release-sign-verify.test.mjs for `sign`'s own full P3-T2 acceptance-criteria coverage.
+// All four verbs (manifest, register, sign, verify) are implemented as of P3-T4. `NotImplementedError`
+// stays exported (see tools/release-sign/lib/errors.mjs's own header) as the documented pattern for
+// any future scaffolded-but-unimplemented verb, but no verb in this tool throws it today — a bare
+// invocation of any verb now fails closed with that VERB's own UsageError (or a UsageError subclass)
+// on missing required flags, never the P3-T1-era stub marker. See tests/ef-release-sign-verify.test.mjs
+// for `sign`/`verify`'s own full acceptance-criteria coverage and tests/ef-release-registry.test.mjs
+// for `register`'s (P3-T4, FR-14/OQ-4).
 // =================================================================================================
 
-test('register verb is dispatchable but currently fails closed with NotImplementedError (P3-T4 scaffold); sign (P3-T2) and verify (P3-T3) are implemented and fail closed with their own UsageError on missing args', async () => {
-  await assert.rejects(() => runRegister({}), NotImplementedError);
+test('all 4 verbs fail closed with their own UsageError (never the unimplemented-verb stub) on a bare, argument-less invocation', async () => {
+  await assert.rejects(() => runRegister({}), UsageError);
+  await assert.rejects(() => runRegister({}), (err) => !(err instanceof NotImplementedError));
   await assert.rejects(() => runSign({}), UsageError);
   // verify (P3-T3, FR-13) is implemented: an empty options object is a malformed invocation
   // (missing --candidate/--registry), not the unimplemented-verb stub — see
@@ -267,7 +270,7 @@ test('register verb is dispatchable but currently fails closed with NotImplement
   await assert.rejects(() => runVerify({}), (err) => !(err instanceof NotImplementedError));
 });
 
-test('the CLI dispatches register/sign/verify with no args to exit 1 — register via NotImplementedError (P3-T4 scaffold), sign/verify via their own UsageError (missing required flags)', async () => {
+test('the CLI dispatches register/sign/verify with no args to exit 1 — each verb\'s own UsageError (missing required flags), never the unimplemented-verb stub', async () => {
   for (const verb of ['register', 'sign', 'verify']) {
     const { result: exitCode } = await withCapturedStdout(() => cliMain([verb]));
     assert.equal(exitCode, 1, `${verb} must fail closed with exit 1 on a bare invocation`);

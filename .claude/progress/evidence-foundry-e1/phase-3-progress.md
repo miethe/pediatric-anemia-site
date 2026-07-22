@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 8
-completed_tasks: 3
+completed_tasks: 4
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -117,7 +117,7 @@ tasks:
     of existing entries (append-only, git-tracked, same two-layer approach as P2-T3
     where applicable). E1 never sets withdrawalState != "none" (validator-enforced
     const).'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -126,6 +126,26 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  note: 'register verb implemented (FR-14/OQ-4): releases/registry.json seeded ({schemaVersion:1,
+    entries:[]}); register accepts either manifest''s bare candidate or sign''s full
+    reporting object, never trusting the candidate document -- re-derives moduleId/packVersion/manifestDigest
+    from a fresh packDir read and computes packDigest (new lib/pack-digest.mjs) over
+    every pack file. Persisted entry always signature:null/withdrawalState:none regardless
+    of dry-run vs unsigned input; a non-dry-run candidate carrying a populated signature
+    is rejected outright (RegisterRealCandidateSignedError). Append-only enforced
+    two layers: in-process exactly-one-append check + a git-history walk (checkRegistryHistoryAppendOnly,
+    exported for P3-T6). Duplicate moduleId/version and already-invalid registry both
+    rejected fail-closed, zero partial writes. 20 new tests (tests/ef-release-registry.test.mjs)
+    + fixed 2 stale P1-T7-era real-repo-tree assertions (tests/ef-contract-forced-empty.test.mjs)
+    + fixed 2 stale P3-T1-era NotImplementedError assertions (tests/ef-release-manifest-canonical-bytes.test.mjs).
+    npm test 1630/1630, npm run validate clean, npm run check:imports clean. scripts/validate-kb.mjs
+    untouched (reserved for P3-T6).'
+  started: 2026-07-22T00:00Z
+  completed: 2026-07-22T00:00Z
+  evidence:
+  - test: tests/ef-release-registry.test.mjs
+  - test: tests/ef-contract-forced-empty.test.mjs
+  - test: tests/ef-release-manifest-canonical-bytes.test.mjs
 - id: P3-T5
   description: 'No-keys + forced-empty enforcement tests (FR-15/FR-16), R3/SPIKE-006
     reconciliation: tests/ef-release-no-keys.test.mjs — (a) scans the repo tree for
@@ -277,7 +297,7 @@ files_modified:
 - tests/ef-release-registry.test.mjs
 - tests/ef-release-no-keys.test.mjs
 - tests/fixtures/ef-release/**
-progress: 37
+progress: 50
 updated: '2026-07-22'
 ---
 
