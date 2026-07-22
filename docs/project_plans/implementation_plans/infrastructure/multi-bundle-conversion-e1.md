@@ -27,6 +27,7 @@ architecture_summary: tools/rf-bundle-to-kb-pack/ (E0-delivered, reused unchange
   committed and zero rules; REG-001/REG-004 get a standalone rights-posture HOLD record
   and touch no fixture, module, or converter artifact.
 related_documents:
+- .claude/findings/multi-bundle-conversion-e1-findings.md
 - docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md
 - docs/project_plans/expansion/rf-handoff/RESULTS.md
 - docs/project_plans/expansion/rf-handoff/README.md
@@ -52,7 +53,7 @@ adr_refs:
 - docs/adr/0002-exact-passage-storage-licensing.md
 - docs/adr/0004-clinical-approval-identity-adjudication.md
 deferred_items_spec_refs: []
-findings_doc_ref: null
+findings_doc_ref: .claude/findings/multi-bundle-conversion-e1-findings.md
 charter_ref: null
 changelog_ref: null
 changelog_required: true
@@ -184,6 +185,8 @@ wave_plan:
     - docs/legal/reg-001-reg-004-hold.md
     - tests/ef-reg-exclusion.test.mjs
     - tests/ef-multi-bundle-determinism.test.mjs
+    - tools/rf-bundle-to-kb-pack/lib/multi-bundle-report.mjs
+    - tests/ef-converter-multi-bundle-report.test.mjs
   - id: P7
     depends_on:
     - P6
