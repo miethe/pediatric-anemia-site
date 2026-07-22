@@ -1,0 +1,115 @@
+id: ext_20260718_11280716_001
+source_card_id: src_20260718_rfgro002_05
+created_at: '2026-07-18T16:33:56-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: A recent expert-opinion consensus recommends evaluating for faltering growth when weight-for-age
+    drops by 1 z-score over 1 month or more, excluding the first 2 weeks of life.
+  locator: Introduction, para after Box 2 (Cooke et al. expert-opinion definition)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: The review's abstract states the consensus threshold as a drop of weight-for-HEIGHT of 1 z-score
+    - conflicting with the weight-for-age framing used in the body text.
+  locator: Abstract (Summary)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: WHO undernutrition is defined by static anthropometric z-scores below -2 for underweight, stunting,
+    and wasting (labels reproduced verbatim; see limitations).
+  locator: Box 1, 'WHO definitions for undernutrition'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: UK NICE 2017 defines faltering growth by falls across weight centile spaces graded by birthweight
+    centile, on WHO-UK charts where 1 centile space = 0.67 z-score; a >=1.0 weight-for-age z-score fall
+    is an alternative (2021).
+  locator: Box 1, 'United Kingdom (UK) NICE guidelines 2017' + z-score conversion note
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: For 10 g/kg/day catch-up growth in infants, theoretical requirements are 2.82 g/kg/day protein
+    and 126 kcal/kg/day energy (protein-energy ratio 8.9%); an ideal PE ratio for catch-up is 8.9-12%.
+  locator: Table 1 (Theoretical energy and protein intake for catch-up growth) + surrounding text
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: Golden-derived catch-up weight-gain velocities (g/kg/day) for children 65-80 cm length; e.g.,
+    to recover weight-for-age z-score -1 to 0 in 20 days, males need 4.1 and females 4.4 g/kg/day.
+  locator: Table 3 (Rates of weight gain required to catch-up, adjusted from Golden 2009)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: 'Reference nutrient intakes for micronutrient support in catch-up growth; for age 1-3 years: vitamin
+    A 400 ug/day, vitamin D 10 ug/day, zinc 5 mg/day, iron 6.9 mg/day.'
+  locator: Table 2 (Reference nutrient intake, source British Nutrition Foundation)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_008
+  text: 'Older static undernutrition criteria are listed as alternative FG definitions: Gomez (weight
+    <75% of median weight-for-age) and Waterlow (weight <80% of median weight-for-length).'
+  locator: Box 1 (Gomez and Waterlow criteria)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Introduction, para after Box 2 (Cooke et al. expert-opinion definition)
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Abstract (Summary)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Box 1, 'WHO definitions for undernutrition'
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Box 1, 'United Kingdom (UK) NICE guidelines 2017' + z-score conversion note
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Table 1 (Theoretical energy and protein intake for catch-up growth) + surrounding text
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Table 3 (Rates of weight gain required to catch-up, adjusted from Golden 2009)
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: Table 2 (Reference nutrient intake, source British Nutrition Foundation)
+- metric_name: evidence_point
+  value: ev_008
+  unit: null
+  date_context: null
+  locator: Box 1 (Gomez and Waterlow criteria)
+contradictions_or_cautions:
+- text: Review, not a primary trial or a single guideline; numeric tables are reproduced/adapted from
+    cited external sources (refs 22, 27, 31, 35, British Nutrition Foundation).
+  locator: card/trust
+- text: 'Internal inconsistency: abstract defines FG by weight-for-HEIGHT z-score drop; body text and
+    Cooke definition use weight-for-AGE.'
+  locator: card/trust
+- text: Box 1 WHO undernutrition labels appear internally mislabeled (stunting/wasting anthropometric
+    bases swapped vs conventional usage) - preserved verbatim, not corrected.
+  locator: card/trust

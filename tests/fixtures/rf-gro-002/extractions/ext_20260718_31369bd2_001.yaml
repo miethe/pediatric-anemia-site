@@ -1,0 +1,66 @@
+id: ext_20260718_31369bd2_001
+source_card_id: src_20260718_rfgro002_07
+created_at: '2026-07-18T16:33:56-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: The consensus statement defines a standardized indicator set to diagnose/document undernutrition
+    in the pediatric population aged 1 month to 18 years.
+  locator: Abstract, purpose sentence (Nutr Clin Pract 2015;30(1):147-61)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: With a single data point, the recommended indicators are z-scores for weight-for-height/length,
+    BMI-for-age, or length/height-for-age, or mid-upper arm circumference.
+  locator: Abstract, recommended-indicators sentence (single data point)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: With 2+ data points the indicators add weight gain velocity (age <2 years), weight loss (age 2-20
+    years), deceleration in weight-for-length/height z-score, and inadequate nutrient intake.
+  locator: Abstract, recommended-indicators sentence (2+ data points)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The indicators are intended for use across acute, ambulatory/outpatient, and residential care
+    settings.
+  locator: Abstract, settings sentence
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: The statement is a diagnosis/documentation tool, not a nutritional-risk screening tool; deriving
+    screening criteria is explicitly out of scope.
+  locator: Abstract, scope-exclusion sentence
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: Clinicians should use as many available data points as possible to identify and document malnutrition.
+  locator: Abstract, clinician-guidance sentence
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract, purpose sentence (Nutr Clin Pract 2015;30(1):147-61)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Abstract, recommended-indicators sentence (2+ data points)
+contradictions_or_cautions:
+- text: Numeric z-score / percentage classification cutoffs (mild/moderate/severe) live in the primary's
+    tables, which were not accessible as verbatim text — asserted numbers here are limited to the abstract's
+    age-band scopes.
+  locator: card/trust
+- text: Growth-reference standard (WHO vs CDC) for the z-scores is not stated in the accessed abstract.
+  locator: card/trust

@@ -1,0 +1,109 @@
+id: ext_20260718_f4cd1236_001
+source_card_id: src_20260718_rfgro002_02
+created_at: '2026-07-18T16:33:56-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: 'The length/height indicator is selected by age: recumbent length is used for children younger
+    than 24 months and standing height for children 24 months and older.'
+  locator: WHO Anthro for PC Manual v3.2.2, §3.2 'Recumbent length and standing height' (measurement-type
+    rule); mirrors WHO standards page length-vs-height indicator split
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: 'The computational boundary between length-for-age and height-for-age is exact in days: up to
+    730 days inclusive is length-for-age, and 731 days or more is height-for-age.'
+  locator: WHO Anthro for PC Manual v3.2.2, §3.3 'Recumbent length and standing height' (indicator-naming
+    / age-in-days rule)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: When a child is measured in the position that does not match the age rule, 0.7 cm is subtracted
+    from length to estimate height, or added to height to estimate length, before deriving indicators.
+  locator: WHO Anthro for PC Manual v3.2.2, §3.3 'Recumbent length and standing height' (measurement-conversion
+    rule)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The 0.7 cm length-height offset was derived empirically from MGRS children aged 18-30 months who
+    had both length and height measured.
+  locator: WHO Anthro for PC Manual v3.2.2, §3.3 'Recumbent length and standing height' (basis of the
+    offset)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: When neither age nor measurement type is known, values below 87 cm are treated as length and 87
+    cm or above as height; 87 cm is the mean of the sex-specific median length and height at 24 months.
+  locator: WHO Anthro for PC Manual v3.2.2, §3.3 (fallback when age and measurement type are both unknown)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: Length-based indicators are set to not-available outside 45-110 cm for age under 24 months, and
+    height-based indicators outside 65-120 cm for age 24 months or older.
+  locator: WHO Anthro for PC Manual v3.2.2, data-quality / biologically-implausible exclusion bounds (length
+    and height NA rules)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: The published standard provides length-for-age birth to 2 years and height-for-age 2 to 5 years,
+    plus a combined length/height-for-age birth to 5 years, as z-score and percentile charts and tables
+    for boys and girls.
+  locator: WHO standards page 'Length/height-for-age' — chart & table download index (verbatim item labels)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: WHO Anthro for PC Manual v3.2.2, §3.2 'Recumbent length and standing height' (measurement-type
+    rule); mirrors WHO standards page length-vs-height indicator split
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: WHO Anthro for PC Manual v3.2.2, §3.3 'Recumbent length and standing height' (indicator-naming
+    / age-in-days rule)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: WHO Anthro for PC Manual v3.2.2, §3.3 'Recumbent length and standing height' (measurement-conversion
+    rule)
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: WHO Anthro for PC Manual v3.2.2, §3.3 'Recumbent length and standing height' (basis of the
+    offset)
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: WHO Anthro for PC Manual v3.2.2, §3.3 (fallback when age and measurement type are both unknown)
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: WHO Anthro for PC Manual v3.2.2, data-quality / biologically-implausible exclusion bounds (length
+    and height NA rules)
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: WHO standards page 'Length/height-for-age' — chart & table download index (verbatim item labels)
+contradictions_or_cautions:
+- text: Standards page itself carries no prose thresholds — it is a download index of z-score/percentile
+    charts and tables.
+  locator: card/trust
+- text: 0.7 cm length/height conversion is a modelled adjustment, not a per-child measurement.
+  locator: card/trust

@@ -1,0 +1,1629 @@
+id: claims_20260718_rf_run_20260717_rf_gro_002
+intent_id: intent_research_20260717_rf_gro_002_pediatric_cds_evidence
+report_ref: reports/report_draft.md
+verification_status: passed
+claims:
+- claim_id: clm_001
+  text: A recent expert-opinion consensus recommends evaluating for faltering growth when weight-for-age
+    drops by 1 z-score over 1 month or more, excluding the first 2 weeks of life.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_05
+    evidence_id: ev_001
+    relation: supports
+    locator: Introduction, para after Box 2 (Cooke et al. expert-opinion definition)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_002
+  text: The review's abstract states the consensus threshold as a drop of weight-for-HEIGHT of 1 z-score
+    - conflicting with the weight-for-age framing used in the body text.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_05
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract (Summary)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_003
+  text: WHO undernutrition is defined by static anthropometric z-scores below -2 for underweight, stunting,
+    and wasting (labels reproduced verbatim; see limitations).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_05
+    evidence_id: ev_003
+    relation: supports
+    locator: Box 1, 'WHO definitions for undernutrition'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_004
+  text: UK NICE 2017 defines faltering growth by falls across weight centile spaces graded by birthweight
+    centile, on WHO-UK charts where 1 centile space = 0.67 z-score; a >=1.0 weight-for-age z-score fall
+    is an alternative (2021).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_05
+    evidence_id: ev_004
+    relation: supports
+    locator: Box 1, 'United Kingdom (UK) NICE guidelines 2017' + z-score conversion note
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_005
+  text: For 10 g/kg/day catch-up growth in infants, theoretical requirements are 2.82 g/kg/day protein
+    and 126 kcal/kg/day energy (protein-energy ratio 8.9%); an ideal PE ratio for catch-up is 8.9-12%.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_05
+    evidence_id: ev_005
+    relation: supports
+    locator: Table 1 (Theoretical energy and protein intake for catch-up growth) + surrounding text
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_006
+  text: Golden-derived catch-up weight-gain velocities (g/kg/day) for children 65-80 cm length; e.g.,
+    to recover weight-for-age z-score -1 to 0 in 20 days, males need 4.1 and females 4.4 g/kg/day.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_05
+    evidence_id: ev_006
+    relation: supports
+    locator: Table 3 (Rates of weight gain required to catch-up, adjusted from Golden 2009)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_007
+  text: 'Reference nutrient intakes for micronutrient support in catch-up growth; for age 1-3 years: vitamin
+    A 400 ug/day, vitamin D 10 ug/day, zinc 5 mg/day, iron 6.9 mg/day.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_05
+    evidence_id: ev_007
+    relation: supports
+    locator: Table 2 (Reference nutrient intake, source British Nutrition Foundation)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_008
+  text: 'Older static undernutrition criteria are listed as alternative FG definitions: Gomez (weight
+    <75% of median weight-for-age) and Waterlow (weight <80% of median weight-for-length).'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_05
+    evidence_id: ev_008
+    relation: supports
+    locator: Box 1 (Gomez and Waterlow criteria)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_009
+  text: For a single available data point, the recommended pediatric undernutrition indicators are z-scores
+    for weight-for-height/length, BMI-for-age, length/height-for-age, or mid-upper arm circumference (MUAC).
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_11
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract (author summary), recommended-indicators sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_010
+  text: When 2 or more data points are available, indicators additionally include weight-gain velocity
+    (applies age <2 years), weight loss (applies age 2-20 years), deceleration in weight-for-length/height
+    z-score, and inadequate nutrient intake.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_11
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract (author summary), two-or-more-data-points sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_011
+  text: The indicator set is intended to diagnose and document undernutrition across the pediatric population
+    ages 1 month to 18 years.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_11
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract (author summary), purpose/scope sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_012
+  text: The indicators are intended for use across multiple care settings — acute, ambulatory/outpatient,
+    and residential care.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_11
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract (author summary), settings sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_013
+  text: The statement defines diagnostic/documentation indicators, not nutritional-risk screening criteria;
+    screening is explicitly out of scope.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_11
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract (author summary), scope-exclusion sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_014
+  text: Clinicians are directed to use as many data points as are available when identifying and documenting
+    malnutrition (favoring multi-datapoint over single-datapoint indicators where possible).
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_11
+    evidence_id: ev_006
+    relation: supports
+    locator: Abstract (author summary), clinician-guidance sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_015
+  text: CART identified a weight z-score of -1.79 or below at 36 weeks PMA as an alternative growth-failure
+    cut point that showed high specificity (82%) for risk of 2-year cognitive impairment.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_08
+    evidence_id: ev_001
+    relation: supports
+    locator: Results (weight-based growth failure) / Discussion, para 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_016
+  text: A length z-score less than -1 at 36 weeks PMA had the highest sensitivity (80%) among tested cut
+    points for detecting 2-year cognitive impairment.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_08
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract (Results); Results para 'diagnostic accuracy ... length and head circumference';
+      Discussion para 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_017
+  text: A head circumference z-score decline of 2.43 or greater from birth to 36 weeks PMA had the highest
+    specificity (86%) among tested cut points for 2-year cognitive impairment.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_08
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract (Results); Results para 'diagnostic accuracy ... length and head circumference';
+      Discussion para 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_018
+  text: CART identified a weight z-score decline of 1.06 or greater from birth to 36 weeks PMA as an alternative
+    growth-faltering cut point (sensitivity 40%, specificity 67%), which did not reach statistical significance
+    for adjusted cognitive-impairment risk.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_08
+    evidence_id: ev_004
+    relation: supports
+    locator: Results (weight-based growth faltering), para on CART decline cut point
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_019
+  text: The standard growth-failure definition (weight z-score below -1.28, i.e. below the 10th percentile)
+    at 36 weeks PMA occurred in 32% of infants but had low sensitivity (40% and 26%) for cognitive impairment.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_08
+    evidence_id: ev_005
+    relation: supports
+    locator: Results (baseline), para 'Using the INTERGROWTH-21 standards, growth failure using the standard
+      definition'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_020
+  text: The standard growth-faltering definition (weight z-score decline greater than 1.2 from birth to
+    36 weeks PMA) had poor sensitivity (34%) for detecting 2-year cognitive impairment.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_08
+    evidence_id: ev_006
+    relation: supports
+    locator: Methods (diagnostic accuracy of standard cut points); Results (weight-based growth faltering)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_021
+  text: 'The cognitive-impairment outcome was defined by Bayley (BSID-III) cognitive composite score cut
+    points: mild <85 (35% of infants) and moderate <70 (13% of infants), assessed at 2 years corrected
+    gestational age.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_08
+    evidence_id: ev_007
+    relation: supports
+    locator: Methods (primary outcome); Results (baseline), para on prevalence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_022
+  text: Using Fenton growth curves instead of INTERGROWTH-21st, standard growth failure occurred in 57%
+    of the same infants (vs 32% by INTERGROWTH-21st), and Fenton-based faltering was not associated with
+    cognitive-impairment risk — establishing growth-standard dependence.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_08
+    evidence_id: ev_008
+    relation: supports
+    locator: Results, para 'Using the Fenton growth curves'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_023
+  text: The WHO weight-for-length indicator is the standard applied from birth to 2 years of age.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_01
+    evidence_id: ev_001
+    relation: supports
+    locator: 'Download section labels — ''Weight-for-length: Birth to 2 years'' subsections (Charts /
+      Tables)'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_024
+  text: The WHO weight-for-height indicator is the standard applied from 2 to 5 years of age.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_01
+    evidence_id: ev_002
+    relation: supports
+    locator: 'Download section labels — ''Weight-for-height: 2 to 5 years'' subsections (Charts / Tables)'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_025
+  text: The combined weight-for-length/height standard spans birth to 5 years, joining the length-based
+    (birth-2y) and height-based (2-5y) segments.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_01
+    evidence_id: ev_003
+    relation: supports
+    locator: Download section labels — combined 'Birth to 5 years' weight-for-length/height subsections
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_026
+  text: The standard is published in both z-score and percentile form, provided separately for girls and
+    boys.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_01
+    evidence_id: ev_004
+    relation: supports
+    locator: 'Charts and Tables sections — ''z-scores: girls'', ''Percentiles: girls'', ''z-scores: boys'',
+      ''Percentiles: boys'''
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_027
+  text: WHO distributes the standard in multiple derived formats (charts, full tables, simplified field
+    tables, and expanded national-health-card tables), each split by sex and z-score vs percentile.
+  materiality: background
+  claim_type: comparative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_01
+    evidence_id: ev_005
+    relation: supports
+    locator: Resource-category headings — 'Charts', 'Tables', 'Simplified field tables', 'Expanded tables
+      for constructing national health cards'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_028
+  text: The consensus statement defines a standardized indicator set to diagnose/document undernutrition
+    in the pediatric population aged 1 month to 18 years.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_07
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract, purpose sentence (Nutr Clin Pract 2015;30(1):147-61)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_029
+  text: With a single data point, the recommended indicators are z-scores for weight-for-height/length,
+    BMI-for-age, or length/height-for-age, or mid-upper arm circumference.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_07
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract, recommended-indicators sentence (single data point)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_030
+  text: With 2+ data points the indicators add weight gain velocity (age <2 years), weight loss (age 2-20
+    years), deceleration in weight-for-length/height z-score, and inadequate nutrient intake.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_07
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract, recommended-indicators sentence (2+ data points)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_031
+  text: The indicators are intended for use across acute, ambulatory/outpatient, and residential care
+    settings.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_07
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract, settings sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_032
+  text: The statement is a diagnosis/documentation tool, not a nutritional-risk screening tool; deriving
+    screening criteria is explicitly out of scope.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_07
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract, scope-exclusion sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_033
+  text: Clinicians should use as many available data points as possible to identify and document malnutrition.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_07
+    evidence_id: ev_006
+    relation: supports
+    locator: Abstract, clinician-guidance sentence
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_034
+  text: Growth faltering is diagnosed when weight, weight-for-length, or BMI is persistently below the
+    5th percentile, or when any of these drops by two percentile lines over time.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_10
+    evidence_id: ev_001
+    relation: supports
+    locator: 'Section: Diagnosis'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_035
+  text: A z-score that decreases by 1 or more predicts likely growth faltering, unless the decrease is
+    compensatory (e.g., large for gestational age at birth).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_10
+    evidence_id: ev_002
+    relation: supports
+    locator: 'Section: Diagnosis'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_036
+  text: For children younger than two years, measurements are adjusted for gestational age and plotted
+    on WHO growth charts; CDC growth charts are used for ages two to 20 years.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_10
+    evidence_id: ev_003
+    relation: supports
+    locator: 'Section: Diagnosis'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_037
+  text: Close monitoring continues until the child reaches a z-score of -2 to -1 without additional dietary
+    supplementation (recovery target).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_10
+    evidence_id: ev_004
+    relation: supports
+    locator: 'Section: Further Evaluation and Treatment'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_038
+  text: Growth is generally monitored weekly for infants one to six months of age and every other week
+    for infants six to 12 months of age.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_10
+    evidence_id: ev_005
+    relation: supports
+    locator: 'Section: Further Evaluation and Treatment'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_039
+  text: Negative z-scores represent lower growth percentiles, with lower negative values signifying more
+    severe malnutrition (directional convention, not a numeric cutoff).
+  materiality: background
+  claim_type: comparative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_10
+    evidence_id: ev_006
+    relation: supports
+    locator: 'Section: Diagnosis'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_040
+  text: At 19 years the WHO 2007 BMI-for-age +1 SD value is 25.4 kg/m2 for boys and 25.0 kg/m2 for girls,
+    set equivalent to the adult overweight cutoff of >=25.0 kg/m2.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_06
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract (Findings); repeated in Results and Discussion
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_041
+  text: At 19 years the WHO 2007 BMI-for-age +2 SD value is 29.7 kg/m2 for both sexes, aligned with the
+    adult obesity cutoff of >=30.0 kg/m2.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_06
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract (Findings); repeated verbatim in Discussion
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_042
+  text: The BMI-for-age transition between the 0-5y standards and the 5-19y reference at age 5 is smooth,
+    with differences across all centiles mostly 0.0-0.1 kg/m2 and never more than 0.2 kg/m2.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_06
+    evidence_id: ev_003
+    relation: supports
+    locator: Results (transition at 5 years); Abstract (Findings)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_043
+  text: Weight-for-age is not extended across the full 5-19y range because it cannot distinguish height
+    from body mass beyond childhood; the weight-for-age charts extend only to 10 years.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_06
+    evidence_id: ev_004
+    relation: supports
+    locator: Discussion (weight-for-age scope)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_044
+  text: The WHO 2007 height-for-age and BMI-for-age charts extend to 19 years, the WHO-defined upper limit
+    of adolescence, giving a reference for the 5-19y age group.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_06
+    evidence_id: ev_005
+    relation: supports
+    locator: Discussion (upper age limit); Abstract (Conclusion)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_045
+  text: The WHO 2007 reference curves were constructed with the Box-Cox power exponential (BCPE) method
+    with cubic-spline smoothing, the same approach used for the 0-5y WHO Child Growth Standards.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_06
+    evidence_id: ev_006
+    relation: supports
+    locator: Methods (statistical method)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_046
+  text: CDC recommends the 2006 WHO growth charts for children aged <24 months and continued use of CDC
+    growth charts for persons aged 2-19 years, transitioning at 24 months.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_00
+    evidence_id: ev_001
+    relation: supports
+    locator: Summary; and Recommendations > Use of WHO Growth Charts for Children Aged <24 Months / Continued
+      Use of CDC Growth Charts for Children Aged 24-59 Months
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_047
+  text: On WHO charts for children <24 months, the 2.3rd and 97.7th percentiles (equal to +/-2 SD; labeled
+    2nd/98th on the charts) are the recommended screening cutoffs, not the 5th and 95th.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_00
+    evidence_id: ev_002
+    relation: supports
+    locator: Recommendations > Use of WHO Growth Charts for Children Aged <24 Months; corroborated in
+      Summary and in 'Selection of Percentiles'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_048
+  text: WHO charts are growth STANDARDS (how healthy children should grow under optimal conditions) whereas
+    CDC charts are a growth REFERENCE (how certain children grew at a place and time).
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_00
+    evidence_id: ev_003
+    relation: supports
+    locator: Summary; and Creation of the WHO and CDC Growth Curves > Growth Reference Versus Growth Standard
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_049
+  text: 'The WHO growth-standard reference population was fully breastfed: 100% breastfed for 12 months
+    and predominantly breastfed for at least 4 months.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_00
+    evidence_id: ev_004
+    relation: supports
+    locator: Rationale for Recommendations > Children Aged <24 Months > Breastfeeding and Growth Patterns;
+      corroborated in Table 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_050
+  text: For low weight-for-age at ages 6-23 months, the CDC reference (5th/95th) flags 7%-11% of children
+    whereas the WHO standard (2.3rd/97.7th) flags <3%.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_00
+    evidence_id: ev_005
+    relation: supports
+    locator: Rationale for Recommendations > Selection of Percentiles
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_051
+  text: Misapplying the 5th/95th percentiles to the WHO weight charts would label 10% of an all-healthy
+    reference population as underweight or overweight.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_00
+    evidence_id: ev_006
+    relation: supports
+    locator: Rationale for Recommendations > Selection of Percentiles
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_052
+  text: Growth faltering (GF) is defined longitudinally as a weight-for-age z-score fall of at least 1.0
+    SD from birth to discharge, per applied ESPGHAN criteria.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_03
+    evidence_id: ev_001
+    relation: supports
+    locator: Section 2 (Materials and Methods), 'At discharge' classification paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_053
+  text: Undernutrition (UN) is defined cross-sectionally as a weight-for-age OR length-for-age z-score
+    below −2 SD at discharge, per applied ESPGHAN criteria.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_03
+    evidence_id: ev_002
+    relation: supports
+    locator: Section 2 (Materials and Methods), 'At discharge' classification paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_054
+  text: ESPGHAN flags infants whose weight or length z-score drops exceed 2 SD as requiring attention
+    and tailored nutritional support.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_03
+    evidence_id: ev_003
+    relation: supports
+    locator: Section 1 (Introduction), paragraph 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_055
+  text: Small for gestational age (SGA) is defined at birth as a birth-weight centile below the 3rd percentile.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_03
+    evidence_id: ev_004
+    relation: supports
+    locator: Section 2 (Materials and Methods), 'At birth' classification paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_056
+  text: Growth restriction (GR) at birth is defined by BW <3rd centile or <−2 SD, OR by at least three
+    of five listed criteria (BW <10th, HC <10th, length <10th, prenatal IUGR diagnosis, or maternal hypertension/preeclampsia).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_03
+    evidence_id: ev_005
+    relation: supports
+    locator: Section 2 (Materials and Methods), 'At birth' classification paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_057
+  text: In this cohort of 402 very preterm infants with available data, GF occurred in 45.3% and UN in
+    33.1% at discharge — cohort prevalence, not a decision threshold.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_03
+    evidence_id: ev_006
+    relation: supports
+    locator: Section 3 (Results), opening paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_058
+  text: All growth z-scores and centiles in this study are computed against INTERGROWTH-21st prescriptive
+    standards, making every threshold reference-chart dependent.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_03
+    evidence_id: ev_007
+    relation: supports
+    locator: Section 4 (Discussion), growth-curve paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_059
+  text: CDC recommends switching from the WHO Growth Standards to the CDC 2000 Growth Reference at age
+    2 years, the transition point the study addresses.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_04
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract — Background (first sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_060
+  text: The study defines a large change in z-score as a value less than -1 (drop) or greater than +1
+    (rise).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_04
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract — Methods (final sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_061
+  text: The gradual charts transition between WHO and CDC using a weighted average applied across ages
+    2 to 5 years.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_04
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract — Results (first sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_062
+  text: In 7429 children, the abrupt CDC-recommended switch produced a large mean z-score decrease between
+    1.5 and 2 years (BMIz -0.59, WTz -0.35) that was nearly absent with the gradual charts (BMIz -0.09,
+    WTz -0.01).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_04
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract — Results (second sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_063
+  text: The proportion of children with a large drop in z-score was much higher with the CDC-recommended
+    charts (BMIz 28.3%, WTz 6.0%) than the gradual charts (BMIz 11.6%, WTz 0.85%).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_04
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract — Results (third sentence)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_064
+  text: The authors conclude the gradual-transition charts may reduce overidentification of slow weight
+    gain and may be useful in clinical care and research.
+  materiality: background
+  claim_type: causal
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_04
+    evidence_id: ev_006
+    relation: supports
+    locator: Abstract — Conclusions
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_065
+  text: NG75 frames the weight-centile-fall values as thresholds for concern about faltering growth in
+    infants and children, i.e. triggers for further assessment, not diagnoses.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_09
+    evidence_id: ev_001
+    relation: supports
+    locator: Recommendation 1.2.1, intro clause
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_066
+  text: For an infant whose birthweight was below the 9th centile, a fall across 1 or more weight centile
+    spaces is a threshold for concern.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_09
+    evidence_id: ev_002
+    relation: supports
+    locator: Recommendation 1.2.1, bullet (birthweight below 9th centile)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_067
+  text: For an infant whose birthweight was between the 9th and 91st centiles, a fall across 2 or more
+    weight centile spaces is a threshold for concern.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_09
+    evidence_id: ev_003
+    relation: supports
+    locator: Recommendation 1.2.1, bullet (birthweight 9th-91st centiles)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_068
+  text: For an infant whose birthweight was above the 91st centile, a fall across 3 or more weight centile
+    spaces is a threshold for concern.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_09
+    evidence_id: ev_004
+    relation: supports
+    locator: Recommendation 1.2.1, bullet (birthweight above 91st centile)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_069
+  text: A current weight below the 2nd centile for age is a threshold for concern regardless of birthweight.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_09
+    evidence_id: ev_005
+    relation: supports
+    locator: Recommendation 1.2.1, bullet (current weight below 2nd centile)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_070
+  text: NG75 defines a 'centile space' as the space between adjacent centile lines on the UK-WHO growth
+    charts, which the centile-fall thresholds are measured in.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_09
+    evidence_id: ev_006
+    relation: supports
+    locator: Recommendation 1.2.1, parenthetical definition of centile space
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_071
+  text: In children older than 2 years, a BMI below the 0.4th centile suggests probable undernutrition
+    that needs assessment and intervention.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_09
+    evidence_id: ev_007
+    relation: supports
+    locator: Recommendation 1.2.4 (children over 2 years, BMI)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_072
+  text: A child's length or height centile more than 2 centile spaces below the mid-parental centile is
+    below the range predicted from parental heights and suggests undernutrition or a primary growth disorder.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_09
+    evidence_id: ev_008
+    relation: supports
+    locator: Recommendation 1.2.3 (length/height vs mid-parental centile)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_073
+  text: 'The length/height indicator is selected by age: recumbent length is used for children younger
+    than 24 months and standing height for children 24 months and older.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_02
+    evidence_id: ev_001
+    relation: supports
+    locator: WHO Anthro for PC Manual v3.2.2, §3.2 'Recumbent length and standing height' (measurement-type
+      rule); mirrors WHO standards page length-vs-height indicator split
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_074
+  text: 'The computational boundary between length-for-age and height-for-age is exact in days: up to
+    730 days inclusive is length-for-age, and 731 days or more is height-for-age.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_02
+    evidence_id: ev_002
+    relation: supports
+    locator: WHO Anthro for PC Manual v3.2.2, §3.3 'Recumbent length and standing height' (indicator-naming
+      / age-in-days rule)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_075
+  text: When a child is measured in the position that does not match the age rule, 0.7 cm is subtracted
+    from length to estimate height, or added to height to estimate length, before deriving indicators.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_02
+    evidence_id: ev_003
+    relation: supports
+    locator: WHO Anthro for PC Manual v3.2.2, §3.3 'Recumbent length and standing height' (measurement-conversion
+      rule)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_076
+  text: The 0.7 cm length-height offset was derived empirically from MGRS children aged 18-30 months who
+    had both length and height measured.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_02
+    evidence_id: ev_004
+    relation: supports
+    locator: WHO Anthro for PC Manual v3.2.2, §3.3 'Recumbent length and standing height' (basis of the
+      offset)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_077
+  text: When neither age nor measurement type is known, values below 87 cm are treated as length and 87
+    cm or above as height; 87 cm is the mean of the sex-specific median length and height at 24 months.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_02
+    evidence_id: ev_005
+    relation: supports
+    locator: WHO Anthro for PC Manual v3.2.2, §3.3 (fallback when age and measurement type are both unknown)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_078
+  text: Length-based indicators are set to not-available outside 45-110 cm for age under 24 months, and
+    height-based indicators outside 65-120 cm for age 24 months or older.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_02
+    evidence_id: ev_006
+    relation: supports
+    locator: WHO Anthro for PC Manual v3.2.2, data-quality / biologically-implausible exclusion bounds
+      (length and height NA rules)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_079
+  text: The published standard provides length-for-age birth to 2 years and height-for-age 2 to 5 years,
+    plus a combined length/height-for-age birth to 5 years, as z-score and percentile charts and tables
+    for boys and girls.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfgro002_02
+    evidence_id: ev_007
+    relation: supports
+    locator: WHO standards page 'Length/height-for-age' — chart & table download index (verbatim item
+      labels)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf01
+  text: The 1.0 z-score-fall faltering trigger is corroborated across three independent standards (Cooke
+    expert opinion, UK NICE 2021, applied ESPGHAN preterm criteria) but they disagree on the anthropometric
+    base - weight-for-age vs weight-for-height - so the magnitude is convergent while the indicator remains
+    an unresolved conflict.
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_001
+    - clm_002
+    - clm_004
+    - clm_052
+    reasoning_summary: clm_001/clm_004/clm_052 all set the faltering trigger at a >=1.0 z-score weight-for-AGE
+      fall, while clm_002 (same review's abstract) frames the same 1-z-score trigger on weight-for-HEIGHT;
+      the numeric magnitude agrees across sources but the base indicator does not.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf02
+  text: 'The evidence base supports two parallel and categorically distinct faltering axes: a STATIC severity
+    cutoff at z < -2 shared by WHO undernutrition and applied-ESPGHAN undernutrition, versus a DYNAMIC
+    longitudinal deceleration trigger at a >=1.0 z-score fall - they are not one threshold and must not
+    be collapsed.'
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_003
+    - clm_053
+    - clm_001
+    reasoning_summary: clm_003 (WHO) and clm_053 (ESPGHAN UN at discharge) both use a static z < -2 cross-sectional
+      cutoff, whereas clm_001 defines faltering by a longitudinal >=1.0 z-score fall over time; these
+      are different measurement axes (level vs change) that a CDS must keep separate.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf03
+  text: 'Every numeric z-score/percentile threshold in this evidence base is growth-standard-dependent
+    and non-transferable: the same preterm infants are classified growth-failed 57% on Fenton vs 32% on
+    INTERGROWTH-21st, and WHO-vs-CDC choice shifts low-weight-for-age prevalence at 6-23 months from <3%
+    to 7-11% - so chart identity must be bound to every threshold.'
+  materiality: material
+  claim_type: causal
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_022
+    - clm_050
+    - clm_051
+    - clm_058
+    reasoning_summary: clm_022 shows 57% (Fenton) vs 32% (INTERGROWTH) growth-failure prevalence in the
+      same cohort; clm_050/clm_051 show WHO vs CDC percentile choice changes low-weight flagging (<3%
+      vs 7-11%, and 10% mislabel if mixed); clm_058 states all study thresholds are INTERGROWTH-computed
+      - together the numeric cutoff is meaningless without its chart.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf04
+  text: The 24-month boundary is a triple discontinuity - chart source (WHO to CDC), measurement method
+    (recumbent length to standing height at 730/731 days), and indicator (weight-for-length to weight-for-height)
+    - and the abrupt chart switch alone raises the proportion flagged with a large BMIz drop from 11.6%
+    to 28.3%, so a flat z-score-drop rule applied across 24 months over-identifies faltering.
+  materiality: material
+  claim_type: causal
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_046
+    - clm_063
+    - clm_074
+    - clm_024
+    reasoning_summary: clm_046/clm_059 place the WHO->CDC chart switch at 24 months; clm_074 places the
+      length->height computational switch at 730/731 days; clm_024/clm_023 place the weight-for-length->weight-for-height
+      indicator switch at 2 years; clm_063 shows the abrupt switch alone inflates the large-BMIz-drop
+      rate from 11.6% to 28.3% - three co-located switches compound into a chart artifact.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf05
+  text: 'The consensus (ASPEN-type) indicator set is itself an adaptive staged-testing logic: with a single
+    data point only cross-sectional indicators apply (weight-for-height/length, BMI-for-age, length/height-for-age
+    z-scores, or MUAC), and with two or more data points longitudinal indicators unlock (weight-gain velocity
+    for age <2y, weight loss for age 2-20y, weight-for-length/height deceleration, inadequate intake),
+    with clinicians directed to use as many data points as available.'
+  materiality: material
+  claim_type: factual
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_009
+    - clm_010
+    - clm_014
+    reasoning_summary: clm_009/clm_029 enumerate the single-datapoint indicator set; clm_010/clm_030 add
+      the multi-datapoint longitudinal indicators; clm_014/clm_033 direct clinicians to favor multi-datapoint
+      evidence - i.e. the indicator set is staged by data availability, which is exactly the 'adaptive
+      staged testing captured as claims' the run seeks.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf06
+  text: Monitoring cadence is itself age-staged - weekly for infants 1-6 months and every other week for
+    infants 6-12 months - so the rate at which serial data points accrue (and therefore when the multi-datapoint
+    longitudinal indicators become computable) is age-dependent, not uniform.
+  materiality: material
+  claim_type: factual
+  status: inference
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_038
+    - clm_010
+    reasoning_summary: clm_038 sets a weekly (1-6mo) / biweekly (6-12mo) monitoring cadence; clm_010 makes
+      several indicators require >=2 data points - so cadence governs indicator availability, tying the
+      staged-testing logic to age-specific visit intervals.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf07
+  text: UK NICE NG75 makes the faltering threshold a function of birthweight centile band (a fall of 1
+    space if BW <9th centile, 2 spaces if 9th-91st, 3 spaces if >91st), an explicit regression-to-the-mean
+    adjustment absent from the flat >=1.0 z-score-fall rules - so the two threshold designs are structurally
+    different, not interchangeable.
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_066
+    - clm_067
+    - clm_068
+    - clm_004
+    reasoning_summary: clm_066/clm_067/clm_068 grade the centile-space-fall trigger by birthweight band,
+      whereas clm_004's alternative (and clm_001/clm_052) use a single flat >=1.0 z-score fall independent
+      of birthweight; NICE conditions on birthweight to allow larger falls for high-BW infants, a different
+      design premise.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf08
+  text: Applying NICE's own conversion of 1 centile space = 0.67 z-score, a 2-centile-space fall equals
+    ~1.34 z-score and a 3-space fall ~2.01 z-score - so NICE's 2- and 3-space triggers are more conservative
+    (require a larger drop) than the flat >=1.0 z-score-fall trigger, and thresholds stated in the two
+    units are not equal.
+  materiality: material
+  claim_type: quantitative
+  status: inference
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_004
+    - clm_070
+    - clm_067
+    - clm_001
+    reasoning_summary: clm_004/clm_070 give 1 centile space = 0.67 z-score; multiplying, a 2-space fall
+      (clm_067) = 1.34 z and a 3-space fall (clm_068) = 2.01 z, both exceeding the >=1.0 z flat trigger
+      (clm_001) - a direct arithmetic comparison showing the centile-space rules demand a larger deceleration.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf09
+  text: The evidence supports a distinct preterm/VLBW branch - z-scores on a preterm-specific prescriptive
+    standard (INTERGROWTH-21st) with gestational-age/corrected-age plotting before 2 years - and no located
+    term WHO/CDC anthropometric threshold is validated for preterm infants, so applying term cutoffs to
+    preterm populations is an explicit GAP.
+  materiality: material
+  claim_type: factual
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_058
+    - clm_036
+    - clm_052
+    reasoning_summary: clm_058 computes preterm thresholds on INTERGROWTH-21st; clm_036 requires gestational-age
+      adjustment and WHO charts for children <2y; clm_052 applies the preterm ESPGHAN faltering cutoff
+      - none of the term WHO/CDC screening cutoffs (clm_047/clm_050) is validated for preterm, leaving
+      a population GAP for the CDS.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf10
+  text: For predicting 2-year cognitive impairment in preterm infants, standard growth-failure definitions
+    have poor sensitivity (34-40%), while data-derived alternative cut points trade off - length z < -1
+    maximizes sensitivity (80%) whereas weight z <= -1.79 and a head-circumference z decline >= 2.43 maximize
+    specificity (82-86%) - so no single anthropometric cut point is simultaneously sensitive and specific.
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_015
+    - clm_016
+    - clm_017
+    - clm_019
+    reasoning_summary: clm_019/clm_020 give the standard definitions' poor sensitivity (26-40%); clm_016
+      gives length z < -1 the highest sensitivity (80%); clm_015 and clm_017 give the highest specificities
+      (82%, 86%) for weight and HC cut points - the sensitivity/specificity peaks fall on different indicators,
+      so no one cutoff optimizes both.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec01
+  text: The CDS converter must not conflate the ASPEN diagnosis/documentation indicator set - which explicitly
+    excludes nutritional-risk screening from scope - with the WHO/CDC percentile SCREENING cutoffs; using
+    diagnostic indicators as screening triggers (or the reverse) is a scope-exit error the converter should
+    block.
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: 'Implementation boundary proposal: clm_013/clm_032 state the ASPEN indicators are
+      a diagnosis/documentation tool with screening out of scope, while clm_047/clm_050 are WHO/CDC screening
+      cutoffs - the CDS must keep these two intents separate; this is a forward-looking converter directive,
+      not a source-stated fact.'
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec02
+  text: A consolidated scope-exit/referral trigger set is proposed - current weight below the 2nd centile
+    regardless of birthweight; BMI below the 0.4th centile in children >2 years; length/height more than
+    2 centile spaces below the mid-parental centile; and any weight or length z-score drop exceeding 2
+    SD - each flagging clinician assessment, never diagnosis, dosing, or treatment.
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: Implementation-boundary assembly across clm_069 (weight <2nd centile), clm_071
+      (BMI <0.4th centile >2y), clm_072 (>2 centile spaces below mid-parental), and clm_054 (z drop >2
+      SD ESPGHAN attention); each is source-stated as a concern/attention trigger, but bundling them into
+      a CDS referral list is a forward-looking proposal, so classified as speculation.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec03
+  text: 'The evidence supports a de-escalation/exit boundary for the faltering pathway: continue close
+    monitoring until weight-for-age z-score reaches -2 to -1 without additional dietary supplementation
+    - proposed as the CDS monitoring-stop criterion, not a treatment directive.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: clm_037 states monitoring continues until a z-score of -2 to -1 is reached without
+      supplementation; recasting this recovery target as an explicit pathway-exit rule for the converter
+      is a forward-looking implementation proposal, hence speculation.
+  report_locations: []
+  reviewer_notes: ''
+unresolved_questions: []

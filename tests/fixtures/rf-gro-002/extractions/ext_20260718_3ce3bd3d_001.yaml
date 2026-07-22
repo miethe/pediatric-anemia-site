@@ -1,0 +1,86 @@
+id: ext_20260718_3ce3bd3d_001
+source_card_id: src_20260718_rfgro002_06
+created_at: '2026-07-18T16:33:56-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: At 19 years the WHO 2007 BMI-for-age +1 SD value is 25.4 kg/m2 for boys and 25.0 kg/m2 for girls,
+    set equivalent to the adult overweight cutoff of >=25.0 kg/m2.
+  locator: Abstract (Findings); repeated in Results and Discussion
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: At 19 years the WHO 2007 BMI-for-age +2 SD value is 29.7 kg/m2 for both sexes, aligned with the
+    adult obesity cutoff of >=30.0 kg/m2.
+  locator: Abstract (Findings); repeated verbatim in Discussion
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: The BMI-for-age transition between the 0-5y standards and the 5-19y reference at age 5 is smooth,
+    with differences across all centiles mostly 0.0-0.1 kg/m2 and never more than 0.2 kg/m2.
+  locator: Results (transition at 5 years); Abstract (Findings)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Weight-for-age is not extended across the full 5-19y range because it cannot distinguish height
+    from body mass beyond childhood; the weight-for-age charts extend only to 10 years.
+  locator: Discussion (weight-for-age scope)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: The WHO 2007 height-for-age and BMI-for-age charts extend to 19 years, the WHO-defined upper limit
+    of adolescence, giving a reference for the 5-19y age group.
+  locator: Discussion (upper age limit); Abstract (Conclusion)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: The WHO 2007 reference curves were constructed with the Box-Cox power exponential (BCPE) method
+    with cubic-spline smoothing, the same approach used for the 0-5y WHO Child Growth Standards.
+  locator: Methods (statistical method)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract (Findings); repeated in Results and Discussion
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Abstract (Findings); repeated verbatim in Discussion
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Results (transition at 5 years); Abstract (Findings)
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Discussion (weight-for-age scope)
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Discussion (upper age limit); Abstract (Conclusion)
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Methods (statistical method)
+contradictions_or_cautions:
+- text: Reference derived from 1977 NCHS/WHO US sample merged with the 0-5y standards sample, not a fresh
+    multi-country prescriptive sample like the 0-5y standards
+  locator: card/trust
+- text: Cutoffs are population/statistical (SD-score anchored to adult BMI cutoffs), not assay-based
+  locator: card/trust

@@ -1,0 +1,124 @@
+id: ext_20260718_2224d9de_001
+source_card_id: src_20260718_rfgro002_08
+created_at: '2026-07-18T16:33:56-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: CART identified a weight z-score of -1.79 or below at 36 weeks PMA as an alternative growth-failure
+    cut point that showed high specificity (82%) for risk of 2-year cognitive impairment.
+  locator: Results (weight-based growth failure) / Discussion, para 1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: A length z-score less than -1 at 36 weeks PMA had the highest sensitivity (80%) among tested cut
+    points for detecting 2-year cognitive impairment.
+  locator: Abstract (Results); Results para 'diagnostic accuracy ... length and head circumference'; Discussion
+    para 1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: A head circumference z-score decline of 2.43 or greater from birth to 36 weeks PMA had the highest
+    specificity (86%) among tested cut points for 2-year cognitive impairment.
+  locator: Abstract (Results); Results para 'diagnostic accuracy ... length and head circumference'; Discussion
+    para 1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: CART identified a weight z-score decline of 1.06 or greater from birth to 36 weeks PMA as an alternative
+    growth-faltering cut point (sensitivity 40%, specificity 67%), which did not reach statistical significance
+    for adjusted cognitive-impairment risk.
+  locator: Results (weight-based growth faltering), para on CART decline cut point
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: The standard growth-failure definition (weight z-score below -1.28, i.e. below the 10th percentile)
+    at 36 weeks PMA occurred in 32% of infants but had low sensitivity (40% and 26%) for cognitive impairment.
+  locator: Results (baseline), para 'Using the INTERGROWTH-21 standards, growth failure using the standard
+    definition'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: The standard growth-faltering definition (weight z-score decline greater than 1.2 from birth to
+    36 weeks PMA) had poor sensitivity (34%) for detecting 2-year cognitive impairment.
+  locator: Methods (diagnostic accuracy of standard cut points); Results (weight-based growth faltering)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: 'The cognitive-impairment outcome was defined by Bayley (BSID-III) cognitive composite score cut
+    points: mild <85 (35% of infants) and moderate <70 (13% of infants), assessed at 2 years corrected
+    gestational age.'
+  locator: Methods (primary outcome); Results (baseline), para on prevalence
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_008
+  text: Using Fenton growth curves instead of INTERGROWTH-21st, standard growth failure occurred in 57%
+    of the same infants (vs 32% by INTERGROWTH-21st), and Fenton-based faltering was not associated with
+    cognitive-impairment risk — establishing growth-standard dependence.
+  locator: Results, para 'Using the Fenton growth curves'
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Results (weight-based growth failure) / Discussion, para 1
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Abstract (Results); Results para 'diagnostic accuracy ... length and head circumference'; Discussion
+    para 1
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Abstract (Results); Results para 'diagnostic accuracy ... length and head circumference'; Discussion
+    para 1
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Results (weight-based growth faltering), para on CART decline cut point
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Results (baseline), para 'Using the INTERGROWTH-21 standards, growth failure using the standard
+    definition'
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Methods (diagnostic accuracy of standard cut points); Results (weight-based growth faltering)
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: Methods (primary outcome); Results (baseline), para on prevalence
+- metric_name: evidence_point
+  value: ev_008
+  unit: null
+  date_context: null
+  locator: Results, para 'Using the Fenton growth curves'
+contradictions_or_cautions:
+- text: Cut points derived by CART recursive partitioning on one cohort (development/testing split); not
+    externally validated as a clinical rule.
+  locator: card/trust
+- text: Restricted to 24-26 weeks gestation (excludes 22-23 and 27 weeks); limited generalizability.
+  locator: card/trust
+- text: Cognitive-impairment outcome (BSID-III CCS <85) not a universally accepted definition; may exclude
+    severe global impairment.
+  locator: card/trust
+- text: No data on maternal-milk exposure.
+  locator: card/trust
