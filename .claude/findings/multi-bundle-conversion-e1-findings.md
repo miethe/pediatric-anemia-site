@@ -122,3 +122,46 @@ Deferred Items Triage Table row or design spec (Step 3 of the in-flight-findings
 three are scoped, mechanical fixes (the unreproducible-provenance gap has two named, already-
 understood remediation paths; the shared-mutable-state hazard has an already-proven fix pattern in
 this same codebase), not new architecture/design decisions.
+
+## Post-Execution Findings (Opus verification pass, 2026-07-22)
+
+### Verified-good (independent re-derivation, not test-trusting)
+
+- **"Zero new clinical rules" CONFIRMED by diff, not by prose.** `git diff 276aab8..HEAD -- modules/*/rules.json`:
+  `modules/anemia/rules.json` and `modules/cbc_suite_v1/rules.json` byte-unchanged (91 and 4 rules);
+  `modules/kidney_suite_v1/rules.json` and `modules/growth_suite_v1/rules.json` contain exactly `[]`.
+  `modules/anemia/module.json` byte-identical to the pre-run baseline. `approvedBy: []` on all 4 modules.
+  Note `modules/anemia/module.json.status` is `integrity-recorded` with a non-null `clinicalContentHash`
+  — this PREDATES this pass (verified against the `276aab8` blob) and records Wave-0 content integrity,
+  not clinical approval.
+
+- **No fabricated provenance in the 3 hand-produced projections.** All 187 assertions
+  (kidney 73 / growth 79 / anemia 35) were cross-checked against their source fixtures:
+  0 assertions cite an `rfClaimId` absent from the fixture `claims/claim_ledger.yaml`;
+  0 cite an `rfSourceCardId` that is not a real `sources/src_*.md` card; and every one of the 187
+  `exactPassageSha256` values is present in its own fixture's committed bytes. `exactPassage` is
+  null on all 187 — zero verbatim restricted text committed. The unreproducible-provenance gap
+  recorded above is therefore a REPRODUCIBILITY gap, not an integrity or fabrication one: the
+  content is faithful to the fixtures; what is missing is a committed regenerator for
+  kidney_suite_v1 and growth_suite_v1.
+
+### New finding
+
+- **MEDIUM — P1-T7's stated acceptance criterion overstates the rights-leakage gate's actual
+  coverage.** The AC (phase-1-2-vendoring-batch-orchestration.md, row P1-T7) says the gate "greps
+  every committed byte ... for any string matching a source card's withheld/restricted verbatim
+  passage" and that "a seeded mutation (temporarily inserting one restricted passage's text into a
+  fixture file) is caught by the gate." Empirically, using a real 139-char restricted passage taken
+  from the live RF-KID-001 run directory and appended to `tests/fixtures/rf-kid-001/reports/report_draft.md`:
+    - inserted INSIDE a double-quoted span  -> gate exits 1 (CAUGHT, works as designed)
+    - inserted as BARE UNQUOTED PROSE       -> gate exits 0 (NOT caught)
+  Outside each fixture's `sources/` directory the gate decodes only double-quoted spans and hashes
+  them against its placeholder-derived registry (see the script's own header, §2), so raw prose is
+  never inspected. This is NOT a fabricated or cosmetic gate — it genuinely catches the realistic
+  regression vector (a regeneration or bad merge restoring a `quote:`/`passage_locator:` construct),
+  and `scripts/evidence/check-fixture-rights-leakage.mjs` documents its mechanism honestly. The
+  defect is that the AC text claims byte-level coverage the implementation does not provide.
+  **Recommended:** amend the P1-T7 AC to describe the real property (quoted-span + structural
+  placeholder verification), or widen the scan to substring-match the hash registry against raw
+  text. Do not let the current AC wording stand as-is — on a rights-governance gate, an AC that
+  overstates coverage is the failure mode this repo exists to avoid.
