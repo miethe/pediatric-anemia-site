@@ -15,9 +15,15 @@
 //      its evidence-assertions.json, reports that specific schema error — the actual function
 //      `npm run validate`'s CLI entrypoint calls per module.
 //   3. The real, committed modules/cbc_suite_v1/evidence-assertions.json (19 assertions, one per
-//      slice-rule-supporting claim) still validates cleanly, and a module directory with NO
-//      evidence-assertions.json at all (modules/anemia/, which predates this artifact type)
-//      validates just as cleanly — the existence-gate has no false positives in either direction.
+//      slice-rule-supporting claim) still validates cleanly. modules/anemia/ used to predate this
+//      artifact type entirely (proving the existence-gate had no false positive on total absence);
+//      multi-bundle-conversion-e1 P4-T2 (FR-6/OQ-1) additively backfilled
+//      modules/anemia/evidence-assertions.json (35 assertions, one per RF-EV-001 "supported"-status
+//      claim) WITHOUT touching modules/anemia/evidence.json or rules.json — OQ-1 resolves the two
+//      files as permanently separate, parallel provenance views of the same upstream bundle,
+//      neither superseding the other. This file's existence-gate-on-total-absence proof now rests
+//      on cbc_suite_v1 (file present) above; the test below instead proves anemia's own backfilled
+//      file validates cleanly and reports the expected count.
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -75,6 +81,22 @@ test('all 19 committed modules/cbc_suite_v1/evidence-assertions.json records val
   }
 });
 
+test('all 35 committed modules/anemia/evidence-assertions.json records validate cleanly against evidence-assertions.schema.json (P4-T2 backfill, RF-EV-001)', async () => {
+  const schema = await loadJson(SCHEMA_PATH);
+  const doc = await loadJson(path.join(REPO_ROOT, 'modules', 'anemia', 'evidence-assertions.json'));
+  assert.equal(doc.moduleId, 'anemia');
+  assert.equal(doc.rfProvenance.rfRunId, 'rf_run_20260717_rf_ev_001_pediatric_cds_backfill');
+  assert.equal(doc.assertions.length, 35, 'one assertion per RF-EV-001 "supported"-status claim (35/48; the rest are inference/speculation, per FR-13\'s routing table)');
+  assert.deepEqual(validate(schema, doc), [], 'the committed document should validate with zero errors');
+  for (const assertion of doc.assertions) {
+    assert.equal(assertion.claimStatus, 'supported', `${assertion.assertionId}: every P4-T2 anemia assertion binds a "supported"-status RF-EV-001 claim`);
+    assert.equal(assertion.exactPassage, null, `${assertion.assertionId}: OQ-2 rights-restricted fallback means exactPassage must be null for every RF-EV-001 passage`);
+    assert.match(assertion.exactPassageSha256, /^sha256:[0-9a-f]{64}$/, `${assertion.assertionId}: must carry an immutable passage hash`);
+    assert.equal(assertion.passageId, `psg_${assertion.exactPassageSha256.replace('sha256:', '')}`, `${assertion.assertionId}: passageId must be minted from exactPassageSha256`);
+    assert.equal(assertion.rfRunId, doc.rfProvenance.rfRunId, `${assertion.assertionId}: per-assertion rfRunId must agree with the document's rfProvenance.rfRunId`);
+  }
+});
+
 test('every authoring-decisions.yaml exact_assertion_ids reference resolves to a real assertion in evidence-assertions.json', async () => {
   // Cross-file resolution proof for P3-T1 <-> P3-T3's join. Parsed with the repo's own
   // dependency-free YAML-lite loader (tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs) rather than
@@ -92,10 +114,10 @@ test('every authoring-decisions.yaml exact_assertion_ids reference resolves to a
   }
 });
 
-test('validateModule() treats a missing evidence-assertions.json as legal (existence-gated) — modules/anemia has none', async () => {
+test('validateModule() validates the real, P4-T2-backfilled modules/anemia/evidence-assertions.json cleanly and reports its count', async () => {
   const result = await validateModule('anemia', REPO_ROOT);
   assert.deepEqual(result.errors, [], `validateModule('anemia', ...) should report zero errors: ${JSON.stringify(result.errors)}`);
-  assert.equal(result.evidenceAssertionsCount, 0, 'modules/anemia/ predates evidence-assertions.json; its absence is not an error');
+  assert.equal(result.evidenceAssertionsCount, 35, 'modules/anemia/evidence-assertions.json carries 35 assertions, one per RF-EV-001 "supported"-status claim (P4-T2, multi-bundle-conversion-e1)');
 });
 
 test('validateModule() validates the real modules/cbc_suite_v1/evidence-assertions.json cleanly and reports its count', async () => {

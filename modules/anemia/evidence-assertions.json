@@ -1,0 +1,1026 @@
+{
+  "schemaVersion": "1.0",
+  "moduleId": "anemia",
+  "rfProvenance": {
+    "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+    "rfBundleId": "bundle_20260718_intent_research_20260717_rf_ev_001",
+    "fixturePath": "tests/fixtures/rf-ev-001/"
+  },
+  "assertions": [
+    {
+      "assertionId": "evas_anemia_clm_001",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_01",
+      "sourceId": "WHO2024_HB",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_001",
+      "passageId": "psg_be62ff440b8dd098bbcc1d786e40870c3f822f9cc6f5d851afe95f0fb98da61c",
+      "locator": {
+        "raw": "Executive summary, p.xi, Table 2 (Haemoglobin cutoffs to define anaemia in individuals and populations)",
+        "page": null,
+        "section": "Executive summary, p.xi, Table 2 (Haemoglobin cutoffs to define anaemia in individuals and populations)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:be62ff440b8dd098bbcc1d786e40870c3f822f9cc6f5d851afe95f0fb98da61c",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children 6 months-14 years, both sexes; age-banded (6-23 mo, 24-59 mo, 5-11 y, 12-14 y girls/boys); apparently-healthy reference basis; applies at individual and population level",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Cutoffs defined on haemoglobin concentration via a 5th-percentile statistical derivation; stated as not tied to a specific analyzer but assumes standardized haemoglobin measurement"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_002",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_01",
+      "sourceId": "WHO2024_HB",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_002",
+      "passageId": "psg_63dd2acf5625b92d3a09f44bc6b72ceea7ce1dba3218532d1697febe840d51aa",
+      "locator": {
+        "raw": "Executive summary, p.xi, Normative statement 1.a (Haemoglobin cutoffs to define any anaemia)",
+        "page": null,
+        "section": "Executive summary, p.xi, Normative statement 1.a (Haemoglobin cutoffs to define any anaemia)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:63dd2acf5625b92d3a09f44bc6b72ceea7ce1dba3218532d1697febe840d51aa",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children 6-23 months, both sexes -- the only pediatric group whose defining cutoff was changed in the 2024 revision",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "5th-percentile statistical cutoff derivation; stated as not method-dependent"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_003",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_01",
+      "sourceId": "WHO2024_HB",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_003",
+      "passageId": "psg_84120dc1a64b35c9c3a9da1d86e3665c593cd1aa58e2e7e5d681229a81c981bf",
+      "locator": {
+        "raw": "Section 1 (What should be the haemoglobin cutoffs...), scope/definitions narrative, para 'Physiological, environmental, and genetic factors...'",
+        "page": null,
+        "section": "Section 1 (What should be the haemoglobin cutoffs...), scope/definitions narrative, para 'Physiological, environmental, and genetic factors...'",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:84120dc1a64b35c9c3a9da1d86e3665c593cd1aa58e2e7e5d681229a81c981bf",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "All age and lifecycle groups including children (explicitly 'early life ... and with age'); context = defining/interpreting haemoglobin cutoffs",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (qualitative interpretive principle)"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_004",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_01",
+      "sourceId": "WHO2024_HB",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_004",
+      "passageId": "psg_2c830f41ca79a4dd7f1a184a1b90549337f4a4552b9162a2dd575a4a431fc36d",
+      "locator": {
+        "raw": "Executive summary, p.xii-xiii, Normative statement 2.a.1 (Elevation of residence) + Table 4 and equation footnote b",
+        "page": null,
+        "section": "Executive summary, p.xii-xiii, Normative statement 2.a.1 (Elevation of residence) + Table 4 and equation footnote b",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2c830f41ca79a4dd7f1a184a1b90549337f4a4552b9162a2dd575a4a431fc36d",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "All population groups including children; residents/workers at elevation, esp. below 2500 m (>98% of world population)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Adjustment applied to the haemoglobin concentration value (subtract from observed Hb, or add to the cutoff); not analyzer-dependent"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_005",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_01",
+      "sourceId": "WHO2024_HB",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_005",
+      "passageId": "psg_b3d2153a37488d30575cd8355321e9e6c8a0cf1b9303ac0ee35b7de54c544ff3",
+      "locator": {
+        "raw": "Executive summary, p.xiv, Normative statement 2.b (Infection and inflammation)",
+        "page": null,
+        "section": "Executive summary, p.xiv, Normative statement 2.b (Infection and inflammation)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b3d2153a37488d30575cd8355321e9e6c8a0cf1b9303ac0ee35b7de54c544ff3",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "All groups including children in infection/inflammation- and malaria-endemic settings",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Haemoglobin is NOT inflammation-adjusted (contrast: serum ferritin / transferrin receptor commonly are); not analyzer-dependent"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_006",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_01",
+      "sourceId": "WHO2024_HB",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_006",
+      "passageId": "psg_17af23b0a94b0809ebdba0786d0fe18dec6ca6cf34ebb28b1bb98684644b9477",
+      "locator": {
+        "raw": "Introduction / methods narrative, para 'This guideline updates and complements previous recommendations...'",
+        "page": null,
+        "section": "Introduction / methods narrative, para 'This guideline updates and complements previous recommendations...'",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:17af23b0a94b0809ebdba0786d0fe18dec6ca6cf34ebb28b1bb98684644b9477",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "not applicable (provenance / methodology statement)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_007",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_05",
+      "sourceId": "BSH2020_G6PD",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_007",
+      "passageId": "psg_5e564d319cadfd6a8af990714bdefe8dd2593fb845f5e741aba8a95866ab157a",
+      "locator": {
+        "raw": "Page 5, 'Recommendations: Laboratory diagnosis' (first two bullets)",
+        "page": null,
+        "section": "Page 5, 'Recommendations: Laboratory diagnosis' (first two bullets)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:5e564d319cadfd6a8af990714bdefe8dd2593fb845f5e741aba8a95866ab157a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "All patients suspected of G6PD deficiency (males and females; applies across ages including neonates/children); not age-band-restricted",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Quantitative spectrophotometric G6PD activity assay (WHO one-substrate or Glock & McLean method); screening/POC tests are insufficient to confirm or exclude, especially in females"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_008",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_05",
+      "sourceId": "BSH2020_G6PD",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_008",
+      "passageId": "psg_f9e3966618e564c057ea5bf7e98a62014f729e8bd350ea4dde44290f911dee80",
+      "locator": {
+        "raw": "Page 6, 'Factors affecting clinical interpretation' (opening paragraph)",
+        "page": null,
+        "section": "Page 6, 'Factors affecting clinical interpretation' (opening paragraph)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:f9e3966618e564c057ea5bf7e98a62014f729e8bd350ea4dde44290f911dee80",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Any patient tested during or soon after acute hemolysis/reticulocytosis (all ages); heightened for African-type variant",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Quantitative G6PD activity assay; interpretation is reticulocyte-dependent — result must be read alongside the reticulocyte count on the same sample"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_009",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_05",
+      "sourceId": "BSH2020_G6PD",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_009",
+      "passageId": "psg_a407868822f63a7807aff0424deb445a9f3d243ffcc74ea377b351825aba3d18",
+      "locator": {
+        "raw": "Page 6, 'Factors affecting clinical interpretation'; corroborated by Page 5, 'Recommendations: Laboratory diagnosis' (third bullet)",
+        "page": null,
+        "section": "Page 6, 'Factors affecting clinical interpretation'; corroborated by Page 5, 'Recommendations: Laboratory diagnosis' (third bullet)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:a407868822f63a7807aff0424deb445a9f3d243ffcc74ea377b351825aba3d18",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Patient with clinically suspected G6PD deficiency and unexplained hemolysis, initial assay normal/equivocal (all ages)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Repeat quantitative G6PD activity assay after reticulocytosis resolves"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_010",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_05",
+      "sourceId": "BSH2020_G6PD",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_010",
+      "passageId": "psg_e1defc477849c8e748584d2719c5b2a4feb8dcef5773342020c709283ed6a9c0",
+      "locator": {
+        "raw": "Page 7, 'Molecular diagnosis' (opening paragraph)",
+        "page": null,
+        "section": "Page 7, 'Molecular diagnosis' (opening paragraph)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:e1defc477849c8e748584d2719c5b2a4feb8dcef5773342020c709283ed6a9c0",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Recently transfused patients, heterozygous females, or cases where reticulocytosis may mask deficiency (all ages)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Enzyme activity assay may be unreliable post-transfusion (donor cells) or with reticulocytosis; molecular/DNA analysis is the confirmatory alternative"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_011",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_05",
+      "sourceId": "BSH2020_G6PD",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_011",
+      "passageId": "psg_d21a866f2e2fc88c766d5df7d37df6b8340a6cb71647810232475de0e035ba40",
+      "locator": {
+        "raw": "Page 3, Table I 'Classification of G6PD variants' (Class / Residual G6PD activity (% of normal))",
+        "page": null,
+        "section": "Page 3, Table I 'Classification of G6PD variants' (Class / Residual G6PD activity (% of normal))",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d21a866f2e2fc88c766d5df7d37df6b8340a6cb71647810232475de0e035ba40",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Hemizygous males (footnote: '*Levels of residual G6PD activity in hemizygous males'); classification framework applies across ages",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Residual activity as % of the laboratory's normal (quantitative assay); Class I defined clinically (CNSHA), not purely biochemically"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_012",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_05",
+      "sourceId": "BSH2020_G6PD",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_012",
+      "passageId": "psg_2459d9311235948959d04a3655ab7a7bf4c2dd136d0aa525f8e70ed083c2b41b",
+      "locator": {
+        "raw": "Page 6, 'Normal values' (adult reference values paragraph)",
+        "page": null,
+        "section": "Page 6, 'Normal values' (adult reference values paragraph)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2459d9311235948959d04a3655ab7a7bf4c2dd136d0aa525f8e70ed083c2b41b",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Adults (explicitly 'For adults'); NOT applicable to neonates/infants, whose values deviate (see ev_007). Each lab should establish its own reference range (ICSH or commercial kit).",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Quantitative spectrophotometric assay; values are temperature-dependent (30 C vs 37 C) and 6-PGD-correction-dependent; expressed per gram haemoglobin (iu = umol substrate converted per minute)"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_013",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_05",
+      "sourceId": "BSH2020_G6PD",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_013",
+      "passageId": "psg_4c68f481b1b8bdc07a3f23bca8e0bfa09dd5a694ca9fb97d4398ff9472e4b410",
+      "locator": {
+        "raw": "Page 6, 'Normal values' (newborn/premature paragraph)",
+        "page": null,
+        "section": "Page 6, 'Normal values' (newborn/premature paragraph)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:4c68f481b1b8bdc07a3f23bca8e0bfa09dd5a694ca9fb97d4398ff9472e4b410",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Newborns and infants; premature infants born between 29 and 32 weeks gestation vs term neonates",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Quantitative G6PD activity assay; adult reference ranges do not apply to neonates/infants (age- and gestational-age-dependent)"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_014",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_03",
+      "sourceId": "CDC2025_LEAD",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_014",
+      "passageId": "psg_6c096e6c26e159855c08b4a28b2f4e71aa119b4dbc4964d785a633bca5544a72",
+      "locator": {
+        "raw": "Section 'Initial screening blood lead level' / heading 'If the patient's BLL is ≥ 3.5 micrograms per deciliter'",
+        "page": null,
+        "section": "Section 'Initial screening blood lead level' / heading 'If the patient's BLL is ≥ 3.5 micrograms per deciliter'",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:6c096e6c26e159855c08b4a28b2f4e71aa119b4dbc4964d785a633bca5544a72",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children (childhood lead poisoning prevention); both sexes; CDC screening context cites Medicaid-enrolled testing at ages 12 and 24 months, or 24-72 months if never screened",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Blood lead level measured in µg/dL; capillary (finger-prick/heel-prick) or venous sample for initial screening; capillary result at/above BLRV requires a venous sample"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_015",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_03",
+      "sourceId": "CDC2025_LEAD",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_015",
+      "passageId": "psg_e9cddf92b4dbff423d0730e0d6ead310c3b43862313a7a9717b174e83995e795",
+      "locator": {
+        "raw": "Section 'Initial screening blood lead level', first paragraph",
+        "page": null,
+        "section": "Section 'Initial screening blood lead level', first paragraph",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:e9cddf92b4dbff423d0730e0d6ead310c3b43862313a7a9717b174e83995e795",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children undergoing initial blood lead screening; both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Method-dependent: capillary (finger/heel-prick) initial screen vs venous confirmatory draw; venous draw recommended for confirmatory BLL screening"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_016",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_03",
+      "sourceId": "CDC2025_LEAD",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_016",
+      "passageId": "psg_a368978e7442b91080fc771133f272bfa1b317677880f50310b1583909ac31ba",
+      "locator": {
+        "raw": "Table 1 — 'Recommended schedule for obtaining a confirmatory venous sample'",
+        "page": null,
+        "section": "Table 1 — 'Recommended schedule for obtaining a confirmatory venous sample'",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:a368978e7442b91080fc771133f272bfa1b317677880f50310b1583909ac31ba",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with an elevated initial screening capillary BLL; both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Timelines keyed to initial screening capillary BLL; confirmation is by venous sample"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_017",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_03",
+      "sourceId": "CDC2025_LEAD",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_017",
+      "passageId": "psg_3a0fe1711e0a45360684879088e06328d4e55b637edf8d50d78063c1b5d32a91",
+      "locator": {
+        "raw": "Section 'If the patient's BLL is 3.5-19 micrograms per deciliter', iron-deficiency bullet",
+        "page": null,
+        "section": "Section 'If the patient's BLL is 3.5-19 micrograms per deciliter', iron-deficiency bullet",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:3a0fe1711e0a45360684879088e06328d4e55b637edf8d50d78063c1b5d32a91",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with confirmed BLL 3.5-19 µg/dL; both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Iron-deficiency testing/treatment thresholds deferred to AAP guidelines; not specified numerically in this CDC document"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_018",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_03",
+      "sourceId": "CDC2025_LEAD",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_018",
+      "passageId": "psg_530c46e573cd4a1c594898a4a7c990a9e2f05963d3be93ea8f0ed3710318172b",
+      "locator": {
+        "raw": "Headings 'If the patient's BLL is 20-44 micrograms per deciliter' and 'If the patient's BLL is ≥ 45 micrograms per deciliter'",
+        "page": null,
+        "section": "Headings 'If the patient's BLL is 20-44 micrograms per deciliter' and 'If the patient's BLL is ≥ 45 micrograms per deciliter'",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:530c46e573cd4a1c594898a4a7c990a9e2f05963d3be93ea8f0ed3710318172b",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with confirmed BLL 20-44 µg/dL or ≥45 µg/dL; both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Tiers keyed to confirmed venous BLL; not analyzer-specific in this document"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_019",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_02",
+      "sourceId": "BLOOD2022_PED_ANEMIA",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_019",
+      "passageId": "psg_2b4c9ecb9a7d5f9759c10ab238d359d7c083cdf9757c56ad401820201a7de28b",
+      "locator": {
+        "raw": "Section 'Classification of anemia' (refers to Figure 2)",
+        "page": null,
+        "section": "Section 'Classification of anemia' (refers to Figure 2)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2b4c9ecb9a7d5f9759c10ab238d359d7c083cdf9757c56ad401820201a7de28b",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants and children with anemia (individual-patient diagnostic workup); not applicable to a single numeric cutoff",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Automated hematology analyzer (MCV) plus reticulocyte count; classification is method-dependent on analyzer-reported indices"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_020",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_02",
+      "sourceId": "BLOOD2022_PED_ANEMIA",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_020",
+      "passageId": "psg_18db9fb969e9f2f8ca9e9857e7bc8ff45cef53beef70295db69193ca89e40610",
+      "locator": {
+        "raw": "Section 'Normocytic anemia' (first sentence)",
+        "page": null,
+        "section": "Section 'Normocytic anemia' (first sentence)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:18db9fb969e9f2f8ca9e9857e7bc8ff45cef53beef70295db69193ca89e40610",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric patients (age band not sub-specified in this sentence); note the review's own Figure 1/Table 1 show MCV reference limits are age-dependent in children, so this 80-100 fL band is a general anchor, not an age-specific cutoff",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Automated hematology analyzer-reported MCV; method-dependent"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_021",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_02",
+      "sourceId": "BLOOD2022_PED_ANEMIA",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_021",
+      "passageId": "psg_0613df14630df6e19383f76c8e3acadd47727c7a5af10bf62fd7727350003fd4",
+      "locator": {
+        "raw": "Section 'Laboratory investigation'",
+        "page": null,
+        "section": "Section 'Laboratory investigation'",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:0613df14630df6e19383f76c8e3acadd47727c7a5af10bf62fd7727350003fd4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants and children with anemia; interpretive rule, not applicable to a single sex/age band",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Reticulocyte count (automated or manual); interpretation is relative to degree of anemia, no fixed numeric cutoff given"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_022",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_02",
+      "sourceId": "BLOOD2022_PED_ANEMIA",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_022",
+      "passageId": "psg_6f534c68c0e8d403b6bbb622c98089b9ada9888ce5d27e0745ae27abdf7719c9",
+      "locator": {
+        "raw": "Section 'Laboratory investigation' (peripheral blood smear)",
+        "page": null,
+        "section": "Section 'Laboratory investigation' (peripheral blood smear)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:6f534c68c0e8d403b6bbb622c98089b9ada9888ce5d27e0745ae27abdf7719c9",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants and children with anemia; qualitative smear findings, not applicable to a numeric cutoff",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Peripheral blood smear microscopy (morphology); not a numeric threshold"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_023",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_02",
+      "sourceId": "BLOOD2022_PED_ANEMIA",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_023",
+      "passageId": "psg_f48c2451293e5cf1a25b7939c8068c4c42179bad5abf68c65a470d0a34371478",
+      "locator": {
+        "raw": "Section 'BM replacement syndromes'",
+        "page": null,
+        "section": "Section 'BM replacement syndromes'",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:f48c2451293e5cf1a25b7939c8068c4c42179bad5abf68c65a470d0a34371478",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants and children with anemia plus another cytopenia; qualitative pattern, not applicable to a numeric cutoff",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "CBC differential plus peripheral blood smear; not a numeric threshold"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_024",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_04",
+      "sourceId": "FDA2026_CDS",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_024",
+      "passageId": "psg_a2e3d96d8b5c9f4bd3ab6cd659617403ae79424d159a7632d866ccc3c355a887",
+      "locator": {
+        "raw": "Section II (Background), four-criteria enumeration (pp. 5-6)",
+        "page": null,
+        "section": "Section II (Background), four-criteria enumeration (pp. 5-6)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:a2e3d96d8b5c9f4bd3ab6cd659617403ae79424d159a7632d866ccc3c355a887",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "not applicable",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_025",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_04",
+      "sourceId": "FDA2026_CDS",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_025",
+      "passageId": "psg_cac14dada569c5af17b0a0f2774ccebd42e4065878011689b111fee5caf65b10",
+      "locator": {
+        "raw": "Section II (Background), Criterion (4) verbatim (p. 6); also Section IV(4), pp. 14-15",
+        "page": null,
+        "section": "Section II (Background), Criterion (4) verbatim (p. 6); also Section IV(4), pp. 14-15",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:cac14dada569c5af17b0a0f2774ccebd42e4065878011689b111fee5caf65b10",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "not applicable",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_026",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_04",
+      "sourceId": "FDA2026_CDS",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_026",
+      "passageId": "psg_98f5af134c822d5761996b2b2f7b80cefb4b48b809b70958835c2437864fa498",
+      "locator": {
+        "raw": "Section IV(3) (Interpretation of Criterion 3), pp. 10-11",
+        "page": null,
+        "section": "Section IV(3) (Interpretation of Criterion 3), pp. 10-11",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:98f5af134c822d5761996b2b2f7b80cefb4b48b809b70958835c2437864fa498",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "not applicable",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_027",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_04",
+      "sourceId": "FDA2026_CDS",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_027",
+      "passageId": "psg_4516e577f7ecda822287b1c837c24bac5755b2f4f73553a2707afb32b2248699",
+      "locator": {
+        "raw": "Section IV(4)(a) (Interpretation of Criterion 4), p. 14",
+        "page": null,
+        "section": "Section IV(4)(a) (Interpretation of Criterion 4), p. 14",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:4516e577f7ecda822287b1c837c24bac5755b2f4f73553a2707afb32b2248699",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "not applicable",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_028",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_04",
+      "sourceId": "FDA2026_CDS",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_028",
+      "passageId": "psg_a5d572e928e9bd2a7b84c4d4f507977a126fc21e5e255e92aa84b3af03460c69",
+      "locator": {
+        "raw": "Section IV(4) (Interpretation of Criterion 4), p. 15",
+        "page": null,
+        "section": "Section IV(4) (Interpretation of Criterion 4), p. 15",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:a5d572e928e9bd2a7b84c4d4f507977a126fc21e5e255e92aa84b3af03460c69",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "not applicable",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_029",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_00",
+      "sourceId": "AAP2026_IDA",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_029",
+      "passageId": "psg_9dbb6a1827b609e2fab56fb60091f0023b4adebea782b87a472c124d83bd0e97",
+      "locator": {
+        "raw": "Screening > Laboratory Screening (paragraph beginning 'Screening to identify children and adolescents with ID and IDA includes')",
+        "page": null,
+        "section": "Screening > Laboratory Screening (paragraph beginning 'Screening to identify children and adolescents with ID and IDA includes')",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:9dbb6a1827b609e2fab56fb60091f0023b4adebea782b87a472c124d83bd0e97",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants, children, and adolescents (birth through adolescence) being screened for ID/IDA; general primary-care and subspecialty context",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "CBC on an automated cell counter; serum ferritin immunoassay. Not a single numeric threshold — test-selection statement"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_030",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_00",
+      "sourceId": "AAP2026_IDA",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_030",
+      "passageId": "psg_3e1cf85e2f75b41683f0d87a6e97252fc4a4d1129a7aae804a850c19bc171271",
+      "locator": {
+        "raw": "Table 1 — 'Normal Hematologic Parameters in Infants, Children, and Adolescents by Age and Sex, From Age 9 Months to 18 Years' (ref 42), Hemoglobin / MCV / RDW rows; columns 6–24 mo, 2–6 y, 6–12 y, 12–<18 y (Females, Males)",
+        "page": null,
+        "section": "Table 1 — 'Normal Hematologic Parameters in Infants, Children, and Adolescents by Age and Sex, From Age 9 Months to 18 Years' (ref 42), Hemoglobin / MCV / RDW rows; columns 6–24 mo, 2–6 y, 6–12 y, 12–<18 y (Females, Males)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:3e1cf85e2f75b41683f0d87a6e97252fc4a4d1129a7aae804a850c19bc171271",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Females and males, 6–24 mo / 2–6 y / 6–12 y / 12–<18 y (table title states 'From Age 9 Months to 18 Years'); age- and sex-stratified",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Automated CBC analyzer; intervals derived from reference source cited as ref 42. Local laboratory intervals should be used where available"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_031",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_00",
+      "sourceId": "AAP2026_IDA",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_031",
+      "passageId": "psg_e40f75214e88cd47605e2095c0609a4f09f58e09eea67184b10f2a46506b49c2",
+      "locator": {
+        "raw": "Diagnosis > Iron Studies (final sentence of paragraph reviewing SF thresholds, following WHO and ASH threshold discussion)",
+        "page": null,
+        "section": "Diagnosis > Iron Studies (final sentence of paragraph reviewing SF thresholds, following WHO and ASH threshold discussion)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:e40f75214e88cd47605e2095c0609a4f09f58e09eea67184b10f2a46506b49c2",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Young and school-aged children (≤20 ng/mL) vs adolescents and all menstruating individuals (≤30 ng/mL); age- and menstruating-status stratified",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Serum ferritin (SF) immunoassay; interpretation confounded by inflammation (see ev_004). AAP threshold differs from WHO <12/<15 ng/mL and aligns with ASH ≤20/≤30 ng/mL"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_032",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_00",
+      "sourceId": "AAP2026_IDA",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_032",
+      "passageId": "psg_42f51243d3a32b8cc9b12b9cf05439aaed9522e95f732b9b288ec632d40e671f",
+      "locator": {
+        "raw": "Diagnosis > Iron Studies (paragraph beginning 'In most otherwise healthy children without evidence of acute infection or chronic disease')",
+        "page": null,
+        "section": "Diagnosis > Iron Studies (paragraph beginning 'In most otherwise healthy children without evidence of acute infection or chronic disease')",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:42f51243d3a32b8cc9b12b9cf05439aaed9522e95f732b9b288ec632d40e671f",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children/adolescents with acute or chronic inflammation, tissue injury, or acute illness; contrasted with clinically well children",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Serum ferritin interpreted alongside C-reactive protein (CRP); qualitative interpretive rule, no numeric CRP cutoff stated"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_033",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_00",
+      "sourceId": "AAP2026_IDA",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_033",
+      "passageId": "psg_e063ac22b71917f3ced3bfbb91e7acdcb6816641364876c162f037025c7cecf2",
+      "locator": {
+        "raw": "Diagnosis > Iron Studies (paragraph on soluble transferrin receptor); corroborated by Table 4 (sTfR1) row",
+        "page": null,
+        "section": "Diagnosis > Iron Studies (paragraph on soluble transferrin receptor); corroborated by Table 4 (sTfR1) row",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:e063ac22b71917f3ced3bfbb91e7acdcb6816641364876c162f037025c7cecf2",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with chronic inflammatory conditions and risk factors for ID; used to separate ID from anemia of chronic inflammation",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Soluble transferrin receptor (sTfR/sTfR1) assay combined with serum ferritin; index = sTfR/log10(ferritin). Less affected by inflammation than SF; limited availability and lack of published pediatric norms"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_034",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_00",
+      "sourceId": "AAP2026_IDA",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_034",
+      "passageId": "psg_24d41b8ae01e854269cfa6b29afc348a5ba591c4af2e89cc8d850cb56544c69c",
+      "locator": {
+        "raw": "Laboratory Diagnosis of IDA > Complete Blood Cell Count (paragraph beginning 'The most valuable laboratory test'); Table 3 'Differential Diagnosis of Children With Microcytic Anemia'",
+        "page": null,
+        "section": "Laboratory Diagnosis of IDA > Complete Blood Cell Count (paragraph beginning 'The most valuable laboratory test'); Table 3 'Differential Diagnosis of Children With Microcytic Anemia'",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:24d41b8ae01e854269cfa6b29afc348a5ba591c4af2e89cc8d850cb56544c69c",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children/adolescents with microcytic anemia; differential across IDA, alpha/beta thalassemia trait, and anemia of inflammation/chronic disease",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "CBC (MCV, RDW) plus SF/iron panel; beta thalassemia trait via elevated Hb A2 on Hb analysis after 6 months of age (ID falsely normalizes Hb A2); qualitative pattern, not a single cutoff"
+      },
+      "reviewBy": "2027-07-22"
+    },
+    {
+      "assertionId": "evas_anemia_clm_035",
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "rfSourceCardId": "src_20260718_rfev001_00",
+      "sourceId": "AAP2026_IDA",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_035",
+      "passageId": "psg_41b5ccff226ea2c315f61b184e44d1f5521a0056486ada7d56810ee9d2f17267",
+      "locator": {
+        "raw": "Treatment of Severe or Refractory IDA > Severe IDA (opening sentences)",
+        "page": null,
+        "section": "Treatment of Severe or Refractory IDA > Severe IDA (opening sentences)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:41b5ccff226ea2c315f61b184e44d1f5521a0056486ada7d56810ee9d2f17267",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Young children and adolescents with confirmed IDA; category applies within an established IDA diagnosis, not to anemia of any cause",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Hemoglobin from CBC; category is diagnostic-severity classification, not an executable transfusion rule (transfusion tied to hemodynamic instability / blood loss, not the number alone)"
+      },
+      "reviewBy": "2027-07-22"
+    }
+  ]
+}
