@@ -45,7 +45,7 @@ not clear G2**, and **G2 does not clear until**:
    `status: proposed`. Everything below is this program's **recommended default procedure**, not yet
    ratified policy — the ADR's own "Decision" section is explicit that it "does not accept this
    recommendation... E1 planning must ratify or revise it."
-2. A named signing custodian exists, satisfying the A2 reconciliation (§ 6 below).
+2. A named signing custodian exists, satisfying the A2 reconciliation (§ 7 below).
 3. The ceremony in § 4 is actually carried out by that custodian, offline, and the resulting public
    key is registered against a `keyId` this program's tooling references.
 
@@ -53,7 +53,7 @@ not clear G2**, and **G2 does not clear until**:
 
 | Role | Who | Responsibility here | Never |
 |---|---|---|---|
-| **Signing custodian** | A named human, designated per the A2 reconciliation (§ 6) | Generates and holds the real Ed25519 private key; performs real (non-dry-run) signing at ceremony time; owns rotation and compromise-response decisions for keys under their custody | Authors or proposes the release content being signed; is this repository's CI pipeline; is an agent, task, or AI system |
+| **Signing custodian** | A named human, designated per the A2 reconciliation (§ 7) | Generates and holds the real Ed25519 private key; performs real (non-dry-run) signing at ceremony time; owns rotation and compromise-response decisions for keys under their custody | Authors or proposes the release content being signed; is this repository's CI pipeline; is an agent, task, or AI system |
 | **Release author / content proposer** | Whoever authored or proposed the release candidate (`build/kb-pack/<moduleId>/<packVersion>/`) | Produces the unsigned manifest via E0's `tools/rf-bundle-to-kb-pack propose` verb; hands the resulting `release-manifest.unsigned.json` and its reported preimage digest to the signing custodian for signing | Holds, generates, or has access to the signing custodian's private key; signs their own release candidate |
 | **Runbook maintainer** (`platform-engineering`, this document's `owner`) | Whoever keeps this document current | Keeps the procedure below accurate as `tools/release-sign` evolves; records rotation/compromise events that have already happened, after the fact | Clears G2; names or removes a custodian; performs any step in § 4 on the custodian's behalf |
 | **G0 ratifying authority** | Per ADR-0005's own `deciders` frontmatter (once populated) | Accepts or revises ADR-0005, including this runbook's recommended custody model | Delegates that act to an agent, a task, or this plan's authoring session |
@@ -83,7 +83,7 @@ Recommended default per ADR-0005 (alternative 1, accepted-by-recommendation, not
   Risk 6 posture); the custody model extends that same offline discipline to the human process around
   the tooling, not only the tooling itself.
 - **Never in this repository, never in CI, never held by an agent**: this is the load-bearing custody
-  invariant (A2 reconciliation, § 6). `tests/ef-release-no-keys.test.mjs` (P3-T5) proves by test that
+  invariant (A2 reconciliation, § 7). `tests/ef-release-no-keys.test.mjs` (P3-T5) proves by test that
   no private-key material exists anywhere in this repository's tree and that no automated check,
   script, or CLI default reads a signing key from the repo or from an environment variable. This
   runbook's every step is written to preserve that invariant, not to work around it.
@@ -107,7 +107,7 @@ Do not begin § 4 until **all** of the following are true:
    ratifying authority) — or the ratifying authority has explicitly authorized a ceremony to proceed
    under this runbook's recommended-default procedure ahead of formal ADR acceptance (a decision this
    runbook does not make for them).
-2. A signing custodian has been named who satisfies § 6's A2 reconciliation (distinct authority from
+2. A signing custodian has been named who satisfies § 7's A2 reconciliation (distinct authority from
    the release author; not this repository's CI; not an agent).
 3. A release candidate exists and has passed every automated check available to it: `manifest`
    (P3-T1) reports a preimage digest; that digest is byte-identical to
@@ -354,7 +354,7 @@ anyone remembering to check this list.
 ## 8. Cross-references
 
 - `docs/governance/gates-registry.md` — the canonical enumeration of G0–G4, including G2's own row
-  and the binding A2 reconciliation this runbook's § 6/§ 7 restate rather than diverge from.
+  and the binding A2 reconciliation this runbook's § 7 restates rather than diverges from.
 - `docs/adr/0005-kb-serialization-signing-key-custody.md` — the design decision (Ed25519, offline/
   HSM-backed custody, flat append-only registry) this runbook operationalizes; `status: proposed` as
   of this runbook's authoring — see § "Status note" above.
