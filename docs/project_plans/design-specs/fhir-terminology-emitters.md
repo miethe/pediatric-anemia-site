@@ -5,7 +5,7 @@ title: "Evidence Foundry Buildout: FHIR/terminology emitters (DF-E1-05)"
 status: draft
 maturity: shaping
 created: 2026-07-21
-updated: 2026-07-21
+updated: 2026-07-22
 feature_slug: evidence-foundry-buildout
 prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
 problem_statement: "There is no mechanism to render module content (rules, candidates, evidence) as FHIR/terminology artifacts, because the terminology-mapping ownership question this rendering depends on is not yet resolved to status: accepted."
@@ -131,6 +131,17 @@ is the direction, not the contract.
 plan's Deferred Items Triage Table, `DF-E1-05` row). Promotion also requires the E1 plan to have
 scoped which of the candidate output shapes in the Design Sketch (§3) are in E1's actual build list —
 this spec does not itself commit to building all of them.
+
+## E1 state (evidence-foundry-e1-v1)
+
+`evidence-foundry-e1-v1` shipped none of the `schemas/terminology-profile.schema.json` or
+`schemas/reference-range.schema.json` consumption a future emitter would need — its three new CLIs
+(`tools/review-record/`, `tools/release-sign/`, `tools/retro-validate/`) are entirely orthogonal to
+terminology mapping. `ADR-0003` remains `status: proposed`
+(`docs/adr/0003-terminology-local-lab-profile-ownership.md`), so the Promotion Trigger below is
+still unmet and this spec stays at `maturity: shaping`. E1's own PRD explicitly names FHIR/
+terminology mappings as out of scope (§7.3 item 9 / `DF-E1-05`), confirming the boundary this spec
+already assumed rather than narrowing it further.
 
 ## Open questions
 
