@@ -85,6 +85,14 @@
               "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "American Academy of Pediatrics",
+              "abbreviation": "AAP"
+            },
+            "restatement": "The AAP recommends a complete blood count (haemoglobin, MCV, and RDW) together with serum ferritin as the core laboratory tests for identifying iron deficiency and iron deficiency anaemia.",
+            "scope_or_population": "infants, children, and adolescents screened for iron deficiency or IDA"
+          },
           "reviewFlags": [
             "source-not-independently-retrievable"
           ],
@@ -215,6 +223,14 @@
               "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "American Academy of Pediatrics",
+              "abbreviation": "AAP"
+            },
+            "restatement": "The AAP recommends serum ferritin thresholds that mark iron deficiency, set lower for younger and school-aged children than for adolescents and menstruating individuals.",
+            "scope_or_population": "young and school-aged children versus adolescents and menstruating individuals"
+          },
           "reviewFlags": [
             "source-not-independently-retrievable"
           ],
@@ -395,6 +411,14 @@
               "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "American Academy of Pediatrics",
+              "abbreviation": "AAP"
+            },
+            "restatement": "The AAP recommends distinguishing iron deficiency anaemia from thalassaemia trait and anaemia of inflammation when a child presents with microcytic anaemia, rather than attributing microcytosis to iron deficiency by default.",
+            "scope_or_population": "children and adolescents with microcytic anaemia"
+          },
           "reviewFlags": [
             "source-not-independently-retrievable"
           ],
@@ -455,6 +479,14 @@
               "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "American Academy of Pediatrics",
+              "abbreviation": "AAP"
+            },
+            "restatement": "The AAP recommends that transfusion for severe iron deficiency anaemia be reserved for clinical instability rather than driven by the haemoglobin value alone.",
+            "scope_or_population": "children and adolescents with confirmed severe IDA"
+          },
           "reviewFlags": [
             "adds-claim-not-in-located-passage",
             "source-not-independently-retrievable"
@@ -810,6 +842,14 @@
               "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "World Health Organization",
+              "abbreviation": "WHO"
+            },
+            "restatement": "The WHO adopted, in its 2024 revision, an anaemia-defining haemoglobin cutoff changed for one paediatric age group rather than a single universal paediatric threshold.",
+            "scope_or_population": "children 6-23 months"
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -866,6 +906,14 @@
               "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "World Health Organization",
+              "abbreviation": "WHO"
+            },
+            "restatement": "The WHO recommends accounting for physiological, environmental, genetic, and lifecycle factors when defining and interpreting haemoglobin cutoffs, supporting context-specific rather than universal interpretation.",
+            "scope_or_population": "all age and lifecycle groups, including children"
+          },
           "reviewFlags": [
             "overclaims-source-modality"
           ],
@@ -998,6 +1046,14 @@
               "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "World Health Organization",
+              "abbreviation": "WHO"
+            },
+            "restatement": "The WHO recommends that haemoglobin not be adjusted for infection or inflammation when interpreting anaemia cutoffs.",
+            "scope_or_population": "all groups, including children in infection- or inflammation-affected settings"
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -1566,6 +1622,14 @@
               "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Centers for Disease Control and Prevention",
+              "abbreviation": "CDC"
+            },
+            "restatement": "The CDC issues a recommended clinical action for a child whose initial blood lead screening result reaches the reference value, keyed to that lead level.",
+            "scope_or_population": "children whose initial blood lead screening result is at or above the reference value"
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1626,6 +1690,14 @@
               "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Centers for Disease Control and Prevention",
+              "abbreviation": "CDC"
+            },
+            "restatement": "The CDC recommends confirming a capillary lead screening result at or above the blood lead reference value with a venous sample before further action.",
+            "scope_or_population": "children undergoing initial blood lead screening"
+          },
           "reviewFlags": [
             "overclaims-source-modality"
           ],
@@ -1689,6 +1761,14 @@
               "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Centers for Disease Control and Prevention",
+              "abbreviation": "CDC"
+            },
+            "restatement": "The CDC recommends a schedule for obtaining a confirmatory venous sample after an elevated initial capillary blood lead result, with timing keyed to that result.",
+            "scope_or_population": "children with an elevated initial capillary blood lead level"
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -1749,6 +1829,14 @@
               "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Centers for Disease Control and Prevention",
+              "abbreviation": "CDC"
+            },
+            "restatement": "The CDC recommends testing for and treating iron deficiency, following AAP guidance, for a child with a confirmed blood lead level in the lower elevated range.",
+            "scope_or_population": "children with a confirmed blood lead level of 3.5-19 ug/dL"
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -1805,6 +1893,14 @@
               "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Centers for Disease Control and Prevention",
+              "abbreviation": "CDC"
+            },
+            "restatement": "The CDC recommends escalating tiers of clinical and environmental action at successively higher confirmed blood lead levels, up to a highest tier with specialist consultation and possible chelation.",
+            "scope_or_population": "children with a confirmed blood lead level of 20-44 ug/dL or of 45 ug/dL or higher"
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -1949,6 +2045,14 @@
               "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Food and Drug Administration",
+              "abbreviation": "FDA"
+            },
+            "restatement": "The FDA states that a clinical-decision-support software function falls outside the medical-device definition only when it satisfies all four of the enumerated non-device CDS criteria.",
+            "scope_or_population": null
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -2001,6 +2105,14 @@
               "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Food and Drug Administration",
+              "abbreviation": "FDA"
+            },
+            "restatement": "The FDA sets out the fourth of its four non-device clinical-decision-support criteria.",
+            "scope_or_population": null
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -2057,6 +2169,14 @@
               "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Food and Drug Administration",
+              "abbreviation": "FDA"
+            },
+            "restatement": "The FDA gives its interpretation of the third non-device clinical-decision-support criterion.",
+            "scope_or_population": null
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -2113,6 +2233,14 @@
               "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Food and Drug Administration",
+              "abbreviation": "FDA"
+            },
+            "restatement": "The FDA gives its interpretation of the fourth non-device clinical-decision-support criterion.",
+            "scope_or_population": null
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -2169,6 +2297,14 @@
               "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "US Food and Drug Administration",
+              "abbreviation": "FDA"
+            },
+            "restatement": "The FDA further interprets the fourth non-device clinical-decision-support criterion.",
+            "scope_or_population": null
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -2318,6 +2454,14 @@
               "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "British Society for Haematology",
+              "abbreviation": "BSH"
+            },
+            "restatement": "The BSH recommends diagnosing G6PD deficiency by directly measuring enzyme activity with a quantitative spectrophotometric assay, with a quantitative assay following any abnormal or borderline screening test.",
+            "scope_or_population": "patients of any age suspected of G6PD deficiency"
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",
@@ -2426,6 +2570,14 @@
               "rationale": "Source phrasing is withheld pending REG-002 content-rights clearance; this record stores no located text."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "British Society for Haematology",
+              "abbreviation": "BSH"
+            },
+            "restatement": "The BSH addresses factors affecting clinical interpretation of a G6PD assay when an initial result is normal or equivocal in a patient with unexplained haemolysis.",
+            "scope_or_population": "patients of any age with a normal or equivocal initial G6PD assay"
+          },
           "reviewFlags": [
             "near-verbatim-span-pending-rights"
           ],
@@ -2486,6 +2638,14 @@
               "rationale": "Surrounding narrative prose is not stored; only the extracted fact is retained."
             }
           ],
+          "guideline_recommendation_capture": {
+            "issuing_body": {
+              "name": "British Society for Haematology",
+              "abbreviation": "BSH"
+            },
+            "restatement": "The BSH recommends considering molecular analysis when a precise G6PD diagnosis is needed and recent transfusion may mask the deficiency.",
+            "scope_or_population": "recently transfused patients or heterozygous females, any age"
+          },
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": "source-supported-fact",

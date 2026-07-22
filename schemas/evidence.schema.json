@@ -313,6 +313,10 @@
           "$ref": "#/$defs/numericRecapture",
           "description": "EPR3-T6 (FR-WP3-05, AC-WP3-NUMERICS, D1). OPTIONAL — present only on a passage the independent EP3-T5 fidelity audit found dropped source numerics (reviewFlag `omits-source-numerics`), plus AAP2026_IDA#ev_002, which docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md additionally names. It records how that numeric omission was RESOLVED, to exactly one of two states and never to neither: (a) `per_value_atoms` — a set of per-value typed atoms, each independently worded, each carrying the source's *reported* value transcribed at a component-addressable `structured_locator`, its own `evidence_item_type`/`rights_component_class`/`judgment_basis: unassessed`, and never a reproduced table (the omitted table structure stays named in this passage's `not_captured[]`, D1/REG_002 uncleared); or (b) `no_reported_value_available` — an explicit not-captured resolution stating why no atom could be captured (the reported value is absent from the retrievable in-repo provenance; nothing is authored, adjusted, or interpolated — no invented thresholds). Coverage/consistency only, never a clearance surface (D7); a passage with no numeric omission simply omits this key. The `omits-source-numerics`-flagged passages, and the audit-named AAP case, are proven to carry a well-formed value here by the `evidence-numeric-recapture-resolution` coverage gate (scripts/validate-rights.mjs)."
         },
+        "guideline_recommendation_capture": {
+          "$ref": "#/$defs/guidelineRecommendationCapture",
+          "description": "EPR3-T8 (FR-WP3-08, D2 'captured, not avoided'). OPTIONAL — present only on a passage whose `evidence_item_type` is `guideline_recommendation`, where it captures the FACT of the recommendation (its named issuing body, an independently-worded restatement, and the scope/population it applies to) at the passage's addressable `structured_locator`, and NEVER the recommendation's prose. A guideline is captured, not avoided (D2): we record THAT a named body recommends something and to whom, in our own words, without retaining the source sentence. Kept OPTIONAL in the schema — deliberately NOT conditionally required on `evidence_item_type` — so no `$defs/passage` clause couples the capture's presence to a taxonomy axis (D2/AC-WP3-AXES, asserted by tests/rights-axis-separation.test.mjs's schema probe); the presence obligation for every guideline_recommendation item is instead a coverage gate (`evidence-guideline-recommendation-capture`, scripts/validate-rights.mjs), mirroring how EPR3-T6's `numeric_recapture` presence is gate-enforced rather than schema-required. Coverage/consistency only, never a clearance surface (D7). EPR3-T1's negative invariant scans `restatement` like every other capture surface, so a verbatim span from the source here trips it."
+        },
         "reviewFlags": {
           "type": "array",
           "items": {
@@ -769,6 +773,42 @@
           }
         }
       ]
+    },
+    "guidelineRecommendationCapture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuing_body", "restatement", "scope_or_population"],
+      "description": "EPR3-T8 (FR-WP3-08, D2 'captured, not avoided'; D1). The FACT of a guideline recommendation, captured — never the recommendation's prose. A `guideline_recommendation` item records THAT a named body recommends something and WHO it applies to, restated in this project's OWN words; the addressable 'where' is the enclosing passage's `structured_locator`. This object exists so a guideline is captured rather than avoided (D2): the recommendation's authority (which body) and substance (an independent restatement of the fact) become queryable without ever retaining the source's sentence (D1). It carries NO clearance authority (D7): naming an issuing body and restating a recommendation makes no legal determination about reuse — that lives on the joined `rights/` record. `restatement` is scanned by EPR3-T1's negative invariant exactly like any capture surface, so a near-verbatim span here fails that gate.",
+      "properties": {
+        "issuing_body": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "abbreviation"],
+          "description": "The body that ISSUES the recommendation, captured as a STRUCTURED field (FR-WP3-08 names the issuing body as a first-class field, not a phrase buried in prose): the fact 'the AAP recommends ...' is addressable as an organisation, distinct from any of that organisation's copyrighted text. Drawn from the enclosing source's `organization`; a proper-noun fact, not source expression.",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The issuing body's name (e.g. `American Academy of Pediatrics`). The organisation itself — a fact, never a quotation."
+            },
+            "abbreviation": {
+              "type": ["string", "null"],
+              "minLength": 1,
+              "description": "The body's common abbreviation (e.g. `AAP`) when it has one; `null` when it does not (D2: an explicit not-applicable, never an omitted key)."
+            }
+          }
+        },
+        "restatement": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The recommendation restated in THIS PROJECT'S OWN words — the fact of WHAT is recommended, never a quotation of the source sentence (FR-WP3-08 'captured, not avoided'; D1). Independently worded even for a passage whose `exactPassage` is `withheld` (a near-verbatim span pending REG-002): the fact of the recommendation is captured at a level the addressable `structured_locator` anchors, without reconstructing the withheld prose. A verbatim/near-verbatim span here fails EPR3-T1's negative invariant, which scans this field as a capture surface."
+        },
+        "scope_or_population": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Who or what the recommendation is qualified to apply to (e.g. `children and adolescents with microcytic anaemia`), when the source qualifies it; `null` when the recommendation is unqualified by population (e.g. a regulatory recommendation about a software function) — an explicit not-applicable, never an omitted key (D2). This is the RECOMMENDATION's own stated scope, distinct from the passage-level clinical `applicability` claim and from the `structured_locator`'s `population_or_scope` locator facet; all three may legitimately coexist."
+        }
+      }
     },
     "derivedSynthesis": {
       "type": "object",

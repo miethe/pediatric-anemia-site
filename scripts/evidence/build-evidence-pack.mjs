@@ -29,6 +29,11 @@
 // EP-3-era record shape is emitted unchanged for it — the mid-migration/legacy tolerance
 // tests/evidence-rights-resilience.test.mjs pins.
 //
+// EPR3-T6/T8: two further authored, OPTIONAL passage keys are preserved the same way — `numeric_recapture`
+// (on numeric-omission passages) and `guideline_recommendation_capture` (on guideline_recommendation
+// passages, the fact of the recommendation). Neither is pack-derivable; both are carried through
+// verbatim from the committed record, so a byte diff on either under `--check` is an out-of-band edit.
+//
 // EP3-T5: this script also reads evidence-packs/rf-ev-001/fidelity-findings.json (an independent
 // cross-family audit, mechanically applied — see that file's header comment) and stamps every
 // minted passage record with `reviewFlags`/`reviewFindingIds`. Both are `[]` on a clean record.
@@ -79,6 +84,7 @@ const PASSAGE_KEY_ORDER = [
   'structured_locator',
   'not_captured',
   'numeric_recapture',
+  'guideline_recommendation_capture',
   'reviewFlags',
   'reviewFindingIds',
   'evidenceGrade',
@@ -109,7 +115,14 @@ const TAXONOMY_KEY_ORDER = [
 // record (numericRecaptureOverlayFor below) and re-emitted between `not_captured` and `reviewFlags`,
 // exactly at its schemas/evidence.schema.json property-declaration position. It is OPTIONAL: a
 // passage with no numeric omission carries none, and the EP-3-era shape is unaffected.
-const OPTIONAL_PASSAGE_KEYS = new Set([...TAXONOMY_KEY_ORDER, 'numeric_recapture']);
+// EPR3-T8 (FR-WP3-08): `guideline_recommendation_capture` is an EIGHTH authored, optional passage
+// key — present only on passages whose evidence_item_type is guideline_recommendation, where it
+// carries the fact of the recommendation (named issuing body, independently-worded restatement,
+// scope). Like the taxonomy fields and numeric_recapture it is authored content this generator
+// cannot re-derive from the pack, so it is carried through verbatim from the committed record
+// (guidelineRecommendationCaptureOverlayFor below) and re-emitted between numeric_recapture and
+// reviewFlags, exactly at its schemas/evidence.schema.json property-declaration position.
+const OPTIONAL_PASSAGE_KEYS = new Set([...TAXONOMY_KEY_ORDER, 'numeric_recapture', 'guideline_recommendation_capture']);
 
 const SOURCE_LOCATOR_KEY_ORDER = ['raw', 'page', 'section', 'table', 'figure'];
 const APPLICABILITY_KEY_ORDER = ['age', 'sex', 'assay'];
@@ -178,6 +191,17 @@ function taxonomyOverlayFor(existingPassage) {
 function numericRecaptureOverlayFor(existingPassage) {
   if (!existingPassage || !Object.hasOwn(existingPassage, 'numeric_recapture')) return {};
   return { numeric_recapture: existingPassage.numeric_recapture };
+}
+
+// EPR3-T8 (FR-WP3-08). Reads the authored `guideline_recommendation_capture` field off the existing
+// passage record (keyed by id) so it can be carried through the regeneration unchanged — the same
+// preserve-authored-content pattern as `numericRecaptureOverlayFor`. Returns `{}` when the record
+// does not carry it (every non-guideline_recommendation passage), so spreading the result is a no-op
+// there. The generator authors nothing here; a byte diff on `guideline_recommendation_capture` under
+// `--check` is therefore always an out-of-band hand-edit, exactly what a reviewer wants to see.
+function guidelineRecommendationCaptureOverlayFor(existingPassage) {
+  if (!existingPassage || !Object.hasOwn(existingPassage, 'guideline_recommendation_capture')) return {};
+  return { guideline_recommendation_capture: existingPassage.guideline_recommendation_capture };
 }
 
 // Explicit codepoint comparator (EP3T5-F11): `String.prototype.localeCompare` is locale-dependent
@@ -256,6 +280,9 @@ export function buildPassageRecords(packSource, pack, fidelityIndex, existingPas
       // EPR3-T6: the authored numeric_recapture resolution, carried through verbatim when present
       // (only numeric-omission passages carry it); `orderPassageKeys` slots it after not_captured.
       ...numericRecaptureOverlayFor(existingPassagesById.get(passageId)),
+      // EPR3-T8: the authored guideline_recommendation_capture, carried through verbatim when present
+      // (only guideline_recommendation passages carry it); slotted after numeric_recapture.
+      ...guidelineRecommendationCaptureOverlayFor(existingPassagesById.get(passageId)),
       reviewFlags,
       reviewFindingIds,
       evidenceGrade: passage.evidenceGrade,

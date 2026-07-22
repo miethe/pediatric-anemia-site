@@ -84,9 +84,15 @@ import { checkEvidenceItemLocatorCapture } from './lib/evidence-item-capture-gat
 // field — so homing it here would not itself trip the D2 barrier probe; it is split out anyway to
 // mirror gate (f)'s pattern and keep this authority-field-reading file free of capture-side reads.
 import { checkNumericRecaptureResolution } from './lib/evidence-numeric-recapture-gate.mjs';
+// Gate (h) (EPR3-T8) is homed in its own module because it reads the `evidence_item_type` item axis
+// to scope guideline_recommendation items — co-mentioning that axis with this file's gate (b)
+// authority-field reads would trip the D2 barrier probe. It reads no rights-authority field; the
+// split keeps the probe honest without an allowlist exemption (see the gate module's header).
+import { checkGuidelineRecommendationCapture } from './lib/evidence-guideline-recommendation-gate.mjs';
 
 export { checkEvidenceItemLocatorCapture };
 export { checkNumericRecaptureResolution };
+export { checkGuidelineRecommendationCapture };
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -527,6 +533,11 @@ export const GATES = [
     id: 'evidence-numeric-recapture-resolution',
     description: 'Every in-scope numeric-omission passage (reviewFlag omits-source-numerics, plus the audit-named AAP2026_IDA#ev_002) resolves to per_value_atoms or no_reported_value_available — never to neither — and the resolution/atoms pairing is consistent (EPR3-T6, FR-WP3-05, AC-WP3-NUMERICS, D1). Coverage/consistency only; reads no authority field or taxonomy axis (D7).',
     run: checkNumericRecaptureResolution,
+  },
+  {
+    id: 'evidence-guideline-recommendation-capture',
+    description: 'Every guideline_recommendation item carries the fact of the recommendation — a named issuing body and an independently-worded restatement — captured, not avoided (EPR3-T8, FR-WP3-08, D2). Coverage/consistency only; reads no rights-authority field (D7). Scoping (which items are guideline recommendations) is done in its own module, evidence-guideline-recommendation-gate.mjs, to keep this authority-field-reading file clear of the item-type axis (the D2 barrier probe).',
+    run: checkGuidelineRecommendationCapture,
   },
   // EP-R3 (later tasks): append your gate here as a new `{ id, description, run }` entry, with
   // its own `export function checkX(context) {...}` defined above (per this file's module

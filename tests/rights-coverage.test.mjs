@@ -95,8 +95,9 @@ test('D7 control: the unmutated substrate — every seeded record at overall_sta
       'D7 control fixture assumption broken: not every seeded record is at overall_status UNKNOWN',
     );
     assert.equal(result.status, 0, `an UNKNOWN overall_status must never fail the kb-json-file-coverage gate; stderr:\n${result.stderr}`);
-    // EPR3-T4 appends a 6th gate (evidence-item-locator-capture); this literal tracks GATES.length.
-    assert.match(result.stdout, /validate-rights: 7 gate\(s\) passed/);
+    // Each phase that appends a gate bumps this literal, which tracks GATES.length (EPR3-T4 → 6,
+    // EPR3-T6 → 7, EPR3-T8 → 8).
+    assert.match(result.stdout, /validate-rights: 8 gate\(s\) passed/);
   });
 });
 

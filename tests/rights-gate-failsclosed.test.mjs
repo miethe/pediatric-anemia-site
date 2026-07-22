@@ -82,7 +82,7 @@ test('control: an unmutated copy of the seeded substrate passes the CLI with exi
     // EPR1-T2 appended a 5th gate (kb-json-file-coverage); EPR3-T4 appends a 6th
     // (evidence-item-locator-capture) per this file's own module contract — the literal here tracks
     // GATES.length, not a fixed constant; each later phase that appends its own gate bumps it in turn.
-    assert.match(result.stdout, /validate-rights: 7 gate\(s\) passed/);
+    assert.match(result.stdout, /validate-rights: 8 gate\(s\) passed/);
   });
 });
 
