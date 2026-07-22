@@ -273,8 +273,13 @@ Human-verifiable, drawn from the PRD's Overall Acceptance Criteria (§11):
   The load-bearing honesty outcome the plan set out to prove holds regardless of this split: zero
   new clinical rules were emitted anywhere (`modules/anemia/rules.json` is byte-unchanged;
   `cbc_suite_v1/rules.json` unchanged by the merge; `kidney_suite_v1`/`growth_suite_v1` both carry
-  empty `rules.json`), and all 4 modules remain `status: "unsigned-stub"`, `approvedBy: []`,
-  `clinicalContentHash: null`. `REG-001`/`REG-004` were never read by any converter or generator
-  script -- only `docs/legal/reg-001-reg-004-hold.md` and its design-spec cross-reference name them.
+  empty `rules.json`), and `approvedBy` is `[]` across every module. Module status is not
+  uniform, though: `anemia`'s `module.json.status` is `"integrity-recorded"`
+  (`clinicalContentHash`/`governanceHash` populated and verified at server startup, per
+  Wave-0/EP-5); `cbc_suite_v1`, `kidney_suite_v1`, and `growth_suite_v1` all stay
+  `"unsigned-stub"` (`clinicalContentHash`/`governanceHash: null`) -- see `docs/architecture.md`
+  §2a for the full per-module breakdown. `REG-001`/`REG-004` were never read by any converter or
+  generator script -- only `docs/legal/reg-001-reg-004-hold.md` and its design-spec cross-reference
+  name them.
   Frontmatter status stays `in_progress` per the lifecycle spec -- Opus sets `completed` after the
   end-of-feature gate.

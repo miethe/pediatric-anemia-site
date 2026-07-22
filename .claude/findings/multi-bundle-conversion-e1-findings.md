@@ -3,7 +3,7 @@ schema_version: 2
 doc_type: report
 report_category: finding
 title: "Findings: E1 Multi-Bundle Conversion Pass"
-status: draft
+status: accepted
 source: agent
 created: '2026-07-22'
 updated: '2026-07-22'
@@ -56,47 +56,51 @@ related_plan: /docs/project_plans/implementation_plans/infrastructure/multi-bund
   report SHA-256-identical. No design-spec is warranted — this is an AC-wording correction against
   an already-documented, already-scoped constraint, not new design work.
 
-- **Unreproducible-provenance gap: 3 of 4 modules' committed evidence-layer artifacts have no
-  producing script anywhere in this repository.** `scripts/evidence/` holds exactly one committed
-  projection generator, `backfill-cbc-002-evidence.mjs` (P4-T5, `cbc_suite_v1`). No sibling script
-  exists for the other three modules whose evidence-layer files were nonetheless committed to the
-  repo:
-  - `modules/anemia/evidence-assertions.json` (commit `6f28cd2`, P4-T2)
+- **Unreproducible-provenance gap: 2 of 4 modules' committed evidence-layer artifacts have no
+  producing script anywhere in this repository (a third, `anemia`, has since been remediated).**
+  `scripts/evidence/` holds two committed projection generators today:
+  `backfill-cbc-002-evidence.mjs` (P4-T5, `cbc_suite_v1`) and, as of commit `33bc6c5`,
+  `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py` (`anemia`). No sibling script exists
+  for the other two modules whose evidence-layer files were nonetheless committed to the repo:
+  - `modules/anemia/evidence-assertions.json` (commit `6f28cd2`, P4-T2) — **generator now committed**,
+    see below.
   - `modules/kidney_suite_v1/evidence.json` + `evidence-assertions.json` + `unresolved.json`
-    (commit `5ef190c`, P5-T1)
+    (commit `5ef190c`, P5-T1) — generator still missing.
   - `modules/growth_suite_v1/evidence-assertions.json` + `evidence.json` + `unresolved.json`
-    (commit `5f8e753`, P5-T2)
+    (commit `5f8e753`, P5-T2) — generator still missing.
 
   All three commit messages self-report the same pattern: `propose.mjs` is hardwired (by design,
   P3-T7/FR-14) to `cbc_suite_v1`'s own hand-authored drafting content and cannot run generically
   against another module without also writing `rules.json`/`candidates.json`/`evidence.json` for
   it — exactly what each of these tasks' own ACs forbade — so each was produced instead by a
-  bespoke, **uncommitted** one-off generator. Only one of those generators is still present on disk
-  at all, and only in this worktree's untracked scratch space: `.scratch/gen-anemia-evidence-
-  assertions.py` (the `modules/anemia/` producer). It is not tracked by git (confirmed via `git
-  status`: it lists as untracked; it has never been committed to any branch). The kidney/growth-suite
-  generators are not present anywhere in the repo or its history at all — their commit messages
-  describe the pattern but no script file accompanies either commit.
+  bespoke one-off generator outside the converter. Only one of those three generators is still
+  present on disk at all — the `modules/anemia/` producer — and it **is now committed**, at
+  `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py` (recovered from an untracked worktree
+  scratch file per commit `33bc6c5`, after karen's P6-GATE2 review flagged the gap
+  TIME-SENSITIVE/HIGH). The kidney/growth-suite generators are not present anywhere in the repo or
+  its history at all — their commit messages describe the pattern but no script file accompanies
+  either commit, and neither has ever been committed to any branch.
 
-  **Plainly stated**: the evidence-layer artifacts for `modules/anemia/`, `modules/kidney_suite_v1/`,
-  and `modules/growth_suite_v1/` are **not regenerable from committed code today**. If any upstream
-  fixture (`tests/fixtures/rf-ev-001/`, `rf-kid-001/`, `rf-gro-002/`) changed and someone needed to
-  re-derive the corresponding committed JSON, there is no checked-in tool that reproduces it —
-  only `cbc_suite_v1`'s evidence layer has that property, via `backfill-cbc-002-evidence.mjs` +
-  `npm run check`'s coverage of it. This is a real provenance/reproducibility gap in the delivered
-  artifacts, distinct from (and in addition to) the already-documented DF-E1-M1 rule-authoring gap
-  the parent plan and `batch.mjs` already track.
+  **Plainly stated**: the evidence-layer artifacts for `modules/kidney_suite_v1/` and
+  `modules/growth_suite_v1/` are **not regenerable from committed code today**;
+  `modules/anemia/`'s now are, via the committed generator above. If either remaining upstream
+  fixture (`tests/fixtures/rf-kid-001/`, `rf-gro-002/`) changed and someone needed to re-derive the
+  corresponding committed JSON, there is no checked-in tool that reproduces it — only
+  `cbc_suite_v1`'s evidence layer (via `backfill-cbc-002-evidence.mjs`) and `anemia`'s evidence
+  layer (via `gen-anemia-evidence-assertions.py`) have that property, both covered by `npm run
+  check`. This is a real provenance/reproducibility gap in the delivered artifacts for the two
+  remaining modules, distinct from (and in addition to) the already-documented DF-E1-M1
+  rule-authoring gap the parent plan and `batch.mjs` already track.
 
   **Recommended remediation** (either is sufficient; not decided here — this finding only surfaces
   the gap, per the in-flight-findings lifecycle's Step 3 boundary against prescribing new design
-  work): (1) commit the three projection scripts (recover `.scratch/gen-anemia-evidence-
-  assertions.py` into `scripts/evidence/`; author and commit equivalent scripts for
-  `kidney_suite_v1`/`growth_suite_v1`, following `backfill-cbc-002-evidence.mjs`'s structure), so
-  each module's evidence layer is regenerable the same way `cbc_suite_v1`'s is; or (2) close
-  DF-E1-M1 (per-module `authoring-decisions.yaml`) for these three modules so the committed
-  `propose` verb can actually produce their evidence-layer output going forward, retiring the
-  bespoke generators entirely. Either remediation should be scoped as its own follow-up task, not
-  retrofitted into this phase's already-closed rows.
+  work): (1) author and commit equivalent scripts for `kidney_suite_v1`/`growth_suite_v1`,
+  following `backfill-cbc-002-evidence.mjs`'s (or `gen-anemia-evidence-assertions.py`'s) structure,
+  so each module's evidence layer is regenerable the same way `cbc_suite_v1`'s and `anemia`'s
+  already are; or (2) close DF-E1-M1 (per-module `authoring-decisions.yaml`) for these two modules
+  so the committed `propose` verb can actually produce their evidence-layer output going forward,
+  retiring the bespoke generators entirely. Either remediation should be scoped as its own
+  follow-up task, not retrofitted into this phase's already-closed rows.
 
 ## Resolution Status (Phase 6)
 

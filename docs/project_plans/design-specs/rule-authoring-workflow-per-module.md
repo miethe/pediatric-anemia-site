@@ -1,4 +1,5 @@
 ---
+schema_version: 2
 doc_type: design_spec
 title: "Rule-Authoring Workflow per Module (DF-E1-M1)"
 status: draft

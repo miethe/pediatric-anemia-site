@@ -200,15 +200,21 @@ authoring, release, or activation on its own.
      `evidence.json`/`evidence-assertions.json`/`unresolved.json` files committed for these three
      modules were **not produced by the converter**. They were hand-produced by bespoke, per-module
      one-off generator scripts written outside the converter pipeline; only one of the three
-     generators (`modules/anemia/`'s) still exists anywhere in this repo, and only as an untracked
-     scratch file (`.scratch/gen-anemia-evidence-assertions.py`) — the kidney/growth-suite
+     generators (`modules/anemia/`'s) still exists anywhere in this repo, and it **is** committed,
+     at `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py` — the kidney/growth-suite
      generators are not present in the repo or its history at all. This is a real, currently
-     unremediated provenance gap: **none of these three modules' evidence-layer artifacts is
-     regenerable from committed code today.** Full detail, including the two named remediation
+     unremediated provenance gap for the other two: **`kidney_suite_v1`'s and
+     `growth_suite_v1`'s evidence-layer artifacts are not regenerable from committed code
+     today** (anemia's are). Full detail, including the two named remediation
      options, is in `.claude/findings/multi-bundle-conversion-e1-findings.md`.
-   - **All 4 modules stay `"unsigned-stub"`** (`approvedBy: []`, `clinicalContentHash: null`) and
-     **zero new rules were emitted to any module's `rules.json` by this feature** — evidence
-     projected is never "module complete" or clinically ready, converter-produced or not.
+   - **`approvedBy` is `[]` and zero new rules were emitted to any module's `rules.json` by this
+     feature** — evidence projected is never "module complete" or clinically ready,
+     converter-produced or not. Module status is not uniform across the four: `anemia`'s
+     `module.json.status` is `"integrity-recorded"` (`clinicalContentHash`/`governanceHash`
+     populated and verified at server startup, per Wave-0/EP-5); `cbc_suite_v1`,
+     `kidney_suite_v1`, and `growth_suite_v1` all stay `"unsigned-stub"`
+     (`clinicalContentHash`/`governanceHash: null`). See `docs/architecture.md` §2a's module
+     inventory for the full per-module breakdown.
    - **Status: EF-WP0/EF-WP1 partial — `cbc_suite_v1` only.** DF-E1-M1 (authoring-decisions for the
      other 3 modules) remains the open blocker to close this gap for `anemia`/`kidney_suite_v1`/
      `growth_suite_v1`; see `docs/project_plans/design-specs/rule-authoring-workflow-per-module.md`.

@@ -52,11 +52,14 @@ all carry evidence-layer artifacts that trace to a verified `rf` bundle, but eac
 **bespoke, module-specific generator script**, not by running the converter's `propose` verb —
 `propose.mjs` cannot yet run generically against a module that lacks its own
 `authoring-decisions.yaml` (Deferred Item DF-E1-M1; design spec
-`docs/project_plans/design-specs/rule-authoring-workflow-per-module.md`). None of the three
-bespoke-generator scripts for `anemia`/`kidney_suite_v1`/`growth_suite_v1` is committed to this
-repository today — only `cbc_suite_v1`'s producing script, `scripts/evidence/backfill-cbc-002-evidence.mjs`,
-is checked in — so those three modules' evidence-layer files are not currently regenerable from
-committed code (tracked in `.claude/findings/multi-bundle-conversion-e1-findings.md`, Phase 6
+`docs/project_plans/design-specs/rule-authoring-workflow-per-module.md`). Of the three
+bespoke-generator scripts for `anemia`/`kidney_suite_v1`/`growth_suite_v1`, only the `anemia`
+one is committed — `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py` — alongside
+`cbc_suite_v1`'s converter-produced script, `scripts/evidence/backfill-cbc-002-evidence.mjs`.
+`kidney_suite_v1`'s and `growth_suite_v1`'s generators remain uncommitted and unrecoverable
+from this repository or its history, so those two modules' evidence-layer files are not
+currently regenerable from committed code (tracked in
+`.claude/findings/multi-bundle-conversion-e1-findings.md`, Phase 6
 "Unreproducible-provenance gap" finding). Whichever module a future pass converts next, describe it
 as converter-derived **only** once it has an actual `propose` run behind it and its own
 `authoring-decisions.yaml` — never by analogy to another module's posture.

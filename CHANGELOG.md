@@ -91,10 +91,12 @@ toward one.** No rule, candidate, or threshold was added, changed, or approved i
   run without a per-module `authoring-decisions.yaml`, which does not yet exist for any of the
   other three modules (Deferred Item DF-E1-M1). Those three were instead hand-produced by bespoke,
   scoped, evidence-only generator scripts outside the converter, and are correctly labeled
-  **bespoke evidence projections pending DF-E1-M1**, never converter output. Only
-  `cbc_suite_v1`'s evidence layer is regenerable from a committed script
-  (`scripts/evidence/backfill-cbc-002-evidence.mjs`) today; the other three projections'
-  generators are not committed anywhere in this repository (see
+  **bespoke evidence projections pending DF-E1-M1**, never converter output. `cbc_suite_v1`'s
+  evidence layer is regenerable from a committed script
+  (`scripts/evidence/backfill-cbc-002-evidence.mjs`), and `anemia`'s evidence-layer generator is
+  also committed, at `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py`. Only
+  `kidney_suite_v1`'s and `growth_suite_v1`'s generators remain uncommitted and unrecoverable
+  from this repository or its history (see
   `.claude/findings/multi-bundle-conversion-e1-findings.md`, "Unreproducible-provenance gap").
 - `npm run check` remains green across all four modules' updated artifact counts; `npm run
   validate` reports the expected per-module rule/candidate/evidence/assertion counts with zero
