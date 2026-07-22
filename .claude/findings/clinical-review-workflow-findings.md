@@ -443,6 +443,17 @@ integrator reconciling both fix cycles) sees the exact, minimal fix needed and d
 resulting failures for a new regression in `validate-cache.mjs` itself — they are the direct,
 expected, and correctly-attributed consequence of BLOCKER 2's security fix landing in `scaffold.mjs`.
 
+**2026-07-22 addendum (BLOCKER 1 RE-PASS, symlink vector, then a residual-adjudication follow-up)**:
+`store.mjs`'s `assertNoSymlinkedAncestor` (added this same fix cycle) closes the git-transmissible
+COMMITTED-symlink vector on `modules/<moduleId>/reviews/`. A subsequent codex narrow re-verification
+accepted that closure but flagged the check is `lstat`-then-mkdir/write, not race-free against an
+*active* same-user process swapping a real directory for a symlink mid-call; orchestrator adjudication
+placed that active race OUTSIDE this tool's threat model (the same same-user trust boundary CRW-F9
+documents below for the validate cache — a same-user attacker with write access could already replace
+the CLI/`node` binary itself), since a race-free fix would need openat-style dirfd writes unavailable
+in Node without a new dependency (guardrail-forbidden). Documented in `store.mjs`'s own
+`assertNoSymlinkedAncestor` header, not hedged.
+
 ## CRW-F9 — Validate-cache entry trust hardening
 
 **Severity**: informational (fix-cycle gate finding, adjudicated BLOCKER 3) · **Status**: resolved

@@ -321,6 +321,15 @@ function resolvesStrictlyInside(candidatePath, dirPath) {
  * so a symlinked terminal path is refused by that layer regardless of this one; only the ANCESTOR
  * directory components need an explicit check.
  *
+ * Residual, adjudicated limitation (documented, not hedged): this check is `lstat`-then-mkdir/write,
+ * NOT race-free -- a concurrent SAME-USER process could swap a checked real directory for a symlink
+ * between the `lstat` here and the `mkdir`/`writeFile` below. That active race is OUTSIDE this
+ * tool's threat model, the same same-user trust boundary CRW-F9 already documents for the validate
+ * cache (a same-user attacker with write access here could already replace the CLI or `node` binary
+ * itself; a race-free fix would need openat-style dirfd-relative writes, unavailable in Node without
+ * a new dependency -- guardrail-forbidden). This check's actual target -- the git-transmissible
+ * COMMITTED-symlink vector described above -- IS closed regardless.
+ *
  * @param {string} rootDir
  * @param {string} moduleId
  * @returns {Promise<void>}
