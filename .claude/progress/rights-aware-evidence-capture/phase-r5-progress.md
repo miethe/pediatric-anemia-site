@@ -10,15 +10,15 @@ execution_model: sequential
 phase: EP-R5
 created: '2026-07-21'
 title: 'EP-R5: Spec Amendments & Doc Truth (WP5)'
-status: pending
+status: completed
 started: null
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 7
-completed_tasks: 6
+completed_tasks: 7
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0

@@ -10,15 +10,15 @@ execution_model: sequential
 phase: EP-R3
 created: '2026-07-21'
 title: 'EP-R3: Evidence Taxonomy & Archive Capture (WP3)'
-status: pending
+status: completed
 started: '2026-07-21'
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 25
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 8
+completed_tasks: 9
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
