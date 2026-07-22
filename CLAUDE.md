@@ -70,10 +70,15 @@ when-to-reach-for-what, honesty boundaries). Linked handoff docs there are canon
   *claims, not rules*; nothing converts them into `modules/<id>/*.json` yet (`EF-WP0`/`EF-WP1`,
   not started). Treating an unconverted `rf` bundle as production clinical evidence is the
   mistake a future session is most likely to make.
-- **ARC has a repository-ready pediatric clinical council** with a completed synthetic readiness
-  audit — non-qualifying. Treating that ARC review as credentialed clinical sign-off is the other
-  most likely mistake; `clinicalApprovers[]`/`approvedBy[]` need real named humans, never ARC
-  output.
+- **ARC has a repository-ready pediatric clinical council**, now Portal-authorable (Phase 6 complete),
+  with a completed synthetic readiness audit — non-qualifying — and a Phase 5 qualifying-pilot attempt
+  that is **blocked on owner action** (SDK credential + evidence-rights receipts), not yet run.
+  Treating that ARC review as credentialed clinical sign-off is the other most likely mistake;
+  `clinicalApprovers[]`/`approvedBy[]` need real named humans, never ARC output. **Single maintained
+  entry point:** `docs/project_plans/expansion/03-arc-clinical-council-handoff.md` — route every
+  material pediatric clinician-facing artifact review there before acting on it; it owns the pinned
+  baseline, the scaffold/populate/validate/read-verdict workflow, the rollback/runbook, and the
+  source-refresh schedule. Do not invoke the council ad hoc from another doc.
 - **Check the `rf` catalog before launching a new evidence run**:
   `GET $RF_API_URL/api/catalog/search?q=...` — a verified claim may already exist.
 - **IntentTree node status is known stale** (merged P0 work and all 7 verified `rf` runs still

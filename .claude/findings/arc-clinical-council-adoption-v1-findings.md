@@ -1,20 +1,24 @@
 ---
-title: "Findings: ARC Clinical Council Adoption v1"
+title: 'Findings: ARC Clinical Council Adoption v1'
 schema_version: 2
 doc_type: report
-report_category: findings
+report_category: finding
 status: completed
-created: 2026-07-19
-updated: 2026-07-19
+created: '2026-07-19'
+updated: '2026-07-21'
 feature_slug: arc-clinical-council-adoption-v1
 plan_ref: docs/project_plans/implementation_plans/enhancements/arc-clinical-council-adoption-v1.md
 owner: pediatric-cds-program-owner
-tags: [arc, clinical-review, security, findings]
+tags:
+- arc
+- clinical-review
+- security
+- findings
 ---
 
 # Findings — ARC Clinical Council Adoption v1
 
-In-flight findings from the independent reviewer gates for P0–P3. Each row records the gate that
+In-flight findings from the independent reviewer gates for P0–P6. Each row records the gate that
 produced it, the disposition, and where it landed. Findings that were **refuted** are kept, because a
 refuted finding is evidence too.
 
@@ -545,3 +549,106 @@ for cross-reference but never dispatched as a fix — see the R7 process note ea
 and the **destroyed-uncommitted-file incident** recorded in the phase-4 completion note's "Two process
 failures in this cycle, both mine" section. The routing gap that dropped F4 was the phase-owner's, not
 any subagent's, exactly as the phase owner recorded for R7 and the destroyed file.
+
+## P5-V1 — qualifying-pilot phase findings (pilot BLOCKED on owner action; reviewed findings carried below)
+
+P5-V1 itself was **not satisfied** — the qualifying pilot never executed. Full narrative:
+`.claude/progress/arc-clinical-council-adoption-v1/phase-5-completion.md`. Three review cycles ran
+against the committed pilot skeleton instead: `task-completion-validator` (FIX-REQUIRED → PASS →
+FIX-REQUIRED, 3 items) and `pediatric-clinical-adjudicator` (FAIL, 1 CRITICAL/3 HIGH → FAIL, 3 HIGH/3
+MED/5 LOW → PASS-WITH-FINDINGS, 1 HIGH residual). The other eight named AC P5.1 lenses
+(`pediatric-hematology-reviewer`, `pediatric-laboratory-medicine-reviewer`,
+`general-pediatrics-reviewer`, `clinical-informatics-interoperability-reviewer`,
+`diagnostic-accuracy-methods-reviewer`, `prediction-implementation-evaluation-reviewer`,
+`pediatric-safety-human-factors-reviewer`, `pediatric-equity-patient-family-reviewer`,
+`evidence-quality-scribe`, `correctness-reviewer`) did not run — no seat has assessed any of the ten
+hazard families for this candidate. Fix cycle 4 (below) is applied and committed at ARC `afe3b98`; it
+corrects the skeleton's own labels and does not, and cannot, close the phase, which remains blocked on
+two independent owner-held gates (SDK credential; evidence-rights receipt plus trust anchor) — see
+`03-arc-clinical-council-handoff.md` "Current pilot disposition" for the full gate description.
+
+| # | Severity | Finding | Owner role | Status |
+|---|---|---|---|---|
+| RR-1 | HIGH — FIXED (ARC `afe3b98`) | `dangerous_miss_review.families[subgroup_or_access_failure]` asserted `not_applicable` with empty `finding_refs` while PED `DM-EQUITY-009` is `no_control_exists` with open HIGH `PAC-P4T2-001`. Now corrected to `not_covered` with the finding reference, mirroring the five already-corrected families | `equity-and-family-governance-owner` | Artifact label fixed; the hazard itself stays wholly unmitigated and owner-held |
+| C1 | MEDIUM — FIXED (ARC `afe3b98`) | `adjudication_record.yaml` `decided_at_disclosure` rewritten to state the schema truth (`decided_at` is bare `{"type":"string"}`; emptiness is not schema-enforced) | `arc-runtime-owner` | Fixed |
+| C2 | LOW — FIXED (ARC `afe3b98`) | `data_boundary_scan_adjudication.md` corrected to "19 files carry `possible_full_text`" (one also carries `patient_name_context`); an anchor was added so the 18 existing allowlist links stay resolvable | `arc-runtime-owner` | Fixed |
+| C3 | LOW — FIXED (ARC `afe3b98`) | `data_boundary_scan_allowlist.yaml` `metadata.fix_cycle` bumped `1 → 4`; the two self-scan `expected_sha256` entries for the edited adjudication file refreshed so the scan stays `all_clean` | `arc-runtime-owner` | Fixed |
+| RR-2 | MEDIUM | `not_covered` now carries materially different states in one array (unassessed / not-reachable-in-product ×3 / open-critical-coverage-finding / no-control-exists) | `arc-schema-owner` | Open |
+| RR-4 | LOW | `local_approvals_required`'s causal claim that alert-dominance depends on derived `localFlags` is unhedged; PED's cited test exercises a different path | `arc-runtime-owner` | Open |
+| RF-1 | — | `council_recommendation` enum has no "never executed" value; `abstained` is used as a proxy | `arc-schema-owner` | Open |
+| RF-2 | — | `dangerousMissFamily.status` enum has no `not_assessed`, so a skeleton must assert something untrue | `arc-schema-owner` | Open |
+| RF-3 | — | `DM-CBC-001` is an n=1 sample from the best-case stratum (the cleanest matrix row, and within it the most overt clinical picture). Latent now; live the moment P5-T2 executes | `pediatric-safety-owner` | Open (latent) |
+| RF-4 | — | `unresolved_critical_count` cannot express "unknown"; artifact-vs-knowledge-base scope undefined. Value `4` kept as a fail-closed floor | `arc-schema-owner` | Open |
+| RF-5 | — | `dissentRecord.reviewer_roles` `minItems: 2` forces a second name with no way to mark it unheld | `arc-schema-owner` | Open |
+| RF-6 | — | Synthetic seat identity and human approval authority share one unnamespaced string space. CRITICAL-vs-HIGH severity disagreement preserved | `clinical-governance-owner` | Open |
+| RF-7 | — | SkillBOM `reviewer.skills` overloaded to encode voting/non-voting seat class | `arc-schema-owner` | Open |
+| DIS-1 | open | `blocked` vs `human_review_pending` unresolved; only the adjudicator lens holds a position | `clinical-governance-owner` / `pediatric-safety-owner` | Open — dissent preserved, not adjudicated away |
+
+### Cross-repo and pre-existing items disclosed by P5 (owner-held, not P5 defects)
+
+- **`_RESERVED_AUTHORITY_STATE_TOKENS` cross-repo defect (recurs at P5-T4/P6/P7 — fix once).** This
+  plan's §5 mandates the literal `not_executed_owner_held`; ARC's `arc_cli/__main__.py`
+  `_RESERVED_AUTHORITY_STATE_TOKENS` (line ~1150) hard-errors (exit 2) on that exact token anywhere
+  under `metadata.*` outside `authority_attachments`/`local_profiles`, so the literal is unwritable in
+  a run manifest's free-form metadata. Currently handled by disclosed synonym substitution; the plan
+  literal is still used verbatim in the two artifacts `arc validate` does not govern. Owner:
+  `arc-schema-owner` / `arc-runtime-owner`.
+- **Pre-existing ARC RED, out of P5 (and P6, P7) scope.**
+  `tests/test_local_profiles.py::DispatchAndCertificationGates::test_certification_acceptance_passes_the_gate_when_verified`
+  fails at ARC HEAD, confirmed the *only* pytest failure through Phase 6 (`e42f6a6`; 1142 passed / 1
+  failed). Root-caused as a wall-clock time-bomb: fixture `NOW = 2026-07-19`, a 24-hour snapshot
+  max-age, and `custom_outputs.py:1334` omitting `now=`. Inherited from P1-P3 (`80bb663`); do not
+  attribute to P5, P6, or P7, and do not fix it as part of this program's closeout. Owner: ARC
+  certification / local-profile owner (P3-scoped).
+- **Out-of-repo mutation, disclosed:** `~/.config/arc/approved-roots.yaml` was rewritten via
+  `arc roots add --force` during P5-T1. Disclosed in `pilot_input_manifest.yaml`; not reverted. Owner:
+  `arc-runtime-owner` (operator-local config, informational only).
+
+## P6-V1 — governed Portal authoring + MeatyWiki metadata adapter (verdict: PASS, 4 lenses)
+
+All four AC P6.1 reviewer lenses PASSed on the reviewed tree (ARC base `afe3b98`, web tree advanced by
+the UXW-P6-01 fix and re-validated post-fix). Full narrative:
+`.claude/progress/arc-clinical-council-adoption-v1/phase-6-completion.md`.
+
+| Lens | Verdict | Notes |
+|---|---|---|
+| `task-completion-validator` | PASS | `uv run pytest` 1142 passed / 1 failed (the pre-existing time-bomb above, confirmed the only failure); `arc validate .` PASS; `uv build` PASS; `git diff --check` clean; web typecheck + test (280→283 post-fix) + build PASS; `git diff` on `schemas/`/`councils/`/`knowledge-packs/` EMPTY (no source/safety-policy mutation) |
+| `security-identity-reviewer` | PASS | all 5 invariants hold: disabled-by-default, metadata-only strict allowlist, fail-closed no-echo, no authority forgery via `app.py`, adapter inert/unwired |
+| `mcp-tool-governance-reviewer` | PASS | injection resilience, source-rights enforcement, permission scope, auditability; no negative test merely names a class without asserting the boundary |
+| `ux-workflow-reviewer` | PASS (after fix cycle 1) | raised UXW-P6-01 (MEDIUM); re-reviewed after fix → PASS, closed |
+
+### UXW-P6-01 [MEDIUM] — FIXED and CLOSED
+
+Review-step "Create review" CTA stayed enabled while the preview showed "(blocks this run)." Fixed: the
+CTA is now gated on affirmative `previewData.ok === false` (no over-block on null/pending state) plus
+an inline hint. Re-reviewed by `ux-workflow-reviewer` → PASS, closed. Owner:
+`portal-integration-engineer` (fix landed at Phase 6; no further action).
+
+### Non-blocking follow-ups (reviewers PASSed with these open — not findings that block AC P6.1)
+
+| ID | Severity | Finding | Owner role |
+|---|---|---|---|
+| tool-governance F1 | low/info | `_assert_no_echo` docstring overclaims (checks `str(exc)` + `str(__cause__)`, not `repr`/`__context__`) — doc drift, no real coverage hole | `arc-runtime-owner` |
+| tool-governance F2 | low | Add one nested arbitrary-extra-key injection test; defense already exists via schema `additionalProperties:false`, just not directly asserted | `arc-runtime-owner` |
+| tool-governance F3 / security OBS-2 | low | `fetch_source_metadata` doesn't cross-check returned `source_id` vs requested; the per-vault `base_url` in the allowlist is parsed but not consumed — bounded, no SSRF | `arc-runtime-owner` |
+| security OBS-1 | low | HTTP-supplied `authority_attachments`/`local_profiles` admission accepts absolute out-of-repo paths (schema-valid-record + symlink/registry-rejected + offline verify) — PRE-EXISTING since ADR-0005/0006, not introduced by P6; consider repo-root-constraining as defense-in-depth | `arc-runtime-owner` |
+| UXW-P6-02 | low | Manifest digest byte-exactness caution copy could be clearer | `portal-integration-engineer` |
+| UXW-P6-03 | low | Disclaimer over-disclaims on non-clinical previews | `portal-integration-engineer` |
+| UXW-P6-04 | low | Round-trip "Exact match" relies on a sibling disclaimer rather than standing alone | `portal-integration-engineer` |
+| `derive.ts` type-contract drift | info (defensive fix landed) | Live API returns structured `council.gates` objects but the TS type said `string[]`, crashing (`g.trim is not a function`) whenever the pediatric council was selected — fixed defensively in `web/src/lib/arcade/derive.ts`; flagged as real API/type-contract drift needing a proper backend/type fix | `portal-integration-engineer` (web fix) / `arc-schema-owner` (contract fix) |
+| `notes` RunSpec field | info | No persistence path in `core.create_run` at all — not a forwarding gap, no parameter exists. Needs a design decision on where it lands | `arc-schema-owner` |
+
+### Evidence-source-manifest editor is download-only (accepted, not a gap)
+
+Both the UI and backend specialists independently concluded a write endpoint (`PUT`) for the
+evidence-source manifest would be a materially larger trust boundary than any existing `PUT` precedent
+(arbitrary caller-chosen repo path vs. fixed council/role directories). Accepted as satisfying "raw
+YAML stays the authoritative fallback": the form serializes byte-exact YAML plus SHA-256 for the
+operator to commit. No owner action required unless a future write path is explicitly requested.
+
+### Pre-existing ARC RED, confirmed again at Phase 6 (owner-held, not a P6 regression)
+
+`tests/test_local_profiles.py::DispatchAndCertificationGates::test_certification_acceptance_passes_the_gate_when_verified`
+fails at ARC HEAD — the P1-P3 wall-clock time-bomb (same finding as recorded under P5-V1 above).
+Confirmed by the Phase 6 validator as the ONLY pytest failure (1142 passed / 1 failed). Owner: ARC
+certification / local-profile owner (P3-scoped).

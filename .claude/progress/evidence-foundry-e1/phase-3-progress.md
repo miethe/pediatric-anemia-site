@@ -1,0 +1,316 @@
+---
+type: progress
+schema_version: 2
+doc_type: progress
+prd: evidence-foundry-e1
+feature_slug: evidence-foundry-e1
+prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-e1-v1.md
+plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1.md
+execution_model: batch-parallel
+phase: 3
+title: 'Evidence Foundry E1 — Phase 3: Signed Release Machinery'
+status: not_started
+started: null
+completed: null
+commit_refs: []
+pr_refs: []
+overall_progress: 0
+completion_estimate: on-track
+total_tasks: 8
+completed_tasks: 0
+in_progress_tasks: 0
+blocked_tasks: 0
+at_risk_tasks: 0
+owners:
+- general-purpose
+contributors:
+- documentation-writer
+- backend-architect
+- task-completion-validator
+model_usage:
+  primary: sonnet
+  external: []
+tasks:
+- id: P3-T1
+  description: 'tools/release-sign/ scaffold + E0 golden-bytes pin (FR-12 preimage),
+    decisions block Risk 6: scaffold tools/release-sign/ (Node ESM cli.mjs, verbs
+    manifest | register | sign | verify; node:crypto only, zero new crypto deps;
+    README module boundary: canonical-bytes / manifest / registry / sign / verify).
+    Pin a golden-bytes regression fixture from E0''s P5-T5 canonical serialization
+    of the cbc_suite_v1 pack under tests/fixtures/ef-release/golden-canonical-bytes/;
+    the manifest verb calls E0''s existing canonicalization (import from tools/rf-bundle-to-kb-pack/,
+    never re-implement). Byte-identity test asserts the signing preimage equals
+    E0''s canonical bytes; golden drift fails the phase, never silently re-baselines.'
+  status: pending
+  assigned_to:
+  - general-purpose
+  dependencies: []
+  estimated_effort: 1.5 pts
+  priority: critical
+  assigned_model: sonnet
+  model_effort: extended
+- id: P3-T2
+  description: 'Ed25519 sign verb — human-offline design, dry-run only in E1 (OQ-6),
+    FR-12/FR-15 (ruling R3): implement detached Ed25519 signing over the P3-T1 manifest
+    digest. The verb is designed for human offline execution (reads a key from an
+    operator-supplied path outside the repo at ceremony time — G2, never exercised
+    in E1) and carries a --dry-run mode per OQ-6: ephemeral in-memory keypair, keyId
+    forced to TESTKEY- prefix, private key discarded at process exit. No key-generation
+    verb writes anything to the tree; no automated check invokes sign outside dry-run.
+    Never bypass or weaken the schema-forced-empty signature slot on real candidates
+    (P1-T5).'
+  status: pending
+  assigned_to:
+  - general-purpose
+  dependencies:
+  - P3-T1
+  estimated_effort: 1.5 pts
+  priority: critical
+  assigned_model: sonnet
+  model_effort: extended
+- id: P3-T3
+  description: 'verify verb — fail-closed exit-code taxonomy (FR-13): verify --candidate
+    <manifest> --registry releases/registry.json is fail-closed with a documented
+    exit-code taxonomy (README table): 0 ok, distinct non-zero codes for each of
+    5 failure classes — (1) byte drift vs canonical bytes, (2) digest mismatch vs
+    manifest, (3) unknown keyId, (4) registry inconsistency, (5) TESTKEY- identity
+    on a non-dry-run candidate. Non-zero exit → no partial output. Seeded tamper
+    fixtures for all 5 classes. Verify-only is the CI/agent-reachable surface —
+    CI can never sign (R3).'
+  status: pending
+  assigned_to:
+  - general-purpose
+  dependencies:
+  - P3-T2
+  estimated_effort: 1.5 pts
+  priority: high
+  assigned_model: sonnet
+  model_effort: extended
+- id: P3-T4
+  description: 'Registry seed + append-only validator (FR-14, OQ-4): create releases/registry.json
+    (top-level schemaVersion + empty entries[]) validating against P1-T5''s schema;
+    implement register — appends an entry (dry-run candidates carry the structural
+    dry-run marker; real entries have signature:null pre-G2) and rejects any mutation/removal
+    of existing entries (append-only, git-tracked, same two-layer approach as P2-T3
+    where applicable). E1 never sets withdrawalState != "none" (validator-enforced
+    const).'
+  status: pending
+  assigned_to:
+  - general-purpose
+  dependencies:
+  - P3-T3
+  estimated_effort: 1.0 pts
+  priority: high
+  assigned_model: sonnet
+  model_effort: adaptive
+- id: P3-T5
+  description: 'No-keys + forced-empty enforcement tests (FR-15/FR-16), R3/SPIKE-006
+    reconciliation: tests/ef-release-no-keys.test.mjs — (a) scans the repo tree
+    for private-key material patterns (PEM/OpenSSH/PKCS8 headers, raw Ed25519 seed
+    files) and fails on any hit outside an explicit empty allowlist; (b) asserts
+    no automated check/script/CLI default reads a signing key from repo or env;
+    (c) proves a populated signature on a real (non-dry-run) candidate fails npm
+    run validate; (d) proves a TESTKEY- keyId in a real registry entry is rejected
+    (release-path test-key leak).'
+  status: pending
+  assigned_to:
+  - general-purpose
+  dependencies:
+  - P3-T2
+  - P3-T4
+  estimated_effort: 1.0 pts
+  priority: critical
+  assigned_model: sonnet
+  model_effort: adaptive
+- id: P3-T6
+  description: 'Verifier-surface wiring (FR-18, PRD OQ-2 — seam task): structural
+    verification joins scripts/validate-kb.mjs (registry schema-validity + append-only
+    shape + forced-empty/TESTKEY checks run in npm run validate); full cryptographic
+    verify remains a tools/release-sign verb exercised by tests — not wired into
+    the SPA/API runtime, not a new npm script. The anemia browser deployment''s
+    SPIKE-006 posture (two-part digest, fail-closed, unsigned-stub → integrity-recorded
+    → superseded/revoked enum) stays byte-untouched. Sole post-P1 barrier-file change
+    (scripts/validate-kb.mjs) in this wave; document the surface decision in the
+    tool README.'
+  status: pending
+  assigned_to:
+  - general-purpose
+  - backend-architect
+  dependencies:
+  - P3-T4
+  - P3-T5
+  estimated_effort: 0.75 pts
+  priority: high
+  assigned_model: sonnet
+  model_effort: adaptive
+- id: P3-T7
+  description: 'Signing-ceremony runbook (FR-17): author docs/governance/signing-ceremony-runbook.md
+    — human-executed offline key generation, custody model, signing steps over
+    the canonical digest, rotation and compromise-response ownership, and the G2
+    entry criteria (custodian named, distinct authority from the release author
+    per the A2 reconciliation; cross-reference the P1-T6 gates registry). Document
+    deliverable only — the ceremony itself is gate G2, out of scope, stated explicitly.
+    Carries the unvalidated-research-prototype posture; states no signature confers
+    clinical standing.'
+  status: pending
+  assigned_to:
+  - documentation-writer
+  dependencies:
+  - P3-T2
+  estimated_effort: 0.75 pts
+  priority: medium
+  assigned_model: sonnet
+  model_effort: adaptive
+- id: P3-GATE
+  description: 'task-completion-validator gate: verify Phase 3 exit gate — byte-identity
+    + golden-bytes tests green; dry-run sign→verify byte-stable across 2 runs; 5/5
+    verify failure classes fail closed; registry seeded, append-only, withdrawal
+    inert; no-keys test green (4/4 groups); browser posture untouched; runbook complete;
+    npm run check green; ADR-delta check (ADR-0005 unchanged, else escalate).'
+  status: pending
+  assigned_to:
+  - task-completion-validator
+  dependencies:
+  - P3-T1
+  - P3-T2
+  - P3-T3
+  - P3-T4
+  - P3-T5
+  - P3-T6
+  - P3-T7
+  estimated_effort: —
+  priority: critical
+  assigned_model: sonnet
+  model_effort: adaptive
+parallelization:
+  batch_1:
+  - P3-T1
+  batch_2:
+  - P3-T2
+  batch_3:
+  - P3-T3
+  - P3-T7
+  batch_4:
+  - P3-T4
+  batch_5:
+  - P3-T5
+  batch_6:
+  - P3-T6
+  batch_7:
+  - P3-GATE
+  critical_path:
+  - P3-T1
+  - P3-T2
+  - P3-T3
+  - P3-T4
+  - P3-T5
+  - P3-T6
+  - P3-GATE
+  estimated_total_time: 7.25 pts critical path; 8.0 pts total phase
+blockers:
+- id: BLOCKER-PHASE-DEP
+  title: Phase 3 cannot open until Phase 1 exit gate (P1-GATE2, karen) passes
+  severity: high
+  blocking:
+  - P3-T1
+  resolution: Wait for .claude/progress/evidence-foundry-e1/phase-1-progress.md P1-GATE2
+    to complete
+  created: '2026-07-21'
+success_criteria:
+- id: SC-1
+  description: npm run check green (quality gate; task-completion-validator)
+  status: pending
+- id: SC-2
+  description: Signing preimage byte-identical to E0 P5-T5 canonical bytes (test-proven);
+    golden drift fails closed
+  status: pending
+- id: SC-3
+  description: CI/agents can verify but structurally cannot sign; zero key material
+    in repo/CI/agent context (test-proven)
+  status: pending
+- id: SC-4
+  description: Signature slot schema-forced empty on every real candidate; TESTKEY
+    leak onto release path rejected
+  status: pending
+- id: SC-5
+  description: Registry append-only, withdrawal-state inert; anemia browser SPIKE-006
+    posture byte-untouched
+  status: pending
+files_modified:
+- tools/release-sign/**
+- releases/registry.json
+- scripts/validate-kb.mjs
+- docs/governance/signing-ceremony-runbook.md
+- tests/ef-release-sign-verify.test.mjs
+- tests/ef-release-registry.test.mjs
+- tests/ef-release-no-keys.test.mjs
+- tests/fixtures/ef-release/**
+progress: 0
+updated: '2026-07-21'
+---
+
+# evidence-foundry-e1 - Phase 3: Signed Release Machinery
+
+**YAML frontmatter is the source of truth for tasks, status, and assignments.** Do not duplicate in markdown.
+
+Update progress via CLI:
+
+```bash
+python .claude/skills/artifact-tracking/scripts/update-status.py \
+  -f .claude/progress/evidence-foundry-e1/phase-3-progress.md -t TASK-X -s completed
+```
+
+---
+
+## Objective
+
+Second of three parallel wave-2 workstreams (P2 ∥ P3 ∥ P4, disjoint file ownership: `tools/release-sign/`
++ `releases/` + the sole permitted wave-2 change to `scripts/validate-kb.mjs`). Builds the release-candidate
+signing/verification tooling over E0's proven canonical bytes, the append-only release registry, the
+no-keys enforcement suite, and the signing-ceremony runbook. Duration ~4-5 engineer-days.
+
+**Dependencies**: Phase 1 complete (P1-GATE2 `karen` passed); independent of Phase 2 and Phase 4 —
+disjoint file ownership means this phase runs concurrently with both siblings without blocking on
+either.
+
+**Exit gate** (decisions block §1): deterministic manifest reproducible byte-for-byte; CI verifies
+but can never sign; test asserts no key material in repo/CI env; `npm run check` + task-completion-validator.
+
+---
+
+## Implementation Notes
+
+### Architectural Decisions
+
+- **Decisions block §6 (correctness over speed)**: P3-T1/T2/T3 (crypto + determinism) run at
+  `extended` effort — this is the risk-hotspot lane of the whole plan (SPIKE-006 NO-GO recreation
+  risk).
+- **R3 / verify-only CI posture**: `sign` is designed for human offline execution and is only ever
+  exercised in `--dry-run` mode by tests; `verify` is the sole CI/agent-reachable surface. No code
+  path in this phase can make CI (or an agent) hold or use a real signing key.
+- **P3-T6 is the sole post-P1 seam** touching the `scripts/validate-kb.mjs` serialization barrier in
+  this wave — no other parallel phase touches it, avoiding a merge/ordering conflict with P2 or P4.
+- Golden-bytes pin (P3-T1): drift against E0's P5-T5 canonical serialization **fails the phase** —
+  never silently re-baselined.
+
+### Known Gotchas
+
+- OQ-6 ephemeral-key ergonomics apply here identically to P2-T5/P2-T8: no `--test-keys` flag, no
+  persistent key files, `TESTKEY-` prefix forced structurally.
+- P3-T5's no-keys test suite is the load-bearing proof for Risk 1 (signing custody misdesign) —
+  do not treat it as boilerplate; all 4 assertion groups must be individually named and green.
+- Watch for scope creep into E2 territory (surveillance/re-verify cadence, materiality classification,
+  withdraw/rollback machinery) — the registry seed (P3-T4) ships exactly the OQ-4 field list, nothing
+  more.
+
+### Development Setup
+
+Node ≥ 20. Gate before Phase 5 integration: `npm run check` green + `task-completion-validator` on
+this phase's P3-GATE, independently of Phase 2/4's gates.
+
+---
+
+## Completion Notes
+
+Fill in when Phase 3 is complete: what was built, key learnings, unexpected challenges, recommendations
+for Phase 5 (cross-workstream integration dry-run, honesty audit).

@@ -4,7 +4,7 @@ description: "How the Agentic OS dispatches a pediatric ARC council review, and 
 audience: [project-agents, platform-engineering, clinical-governance, evidence-governance]
 tags: [pediatric-cds, arc, aos, correlation, identifier-only, clinical-safety]
 created: 2026-07-19
-updated: 2026-07-19
+updated: 2026-07-21
 status: contract
 ---
 
@@ -50,6 +50,19 @@ The approved-roots registry that resolves `repo:<alias>/...` is **operator-local
 configuration on the machine running `arc`**. AOS never sends it, never reads it,
 and never sends a root path in any form. This is what keeps the locator portable
 and absolute-path-free.
+
+**`authority_attachments` and `local_profiles`** — RunSpec fields added by ARC's P2/P3 authority and
+local-profile work (ADR-0005/ADR-0006), after this contract was first authored — are deliberately
+absent from the permitted set above, not an oversight verified stale at P7-T2. Both are arrays of
+*paths* to owner-signed authority/profile record files (`EvidenceRightsReceipt`,
+`CredentialedApprovalAttachment`, `LocalProfileAssertion`) that `arc` resolves and copies into the run
+directory at scaffold time; ARC verifies and references these records but never mints them. They fall
+under two prohibitions already stated below — "Approval bodies" (item 5) and "Absolute filesystem
+paths, machine-local paths" (item 6) — for the same reason the approved-roots registry itself is never
+sent: they identify owner-held authority material that lives on the operator's own machine. If a future
+ARC or adapter change makes these fields carry pure repository-relative, non-authority-bearing
+locators, that is a reviewed change to this contract and to ARC ADR-0004 D6, per "Unknown fields"
+below — never a default inclusion.
 
 ### Outbound (ARC to AOS, as correlation)
 
