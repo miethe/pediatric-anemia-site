@@ -1,0 +1,25 @@
+# tests/fixtures/ef-review-render/input/modules/render_fixture_v1/reviews/rr-0005-release-auth.yaml
+#
+# P2-T6 render-golden fixture ONLY -- see rr-0001-clinical-1.yaml (same directory) for the full
+# disclaimer. `previousRecordHash` below is the real canonical-record hash of rr-0004-adjudication.
+# `decision: request-changes` (not `approve`) is deliberate here -- see `rationale` below: this
+# record is honest that a synthetic-only record set can never actually authorize a release
+# (governance/reviewer-roster.yaml ships synthetic-only pre-G1, FR-3), which `render` (P2-T6) must
+# reflect via the per-record non-qualifying label rather than implying an authorized release exists.
+
+schemaVersion: 1
+review_id: rr-0005-release-auth
+role: release-auth
+moduleId: render_fixture_v1
+subjectContentHash: sha256:5643e7dd1a554c5983161728f3bd21dd1f5c00f355e9aa6496b5aaba5e2ba279
+previousRecordHash: sha256:a9b7ba1622afd5c51d0b622c5c5c440fab5ef07c9a788ae4d1c4be4642b7ba23
+supersedes: null
+reviewerId: "synthetic-fixture-release-auth"
+decision: request-changes
+rationale: "SYNTHETIC DRY-RUN ONLY: this record is schema-shaped for CLI-render testing and cannot authorize a real release -- governance/reviewer-roster.yaml ships synthetic-only pre-G1 (FR-3), so no release-authorization validity condition can be satisfied over this record set."
+reviewedAt: 2026-01-05T00:00:00Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-ef-e1-p2t6-render-fixture-release-auth
+  value: "ZmFrZS1zaWduYXR1cmUtcmVuZGVyLWZpeHR1cmUtcmVsZWFzZS1hdXRo"

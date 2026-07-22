@@ -117,3 +117,21 @@ export class ValidationFailedError extends UsageError {
     this.violations = violations;
   }
 }
+
+// -------------------------------------------------------------------------------------------
+// P2-T6 addition (`render` verb, FR-8/FR-31/OQ-3).
+// -------------------------------------------------------------------------------------------
+
+/** `render --record <review_id>` named a `review_id` that does not exist among the module's
+ * committed records (well-formed shape, per `store.mjs`'s `parseReviewId`, but not found on disk).
+ * Fails closed rather than silently rendering the full module or an empty page. */
+export class ReviewRecordNotFoundError extends UsageError {
+  constructor(reviewId, moduleId) {
+    super(
+      `--record "${reviewId}" was not found among the committed review records for module ` +
+        `"${moduleId}" (checked modules/${moduleId}/reviews/).`,
+    );
+    this.reviewId = reviewId;
+    this.moduleId = moduleId;
+  }
+}

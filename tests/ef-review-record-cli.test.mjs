@@ -4,10 +4,12 @@
 // (docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1/phase-2-4-workstreams.md,
 // row P2-T1):
 //   - `cli.mjs --help` lists all 5 verbs.
-//   - `render`/`dry-run` fail closed with a distinct, named "not yet implemented" error
+//   - `dry-run` fails closed with a distinct, named "not yet implemented" error
 //     (`NotImplementedError`, exit 1) rather than a silent no-op or a crash. (`scaffold` and
 //     `validate` got their own real implementations in P2-T2 — see tests/ef-review-workflow.test.mjs
-//     for their coverage; this file no longer exercises them as stubs.)
+//     for their coverage; `render` got its own real implementation in P2-T6 — see
+//     tests/ef-review-render.test.mjs for its coverage; this file no longer exercises either as a
+//     stub.)
 //   - `list` over a fixture module prints a structured, non-empty per-module review-record state
 //     summary (OQ-2 store layout).
 //   - Zero network calls / zero model-invocation hooks across all verbs, proven both statically
@@ -36,8 +38,9 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, readdir } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -63,8 +66,9 @@ const TOOL_ROOT = path.join(REPO_ROOT, 'tools', 'review-record');
 const CLI_PATH = path.join(TOOL_ROOT, 'cli.mjs');
 const FIXTURES_ROOT = path.join(REPO_ROOT, 'tests', 'fixtures', 'ef-review-record-cli');
 
+// `render` (P2-T6) is real now — see tests/ef-review-render.test.mjs for its own coverage. Only
+// `dry-run` (P2-T8) remains an unimplemented stub here.
 const STUB_VERBS = Object.freeze([
-  { verb: 'render', run: runRender, owner: 'P2-T6' },
   { verb: 'dry-run', run: runDryRun, owner: 'P2-T8' },
 ]);
 
@@ -155,7 +159,7 @@ for (const { verb, run, owner } of STUB_VERBS) {
 
 test('dispatchVerb forwards a NotImplementedError exit code verbatim', async () => {
   const handler = async () => {
-    throw new NotImplementedError('render', 'P2-T6');
+    throw new NotImplementedError('dry-run', 'P2-T8');
   };
   const code = await dispatchVerb(handler, {});
   assert.equal(code, EXIT_USAGE);
@@ -412,7 +416,21 @@ test('the real list verb makes zero network calls at runtime (patched global fet
   }
 });
 
-test('the remaining stub verbs (render, dry-run) make zero network calls before throwing NotImplementedError', async () => {
+test('the real render verb makes zero network calls at runtime (patched global fetch throws if invoked)', async () => {
+  const outDir = await mkdtemp(path.join(os.tmpdir(), 'ef-review-render-fetch-check-'));
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => {
+    throw new Error('network call attempted during a review-record CLI verb invocation');
+  };
+  try {
+    await assert.doesNotReject(() => runRender({ module: 'fixture_module_v1', root: FIXTURES_ROOT, out: outDir }));
+  } finally {
+    globalThis.fetch = originalFetch;
+    await rm(outDir, { recursive: true, force: true });
+  }
+});
+
+test('the remaining stub verb (dry-run) makes zero network calls before throwing NotImplementedError', async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () => {
     throw new Error('network call attempted during a review-record CLI verb invocation');

@@ -5,18 +5,91 @@ E1's review-workflow machinery. Design/scaffold task **P2-T1** (OQ-1/OQ-2/FR-1/F
 `docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1.md` and its
 `evidence-foundry-e1-v1/phase-2-4-workstreams.md` phase file (row `P2-T1`).
 
-**Status (as of P2-T4)**: `list` (P2-T1) and `scaffold`/`validate` (P2-T2 first increment, extended
-P2-T3/T4) are real. `render`/`dry-run` remain dispatch stubs (`NotImplementedError`, exit 1) until
-P2-T6/P2-T8. `validate` now covers per-record schema shape, D-4 roster resolution, the FR-4
-reviewer-2 textual-independence heuristic (P2-T2), the FR-9/OQ-2 two-layer append-only enforcement
-(P2-T3, see "Append-only enforcement" below), and PRD OQ-5's authorship-union computation +
-FR-5 (adjudicator/release-authorizer not-in-authorship-union) + FR-6 (release-authorization chain
-validity) checks (P2-T4, see "Adjudication + release-authorization" below) — signature (P2-T5)
-checks land on the same verb next. Nothing in this tool signs, releases, or clinically approves
-anything; nothing in this tool clears, advances, or partially satisfies any of the G0–G4 human gates
+**Status (as of P2-T6)**: `list` (P2-T1), `scaffold`/`validate` (P2-T2 first increment, extended
+P2-T3/T4/T5), and `render` (P2-T6) are real. `dry-run` remains a dispatch stub
+(`NotImplementedError`, exit 1) until P2-T8. `validate` now covers per-record schema shape, D-4
+roster resolution, the FR-4 reviewer-2 textual-independence heuristic (P2-T2), the FR-9/OQ-2
+two-layer append-only enforcement (P2-T3, see "Append-only enforcement" below), PRD OQ-5's
+authorship-union computation + FR-5 (adjudicator/release-authorizer not-in-authorship-union) + FR-6
+(release-authorization chain validity) checks (P2-T4, see "Adjudication + release-authorization"
+below), and FR-10/OQ-2 Ed25519 signature verification, TESTKEY- dry-run only, fail-closed on tamper
+(P2-T5, see "Signature binding" below). `render` (P2-T6, see "Read-only static render" below) emits
+a self-contained, read-only static HTML render of a module's committed review chain — explicitly NOT
+a portal. Nothing in this tool signs, releases, or clinically approves anything; nothing in this tool
+clears, advances, or partially satisfies any of the G0–G4 human gates
 (`docs/governance/gates-registry.md`). Structural validity proven by any verb here never implies
 clinical validity, safety, or that a named human clinician reviewed anything — see
 `schemas/review-record.schema.json`'s own top-level description for that standing caveat.
+
+### Read-only static render (P2-T6, FR-8/FR-31/OQ-3)
+
+`render --module <id> [--record <review_id>] [--root <dir>] [--out <dir>]` reads a module's
+already-committed review-record chain (`lib/store.mjs`) plus, when present, its
+`traceability-index.json` (rule -> passage -> test chain) and `evidence-assertions.json` (passage
+text/rights posture) and writes ONE self-contained `<!doctype html>` file to
+`<out>/<module_id>/{index,<review_id>}.html` — `--out` defaults to `<cwd>/build/review-render/`
+(OQ-3, git-ignored); `--root` only ever names where the SOURCE artifacts live, so a render over a
+fixture tree can never collide with a real `build/review-render/` output. Explicitly **not a
+portal**: no server, no database, no write path back into `modules/`, no auth, no `<script>` tag
+anywhere in the output, and no `<a href>` at all (so no third-party/remote asset or URL can ever
+appear). Every page carries `lib/render.mjs`'s `UNVALIDATED_PROTOTYPE_BANNER` — the exact string
+`tools/retro-validate/lib/metrics.mjs` (P4-T4) already uses for its own report header, reused
+verbatim rather than re-authored — in both a header and a footer, and every `synthetic: true`
+record's card carries a `NON_QUALIFYING_RECORD_LABEL`.
+
+**Rights posture (FR-31, ADR-0002, E0 OQ-2 precedent)**: a passage renders as inline text ONLY when
+its resolved `evidence-assertions.json` assertion carries `displayPolicy: "public_short_excerpt"`
+AND a non-empty `exactPassage`. Every other case — `hash_and_selector_only`,
+`clinician_authenticated_short_excerpt` (this static output has no auth layer to gate that audience
+either), or an assertionId `traceability-index.json` references but `evidence-assertions.json` does
+not carry — renders as a hash + selector reference block (`passageId`/`exactPassageSha256` +
+`locator.raw`) instead, never the passage text. Ambiguous or missing data defaults to the MORE
+restrictive rendering, matching this program's "missingness is never treated as normal" guardrail.
+
+`lib/render.mjs` is pure (never touches the filesystem) and deterministic — no wall-clock timestamp
+or non-reproducible value appears anywhere in its output, so re-rendering identical committed
+artifacts twice produces byte-identical bytes. `lib/verbs/render.mjs` is the only writer, and the
+only thing in this tool that ever writes under `build/`.
+
+### Signature binding (P2-T5, FR-10/OQ-2/OQ-6)
+
+`lib/signature.mjs` implements the ONE `signature` mechanism `schemas/review-record.schema.json`
+already names: a detached Ed25519 signature (`node:crypto` only, zero new dependencies) over the
+"canonicalized record bytes minus the signature object" (`lib/chain.mjs`'s `stableStringify` applied
+to the record with `signature` omitted) — binding `reviewerId` to `subjectContentHash` (and every
+other field) by construction, since mutating any field other than `signature` itself invalidates it.
+
+E1 signing exists **only** in synthetic dry-run mode (OQ-6, decisions block Risk 1, FR-15 "no
+agent/CI keys ever"): `signRecordDryRun(record)` generates a fresh Ed25519 keypair in memory on
+every call (`node:crypto#generateKeyPairSync`), never reads a key from a file or a CLI flag (there
+is **no** `--test-keys` flag anywhere in this tool), and never writes either half of the keypair to
+disk — the private key lives only in that function's own stack frame and is discarded the instant
+the call returns. It fails closed (`UsageError`) unless `record.synthetic === true` and
+`record.signature` is not already populated — **"writable only onto synthetic:true records" is
+enforced structurally, at the point of signing**, not left to a caller's discipline. The resulting
+`signature.keyId` always carries the structural `TESTKEY-` prefix.
+
+**Self-certifying `keyId`, and why**: `schemas/review-record.schema.json`'s `signature` object has
+exactly three fields (`algorithm`, `keyId`, `value`, `additionalProperties: false`) — there is no
+fourth slot for a public key, and OQ-6 explicitly rules out any persistent test-key registry. So
+`signRecordDryRun` encodes the ephemeral public key's raw Ed25519 x-coordinate (the same 32 raw
+bytes a JWK `x` field carries, base64url-encoded) directly into `keyId`, right after the `TESTKEY-`
+prefix: `TESTKEY-<43-char base64url x-coordinate>`. This makes the committed record file itself
+self-sufficient for verification — a later, wholly separate `validate` invocation (a different
+process, no shared memory, no key it "kept") recovers the public key straight from `keyId` and
+cryptographically checks `value` against a fresh recomputation of the signing preimage. The public
+half of an Ed25519 keypair is non-secret by definition, so folding it into the identity label that
+already exists loses nothing a dedicated field would have provided.
+
+`validate` calls `verifyRecordSignature(record)` for every record it examines (respects `--record`
+narrowing — a signature is a fact about one record, unlike the module-wide chain/independence/
+authorship checks) and fails closed with a `signature:`-prefixed violation on: a `synthetic: true`
+record with no signature; a populated signature on a `synthetic: false` record (never legitimate
+pre-G1/G2, checked independently of the schema's own equivalent `allOf` branch); a malformed shape
+(wrong algorithm, missing `TESTKEY-` prefix, empty `value`); an unparseable embedded public key; or —
+the tamper case — a signature that fails cryptographic verification against the record's own
+canonicalized bytes. A `synthetic: false` record's forced-null signature slot verifies trivially
+(nothing to check, by design).
 
 ### Adjudication + release-authorization (P2-T4, PRD OQ-5/FR-5/FR-6)
 
@@ -140,12 +213,12 @@ responsibility plus a `lib/verbs/` directory of thin verb handlers:
 | **Roster** | `lib/roster.mjs` | Resolve `reviewerId` against `governance/reviewer-roster.yaml` (unknown identity / out-of-scope module both fail closed, FR-3) | **P2-T2** | errors, `../rf-bundle-to-kb-pack/lib/yaml-lite.mjs` |
 | **Independence** | `lib/independence.mjs` | Supplementary, heuristic FR-4 reviewer-2-independence check (`checkReviewerIndependence`) — verbatim textual overlap / direct sibling-identity reference between a module's `clinical-1`/`clinical-2` records. NOT the primary enforcement (see Roster/Chain above and this file's own header) | **P2-T2** | — |
 | **Adjudication** | `lib/adjudication.mjs` | `computeAuthorshipUnion` (PRD OQ-5, git-history-derived — see "Adjudication + release-authorization" above) + `rosterEntryInAuthorshipUnion` (FR-5) + `evaluateReleaseAuthorization` (FR-6) | **P2-T4** | store, chain |
-| **Signature** | *(new in P2-T5)* | Ed25519 sign/verify over canonicalized record bytes minus `signature` (`node:crypto` only, `TESTKEY-` dry-run only) | **P2-T5** | chain |
-| **Render** | *(new in P2-T6)* | Read-only static HTML render to `build/review-render/` | **P2-T6** | store, chain |
+| **Signature** | `lib/signature.mjs` | `signRecordDryRun` (ephemeral in-memory Ed25519 keypair, `TESTKEY-` self-certifying `keyId`, writable only onto `synthetic:true` records) + `verifyRecordSignature` (fail-closed verification, tamper detection) — see "Signature binding" above | **P2-T5** | chain |
+| **Render** | `lib/render.mjs` | Loads a module's committed review chain + (existence-gated) `traceability-index.json`/`evidence-assertions.json` and builds ONE self-contained, deterministic HTML string (`renderModuleHtml`) — see "Read-only static render" above | **P2-T6** | store, chain |
 | Verb handler | `lib/verbs/scaffold.mjs` | `scaffold` verb — builds + (signature-gated) writes a draft; see this file's "Status" section above | stub P2-T1, real **P2-T2** | store, chain, roster |
-| Verb handler | `lib/verbs/validate.mjs` | `validate` verb — schema shape + roster resolution + independence heuristic (P2-T2); FR-9/OQ-2 two-layer append-only enforcement, chain (always) + `--history` git-history check (P2-T3); PRD OQ-5 authorship-union / FR-5 adjudicator-authorship + FR-6 release-authorization validity (P2-T4) | stub P2-T1, first increment **P2-T2**, extended **P2-T3/T4**, further **P2-T5** | store, roster, independence, chain, history, adjudication, `../../../scripts/lib/json-schema-lite.mjs` |
+| Verb handler | `lib/verbs/validate.mjs` | `validate` verb — schema shape + roster resolution + independence heuristic (P2-T2); FR-9/OQ-2 two-layer append-only enforcement, chain (always) + `--history` git-history check (P2-T3); PRD OQ-5 authorship-union / FR-5 adjudicator-authorship + FR-6 release-authorization validity (P2-T4); FR-10/OQ-2 Ed25519 signature verification (P2-T5) | stub P2-T1, first increment **P2-T2**, extended **P2-T3/T4/T5** | store, roster, independence, chain, history, adjudication, signature, `../../../scripts/lib/json-schema-lite.mjs` |
 | Verb handler | `lib/verbs/list.mjs` | `list` verb — per-module review-record state summary | **P2-T1** (real) | store, chain |
-| Verb handler | `lib/verbs/render.mjs` | `render` verb | stub P2-T1, real **P2-T6** | render |
+| Verb handler | `lib/verbs/render.mjs` | `render` verb — writes `lib/render.mjs`'s output to `<out>/<module_id>/{index,<review_id>}.html`, the only writer under `build/` | stub P2-T1, real **P2-T6** | render |
 | Verb handler | `lib/verbs/dry-run.mjs` | `dry-run` verb | stub P2-T1, real **P2-T8** | scaffold, signature, validate |
 
 **Verb-handler contract**: every file under `lib/verbs/` exports `async function run(options)` that
@@ -233,17 +306,23 @@ tools/review-record/
     chain.mjs                    canonical hashing + informational linkage report (P2-T1 primitive); nextChainLink (P2-T2); consumed as validate's chain-enforcement input (P2-T3)
     history.mjs                   FR-9/OQ-2 append-only layer (b): git-history append-only check (P2-T3)
     adjudication.mjs               PRD OQ-5 authorship-union + FR-5/FR-6 adjudication/release-authorization validators (P2-T4)
+    signature.mjs                   FR-10/OQ-2 Ed25519 signature binding: signRecordDryRun + verifyRecordSignature (P2-T5)
+    render.mjs                      FR-8/FR-31/OQ-3 read-only static-HTML render core: renderModuleHtml (P2-T6)
     roster.mjs                    reviewerId resolution against governance/reviewer-roster.yaml (P2-T2)
     independence.mjs               heuristic FR-4 reviewer-2-independence check (P2-T2)
     wave0-migration.mjs             wave0 -> canonical migration helper (P1-T3, unrelated to CLI dispatch)
     verbs/
       list.mjs                       `list` verb — real (P2-T1)
       scaffold.mjs                    `scaffold` verb — real (P2-T2)
-      validate.mjs                     `validate` verb — first increment real (P2-T2); FR-9/OQ-2 append-only enforcement (P2-T3); PRD OQ-5/FR-5/FR-6 adjudication + release-authorization (P2-T4); extended P2-T5
-      render.mjs                        `render` verb — stub (real: P2-T6)
+      validate.mjs                     `validate` verb — first increment real (P2-T2); FR-9/OQ-2 append-only enforcement (P2-T3); PRD OQ-5/FR-5/FR-6 adjudication + release-authorization (P2-T4); FR-10/OQ-2 Ed25519 signature verification (P2-T5)
+      render.mjs                        `render` verb — real (P2-T6)
       dry-run.mjs                        `dry-run` verb — stub (real: P2-T8)
 ```
 
-`build/review-render/` (P2-T6's eventual render output root) is git-ignored (`.gitignore`) —
-nothing under it is ever committed. Golden/fixture output lives under
-`tests/fixtures/ef-review-render/` instead (OQ-3).
+`build/review-render/` (P2-T6's render output root, `--out` default) is git-ignored (`.gitignore`) —
+nothing under it is ever committed. One golden render lives under `tests/fixtures/ef-review-render/`
+instead (OQ-3): `input/` is a hand-authored, non-real fixture module (`render_fixture_v1`, five
+synthetic review records + a two-passage traceability chain, one rights-restricted and one
+inline-eligible) and `golden/` holds the exact HTML `render` produces over it — regenerate with
+`node tools/review-record/cli.mjs render --module render_fixture_v1 --root
+tests/fixtures/ef-review-render/input --out <scratch-dir>` and diff, never hand-edit the golden file.

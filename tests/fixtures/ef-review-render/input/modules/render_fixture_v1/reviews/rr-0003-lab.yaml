@@ -1,0 +1,21 @@
+# tests/fixtures/ef-review-render/input/modules/render_fixture_v1/reviews/rr-0003-lab.yaml
+#
+# P2-T6 render-golden fixture ONLY -- see rr-0001-clinical-1.yaml (same directory) for the full
+# disclaimer. `previousRecordHash` below is the real canonical-record hash of rr-0002-clinical-2.
+
+schemaVersion: 1
+review_id: rr-0003-lab
+role: lab
+moduleId: render_fixture_v1
+subjectContentHash: sha256:5643e7dd1a554c5983161728f3bd21dd1f5c00f355e9aa6496b5aaba5e2ba279
+previousRecordHash: sha256:20eba20db84e1e862da523bf450f7487624624e882549e35e3e267be7fe20c85
+supersedes: null
+reviewerId: "synthetic-fixture-lab"
+decision: approve
+rationale: "Fixture-only synthetic dry-run rationale confirming laboratory-context plausibility of the fixture pattern -- not a real clinical review act."
+reviewedAt: 2026-01-03T00:00:00Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-ef-e1-p2t6-render-fixture-lab
+  value: "ZmFrZS1zaWduYXR1cmUtcmVuZGVyLWZpeHR1cmUtbGFi"

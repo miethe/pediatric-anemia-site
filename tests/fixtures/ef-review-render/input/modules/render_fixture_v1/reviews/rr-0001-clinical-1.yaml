@@ -1,0 +1,28 @@
+# tests/fixtures/ef-review-render/input/modules/render_fixture_v1/reviews/rr-0001-clinical-1.yaml
+#
+# P2-T6 render-golden fixture ONLY -- lives entirely under tests/fixtures/, never under a real
+# modules/<id>/reviews/ path, so it can never be mistaken for a real review act and never fires
+# scripts/validate-kb.mjs's runtime modules/<id>/reviews/*.yaml roster cross-check. "render_fixture_v1"
+# is not a real module id. `previousRecordHash`/hashes throughout this five-record chain were
+# generated with tools/review-record/lib/{store,chain}.mjs's own canonicalRecordHash so the render's
+# informational chain-linkage column reads "ok" end to end -- this is a clean-chain demonstration
+# fixture for `render` (P2-T6), not a violation fixture (contrast tests/fixtures/ef-review-record-cli/
+# for seeded-violation fixtures). synthetic: true throughout -- not a real, gate-cleared clinical
+# review act.
+
+schemaVersion: 1
+review_id: rr-0001-clinical-1
+role: clinical-1
+moduleId: render_fixture_v1
+subjectContentHash: sha256:5643e7dd1a554c5983161728f3bd21dd1f5c00f355e9aa6496b5aaba5e2ba279
+previousRecordHash: null
+supersedes: null
+reviewerId: "synthetic-fixture-clinical-1"
+decision: approve
+rationale: "Fixture-only synthetic dry-run rationale exercising the P2-T6 render verb -- not a real clinical review act. Pattern is consistent with the fixture traceability chain (FIXTURE-RULE-001)."
+reviewedAt: 2026-01-01T00:00:00Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-ef-e1-p2t6-render-fixture-clinical-1
+  value: "ZmFrZS1zaWduYXR1cmUtcmVuZGVyLWZpeHR1cmUtY2xpbmljYWwtMQ=="

@@ -462,15 +462,27 @@ async function walkJsFiles(dir) {
   return files;
 }
 
-test('writeFile is called only from lib/store.mjs across the whole tool — the ONE write path (structural)', async () => {
+// `lib/store.mjs` is this tool's ONE write path into `modules/<id>/reviews/` (the append-only
+// review-record store) -- that invariant is unchanged. P2-T6 adds a second, legitimate, and
+// entirely disjoint `writeFile` caller: `lib/verbs/render.mjs`, whose only write target is
+// `build/review-render/` (OQ-3, git-ignored) -- never `modules/`, never anything this tool's other
+// write-path guarantees are about (see `lib/verbs/render.mjs`'s own header). Any FUTURE writeFile
+// caller beyond these two named, narrow-purpose files is still exactly the kind of drift this test
+// exists to catch.
+const ALLOWED_WRITE_FILE_CALLERS = Object.freeze([
+  path.join('lib', 'store.mjs'),
+  path.join('lib', 'verbs', 'render.mjs'),
+]);
+
+test('writeFile is called only from lib/store.mjs (modules/<id>/reviews/) and lib/verbs/render.mjs (build/review-render/) across the whole tool — no other write path (structural)', async () => {
   const files = await walkJsFiles(TOOL_ROOT);
   for (const file of files) {
     const content = await readFile(file, 'utf8');
     if (/\bwriteFile\(/.test(content)) {
-      assert.equal(
-        path.relative(TOOL_ROOT, file),
-        path.join('lib', 'store.mjs'),
-        `${path.relative(REPO_ROOT, file)} must not call writeFile -- lib/store.mjs is this tool's ONE write path`,
+      assert.ok(
+        ALLOWED_WRITE_FILE_CALLERS.includes(path.relative(TOOL_ROOT, file)),
+        `${path.relative(REPO_ROOT, file)} must not call writeFile -- only ` +
+          `${ALLOWED_WRITE_FILE_CALLERS.join(' and ')} may write anything in this tool`,
       );
     }
   }

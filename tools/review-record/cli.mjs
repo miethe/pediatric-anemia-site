@@ -17,7 +17,8 @@
 //               P2-T4/T5 on this same verb.
 //   list      — print per-module review state (records by role, chain linkage, synthetic flags).
 //               IMPLEMENTED (P2-T1) — see lib/verbs/list.mjs.
-//   render    — read-only static HTML render of a review chain. NOT YET IMPLEMENTED (P2-T6).
+//   render    — read-only static HTML render of a review chain. IMPLEMENTED (P2-T6) — see
+//               lib/verbs/render.mjs / lib/render.mjs for the FR-8/FR-31/OQ-3 rendering logic.
 //   dry-run   — full five-role synthetic dry-run cycle. NOT YET IMPLEMENTED (P2-T8).
 //
 // Zero network calls, zero LLM/generative-model invocations, ever (FR-7). No file in this tool
@@ -68,9 +69,13 @@ Verbs:
       Print a structured per-module review-record state summary: records by role, informational
       chain-linkage status, synthetic flags. Read-only. IMPLEMENTED (P2-T1).
 
-  render --module <id> [--record <review_id>]
-      Read-only static HTML render of a review chain to build/review-render/ (gitignored).
-      NOT YET IMPLEMENTED — lands in P2-T6.
+  render --module <id> [--record <review_id>] [--root <dir>] [--out <dir>]
+      Read-only static HTML render of the passage -> decision -> rule -> test chain to
+      build/review-render/<module_id>/ (gitignored; --out overrides). NOT a portal: no server,
+      database, write path, auth, <script>, or third-party/remote asset. Every page carries the
+      unvalidated-research-prototype banner and per-record non-qualifying labels for synthetic
+      content; rights-restricted passages (FR-31) render as hash + selector reference blocks,
+      never inline text. IMPLEMENTED (P2-T6).
 
   dry-run --module <id> --subject <content-hash>
       Full five-role synthetic dry-run cycle (scaffold -> sign -> chain-validate). NOT YET
