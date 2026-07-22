@@ -225,14 +225,17 @@ python .claude/skills/artifact-tracking/scripts/update-status.py \
 
 ## Objective
 
-Ship a gate-aware `sign` verb (TESTKEY-only synthetic path, hard fail-closed refusal on any
-real-identity `synthetic: false` record pre-G1/G2) plus an incremental fail-closed `validate`
-cache. See PRD FR-6..10/23 and decisions block §3 risks R1/R5/R9.
+Ship a gate-aware `sign` verb that operates only on a staged `scaffold --draft` file
+(TESTKEY-only synthetic path, hard fail-closed refusal on any real-identity `synthetic: false`
+draft or any `--record` over a committed file, pre-G1/G2) plus an incremental fail-closed
+`validate` cache that is now a cross-process composite-keyed persistent store. See PRD
+FR-6..10/23/25 and decisions block §3 risks R1/R5/R9.
 
 **Duration**: ~2 engineer-days · **Dependencies**: Phase 1 complete · **Exit gate**: `sign`
-round-trips against `validate` on the synthetic path and refuses fail-closed on the real path;
-incremental `validate` wall-time is measurably reduced; stale-cache test proves fail-closed;
-`npm run check` green.
+consumes a staged draft (never an existing `reviews/` file, F1), round-trips against `validate`
+on the synthetic path and refuses fail-closed on the real path; incremental `validate`
+wall-time is measurably reduced across two separate processes sharing the persistent cache;
+the 5 composite-key fresh-process invalidation tests pass fail-closed; `npm run check` green.
 
 **Hard guardrail reminder (this phase is the highest-risk phase for it)**: no task signs a
 `synthetic: false` record; `sign` refuses fail-closed pre-G1/pre-G2; zero new runtime
@@ -244,10 +247,10 @@ dependencies, zero network, zero LLM inside `tools/review-record/`.
 
 | Task ID | Name | Assigned Subagent(s) | Model/Effort | Status | Dependencies |
 |---------|------|-----------------------|---------------|--------|---------------|
-| P2-T1 | `sign` verb, TESTKEY-only synthetic path | general-purpose | sonnet/extended | pending | Phase 1 complete |
+| P2-T1 | `sign` verb on a staged draft, TESTKEY-only synthetic path | general-purpose | sonnet/extended | pending | Phase 1 complete |
 | P2-T2 | `sign` fail-closed refusal + no-keyfile grep | general-purpose | sonnet/extended | pending | P2-T1 |
-| P2-T3 | Incremental `validate` cache | general-purpose | sonnet/extended | pending | P1-T1, P2-T1 |
-| P2-T4 | Fail-closed stale-cache + `--history` union + microbenchmark | general-purpose | sonnet/extended | pending | P2-T3 |
+| P2-T3 | Incremental `validate` composite-keyed persistent cache | general-purpose | sonnet/extended | pending | P1-T1, P2-T1 |
+| P2-T4 | Fail-closed composite-key invalidation + `--history` union + cross-process microbenchmark | general-purpose | sonnet/extended | pending | P2-T3 |
 | P2-GATE1 | `task-completion-validator` gate | task-completion-validator | sonnet/adaptive | pending | P2-T1..T4 |
 | P2-GATE2 | codex `gpt-5.6-terra` read-only second-opinion | codex (read-only) | gpt-5.6-terra/high | pending | P2-GATE1 |
 
@@ -258,47 +261,59 @@ dependencies, zero network, zero LLM inside `tools/review-record/`.
 ### Batch 1 (after Phase 1 complete)
 
 ```
-Task("general-purpose", "P2-T1: sign verb, TESTKEY-only synthetic path (FR-6, OQ-1). Add
-sign to cli.mjs + new lib/verbs/sign.mjs. On a synthetic:true record with signature:null,
-call lib/signature.mjs's signRecordDryRun (ephemeral in-memory Ed25519, TESTKEY- prefix, key
-discarded on return). No --keyfile seam. AC: sign round-trips against validate on a synthetic
-fixture; --help lists sign. See plan §Phase 2, P2-T1.")
+Task("general-purpose", "P2-T1: sign verb on a staged draft, TESTKEY-only synthetic path
+(FR-6/FR-25, OQ-1, F1). Add sign to cli.mjs + new lib/verbs/sign.mjs. Frozen signature: sign
+--draft <path> --module <id> --root <dir>. sign reads ONLY a staged draft written by scaffold
+--draft to <root>/.review-drafts/<moduleId>/<review_id>.draft.yaml (never an existing
+reviews/ file); on a synthetic:true draft with signature:null, call lib/signature.mjs's
+signRecordDryRun (ephemeral in-memory Ed25519, TESTKEY- prefix, key discarded on return), then
+perform the record's FIRST and ONLY committed write via lib/store.mjs. No --keyfile seam. AC:
+scaffold --draft -> sign --draft round-trips against validate; a dedicated test proves NO
+pre-existing reviews/*.yaml changes across a sign call (F1); --help lists sign with the exact
+signature. See plan §Phase 2, P2-T1.")
 ```
 
 ### Batch 2 (after P2-T1)
 
 ```
 Task("general-purpose", "P2-T2: sign fail-closed refusal + no-keyfile grep (FR-7/23, R1).
-sign must refuse synthetic:false records with a message naming BOTH 'G1' and 'G2'; refuse
---keyfile/--key/--test-keys/env-var key paths for any input. Add a static grep test proving
-zero key-reading code exists in lib/verbs/sign.mjs. See plan §Phase 2, P2-T2.")
+sign must refuse a synthetic:false draft with a message naming BOTH 'G1' and 'G2'; refuse
+--keyfile/--key/--test-keys/env-var key paths AND a --record pointing at a committed file
+(FR-25) for any input. Add a static grep test proving zero key-reading code exists in
+lib/verbs/sign.mjs. See plan §Phase 2, P2-T2.")
 
-Task("general-purpose", "P2-T3: Incremental validate cache (FR-8, R9). New
-lib/validate-cache.mjs; validate --record/--module reuses per-record results (schema shape,
-roster resolution, signature verification, chain-link check) when the record's canonical
-content hash and its predecessor's are unchanged. Module-wide checks (authorship-union,
-independence heuristic, release-authorization) always re-run — never cache-eligible. See plan
-§Phase 2, P2-T3.")
+Task("general-purpose", "P2-T3: Incremental validate composite-keyed persistent cache (FR-8,
+R9, F3). New lib/validate-cache.mjs; validate --record/--module reuses per-record results only
+when EVERY component of the composite key matches (record content hash, complete
+predecessor-set hashes, roster file hash, schema hash, validator-policy version,
+history-mode flag — not just the record+predecessor pair, F3). Cache is a PERSISTENT store
+OUTSIDE the repo tree (OS temp/XDG cache dir, atomic write-then-rename) keyed by {root,
+moduleId} so warmth survives across separate CLI processes. Module-wide checks always re-run
+— never cache-eligible. See plan §Phase 2, P2-T3.")
 ```
 
 ### Batch 3 (after P2-T3)
 
 ```
-Task("general-purpose", "P2-T4: Fail-closed stale-cache + --history union + microbenchmark
-(FR-9/10, R5, OQ-6). Cache keyed on canonical content hash — any mismatch/mtime skew/parse
-failure triggers full recompute, never a stale pass. Add a bit-flip-tampered adversarial test.
-validate --history must NEVER use the cache (always fresh git-log walk). Author a repeatable
-microbenchmark script (cache-cold vs. cache-warm) on the committed 5-record cbc_suite_v1 set.
-See plan §Phase 2, P2-T4.")
+Task("general-purpose", "P2-T4: Fail-closed composite-key invalidation + --history union +
+cross-process microbenchmark (FR-9/10, R5, OQ-6, F3). Any single key-component miss, read
+uncertainty, or unreadable/corrupt cache file triggers full recompute, never a stale pass. Add
+5 dedicated fresh-process adversarial tests, one per key component (roster, schema,
+record-content, predecessor-content, history-mode-flag). validate --history must NEVER use
+the cache (always fresh git-log walk). Author a repeatable microbenchmark script (cache-cold
+vs. cache-warm) across two separate node invocations sharing the persistent cache dir on the
+committed 5-record cbc_suite_v1 set. See plan §Phase 2, P2-T4.")
 ```
 
 ### Gates
 
 ```
 Task("task-completion-validator", "P2-GATE1: Verify Phase 2 exit gate for
-clinical-review-workflow — sign round-trips against validate on the synthetic path and
-refuses fail-closed on the real path; incremental validate wall-time measurably reduced;
-stale-cache test proves fail-closed; npm run check green.")
+clinical-review-workflow — sign consumes a staged draft (never an existing reviews/ file, F1),
+round-trips against validate on the synthetic path and refuses fail-closed on the real path;
+incremental validate wall-time measurably reduced across two separate processes sharing the
+persistent cache; the 5 composite-key fresh-process invalidation tests pass fail-closed; npm
+run check green.")
 ```
 
 codex `gpt-5.6-terra` read-only second-opinion (invoke via the `codex` skill, read-only diff
@@ -307,8 +322,9 @@ prior-session memory that codex second-opinion review found real gaps validators
 
 ```
 codex exec --read-only "Diff-review the full Phase 2 changeset for clinical-review-workflow
-against R1/R5/R9 and FR-6..10/23. Specifically hunt fail-closed gaps in the sign-refusal path
-and the cache-staleness path."
+against R1/R5/R9 and FR-6..10/23/FR-25. Specifically hunt fail-closed gaps in the sign
+staged-draft lifecycle (no existing-record rewrite, F1) and the composite-key cache-staleness
+paths (per-component invalidation, F3)."
 ```
 
 ---
@@ -325,9 +341,16 @@ offline key ceremony, ADR-0005) both clear.
 
 - P2 and P3 both touch `lib/verbs/validate.mjs` — this is why P3 is scheduled a wave later
   (wave 3), not because P3 depends on P2's work.
-- The stale-cache test must seed an actual bit-flip-tampered input, not merely assert "cache
-  invalidated" — a shallow test here is exactly the fail-open risk (R5) this phase exists to
-  prevent.
+- `sign` must never open, read, or rewrite a path already inside `reviews/` — it operates
+  exclusively on the `.review-drafts/` staging area (Revision 1, F1); this is a stricter
+  invariant than the earlier `--record` framing and is worth a dedicated bytes/mtime test on
+  every pre-existing committed file.
+- The composite-key cache (Revision 1, F3) invalidates on ANY of 6 components, not just
+  record+predecessor content hash — the 5 fresh-process adversarial tests must each seed a
+  real mismatch on a distinct key component, not merely assert "cache invalidated" — a shallow
+  test here is exactly the fail-open risk (R5) this phase exists to prevent.
+- The cache is now a cross-process PERSISTENT store outside the repo tree — warmth must be
+  provable across two separate `node` invocations, not just within one process.
 - `--history` must never read from the incremental cache — always re-run the git-log walk
   (OQ-6).
 
