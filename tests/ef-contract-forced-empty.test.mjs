@@ -546,9 +546,10 @@ test('loadReviewerRosterIndex(): an absent governance/reviewer-roster.yaml degra
   }
 });
 
-test('loadReviewerRosterIndex(): loads the real committed governance/reviewer-roster.yaml (ships empty, FR-3) into an empty index', async () => {
+test('loadReviewerRosterIndex(): loads the real committed governance/reviewer-roster.yaml (P2-T8: 5 synthetic-only dry-run personas, FR-3: zero real entries) into a 5-entry index', async () => {
   const index = await loadReviewerRosterIndex(REPO_ROOT);
-  assert.equal(index.size, 0);
+  assert.equal(index.size, 5);
+  assert.ok([...index.values()].every((entry) => entry.synthetic === true), 'every real-roster entry must be synthetic:true pre-G1');
 });
 
 // --- new wiring: releases/registry.json (existence-gated across the whole tree) -----------------
@@ -601,16 +602,16 @@ test('validateModule() on the real modules/anemia/ still reports zero errors wit
   assert.equal(result.reviewRecordCount, 0);
 });
 
-test('validateModule() on the real modules/cbc_suite_v1/ still reports zero errors with the new wiring in place', async () => {
+test('validateModule() on the real modules/cbc_suite_v1/ still reports zero errors with the new wiring in place (P2-T8: now carries the 5-record synthetic dry-run set)', async () => {
   const result = await validateModule('cbc_suite_v1', REPO_ROOT);
   assert.deepEqual(result.errors, [], `validateModule('cbc_suite_v1', ...) should report zero errors: ${JSON.stringify(result.errors)}`);
-  assert.equal(result.reviewRecordCount, 0);
+  assert.equal(result.reviewRecordCount, 5);
 });
 
-test('loadAndValidateReviewerRoster() on the real committed governance/reviewer-roster.yaml reports zero errors and zero reviewers (FR-3: ships empty)', async () => {
+test('loadAndValidateReviewerRoster() on the real committed governance/reviewer-roster.yaml reports zero errors and 5 reviewers (P2-T8: synthetic-only dry-run personas, FR-3: zero real entries)', async () => {
   const result = await loadAndValidateReviewerRoster(REPO_ROOT);
   assert.deepEqual(result.errors, []);
-  assert.equal(result.reviewerCount, 0);
+  assert.equal(result.reviewerCount, 5);
 });
 
 test('loadAndValidateReleaseRegistry() on the real repo (releases/registry.json now shipped -- P3-T4 seed) passes with present:true, zero entries, never a crash', async () => {
@@ -630,7 +631,10 @@ test('scripts/validate-kb.mjs (the real, committed file) exits 0 when run as npm
     encoding: 'utf8',
   });
   assert.equal(result.status, 0, `expected exit 0, got ${result.status}: stdout=${result.stdout} stderr=${result.stderr}`);
-  assert.match(result.stdout, /governance\/reviewer-roster\.yaml: validated 0 reviewer\(s\)\./);
+  // Updated for P2-T8: governance/reviewer-roster.yaml now carries its first content (the 5
+  // synthetic dry-run personas resolved by tools/review-record's dry-run verb) — see this task's
+  // own header note in that file. Zero real (synthetic:false) entries still, unchanged FR-3.
+  assert.match(result.stdout, /governance\/reviewer-roster\.yaml: validated 5 reviewer\(s\)\./);
   // Updated for P3-T4: releases/registry.json now ships seeded (0 entries), so the CLI reports
   // it as validated rather than "not yet seeded (absent)" — that absent-path message stays exact
   // and unit-tested elsewhere in this same file for the case where the file genuinely is missing

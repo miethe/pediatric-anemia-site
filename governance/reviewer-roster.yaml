@@ -1,11 +1,20 @@
 # governance/reviewer-roster.yaml
 #
-# Task: P1-T4 (Evidence Foundry E1, Phase 1 -- Contracts & Gates)
+# Task: P1-T4 (Evidence Foundry E1, Phase 1 -- Contracts & Gates); entries added by P2-T8
+# (Evidence Foundry E1, Phase 2 -- Review Workflow Machinery).
 # PRD OQ-1 / FR-3: the roster of individuals a review-record file's `reviewerId`
 # (schemas/review-record.schema.json) may reference. Validated by schemas/reviewer-roster.schema.json.
 #
-# THIS FILE SHIPS EMPTY -- zero entries -- BY DESIGN. FR-3 requires the roster to ship "empty or
-# synthetic-only" until gate G1 clears; this task (P1-T4) ships the schema + this empty seed only.
+# THIS FILE SHIPS WITH ZERO `synthetic: false` (REAL) ENTRIES -- BY DESIGN, and will continue to
+# until gate G1 clears (see below). FR-3 requires the roster to stay "empty or synthetic-only" until
+# then; P1-T4 shipped it literally empty, and the five entries below (added by P2-T8, the five-role
+# synthetic dry-run, FR-11) are the roster's FIRST content -- every one of them `synthetic: true`, a
+# clearly-labeled, NON-CREDENTIALED test persona (name field: "SYNTHETIC -- NOT A CREDENTIALED
+# REVIEWER") scoped only to `cbc_suite_v1`, resolved by `tools/review-record/lib/verbs/dry-run.mjs`
+# to exercise the ADR-0004 five-role review-record workflow end to end. None of the five can ever
+# satisfy release-authorization validity (P2-T4's `evaluateReleaseAuthorization`, FR-6) -- see that
+# module's own header. Presence of these entries is never a clinical-validity, credentialing, or
+# safety claim; it records that a name/credential-reference/module-scope tuple exists, nothing more.
 #
 # GATE G1 (docs/governance/gates-registry.md; human-owned, external to any task in this repo):
 # any `synthetic: false` ("real") entry requires the program owner to RECRUIT and independently,
@@ -25,4 +34,34 @@
 # -- is never itself a clinical-validity, credentialing, licensure, or safety claim.
 
 schemaVersion: 1
-reviewers: []
+reviewers:
+  - reviewerId: dryrun-cbc-suite-clinical-1
+    name: "SYNTHETIC -- NOT A CREDENTIALED REVIEWER (P2-T8 dry-run clinical-1 persona)"
+    credentialRef: SYNTHETIC-NO-CREDENTIAL-P2T8-CLINICAL-1
+    moduleScopes:
+      - cbc_suite_v1
+    synthetic: true
+  - reviewerId: dryrun-cbc-suite-clinical-2
+    name: "SYNTHETIC -- NOT A CREDENTIALED REVIEWER (P2-T8 dry-run clinical-2 persona)"
+    credentialRef: SYNTHETIC-NO-CREDENTIAL-P2T8-CLINICAL-2
+    moduleScopes:
+      - cbc_suite_v1
+    synthetic: true
+  - reviewerId: dryrun-cbc-suite-lab
+    name: "SYNTHETIC -- NOT A CREDENTIALED REVIEWER (P2-T8 dry-run lab persona)"
+    credentialRef: SYNTHETIC-NO-CREDENTIAL-P2T8-LAB
+    moduleScopes:
+      - cbc_suite_v1
+    synthetic: true
+  - reviewerId: dryrun-cbc-suite-adjudication
+    name: "SYNTHETIC -- NOT A CREDENTIALED REVIEWER (P2-T8 dry-run adjudication persona)"
+    credentialRef: SYNTHETIC-NO-CREDENTIAL-P2T8-ADJUDICATION
+    moduleScopes:
+      - cbc_suite_v1
+    synthetic: true
+  - reviewerId: dryrun-cbc-suite-release-auth
+    name: "SYNTHETIC -- NOT A CREDENTIALED REVIEWER (P2-T8 dry-run release-auth persona)"
+    credentialRef: SYNTHETIC-NO-CREDENTIAL-P2T8-RELEASE-AUTH
+    moduleScopes:
+      - cbc_suite_v1
+    synthetic: true

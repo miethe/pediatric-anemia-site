@@ -4,12 +4,13 @@
 // (docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1/phase-2-4-workstreams.md,
 // row P2-T1):
 //   - `cli.mjs --help` lists all 5 verbs.
-//   - `dry-run` fails closed with a distinct, named "not yet implemented" error
-//     (`NotImplementedError`, exit 1) rather than a silent no-op or a crash. (`scaffold` and
-//     `validate` got their own real implementations in P2-T2 — see tests/ef-review-workflow.test.mjs
-//     for their coverage; `render` got its own real implementation in P2-T6 — see
-//     tests/ef-review-render.test.mjs for its coverage; this file no longer exercises either as a
-//     stub.)
+//   - [Historical, P2-T1] `dry-run` originally failed closed with a distinct, named "not yet
+//     implemented" error (`NotImplementedError`, exit 1) rather than a silent no-op or a crash —
+//     this file exercised that stub. `scaffold`/`validate` got real implementations in P2-T2 (see
+//     tests/ef-review-workflow.test.mjs), `render` in P2-T6 (see tests/ef-review-render.test.mjs),
+//     and `dry-run` itself in P2-T8 (see tests/ef-review-dryrun.test.mjs for its full coverage —
+//     mechanism, real committed artifact, terminal FR-6 state, friction note, zero-approver-field
+//     proof). Every verb this tool exposes is now real; this file no longer exercises any stub.
 //   - `list` over a fixture module prints a structured, non-empty per-module review-record state
 //     summary (OQ-2 store layout).
 //   - Zero network calls / zero model-invocation hooks across all verbs, proven both statically
@@ -59,18 +60,19 @@ import {
 import { stableStringify, canonicalRecordHash, checkModuleChainLinkage } from '../tools/review-record/lib/chain.mjs';
 import { run as runList, formatModuleState } from '../tools/review-record/lib/verbs/list.mjs';
 import { run as runRender } from '../tools/review-record/lib/verbs/render.mjs';
-import { run as runDryRun } from '../tools/review-record/lib/verbs/dry-run.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const TOOL_ROOT = path.join(REPO_ROOT, 'tools', 'review-record');
 const CLI_PATH = path.join(TOOL_ROOT, 'cli.mjs');
 const FIXTURES_ROOT = path.join(REPO_ROOT, 'tests', 'fixtures', 'ef-review-record-cli');
 
-// `render` (P2-T6) is real now — see tests/ef-review-render.test.mjs for its own coverage. Only
-// `dry-run` (P2-T8) remains an unimplemented stub here.
-const STUB_VERBS = Object.freeze([
-  { verb: 'dry-run', run: runDryRun, owner: 'P2-T8' },
-]);
+// Historical (P2-T1): every verb this tool exposes was once a stub here. `render` went real in
+// P2-T6 (tests/ef-review-render.test.mjs); `dry-run` went real in P2-T8
+// (tests/ef-review-dryrun.test.mjs) — this array is now intentionally empty, kept (rather than
+// deleted along with the for-loop below) so a FUTURE net-new verb added to this tool has an
+// obvious place to register its own stub-phase coverage, matching this file's own established
+// pattern.
+const STUB_VERBS = Object.freeze([]);
 
 /** Runs the real `cli.mjs` as a child process and returns its exit status + captured output. */
 function runCli(args) {
@@ -430,19 +432,9 @@ test('the real render verb makes zero network calls at runtime (patched global f
   }
 });
 
-test('the remaining stub verb (dry-run) makes zero network calls before throwing NotImplementedError', async () => {
-  const originalFetch = globalThis.fetch;
-  globalThis.fetch = async () => {
-    throw new Error('network call attempted during a review-record CLI verb invocation');
-  };
-  try {
-    for (const { run } of STUB_VERBS) {
-      await assert.rejects(() => run({}), NotImplementedError);
-    }
-  } finally {
-    globalThis.fetch = originalFetch;
-  }
-});
+// `dry-run`'s own zero-network-calls runtime proof lives in tests/ef-review-dryrun.test.mjs
+// (P2-T8) — that test needs a git-fixture module/roster this file does not set up, so it is not
+// duplicated here.
 
 // -------------------------------------------------------------------------------------------
 // parseFlags

@@ -1,0 +1,16 @@
+schemaVersion: 1
+review_id: rr-0004-adjudication
+role: adjudication
+moduleId: cbc_suite_v1
+subjectContentHash: sha256:0a91991b6fd8b2480fed14625c461ba09d8eb4c9e4ba022c19e8fb72257103b2
+previousRecordHash: sha256:2c10ff6f43634679ac8ada5de5bdb66a0998f53ae246ef3638ff372b96ac3fe3
+supersedes: null
+reviewerId: "dryrun-cbc-suite-adjudication"
+decision: approve
+rationale: "SYNTHETIC ADJUDICATOR PERSONA -- NOT CREDENTIALED. Exercises PRD OQ-5's adjudicator-not-in-authorship-union check (FR-5) and the chain's adjudication act (P2-T8); this persona is not, and does not claim to be, a member of the cbc_suite_v1 authorship union, and no genuine adjudicative judgment about proposal content occurred."
+reviewedAt: 2026-07-22T06:57:37.377Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-80U22HRkX1k8d6O4Z-_5J-U6GEgg8MFn4s78hTe7WA8
+  value: "iyUrbaoOSKvOJO/D/QO+ODFLY5L+GGgfTeMpvH5SVZc8XoWyiBZcWzBXFfAiQqAOIJd4p70eMPPJ0g/TMOlnAg=="

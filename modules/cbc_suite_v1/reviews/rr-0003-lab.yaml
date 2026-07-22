@@ -1,0 +1,16 @@
+schemaVersion: 1
+review_id: rr-0003-lab
+role: lab
+moduleId: cbc_suite_v1
+subjectContentHash: sha256:0a91991b6fd8b2480fed14625c461ba09d8eb4c9e4ba022c19e8fb72257103b2
+previousRecordHash: sha256:c0b5f8a266bf38ca4abf941e2556a7a261a3da5ba62a5a2b5ed503bceb5080be
+supersedes: null
+reviewerId: "dryrun-cbc-suite-lab"
+decision: approve
+rationale: "NON-CREDENTIALED SYNTHETIC PERSONA (laboratory-medicine role). Exercises the ADR-0004 chain's lab review act structurally only (FR-11 dry-run, task P2-T8); no assay, reference-range, or specimen-handling content was actually evaluated by a credentialed laboratory-medicine reviewer."
+reviewedAt: 2026-07-22T06:56:37.247Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-lNF3G0KPBEyBAuaRxjqkGXTaxyyCdVPkgbXxT4O9qng
+  value: "DCM/dTFc2mgMsJw6u+IrSHzDRAB8Prbt5PpCkBob+4uqp2lYfpdEqYT1HGaf3wwL5VCe+CwguB1zoRg4hdK6AA=="

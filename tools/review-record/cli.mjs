@@ -20,7 +20,9 @@
 //               IMPLEMENTED (P2-T1) — see lib/verbs/list.mjs.
 //   render    — read-only static HTML render of a review chain. IMPLEMENTED (P2-T6) — see
 //               lib/verbs/render.mjs / lib/render.mjs for the FR-8/FR-31/OQ-3 rendering logic.
-//   dry-run   — full five-role synthetic dry-run cycle. NOT YET IMPLEMENTED (P2-T8).
+//   dry-run   — full five-role synthetic dry-run cycle. IMPLEMENTED (P2-T8) — see
+//               lib/verbs/dry-run.mjs for the scaffold -> sign -> chain-validate composition and
+//               the expected structural FR-6 non-qualifying terminal state.
 //
 // Zero network calls, zero LLM/generative-model invocations, ever (FR-7). No file in this tool
 // imports `node:http`, `node:https`, `node:dgram`, `fetch`, or any AI/model SDK — see
@@ -79,9 +81,19 @@ Verbs:
       content; rights-restricted passages (FR-31) render as hash + selector reference blocks,
       never inline text. IMPLEMENTED (P2-T6).
 
-  dry-run --module <id> --subject <content-hash>
-      Full five-role synthetic dry-run cycle (scaffold -> sign -> chain-validate). NOT YET
-      IMPLEMENTED — lands in P2-T8.
+  dry-run [--module <id>] [--subject <content-hash>] [--reviewed-at <iso>] [--root <dir>]
+      Full five-role synthetic dry-run cycle (scaffold -> sign -> chain-validate, ADR-0004 role
+      order) over ONE subjectContentHash shared by all five records. --module defaults to
+      "cbc_suite_v1" (this task's binding scope, FR-11); --subject defaults to a real SHA-256
+      computed over the target module's own committed content (lib/subject.mjs) when omitted.
+      Resolves five clearly-labeled, synthetic:true, NON-CREDENTIALED personas against
+      governance/reviewer-roster.yaml (P2-T8's own added entries for cbc_suite_v1) — see
+      lib/verbs/dry-run.mjs's DRY_RUN_PERSONAS. Refuses to run (fails closed) over a module that
+      already has any committed review record — append-only, one-time act, never a re-run. The
+      final (release-auth) write always trips ONE expected, structural FR-6 non-qualifying
+      finding ("this entire record set is synthetic:true") — this is the correct terminal state,
+      not a dry-run failure; any OTHER validation finding at any step still fails closed.
+      IMPLEMENTED (P2-T8).
 
 Global:
   -h, --help    Show this help and exit 0.

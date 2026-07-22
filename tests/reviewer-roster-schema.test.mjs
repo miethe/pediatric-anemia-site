@@ -10,8 +10,13 @@
 // pattern used for KB-wired schemas.
 //
 // Three things this task's own binding acceptance criteria require proving:
-//   1. The shipped governance/reviewer-roster.yaml ships EMPTY (zero entries) and validates
-//      cleanly — FR-3's "the roster itself ships empty ... until G1" requirement, non-vacuously.
+//   1. [Updated by P2-T8, Evidence Foundry E1 Phase 2] The shipped governance/reviewer-roster.yaml
+//      ships with ZERO `synthetic: false` (real) entries and validates cleanly — FR-3's "the roster
+//      itself ships empty of REAL entries ... until G1" requirement, non-vacuously. P1-T4 shipped it
+//      literally empty; P2-T8 (the five-role synthetic dry-run, FR-11) added the roster's first
+//      content — exactly five `synthetic: true`, clearly-labeled, non-credentialed personas scoped
+//      to `cbc_suite_v1` — which is exactly the "or synthetic-only" branch FR-3's own wording always
+//      allowed. See governance/reviewer-roster.yaml's own header for the full P2-T8 note.
 //   2. A representative hand-authored example (schemas/examples/reviewer-roster.example.json,
 //      never itself committed as the live roster) round-trips through both legal entry shapes:
 //      a synthetic dry-run persona and a real (`synthetic: false`) entry with `verificationRef`.
@@ -53,20 +58,44 @@ function baseEntry(overrides = {}) {
   };
 }
 
-// --- FR-3 non-vacuity: the shipped roster is actually empty and actually validates -------------
+// --- FR-3 non-vacuity: the shipped roster carries zero REAL entries and actually validates -----
 
-test('the shipped governance/reviewer-roster.yaml ships EMPTY (zero reviewers) and parses via the shared YAML-lite parser', async () => {
+test('the shipped governance/reviewer-roster.yaml carries ZERO synthetic:false (real) reviewers and parses via the shared YAML-lite parser', async () => {
   const raw = await readFile(ROSTER_PATH, 'utf8');
   const doc = parseYamlDocument(raw);
   assert.equal(doc.schemaVersion, 1);
-  assert.deepEqual(doc.reviewers, [], 'FR-3: the roster must ship with zero entries');
+  assert.ok(Array.isArray(doc.reviewers), 'reviewers must be an array');
+  assert.ok(
+    doc.reviewers.every((entry) => entry.synthetic === true),
+    'FR-3: every shipped entry must be synthetic:true — zero real entries pre-G1',
+  );
 });
 
-test('the shipped empty roster validates against reviewer-roster.schema.json with zero errors', async () => {
+test('the shipped roster carries exactly the P2-T8 five-role synthetic dry-run persona set, scoped to cbc_suite_v1', async () => {
+  const raw = await readFile(ROSTER_PATH, 'utf8');
+  const doc = parseYamlDocument(raw);
+  assert.equal(doc.reviewers.length, 5, 'expected exactly the 5 P2-T8 dry-run personas');
+  const reviewerIds = doc.reviewers.map((entry) => entry.reviewerId).sort();
+  assert.deepEqual(reviewerIds, [
+    'dryrun-cbc-suite-adjudication',
+    'dryrun-cbc-suite-clinical-1',
+    'dryrun-cbc-suite-clinical-2',
+    'dryrun-cbc-suite-lab',
+    'dryrun-cbc-suite-release-auth',
+  ]);
+  for (const entry of doc.reviewers) {
+    assert.deepEqual(entry.moduleScopes, ['cbc_suite_v1']);
+    assert.match(entry.name, /SYNTHETIC/, `entry "${entry.reviewerId}" name must self-identify as synthetic`);
+    assert.match(entry.name, /NOT A CREDENTIALED REVIEWER/, `entry "${entry.reviewerId}" name must self-identify as non-credentialed`);
+    assert.equal('verificationRef' in entry, false, 'a synthetic entry must never carry verificationRef');
+  }
+});
+
+test('the shipped roster validates against reviewer-roster.schema.json with zero errors', async () => {
   const schema = await loadSchema();
   const raw = await readFile(ROSTER_PATH, 'utf8');
   const doc = parseYamlDocument(raw);
-  assert.deepEqual(validate(schema, doc), [], 'the committed empty roster must validate cleanly');
+  assert.deepEqual(validate(schema, doc), [], 'the committed roster must validate cleanly');
 });
 
 test('the shipped roster file header documents gate G1 and the synthetic-can-never-authorize-release invariant', async () => {
@@ -74,7 +103,8 @@ test('the shipped roster file header documents gate G1 and the synthetic-can-nev
   assert.match(raw, /\bG1\b/, 'header must name gate G1');
   assert.match(raw, /SYNTHETIC ENTRIES CAN NEVER SATISFY RELEASE-AUTHORIZATION/i,
     'header must state synthetic entries can never satisfy release-authorization');
-  assert.match(raw, /SHIPS EMPTY/i, 'header must state the roster ships empty');
+  assert.match(raw, /ZERO `synthetic: false` \(REAL\) ENTRIES/i,
+    'header must state the roster ships with zero real entries');
 });
 
 // --- example fixture round-trips through both legal entry shapes -------------------------------
