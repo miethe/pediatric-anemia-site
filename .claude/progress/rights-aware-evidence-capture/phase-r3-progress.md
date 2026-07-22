@@ -160,7 +160,20 @@ tasks:
     avoided"): guideline_recommendation items capture the fact of the recommendation — named body
     as a structured field, the recommendation restated independently, scope/population, locator
     — and never the recommendation''s prose. A verbatim span fails EPR3-T1''s invariant.'
-  status: not_started
+  status: completed
+  commit: 6951794694c162adfd732b5dbde5b28bf39ffaa4
+  completion_note: 'New optional $defs/guidelineRecommendationCapture (issuing_body{name,abbreviation},
+    restatement, scope_or_population) on the passage — kept OPTIONAL, not conditionally required on
+    evidence_item_type, so no schema clause couples it to a taxonomy axis (D2/AC-WP3-AXES); presence is
+    enforced by appended coverage gate (h) evidence-guideline-recommendation-capture, homed in its own
+    module (reads only evidence_item_type, no authority field, so the D2 barrier probe stays clean).
+    Backfilled all 20 guideline_recommendation passages across the 6 sources with independently-worded
+    restatements (the 7 withheld/near-verbatim passages restated at the level their addressable locator
+    anchors, never reconstructing withheld prose). build-evidence-pack carries the field through --check
+    byte-identically. Verbatim-span protection is EPR3-T1 existing capture-surface scan (no T1 change).
+    Zero clearances/attestations; REG_002_CLEARED untouched (false). KB-edit cascade re-signed + rebound
+    (module.json, 10 dangerous-miss fixtures, hazard matrix versionBinding/scenarioRef, gate count 7 to 8).
+    npm run check green (1285/1285).'
   assigned_to:
   - general-purpose
   dependencies:
