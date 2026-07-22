@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 8
-completed_tasks: 4
+completed_tasks: 5
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -154,7 +154,7 @@ tasks:
     check/script/CLI default reads a signing key from repo or env; (c) proves a populated
     signature on a real (non-dry-run) candidate fails npm run validate; (d) proves
     a TESTKEY- keyId in a real registry entry is rejected (release-path test-key leak).'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -164,6 +164,28 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: adaptive
+  note: 'no-keys sweep implemented (FR-15/FR-16, R3/SPIKE-006 reconciliation): tests/ef-release-no-keys.test.mjs,
+    4 individually-named assertion groups -- (a) git-tracked-tree PEM/OpenSSH/PKCS8
+    header + raw-key-seed-filename scan, fail-closed outside an asserted-empty allowlist;
+    (b) process.env grep across tools/release-sign/ + package.json script/GHA-workflow
+    scans + real in-process and CLI-subprocess proofs that real-mode sign still requires
+    explicit --key with common signing-key env vars populated, dry-run unaffected;
+    (c) a populated signature on a real (non-dry-run) release-manifest, staged into
+    the real repo''s build/kb-pack/ tree under a dedicated non-colliding probe moduleId,
+    fails node scripts/validate-kb.mjs (npm run validate''s first script) plus an
+    absence-regression companion; (d) a genuinely dry-run-produced TESTKEY- signature
+    hand-spliced into a registry entry is rejected by both validateReleaseRegistryDocument
+    and loadAndValidateReleaseRegistry, plus a companion proving register itself never
+    persists one. 13/13 new tests green; full tools/release-sign-scoped suite (83
+    tests) green; npm run validate clean. 9 unrelated failures observed elsewhere
+    in npm test (tools/retro-validate/, tools/review-record/, backfill-rule-governance.mjs)
+    are other parallel agents'' in-progress work in this shared worktree, out of P3-T5
+    scope.'
+  started: 2026-07-22T00:00Z
+  completed: 2026-07-22T00:00Z
+  evidence:
+  - test: tests/ef-release-no-keys.test.mjs
+  - commit: 540b50d
 - id: P3-T6
   description: 'Verifier-surface wiring (FR-18, PRD OQ-2 — seam task): structural
     verification joins scripts/validate-kb.mjs (registry schema-validity + append-only
@@ -297,7 +319,7 @@ files_modified:
 - tests/ef-release-registry.test.mjs
 - tests/ef-release-no-keys.test.mjs
 - tests/fixtures/ef-release/**
-progress: 50
+progress: 62
 updated: '2026-07-22'
 ---
 
