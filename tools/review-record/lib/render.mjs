@@ -112,6 +112,20 @@ export const QUEUE_NEXT_MARKER = 'NEXT';
 export const QUEUE_TERMINAL_MARKER = 'TERMINAL';
 
 /**
+ * FR-12 (Clinical Review Workflow v1, Phase 3, P3-T2): a VERBATIM, documented mirror of
+ * `lib/verbs/status.mjs`'s `STRUCTURALLY_NON_QUALIFYING_TERMINUS_NOTE` constant — the shared
+ * explanatory sentence naming a fully `synthetic: true`, terminal record set as the correct,
+ * by-design terminus (substrate FR-6), never a defect. Duplicated rather than imported: this file
+ * is a foundational `lib/*` module (this tool's own README module-boundary table) with no legitimate
+ * dependency on any `lib/verbs/*` verb handler — importing FROM `lib/verbs/status.mjs` here would
+ * invert that layering. Any wording drift between the copies is itself a finding, not a routine
+ * edit. See `lib/verbs/validate.mjs`'s own verbatim copy for the third surface this exact sentence
+ * appears on.
+ */
+export const STRUCTURALLY_NON_QUALIFYING_TERMINUS_NOTE = 'This is the correct, by-design terminus ' +
+  'for a fully synthetic:true record set (FR-6) -- not a defect.';
+
+/**
  * @param {string} rootDir absolute or cwd-relative repo root (or a fixture root standing in for it)
  * @param {string} relPath path segments under `<rootDir>/modules/<moduleId>/`
  * @returns {Promise<object|null>} the parsed JSON document, or `null` if the file does not exist
@@ -408,10 +422,17 @@ function renderRecordCard(entry, linkage) {
  *   roles: { role: string, reviewId: string|null, isNext: boolean }[],
  *   terminal: boolean,
  *   nextExpectedRole: string|null,
+ *   allEffectiveSynthetic: boolean,
  * }} `roles` — one entry per `REVIEW_ROLES`, in canonical order. `terminal` — true once every
  *   required role (FR-26's conditional `adjudication` requirement included, via
  *   `isAdjudicationRequired`) has an effective act on record. `nextExpectedRole` — `null` when
- *   `terminal` is true, else the one role awaiting its committed act.
+ *   `terminal` is true, else the one role awaiting its committed act. `allEffectiveSynthetic`
+ *   (FR-12, P3-T2) — `true` only when `terminal` is also `true` AND every effective record this
+ *   queue view found carries `synthetic === true`: a structural (role-presence-only, no schema/
+ *   roster/signature I/O) proxy for the same "this entire record set is synthetic:true" condition
+ *   `evaluateReleaseAuthorization`'s FR-6 check enforces fail-closed — good enough for this
+ *   deliberately narrower view to decide whether to show the FR-12 by-design-terminus note, without
+ *   this file forking a second copy of that full check.
  */
 export function computeQueueState(allRecords) {
   const effectiveByRole = new Map();
@@ -434,6 +455,9 @@ export function computeQueueState(allRecords) {
   }
 
   const terminal = nextExpectedRole === null;
+  const allEffectiveSynthetic = terminal
+    && effectiveByRole.size > 0
+    && [...effectiveByRole.values()].every((entry) => entry.record?.synthetic === true);
 
   const roles = REVIEW_ROLES.map((role) => {
     const effective = effectiveByRole.get(role);
@@ -444,7 +468,7 @@ export function computeQueueState(allRecords) {
     };
   });
 
-  return { roles, terminal, nextExpectedRole };
+  return { roles, terminal, nextExpectedRole, allEffectiveSynthetic };
 }
 
 /**
@@ -460,14 +484,21 @@ export function computeQueueState(allRecords) {
  * @returns {string}
  */
 function renderQueueSection(allRecords) {
-  const { roles, terminal, nextExpectedRole } = computeQueueState(allRecords);
+  const { roles, terminal, nextExpectedRole, allEffectiveSynthetic } = computeQueueState(allRecords);
 
   const summary = terminal
     ? `<p class="queue-marker queue-marker-terminal">${QUEUE_TERMINAL_MARKER} &mdash; every ` +
       'required ADR-0004 role (FR-26\'s conditional adjudication requirement included) has a ' +
       'committed, effective review act on record for this module. Structural role-presence only ' +
       '&mdash; NOT a release-authorization, approval, or clinical-validity determination; see the ' +
-      'Review records section below for each act\'s own chain-linkage and synthetic status.</p>'
+      'Review records section below for each act\'s own chain-linkage and synthetic status.</p>' +
+      // FR-12 (P3-T2): explicit "by design, not a defect" naming when this terminal position is
+      // ALSO the structurally-non-qualifying one -- every effective role's act is synthetic:true,
+      // so `validate`'s FR-6 release-authorization check always rejects this set, and a reader of
+      // this render should not mistake that rejection for a bug this tool failed to catch.
+      (allEffectiveSynthetic
+        ? `<p class="non-qualifying">${escapeHtml(STRUCTURALLY_NON_QUALIFYING_TERMINUS_NOTE)}</p>`
+        : '')
     : `<p class="queue-marker">${QUEUE_NEXT_MARKER}: ${escapeHtml(nextExpectedRole)}</p>`;
 
   const roleItems = roles.map((entry) => {

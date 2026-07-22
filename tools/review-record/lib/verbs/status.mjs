@@ -88,6 +88,22 @@ const UNREDACTED_WARNING =
   "disputed pair); using it elsewhere risks biasing a pending, not-yet-committed independent review " +
   'act (ADR-0004 decision item 4).\n';
 
+/**
+ * FR-12 (Clinical Review Workflow v1, Phase 3, P3-T2): the shared explanatory sentence naming the
+ * `structurally-non-qualifying` derived state as the correct, by-design terminus for any
+ * `synthetic: true` record set — never a defect (substrate FR-6, `lib/verbs/dry-run.mjs`'s own
+ * `isExpectedTerminalNonQualifyingViolations`). Exported as a named constant so `validate`
+ * (`lib/verbs/validate.mjs`) and `render` (`lib/render.mjs`) can reuse this EXACT wording — each
+ * keeps its own verbatim, documented mirror rather than importing this one directly, because
+ * importing FROM this file would either invert `lib/render.mjs`'s layering (a foundational `lib/*`
+ * module depending on a `lib/verbs/*` verb handler) or reach back through `lib/verbs/dry-run.mjs`
+ * (which this file already imports, and which itself imports `lib/verbs/validate.mjs`) into a
+ * circular module dependency. Any wording drift between the copies is itself a finding, not a
+ * routine edit.
+ */
+export const STRUCTURALLY_NON_QUALIFYING_TERMINUS_NOTE = 'This is the correct, by-design terminus ' +
+  'for a fully synthetic:true record set (FR-6) -- not a defect.';
+
 async function loadSchema() {
   return JSON.parse(await readFile(SCHEMA_PATH, 'utf8'));
 }
@@ -354,10 +370,7 @@ export function renderHumanOutput(result, unredacted) {
   } else {
     lines.push(`Terminal state reached (${result.derivedState}) -- no further role is expected.`);
     if (result.derivedState === 'structurally-non-qualifying') {
-      lines.push(
-        'This is the correct, by-design terminus for a fully synthetic:true record set (FR-6) -- not ' +
-          'a defect.',
-      );
+      lines.push(STRUCTURALLY_NON_QUALIFYING_TERMINUS_NOTE);
     }
     if (result.derivedState === ACTS_COMPLETE_UNAUTHORIZED) {
       lines.push(

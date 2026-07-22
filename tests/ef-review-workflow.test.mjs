@@ -70,11 +70,17 @@ import { isExpectedTerminalNonQualifyingViolations } from '../tools/review-recor
 import {
   ACTS_COMPLETE_UNAUTHORIZED,
   REDACTED_MARKER,
+  STRUCTURALLY_NON_QUALIFYING_TERMINUS_NOTE as STATUS_TERMINUS_NOTE,
   applyRedaction,
   computeEffectiveRecordsByRole,
   computeTurnState,
   run as runStatus,
 } from '../tools/review-record/lib/verbs/status.mjs';
+import {
+  STRUCTURALLY_NON_QUALIFYING_TERMINUS_NOTE as RENDER_TERMINUS_NOTE,
+  loadModuleRenderData,
+  renderModuleHtml,
+} from '../tools/review-record/lib/render.mjs';
 import {
   RecordAlreadyExistsError,
   ReviewerNotInScopeError,
@@ -1940,6 +1946,53 @@ test('drift guard (F6): status --json blockers and validate\'s violations agree 
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
+});
+
+// -------------------------------------------------------------------------------------------
+// FR-12 (Clinical Review Workflow v1, Phase 3, P3-T2): validate, status, and render each name the
+// structurally-non-qualifying derived state as the correct, by-design terminus for a synthetic:true
+// record set -- never a defect -- on the committed cbc_suite_v1 dry-run set (the real, live module,
+// not a fixture). This is a shared-string test: all three surfaces carry their own verbatim,
+// independently-documented copy of the exact same sentence (see each file's own header for why it
+// is duplicated rather than imported -- lib/verbs/status.mjs, lib/verbs/validate.mjs,
+// lib/render.mjs), so this test also proves the three copies have not drifted from each other,
+// not merely that each individually contains SOME by-design-terminus wording.
+// -------------------------------------------------------------------------------------------
+
+test('FR-12 shared-string: status\'s and render\'s exported STRUCTURALLY_NON_QUALIFYING_TERMINUS_NOTE constants are byte-identical (the three verbatim copies must never independently drift)', () => {
+  assert.equal(STATUS_TERMINUS_NOTE, RENDER_TERMINUS_NOTE);
+  assert.match(STATUS_TERMINUS_NOTE, /correct, by-design terminus for a fully synthetic:true record set \(FR-6\) -- not a defect/);
+});
+
+test('FR-12 shared-string: validate\'s CLI output, status\'s human companion text, and render\'s HTML output all carry the exact by-design-terminus sentence on the committed cbc_suite_v1 synthetic set', async () => {
+  // validate --module cbc_suite_v1: still fails closed (EXIT_USAGE) on the one expected FR-6
+  // finding -- this note changes wording only, never the exit code or the underlying violation.
+  const validateCli = runCli(['validate', '--module', 'cbc_suite_v1']);
+  assert.equal(validateCli.status, EXIT_USAGE, `validate must still fail closed: ${validateCli.stderr}`);
+  assert.ok(
+    (validateCli.stdout + validateCli.stderr).includes(STATUS_TERMINUS_NOTE),
+    `expected validate's combined stdout+stderr to contain the FR-12 note; got:\nSTDOUT:\n${validateCli.stdout}\nSTDERR:\n${validateCli.stderr}`,
+  );
+
+  // status --module cbc_suite_v1 (human, non-JSON companion text): exits 0 -- structurally-non-
+  // qualifying is a reportable terminal state, not itself an `invalid` result.
+  const { status: statusExit, stdout: statusStdout, stderr: statusStderr } =
+    runStatusCli(['--module', 'cbc_suite_v1']);
+  assert.equal(statusExit, EXIT_OK, statusStderr);
+  assert.ok(
+    statusStdout.includes(STATUS_TERMINUS_NOTE),
+    `expected status's human output to contain the FR-12 note; got:\n${statusStdout}`,
+  );
+
+  // render --module cbc_suite_v1 (real committed module, real repo root -- not a fixture): the
+  // queue section's TERMINAL summary carries the same note when every effective record is
+  // synthetic:true, exactly as cbc_suite_v1's five dry-run records are.
+  const renderData = await loadModuleRenderData(REPO_ROOT, 'cbc_suite_v1');
+  const html = renderModuleHtml(renderData);
+  assert.ok(
+    html.includes(RENDER_TERMINUS_NOTE),
+    'expected render\'s HTML output for cbc_suite_v1 to contain the FR-12 note',
+  );
 });
 
 // -------------------------------------------------------------------------------------------

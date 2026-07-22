@@ -133,6 +133,35 @@ async function loadSchema() {
   return JSON.parse(await readFile(SCHEMA_PATH, 'utf8'));
 }
 
+// --- FR-12 addendum (Clinical Review Workflow v1, Phase 3, P3-T2): explicit "this is by design, not
+// a defect" messaging on the structurally-non-qualifying terminal state -----------------------------
+//
+// `isExpectedTerminalNonQualifyingViolations` below is a VERBATIM, deliberately duplicated mirror of
+// `lib/verbs/dry-run.mjs`'s own function of the same name — the ONE narrow violation shape (exactly
+// one violation, naming "release-authorization is not valid", "synthetic:true", and "(FR-6, D-4)")
+// that is the expected, structural, by-design terminus for an all-synthetic:true record set, not a
+// genuine validate defect. It is duplicated rather than imported because `lib/verbs/dry-run.mjs`
+// itself imports THIS file's `run` (its scaffold -> sign -> chain-validate composition) — importing
+// back from `dry-run.mjs` here would create a circular module dependency. Any wording/logic drift
+// between the two copies is itself a finding, not a routine edit.
+//
+// `STRUCTURALLY_NON_QUALIFYING_TERMINUS_NOTE` below is likewise a verbatim, documented mirror of
+// `lib/verbs/status.mjs`'s constant of the same name — see that file's own header for why the note is
+// duplicated rather than imported across these files (each direction either inverts a layering
+// boundary or reaches into the same dry-run.mjs/validate.mjs cycle noted above).
+function isExpectedTerminalNonQualifyingViolations(violations) {
+  if (!Array.isArray(violations) || violations.length !== 1) return false;
+  const [only] = violations;
+  return (
+    only.includes('release-authorization is not valid')
+    && only.includes('synthetic:true')
+    && only.includes('(FR-6, D-4)')
+  );
+}
+
+const STRUCTURALLY_NON_QUALIFYING_TERMINUS_NOTE = 'This is the correct, by-design terminus for a ' +
+  'fully synthetic:true record set (FR-6) -- not a defect.';
+
 /**
  * Computes the four PER-RECORD facts this verb's cache tracks -- schema shape, D-4 roster
  * resolution, Ed25519 signature verification, and this record's own chain-link fact (read off
@@ -333,6 +362,22 @@ export async function run(options = {}) {
   );
 
   violations.push(...derived.blockers);
+
+  // FR-12 (P3-T2): when the ONLY reason this call is about to fail closed is the one narrow,
+  // expected, structural FR-6 finding (this entire record set is synthetic:true), say so explicitly
+  // BEFORE throwing -- this is the correct, by-design terminus for a dry-run exercise set, never a
+  // genuine defect, and a reader of validate's CLI output should not have to already know that.
+  // validate still fails closed exactly as before (this note changes wording only, never the exit
+  // code or the violations[] this call throws) -- a structurally-non-qualifying record set is still
+  // not a passing validate result, only an EXPECTED one.
+  if (isExpectedTerminalNonQualifyingViolations(violations)) {
+    process.stdout.write(
+      `structurally-non-qualifying (FR-12): ${STRUCTURALLY_NON_QUALIFYING_TERMINUS_NOTE} validate ` +
+        'still reports the finding below as a fail-closed violation -- release-authorization ' +
+        'validity legitimately requires a non-synthetic record set, and this entire module is ' +
+        'synthetic:true by design (dry-run exercise fixture).\n',
+    );
+  }
 
   if (violations.length > 0) throw new ValidationFailedError(violations);
 
