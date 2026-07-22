@@ -156,6 +156,51 @@ exactly as designed (FR-3/FR-6/FR-9's fail-closed, append-only, non-synthetic-on
 that it measures tool-mechanics friction from one automated pass, not real reviewer usability. It
 neither proposes a friction threshold nor a promotion decision.
 
+## Portal-Promotion Decision Framework (OQ-8)
+
+`clinical-review-workflow-v1` Phase 4 (task P4-T1) answers PRD OQ-8 with a committed decision
+framework at `.claude/worknotes/clinical-review-workflow/friction-observations.md`. That file is
+the single source of truth for the framework's mechanics — it is BOTH the running friction
+observation log AND the promotion-decision framework — and this section only summarizes its four
+required elements and links to it, per that file's own stated convention. Nothing below adds to,
+weakens, or resolves what this spec's "Promotion Trigger" section already says: the framework
+*informs* a future human decision, it does not make one, and it clears no clinical gate (G0–G4;
+`docs/governance/gates-registry.md`).
+
+1. **Friction-metric categories + observation-log format** (friction-observations.md §2–§3) — six
+   qualitative categories (never machine-emitted telemetry): coordination/turn-taking
+   (`F-COORD`), onboarding/git-literacy (`F-ONBOARD`), error-entry/recovery (`F-ERROR`), validate
+   latency (`F-LATENCY`), interpretability (`F-INTERP`), and review volume (`F-VOLUME`); plus a
+   committed-markdown, append-only observation-log format (a per-entry template and a running
+   table). The framework restates PRD FR-16's zero-telemetry / zero-network / zero-third-party-
+   analytics constraint verbatim in its §1 — every entry is typed by hand by a human (or an agent
+   transcribing a human's stated observation) and committed to git; nothing in
+   `tools/review-record/` emits a metric that feeds this log.
+2. **Promotion threshold — a first-cut PROPOSAL, pending human ratification** (friction-observations.md
+   §4) — an explicit necessary precondition (at least one real, post-G1 reviewer
+   must have actually used the workflow; every observation on record today comes from a single
+   automated dry-run pass, so the threshold is **structurally un-meetable today**), plus an
+   illustrative first-cut friction bar (F-COORD/F-VOLUME/F-ONBOARD counts, or any single
+   `blocking`-severity observation on its own). The document is explicit that this threshold "has
+   no force and triggers no action until the human decision-owner ... has explicitly ratified it" —
+   meeting it authorizes only *convening* a decision, never building anything.
+3. **Authorized human decision-owner — a role, never a person or an agent** (friction-observations.md
+   §5) — the Evidence Foundry platform-engineering lead, who must consult the named
+   clinical-governance lead before recording any decision to promote (a review portal is a second
+   trust boundary distinct from the PHI-free public microsite this spec's own "Design Sketch"
+   discusses below). The role is explicitly never an autonomous agent, a Claude Code session, an
+   `rf`/ARC/`council-review` output, or a gate owner (G0–G4) acting in that capacity — mirroring
+   this program's D-4 invariant that agent output cannot populate a reviewer/approver-shaped field.
+4. **Decision-record template** (friction-observations.md §6) — the template a decision-owner
+   copies into a new, committed decision record (an ADR if the outcome is a durable architectural
+   commitment, or a dated entry in that file's §6.1 log otherwise) the one time a promotion
+   decision is actually convened and recorded. No decision has been recorded yet (§6.1: "none yet —
+   the threshold's necessary precondition ... is unmet").
+
+See `.claude/worknotes/clinical-review-workflow/friction-observations.md` for the full framework
+text, the seed observation-log entry (`OBS-000`, sourced from the P2-T8 synthetic dry-run —
+explicitly not real-reviewer evidence), and the complete decision-record template.
+
 ## Design Sketch
 
 ADR-0004 (`docs/adr/0004-clinical-approval-identity-adjudication.md`, `status: proposed`) resolves the
@@ -191,6 +236,28 @@ different threat model than the public, PHI-free microsite CLAUDE.md governs —
 security review before design work here can commit to an architecture, which is why this spec starts
 at `maturity: shaping` rather than `committed`.
 
+## Concept Mockups (CONCEPT-ONLY)
+
+Phase 4 (task P4-T2) attached one CONCEPT-ONLY watermarked mockup image to inform — never to
+specify or schedule — what a future portal's reviewer UX might look like, generated on the
+operator-directed codex gpt-5.6 native image tool:
+
+- `docs/project_plans/design-specs/assets/clinical-review-portal-concept-v2.png` — an illustrative
+  review-queue + rule/evidence + decision UI concept. The image itself carries a full-width
+  "CONCEPT ONLY — NOT COMMITTED" watermark banner plus a footer disclaimer ("This is a conceptual
+  user interface for a future state. Layout, content, and interactions are subject to change and
+  are not committed for v1.") baked into the rendered pixels.
+
+`docs/project_plans/design-specs/assets/asset-manifest.md` is the docs-truth-checkable registry for
+this and any future asset under that directory (watermark string, generation lane, origin task) —
+that manifest, not this spec, is the source of truth for the asset registry itself, and
+`tests/portal-concept-assets-manifest.test.mjs` fails closed on any image/manifest drift (a new
+image with no manifest row, or a manifest row naming a file no longer present).
+
+This image is not a specification, not a schedule, and not evidence that a portal has been
+authorized — it is one input to the "Portal-Promotion Decision Framework" above, nothing more. This
+spec's `maturity` stays `shaping` regardless of anything shown in it.
+
 ## Promotion Trigger
 
 Per ADR-0004: E1 plan approved, reviewer roles named, and either (a) review volume across modules
@@ -208,6 +275,13 @@ human call, per OQ-8, on whether the friction observed at that point is load-bea
 building and securing a second trust boundary (see "Design Sketch" above on the portal's own,
 unresolved security-review need). No task, tool, or agent in this repository is authorized to make
 that call or to begin portal implementation pre-emptively on the strength of this note alone.
+
+**Framework now exists (Phase 4, P4-T1)**: see "Portal-Promotion Decision Framework (OQ-8)" above
+for the friction-metric categories, the first-cut threshold proposal, the named decision-owner
+role, and the decision-record template that future call will use. As of this writing, that
+framework's own necessary precondition remains unmet — no real, post-G1 reviewer has used the
+workflow yet — so no promotion decision can be convened today; the framework document, not this
+spec, is the single source of truth for that mechanism's detail.
 
 ## Open Questions
 
@@ -227,10 +301,16 @@ of this spec will need to resolve):
 - Does the portal read the same append-only review files ADR-0004 defines as its backing store (portal
   as a UI layer over the file model), or does it own its own database once built — and if the latter,
   how does that reconcile with the append-only, tamper-evident property clinical review records need?
-- What is the actual friction threshold (review count, reviewer complaint volume, calendar time) that
-  triggers building this, and who is authorized to make that call? The P2-T8 dry-run friction note
-  (see "Friction Evidence" above) is the first evidence feed toward answering this, not an answer to
-  it — the threshold and its owner are still an explicit human decision (PRD OQ-8).
+- **[First-cut framework drafted, Phase 4 P4-T1 — pending human ratification]** What is the actual
+  friction threshold (review count, reviewer complaint volume, calendar time) that triggers building
+  this, and who is authorized to make that call? The P2-T8 dry-run friction note (see "Friction
+  Evidence" above) was the first evidence feed toward answering this; the framework at
+  `.claude/worknotes/clinical-review-workflow/friction-observations.md` (see "Portal-Promotion
+  Decision Framework" above) now proposes a first-cut threshold (§4) and names the decision-owner
+  role (§5), but is explicit that every number is non-binding until that role ratifies it, and that
+  the threshold's own necessary precondition (a real, post-G1 reviewer having used the workflow) is
+  unmet today. This question therefore stays open until both ratification and a first real-reviewer
+  observation exist — the framework is a proposal, not the answer.
 - How does the portal's authentication/authorization model interact with the reviewer-credential
   verification ADR-0004 requires — does the portal itself verify credentials, or only display a
   roster verified elsewhere?
@@ -260,3 +340,16 @@ of this spec will need to resolve):
   friction-observations note this spec's "Friction Evidence" section summarizes.
 - `governance/reviewer-roster.yaml`, `schemas/reviewer-roster.schema.json` — the shipped roster this
   spec's roster-mechanics open question now answers for the current file model.
+- `.claude/worknotes/clinical-review-workflow/friction-observations.md` (Phase 4, P4-T1, FR-15/
+  FR-16/OQ-4/OQ-8) — the single source of truth for the "Portal-Promotion Decision Framework"
+  section above: friction-metric categories, the running observation log, the first-cut threshold
+  proposal, the decision-owner role, and the decision-record template. This spec summarizes it but
+  does not restate it in full.
+- `docs/project_plans/design-specs/assets/asset-manifest.md` (Phase 4, P4-T2, FR-17) — the
+  docs-truth-checkable CONCEPT-ONLY watermark registry for the mockup image the "Concept Mockups"
+  section above links.
+- `docs/project_plans/implementation_plans/infrastructure/clinical-review-workflow-v1.md` (Phase 4,
+  tasks P4-T1..P4-T3) — the plan that authored the portal-promotion framework and concept mockups
+  this revision integrates (distinct from this spec's frontmatter `plan_ref`,
+  `evidence-foundry-buildout-v1`, which is the plan that shipped the file+CLI substrate this spec's
+  "What E1 Actually Shipped" section describes).
