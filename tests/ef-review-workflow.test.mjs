@@ -3266,6 +3266,18 @@ test('F9 (P5-T1): scaffold --draft -> sign --draft -> validate -> status, driven
 // actually present above), and check each class label against THAT extracted set, never against
 // the raw file text. Removing or renaming a class's own test() call now breaks this manifest test
 // too, exactly as intended.
+//
+// clinical-review-workflow-v1 Wave-5 codex gate MINOR2 finding fixed (precision gap in the fix
+// above): a naive `title.includes(label)` substring/prefix check is STILL not exact enough. Four of
+// the seven original labels ('P5-T1 (iv', 'P5-T1 (v', 'P5-T1 (vi', 'P5-T1 (vii') deliberately omit
+// the closing paren, because this file's own titles spell the class marker two different ways --
+// "P5-T1 (i): ..." for classes without an F8 co-tag, "P5-T1 (iv, F8): ..." for classes that carry
+// one (the comma sits where a bare ")" would). But an unparenthesized prefix is exactly the wrong
+// tool for a Roman-numeral progression: 'P5-T1 (v' is a literal PREFIX of both "P5-T1 (vi..." and
+// "P5-T1 (vii..." -- so deleting every class (v) test would still leave the manifest passing,
+// satisfied entirely by class (vi)'s/(vii)'s own still-present titles. The fix: extract the EXACT
+// bounded token between "P5-T1 (" and the next ")" or "," (never a partial/prefix match), and
+// compare classes by that exact token, never by substring/`includes`.
 // -------------------------------------------------------------------------------------------
 
 /**
@@ -3290,7 +3302,23 @@ function extractTestTitles(source) {
   return titles;
 }
 
-test('P5-T1 coverage manifest: this file names all seven adversarial/fail-closed classes (i)-(vii), each mapped to at least one REGISTERED test() title in this file -- not a raw source grep (which would trivially pass even with every behavioral test deleted, since this manifest\'s own label array always contains the label text -- see this section\'s header)', async () => {
+/**
+ * Extracts the EXACT, BOUNDED P5-T1 class token from `title` -- the run of lowercase letters
+ * between a literal `"P5-T1 ("` and the next `)` or `,` -- or `null` if `title` carries no such
+ * marker at all. This is a token comparison, never a substring/prefix one: "P5-T1 (v): ..." and
+ * "P5-T1 (v, F8): ..." both extract exactly `"v"`, while "P5-T1 (vi): ..." and "P5-T1 (vii, F8):
+ * ..." extract exactly `"vi"`/`"vii"` -- `"v"` is never satisfied by a title actually marked
+ * `"vi"`/`"vii"`, unlike a naive `includes('P5-T1 (v')` prefix check would allow.
+ *
+ * @param {string} title
+ * @returns {string|null}
+ */
+function extractP5T1ClassToken(title) {
+  const match = /P5-T1 \(([a-z]+)[),]/.exec(title);
+  return match ? match[1] : null;
+}
+
+test('P5-T1 coverage manifest: this file names all seven adversarial/fail-closed classes (i)-(vii), each mapped to at least one REGISTERED test() title in this file, matched by an EXACT bounded class token -- never a raw source grep (trivially passes: this manifest\'s own label text) nor a substring/prefix match (class (v) would trivially pass via class (vi)/(vii)\'s own titles -- see this section\'s header)', async () => {
   const source = await readFile(path.join(REPO_ROOT, 'tests', 'ef-review-workflow.test.mjs'), 'utf8');
   const testTitles = extractTestTitles(source);
   assert.ok(
@@ -3300,15 +3328,21 @@ test('P5-T1 coverage manifest: this file names all seven adversarial/fail-closed
       'matches this file\'s test() call shape)',
   );
 
-  for (const label of ['P5-T1 (i)', 'P5-T1 (ii)', 'P5-T1 (iii)', 'P5-T1 (iv', 'P5-T1 (v', 'P5-T1 (vi', 'P5-T1 (vii']) {
-    const matchingTitles = testTitles.filter((title) => title.includes(label));
+  const foundTokens = new Set();
+  for (const title of testTitles) {
+    const token = extractP5T1ClassToken(title);
+    if (token !== null) foundTokens.add(token);
+  }
+
+  for (const numeral of ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii']) {
     assert.ok(
-      matchingTitles.length > 0,
-      `expected at least one REGISTERED test() title containing "${label}" among the ` +
-        `${testTitles.length} extracted titles, found none -- a raw source grep would trivially ` +
-        'pass here (this manifest test\'s own label array contains the same string), so this check ' +
-        'is deliberately scoped to extracted test() titles only, which a deleted or renamed ' +
-        'behavioral test would actually break',
+      foundTokens.has(numeral),
+      `expected at least one REGISTERED test() title carrying the EXACT class token "P5-T1 (${numeral})"` +
+        ` (or "P5-T1 (${numeral}, ...)") among the ${testTitles.length} extracted titles -- found tokens: ` +
+        `${JSON.stringify([...foundTokens].sort())}. A raw source grep or a substring/prefix match would ` +
+        'both trivially pass here even with this class\'s own test(s) deleted (the former via this ' +
+        'manifest\'s own label text, the latter via a longer numeral\'s title, e.g. class (v) via (vi)/' +
+        '(vii)) -- this check is deliberately an exact bounded-token comparison instead.',
     );
   }
 });
