@@ -48,13 +48,21 @@ const REAL_DECISIONS_PATH = path.join(REPO_ROOT, 'modules', 'cbc_suite_v1', 'aut
 const RELEASE_SIGN_ROOT = path.join(REPO_ROOT, 'tools', 'release-sign');
 const REGISTRY_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'release-registry.schema.json');
 
+// Deliberately built via concatenation, not a single string literal: group (a) below scans the
+// raw text of every git-tracked file (including this one) for a contiguous PEM private-key
+// header sequence, and a literal fixture string matching that pattern would trip this file's
+// own scan. Splitting the leading "-----BEGIN" token from the rest preserves the exact runtime
+// value at test time — still deliberately PEM-shaped-looking garbage, never a real key — while
+// ensuring the source text itself never contains the header as one contiguous substring.
+const BOGUS_PEM_BLOCK = '-----BEGIN' + ' PRIVATE KEY-----\nbogus\n-----END PRIVATE KEY-----\n';
+
 // Bogus env-var candidates a signing tool might, in a badly-designed world, silently fall back to.
 // None of these are ever read by anything in this repo (group b proves it) — the values are
 // deliberately PEM-shaped-looking garbage, never a real key, so even a test failure here could
 // never leak real key material.
 const BOGUS_KEY_ENV = {
-  SIGNING_KEY: '-----BEGIN PRIVATE KEY-----\nbogus\n-----END PRIVATE KEY-----\n',
-  PRIVATE_KEY: '-----BEGIN PRIVATE KEY-----\nbogus\n-----END PRIVATE KEY-----\n',
+  SIGNING_KEY: BOGUS_PEM_BLOCK,
+  PRIVATE_KEY: BOGUS_PEM_BLOCK,
   ED25519_PRIVATE_KEY: 'bogus-ed25519-seed',
   RELEASE_SIGN_KEY: '/tmp/does-not-exist-release-sign-key.pem',
   RELEASE_SIGNING_KEY_PATH: '/tmp/does-not-exist-release-sign-key.pem',

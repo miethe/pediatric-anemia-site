@@ -226,11 +226,18 @@ tasks:
     all 76 tests across the P3 release-sign/registry test files green; npm run validate
     + npm run check:imports clean. Surface decision documented in tools/release-sign/README.md
     ("Verifier surface wired into npm run validate" section). PRE-EXISTING, OUT-OF-SCOPE
-    finding (not fixed, not my file ownership): tests/ef-release-no-keys.test.mjs
-    (P3-T5, committed 540b50d, unmodified by this task) has a self-matching bug --
-    its own fixture literal "-----BEGIN PRIVATE KEY-----...-----END PRIVATE KEY-----"
-    matches its own git-tracked-tree PEM-header scan, failing "P3-T5 (a) [2/2]" whenever
-    the full flat tests/ef-*.test.mjs glob runs; flagged for the phase gate/task-completion-validator.'
+    finding (not fixed, not my file ownership) at the time this task ran: tests/ef-release-no-keys.test.mjs
+    (P3-T5, committed 540b50d, unmodified by this task) had a self-matching bug --
+    its own bogus-env fixture literal (a PEM BEGIN/END PRIVATE KEY header block, spelled
+    out verbatim as a plain string) matched its own git-tracked-tree PEM-header scan,
+    failing "P3-T5 (a) [2/2]" whenever the full flat tests/ef-*.test.mjs glob ran; flagged
+    for the phase gate/task-completion-validator. FIXED post-gate-review (P3-GATE fix
+    cycle): the fixture literal in tests/ef-release-no-keys.test.mjs was rebuilt via string
+    concatenation so the runtime value (still deliberately PEM-shaped-looking garbage) is
+    unchanged but the source file no longer contains the header sequence as one contiguous
+    substring, so it no longer self-matches the scan; this note itself was also reworded to
+    stop quoting that sequence verbatim, since this progress file is itself part of the
+    git-tracked tree the scan walks.'
   started: 2026-07-22T00:00Z
   completed: 2026-07-22T00:00Z
   evidence:
