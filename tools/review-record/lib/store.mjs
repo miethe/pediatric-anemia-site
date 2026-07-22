@@ -17,7 +17,7 @@
 // Every function here is pure w.r.t. its inputs plus (for the two `async` functions) read-only
 // filesystem access — nothing in this module ever writes, renames, or deletes a path.
 
-import { access, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { RecordAlreadyExistsError, UsageError } from './errors.mjs';
@@ -281,16 +281,24 @@ export function serializeReviewRecordYaml(record) {
 }
 
 /**
- * @param {string} filePath
- * @returns {Promise<boolean>}
+ * Whether `candidatePath` resolves to a path STRICTLY inside `dirPath` (never equal to it).
+ * Path-traversal containment guard (clinical-review-workflow-v1 Wave-2 codex gate, BLOCKER 1(c)):
+ * `writeNewReviewRecordFile` below uses this to refuse a computed target path that would land
+ * outside `modules/<moduleId>/reviews/`, independent of whatever upstream validation (or lack of
+ * it) a caller already ran on `reviewId` -- mirrors `lib/verbs/sign.mjs`'s own identically-shaped,
+ * independently-defined helper of the same name (that one checks a caller-supplied `--draft`
+ * argument against the drafts directory; this one checks a path THIS module itself computed
+ * against `reviews/`, one layer deeper and never dependent on what ran upstream).
+ *
+ * @param {string} candidatePath
+ * @param {string} dirPath
+ * @returns {boolean}
  */
-async function fileExists(filePath) {
-  try {
-    await access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
+function resolvesStrictlyInside(candidatePath, dirPath) {
+  const resolvedCandidate = path.resolve(candidatePath);
+  const resolvedDir = path.resolve(dirPath);
+  const rel = path.relative(resolvedDir, resolvedCandidate);
+  return rel !== '' && rel !== '.' && !rel.startsWith(`..${path.sep}`) && rel !== '..' && !path.isAbsolute(rel);
 }
 
 /**
@@ -301,6 +309,22 @@ async function fileExists(filePath) {
  * `listModuleReviewRecords`'s own existence-gate posture for reads). This is the only function in
  * this whole tool that writes to `modules/<id>/reviews/` — see this section's header.
  *
+ * Two additive, fail-closed hardenings from the clinical-review-workflow-v1 Wave-2 codex gate, both
+ * defense-in-depth on top of whatever an upstream caller (e.g. `lib/verbs/sign.mjs`'s own
+ * `parseReviewId`/schema-conformance checks) already validated -- neither changes behavior for any
+ * well-formed `reviewId`/first-time write:
+ *   - BLOCKER 1(c): `filePath` is resolved and checked to sit STRICTLY inside
+ *     `modules/<moduleId>/reviews/` before any I/O happens. A `reviewId` containing path-traversal
+ *     segments (e.g. `"../../escape"`) is refused here even if it somehow reached this function
+ *     without having been pattern-validated first.
+ *   - MAJOR 4: the existence check and the write are now a SINGLE atomic OS-level operation
+ *     (`writeFile(..., { flag: 'wx' })`, exclusive create) instead of a separate
+ *     `fileExists()`-then-`writeFile()` pair. The prior two-step form left a TOCTOU window open: two
+ *     concurrent `sign` processes could both observe "does not exist yet" and both proceed to write,
+ *     the second silently clobbering the first's already-committed record. `EEXIST` from the
+ *     exclusive-create attempt maps to the exact same `RecordAlreadyExistsError` this store has
+ *     always thrown on a path collision; every other error propagates unchanged.
+ *
  * @param {string} rootDir
  * @param {string} moduleId
  * @param {string} reviewId
@@ -308,9 +332,24 @@ async function fileExists(filePath) {
  * @returns {Promise<string>} the absolute path written
  */
 export async function writeNewReviewRecordFile(rootDir, moduleId, reviewId, record) {
+  const reviewsDir = reviewsDirFor(rootDir, moduleId);
   const filePath = recordFilePathFor(rootDir, moduleId, reviewId);
-  if (await fileExists(filePath)) throw new RecordAlreadyExistsError(filePath);
-  await mkdir(reviewsDirFor(rootDir, moduleId), { recursive: true });
-  await writeFile(filePath, serializeReviewRecordYaml(record), 'utf8');
+
+  if (!resolvesStrictlyInside(filePath, reviewsDir)) {
+    throw new UsageError(
+      `writeNewReviewRecordFile refuses to write review_id "${reviewId}" for moduleId "${moduleId}" ` +
+        `-- the computed target path does not resolve strictly inside modules/${moduleId}/reviews/ ` +
+        '(path-traversal containment guard). This store writes exclusively inside that one directory ' +
+        'per module; a reviewId that escapes it is always refused, regardless of caller.',
+    );
+  }
+
+  await mkdir(reviewsDir, { recursive: true });
+  try {
+    await writeFile(filePath, serializeReviewRecordYaml(record), { encoding: 'utf8', flag: 'wx' });
+  } catch (err) {
+    if (err.code === 'EEXIST') throw new RecordAlreadyExistsError(filePath);
+    throw err;
+  }
   return filePath;
 }

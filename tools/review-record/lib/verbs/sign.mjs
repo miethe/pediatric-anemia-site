@@ -48,14 +48,62 @@
 //       (`.review-drafts/` and `modules/<id>/reviews/` are disjoint trees under any `--root`).
 // Neither check reads any bytes from `reviews/` at any point — this file calls `readFile` on
 // exactly one path, the `--draft` argument itself, after both checks above have already passed.
+//
+// clinical-review-workflow-v1 Wave-2 codex gate, BLOCKER 1 (defense in depth, on top of everything
+// above): checks (1)/(2) validate only the `--draft` FILE ARGUMENT's own location -- neither says
+// anything about the CONTENT of the parsed draft. Before this fix, `run` validated only the parsed
+// draft's `moduleId`/`synthetic` fields before handing it to `signRecordDryRun` and then
+// `writeNewReviewRecordFile(rootDir, moduleId, draft.review_id, signed)` -- a staged file whose OWN
+// `review_id` field was a path-traversal payload (e.g. `"../../escape"`), or whose shape was
+// otherwise schema-invalid in a way that had nothing to do with `synthetic`, could reach that write
+// call unchecked. Two additional, independent checks close this:
+//   (b) `draft.review_id` is validated against the SAME canonical `"rr-<seq4>-<role>"` pattern
+//       `schemas/review-record.schema.json`'s own `review_id` property carries -- reusing
+//       `../store.mjs`'s own `parseReviewId` (the tool's one canonical parser for this shape,
+//       already used by `list`/`render`) rather than a second, independently-maintained regex.
+//       Runs immediately after the draft is parsed, well before `writeNewReviewRecordFile` (or
+//       anything else) ever constructs a path from `review_id`.
+//   (a) the FULLY-SIGNED record (`signed`, not `draft`) is validated against the complete,
+//       committed `schemas/review-record.schema.json` -- the SAME `scripts/lib/json-schema-lite.mjs`
+//       `validate` function `lib/verbs/validate.mjs` itself calls post-commit, reused here rather
+//       than forked. This runs on `signed`, not `draft`: a `synthetic: true` draft's
+//       `signature: null` cannot itself satisfy the schema (a synthetic:true record's signature
+//       slot MUST be a populated object per the schema's own `allOf`), so `signed` -- the exact
+//       record about to be committed -- is the honest point to prove full schema conformance. A
+//       malformed, non-scaffold-produced draft (a missing required field, a role/review_id
+//       mismatch, an out-of-enum `decision`, ...) is refused here, fail-closed, before any
+//       committed write.
+// Both checks are additive: a well-formed, scaffold-produced draft is unaffected by either.
 
 import { readFile, rm } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { draftsDirFor, reviewsDirFor, writeNewReviewRecordFile } from '../store.mjs';
+import { draftsDirFor, parseReviewId, reviewsDirFor, writeNewReviewRecordFile } from '../store.mjs';
 import { signRecordDryRun } from '../signature.mjs';
 import { parseYamlDocument } from '../../../rf-bundle-to-kb-pack/lib/yaml-lite.mjs';
+import { validate as validateAgainstSchema } from '../../../../scripts/lib/json-schema-lite.mjs';
 import { EXIT_OK, UsageError } from '../errors.mjs';
+
+// Mirrors `lib/verbs/validate.mjs`'s own identically-computed `REPO_ROOT`/`SCHEMA_PATH` constants
+// exactly (same directory depth: both files live at `tools/review-record/lib/verbs/`) -- one
+// canonical schema file, read the same way by both verbs, never two independently-derived paths.
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
+const SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'review-record.schema.json');
+
+/**
+ * Loads and parses `schemas/review-record.schema.json` fresh on every call -- mirrors
+ * `lib/verbs/validate.mjs`'s own unexported `loadSchema` helper exactly (no caching either place;
+ * this is a single-shot CLI tool). The VALIDATION LOGIC itself (`validateAgainstSchema`, imported
+ * above from `scripts/lib/json-schema-lite.mjs`) is the exact same function `validate.mjs` calls --
+ * this helper only reads and parses the schema document, it does not implement any check of its
+ * own (BLOCKER 1(a): "reuse the exact validation the validate verb uses," never fork a second one).
+ *
+ * @returns {Promise<object>}
+ */
+async function loadSchema() {
+  return JSON.parse(await readFile(SCHEMA_PATH, 'utf8'));
+}
 
 function requireString(options, flag, key = flag) {
   const value = options[key];
@@ -174,6 +222,17 @@ export async function run(options = {}) {
   if (draft === null || typeof draft !== 'object' || Array.isArray(draft)) {
     throw new UsageError(`--draft "${draftArg}" did not parse to a review-record document`);
   }
+
+  // BLOCKER 1(b) (clinical-review-workflow-v1 Wave-2 codex gate): validate review_id against the
+  // schema's own canonical "rr-<seq4>-<role>" pattern BEFORE any path is ever constructed from it
+  // -- reuses lib/store.mjs's own canonical parser (parseReviewId), the exact same pattern
+  // schemas/review-record.schema.json's `review_id` property carries, rather than a second,
+  // independently-maintained regex. A staged draft whose review_id is NOT this shape (e.g. a
+  // path-traversal payload like "../../escape") is refused here -- fail closed
+  // (`MalformedReviewIdError`, a `UsageError`) -- well before `signRecordDryRun` or
+  // `writeNewReviewRecordFile` ever see it.
+  parseReviewId(draft.review_id);
+
   if (draft.moduleId !== moduleId) {
     throw new UsageError(
       `the staged draft's moduleId "${draft.moduleId}" does not match --module "${moduleId}" — ` +
@@ -203,6 +262,23 @@ export async function run(options = {}) {
   // check above is an earlier, independent, more specifically-worded restatement of that same
   // guarantee (defense in depth), not a replacement for it.
   const signed = signRecordDryRun(draft);
+
+  // BLOCKER 1(a) (clinical-review-workflow-v1 Wave-2 codex gate): validate the fully-signed record
+  // against the SAME committed review-record schema `validate` checks post-commit -- reusing
+  // scripts/lib/json-schema-lite.mjs's own `validate` function (this file's `validateAgainstSchema`
+  // import), never a second, independently-maintained validator. See this file's header for why
+  // this runs against `signed`, not `draft`. A malformed, non-scaffold-produced draft (a missing
+  // required field, a role/review_id mismatch, an out-of-enum value, ...) is refused here,
+  // fail-closed, before any committed write.
+  const schemaViolations = validateAgainstSchema(await loadSchema(), signed);
+  if (schemaViolations.length > 0) {
+    throw new UsageError(
+      `sign refuses to commit moduleId="${signed.moduleId}" review_id="${signed.review_id}" -- the ` +
+        'signed record does not conform to schemas/review-record.schema.json (defense in depth; ' +
+        'the same schema this tool\'s `validate` verb checks post-commit):\n' +
+        schemaViolations.map((e) => `  - ${e.path}: ${e.message}`).join('\n'),
+    );
+  }
 
   // The record's FIRST and ONLY committed write — the sole append-only path into
   // modules/<moduleId>/reviews/ (lib/store.mjs's own header names writeNewReviewRecordFile as the
