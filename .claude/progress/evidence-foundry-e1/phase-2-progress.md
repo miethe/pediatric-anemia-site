@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 4
+completed_tasks: 8
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -38,7 +38,7 @@ tasks:
     boundary — store / chain / roster / signature / render). Implement OQ-2 store
     layout: records at modules/<module_id>/reviews/rr-<seq4>-<role>.yaml; list prints
     per-module review state. Offline, deterministic, no network, no generative model.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies: []
@@ -46,6 +46,8 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  evidence:
+  - commit: 2db2a12
 - id: P2-T2
   description: 'Role scaffolding + roster checks + reviewer-2 independence, FR-3/FR-4/FR-7:
     scaffold --module <id> --role <role> --subject <content-hash> creates a schema-valid
@@ -105,7 +107,7 @@ tasks:
     re-asserted by test, not weakened). Seeded violations: adjudicator = authorship-union
     identity rejected; release-auth over a chain containing any synthetic:true record
     structurally non-qualifying.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -114,6 +116,8 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  evidence:
+  - commit: 7dc9fcd
 - id: P2-T5
   description: 'Record signature binding (test keys only), FR-10/OQ-2/OQ-6: implement
     the record signature object — Ed25519 (node:crypto only) over the canonicalized
@@ -145,7 +149,7 @@ tasks:
     copy) and per-record non-qualifying labels for synthetic content. Rights posture
     (FR-31): rights-restricted passages render as hash + selector reference blocks,
     never inline text. Commit one golden render under tests/fixtures/ef-review-render/.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   - documentation-writer
@@ -155,6 +159,8 @@ tasks:
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
+  evidence:
+  - commit: c172ddf
 - id: P2-T7
   description: 'Render runtime smoke (R-P4), the only UI-adjacent surface: tests/ef-review-render-smoke.test.mjs
     renders from committed fixture artifacts end to end and asserts: output file exists
@@ -185,7 +191,7 @@ tasks:
     (schema-proven). Emit a friction-observations note (.claude/worknotes/evidence-foundry-e1-v1/dryrun-friction.md)
     — first evidence feed for PRD OQ-8''s portal trigger (a human decision, not this
     plan''s).'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   - documentation-writer
@@ -196,6 +202,8 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  evidence:
+  - commit: ce75b03
 - id: P2-GATE
   description: 'task-completion-validator gate: verify Phase 2 exit gate — five-role
     dry-run committed and chain-valid; both append-only layers reject seeded mutations;
@@ -279,7 +287,7 @@ files_modified:
 - tests/ef-review-render-smoke.test.mjs
 - tests/fixtures/ef-review-render/**
 - .claude/worknotes/evidence-foundry-e1-v1/dryrun-friction.md
-progress: 44
+progress: 89
 updated: '2026-07-22'
 ---
 

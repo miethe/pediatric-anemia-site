@@ -141,6 +141,9 @@ const EXCLUDED_FIXTURE_DIRS = [
   'tests/fixtures/ef-review-record-migration',
   'tests/fixtures/ef-contract-violations',
   'tests/fixtures/ef-retro',
+  'tests/fixtures/ef-review-record-cli',
+  'tests/fixtures/ef-review-render',
+  'tests/fixtures/ef-review-dryrun',
 ];
 const CHANGE_RATIONALE =
   'EP-4 governance backfill (wave0-safety-foundation, scripts/evidence/backfill-rule-governance.mjs): '
