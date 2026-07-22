@@ -23,3 +23,9 @@ __pycache__/
 # git worktrees created by EnterWorktree / dev-execution protocol
 .claude/worktrees/
 .claude/agent-memory/
+
+# Clinical Review Workflow v1 staging area (tools/review-record, P1-T3(c)/P2-T1, F1/CRW-F2):
+# `scaffold --draft` writes an unsigned draft record here, outside modules/<id>/reviews/; `sign`
+# reads ONLY from this path and never opens/rewrites a path already inside reviews/. Ephemeral
+# scratch space, never git-tracked, never a committed review record.
+.review-drafts/

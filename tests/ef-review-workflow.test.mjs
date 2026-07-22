@@ -36,7 +36,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { readFile, mkdir, mkdtemp, rm, stat, writeFile } from 'node:fs/promises';
 import { spawnSync, execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -57,8 +57,9 @@ import { loadRosterIndex, resolveReviewer, buildRosterIndex } from '../tools/rev
 import { checkReviewerIndependence, longestCommonSubstringLength } from '../tools/review-record/lib/independence.mjs';
 import { computeModuleContentHash } from '../tools/review-record/lib/subject.mjs';
 import { signRecordDryRun } from '../tools/review-record/lib/signature.mjs';
-import { buildDraftRecord, run as runScaffold } from '../tools/review-record/lib/verbs/scaffold.mjs';
+import { buildDraftRecord, draftFilePathFor, run as runScaffold } from '../tools/review-record/lib/verbs/scaffold.mjs';
 import { run as runValidate } from '../tools/review-record/lib/verbs/validate.mjs';
+import { run as runSign } from '../tools/review-record/lib/verbs/sign.mjs';
 import { isExpectedTerminalNonQualifyingViolations } from '../tools/review-record/lib/verbs/dry-run.mjs';
 import {
   ACTS_COMPLETE_UNAUTHORIZED,
@@ -354,6 +355,388 @@ test('governance/reviewer-roster.yaml shows zero diff against HEAD after this ta
     '',
     'governance/reviewer-roster.yaml must show zero diff against HEAD after any P1-T3 scaffold test',
   );
+});
+
+// -------------------------------------------------------------------------------------------
+// CRW-F2 gap closure (Clinical Review Workflow v1, Phase 1 prerequisite for Phase 2's P2-T1):
+// F5 (--subject <-> content-hash comparison, --allow-historical-subject) and --draft staging.
+// -------------------------------------------------------------------------------------------
+
+/**
+ * Swaps the first pair of adjacent differing hex characters found in `hex` -- produces a
+ * transposed-but-pattern-valid hash that provably differs from the input (never a same-value
+ * "swap" that could silently no-op the test).
+ * @param {string} hex 64 lowercase hex characters
+ * @returns {string}
+ */
+function transposeAdjacentDifferingHexChars(hex) {
+  for (let i = 0; i < hex.length - 1; i += 1) {
+    if (hex[i] !== hex[i + 1]) {
+      return hex.slice(0, i) + hex[i + 1] + hex[i] + hex.slice(i + 2);
+    }
+  }
+  throw new Error('transposeAdjacentDifferingHexChars: no adjacent differing hex chars found');
+}
+
+test('F5: an explicit --subject that mismatches cbc_suite_v1\'s recomputed content hash hard-fails by default, and --allow-historical-subject suppresses ONLY that comparison (transposed-but-pattern-valid hash, both directions)', async () => {
+  const realHash = await computeModuleContentHash(REPO_ROOT, 'cbc_suite_v1');
+  const [, hex] = realHash.split(':');
+  const transposedHash = `sha256:${transposeAdjacentDifferingHexChars(hex)}`;
+  assert.notEqual(transposedHash, realHash);
+  assert.match(transposedHash, /^sha256:[0-9a-f]{64}$/);
+
+  const baseArgs = [
+    'scaffold', '--module', 'cbc_suite_v1', '--role', 'clinical-1',
+    '--subject', transposedHash,
+    '--reviewer-id', 'dryrun-cbc-suite-clinical-1', '--decision', 'approve',
+    '--rationale', 'F5 regression check: transposed-but-pattern-valid subject, no clinical claim.',
+    '--reviewed-at', '2026-02-09T00:00:00Z',
+    '--root', REPO_ROOT,
+  ];
+
+  const withoutFlag = runCli(baseArgs);
+  assert.equal(withoutFlag.status, EXIT_USAGE, withoutFlag.stdout);
+  assert.match(withoutFlag.stderr, /does not match/);
+  assert.match(withoutFlag.stderr, /--allow-historical-subject/);
+
+  const withFlag = runCli([...baseArgs, '--allow-historical-subject']);
+  assert.equal(withFlag.status, EXIT_OK, withFlag.stderr);
+  assert.match(withFlag.stdout, /DRAFT ONLY — NOT WRITTEN TO DISK/);
+  assert.match(withFlag.stdout, new RegExp(`subjectContentHash: ${transposedHash}`));
+});
+
+test('F5 design note (CRW-F5): when the target module has no on-disk content to recompute a hash from (module directory absent -- the shape of every bare CLI-test fixture module in this file, and of the already-shipped P4-T5 discordance->adjudication scaffold bridge\'s own fixture root), an explicit, non-matching --subject does NOT hard-fail -- "cannot verify" is distinct from "verified and it disagrees"', () => {
+  const { status, stdout, stderr } = runCli([
+    'scaffold', '--module', 'scaffold_target_v1', '--role', 'clinical-1', '--subject', SUBJECT_HASH,
+    '--reviewer-id', 'synthetic-multirole-reviewer', '--decision', 'approve',
+    '--rationale', 'F5 design-note regression: cannot-compute must not be treated as mismatch.',
+    '--root', FIXTURES_ROOT,
+  ]);
+  assert.equal(status, EXIT_OK, stderr);
+  assert.match(stdout, /DRAFT ONLY/);
+});
+
+test('scaffold --draft writes the built record to <root>/.review-drafts/<moduleId>/<review_id>.draft.yaml, prints that path, and writes NOTHING under reviews/', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-review-workflow-draft-'));
+  try {
+    await mkdir(path.join(tmp, 'governance'), { recursive: true });
+    await writeFile(
+      path.join(tmp, 'governance', 'reviewer-roster.yaml'),
+      'schemaVersion: 1\n' +
+        'reviewers:\n' +
+        '  - reviewerId: draft-fixture-reviewer\n' +
+        '    name: "SYNTHETIC -- NOT A CREDENTIALED REVIEWER (draft-staging fixture)"\n' +
+        '    credentialRef: fixture-placeholder-draft\n' +
+        '    moduleScopes:\n' +
+        '      - draft_staging_v1\n' +
+        '    synthetic: true\n',
+      'utf8',
+    );
+
+    const before = await listModuleReviewRecords(tmp, 'draft_staging_v1');
+    assert.deepEqual(before, []);
+
+    const { status, stdout, stderr } = runCli([
+      'scaffold', '--module', 'draft_staging_v1', '--role', 'clinical-1', '--subject', SUBJECT_HASH,
+      '--reviewer-id', 'draft-fixture-reviewer', '--decision', 'approve',
+      '--rationale', 'P2-T1/CRW-F2 --draft staging regression check, no clinical claim.',
+      '--reviewed-at', '2026-02-09T00:00:00Z',
+      '--root', tmp, '--draft',
+    ]);
+    assert.equal(status, EXIT_OK, stderr);
+
+    const expectedPath = draftFilePathFor(tmp, 'draft_staging_v1', 'rr-0001-clinical-1');
+    assert.match(stdout, new RegExp(expectedPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+
+    const draft = parseYamlDocument(await readFile(expectedPath, 'utf8'));
+    assert.equal(draft.synthetic, true);
+    assert.equal(draft.signature, null);
+    assert.equal(draft.moduleId, 'draft_staging_v1');
+
+    const after = await listModuleReviewRecords(tmp, 'draft_staging_v1');
+    assert.deepEqual(after, [], '--draft must never write under modules/<id>/reviews/');
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('.review-drafts/ is git-ignored (F1 staging area never git-tracked)', () => {
+  const result = spawnSync(
+    'git',
+    ['check-ignore', '-q', path.join(REPO_ROOT, '.review-drafts', 'cbc_suite_v1', 'rr-0001-clinical-1.draft.yaml')],
+    { cwd: REPO_ROOT },
+  );
+  assert.equal(result.status, 0, 'expected git check-ignore to report .review-drafts/ paths as ignored (exit 0)');
+});
+
+// -------------------------------------------------------------------------------------------
+// P2-T1 (Clinical Review Workflow v1, Phase 2) -- `sign` verb, TESTKEY-only synthetic path
+// (FR-6/FR-25, OQ-1, F1). Every fixture below is a throwaway tmp root, never the real repo tree
+// (except read-only reuse of tests/fixtures/clinical-review-workflow/roster-with-real-entry.yaml,
+// itself never the real governance/reviewer-roster.yaml -- see that fixture's own header).
+// -------------------------------------------------------------------------------------------
+
+async function writeSignFixtureRoster(tmp, entries) {
+  const lines = ['schemaVersion: 1', 'reviewers:'];
+  for (const entry of entries) {
+    lines.push(`  - reviewerId: ${entry.reviewerId}`);
+    lines.push(`    name: "SYNTHETIC -- NOT A CREDENTIALED REVIEWER (${entry.label})"`);
+    lines.push(`    credentialRef: fixture-placeholder-${entry.reviewerId}`);
+    lines.push('    moduleScopes:');
+    lines.push(`      - ${entry.moduleId}`);
+    lines.push('    synthetic: true');
+  }
+  await mkdir(path.join(tmp, 'governance'), { recursive: true });
+  await writeFile(path.join(tmp, 'governance', 'reviewer-roster.yaml'), `${lines.join('\n')}\n`, 'utf8');
+}
+
+async function writeTrivialModuleContent(tmp, moduleId) {
+  await mkdir(path.join(tmp, 'modules', moduleId), { recursive: true });
+  await writeFile(path.join(tmp, 'modules', moduleId, 'module.json'), '{"schemaVersion":1}\n', 'utf8');
+}
+
+test('P2-T1: full flow scaffold --draft -> sign --draft <path> on a synthetic fixture writes exactly one new reviews/*.yaml and round-trips against validate (chain-link + signature-verify pass)', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-review-workflow-sign-roundtrip-'));
+  try {
+    const moduleId = 'sign_roundtrip_v1';
+    await writeSignFixtureRoster(tmp, [
+      { reviewerId: 'sign-fixture-clinical-1', moduleId, label: 'sign roundtrip fixture' },
+    ]);
+    await writeTrivialModuleContent(tmp, moduleId);
+
+    const scaffoldCode = await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'sign-fixture-clinical-1',
+      decision: 'approve', rationale: 'Sign round-trip fixture, structural only, no clinical claim.',
+      reviewedAt: '2026-02-10T00:00:00Z', root: tmp, draft: true,
+    });
+    assert.equal(scaffoldCode, EXIT_OK);
+
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    const draftBefore = parseYamlDocument(await readFile(draftPath, 'utf8'));
+    assert.equal(draftBefore.synthetic, true);
+    assert.equal(draftBefore.signature, null);
+
+    const before = await listModuleReviewRecords(tmp, moduleId);
+    assert.deepEqual(before, []);
+
+    const signCode = await runSign({ draft: draftPath, module: moduleId, root: tmp });
+    assert.equal(signCode, EXIT_OK);
+
+    const after = await listModuleReviewRecords(tmp, moduleId);
+    assert.equal(after.length, 1, 'sign must write exactly one new reviews/*.yaml');
+    const [{ record }] = after;
+    assert.equal(record.synthetic, true);
+    assert.ok(record.signature, 'signed record must carry a populated signature');
+    assert.equal(record.signature.algorithm, 'ed25519');
+    assert.ok(record.signature.keyId.startsWith('TESTKEY-'));
+    assert.equal(record.previousRecordHash, null);
+
+    // Round-trips against validate: chain-link (first record, previousRecordHash null) +
+    // signature-verify both pass.
+    await assert.doesNotReject(() => runValidate({ module: moduleId, root: tmp }));
+
+    // The staged draft is consumed (best-effort cleanup) -- never re-signable/re-writable.
+    await assert.rejects(() => readFile(draftPath, 'utf8'));
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('cli.mjs (subprocess): scaffold --draft -> sign --draft round-trips end to end', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-review-workflow-sign-cli-'));
+  try {
+    const moduleId = 'sign_cli_roundtrip_v1';
+    await writeSignFixtureRoster(tmp, [{ reviewerId: 'sign-cli-reviewer', moduleId, label: 'CLI round-trip fixture' }]);
+    await writeTrivialModuleContent(tmp, moduleId);
+
+    const scaffoldResult = runCli([
+      'scaffold', '--module', moduleId, '--role', 'clinical-1',
+      '--reviewer-id', 'sign-cli-reviewer', '--decision', 'approve',
+      '--rationale', 'CLI subprocess round-trip regression, structural only, no clinical claim.',
+      '--reviewed-at', '2026-02-14T00:00:00Z', '--root', tmp, '--draft',
+    ]);
+    assert.equal(scaffoldResult.status, EXIT_OK, scaffoldResult.stderr);
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+
+    const signResult = runCli(['sign', '--draft', draftPath, '--module', moduleId, '--root', tmp]);
+    assert.equal(signResult.status, EXIT_OK, signResult.stderr);
+    assert.match(signResult.stdout, /TESTKEY-/);
+
+    const records = await listModuleReviewRecords(tmp, moduleId);
+    assert.equal(records.length, 1);
+    assert.ok(records[0].record.signature);
+    assert.ok(records[0].record.signature.keyId.startsWith('TESTKEY-'));
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('F1: sign never opens or rewrites a path already inside reviews/ -- an existing sibling record\'s bytes/mtime are unchanged across a sign call', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-review-workflow-sign-f1-'));
+  try {
+    const moduleId = 'sign_f1_v1';
+    await writeSignFixtureRoster(tmp, [
+      { reviewerId: 'sign-f1-clinical-1', moduleId, label: 'F1 fixture, clinical-1' },
+      { reviewerId: 'sign-f1-clinical-2', moduleId, label: 'F1 fixture, clinical-2' },
+    ]);
+    await writeTrivialModuleContent(tmp, moduleId);
+
+    // First act: clinical-1, drafted + signed normally -- this is the "pre-existing" committed
+    // record whose bytes/mtime this test protects across the SECOND sign call below.
+    const scaffold1Code = await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'sign-f1-clinical-1',
+      decision: 'approve', rationale: 'First fixture reviewer approves this F1 workflow-mechanics exercise.',
+      reviewedAt: '2026-02-11T00:00:00Z', root: tmp, draft: true,
+    });
+    assert.equal(scaffold1Code, EXIT_OK);
+    const draft1Path = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    const sign1Code = await runSign({ draft: draft1Path, module: moduleId, root: tmp });
+    assert.equal(sign1Code, EXIT_OK);
+
+    const clinical1FilePath = recordFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    const bytesBefore = await readFile(clinical1FilePath);
+    const statBefore = await stat(clinical1FilePath);
+
+    // Second act: clinical-2, drafted + signed -- the sign call under test.
+    const scaffold2Code = await runScaffold({
+      module: moduleId, role: 'clinical-2', reviewerId: 'sign-f1-clinical-2',
+      decision: 'approve',
+      rationale: 'Second fixture reviewer independently reaches agreement, without consulting any prior act.',
+      reviewedAt: '2026-02-11T00:05:00Z', root: tmp, draft: true,
+    });
+    assert.equal(scaffold2Code, EXIT_OK);
+    const draft2Path = draftFilePathFor(tmp, moduleId, 'rr-0002-clinical-2');
+    const sign2Code = await runSign({ draft: draft2Path, module: moduleId, root: tmp });
+    assert.equal(sign2Code, EXIT_OK);
+
+    const bytesAfter = await readFile(clinical1FilePath);
+    const statAfter = await stat(clinical1FilePath);
+    assert.deepEqual(
+      bytesAfter, bytesBefore,
+      'F1: pre-existing sibling record bytes must be byte-identical across a sign call',
+    );
+    assert.equal(
+      statAfter.mtimeMs, statBefore.mtimeMs,
+      'F1: pre-existing sibling record mtime must be unchanged across a sign call',
+    );
+
+    // Round-trip confirmation: two chain-linked records now exist, both signature-valid.
+    const records = await listModuleReviewRecords(tmp, moduleId);
+    assert.equal(records.length, 2);
+    assert.equal(records[1].record.previousRecordHash, canonicalRecordHash(records[0].record));
+    await assert.doesNotReject(() => runValidate({ module: moduleId, root: tmp }));
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('sign refuses a --draft path that resolves outside <root>/.review-drafts/<moduleId>/ -- including a path already inside reviews/ (F1/R10)', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-review-workflow-sign-outside-'));
+  try {
+    const moduleId = 'sign_outside_v1';
+    await writeSignFixtureRoster(tmp, [{ reviewerId: 'sign-outside-reviewer', moduleId, label: 'outside-drafts fixture' }]);
+    await writeTrivialModuleContent(tmp, moduleId);
+
+    await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'sign-outside-reviewer',
+      decision: 'approve', rationale: 'Outside-drafts-dir regression fixture, structural only.',
+      reviewedAt: '2026-02-12T00:00:00Z', root: tmp, draft: true,
+    });
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    await runSign({ draft: draftPath, module: moduleId, root: tmp });
+
+    // Now committed under reviews/ -- pointing --draft directly at it must be refused.
+    const reviewsPath = recordFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    await assert.rejects(() => runSign({ draft: reviewsPath, module: moduleId, root: tmp }), UsageError);
+
+    // A path entirely unrelated to either tree is refused too.
+    await assert.rejects(
+      () => runSign({ draft: path.join(tmp, 'not-a-draft.yaml'), module: moduleId, root: tmp }),
+      UsageError,
+    );
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('sign refuses a --draft path that does not exist', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-review-workflow-sign-missing-'));
+  try {
+    const moduleId = 'sign_missing_v1';
+    const missingPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    await assert.rejects(() => runSign({ draft: missingPath, module: moduleId, root: tmp }), UsageError);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('sign refuses a synthetic:false draft (real-identity gate, pre-G1/G2) -- fixture roster only, never the real governance/reviewer-roster.yaml', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-review-workflow-sign-real-'));
+  try {
+    const fixtureRosterPath = path.join(
+      REPO_ROOT, 'tests', 'fixtures', 'clinical-review-workflow', 'roster-with-real-entry.yaml',
+    );
+    await mkdir(path.join(tmp, 'governance'), { recursive: true });
+    await writeFile(
+      path.join(tmp, 'governance', 'reviewer-roster.yaml'),
+      await readFile(fixtureRosterPath, 'utf8'),
+      'utf8',
+    );
+    const moduleId = 'real_entry_fixture_v1'; // matches the fixture roster entry's moduleScopes[]
+
+    const scaffoldCode = await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'fixture-real-reviewer-1',
+      decision: 'approve',
+      rationale: 'Fixture-only real-identity sign-refusal regression check, structural only.',
+      subject: SUBJECT_HASH, reviewedAt: '2026-02-13T00:00:00Z', root: tmp, draft: true,
+    });
+    assert.equal(scaffoldCode, EXIT_OK);
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    const draft = parseYamlDocument(await readFile(draftPath, 'utf8'));
+    assert.equal(draft.synthetic, false);
+
+    await assert.rejects(() => runSign({ draft: draftPath, module: moduleId, root: tmp }), UsageError);
+
+    // Never actually written to reviews/ -- the refusal is truly fail-closed, not a partial write.
+    const records = await listModuleReviewRecords(tmp, moduleId);
+    assert.deepEqual(records, []);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('sign refuses when the staged draft\'s own moduleId field does not match --module (defense in depth beyond the staging-path check)', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-review-workflow-sign-modmismatch-'));
+  try {
+    const moduleId = 'sign_modmismatch_v1';
+    await writeSignFixtureRoster(tmp, [{ reviewerId: 'sign-modmismatch-reviewer', moduleId, label: 'moduleId-mismatch fixture' }]);
+    await writeTrivialModuleContent(tmp, moduleId);
+
+    await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'sign-modmismatch-reviewer',
+      decision: 'approve', rationale: 'moduleId-mismatch defense-in-depth regression, structural only.',
+      reviewedAt: '2026-02-13T00:00:00Z', root: tmp, draft: true,
+    });
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    const tampered = (await readFile(draftPath, 'utf8')).replace(`moduleId: ${moduleId}`, 'moduleId: a-different-module-id');
+    await writeFile(draftPath, tampered, 'utf8');
+
+    await assert.rejects(() => runSign({ draft: draftPath, module: moduleId, root: tmp }), UsageError);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('sign requires every required flag (--draft, --module, --root -- frozen signature has no optional flags)', async () => {
+  await assert.rejects(() => runSign({ module: 'x', root: 'y' }), UsageError);
+  await assert.rejects(() => runSign({ draft: 'x', root: 'y' }), UsageError);
+  await assert.rejects(() => runSign({ draft: 'x', module: 'y' }), UsageError);
+});
+
+test('cli.mjs --help lists sign with the exact frozen signature', () => {
+  const { status, stdout } = runCli(['--help']);
+  assert.equal(status, EXIT_OK);
+  assert.match(stdout, /sign --draft <path> --module <id> --root <dir>/);
 });
 
 // -------------------------------------------------------------------------------------------

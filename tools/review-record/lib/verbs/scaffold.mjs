@@ -38,21 +38,64 @@
 // When omitted, this verb derives `subjectContentHash` via `lib/subject.mjs`'s
 // `computeModuleContentHash` — the exact same function `dry-run` (`lib/verbs/dry-run.mjs`) already
 // uses for its own default `--subject` — so a scaffolded draft's auto-derived subject can never
-// silently drift from what a full dry-run over the same module would have used (R8). When
-// `--subject` IS supplied, the existing pattern-shape validation runs unchanged; this task does not
-// add the `computeModuleContentHash` cross-check against a supplied `--subject` (that comparison,
-// plus `--allow-historical-subject`, is F5 — out of this task's narrower scope, see this feature's
-// findings doc if that gap needs tracking). This verb's real-identity (`synthetic: false`) write
-// path above is unchanged by this addition — it is exercised in this task's own tests only against
-// a throwaway fixture roster (`tests/fixtures/clinical-review-workflow/roster-with-real-entry.yaml`),
-// never `governance/reviewer-roster.yaml` itself, which ships (and stays) 5 `synthetic: true`
-// entries / 0 real entries.
+// silently drift from what a full dry-run over the same module would have used (R8). This verb's
+// real-identity (`synthetic: false`) write path above is unchanged by this addition — it is
+// exercised in this task's own tests only against a throwaway fixture roster
+// (`tests/fixtures/clinical-review-workflow/roster-with-real-entry.yaml`), never
+// `governance/reviewer-roster.yaml` itself, which ships (and stays) 5 `synthetic: true` entries / 0
+// real entries.
+//
+// CRW-F2 gap closure (P2-T1, Clinical Review Workflow v1 Phase 2 prerequisite): the Revision-1 plan
+// row for P1-T3 additionally specified two things the originally-dispatched P1-T3 task did not ship
+// (see `.claude/findings/clinical-review-workflow-findings.md`, CRW-F2) — both added here, since
+// Phase 2's `sign` verb (`lib/verbs/sign.mjs`) structurally depends on the second one:
+//
+//   (a) F5 — when `--subject` IS supplied, this verb now recomputes `computeModuleContentHash` for
+//       the target module and hard-fails (`UsageError`) by default if the two disagree: the
+//       `sha256:<64 hex>` pattern check alone cannot catch a transposed-but-pattern-valid hash that
+//       is syntactically fine but points at the wrong content. `--allow-historical-subject`
+//       suppresses ONLY this comparison (never the pattern check), for the legitimate case of
+//       reviewing historical content that no longer matches the module's current on-disk bytes.
+//
+//       SCOPE NOTE on this comparison (see CRW-F5 in the findings doc for the full reasoning): it
+//       only fires when `computeModuleContentHash` can actually produce a value for `moduleId`
+//       under `rootDir` — i.e. `modules/<moduleId>/` exists on disk with at least one non-`reviews/`
+//       file. When it CANNOT (module directory absent, or present but empty of non-`reviews/`
+//       content), there is no freshly-computed module-content hash for the supplied `--subject` to
+//       disagree with in the first place, so this is treated as "nothing to compare" rather than a
+//       hard-fail — distinct from an actual computed MISMATCH, which always hard-fails by default
+//       regardless of this exemption. This keeps the already-shipped `--role adjudication` scaffold
+//       bridge (`tools/retro-validate/lib/discordance.mjs`'s `toAdjudicationScaffoldInput`, Evidence
+//       Foundry E1 Phase 4) working unmodified: an adjudication act's `subjectContentHash` there is
+//       legitimately a discordance record's own `candidateDigest`, never a fresh module-content
+//       hash, and that bridge's own fixture root carries no `modules/` directory at all.
+//
+//   (b) `--draft` staging write (F1 seam, feeds Phase 2's `sign` verb) — with `--draft`, this verb
+//       builds the record exactly as it otherwise would (regardless of the resolved roster entry's
+//       `synthetic` flag) and writes it to `draftFilePathFor(rootDir, moduleId, reviewId)` —
+//       `<rootDir>/.review-drafts/<moduleId>/<reviewId>.draft.yaml`, OUTSIDE `reviews/`, gitignored
+//       (`.gitignore`) — instead of running the preview-vs-direct-write branch below at all. Nothing
+//       is ever written under `reviews/` when `--draft` is set. `sign` (`lib/verbs/sign.mjs`) reads
+//       ONLY from this exact staging path.
 
-import { REVIEW_ROLES, buildReviewId, serializeReviewRecordYaml, writeNewReviewRecordFile } from '../store.mjs';
+import {
+  REVIEW_ROLES,
+  buildReviewId,
+  serializeReviewRecordYaml,
+  writeDraftRecordFile,
+  writeNewReviewRecordFile,
+} from '../store.mjs';
 import { nextChainLink } from '../chain.mjs';
 import { loadRosterIndex, resolveReviewer } from '../roster.mjs';
 import { computeModuleContentHash } from '../subject.mjs';
 import { EXIT_OK, UsageError } from '../errors.mjs';
+
+// Re-exported for callers (e.g. `lib/verbs/sign.mjs`, tests) that want the draft-staging path
+// convention without importing `store.mjs` directly — the actual definition, and the one
+// `writeFile` call site (`tests/ef-review-adjudication.test.mjs`'s structural invariant), both live
+// in `store.mjs`; see this file's header (CRW-F2/CRW-F6) and that file's own "Draft staging path"
+// section for why.
+export { draftFilePathFor, draftsDirFor } from '../store.mjs';
 
 const DECISIONS = Object.freeze(['approve', 'reject', 'request-changes']);
 const SUBJECT_HASH_RE = /^sha256:[0-9a-f]{64}$/;
@@ -113,10 +156,15 @@ function requireString(options, flag, key = flag) {
  * @param {{
  *   module?: string, role?: string, subject?: string, reviewerId?: string, decision?: string,
  *   rationale?: string, reviewedAt?: string, supersedes?: string, root?: string,
+ *   allowHistoricalSubject?: boolean, draft?: boolean,
  * }} options `subject` is OPTIONAL (P1-T3, FR-3/R8) — when omitted, it is auto-derived via
  *   `lib/subject.mjs`'s `computeModuleContentHash(rootDir, moduleId)`, the same function `dry-run`
- *   uses for its own default; when supplied, its `sha256:<64 hex>` shape is still validated exactly
- *   as before.
+ *   uses for its own default; when supplied, its `sha256:<64 hex>` shape is validated AND (F5,
+ *   default, unless `allowHistoricalSubject`) compared against a freshly recomputed
+ *   `computeModuleContentHash` when one can be computed — see this file's header for the exact
+ *   scope of that comparison. `draft: true` (F1 seam) writes the built record to
+ *   `draftFilePathFor(rootDir, moduleId, reviewId)` instead of running the normal preview-or-write
+ *   branch, and makes no write under `reviews/`.
  * @returns {Promise<number>}
  */
 export async function run(options = {}) {
@@ -155,10 +203,33 @@ export async function run(options = {}) {
   // uses (lib/subject.mjs), over this module's already-committed content on disk under `rootDir` —
   // so an auto-derived `subjectContentHash` here can never independently drift from what a fresh
   // `dry-run` over the same module/root would compute.
+  const allowHistoricalSubject = options.allowHistoricalSubject === true;
   let subjectContentHash = options.subject;
   if (typeof subjectContentHash === 'string' && subjectContentHash.length > 0) {
     if (!SUBJECT_HASH_RE.test(subjectContentHash)) {
       throw new UsageError(`--subject "${subjectContentHash}" must match sha256:<64 hex>`);
+    }
+
+    // F5 (CRW-F2 gap closure): recompute and compare, hard-failing on an actual computed mismatch
+    // by default — see this file's header for the exact, deliberate scope of this comparison
+    // (skipped, not hard-failed, when computeModuleContentHash cannot produce a value at all).
+    if (!allowHistoricalSubject) {
+      let recomputed = null;
+      try {
+        recomputed = await computeModuleContentHash(rootDir, moduleId);
+      } catch {
+        recomputed = null; // nothing on disk to compare against — see this file's header (CRW-F5)
+      }
+      if (recomputed !== null && recomputed !== subjectContentHash) {
+        throw new UsageError(
+          `--subject "${subjectContentHash}" does not match modules/${moduleId}/'s current content ` +
+            `hash (recomputed "${recomputed}") — the sha256:<64 hex> pattern check alone cannot ` +
+            'catch a transposed-but-pattern-valid hash pointing at the wrong content (F5). If this ' +
+            'is intentionally reviewing historical content (a --subject computed against an earlier ' +
+            `state of modules/${moduleId}/, since superseded), pass --allow-historical-subject to ` +
+            'suppress ONLY this comparison — the sha256:<64 hex> pattern check above still always runs.',
+        );
+      }
     }
   } else {
     subjectContentHash = await computeModuleContentHash(rootDir, moduleId);
@@ -184,14 +255,30 @@ export async function run(options = {}) {
     synthetic: rosterEntry.synthetic === true,
   });
 
+  // --draft (F1 seam, CRW-F2 gap closure): stage the built record for `sign` to consume, regardless
+  // of the resolved roster entry's synthetic flag — see this file's header. Never falls through to
+  // the preview-vs-direct-write branch below; never writes under reviews/. The actual `writeFile`
+  // call lives in `store.mjs`'s `writeDraftRecordFile` — see this file's header (CRW-F6) for why.
+  if (options.draft === true) {
+    const draftPath = await writeDraftRecordFile(rootDir, moduleId, reviewId, record);
+    process.stdout.write(
+      `Wrote draft ${draftPath}\n` +
+        'STAGED ONLY — NOT A COMMITTED REVIEW RECORD. Outside modules/<id>/reviews/, gitignored. ' +
+        'Next: `sign --draft <path> --module <id> --root <dir>` (synthetic:true drafts only, ' +
+        'pre-G1/G2).\n' +
+        'Structural review-record content only -- not a clinical-validity, safety, or approval claim.\n',
+    );
+    return EXIT_OK;
+  }
+
   if (record.synthetic) {
     // Signature-gated: see this file's header. Preview only, never written.
     process.stdout.write(
       'DRAFT ONLY — NOT WRITTEN TO DISK.\n' +
         `reviewerId "${reviewerId}" resolves to a synthetic dry-run roster persona; ` +
         `schemas/review-record.schema.json requires a populated TESTKEY- signature on every ` +
-        'synthetic:true record, and this verb (P2-T2) has no signing capability (that is P2-T5, ' +
-        'composed by the P2-T8 dry-run flow). This draft is otherwise fully shaped:\n\n' +
+        'synthetic:true record, and this verb (P2-T2) has no signing capability on this path (see ' +
+        '`sign`, or the P2-T8 dry-run composition). This draft is otherwise fully shaped:\n\n' +
         `${serializeReviewRecordYaml(record)}\n` +
         'Structural review-record content only -- not a clinical-validity, safety, or approval claim.\n',
     );

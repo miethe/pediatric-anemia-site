@@ -154,9 +154,72 @@ export async function nextSequenceFor(rootDir, moduleId) {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Write path (P2-T2). Everything above this line is read-only, per this file's own header. This
-// is the ONLY place in the whole `review-record` tool that ever writes a `modules/<id>/reviews/`
-// file — `scaffold` (lib/verbs/scaffold.mjs) is its sole caller.
+// Draft staging path (Clinical Review Workflow v1, P1-T3(c)/P2-T1, CRW-F2/CRW-F6 gap closure).
+//
+// `.review-drafts/<moduleId>/<reviewId>.draft.yaml` — OUTSIDE `modules/<id>/reviews/`, gitignored
+// (`.gitignore`), never git-tracked. `scaffold --draft` (`lib/verbs/scaffold.mjs`) writes here; the
+// `sign` verb (`lib/verbs/sign.mjs`) reads ONLY from here, never a path already inside `reviews/`
+// (F1). These path helpers and the write function below live in `store.mjs` — not in
+// `scaffold.mjs`/`sign.mjs` themselves — so `writeFile` is called from exactly one place in this
+// whole tool, matching `tests/ef-review-adjudication.test.mjs`'s pre-existing structural invariant
+// ("writeFile is called only from lib/store.mjs ... and lib/verbs/render.mjs ... — no other write
+// path") without weakening it: this is the SAME `store.mjs` `writeFile` caller that invariant
+// already names, gaining a second, disjoint write target (`.review-drafts/`, never
+// `modules/<id>/reviews/`) rather than a new caller appearing elsewhere.
+//
+// UNLIKE `writeNewReviewRecordFile` below, this write path is NOT append-only-guarded — a re-run of
+// `scaffold --draft` for the same `moduleId`+`reviewId` (e.g. abandoning and redrafting the SAME
+// pending act before it has been signed) simply overwrites the prior draft. This is a deliberate,
+// narrow relaxation scoped to this one ephemeral, gitignored, never-committed staging file — it does
+// not touch, and has no bearing on, the append-only guarantee `writeNewReviewRecordFile` enforces
+// for the real `modules/<id>/reviews/` store.
+// ---------------------------------------------------------------------------------------------
+
+/** Directory name (direct child of `rootDir`) holding staged, unsigned draft records. */
+export const DRAFTS_DIR_NAME = '.review-drafts';
+
+/**
+ * @param {string} rootDir
+ * @param {string} moduleId
+ * @returns {string} absolute path to `<rootDir>/.review-drafts/<moduleId>/`
+ */
+export function draftsDirFor(rootDir, moduleId) {
+  return path.join(rootDir, DRAFTS_DIR_NAME, moduleId);
+}
+
+/**
+ * @param {string} rootDir
+ * @param {string} moduleId
+ * @param {string} reviewId
+ * @returns {string} absolute path to `<rootDir>/.review-drafts/<moduleId>/<reviewId>.draft.yaml`
+ */
+export function draftFilePathFor(rootDir, moduleId, reviewId) {
+  return path.join(draftsDirFor(rootDir, moduleId), `${reviewId}.draft.yaml`);
+}
+
+/**
+ * Writes (or overwrites — see this section's header) one draft record to the `.review-drafts/`
+ * staging area. Creates the target directory if needed. NOT append-only-guarded — see this
+ * section's header for why that is deliberate and narrowly scoped.
+ *
+ * @param {string} rootDir
+ * @param {string} moduleId
+ * @param {string} reviewId
+ * @param {object} record a fully-built review-record document (e.g. `lib/verbs/scaffold.mjs`'s
+ *   `buildDraftRecord` output — `signature: null`, `synthetic` either value)
+ * @returns {Promise<string>} the absolute path written
+ */
+export async function writeDraftRecordFile(rootDir, moduleId, reviewId, record) {
+  const filePath = draftFilePathFor(rootDir, moduleId, reviewId);
+  await mkdir(draftsDirFor(rootDir, moduleId), { recursive: true });
+  await writeFile(filePath, serializeReviewRecordYaml(record), 'utf8');
+  return filePath;
+}
+
+// ---------------------------------------------------------------------------------------------
+// Write path (P2-T2). Everything above the draft-staging section is read-only, per this file's own
+// header. This remains the ONLY place in the whole `review-record` tool that ever writes a
+// `modules/<id>/reviews/` file — `scaffold` (lib/verbs/scaffold.mjs) is its sole caller.
 // ---------------------------------------------------------------------------------------------
 
 /**

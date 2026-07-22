@@ -308,3 +308,123 @@ blocker. All pre-existing suites (FR-26 conditional-completeness, the committed 
 terminal-behavior fixture, ADR-0004 status-untouched guard, `chain_isolation_v1` structural
 independence) stay green: 36/36 targeted in `tests/ef-review-adjudication.test.mjs`, 104/104 across
 that file plus `tests/ef-review-workflow.test.mjs` together, 2292/2292 full `npm test`.
+
+## CRW-F5 — F5's literal "recompute and compare" text would break the already-shipped
+`--role adjudication` scaffold bridge; scoped to "computed mismatch," not "cannot compute"
+
+**Severity**: informational (scope note, deliberate narrowing) · **Status**: resolved by executing
+agent (P2-T1), implemented as described below.
+
+### (a) What the plan's F5 text says, read literally
+
+The Revision-1 plan's P1-T3 row and PRD FR-3 both say: "when `--subject` IS supplied, `scaffold`
+(by default) additionally recomputes `computeModuleContentHash` for the target module and hard-fails
+(`UsageError`) on any mismatch." Read literally and unconditionally, this means: whenever
+`computeModuleContentHash(rootDir, moduleId)` does not return the SAME value as the supplied
+`--subject` — including when it cannot be computed AT ALL (the module directory is absent, or exists
+but carries no non-`reviews/` content) — `scaffold` should hard-fail unless `--allow-historical-
+subject` is passed.
+
+### (b) Why that literal reading cannot ship without breaking already-shipped, out-of-scope callers
+
+`tools/retro-validate/lib/discordance.mjs`'s `toAdjudicationScaffoldInput` (Evidence Foundry E1
+Phase 4, P4-T5, already shipped and NOT a target surface of this task) sets `scaffold`'s `subject`
+to a discordance record's own `candidateDigest` — a real `sha256:<64 hex>` hash, but a fundamentally
+DIFFERENT hash concept than "this module's raw file-content hash." Its own tests
+(`tests/ef-retro-discordance.test.mjs`, `tests/ef-e2e-dryrun.test.mjs`, neither a target surface of
+this task) invoke this bridge against `tests/fixtures/ef-retro/discordance-adjudication-scaffold/`,
+a fixture root with a `governance/` directory and NO `modules/` directory at all —
+`computeModuleContentHash` throws (module directory not found) for every one of these calls. This
+tool's OWN pre-existing `scaffold` tests in `tests/ef-review-workflow.test.mjs` (this task's own
+target surface, but written by the earlier P1-T2/T3/T4 tasks) have the identical shape: every
+`FIXTURES_ROOT` module used with an explicit `--subject` (`scaffold_target_v1`,
+`independence_target_v1`, `chain_isolation_v1`, the tmp-root `real_entry_fixture_v1` fixture) carries
+no non-`reviews/` content either, for the same reason — these are narrow CLI-behavior fixtures, not
+full module packages. A literal, unconditional F5 implementation would have hard-failed EVERY ONE of
+these pre-existing, already-passing scaffold invocations (the ones this task is not permitted to
+edit, and several this task did not intend to touch), turning a targeted feature addition into a
+sweeping breaking change across two other tasks' test suites.
+
+### (c) The resolution shipped
+
+`lib/verbs/scaffold.mjs`'s F5 comparison only fires on a COMPUTED mismatch: it attempts
+`computeModuleContentHash(rootDir, moduleId)`, and if that computation itself throws (module
+directory absent, or present but empty of non-`reviews/` content), the comparison is treated as
+"nothing to compare" — NOT a hard-fail — distinct from an actual value disagreement between two
+successfully-computed hashes, which always hard-fails by default regardless of this exemption. This
+preserves F5's real protection (the plan's own worked example: a transposed-but-pattern-valid hash
+silently pointing at the WRONG, but EXISTING, module content) while leaving every already-shipped
+caller of `scaffold` against a subject-hash-only or bare-fixture artifact working unmodified. The
+design is documented in `lib/verbs/scaffold.mjs`'s own header and covered by two dedicated tests in
+`tests/ef-review-workflow.test.mjs`: the transposed-hash-on-real-content case (hard-fails without
+`--allow-historical-subject`, succeeds with it, against the real committed `cbc_suite_v1` module) and
+an explicit "cannot-compute is not a mismatch" regression test.
+
+### (d) Residual risk flagged for a future task (not resolved here — out of scope)
+
+This narrower reading does NOT protect a hypothetical FUTURE real invocation of `scaffold --role
+adjudication --module cbc_suite_v1 --subject <candidateDigest>` against the REAL repo root once G1
+clears: in that case `computeModuleContentHash` WOULD succeed (real module content exists) and would
+almost certainly disagree with a legitimate `candidateDigest`-shaped subject, forcing that future
+real caller to pass `--allow-historical-subject` even though the subject is not "historical" in F5's
+sense, but rather "a different hash concept than module-content hash" by design. Whoever next wires
+`tools/retro-validate/lib/discordance.mjs`'s bridge to run against a real repo root post-G1 should
+either pass `--allow-historical-subject` explicitly or reconsider whether F5's comparison should be
+role-scoped (e.g. skipped entirely for `--role adjudication`, whose `subjectContentHash` is
+structurally never a module-content hash) rather than module-content-presence-scoped as implemented
+here. Not resolved by this task: `tools/retro-validate/lib/discordance.mjs` is not a target surface.
+
+## CRW-F6 — `writeFile` structural invariant (owned by a non-target-surface test file) required a
+small, additive `lib/store.mjs` change outside this task's declared target surfaces
+
+**Severity**: informational (scope note, deliberate, minimal-blast-radius deviation) · **Status**:
+resolved by executing agent (P2-T1).
+
+### (a) The conflict
+
+This task's declared target surfaces are `cli.mjs`, `lib/verbs/sign.mjs`, `lib/verbs/scaffold.mjs`,
+`tests/ef-review-workflow.test.mjs`, `.gitignore` — NOT `lib/store.mjs`. Implementing `scaffold
+--draft`'s staging write as a direct `fs.writeFile` call inside `lib/verbs/scaffold.mjs` (the
+straightforward reading of the plan's own P1-T3(c) row, which names `lib/verbs/scaffold.mjs` as the
+file that "writes the draft record") collides with a PRE-EXISTING structural invariant test in a
+file this task does not own and was not instructed to edit:
+`tests/ef-review-adjudication.test.mjs`'s `"writeFile is called only from lib/store.mjs ... and
+lib/verbs/render.mjs ... — no other write path (structural)"`, which greps every `.mjs` file under
+`tools/review-record/` for a literal `writeFile(` call and fails closed on any caller outside a
+two-entry allowlist. `npm test` reported this failure (`tools/review-record/lib/verbs/scaffold.mjs
+must not call writeFile`) once the `--draft` write path was added directly in `scaffold.mjs`.
+
+### (b) The two available fixes, and why the store.mjs one was chosen
+
+Two ways to make the suite green again both require touching a file outside the declared target-
+surfaces list, since neither `lib/store.mjs` nor `tests/ef-review-adjudication.test.mjs` is on it:
+(1) move the actual `writeFile` call into `lib/store.mjs` (additive-only: new exported
+`draftsDirFor`/`draftFilePathFor`/`writeDraftRecordFile`, zero change to `writeNewReviewRecordFile`
+or any existing export/behavior), so `scaffold.mjs` and `sign.mjs` both call a `store.mjs` function
+rather than `fs.writeFile` directly — the pre-existing allowlist test needs ZERO edits, since
+`lib/store.mjs` is already in it; or (2) widen `ALLOWED_WRITE_FILE_CALLERS` in
+`tests/ef-review-adjudication.test.mjs` to add `lib/verbs/scaffold.mjs`, weakening a governance-
+adjacent guardrail test specifically designed to keep this tool's write surface narrow and auditable.
+Option (1) is strictly additive, changes zero existing behavior or test outcomes, and is the more
+architecturally consistent choice (this tool's own established convention, per `store.mjs`'s own
+header, is "one append-only write path... `scaffold` is its sole caller" — extending that one
+write-path file with a second, disjoint write target is truer to the pattern than adding a second
+write-capable verb file). Option (2) directly weakens a guardrail without the human-reviewed
+escalation that guardrail's own posture implies. This task chose (1): `lib/store.mjs` gained a small,
+clearly-scoped, additive "Draft staging path" section (new exports only, no existing export
+modified), and `tests/ef-review-adjudication.test.mjs` was not touched at all — it passes unmodified
+because `lib/store.mjs` was already inside its allowlist.
+
+### (c) What changed, concretely
+
+`lib/store.mjs`: new `DRAFTS_DIR_NAME`, `draftsDirFor`, `draftFilePathFor`, `writeDraftRecordFile`
+exports (the latter NOT append-only-guarded, deliberately — a re-`scaffold --draft` for the same
+`moduleId`+`reviewId` before it has been signed simply overwrites the prior draft; this is scoped
+narrowly to the ephemeral, gitignored `.review-drafts/` tree and has no bearing on
+`writeNewReviewRecordFile`'s append-only guarantee for the real `modules/<id>/reviews/` store, which
+is unmodified). `lib/verbs/scaffold.mjs` re-exports `draftFilePathFor`/`draftsDirFor` from
+`../store.mjs` (so this task's own test file and `sign.mjs` can still import the path convention
+from either module without drift) and calls `writeDraftRecordFile` instead of `fs.writeFile`
+directly. `lib/verbs/sign.mjs` imports `draftsDirFor` from `../store.mjs` directly. Full `npm test`
+(2319/2319) and `npm run check` are green with this change; `tests/ef-review-adjudication.test.mjs`
+required no edits and its own targeted suite passes unmodified.
