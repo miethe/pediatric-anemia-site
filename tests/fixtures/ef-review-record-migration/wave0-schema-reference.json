@@ -1,0 +1,257 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/pediatric-anemia/schemas/review-record.schema.json",
+  "title": "Pediatric CDS Review Record",
+  "description": "EP7-T1 (FR-WP7-01). DATA CONTRACT ONLY: this schema shapes a review record for a proposed change to any governed knowledge-base artifact (a rule, a candidate, a manifest field, etc.) as it moves through `proposed` -> `under-review` -> (optionally) `disputed` -> `approved`/`rejected`. It does not define, and this repository does not yet ship, any review-portal application, API, database, or server that produces or consumes these records — that surface is described (never implemented) by the EP7-T2 design doc. `approvedBy` is deliberately shaped to be byte-for-byte compatible with schemas/module-manifest.schema.json's `approvedBy` and schemas/rule.schema.json's `clinicalApprovers`: a flat array of non-empty strings. That compatibility is the point — a future, SEPARATELY GATED act could copy an approved review record's `approvedBy[]` verbatim into a module manifest once this project deliberately raises that field's `maxItems: 0` ceiling; this schema does not raise it and does not perform that act. D-4 (no synthetic review may ever populate an approver field) is enforced here structurally, not by convention: every entry in `reviewers[]` is pinned to `reviewerType: {\"const\": \"human\"}` and `attestedHuman: {\"const\": true}`, which makes it schema-impossible to represent an ARC council run, a `council-review`/`rf` verification bundle, an automated linter, or a model's own self-review as a reviewer or an approver — there is no enum value, no field, no shape in this schema that such a synthetic source could occupy. If ARC/automated output is ever consulted as an input, it belongs only in free-text narrative fields (`changeProposal.rationale`, `history[].note`, `conflictResolution.reason`/`notes`) as advisory context, never as a `reviewers[]` entry and never contributing to `approvedBy[]`. Structural validity here never implies clinical validity, safety, or that a named human clinician reviewed the underlying clinical content — see clinicalApprovers/approvedBy's own descriptions for that standing caveat.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "id", "changeProposal", "workflowState", "reviewers",
+    "conflictResolution", "approvedBy", "history", "createdAt", "updatedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "REQUIRED, non-null. Integer review-record-shape version, bumped only when this schema's own shape changes."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^RR-[0-9]{4}-[0-9]{3,}$",
+      "description": "REQUIRED, non-null. Review record identifier, e.g. `RR-2026-001`. Distinct from `changeProposal.proposalId` — one proposal has exactly one review record, but the two ids are tracked separately so a review record can be referenced independently of the proposal it reviews."
+    },
+    "changeProposal": {
+      "$ref": "#/$defs/changeProposal"
+    },
+    "workflowState": {
+      "$ref": "#/$defs/workflowState"
+    },
+    "reviewers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/humanReviewer" },
+      "description": "REQUIRED key. `[]` only while `workflowState` is `proposed` (no review has started yet); every other state requires at least the two reviewers of the dual-review step (`minItems: 2`, enforced below by the per-state `allOf`/`if`/`then`). Every item is a named human reviewer — see `$defs/humanReviewer` for why an automated or ARC-sourced entry cannot be expressed here at all."
+    },
+    "conflictResolution": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["triggeredAt", "reason", "resolvedBy", "resolution", "resolvedAt", "notes"],
+      "properties": {
+        "triggeredAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "REQUIRED, non-null when this object is present. When the dual reviewers' decisions diverged and the record entered `disputed`."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "REQUIRED, non-null when this object is present. Plain-language statement of what the reviewers disagreed about."
+        },
+        "resolvedBy": {
+          "type": ["object", "null"],
+          "description": "REQUIRED key. Nullable while the dispute is still open (`workflowState: disputed` and unresolved). MUST be a non-null `$defs/humanIdentity` once `workflowState` is `approved` or `rejected` (enforced below) — a conflict can only be closed out by a real named human, never by an automated arbiter, exactly as D-4 requires for every other approval-adjacent field in this schema.",
+          "additionalProperties": false,
+          "required": ["name", "credential", "reviewerType", "attestedHuman"],
+          "properties": {
+            "name": { "type": "string", "minLength": 1 },
+            "credential": { "type": "string", "minLength": 1 },
+            "reviewerType": { "const": "human" },
+            "attestedHuman": { "const": true }
+          }
+        },
+        "resolution": {
+          "type": ["string", "null"],
+          "enum": ["escalated-to-additional-review", "returned-to-authors", "resolved-by-arbiter", null],
+          "description": "REQUIRED key. Nullable while unresolved; a closed enum once set."
+        },
+        "resolvedAt": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "REQUIRED key. Nullable while unresolved."
+        },
+        "notes": {
+          "type": ["string", "null"],
+          "description": "REQUIRED key, freely nullable. Additional narrative context; may reference advisory ARC/automated input as long as it is never mistaken for a reviewer or approver (see this schema's top-level description)."
+        }
+      }
+    },
+    "approvedBy": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 },
+      "description": "REQUIRED key. Mirrors schemas/module-manifest.schema.json's `approvedBy` and schemas/rule.schema.json's `clinicalApprovers` shape EXACTLY: a flat array of non-empty strings. `[]` in every state except `approved` (enforced below by the per-state `allOf`/`if`/`then`); `minItems: 2` once `approved`, one string per qualifying entry in `reviewers[]` whose `decision` is `approve` (dual sign-off). Never populate this field from an ARC run id, a model name, or any string not corresponding 1:1 to a `reviewers[]` entry that carries `reviewerType: \"human\"` and `attestedHuman: true` — this schema cannot cross-check that correspondence by content (no `$data` support in this repository's zero-dependency validator), so the guarantee here is: (a) structural, via the state-conditioned `maxItems: 0`/`minItems: 2` gates and the `reviewers[]` `contains`/`minContains` check tying approval to human sign-off, and (b) procedural, via the same review process this record documents. Raising the sibling schemas' `maxItems: 0` ceiling to accept these strings into a module manifest is a separate, deliberate, reviewable act that this schema does not perform."
+    },
+    "history": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/historyEntry" },
+      "description": "REQUIRED key. Append-only log of every workflow-state transition this record has passed through, oldest first. The first entry's `state` MUST be `proposed` (a review record is always created in the `proposed` state)."
+    },
+    "createdAt": { "type": "string", "format": "date-time", "description": "REQUIRED, non-null. When this review record was created (always coincides with the first `history[]` entry)." },
+    "updatedAt": { "type": "string", "format": "date-time", "description": "REQUIRED, non-null. When this review record was last modified (always coincides with the last `history[]` entry)." }
+  },
+  "$defs": {
+    "workflowState": {
+      "type": "string",
+      "enum": ["proposed", "under-review", "disputed", "approved", "rejected"],
+      "description": "Closed enum, FR-WP7-02. `proposed` = change-proposal authored, no review started. `under-review` = dual review in progress. `disputed` = the two reviewers' decisions diverged and a `conflictResolution` is open. `approved`/`rejected` = terminal states."
+    },
+    "changeProposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["proposalId", "title", "summary", "targetArtifacts", "proposedBy", "proposedAt", "rationale"],
+      "properties": {
+        "proposalId": { "type": "string", "minLength": 1, "description": "REQUIRED, non-null. e.g. `CP-2026-001`." },
+        "title": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "targetArtifacts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Repo-relative paths of the governed artifact(s) this proposal would change, e.g. `modules/anemia/rules.json`."
+        },
+        "proposedBy": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Free-text identification of who/what authored the proposal. D-4 restricts only APPROVAL sources (`reviewers[]`/`approvedBy[]`), not proposal authorship — a proposal may legitimately originate from a human, a codemod, or an automated evidence pipeline; that provenance is recorded here as plain text, never as a reviewer or approver."
+        },
+        "proposedAt": { "type": "string", "format": "date-time" },
+        "rationale": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Plain-language justification, expected to reference evidence ids where applicable. Advisory ARC/automated review output, if consulted, may be summarized here as narrative context only — never as a `reviewers[]` entry or an `approvedBy[]` source."
+        }
+      }
+    },
+    "reviewerRole": {
+      "type": "string",
+      "enum": ["primary-reviewer", "secondary-reviewer", "conflict-arbiter"],
+      "description": "Minimal role vocabulary needed to model dual-review plus conflict-resolution. The full role/seat vocabulary (including how it cross-references, and explicitly excludes, ARC's council seat taxonomy as an approval source) is authored in the EP7-T2 review-portal design doc, not here — this schema only needs enough structure to keep `reviewers[]` well-typed."
+    },
+    "humanReviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewerId", "name", "credential", "reviewerType", "role", "decision", "attestedHuman", "decidedAt"],
+      "properties": {
+        "reviewerId": { "type": "string", "minLength": 1 },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The reviewer's real full name. Never a system, tool, or run identifier — see `reviewerType`."
+        },
+        "credential": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The reviewer's professional credential/license (e.g. `MD`, `DO`, `RN, CPNP`, `PharmD`). REQUIRED and non-empty for every reviewer; this is the human-identity field D-4 requires."
+        },
+        "reviewerType": {
+          "const": "human",
+          "description": "Pinned to the single legal value `\"human\"` — there is no other enum member this field could ever hold. This is the structural guarantee: an ARC council run, an `rf`/`council-review` verification bundle, an automated linter, or a model's self-review CANNOT be expressed as a `reviewers[]` entry, because no value other than `\"human\"` validates here. Mirrors the same fail-closed pattern schemas/rule.schema.json (`clinicalApprovers` `maxItems: 0`) and schemas/module-manifest.schema.json (`approvedBy` `maxItems: 0`) use for the same guardrail (D-4/AC-D4)."
+        },
+        "role": { "$ref": "#/$defs/reviewerRole" },
+        "decision": {
+          "type": "string",
+          "enum": ["pending", "approve", "reject", "request-changes", "abstain"],
+          "description": "`pending` while assigned but not yet decided (legitimate during `under-review`); a closed enum of terminal per-reviewer decisions otherwise."
+        },
+        "attestedHuman": {
+          "const": true,
+          "description": "Pinned to the literal `true` — an explicit, separate attestation flag alongside `reviewerType`, so a populated reviewer record always carries two independent structural markers of human identity, not just one."
+        },
+        "comment": { "type": "string", "description": "Optional free-text reviewer comment." },
+        "decidedAt": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "REQUIRED key. Nullable while `decision` is `pending`; a well-formed date-time once a decision has been recorded."
+        }
+      }
+    },
+    "historyEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "enteredAt", "actor", "note"],
+      "properties": {
+        "state": { "$ref": "#/$defs/workflowState" },
+        "enteredAt": { "type": "string", "format": "date-time" },
+        "actor": { "type": "string", "minLength": 1, "description": "Who/what caused this transition (a human reviewer's name, or a system actor such as `system:proposal-intake` for the initial `proposed` entry)." },
+        "note": { "type": ["string", "null"], "description": "REQUIRED key, freely nullable. Optional narrative context for this transition." }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "workflowState": { "const": "proposed" } } },
+      "then": {
+        "properties": {
+          "reviewers": { "maxItems": 0 },
+          "approvedBy": { "maxItems": 0 },
+          "conflictResolution": { "type": "null" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "workflowState": { "const": "under-review" } } },
+      "then": {
+        "properties": {
+          "reviewers": { "minItems": 2 },
+          "approvedBy": { "maxItems": 0 },
+          "conflictResolution": { "type": "null" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "workflowState": { "const": "disputed" } } },
+      "then": {
+        "properties": {
+          "reviewers": { "minItems": 2 },
+          "approvedBy": { "maxItems": 0 },
+          "conflictResolution": { "type": "object", "required": ["triggeredAt", "reason"] }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "workflowState": { "const": "rejected" } } },
+      "then": {
+        "properties": {
+          "reviewers": { "minItems": 2 },
+          "approvedBy": { "maxItems": 0 }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "workflowState": { "const": "approved" } } },
+      "then": {
+        "properties": {
+          "reviewers": {
+            "minItems": 2,
+            "contains": { "properties": { "reviewerType": { "const": "human" }, "decision": { "const": "approve" } } },
+            "minContains": 2
+          },
+          "approvedBy": { "minItems": 2 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "workflowState": { "enum": ["approved", "rejected"] },
+          "conflictResolution": { "type": "object" }
+        },
+        "required": ["workflowState", "conflictResolution"]
+      },
+      "then": {
+        "properties": {
+          "conflictResolution": {
+            "required": ["resolvedBy", "resolution", "resolvedAt"],
+            "properties": {
+              "resolvedBy": { "type": "object" },
+              "resolution": { "type": "string" },
+              "resolvedAt": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

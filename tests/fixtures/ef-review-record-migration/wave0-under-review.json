@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "id": "RR-2026-001",
+  "changeProposal": {
+    "proposalId": "CP-2026-001",
+    "title": "Add sourcePassageId backfill for candidate CAND-IRON-002",
+    "summary": "Backfill the previously-null sourcePassageId on candidate CAND-IRON-002 with a reviewed passage citation from evidence source EV-004, replacing the implementation-proposal fallback sentinel.",
+    "targetArtifacts": ["modules/anemia/candidates.json"],
+    "proposedBy": "scripts/evidence/backfill-candidate-governance.mjs (automated codemod, human-reviewed mapping)",
+    "proposedAt": "2026-07-10T14:00:00Z",
+    "rationale": "EV-004 passage p12 directly supports CAND-IRON-002's summary text; backfilling closes one of the remaining unbound-candidate gaps tracked by the evidence-grounding effort."
+  },
+  "workflowState": "under-review",
+  "reviewers": [
+    {
+      "reviewerId": "REV-001",
+      "name": "Dr. A. Ibarra",
+      "credential": "MD, Pediatric Hematology",
+      "reviewerType": "human",
+      "role": "primary-reviewer",
+      "decision": "pending",
+      "attestedHuman": true,
+      "decidedAt": null
+    },
+    {
+      "reviewerId": "REV-002",
+      "name": "Dr. B. Okonkwo",
+      "credential": "DO, General Pediatrics",
+      "reviewerType": "human",
+      "role": "secondary-reviewer",
+      "decision": "pending",
+      "attestedHuman": true,
+      "decidedAt": null
+    }
+  ],
+  "conflictResolution": null,
+  "approvedBy": [],
+  "history": [
+    {
+      "state": "proposed",
+      "enteredAt": "2026-07-10T14:00:00Z",
+      "actor": "system:proposal-intake",
+      "note": "Change proposal CP-2026-001 filed."
+    },
+    {
+      "state": "under-review",
+      "enteredAt": "2026-07-11T09:00:00Z",
+      "actor": "system:review-assignment",
+      "note": "Dual review assigned to REV-001 (primary) and REV-002 (secondary)."
+    }
+  ],
+  "createdAt": "2026-07-10T14:00:00Z",
+  "updatedAt": "2026-07-11T09:00:00Z"
+}

@@ -3,11 +3,11 @@
 // schemas/reviewer-roster.schema.json validates governance/reviewer-roster.yaml: the ONE place a
 // review-record file's `reviewerId` (schemas/review-record.schema.json) can resolve to a named
 // human identity plus credential/module-scope facts. This file is a standalone paper contract at
-// this phase — like tests/review-record-schema.test.mjs, it is NOT wired into scripts/validate-kb.mjs
-// (that cross-file validator wiring, and the roster's actual use, land in P1-T7/P2-T2) — so this
-// test file exercises the schema directly against parsed YAML/JSON, following the same inline-copy
-// pattern tests/review-record-schema.test.mjs already established rather than the
-// validateModule()-against-a-temp-directory pattern used for KB-wired schemas.
+// this phase — it is NOT wired into scripts/validate-kb.mjs (that cross-file validator wiring, and
+// the roster's actual use, land in P1-T7/P2-T2) — so this test file exercises the schema directly
+// against parsed YAML/JSON, following the same inline-copy pattern tests/ef-review-record-schema.test.mjs
+// uses for schemas/review-record.schema.json, rather than the validateModule()-against-a-temp-directory
+// pattern used for KB-wired schemas.
 //
 // Three things this task's own binding acceptance criteria require proving:
 //   1. The shipped governance/reviewer-roster.yaml ships EMPTY (zero entries) and validates
@@ -183,8 +183,7 @@ test('moduleScopes entries must match the moduleId pattern', async () => {
   assert.ok(errors.length > 0, 'a malformed module id in moduleScopes must be rejected');
 });
 
-// --- schema-level structural inspection (mirrors tests/review-record-schema.test.mjs's own
-//     direct-inspection tests for its D-4 const markers) ---------------------------------------
+// --- schema-level structural inspection ---------------------------------------------------------
 
 test('reviewer-roster.schema.json ships with zero entries by default guidance (minItems: 0) and documents the FR-3 empty-ship requirement', async () => {
   const schema = await loadSchema();

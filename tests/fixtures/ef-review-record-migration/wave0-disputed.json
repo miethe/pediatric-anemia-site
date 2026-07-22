@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "id": "RR-2026-001",
+  "changeProposal": {
+    "proposalId": "CP-2026-001",
+    "title": "Add sourcePassageId backfill for candidate CAND-IRON-002",
+    "summary": "Backfill the previously-null sourcePassageId on candidate CAND-IRON-002 with a reviewed passage citation from evidence source EV-004, replacing the implementation-proposal fallback sentinel.",
+    "targetArtifacts": ["modules/anemia/candidates.json"],
+    "proposedBy": "scripts/evidence/backfill-candidate-governance.mjs (automated codemod, human-reviewed mapping)",
+    "proposedAt": "2026-07-10T14:00:00Z",
+    "rationale": "EV-004 passage p12 directly supports CAND-IRON-002's summary text; backfilling closes one of the remaining unbound-candidate gaps tracked by the evidence-grounding effort."
+  },
+  "workflowState": "disputed",
+  "reviewers": [
+    {
+      "reviewerId": "REV-001",
+      "name": "Dr. A. Ibarra",
+      "credential": "MD, Pediatric Hematology",
+      "reviewerType": "human",
+      "role": "primary-reviewer",
+      "decision": "approve",
+      "attestedHuman": true,
+      "comment": "Passage p12 supports the candidate summary; mapping is sound.",
+      "decidedAt": "2026-07-12T09:30:00Z"
+    },
+    {
+      "reviewerId": "REV-002",
+      "name": "Dr. B. Okonkwo",
+      "credential": "DO, General Pediatrics",
+      "reviewerType": "human",
+      "role": "secondary-reviewer",
+      "decision": "request-changes",
+      "attestedHuman": true,
+      "comment": "Passage p12 is about a related but distinct candidate; I don't think it supports CAND-IRON-002 specifically without an additional sentence.",
+      "decidedAt": "2026-07-12T15:45:00Z"
+    }
+  ],
+  "conflictResolution": {
+    "triggeredAt": "2026-07-13T08:00:00Z",
+    "reason": "Primary reviewer approved the passage mapping; secondary reviewer disputed whether the cited passage actually supports the specific candidate claim.",
+    "resolvedBy": null,
+    "resolution": null,
+    "resolvedAt": null,
+    "notes": null
+  },
+  "approvedBy": [],
+  "history": [
+    {
+      "state": "proposed",
+      "enteredAt": "2026-07-10T14:00:00Z",
+      "actor": "system:proposal-intake",
+      "note": "Change proposal CP-2026-001 filed."
+    },
+    {
+      "state": "under-review",
+      "enteredAt": "2026-07-11T09:00:00Z",
+      "actor": "system:review-assignment",
+      "note": "Dual review assigned to REV-001 (primary) and REV-002 (secondary)."
+    },
+    {
+      "state": "disputed",
+      "enteredAt": "2026-07-13T08:00:00Z",
+      "actor": "system:review-assignment",
+      "note": "REV-001 approved; REV-002 requested changes on the same passage mapping. Escalated to conflict resolution."
+    }
+  ],
+  "createdAt": "2026-07-10T14:00:00Z",
+  "updatedAt": "2026-07-13T08:00:00Z"
+}
