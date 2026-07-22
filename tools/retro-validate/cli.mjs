@@ -11,7 +11,7 @@
 //
 // Verbs:
 //   check-fixtures  -- structural de-identification boundary gate (FR-20). Real as of P4-T1.
-//   run             -- version-pinned deterministic replay (FR-19). Scaffold-only until P4-T3.
+//   run             -- version-pinned deterministic replay (FR-19). Real as of P4-T3.
 //   report          -- software-agreement metrics + provenance sidecar (FR-21). Scaffold-only
 //                       until P4-T4.
 //
@@ -43,8 +43,12 @@ Verbs:
       non-zero exit and no output artifact. Prints a JSON summary on success.
 
   run --corpus <dir> --candidate-digest <registry digest> --registry <path>
-      Scaffold only in this task (P4-T1) -- lands in P4-T3. Will replay every corpus case through
-      the pinned candidate build and emit byte-identical-across-runs metric artifacts.
+      Real as of P4-T3. Resolves the candidate build EXCLUSIVELY via a registry-entry packDigest
+      match (never "current tree" -- an unpinned/unregistered digest, an unregistered moduleId, a
+      missing pinned-content directory, or drifted pinned content all fail closed with zero output),
+      then replays every corpus case (sorted by caseId) and writes a canonical, timestamp-free
+      build/retro-runs/<corpusId>/<digestSlug>/replay-output.json -- byte-identical across two runs
+      over identical inputs. See tools/retro-validate/README.md's "Version-pinned replay" section.
 
   report --corpus <dir> --run <replay output dir> --protocol <protocol doc>
       Scaffold only in this task (P4-T1) -- lands in P4-T4. Will emit agreement-report.json (5
@@ -61,7 +65,8 @@ flags, never required (an unresolved value is logged explicitly, never silently 
 Global:
   -h, --help    Show this help and exit 0.
 
-Exit codes: 0 ok · 1 usage (including an unbuilt verb) · 2 boundary (FR-20 rejection, fail-closed).
+Exit codes: 0 ok · 1 usage (including an unbuilt verb, or a RegistryError candidate-resolution
+failure -- see run above) · 2 boundary (FR-20 rejection, fail-closed).
 
 This tool makes zero network calls and invokes no LLM/generative model at any point. Nothing it
 emits is, or may be read as, a clinical-validity, safety, or diagnostic-performance claim.

@@ -109,6 +109,31 @@ const VERBS_UNDER_TEST = [
   { name: 'report', run: runReportVerb, ownerTask: 'P4-T4' },
 ];
 
+// P4-T3 landed `run`'s real post-boundary logic (candidate resolution + replay) -- it no longer
+// falls through to the scaffold `NotImplementedError` the moment the boundary check clears; it now
+// has its OWN next usage requirement (`--candidate-digest`/`--registry`). `report` still lands in
+// P4-T4, so it is unchanged: reaching `NotImplementedError` (never `BoundaryError`/`UsageError`) is
+// still the proof its own boundary gate cleared. See tests/ef-retro-determinism.test.mjs for
+// `run`'s own real-replay ACs (candidate resolution, determinism, "never current tree").
+const POST_BOUNDARY_EXPECTATION = {
+  run: (err) => {
+    assert.ok(err instanceof UsageError, `expected UsageError, got ${err?.constructor?.name}: ${err?.message}`);
+    assert.ok(
+      !(err instanceof NotImplementedError),
+      '`run` has real post-boundary logic since P4-T3 -- a boundary-passing corpus must not fall through to the scaffold placeholder',
+    );
+    assert.equal(err.exitCode, EXIT_USAGE);
+    assert.match(err.message, /--candidate-digest/, 'the next-required-flag error must name what is still missing');
+  },
+  report: (err) => {
+    // Reaching NotImplementedError (rather than BoundaryError/UsageError) is itself the proof
+    // that the boundary gate was cleared -- this verb's ONLY logic before its scaffold
+    // placeholder is the checkFixtures() call (still true; P4-T4 has not landed).
+    assert.ok(err instanceof NotImplementedError);
+    assert.equal(err.exitCode, EXIT_USAGE);
+  },
+};
+
 for (const { name: verbName, run: verbRun } of VERBS_UNDER_TEST) {
   for (const { name: className, dir } of REJECTION_CLASSES) {
     test(`\`${verbName}\` verb refuses to start on a failing corpus (${className}): throws BoundaryError, not NotImplementedError`, async () => {
@@ -147,15 +172,11 @@ for (const { name: verbName, run: verbRun } of VERBS_UNDER_TEST) {
     );
   });
 
-  test(`\`${verbName}\` verb: once a corpus PASSES the boundary check, it proceeds past the gate to its own (currently scaffold) logic`, async () => {
+  test(`\`${verbName}\` verb: once a corpus PASSES the boundary check, it proceeds past the gate to its own next logic`, async () => {
     await assert.rejects(
       () => verbRun({ corpus: fixtureDir('valid-synthetic'), accessLogPath: ACCESS_LOG_PATH }),
       (err) => {
-        // Reaching NotImplementedError (rather than BoundaryError/UsageError) is itself the proof
-        // that the boundary gate was cleared -- this verb's ONLY logic before its scaffold
-        // placeholder is the checkFixtures() call.
-        assert.ok(err instanceof NotImplementedError);
-        assert.equal(err.exitCode, EXIT_USAGE);
+        POST_BOUNDARY_EXPECTATION[verbName](err);
         return true;
       },
     );
@@ -191,7 +212,7 @@ for (const verb of ['run', 'report']) {
     assert.match(result.stderr, /BoundaryError/);
   });
 
-  test(`CLI: \`${verb} --corpus <valid-synthetic>\` clears the boundary gate, then exits 1 (scaffold NotImplementedError, not boundary)`, () => {
+  test(`CLI: \`${verb} --corpus <valid-synthetic>\` clears the boundary gate, then exits 1 (usage, not boundary)`, () => {
     const result = spawnSync(
       process.execPath,
       [CLI_PATH, verb, '--corpus', fixtureDir('valid-synthetic')],
@@ -199,7 +220,9 @@ for (const verb of ['run', 'report']) {
     );
     assert.equal(result.status, EXIT_USAGE, `stderr: ${result.stderr}`);
     assert.equal(result.stdout, '');
-    assert.match(result.stderr, /NotImplementedError/);
+    // `run` (P4-T3, landed) next requires --candidate-digest/--registry -- a plain UsageError, not
+    // the scaffold NotImplementedError `report` (P4-T4, not yet landed) still throws.
+    assert.match(result.stderr, verb === 'run' ? /UsageError/ : /NotImplementedError/);
   });
 }
 

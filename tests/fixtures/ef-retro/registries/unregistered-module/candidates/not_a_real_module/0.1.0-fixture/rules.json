@@ -1,0 +1,69 @@
+[
+  {
+    "id": "FIX-IRON-RISK-ALERT-001",
+    "category": "safety",
+    "when": { "fact": "history.ironRiskHistory", "op": "is-present" },
+    "output": {
+      "type": "alert",
+      "severity": "important",
+      "title": "Fixture: iron-risk history present",
+      "detail": "Deterministic replay fixture rule (tools/retro-validate, P4-T3) -- not clinical content.",
+      "actions": ["Fixture action -- not a clinical instruction."]
+    },
+    "evidence": [],
+    "version": "0.1.0-fixture",
+    "effectiveDate": "2026-07-01",
+    "retireDate": null,
+    "owner": "evidence-foundry-e1-p4-t3-fixture",
+    "safetyClass": "non-safety-critical",
+    "sourcePassageId": null,
+    "requiredTestCaseIds": [],
+    "clinicalApprovers": []
+  },
+  {
+    "id": "FIX-INDETERMINATE-Q-001",
+    "category": "missing-data",
+    "when": { "fact": "anemia.status", "op": "eq", "value": "indeterminate" },
+    "output": {
+      "type": "question",
+      "priority": 10,
+      "section": "additional",
+      "prompt": "Fixture: supply hemoglobin and MCV to classify anemia status.",
+      "why": "Deterministic replay fixture rule (tools/retro-validate, P4-T3) -- not clinical content."
+    },
+    "evidence": [],
+    "version": "0.1.0-fixture",
+    "effectiveDate": "2026-07-01",
+    "retireDate": null,
+    "owner": "evidence-foundry-e1-p4-t3-fixture",
+    "safetyClass": "non-safety-critical",
+    "sourcePassageId": null,
+    "requiredTestCaseIds": [],
+    "clinicalApprovers": []
+  },
+  {
+    "id": "FIX-IDA-CANDIDATE-001",
+    "category": "differential",
+    "when": {
+      "all": [
+        { "fact": "anemia.present", "op": "eq", "value": true },
+        { "fact": "morphology.microcytic", "op": "eq", "value": true }
+      ]
+    },
+    "output": {
+      "type": "candidate",
+      "candidateId": "iron-deficiency-anemia-fixture",
+      "level": "possible",
+      "points": 10
+    },
+    "evidence": [],
+    "version": "0.1.0-fixture",
+    "effectiveDate": "2026-07-01",
+    "retireDate": null,
+    "owner": "evidence-foundry-e1-p4-t3-fixture",
+    "safetyClass": "non-safety-critical",
+    "sourcePassageId": null,
+    "requiredTestCaseIds": [],
+    "clinicalApprovers": []
+  }
+]
