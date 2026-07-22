@@ -165,3 +165,42 @@ this same codebase), not new architecture/design decisions.
   placeholder verification), or widen the scan to substring-match the hash registry against raw
   text. Do not let the current AC wording stand as-is — on a rights-governance gate, an AC that
   overstates coverage is the failure mode this repo exists to avoid.
+
+### BLOCKER — merge to `main` halted: rights-schema integration requires human rights determinations
+
+Discovered when merging `origin/main` (which had advanced by PR #20 "Rights-Aware Evidence Capture"
+and PR #21 "Evidence Foundry E1") into this branch. Textual conflicts resolved cleanly; the
+**merged tree is red: 25 failures / 2412 tests**.
+
+**Root causes (both from PR #20):**
+1. `schemas/evidence.schema.json` now requires `license`, `access_basis`, `terms`, `terms_snapshot`
+   on every source, and `evidence_item_type`, `judgment_basis` on every passage.
+2. `rights/rights-ledger.json` requires an entry per `evidence_source_id`, each backed by a
+   rights record (`RR-*`).
+
+**Scope:** 35 sources lack the new fields — `kidney_suite_v1` (12), `growth_suite_v1` (11),
+`cbc_suite_v1` (12, the RF-CBC-002 additions). `modules/anemia`'s 6 sources already comply.
+
+**Why this was NOT auto-completed.** The existing `contentRights` block on our sources
+(`allowedForPublicOutput`, `allowedForWorkOutput`, `citationRequired`, `quoteLimitNotes`) does NOT
+map to the new fields. `license` and `access_basis` are legal determinations about a third-party
+source; `terms`/`terms_snapshot` require the actual terms text. These cannot be mechanically derived
+from the fixtures, and no migration/backfill script ships with PR #20 — it ships
+`scripts/rights/build-decision-brief.mjs`, a tool that assembles a brief for a HUMAN to decide,
+which is itself evidence that these determinations are human-gated by design.
+
+Fabricating 35 license/access-basis determinations would be the same guardrail breach this pass
+already declined once (refusing to author `authoring-decisions.yaml` to force the converter). It is
+the rights-governance analogue of `no AI-published rule changes`, and it is precisely what the
+`REG-001`/`REG-004` HOLD record exists to prevent.
+
+**Resolution paths (owner decision):**
+- (a) Owner/legal supplies rights determinations for the 35 sources; then populate and merge.
+- (b) Run `scripts/rights/build-decision-brief.mjs` over the 35 to produce the decision brief, and
+      route it through the owner — the intended workflow.
+- (c) Land this branch's tooling/docs/scaffolds first and defer the three modules' evidence layers
+      until their rights records exist.
+
+Branch state: own baseline green (1389/1389 at `b2bc4c4`); merge commit `8163b48` present and
+textually correct (notably `package.json` `validate` chains BOTH rights checks —
+`validate-rights.mjs` from main and `check-fixture-rights-leakage.mjs` from this branch).
