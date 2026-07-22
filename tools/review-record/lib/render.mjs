@@ -37,12 +37,31 @@
 // relaxations and `scripts/validate-kb.mjs`'s existence-gated per-module checks). Their absence
 // renders an explicit "not yet committed" note, never a thrown error and never a silently blank
 // section.
+//
+// QUEUE / TURN-STATE SECTION (Clinical Review Workflow v1, Phase 3, P3-T1, FR-11): every render now
+// also carries a module-wide "Review queue & turn state" section naming the five ADR-0004 roles, in
+// canonical order, each with a textual reference to its existing committed record (never an
+// `<a href>` — this file's `<script>`/`<a href>`-free constraint is unchanged) plus a `NEXT` or
+// `TERMINAL` marker. This is DELIBERATELY SOURCED FROM the same primitives Phase 1's shared
+// derived-state library treats as authoritative — `resolveEffectiveRoleRecord`/`isAdjudicationRequired`
+// (`lib/adjudication.mjs`), which `lib/derived-state.mjs`'s own header names as the ONE
+// "effective act"/"adjudication required" reasoning this tool uses (P1-T1/P1-T5) — rather than
+// forking a second copy of that turn-taking logic. It is DELIBERATELY NARROWER than `status`'s own
+// full derived-state result (`lib/verbs/status.mjs`, P1-T2): it answers only "which role, in
+// canonical order, has no effective act yet" from already-loaded record data, and never runs
+// schema/roster/signature verification or the release-authorization completeness check (those need
+// roster/schema file I/O this render module does not perform). Mirrors this tool's established
+// "list's chain-linkage column is informational, not enforcement" posture (README) — a `TERMINAL`
+// queue reading is a structural role-presence summary only, never a substitute for `validate`/
+// `status`'s fail-closed judgment, and never a release-authorization, approval, or clinical-validity
+// claim.
 
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import { listModuleReviewRecords } from './store.mjs';
+import { REVIEW_ROLES, listModuleReviewRecords } from './store.mjs';
 import { checkModuleChainLinkage } from './chain.mjs';
+import { resolveEffectiveRoleRecord, isAdjudicationRequired } from './adjudication.mjs';
 import { ReviewRecordNotFoundError } from './errors.mjs';
 
 /**
@@ -71,6 +90,17 @@ export const RIGHTS_RESTRICTED_LABEL = 'Rights-restricted passage -- hash + sele
 
 const NOT_A_PORTAL_NOTE = 'Read-only static render -- not a portal. No server, database, write '
   + 'path, or auth; generated only from already-committed repository artifacts (FR-8/OQ-3).';
+
+/** Literal marker text stamped on the queue/turn-state section (P3-T1, FR-11) when a role is
+ * awaiting its committed act, or on the section's overall summary line when at least one role's
+ * effective act is still outstanding. Kept as a named export so tests assert the exact literal
+ * rather than a re-typed copy. */
+export const QUEUE_NEXT_MARKER = 'NEXT';
+
+/** Literal marker text stamped on the queue/turn-state section's overall summary line once every
+ * required ADR-0004 role has a committed, effective review act on record (structural role-presence
+ * only — see this file's header for why this is never a release-authorization/approval claim). */
+export const QUEUE_TERMINAL_MARKER = 'TERMINAL';
 
 /**
  * @param {string} rootDir absolute or cwd-relative repo root (or a fixture root standing in for it)
@@ -226,6 +256,13 @@ const STYLE = [
   '.tests{margin:0.25rem 0;padding-left:1.25rem;}',
   '.empty{color:#666;font-style:italic;}',
   'code{background:#f0f0f0;padding:0 0.2rem;}',
+  '.queue-roles{list-style:decimal;padding-left:1.5rem;margin:0.5rem 0;}',
+  '.queue-role{border:1px solid #ccc;border-radius:4px;padding:0.5rem 0.75rem;margin:0.5rem 0;}',
+  '.queue-role h3{margin:0 0 0.25rem 0;font-size:1rem;}',
+  '.queue-role-next{border-color:#7a5a00;background:#fffaf0;}',
+  '.queue-role-committed{border-color:#3a6b3a;}',
+  '.queue-marker{font-weight:bold;}',
+  '.queue-marker-terminal{color:#3a6b3a;}',
 ].join('');
 
 /**
@@ -346,6 +383,121 @@ function renderRecordCard(entry, linkage) {
 }
 
 /**
+ * Computes the five-role queue/turn-state view the render's new section needs (P3-T1, FR-11).
+ * REUSES, rather than reimplements, the P1-T1/P1-T5 derived-state primitives
+ * (`resolveEffectiveRoleRecord`/`isAdjudicationRequired`, `lib/adjudication.mjs`) that
+ * `lib/derived-state.mjs`'s own header already names as the ONE authoritative "effective act"/
+ * "adjudication required" reasoning in this tool — this function does not fork a second copy of
+ * either. See this file's header for why it is deliberately narrower than `status`'s own full
+ * derived-state result (`lib/verbs/status.mjs`, P1-T2): a pure, I/O-free, role-presence-only
+ * summary, never a substitute for `validate`/`status`'s fail-closed judgment.
+ *
+ * @param {{ reviewId: string, seq: number, role: string, record: object }[]} allRecords the full
+ *   module record set (`loadModuleRenderData`'s own `records`, unfiltered by any `--record`
+ *   narrowing — the queue view is inherently module-wide, like the rule-chain section below)
+ * @returns {{
+ *   roles: { role: string, reviewId: string|null, isNext: boolean }[],
+ *   terminal: boolean,
+ *   nextExpectedRole: string|null,
+ * }} `roles` — one entry per `REVIEW_ROLES`, in canonical order. `terminal` — true once every
+ *   required role (FR-26's conditional `adjudication` requirement included, via
+ *   `isAdjudicationRequired`) has an effective act on record. `nextExpectedRole` — `null` when
+ *   `terminal` is true, else the one role awaiting its committed act.
+ */
+export function computeQueueState(allRecords) {
+  const effectiveByRole = new Map();
+  for (const role of REVIEW_ROLES) {
+    const effective = resolveEffectiveRoleRecord(allRecords, role);
+    if (effective) effectiveByRole.set(role, effective);
+  }
+
+  let nextExpectedRole = null;
+  if (!effectiveByRole.has('clinical-1')) {
+    nextExpectedRole = 'clinical-1';
+  } else if (!effectiveByRole.has('clinical-2')) {
+    nextExpectedRole = 'clinical-2';
+  } else if (!effectiveByRole.has('lab')) {
+    nextExpectedRole = 'lab';
+  } else if (isAdjudicationRequired(allRecords) && !effectiveByRole.has('adjudication')) {
+    nextExpectedRole = 'adjudication';
+  } else if (!effectiveByRole.has('release-auth')) {
+    nextExpectedRole = 'release-auth';
+  }
+
+  const terminal = nextExpectedRole === null;
+
+  const roles = REVIEW_ROLES.map((role) => {
+    const effective = effectiveByRole.get(role);
+    return {
+      role,
+      reviewId: effective ? effective.reviewId : null,
+      isNext: role === nextExpectedRole,
+    };
+  });
+
+  return { roles, terminal, nextExpectedRole };
+}
+
+/**
+ * Renders the "Review queue & turn state" section (P3-T1, FR-11): an `<h2>`-headed section
+ * carrying, for each of the five ADR-0004 roles (each its own `<h3>` — semantic headings for
+ * screen-reader navigation, this task's own acceptance criterion), a textual reference to its
+ * existing committed record (never an `<a href>`) when present, or an explicit "not yet committed"
+ * note when absent — plus a `QUEUE_NEXT_MARKER`/`QUEUE_TERMINAL_MARKER` summary line. Module-wide,
+ * like the rule-chain section below — never narrowed by a `--record` filter, since turn-taking is a
+ * whole-module concept.
+ *
+ * @param {{ reviewId: string, seq: number, role: string, record: object }[]} allRecords
+ * @returns {string}
+ */
+function renderQueueSection(allRecords) {
+  const { roles, terminal, nextExpectedRole } = computeQueueState(allRecords);
+
+  const summary = terminal
+    ? `<p class="queue-marker queue-marker-terminal">${QUEUE_TERMINAL_MARKER} &mdash; every ` +
+      'required ADR-0004 role (FR-26\'s conditional adjudication requirement included) has a ' +
+      'committed, effective review act on record for this module. Structural role-presence only ' +
+      '&mdash; NOT a release-authorization, approval, or clinical-validity determination; see the ' +
+      'Review records section below for each act\'s own chain-linkage and synthetic status.</p>'
+    : `<p class="queue-marker">${QUEUE_NEXT_MARKER}: ${escapeHtml(nextExpectedRole)}</p>`;
+
+  const roleItems = roles.map((entry) => {
+    let body;
+    let itemClass;
+    if (entry.isNext) {
+      itemClass = 'queue-role-next';
+      body = `<p>${QUEUE_NEXT_MARKER} &mdash; awaiting this role's committed review act.</p>`;
+    } else if (entry.reviewId) {
+      itemClass = 'queue-role-committed';
+      body = `<p>Committed review act: <code>${escapeHtml(entry.reviewId)}</code> (see Review ` +
+        'records below).</p>';
+    } else {
+      itemClass = 'queue-role-pending';
+      body = '<p class="empty">Not yet committed.</p>';
+    }
+    return [
+      `<li class="queue-role ${itemClass}">`,
+      `<h3>${escapeHtml(entry.role)}</h3>`,
+      body,
+      '</li>',
+    ].join('');
+  }).join('');
+
+  return [
+    '<section class="queue">',
+    '<h2>Review queue &amp; turn state</h2>',
+    '<p class="subtitle">Structural role-by-role act presence only, reusing the P1-T1/P1-T5 ' +
+      'derived-state primitives (FR-11) &mdash; informational, not a substitute for `validate`/' +
+      '`status`\'s fail-closed checks.</p>',
+    summary,
+    '<ol class="queue-roles">',
+    roleItems,
+    '</ol>',
+    '</section>',
+  ].join('');
+}
+
+/**
  * Assembles ONE self-contained HTML document string. Pure — never touches the filesystem
  * (`lib/verbs/render.mjs` is the only writer). Deterministic over identical inputs: no wall-clock
  * timestamp, random id, or non-reproducible value appears anywhere in the output, so re-rendering
@@ -400,6 +552,7 @@ export function renderModuleHtml({
     '<main>',
     `<h1>${escapeHtml(titleBase)} <span class="role-badge">${escapeHtml(moduleId)}</span></h1>`,
     `<p class="subtitle">${escapeHtml(NOT_A_PORTAL_NOTE)}</p>`,
+    renderQueueSection(records),
     '<section class="records">',
     `<h2>Review records${recordFilter ? ` — ${escapeHtml(recordFilter)}` : ''}</h2>`,
     recordsHtml,
