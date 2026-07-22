@@ -29,7 +29,10 @@
 //     authorship union) and FR-6 (a `release-auth` record is valid only over a complete,
 //     chain-valid, roster-verified, non-synthetic record set; E1 raises no ceiling — this stays
 //     structurally non-qualifying for any record this tool can currently produce, since
-//     `governance/reviewer-roster.yaml` ships synthetic-only pre-G1, FR-3).
+//     `governance/reviewer-roster.yaml` ships synthetic-only pre-G1, FR-3). As of P1-T5 (Clinical
+//     Review Workflow v1, FR-26), "complete" is no longer an unconditional all-five-roles check:
+//     `adjudication` is a CONDITIONAL completeness requirement — see `isAdjudicationRequired`'s own
+//     header below for the ADR-0004 decision item 5 policy this encodes.
 //
 // Zero network calls: the only subprocess this module ever spawns is a local, offline `git`
 // invocation (read-only `rev-parse`/`log`) against the caller-supplied `rootDir`'s own working
@@ -252,15 +255,82 @@ export function rosterEntryInAuthorshipUnion(rosterEntry, authorshipBlock) {
 }
 
 /**
- * FR-6 / OQ-2: a `release-auth` record is valid only over a COMPLETE (all five roles present for
- * its `subjectContentHash`), CHAIN-VALID (no broken hash-chain link anywhere in the module's
- * committed sequence — a hash chain's integrity is a whole-module property, not scoped to one
- * subject), ROSTER-VERIFIED (every related record's `reviewerId` resolved), NON-SYNTHETIC (every
- * related record carries `synthetic === false`) record set. Since `governance/reviewer-roster.yaml`
- * ships synthetic-only pre-G1 (FR-3), the non-synthetic condition is structurally unmet for any
- * record this tool can currently produce — by design (FR-6: "E1 raises no ceiling"). Returns
- * violation strings (empty = this `release-auth` record qualifies); never throws — the caller
- * (`validate.mjs`) decides how to surface the result.
+ * FR-26 (ADR-0004 decision item 5, encoded P1-T5, Clinical Review Workflow v1 — governance-
+ * sensitive): resolves the "effective act" for one role within an already subject-scoped record
+ * set — the latest record of that role which is NOT named in any OTHER record's `supersedes`
+ * field. A correction is always a brand-new file (`supersedes: <review_id>`, OQ-2 append-only,
+ * never an in-place edit); once a correction supersedes a record, that corrected record's own
+ * `decision` must never re-enter policy reasoning again — this is what "resolved" means in the
+ * decisions block's FR-26 wording ("the resolved clinical-1 and clinical-2 records' decision
+ * fields").
+ *
+ * @param {{ reviewId: string, seq: number, role: string, record: object }[]} subjectScopedRecords
+ *   records already narrowed to one `subjectContentHash` — this function does not filter by
+ *   subject itself; the caller (`evaluateReleaseAuthorization` below) always passes its own
+ *   already-subject-scoped `relatedRecords`.
+ * @param {string} role one of `REVIEW_ROLES`
+ * @returns {{ reviewId: string, seq: number, role: string, record: object } | undefined} the
+ *   effective record for `role`, or `undefined` if no record of that role exists in the set.
+ */
+export function resolveEffectiveRoleRecord(subjectScopedRecords, role) {
+  const roleRecords = subjectScopedRecords.filter((entry) => entry.role === role);
+  if (roleRecords.length === 0) return undefined;
+
+  const supersededIds = new Set(
+    subjectScopedRecords
+      .map((entry) => entry.record?.supersedes)
+      .filter((id) => typeof id === 'string' && id.length > 0),
+  );
+  const notSuperseded = roleRecords.filter((entry) => !supersededIds.has(entry.reviewId));
+
+  // Defensive fallback (should never occur over a well-formed append-only supersedes chain, where
+  // exactly one record of a given role is never named as anyone's `supersedes` target): if every
+  // record of this role has somehow been marked superseded, fail toward the most recent record
+  // rather than silently treating the role as entirely absent from policy reasoning.
+  const candidates = notSuperseded.length > 0 ? notSuperseded : roleRecords;
+  return candidates.reduce((latest, entry) => (entry.seq > latest.seq ? entry : latest));
+}
+
+/**
+ * FR-26 / ADR-0004 decision item 5: "Adjudication is a distinct, separately signed file produced
+ * only when reviewer 1 and reviewer 2 disagree." This is the single predicate encoding that rule —
+ * `adjudication` is a CONDITIONAL completeness requirement for a `release-auth` record's related
+ * set: required IFF the resolved (effective, see `resolveEffectiveRoleRecord`) `clinical-1` and
+ * `clinical-2` `decision` fields disagree. On documented agreement, `adjudication` is NOT part of
+ * the completeness requirement — the four remaining roles (`clinical-1`, `clinical-2`, `lab`,
+ * `release-auth`) are sufficient.
+ *
+ * FAILS CLOSED toward "required" whenever either effective decision cannot be resolved — the role
+ * is entirely absent from the set, or its `decision` field is missing/non-string. Missingness is
+ * never treated as agreement (this program's own "missingness is never treated as normal"
+ * guardrail); in practice this case is moot for release-authorization completeness anyway, since
+ * `clinical-1`/`clinical-2` are themselves unconditionally required roles below — a genuinely
+ * missing clinical role already fails the completeness check on its own.
+ *
+ * @param {{ reviewId: string, seq: number, role: string, record: object }[]} subjectScopedRecords
+ *   already subject-scoped (see `resolveEffectiveRoleRecord`'s own parameter doc)
+ * @returns {boolean} `true` if `adjudication` must be present for this set to be complete
+ */
+export function isAdjudicationRequired(subjectScopedRecords) {
+  const clinical1 = resolveEffectiveRoleRecord(subjectScopedRecords, 'clinical-1');
+  const clinical2 = resolveEffectiveRoleRecord(subjectScopedRecords, 'clinical-2');
+  const decision1 = typeof clinical1?.record?.decision === 'string' ? clinical1.record.decision : null;
+  const decision2 = typeof clinical2?.record?.decision === 'string' ? clinical2.record.decision : null;
+  if (decision1 === null || decision2 === null) return true;
+  return decision1 !== decision2;
+}
+
+/**
+ * FR-6 / OQ-2: a `release-auth` record is valid only over a COMPLETE (all REQUIRED roles present
+ * for its `subjectContentHash` — as of P1-T5/FR-26, `adjudication` is a CONDITIONAL requirement,
+ * see `isAdjudicationRequired` above; the other four roles are always required), CHAIN-VALID (no
+ * broken hash-chain link anywhere in the module's committed sequence — a hash chain's integrity is
+ * a whole-module property, not scoped to one subject), ROSTER-VERIFIED (every related record's
+ * `reviewerId` resolved), NON-SYNTHETIC (every related record carries `synthetic === false`)
+ * record set. Since `governance/reviewer-roster.yaml` ships synthetic-only pre-G1 (FR-3), the
+ * non-synthetic condition is structurally unmet for any record this tool can currently produce —
+ * by design (FR-6: "E1 raises no ceiling"). Returns violation strings (empty = this `release-auth`
+ * record qualifies); never throws — the caller (`validate.mjs`) decides how to surface the result.
  *
  * @param {{ reviewId: string, seq: number, role: string, record: object }[]} allModuleRecords every
  *   committed record for the module, in ascending `seq` order (`store.mjs`'s `listModuleReviewRecords`
@@ -276,7 +346,16 @@ export function evaluateReleaseAuthorization(allModuleRecords, releaseAuthEntry,
 
   const relatedRecords = allModuleRecords.filter((entry) => entry.record?.subjectContentHash === subject);
   const rolesPresent = new Set(relatedRecords.map((entry) => entry.role));
-  const missingRoles = REVIEW_ROLES.filter((role) => !rolesPresent.has(role));
+
+  // FR-26 (ADR-0004 decision item 5, P1-T5, governance-sensitive): `adjudication` is required IFF
+  // the resolved clinical-1/clinical-2 decisions disagree; on documented agreement the remaining
+  // four roles suffice. See `isAdjudicationRequired`'s own header for the fail-closed posture on
+  // missing/ambiguous data. This does NOT ratify ADR-0004 (its `status` stays `proposed`, G0) — it
+  // is purely this completeness policy's own role-set computation.
+  const requiredRoles = isAdjudicationRequired(relatedRecords)
+    ? REVIEW_ROLES
+    : REVIEW_ROLES.filter((role) => role !== 'adjudication');
+  const missingRoles = requiredRoles.filter((role) => !rolesPresent.has(role));
   if (missingRoles.length > 0) {
     violations.push(
       `${releaseAuthEntry.reviewId}: release-authorization is not valid — incomplete record set for ` +

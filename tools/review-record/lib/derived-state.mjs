@@ -35,9 +35,18 @@
 // `--json` enum) are new reasoning this task's acceptance criteria do not cover, and are left to
 // P1-T2 (the `status` verb, which owns that frozen enum) to add on top of `blockers` -- see this
 // task's own finding entry in `.claude/findings/clinical-review-workflow-findings.md` for the
-// explicit record of this scope boundary. P1-T5 (FR-26, governance-sensitive) is expected to modify
-// THIS file's release-authorization completeness policy (the block below reusing
-// `evaluateReleaseAuthorization`), not fork a second copy.
+// explicit record of this scope boundary.
+//
+// P1-T5 (FR-26, governance-sensitive) reconciled `lib/adjudication.mjs`'s release-authorization
+// completeness policy against ADR-0004 decision item 5 ("adjudication produced only when reviewer 1
+// and reviewer 2 disagree"): `adjudication` is now a CONDITIONAL completeness requirement rather
+// than an unconditional fifth role. That policy (the effective-record resolution and the
+// agree/disagree predicate) lives ENTIRELY in `lib/adjudication.mjs`'s `evaluateReleaseAuthorization`
+// (via `isAdjudicationRequired`/`resolveEffectiveRoleRecord`) -- this file was deliberately NOT
+// changed to fork a second copy of that reasoning; the release-auth block below already calls
+// `evaluateReleaseAuthorization` as its one release-auth sub-check, so `status` (once P1-T2 lands)
+// and `validate` inherit the FR-26 policy identically, from the same call, with zero drift risk
+// (the F2 blocker this task exists to close).
 
 import { checkReviewerIndependence } from './independence.mjs';
 import { checkModuleChainLinkage } from './chain.mjs';
@@ -151,7 +160,11 @@ export function computeDerivedReviewState(allModuleRecords, rosterVerifiedByRevi
   // non-synthetic record set. Always non-qualifying for any record this tool can currently produce
   // (governance/reviewer-roster.yaml ships synthetic-only pre-G1, FR-3) — by design, not a bug.
   // `evaluateReleaseAuthorization`'s violations[] map 1:1 onto this function's blockers[] (this IS
-  // its release-auth sub-check, not a parallel path merely agreeing with it).
+  // its release-auth sub-check, not a parallel path merely agreeing with it). "Complete" here is
+  // FR-26's CONDITIONAL completeness policy (P1-T5, governance-sensitive, ADR-0004 decision item
+  // 5): `adjudication` is required only when the resolved clinical-1/clinical-2 decisions disagree
+  // — see `evaluateReleaseAuthorization`'s own header in `lib/adjudication.mjs` for the policy
+  // itself; this file does not duplicate it.
   for (const entry of allModuleRecords.filter((r) => r.role === 'release-auth')) {
     blockers.push(...evaluateReleaseAuthorization(allModuleRecords, entry, rosterVerifiedByReviewId));
   }

@@ -141,3 +141,50 @@ Before Phase 2's `P2-T1` opens, confirm whether a task will add `--draft`/F5 to 
 amended to change `sign`'s input contract. No guardrail was crossed by leaving this out — the
 dispatched task's own acceptance criteria are fully met and independently tested (38/38 targeted,
 2246/2246 full `npm test`) — this is a plan-vs-dispatch scope-tracking note only.
+
+## CRW-F3 — P1-T5: dispatched AC list narrower than the plan's row; implemented the fuller plan version; one related out-of-scope observation
+
+**Severity**: informational (scope note, not a defect in the work delivered) · **Status**: open,
+for P1-GATE1/P1-GATE2 awareness.
+
+### (a) Dispatched AC vs. plan AC
+
+The task actually dispatched for "P1-T5" listed four acceptance criteria: an agree-path five-record
+set MINUS `adjudication` evaluates as complete; a disagree-path set MINUS `adjudication` reports
+the missing-role blocker; the committed `cbc_suite_v1` dry-run fixture's terminal behavior is
+unchanged; and a grep test confirming ADR-0004 `status` is untouched. The CURRENT plan row (this
+same file, P1-T5, and `.claude/worknotes/clinical-review-workflow/decisions-block.md` FR-26)
+additionally requires a **fifth** AC: "a superseded-correction fixture (a `clinical-1` act
+corrected via `supersedes`, effective decisions agreeing) applies the predicate to the EFFECTIVE
+(latest non-superseded) records only — the superseded record's decision must not trigger a spurious
+adjudication requirement (FR-26 effective-act rule)." This AC is also the exact mechanism the
+decisions block's own FR-26 row defines "resolved" to mean (`resolveEffectiveRoleRecord` in the
+delivered code).
+
+### (b) What was done about it
+
+Rather than silently narrowing scope to the dispatched four, this task implemented the fuller
+plan/decisions-block definition of FR-26 (`resolveEffectiveRoleRecord` + `isAdjudicationRequired` in
+`tools/review-record/lib/adjudication.mjs`) and added the fifth AC's fixture test verbatim:
+`tests/ef-review-adjudication.test.mjs`, test `"evaluateReleaseAuthorization: a
+superseded-correction fixture applies FR-26's predicate to the EFFECTIVE (latest non-superseded)
+records only..."`, plus a matching unit test on `isAdjudicationRequired` itself. All five ACs (the
+dispatched four plus the plan's fifth) pass. No guardrail was crossed and no scope was narrowed —
+this is a plan-vs-dispatch tracking note only, recorded per this task's own instruction to log
+rather than silently deviate.
+
+### (c) Related, explicitly out-of-scope observation for a future task
+
+`lib/derived-state.mjs`'s `computeDerivedReviewState` resolves its `clinical1`/`clinical2` inputs to
+the FR-4 reviewer-independence heuristic (`checkReviewerIndependence`) via a plain
+`allModuleRecords.find((r) => r.role === 'clinical-1' | 'clinical-2')` — the FIRST record of that
+role, not the FR-26-style EFFECTIVE (latest non-superseded) one this task introduces for the
+release-authorization completeness check. Concretely: if a `clinical-1` record is later corrected
+via `supersedes`, the independence heuristic still textually compares the ORIGINAL (superseded)
+`clinical-1` rationale against `clinical-2`'s, not the correction's. This is a heuristic,
+supplementary check to begin with (see `lib/independence.mjs`'s own header: "not... a comprehensive
+dependence detector"), and `lib/independence.mjs` is not one of this task's target surfaces (owned
+by a sibling task's prior work, FR-4/P2-T2), so this task did not change it. Flagging it here as a
+related, latent, pre-existing gap for whoever next touches `computeDerivedReviewState`'s
+independence-check wiring or `lib/independence.mjs` itself to consider — not a defect this task's
+own FR-26 scope introduced or is responsible for closing.
