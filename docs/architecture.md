@@ -339,13 +339,20 @@ clinician review has occurred; nothing here is or may be read as clinical sign-o
 `status: proposed` — not yet ratified, gate G0) as the software machinery for the five-role review
 record chain: `clinical-1`, `clinical-2`, `lab`, `adjudication`, `release-auth`, one append-only
 `modules/<module_id>/reviews/rr-<seq4>-<role>.yaml` file per review act, never mutated in place —
-corrections are new superseding records. `scaffold` builds a draft; `validate` fail-closes on schema
-shape, roster resolution, chain linkage, and signature verification; `dry-run` composes all three
-into a single synthetic end-to-end pass; `render` writes a self-contained, read-only static HTML
-view (`build/review-render/`, git-ignored) — explicitly not a portal: no server, no auth, no write
-path back into `modules/`. Full mechanism detail (store layout, chain hashing, signature binding,
-adjudication/release-authorization rules, the two append-only enforcement layers) lives in
-`tools/review-record/README.md`; this section only orients where the tool sits architecturally.
+corrections are new superseding records.
+
+**Verb surfaces.** The tool exposes six verbs:
+
+- `scaffold` — builds a draft review record (still unsigned, `signature: null` on real-identity records).
+- `sign` — applies a signature to a staged draft (TESTKEY-only synthetic path, fail-closed pre-gates G1/G2 on real records).
+- `validate` — fail-closes on schema shape, roster resolution, chain linkage, and signature verification; includes both module-wide checks (authorship union, independence heuristic, release-authorization validity) and per-record checks (with optional incremental caching via a persistent composite-keyed cache for wall-time reduction across processes).
+- `status` — reports derived review-chain state (per-module queue/turn state, next-expected role, blockers) from a shared derived-state library consumed by both `status` and `validate` to prevent drift.
+- `dry-run` — composes scaffold, sign, and validate into a single synthetic end-to-end pass over all five ADR-0004 roles.
+- `render` — writes a self-contained, read-only static HTML view (`build/review-render/`, git-ignored) — explicitly not a portal: no server, no auth, no write path back into `modules/`.
+
+**Derived-state model.** A single `lib/derived-state.mjs#computeDerivedReviewState` function produces one structured result `{ state, nextExpectedRole, eligibility, blockers: string[] }` consumed by both `status` and `validate`, eliminating the risk of their derived-state logic diverging. The state machine recognizes `structurally-non-qualifying` (always the terminal state for synthetic records) and `acts-complete-unauthorized` (the terminal all-real state, never emitted as "release-ready"), never inferring release authorization pre-gates. Machine-readable `blockers[]` map 1:1 onto validation violations so the two verbs' diagnostics stay consistent.
+
+Full mechanism detail (store layout, chain hashing, signature binding, derived-state construction, adjudication/release-authorization rules, the two append-only enforcement layers, incremental validate caching) lives in `tools/review-record/README.md`; this section only orients where the tool sits architecturally. Non-engineer reviewer guidance — five-role git walkthrough, correction via supersedes, the distinction between exercise (synthetic) and post-G1 (real) tracks — lives in `docs/governance/reviewer-runbook.md`.
 
 **Roster and independence.** Reviewer identity resolves against `governance/reviewer-roster.yaml`,
 which ships with zero real (`synthetic: false`) entries — every entry usable today is a labeled
