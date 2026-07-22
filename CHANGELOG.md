@@ -93,8 +93,14 @@ toward one.** No rule, candidate, or threshold was added, changed, or approved i
   scoped, evidence-only generator scripts outside the converter, and are correctly labeled
   **bespoke evidence projections pending DF-E1-M1**, never converter output. `cbc_suite_v1`'s
   evidence layer is regenerable from a committed script
-  (`scripts/evidence/backfill-cbc-002-evidence.mjs`), and `anemia`'s evidence-layer generator is
-  also committed, at `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py`. Only
+  (`scripts/evidence/backfill-cbc-002-evidence.mjs`), whose `run()` is imported and exercised by
+  the test suite that `npm run check` runs. `anemia`'s evidence-layer generator script is also
+  committed, at `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py`; a path-resolution bug
+  in the committed script (it resolved the repo root incorrectly and failed on any invocation) was
+  fixed, and running it now reproduces the committed `modules/anemia/evidence-assertions.json`
+  byte-for-byte (verified manually, 2026-07-22). It is **not**, however, wired into any test or
+  `npm run check` — it is a standalone manual script with zero automated coverage, so
+  reproducibility is not continuously enforced the way `cbc_suite_v1`'s is. Only
   `kidney_suite_v1`'s and `growth_suite_v1`'s generators remain uncommitted and unrecoverable
   from this repository or its history (see
   `.claude/findings/multi-bundle-conversion-e1-findings.md`, "Unreproducible-provenance gap").

@@ -40,7 +40,7 @@ uniform — read each row rather than assuming parity across modules:
 
 | Module | `module.json.status` | `clinicalContentHash` / `governanceHash` | `approvedBy` | Evidence-layer provenance |
 |---|---|---|---|---|
-| `anemia` | `integrity-recorded` (Wave-0/EP-5) | populated, verified at server startup | `[]` (no clinical sign-off) | **Bespoke evidence projection** — `evidence-assertions.json` was hand-authored against the verified `RF-EV-001` bundle by a one-off, uncommitted generator, not the converter's `propose` verb (see below). Its pre-existing `evidence.json` (EP-3/EP-4 pipeline) is a separate, parallel provenance view; see `modules/anemia/EVIDENCE-PROVENANCE-NOTE.md` and `docs/project_plans/design-specs/anemia-backfill-reconciliation-procedure.md` |
+| `anemia` | `integrity-recorded` (Wave-0/EP-5) | populated, verified at server startup | `[]` (no clinical sign-off) | **Bespoke evidence projection** — `evidence-assertions.json` was hand-authored against the verified `RF-EV-001` bundle by a one-off generator script, not the converter's `propose` verb (see below). The generator is committed (`scripts/evidence/oneoff/gen-anemia-evidence-assertions.py`) and manually verified to reproduce this file byte-for-byte, but it is not wired into `npm run check` or any test. Its pre-existing `evidence.json` (EP-3/EP-4 pipeline) is a separate, parallel provenance view; see `modules/anemia/EVIDENCE-PROVENANCE-NOTE.md` and `docs/project_plans/design-specs/anemia-backfill-reconciliation-procedure.md` |
 | `cbc_suite_v1` | `unsigned-stub` | `null` / `null` | `[]` | **Converter-derived, end-to-end.** The only module whose evidence-layer artifacts (`evidence-assertions.json`, `rule-provenance.json`, and the drafted `rules.json`/`candidates.json` content) were produced by `tools/rf-bundle-to-kb-pack/`'s `propose` verb against the verified `RF-CBC-002` bundle, per §2b. It is also the only module with a hand-authored `authoring-decisions.yaml` (DF-E1-M1 dependency), which is what lets the converter's rule/candidate-drafting stage run for it at all |
 | `kidney_suite_v1` | `unsigned-stub` | `null` / `null` | `[]` | **Bespoke evidence projection**, not converter output — `evidence.json`/`evidence-assertions.json`/`unresolved.json` were hand-derived against the verified `RF-KID-001` bundle by an uncommitted one-off generator, because `propose.mjs` is hardwired to `cbc_suite_v1`'s own drafting content (FR-14) and no `authoring-decisions.yaml` exists yet for this module (Deferred Item DF-E1-M1) |
 | `growth_suite_v1` | `unsigned-stub` | `null` / `null` | `[]` | **Bespoke evidence projection**, not converter output — `evidence.json`/`evidence-assertions.json`/`unresolved.json` were hand-derived against the verified `RF-GRO-002` bundle by an uncommitted one-off generator, for the same DF-E1-M1 reason as `kidney_suite_v1` |
@@ -54,11 +54,16 @@ all carry evidence-layer artifacts that trace to a verified `rf` bundle, but eac
 `authoring-decisions.yaml` (Deferred Item DF-E1-M1; design spec
 `docs/project_plans/design-specs/rule-authoring-workflow-per-module.md`). Of the three
 bespoke-generator scripts for `anemia`/`kidney_suite_v1`/`growth_suite_v1`, only the `anemia`
-one is committed — `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py` — alongside
-`cbc_suite_v1`'s converter-produced script, `scripts/evidence/backfill-cbc-002-evidence.mjs`.
-`kidney_suite_v1`'s and `growth_suite_v1`'s generators remain uncommitted and unrecoverable
-from this repository or its history, so those two modules' evidence-layer files are not
-currently regenerable from committed code (tracked in
+one is committed — `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py`. Its committed
+form had a path-resolution bug (a wrong repo-root computation) that made every invocation fail;
+this has been fixed, and running the corrected script now reproduces
+`modules/anemia/evidence-assertions.json` byte-for-byte (verified manually). Unlike
+`cbc_suite_v1`'s converter-produced script, `scripts/evidence/backfill-cbc-002-evidence.mjs`
+(whose `run()` is imported and exercised by the test suite `npm run check` runs), the anemia
+generator is **not** wired into `npm run check` or any test — it is a manual, standalone script
+whose reproducibility is not continuously enforced. `kidney_suite_v1`'s and `growth_suite_v1`'s
+generators remain uncommitted and unrecoverable from this repository or its history, so those two
+modules' evidence-layer files are not regenerable from committed code at all today (tracked in
 `.claude/findings/multi-bundle-conversion-e1-findings.md`, Phase 6
 "Unreproducible-provenance gap" finding). Whichever module a future pass converts next, describe it
 as converter-derived **only** once it has an actual `propose` run behind it and its own

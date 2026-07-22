@@ -83,21 +83,28 @@ related_plan: /docs/project_plans/implementation_plans/infrastructure/multi-bund
 
   **Plainly stated**: the evidence-layer artifacts for `modules/kidney_suite_v1/` and
   `modules/growth_suite_v1/` are **not regenerable from committed code today**;
-  `modules/anemia/`'s now are, via the committed generator above. If either remaining upstream
-  fixture (`tests/fixtures/rf-kid-001/`, `rf-gro-002/`) changed and someone needed to re-derive the
-  corresponding committed JSON, there is no checked-in tool that reproduces it — only
-  `cbc_suite_v1`'s evidence layer (via `backfill-cbc-002-evidence.mjs`) and `anemia`'s evidence
-  layer (via `gen-anemia-evidence-assertions.py`) have that property, both covered by `npm run
-  check`. This is a real provenance/reproducibility gap in the delivered artifacts for the two
-  remaining modules, distinct from (and in addition to) the already-documented DF-E1-M1
-  rule-authoring gap the parent plan and `batch.mjs` already track.
+  `modules/anemia/`'s is only regenerable via the committed generator above **run manually** — its
+  committed form had a path-resolution bug (a wrong repo-root computation) that made every
+  invocation fail; the bug has been fixed and the corrected script now reproduces
+  `modules/anemia/evidence-assertions.json` byte-for-byte. If either remaining upstream fixture
+  (`tests/fixtures/rf-kid-001/`, `rf-gro-002/`) changed and someone needed to re-derive the
+  corresponding committed JSON, there is no checked-in tool that reproduces it. `cbc_suite_v1`'s
+  evidence layer (via `backfill-cbc-002-evidence.mjs`) is covered by `npm run check` — its `run()`
+  is imported and exercised by the test suite. `anemia`'s evidence layer (via
+  `gen-anemia-evidence-assertions.py`) is **not**: it is a standalone script with zero test or
+  `npm run check` coverage, so its reproducibility is not continuously enforced, only manually
+  verified as of this pass. This is a real provenance/reproducibility gap in the delivered
+  artifacts for the two remaining modules, distinct from (and in addition to) the
+  already-documented DF-E1-M1 rule-authoring gap the parent plan and `batch.mjs` already track,
+  and the anemia generator's lack of automated coverage remains a smaller, related gap of its own.
 
   **Recommended remediation** (either is sufficient; not decided here — this finding only surfaces
   the gap, per the in-flight-findings lifecycle's Step 3 boundary against prescribing new design
   work): (1) author and commit equivalent scripts for `kidney_suite_v1`/`growth_suite_v1`,
   following `backfill-cbc-002-evidence.mjs`'s (or `gen-anemia-evidence-assertions.py`'s) structure,
-  so each module's evidence layer is regenerable the same way `cbc_suite_v1`'s and `anemia`'s
-  already are; or (2) close DF-E1-M1 (per-module `authoring-decisions.yaml`) for these two modules
+  so each module's evidence layer is at least manually regenerable the way `cbc_suite_v1`'s and
+  `anemia`'s already are — and ideally wire the new scripts into `npm run check` from the start,
+  which `anemia`'s currently is not; or (2) close DF-E1-M1 (per-module `authoring-decisions.yaml`) for these two modules
   so the committed `propose` verb can actually produce their evidence-layer output going forward,
   retiring the bespoke generators entirely. Either remediation should be scoped as its own
   follow-up task, not retrofitted into this phase's already-closed rows.

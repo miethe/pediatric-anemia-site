@@ -202,10 +202,15 @@ authoring, release, or activation on its own.
      one-off generator scripts written outside the converter pipeline; only one of the three
      generators (`modules/anemia/`'s) still exists anywhere in this repo, and it **is** committed,
      at `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py` — the kidney/growth-suite
-     generators are not present in the repo or its history at all. This is a real, currently
-     unremediated provenance gap for the other two: **`kidney_suite_v1`'s and
-     `growth_suite_v1`'s evidence-layer artifacts are not regenerable from committed code
-     today** (anemia's are). Full detail, including the two named remediation
+     generators are not present in the repo or its history at all. Its committed form had a
+     path-resolution bug that made every invocation fail; this has been fixed, and the corrected
+     script now manually reproduces `modules/anemia/evidence-assertions.json` byte-for-byte, but it
+     is **not** wired into `npm run check` or any test (unlike `cbc_suite_v1`'s
+     `backfill-cbc-002-evidence.mjs`, which is imported and exercised by the test suite). This is a
+     real, currently unremediated provenance gap for the other two: **`kidney_suite_v1`'s and
+     `growth_suite_v1`'s evidence-layer artifacts are not regenerable from committed code at all
+     today** — `anemia`'s is regenerable only via a manual, uncovered script run, never via
+     `npm run check` or any automated test. Full detail, including the two named remediation
      options, is in `.claude/findings/multi-bundle-conversion-e1-findings.md`.
    - **`approvedBy` is `[]` and zero new rules were emitted to any module's `rules.json` by this
      feature** — evidence projected is never "module complete" or clinically ready,
