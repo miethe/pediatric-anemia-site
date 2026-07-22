@@ -253,3 +253,28 @@ Human-verifiable, drawn from the PRD's Overall Acceptance Criteria (§11):
 ## 9. Running Log
 
 - [2026-07-21] Brief created alongside the Implementation Plan, expanding the Opus decisions block.
+- [2026-07-22] **Closing entry (P7-T8).** All 7 phases executed; `npm run check` is green on this
+  branch. The real outcome, stated plainly rather than as a uniform "4 bundles converted" claim:
+  **only `rf-cbc-002` -> `cbc_suite_v1` ran `tools/rf-bundle-to-kb-pack/` end to end** (`inspect` ->
+  `verify` -> `propose`, collision-safe merge, byte-identity-proven against the pre-merge snapshot).
+  The other 3 bundles -- `rf-ev-001` -> `modules/anemia/`, `rf-kid-001` -> `modules/kidney_suite_v1/`,
+  `rf-gro-002` -> `modules/growth_suite_v1/` -- **halt at `inspect` with `DecisionsNotFoundError`** by
+  design (FR-14: `propose.mjs` is hardwired to `cbc_suite_v1`'s own drafting content; no
+  `authoring-decisions.yaml` exists yet for the other 3 modules, per Deferred Item DF-E1-M1). Their
+  committed evidence-layer artifacts (`evidence.json`, `evidence-assertions.json`, `unresolved.json`)
+  were instead **hand-produced by bespoke, one-off generator scripts** -- not by the converter's
+  `propose` verb. Of those three generators, only the anemia one survives in the repository, at
+  `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py` (recovered from an untracked worktree
+  scratch file after karen's P6-GATE2 review flagged it TIME-SENSITIVE/HIGH); the kidney- and
+  growth-suite generators were never committed and are not recoverable from this repo or its
+  history -- their output JSON is committed, but is **not regenerable from committed code today**.
+  This provenance split, its cause, and the two named remediation options are documented in full
+  at `.claude/findings/multi-bundle-conversion-e1-findings.md` ("Unreproducible-provenance gap").
+  The load-bearing honesty outcome the plan set out to prove holds regardless of this split: zero
+  new clinical rules were emitted anywhere (`modules/anemia/rules.json` is byte-unchanged;
+  `cbc_suite_v1/rules.json` unchanged by the merge; `kidney_suite_v1`/`growth_suite_v1` both carry
+  empty `rules.json`), and all 4 modules remain `status: "unsigned-stub"`, `approvedBy: []`,
+  `clinicalContentHash: null`. `REG-001`/`REG-004` were never read by any converter or generator
+  script -- only `docs/legal/reg-001-reg-004-hold.md` and its design-spec cross-reference name them.
+  Frontmatter status stays `in_progress` per the lifecycle spec -- Opus sets `completed` after the
+  end-of-feature gate.
