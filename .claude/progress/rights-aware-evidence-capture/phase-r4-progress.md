@@ -10,7 +10,7 @@ execution_model: sequential
 phase: EP-R4
 created: '2026-07-21'
 title: 'EP-R4: Clean-Room Authoring Workflow (WP4)'
-status: not_started
+status: pending
 started: null
 completed: null
 commit_refs: []
@@ -18,7 +18,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 0
+completed_tasks: 1
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -31,12 +31,13 @@ model_usage:
 tasks:
 - id: EPR4-T1
   description: 'Clean-room workflow doc (FR-WP4-01): author docs/workflows/clean-room-authoring.md
-    mapping spec §9''s five roles — research reviewer, independent rule author, clinical adjudicator,
-    rights reviewer, technical verifier — onto this repo''s actual artifacts and gates, naming
-    which roles are currently UNFILLED. The rights owner (OQ-2) and the credentialed clinician
-    are named unfilled, with a note that neither is an engineering task. The doc claims no role
-    is filled by an agent, ARC, or council output.'
-  status: not_started
+    mapping spec §9''s five roles — research reviewer, independent rule author, clinical
+    adjudicator, rights reviewer, technical verifier — onto this repo''s actual artifacts
+    and gates, naming which roles are currently UNFILLED. The rights owner (OQ-2)
+    and the credentialed clinician are named unfilled, with a note that neither is
+    an engineering task. The doc claims no role is filled by an agent, ARC, or council
+    output.'
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -45,13 +46,18 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T00:00:00Z'
+  completed: '2026-07-21T00:00:00Z'
+  evidence:
+  - note: docs/workflows/clean-room-authoring.md
 - id: EPR4-T2
   description: 'Deterministic decision-brief generator (FR-WP4-02): scripts/rights/build-decision-brief.mjs
-    — given an item or binding, emits a decision-ready brief containing independently-worded atoms,
-    structured locators, scope/population, the recorded rights position, and the specific question
-    the human must answer. Fully offline and deterministic; any date input arrives via --as-of
-    or env, never Date.now(). The brief states the recorded rights position as recorded — it never
-    asserts, infers, or upgrades a clearance.'
+    — given an item or binding, emits a decision-ready brief containing independently-worded
+    atoms, structured locators, scope/population, the recorded rights position, and
+    the specific question the human must answer. Fully offline and deterministic;
+    any date input arrives via --as-of or env, never Date.now(). The brief states
+    the recorded rights position as recorded — it never asserts, infers, or upgrades
+    a clearance.'
   status: not_started
   assigned_to:
   - general-purpose
@@ -63,9 +69,10 @@ tasks:
   model_effort: high
 - id: EPR4-T3
   description: 'Clean-room contamination guard (FR-WP4-03, D5): tests/rights-brief-contamination.test.mjs
-    asserts no generated brief contains a verbatim span from a restricted source. Contaminating
-    a brief fails the GATE, not merely a review. The check runs over generator output, not over
-    reviewer assurance. Residual gap R-1 applies here too and is referenced, not claimed closed.'
+    asserts no generated brief contains a verbatim span from a restricted source.
+    Contaminating a brief fails the GATE, not merely a review. The check runs over
+    generator output, not over reviewer assurance. Residual gap R-1 applies here too
+    and is referenced, not claimed closed.'
   status: not_started
   assigned_to:
   - general-purpose
@@ -76,9 +83,10 @@ tasks:
   assigned_model: sonnet
   model_effort: high
 - id: EPR4-T4
-  description: 'Rights-decision ledger plumbing on the RG-9 seam (FR-WP4-04, D4): define a rights-decision
-    ledger entry shape that a future rights owner fills, joined bidirectionally to rights records
-    and evidence items, reusing loadAttestationLedger / validateBindingsAgainstLedger in scripts/evidence/lib/attested-passage-map.mjs
+  description: 'Rights-decision ledger plumbing on the RG-9 seam (FR-WP4-04, D4):
+    define a rights-decision ledger entry shape that a future rights owner fills,
+    joined bidirectionally to rights records and evidence items, reusing loadAttestationLedger
+    / validateBindingsAgainstLedger in scripts/evidence/lib/attested-passage-map.mjs
     rather than adding a second validator. The live rights-decision ledger ships EMPTY.'
   status: not_started
   assigned_to:
@@ -90,12 +98,13 @@ tasks:
   assigned_model: sonnet
   model_effort: high
 - id: EPR4-T5
-  description: 'Positive checks for future clearance entries; ledger stays empty (FR-WP4-05, FR-WP4-06,
-    D6): any future counsel_approved / clearance entry must pass the same positive checks as RG-14/16/17
-    — closed credential list, realpath-canonical attestationRef under docs/attestations/, calendar-valid
-    date — reusing attested-passage-map.mjs. Exercised by a FIXTURE entry only. Negative criterion:
-    the live ledger is empty and a test asserts it; tests/attestation-ledger-gate.test.mjs is
-    unmodified and still passes.'
+  description: 'Positive checks for future clearance entries; ledger stays empty (FR-WP4-05,
+    FR-WP4-06, D6): any future counsel_approved / clearance entry must pass the same
+    positive checks as RG-14/16/17 — closed credential list, realpath-canonical attestationRef
+    under docs/attestations/, calendar-valid date — reusing attested-passage-map.mjs.
+    Exercised by a FIXTURE entry only. Negative criterion: the live ledger is empty
+    and a test asserts it; tests/attestation-ledger-gate.test.mjs is unmodified and
+    still passes.'
   status: not_started
   assigned_to:
   - general-purpose
@@ -106,10 +115,11 @@ tasks:
   assigned_model: sonnet
   model_effort: high
 - id: EPR4-T6
-  description: 'Brief shape for clinician minutes (FR-WP4-07, Should, D5): the brief is one screen
-    per decision, with the decision question stated FIRST, followed by the atoms and locators
-    needed to answer it. The generator may prepare derived_synthesis candidates and may never
-    mark one authoritative — its only reachable synthesis output is a candidate.'
+  description: 'Brief shape for clinician minutes (FR-WP4-07, Should, D5): the brief
+    is one screen per decision, with the decision question stated FIRST, followed
+    by the atoms and locators needed to answer it. The generator may prepare derived_synthesis
+    candidates and may never mark one authoritative — its only reachable synthesis
+    output is a candidate.'
   status: not_started
   assigned_to:
   - general-purpose
@@ -143,34 +153,36 @@ parallelization:
 blockers: []
 success_criteria:
 - id: SC-1
-  description: All five spec §9 roles mapped to a real artifact and gate; unfilled roles named
-    as unfilled (EPR4-T1)
+  description: All five spec §9 roles mapped to a real artifact and gate; unfilled
+    roles named as unfilled (EPR4-T1)
   status: not_started
 - id: SC-2
-  description: Brief generator is deterministic and offline; byte-identical across runs; no Date.now()
-    (EPR4-T2)
+  description: Brief generator is deterministic and offline; byte-identical across
+    runs; no Date.now() (EPR4-T2)
   status: not_started
 - id: SC-3
-  description: Contamination guard fails a quoting brief as a gate, not a review note (EPR4-T3,
-    D5)
+  description: Contamination guard fails a quoting brief as a gate, not a review note
+    (EPR4-T3, D5)
   status: not_started
 - id: SC-4
-  description: Rights-decision ledger validates bidirectionally on the reused RG-9 seam; no second
-    validator (EPR4-T4)
+  description: Rights-decision ledger validates bidirectionally on the reused RG-9
+    seam; no second validator (EPR4-T4)
   status: not_started
 - id: SC-5
-  description: Positive credential/path/date checks exist and are fixture-exercised (EPR4-T5)
+  description: Positive credential/path/date checks exist and are fixture-exercised
+    (EPR4-T5)
   status: not_started
 - id: SC-6
-  description: Live ledgers are empty; a test asserts it. Zero attestations, zero approvals, zero
-    clearances shipped (EPR4-T5, D6)
+  description: Live ledgers are empty; a test asserts it. Zero attestations, zero
+    approvals, zero clearances shipped (EPR4-T5, D6)
   status: not_started
 - id: SC-7
-  description: tests/attestation-ledger-gate.test.mjs unmodified and still passing (EPR4-T5)
+  description: tests/attestation-ledger-gate.test.mjs unmodified and still passing
+    (EPR4-T5)
   status: not_started
 - id: SC-8
-  description: Generator can prepare derived_synthesis candidates only; authoritative output unreachable
-    (EPR4-T6, D3/D6)
+  description: Generator can prepare derived_synthesis candidates only; authoritative
+    output unreachable (EPR4-T6, D3/D6)
   status: not_started
 - id: SC-9
   description: One decision per brief, question first (EPR4-T6, D5)
@@ -189,7 +201,7 @@ files_modified:
 - scripts/rights/build-decision-brief.mjs
 - rights/rights-ledger.json
 - tests/rights-brief-contamination.test.mjs
-progress: 0
+progress: 16
 updated: '2026-07-21'
 ---
 
