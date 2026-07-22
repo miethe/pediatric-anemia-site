@@ -60,6 +60,48 @@ open findings — see `.claude/findings/wave0-ep6-validation-corpus-findings.md`
 - The severe-anemia alert can be suppressed when sex-at-birth is not provided.
 - A classic acute-leukemia presentation can currently return an empty assessment.
 
+### Multi-Bundle Conversion (E1): Two New Module Scaffolds & Evidence-Layer Projections — zero new rules
+
+This is a bookkeeping/scaffolding pass over already-vendored, verified `rf` (Research Foundry)
+evidence bundles. **It produced zero new clinical rules and is not a content release or a step
+toward one.** No rule, candidate, or threshold was added, changed, or approved in any module.
+
+- Added two new greenfield module scaffolds, `modules/kidney_suite_v1/` and
+  `modules/growth_suite_v1/`, registered in `src/modules/registry.js` and `src/facts/registry.js`.
+  Both ship `module.json.status: "unsigned-stub"`, `approvedBy: []`, an `engineLabel` explicitly
+  marked "not yet implemented", and empty `rules.json`/`candidates.json` (`[]`/`{}`) — neither
+  module is usable for any patient population yet; both are registered only so the platform's
+  multi-module plumbing (module/facts registries) can be proven end-to-end ahead of any real
+  clinical content.
+- Added evidence-layer projections for four modules: `modules/anemia/evidence-assertions.json`
+  (35 assertions from `rf-ev-001`), `modules/kidney_suite_v1/evidence.json` +
+  `evidence-assertions.json` + `unresolved.json` (73 assertions / 83 unresolved entries from
+  `rf-kid-001`, including one named, un-averaged proteinuria-cutoff source conflict), and
+  `modules/growth_suite_v1/evidence-assertions.json` + `evidence.json` + `unresolved.json`
+  (79 assertions / 89 unresolved entries from `rf-gro-002`, including one named, un-averaged
+  WHO-vs-CDC growth-standard source conflict). Every assertion resolves to a rights-restricted,
+  hash-verified passage reference (`exactPassageSha256`), never a fabricated quote.
+- **Provenance is split, not uniform, across these four projections — this distinction is
+  load-bearing and must not be collapsed in any future summary:** only `rf-cbc-002` →
+  `modules/cbc_suite_v1/` was produced by running the committed `tools/rf-bundle-to-kb-pack/`
+  converter's `propose` verb end to end (deterministic, offline, test-proven byte-identical
+  across clean re-runs). The other three projections above (`modules/anemia/`,
+  `modules/kidney_suite_v1/`, `modules/growth_suite_v1/`) were **not** produced by that converter —
+  it is hardwired by design to `cbc_suite_v1`'s own drafting content and structurally refuses to
+  run without a per-module `authoring-decisions.yaml`, which does not yet exist for any of the
+  other three modules (Deferred Item DF-E1-M1). Those three were instead hand-produced by bespoke,
+  scoped, evidence-only generator scripts outside the converter, and are correctly labeled
+  **bespoke evidence projections pending DF-E1-M1**, never converter output. Only
+  `cbc_suite_v1`'s evidence layer is regenerable from a committed script
+  (`scripts/evidence/backfill-cbc-002-evidence.mjs`) today; the other three projections'
+  generators are not committed anywhere in this repository (see
+  `.claude/findings/multi-bundle-conversion-e1-findings.md`, "Unreproducible-provenance gap").
+- `npm run check` remains green across all four modules' updated artifact counts; `npm run
+  validate` reports the expected per-module rule/candidate/evidence/assertion counts with zero
+  schema errors. Nothing here changes the platform's clinical status: it is still an unvalidated
+  research prototype, `clinicalApprovers[]`/`approvedBy[]` remain empty across every module, and
+  no rule anywhere has received named, credentialed clinical sign-off.
+
 ### Evidence Foundry Buildout (E0): Converter & Module Scaffold
 
 - Added `tools/rf-bundle-to-kb-pack/`, a deterministic Node ESM CLI converter that transforms verified Research Foundry evidence bundles into candidate knowledge-base package proposals. The converter accepts an `rf` run with `status: verified` and produces a gitignored staging directory (`build/kb-pack/`) containing module artifacts (rules, candidates, evidence records, governance metadata, and test traces) that require clinical review before being committed to a versioned module package. It is offline and deterministic: zero network calls and zero generative-model calls in any verb (test-enforced), byte-identical output across clean re-runs.
