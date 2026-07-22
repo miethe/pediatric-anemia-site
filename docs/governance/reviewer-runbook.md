@@ -62,7 +62,7 @@ status **"proposed" — not yet formally ratified by clinical governance**):
    release authorization. If they disagree, a named adjudicator — someone who did not author the
    proposal — reviews both records and records the resolving decision.
 5. **`release-auth`** — release authorization. The only role whose record can ever move a module
-   toward release-ready status, and only once every role above it is complete.
+   toward release authorization, and only once every role above it is complete.
 
 The tool tracks, for any module, which of these five records already exist and which role is
 expected next (`status`'s `nextExpectedRole`) — see below.
