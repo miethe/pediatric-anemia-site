@@ -15,13 +15,18 @@
       "uniqueItems": false,
       "items": { "$ref": "#/$defs/source" },
       "description": "`minItems: 0` (relaxed from the original anemia-only `1`, evidence-foundry-buildout P1-T3): a brand-new module package scaffold — e.g. modules/cbc_suite_v1/evidence.json at E0 — legitimately has zero sources until its evidence is converted (Phase 3+). Every EXISTING populated module's evidence.json is unaffected: none has ever had fewer than 1 source, so this only widens what is legal, it narrows nothing."
+    },
+    "derived_syntheses": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/derivedSynthesis" },
+      "description": "EPR3-T7 (FR-WP3-07, decisions-block D3/D6). The first-party synthesis items — content this project AUTHORS over two or more input evidence items, not drawn from any single source. Shipped as a first-class item type from day one with attribution-to-inputs modelled (D3: retrofitting provenance onto a synthesis is impossible — you cannot reconstruct which inputs a claim came from once it is written), reachable ONLY in a `candidate` state (D6). Kept as its own top-level container rather than inside `sources[].passages[]` precisely because a first-party synthesis has no `sourceId`, no `passageFidelity`, and no third-party `structured_locator` — the source-drawn passage shape does not fit it. Per RF handoff §9.5 (DEF-R4) a `derived_synthesis` gets NO `rights_record`: `schemas/rights/rights_record.schema.json` requires a `source_id` (minLength 3) and has no first-party `record_scope` / `overall_status` member, so first-party authorship is modelled on the item itself (`$defs/synthesis.first_party_rights_holder` + `$defs/synthesis.attestation`) and re-homing into a rights-record (or a sibling first-party model) waits on OQ-4 — the gap is recorded here and in `schemas/rights/VENDORING.md` (DEF-R4), never papered over. OPTIONAL and today EMPTY: this feature ships the capability and its fails-closed constraints, and ZERO instances — a real `derived_synthesis` is an unattested clinical claim, which D6 forbids any agent from authoring."
     }
   },
   "$defs": {
     "source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "priority", "year", "title", "organization", "journal", "url", "supports", "passages"],
+      "required": ["id", "priority", "year", "title", "organization", "journal", "url", "supports", "passages", "license", "access_basis", "terms", "terms_snapshot"],
       "properties": {
         "id": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
         "priority": { "type": "string", "minLength": 1 },
@@ -109,6 +114,188 @@
           "minItems": 1,
           "items": { "$ref": "#/$defs/passage" },
           "description": "Exact-passage-level evidence records for this source (EP-3, D-EP3-2/D-EP3-3). Every source has at least one: the minted `<id>#implementation-proposal` sentinel, plus one per source-supported passage backfilled from the RF-EV-001 bundle. `modules/cbc_suite_v1/evidence.json` (evidence-foundry-buildout P3-T2) carries only the sentinel per source at this stage — real exact-passage traceability for that module's slice rules is recorded in the new, separate `modules/cbc_suite_v1/evidence-assertions.json` (02 §4.10, P3-T3), not duplicated into this nested array."
+        },
+        "access_basis": {
+          "description": "EPR2-T1 (FR-WP2-01/05). REQUIRED — omission fails validation; an unassessed source states that explicitly as `unknown` rather than omitting the key (D2). How this repo actually accesses this source's content today. Vocabulary matches schemas/rights/rights_record.schema.json's `access.basis` one-for-one, including the `unknown` local amendment (EPR0-T3, handoff §9.3) so this field and the source's joined rights_record (rights/rights-ledger.json, D4) never disagree on a name for the same concept. This is a lightweight, always-present source-level summary a consumer can read without resolving the ledger — it is NOT a duplicate of the full rights_record and carries no clearance authority itself (D6/D7): a coverage gate may read it, a clearance gate may not exist to read it.",
+          "enum": [
+            "public_web",
+            "open_repository",
+            "personal_subscription",
+            "institutional_subscription",
+            "purchased_copy",
+            "licensed_api",
+            "direct_permission",
+            "author_provided_copy",
+            "government_source",
+            "partner_confidential",
+            "data_use_agreement",
+            "other",
+            "unknown"
+          ]
+        },
+        "license": {
+          "$ref": "#/$defs/license",
+          "description": "EPR2-T1 (FR-WP2-01/05). REQUIRED — omission fails validation; every member below is itself required with an explicit typed unknown/null where genuinely unassessed. Source-level copyright/licence posture, a lightweight sibling of schemas/rights/rights_record.schema.json's `copyright` object — the authoritative, extensible governance record lives in rights/, joined via rights/rights-ledger.json (D4); this field is not a duplicate of it and carries no clearance authority (D6/D7)."
+        },
+        "terms": {
+          "$ref": "#/$defs/terms",
+          "description": "EPR2-T1 (FR-WP2-01/03/05). REQUIRED — omission fails validation; every member below is itself required with an explicit typed unknown where genuinely unassessed. Source-level terms-of-use restrictions transcribed from an observed terms document, a lightweight sibling of schemas/rights/rights_record.schema.json's `contract` object — the authoritative record lives in rights/, joined via rights/rights-ledger.json (D4). `terms_snapshot` (EPR2-T2) separately records the locator and date the terms were observed at; this object records the restriction facts transcribed from that locator, never the terms prose itself (D1) — a fixture attempting to store terms text in any member here is rejected by the closed enums below, none of which is a free-text type."
+        },
+        "terms_snapshot": {
+          "$ref": "#/$defs/termsSnapshot",
+          "description": "EPR2-T2 (FR-WP2-02, D1). REQUIRED — omission fails validation; every member below is itself required, with explicit typed null for genuinely uncaptured. Records WHAT TERMS DOCUMENT WAS OBSERVED AND WHEN — an addressable locator plus a retrieval date — never the terms text itself. This is the load-bearing D1 boundary field: the archive stores provenance precise enough to re-fetch and re-verify, never retained third-party expression. It mirrors, at source-summary granularity, schemas/rights/rights_record.schema.json's `access.terms_snapshot_uri` / `access.terms_snapshot_sha256` / `access.terms_verified_at` triad (D4) — the authoritative, extensible governance record lives in rights/, joined via rights/rights-ledger.json; this field is a lightweight, always-present summary and carries no clearance authority of its own (D6/D7). `terms` (EPR2-T1, above) records the restriction *facts* transcribed from the document this field locates; this field records only where and when that document was observed. EP-R3's negative invariant (EPR3-T1) extends coverage of this no-retained-text boundary once it lands."
+        }
+      }
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "rights_holder", "license_url", "noncommercial_only", "no_derivatives", "government_basis"],
+      "description": "EPR2-T1 (FR-WP2-01/05). Source-level copyright/licence posture. Every member is required; use the typed unknown/null member rather than omitting the key when genuinely unassessed (D2). Field names and enum vocabulary are drawn one-for-one from schemas/rights/rights_record.schema.json's `copyright` object so this lightweight summary and the source's joined rights_record (rights/rights-ledger.json, D4) never disagree on a name for the same concept — this object is not a duplicate of the full rights_record and carries no clearance authority of its own.",
+      "properties": {
+        "status": {
+          "description": "Matches schemas/rights/rights_record.schema.json's `copyright.status` enum exactly. `us_federal_government_work` is a distinct member from `public_domain` by design — it names the 17 U.S.C. §105 basis, never a public-domain claim resting on funding source alone. EPR2-T4 (FR-WP2-04) extends this object with `government_basis` (below) to record that distinction explicitly, enforced structurally by the allOf invariants below: `status: \"us_federal_government_work\"` requires `government_basis.government_work: true`. `status: \"public_domain\"` remains valid on its own non-government basis (e.g. genuinely expired copyright) — but a record that also asserts `government_basis.government_funded: true` may reach `public_domain` only alongside `government_basis.government_work: true`; funding alone can never be the stated basis for a public-domain claim.",
+          "enum": ["copyrighted", "open_license", "public_domain", "us_federal_government_work", "mixed_or_third_party", "unknown"]
+        },
+        "rights_holder": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The named copyright holder, or null when unassessed or genuinely unstated by the source."
+        },
+        "license_url": {
+          "type": ["string", "null"],
+          "pattern": "^https?://\\S+$",
+          "description": "No `format: \"uri\"` (FR-WP0-08) — scripts/lib/json-schema-lite.mjs silently ignores `format` except date/date-time, so an unenforced `format: \"uri\"` would fail open. Null when no published licence URL is known or the field is unassessed; a non-null value that is not a URL is rejected by `pattern`."
+        },
+        "noncommercial_only": {
+          "type": ["boolean", "null"],
+          "description": "Null when unassessed. True/false only once actually determined from the licence/terms."
+        },
+        "no_derivatives": {
+          "type": ["boolean", "null"],
+          "description": "Null when unassessed. True/false only once actually determined from the licence/terms."
+        },
+        "government_basis": {
+          "$ref": "#/$defs/governmentBasis",
+          "description": "EPR2-T4 (FR-WP2-04). REQUIRED — omission fails validation; both members below are themselves required, with explicit typed null for genuinely unassessed (D2). Records, as two independent facts, the government-work / government-funded distinction the reviewed vendored spec's §3.7 conflates (.claude/findings/rights-governance-spec-v1.0-review-findings.md §2.B) — this task transcribes a statutory basis already recorded in those findings; it makes no new legal determination."
+        }
+      },
+      "allOf": [
+        {
+          "description": "EPR2-T4 (FR-WP2-04), clause A: `us_federal_government_work` names the 17 U.S.C. §105 basis, so a record cannot claim that status without also asserting the underlying fact that grounds it.",
+          "if": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "us_federal_government_work" } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["government_basis"],
+            "properties": {
+              "government_basis": {
+                "type": "object",
+                "required": ["government_work"],
+                "properties": { "government_work": { "const": true } }
+              }
+            }
+          }
+        },
+        {
+          "description": "EPR2-T4 (FR-WP2-04), clause B — the acceptance test named in the phase file: a fixture marking a source `public_domain` on funding grounds alone fails validation. `public_domain` remains reachable on its own non-government basis (e.g. genuinely expired copyright, `government_funded` left `null`/`false`); the moment a record also asserts `government_funded: true`, it must additionally assert `government_work: true` to keep that status — `government_funded: true` can never be the sole stated basis for `public_domain`.",
+          "if": {
+            "type": "object",
+            "required": ["status", "government_basis"],
+            "properties": {
+              "status": { "const": "public_domain" },
+              "government_basis": {
+                "type": "object",
+                "required": ["government_funded"],
+                "properties": { "government_funded": { "const": true } }
+              }
+            }
+          },
+          "then": {
+            "type": "object",
+            "required": ["government_basis"],
+            "properties": {
+              "government_basis": {
+                "type": "object",
+                "required": ["government_work"],
+                "properties": { "government_work": { "const": true } }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "governmentBasis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["government_work", "government_funded"],
+      "description": "EPR2-T4 (FR-WP2-04). Two independent facts about a source's relationship to the U.S. federal government, never one field inferred from the other: a U.S. federal government WORK is uncopyrightable under 17 U.S.C. §105 regardless of who funded the underlying research; a government-FUNDED work (e.g. an NIH grant supporting a university author's article — abundant in the PMC corpus this project searches) carries no such exemption and remains fully copyrighted unless it is separately also a government work. A source can be funded without being a government work (the common PMC case), a government work without being extramurally funded (e.g. CDC2025_LEAD, staff-authored agency guidance), both, or neither. See the allOf invariants on `#/$defs/license`: `license.status: \"us_federal_government_work\"` requires `government_work: true`, and `license.status: \"public_domain\"` combined with `government_funded: true` also requires `government_work: true` — `government_funded: true` alone can never justify either status.",
+      "properties": {
+        "government_work": {
+          "type": ["boolean", "null"],
+          "description": "True when this source is itself a work of the U.S. federal government within the meaning of 17 U.S.C. §105 (e.g. authored by federal employees as part of their official duties, as with CDC2025_LEAD's CDC-authored clinical guidance) — the sole basis on which `license.status: \"us_federal_government_work\"` or a funding-adjacent `\"public_domain\"` claim may rest. Null when unassessed."
+        },
+        "government_funded": {
+          "type": ["boolean", "null"],
+          "description": "True when this source's underlying research or authorship was funded, in whole or part, by a U.S. government grant or contract (e.g. an NIH-funded study), independent of who holds copyright in the resulting work. A government-funded work by a non-federal author remains fully copyrighted — this field alone can never justify `license.status: \"us_federal_government_work\"` or `\"public_domain\"`. Null when unassessed."
+        }
+      }
+    },
+    "terms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["incorporation_into_other_products", "adaptation", "commercial_use", "redistribution", "sublicensing"],
+      "description": "EPR2-T1 (FR-WP2-01/03/05). Source-level terms-of-use restrictions. Every member is required; use the closed enum's `unknown` (or `not_addressed`) member rather than omitting the key when genuinely unassessed (D2). Field names and enum vocabulary are drawn one-for-one from schemas/rights/rights_record.schema.json's `contract` object — this object is not a duplicate of the full rights_record and carries no clearance authority of its own; the authoritative record lives in rights/, joined via rights/rights-ledger.json (D4). Every member is a closed enum: there is no free-text member anywhere on this object capable of holding terms prose (D1) — the facts recorded here must be transcribed from an observed terms document (see `terms_snapshot`, EPR2-T2), never authored.",
+      "properties": {
+        "incorporation_into_other_products": {
+          "description": "Matches schemas/rights/rights_record.schema.json's `contract.incorporation_into_other_products` enum exactly.",
+          "enum": ["allowed", "allowed_with_conditions", "restricted_without_written_approval", "prohibited", "not_addressed", "unknown"]
+        },
+        "adaptation": {
+          "description": "Matches schemas/rights/rights_record.schema.json's `contract.adaptation` enum exactly — covers altering, abridging, adapting, or modifying the source content, or preparing a derivative work based on it.",
+          "enum": ["allowed", "allowed_with_conditions", "restricted_without_written_approval", "prohibited", "not_addressed", "unknown"]
+        },
+        "commercial_use": {
+          "description": "A local extension of schemas/rights/rights_record.schema.json's `contract.commercial_use` enum, which closes with `not_granted`. This field adds `not_granted_by_subscription` — the literal value the vendored spec bundle's own prose narrative uses for the AAP2026_IDA case (Research_Foundry_Source_Reuse_and_Rights_Governance_Spec_v1.0.md, Appendix A; FR-WP2-03): a subscription that grants read access grants no commercial-use right, a more precise claim than the generic `not_granted`. This field lives on schemas/evidence.schema.json, not on the vendored schemas/rights/rights_record.schema.json, so extending its enum here is not a vendored-schema amendment and needs no schemas/rights/VENDORING.md entry.",
+          "enum": ["allowed", "allowed_with_conditions", "not_granted", "not_granted_by_subscription", "prohibited", "not_addressed", "unknown"]
+        },
+        "redistribution": {
+          "description": "Matches schemas/rights/rights_record.schema.json's `contract.redistribution` enum exactly.",
+          "enum": ["allowed", "allowed_with_conditions", "restricted", "prohibited", "not_addressed", "unknown"]
+        },
+        "sublicensing": {
+          "description": "Matches schemas/rights/rights_record.schema.json's `contract.sublicensing` enum exactly.",
+          "enum": ["allowed", "allowed_with_conditions", "not_granted", "prohibited", "not_addressed", "unknown"]
+        }
+      }
+    },
+    "termsSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "locator", "sha256", "retrieved_at"],
+      "description": "EPR2-T2 (FR-WP2-02, D1). An addressable reference to the terms document actually observed for this source — never the terms text itself. Every member is required; use `status: \"not_captured\"` or `\"unknown\"` with the other three members null, rather than omitting the key, when a snapshot genuinely was not taken or is unassessed (D2 — omission is never a substitute for a typed 'unassessed'/'not captured' value). There is no free-text body property anywhere on this object capable of holding terms prose: `locator` is a scheme-qualified reference matched by `pattern` (rejects any value containing whitespace, so a pasted paragraph of terms text cannot validate here), `sha256` is a closed 64-hex-digit content hash, and `retrieved_at` is a bare date. No `format: \"uri\"` is used (FR-WP0-08) — scripts/lib/json-schema-lite.mjs silently ignores it; `locator` uses `pattern` instead.",
+      "properties": {
+        "status": {
+          "description": "Whether a terms snapshot locator was actually captured for this source. `not_captured` records the gap explicitly (D1's `not_captured[]` discipline) rather than leaving `locator` silently null with no stated reason.",
+          "enum": ["captured", "not_captured", "unknown"]
+        },
+        "locator": {
+          "type": ["string", "null"],
+          "pattern": "^[a-zA-Z][a-zA-Z0-9+.-]*://\\S+$",
+          "description": "A scheme-qualified addressable reference to the terms document as observed (e.g. `https://...` or an internal content-addressed reference such as `internal://rights-snapshots/<slug>.html`) — a locator, never the document body. The pattern requires a scheme and forbids any whitespace, so a fixture attempting to store prose (which contains spaces) is rejected. Null when `status` is `not_captured` or `unknown`."
+        },
+        "sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Content hash of the observed terms document at `locator`, when computed. Null when not computed, not captured, or unassessed."
+        },
+        "retrieved_at": {
+          "type": ["string", "null"],
+          "format": "date",
+          "description": "The date the terms document was observed at `locator`. Null when `status` is `not_captured` or `unknown`."
         }
       }
     },
@@ -128,9 +315,15 @@
         "reviewDate",
         "supersedes",
         "surveillanceQuery",
-        "provenance"
+        "provenance",
+        "evidence_item_type",
+        "judgment_basis",
+        "judgment_basis_attestation",
+        "rights_component_class",
+        "structured_locator",
+        "not_captured"
       ],
-      "description": "A single exact-passage evidence record (D-EP3-3). Every member below except `applicability` is REQUIRED as a key — legitimate absence is expressed as an explicit typed null (`evidenceGrade`, `supersedes`, and every member of `sourceLocator`/`applicability`), never by omitting the key. `applicability` is conditionally required by the allOf below (AC-WP3-RESIL, EP3-T6): required on every `source-supported` record (an unrestricted-by-default clinical applicability claim on a supposedly source-backed record is a safety defect), optional only on the `implementation-proposal` sentinel, where absence means \"unrestricted\" because there is no clinical claim being made at all. The one content invariant (AC EP3-T1) is enforced by the first allOf member below: a record is valid only when `exactPassage` is non-empty OR `status` is `implementation-proposal` — the proposal sentinel is the only way to have an empty passage.",
+      "description": "A single exact-passage evidence record (D-EP3-3). Every member below except `applicability` is REQUIRED as a key — legitimate absence is expressed as an explicit typed null (`evidenceGrade`, `supersedes`, and every member of `sourceLocator`/`applicability`), never by omitting the key. `applicability` is conditionally required by the allOf below (AC-WP3-RESIL, EP3-T6): required on every `source-supported` record (an unrestricted-by-default clinical applicability claim on a supposedly source-backed record is a safety defect), optional only on the `implementation-proposal` sentinel, where absence means \"unrestricted\" because there is no clinical claim being made at all. The one content invariant (AC EP3-T1) is enforced by the first allOf member below: a record is valid only when `exactPassage` is non-empty OR `status` is `implementation-proposal` — the proposal sentinel is the only way to have an empty passage. EPR3-T2 (FR-WP3-01/02/03, D2) adds three orthogonal REQUIRED axis fields — `evidence_item_type` (what kind of thing), `rights_component_class` (which rights component of the source), `judgment_basis` (measured vs. judged, always `unassessed` today) — plus the forced-null `judgment_basis_attestation` that gates the third. They sit here as first-class members, NOT under `extensions.rights` (RF handoff §9.1), and they are separate from the two axes this record already carried: the epistemic `status` and the reuse-posture `passageFidelity`. Five axes now coexist on one record and none is derived from another (AC-WP3-AXES): a passage can be `source-supported` (epistemically sound) and still sit against a contract-restricted `rights/` record, or be `quarantined` while its rights are unrestricted.",
       "properties": {
         "id": {
           "type": "string",
@@ -154,6 +347,38 @@
         "passageFidelity": {
           "enum": ["verbatim", "paraphrase", "withheld"],
           "description": "States what kind of text `exactPassage` holds. REG-002 has not cleared verbatim reuse of guideline text, so every record minted by this codebase's converter is `paraphrase` unless withheld; `verbatim` is schema-representable for a future cleared source but is asserted by nobody today. `withheld` (EP3T5-F01) means the independent EP3-T5 fidelity audit found the located span shared a rights-restricted contiguous span with source text; vendor-rf-bundle.mjs replaced `exactPassage` with the fixed placeholder before this record was ever minted, and `reviewFlags` carries `near-verbatim-span-pending-rights`."
+        },
+        "evidence_item_type": {
+          "$ref": "#/$defs/evidenceItemType",
+          "description": "EPR3-T2 (FR-WP3-01, decisions-block D2), axis 1 of 3. WHAT KIND OF THING this item is, epistemically. First-class here rather than under `extensions.rights` — RF handoff §9.1: `rights_extension` is `additionalProperties: false` and requires a `clearance_status`/`release_gate` pair no capture-time record can carry, so the taxonomy does not ride it. Orthogonal to `rights_component_class` and to `status`/`passageFidelity`: no code path may infer any one of these from another (AC-WP3-AXES, EPR3-T3)."
+        },
+        "judgment_basis": {
+          "$ref": "#/$defs/judgmentBasis",
+          "description": "EPR3-T2 (FR-WP3-02, OQ-1), axis 2 of 3. Whether the item's value is measured/observed or committee-judged. This determination is a legal/clinical one that routes to counsel and is UNANSWERED for every threshold family in this knowledge base, so every record this codebase mints carries `unassessed`. Leaving `unassessed` requires a non-null `judgment_basis_attestation` (allOf below), which this schema version forces to `null` — so no agent can move this axis. `unassessed` is a typed value, never an omission (D2: missingness is never treated as normal)."
+        },
+        "judgment_basis_attestation": {
+          "const": null,
+          "description": "EPR3-T2 (FR-WP3-02, D6). REQUIRED key, and under this schema version it MUST be exactly `null` — the human attestation that would justify a non-`unassessed` `judgment_basis` does not exist in this project and MUST NOT be agent-authored. The element shape for a future real attestation process is already specified at `$defs/judgmentBasisAttestation` and is applied by the pairing rule in `allOf` below, so the constraint is written once and stays correct when a real process exists. Relaxing this `const` is the deliberate, reviewable act by which this project would first claim a measured-vs-judged determination; it must never be done to make a build pass. Carries no clearance authority and is not a clearance surface (D7)."
+        },
+        "rights_component_class": {
+          "$ref": "#/$defs/rightsComponentClass",
+          "description": "EPR3-T2 (FR-WP3-03, D2), axis 3 of 3. WHICH RIGHTS COMPONENT of the source this item draws on. Deliberately orthogonal to `evidence_item_type`: an `observed_finding` may be drawn from a `table`, a `figure`, or `prose`, and a `reference_interval_value` is very often a `table` — the two axes carry different vocabularies for different purposes and neither is derivable from the other (AC-WP3-AXES). Legal disposition of that component lives on the joined `rights/` record's `overall_status`, never here: this field names the component, it does not clear it (D7)."
+        },
+        "structured_locator": {
+          "$ref": "#/$defs/structuredLocator",
+          "description": "EPR3-T4 (FR-WP3-04, D1). REQUIRED. The addressable provenance that IS the archive (D1: 'the archive is provenance, not text'): each applicable component of where this item was found, held as an INDIVIDUALLY ADDRESSABLE structured field — never a single free-text locator string. There is no free-text catch-all on `$defs/structuredLocator` (unlike the EP-3 `sourceLocator.raw` that predates this feature): a locator that collapses table/row/column into one prose string cannot be represented as complete, and the coverage gate `evidence-item-locator-capture` in scripts/validate-rights.mjs additionally fails any table-derived item (`rights_component_class: \"table\"` or `evidence_item_type: \"reference_interval_value\"`) whose table/row/column is silently null rather than either addressed or listed in `structured_locator.unresolved_components`. Missingness is never treated as normal (D2): an incomplete locator records its unknown-but-applicable components explicitly in `unresolved_components`, it does not omit them. This field is the epistemic/provenance locator; it carries no clearance authority (D7)."
+        },
+        "not_captured": {
+          "$ref": "#/$defs/notCaptured",
+          "description": "EPR3-T4 (FR-WP3-06, D1). REQUIRED, and non-empty on every located record (the `allOf` clause below exempts only the `implementation-proposal` sentinel, which captured nothing from a source). Maximal capture means maximal addressable provenance, NOT retained third-party expression — so what was deliberately NOT stored (the verbatim wording, a table's structure, a figure, the visual layout) is recorded here EXPLICITLY, each entry naming a `kind` and a `rationale`, rather than left implicit. The `evidence-item-locator-capture` gate additionally requires any table-derived item to carry a `not_captured[]` entry of kind `table_structure`: per-value atoms are captured, the table itself is named as omitted, and no reproduced table exists in any form (D1, REG_002 uncleared). Each `rationale` is this project's own explanation of an omission, never a transcription of the omitted third-party text (that would defeat the point and trip EPR3-T1's negative invariant)."
+        },
+        "numeric_recapture": {
+          "$ref": "#/$defs/numericRecapture",
+          "description": "EPR3-T6 (FR-WP3-05, AC-WP3-NUMERICS, D1). OPTIONAL — present only on a passage the independent EP3-T5 fidelity audit found dropped source numerics (reviewFlag `omits-source-numerics`), plus AAP2026_IDA#ev_002, which docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md additionally names. It records how that numeric omission was RESOLVED, to exactly one of two states and never to neither: (a) `per_value_atoms` — a set of per-value typed atoms, each independently worded, each carrying the source's *reported* value transcribed at a component-addressable `structured_locator`, its own `evidence_item_type`/`rights_component_class`/`judgment_basis: unassessed`, and never a reproduced table (the omitted table structure stays named in this passage's `not_captured[]`, D1/REG_002 uncleared); or (b) `no_reported_value_available` — an explicit not-captured resolution stating why no atom could be captured (the reported value is absent from the retrievable in-repo provenance; nothing is authored, adjusted, or interpolated — no invented thresholds). Coverage/consistency only, never a clearance surface (D7); a passage with no numeric omission simply omits this key. The `omits-source-numerics`-flagged passages, and the audit-named AAP case, are proven to carry a well-formed value here by the `evidence-numeric-recapture-resolution` coverage gate (scripts/validate-rights.mjs)."
+        },
+        "guideline_recommendation_capture": {
+          "$ref": "#/$defs/guidelineRecommendationCapture",
+          "description": "EPR3-T8 (FR-WP3-08, D2 'captured, not avoided'). OPTIONAL — present only on a passage whose `evidence_item_type` is `guideline_recommendation`, where it captures the FACT of the recommendation (its named issuing body, an independently-worded restatement, and the scope/population it applies to) at the passage's addressable `structured_locator`, and NEVER the recommendation's prose. A guideline is captured, not avoided (D2): we record THAT a named body recommends something and to whom, in our own words, without retaining the source sentence. Kept OPTIONAL in the schema — deliberately NOT conditionally required on `evidence_item_type` — so no `$defs/passage` clause couples the capture's presence to a taxonomy axis (D2/AC-WP3-AXES, asserted by tests/rights-axis-separation.test.mjs's schema probe); the presence obligation for every guideline_recommendation item is instead a coverage gate (`evidence-guideline-recommendation-capture`, scripts/validate-rights.mjs), mirroring how EPR3-T6's `numeric_recapture` presence is gate-enforced rather than schema-required. Coverage/consistency only, never a clearance surface (D7). EPR3-T1's negative invariant scans `restatement` like every other capture surface, so a verbatim span from the source here trips it."
         },
         "reviewFlags": {
           "type": "array",
@@ -214,6 +439,20 @@
           },
           "then": true,
           "else": { "type": "object", "required": ["applicability"] }
+        },
+        {
+          "description": "EPR3-T4 (FR-WP3-06, D1): `not_captured[]` is non-empty on every LOCATED record — a captured item always withheld SOMETHING (at minimum the verbatim wording it paraphrases, D-EP3-4), and D1 requires that omission be recorded explicitly, never left implicit. The `implementation-proposal` sentinel is the sole exemption: it captured nothing from a source, so there is nothing it deliberately did not store. This clause references only `status` and `not_captured` — no taxonomy axis field — so it does not couple two axes (D2, asserted by tests/rights-evidence-item-axes.test.mjs).",
+          "if": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "implementation-proposal" } }
+          },
+          "then": true,
+          "else": {
+            "type": "object",
+            "required": ["not_captured"],
+            "properties": { "not_captured": { "minItems": 1 } }
+          }
         },
         {
           "description": "EP3-T5 (EP3T5-F01): a record flagged near-verbatim-span-pending-rights must be marked withheld.",
@@ -279,8 +518,86 @@
             "required": ["reviewFlags"],
             "properties": { "reviewFlags": { "minItems": 1 } }
           }
+        },
+        {
+          "description": "EPR3-T2 (FR-WP3-02, OQ-1, D6): `judgment_basis` may leave `unassessed` ONLY against a human attestation record. A record claiming `measured_or_observed` or `committee_judged` with a null `judgment_basis_attestation` is invalid — an unattested determination is exactly the fail-open this feature exists to prevent. Combined with the `const: null` on `judgment_basis_attestation` itself, this makes every non-`unassessed` value structurally unreachable in this schema version: no enum value, flag, or field combination reaches a measured-vs-judged determination without a human attestation record this feature does not create. This clause is written against the attestation SHAPE (`$defs/judgmentBasisAttestation`), not against the `const`, so it remains the operative constraint on the day a real attestation process relaxes that `const`. Note the direction: this is a coverage/consistency constraint on an unassessed record, not a clearance gate — an item at `judgment_basis: unassessed` validates cleanly and always will (D7).",
+          "if": {
+            "type": "object",
+            "required": ["judgment_basis"],
+            "properties": { "judgment_basis": { "not": { "const": "unassessed" } } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["judgment_basis_attestation"],
+            "properties": { "judgment_basis_attestation": { "$ref": "#/$defs/judgmentBasisAttestation" } }
+          }
         }
       ]
+    },
+    "evidenceItemType": {
+      "enum": [
+        "observed_finding",
+        "reference_interval_value",
+        "equation_or_method",
+        "guideline_recommendation",
+        "instrument_or_questionnaire",
+        "bibliographic_metadata",
+        "derived_synthesis"
+      ],
+      "description": "EPR3-T2 (FR-WP3-01, D2). CLOSED enumeration — an unrecognised value is a hard schema violation, not a warning, because an unclassifiable item is one whose rights and epistemic posture nobody has actually looked at. Members are epistemic kinds, not rights components (that is `rights_component_class`) and not confidence (there is none). `derived_synthesis` is this project's own first-party synthesis and exists only in a `candidate` state; EPR3-T7 owns its attribution model and the RF handoff §9.5 gap (DEF-R4) that leaves it without a `rights_record`. Adding a member is a reviewable schema change — never a convenience to make a record fit."
+    },
+    "judgmentBasis": {
+      "enum": ["unassessed", "measured_or_observed", "committee_judged"],
+      "default": "unassessed",
+      "description": "EPR3-T2 (FR-WP3-02, OQ-1). `unassessed` is the ONLY value any artifact in this repository carries today, and the only value an agent may write: whether a threshold family is measured/observed or committee-judged is a determination that routes to counsel (OQ-1, open), and it materially changes the downstream rights analysis. The other two members exist so the answer is representable when a human gives it — their reachability is gated by the `judgment_basis_attestation` pairing rule on `$defs/passage`, not by their absence from this enum. `default` here is a JSON Schema annotation only (`scripts/lib/json-schema-lite.mjs` treats it as inert); the field is REQUIRED, so no record ever relies on a default being applied."
+    },
+    "judgmentBasisAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attested_by", "attestation_ref", "attested_on"],
+      "description": "EPR3-T2 (FR-WP3-02, D6). The shape a human attestation would take if one existed. NOTHING IN THIS REPOSITORY VALIDATES AGAINST THIS DEFINITION TODAY and nothing may be authored against it by an agent: `$defs/passage`'s `judgment_basis_attestation` is `const: null`, so this shape is reachable only after a deliberate, reviewable schema change made alongside a real attestation process. Specified now so that the pairing rule above constrains something real rather than being written as a bare `false`, and so the element shape is already agreed when that process exists — the same posture `schemas/rule.schema.json` takes toward `clinicalApprovers[]`'s `items` under `maxItems: 0`.",
+      "properties": {
+        "attested_by": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The named human who made the determination. Never an agent, an ARC/council run, a Research Foundry run id, or a role name standing in for a person."
+        },
+        "attestation_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Addressable reference to the attestation record itself (the record, not a summary of it). No attestation ledger with a resolvable id space exists for this axis today; establishing one is out of scope for this feature."
+        },
+        "attested_on": {
+          "type": "string",
+          "format": "date",
+          "description": "The date the determination was made — supplied by the attesting human, never by wall-clock time inside a generator (the feature's determinism rule)."
+        }
+      }
+    },
+    "rightsComponentClass": {
+      "enum": [
+        "bibliographic_metadata",
+        "atomic_facts_and_methods",
+        "equation",
+        "guideline_recommendation",
+        "reference_interval_values",
+        "prose",
+        "abstract",
+        "table",
+        "figure",
+        "chart",
+        "nomogram",
+        "decision_tree_or_flowchart",
+        "questionnaire_or_instrument",
+        "patient_handout",
+        "dataset",
+        "software_or_code",
+        "image_or_media",
+        "trademarks_and_logos",
+        "supplementary_material",
+        "other"
+      ],
+      "description": "EPR3-T2 (FR-WP3-03, RF handoff §9.2). Copied ONE-FOR-ONE from `schemas/rights/rights_record.schema.json`'s `component_decisions[].component_type` enum — the SCHEMA enum, which EPR0-T3's declared local amendment establishes as authoritative over the spec's §5.1 prose table (the two diverge: the prose table's single \"Prose or abstract\" and \"Figure or chart\" rows each map to two enum members here). See `schemas/rights/VENDORING.md`. The copy is deliberate and is NOT a `$ref`: FR-WP3-11 forbids any runtime `$ref` or import reaching outside `schemas/` into an RF-owned schema while OQ-4 (does RF accept this entity model?) is open. `tests/rights-evidence-item-axes.test.mjs` asserts the two enums stay identical, so the copy cannot silently drift; a drift is a reviewable diff in one file, not a runtime coupling."
     },
     "sourceLocator": {
       "type": "object",
@@ -293,6 +610,402 @@
         "section": { "type": ["string", "null"], "minLength": 1 },
         "table": { "type": ["string", "null"], "minLength": 1 },
         "figure": { "type": ["string", "null"], "minLength": 1 }
+      }
+    },
+    "structuredLocator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "edition_or_version",
+        "section",
+        "table",
+        "row",
+        "column",
+        "assay_or_method",
+        "population_or_scope",
+        "retrieved_at",
+        "unresolved_components"
+      ],
+      "description": "EPR3-T4 (FR-WP3-04, D1). The structured, individually-addressable provenance of an evidence item — the component-by-component 'where I found this' that makes an item mechanically re-fetchable and re-bindable. It is DELIBERATELY not `$defs/sourceLocator`: that EP-3 shape carries a free-text `raw` catch-all, and FR-WP3-04 forbids a free-text locator wherever a structured component applies. There is no free-text member here at all — every component is its own typed field — so a locator cannot be 'collapsed' into one prose string and still validate as complete. Distinct nullability semantics per D2: a component present with a non-empty string is CAPTURED and addressable; a component set to `null` means NOT APPLICABLE to this item (an `observed_finding` drawn from prose legitimately has `table: null, row: null, column: null`); a component that APPLIES but whose value could not be determined is listed by name in `unresolved_components` (explicit incompleteness) — it is never silently nulled. `source` is the one always-present component (every item has a source it was drawn from). The cross-component rules JSON Schema cannot express — a component may not be both non-null AND listed unresolved; a table-derived item's table/row/column may not be silently null — are enforced by the `evidence-item-locator-capture` coverage gate in scripts/validate-rights.mjs. No `format: \"uri\"` anywhere (FR-WP0-08): `retrieved_at` is a bare `date`, the only format `scripts/lib/json-schema-lite.mjs` enforces.",
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The source this item was drawn from — the enclosing source's citation key (e.g. `AAP2026_IDA`) or an equally addressable identifier. Always present and non-null: an item with no addressable source has no provenance at all."
+        },
+        "edition_or_version": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The edition, version, revision, or year-stamp of the source that pins WHICH published state this item was read from (guidelines are revised; a value read from the 2024 edition is not the same locator as the 2026 one). Null when the source is not versioned or the edition does not apply; named in `unresolved_components` when it applies but is not yet known."
+        },
+        "section": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The named or numbered section / heading / subsection the item sits under. Null when not applicable; listed in `unresolved_components` when applicable-but-unknown."
+        },
+        "table": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The table identifier (e.g. `Table 2`) when the item is drawn from a table. INDEPENDENTLY addressable from `row` and `column` — the three together locate a single cell without ever reproducing the table. Null when the item is not table-derived; a table-derived item (see the coverage gate) must set this or list `table` in `unresolved_components`, never leave it a silent null."
+        },
+        "row": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The row label / index within `table` (e.g. `Hemoglobin, 6–24 mo`). Addressable on its own axis so a single value is locatable without the surrounding rows. Same table-derived rule as `table`."
+        },
+        "column": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The column label / index within `table` (e.g. `Lower limit (g/dL)`). Addressable on its own axis. Same table-derived rule as `table`."
+        },
+        "assay_or_method": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The assay, instrument, analytic method, or equation the value/finding is specific to (e.g. `automated impedance CBC`, `serum ferritin immunoassay`) — the same reference value can differ by method, so the method is part of its address. Null when not applicable; `unresolved_components` when applicable-but-unknown."
+        },
+        "population_or_scope": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The population, age band, sex, or scope the item's addressed location is qualified by within the source (e.g. `children 12–35 months`). This is a LOCATOR facet (which cell/row of the source you read), distinct from the passage-level `applicability` clinical claim; both may legitimately be present. Null when not applicable; `unresolved_components` when applicable-but-unknown."
+        },
+        "retrieved_at": {
+          "type": ["string", "null"],
+          "format": "date",
+          "description": "The date the source was observed at this locator, so the provenance is re-verifiable against a point in time. Supplied from the capture record, never from wall-clock time inside a generator (the feature's determinism rule). Null when genuinely not recorded; may be listed in `unresolved_components` when it should be known but is not."
+        },
+        "unresolved_components": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "edition_or_version",
+              "section",
+              "table",
+              "row",
+              "column",
+              "assay_or_method",
+              "population_or_scope",
+              "retrieved_at"
+            ]
+          },
+          "description": "The explicit record of which APPLICABLE components could not (yet) be determined — the D2 'missingness is never treated as normal' discipline for locators: an incomplete locator NAMES its gaps rather than validating as though it were complete. A component listed here MUST be `null` above (the `evidence-item-locator-capture` gate fails a component that is both valued and listed unresolved — that is a contradiction, not a partial). Empty array means the locator is complete as captured: every applicable component is addressed and every null is a deliberate not-applicable. `source` is intentionally not a member — it is always present and non-null, so it can never be unresolved."
+        }
+      }
+    },
+    "notCaptured": {
+      "type": "array",
+      "description": "EPR3-T4 (FR-WP3-06, D1). What this item DELIBERATELY did not store — the negative space of maximal capture. Every located item withheld something (at minimum the verbatim wording behind its paraphrase); recording it here makes the boundary explicit rather than leaving a reader to infer it. Non-emptiness on located records is enforced by the `allOf` clause on `$defs/passage`; a table-derived item's obligation to name `table_structure` here is enforced by the `evidence-item-locator-capture` coverage gate. Each entry is a `{ kind, rationale }` pair — the `kind` a closed vocabulary of what was omitted, the `rationale` this project's own one-line explanation of WHY (never a transcription of the omitted third-party expression, which would defeat the D1 boundary and trip EPR3-T1's negative invariant).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "rationale"],
+        "properties": {
+          "kind": {
+            "enum": [
+              "verbatim_wording",
+              "prose",
+              "table_structure",
+              "figure",
+              "chart",
+              "visual_layout",
+              "image_or_media",
+              "supplementary_material",
+              "other"
+            ],
+            "description": "The kind of expression deliberately not retained. `verbatim_wording` — the exact phrasing behind a paraphrase; `prose` — surrounding narrative text; `table_structure` — a table's layout/cells, omitted in favour of per-value atoms (the table-derived obligation, D1/REG_002 uncleared); `figure`/`chart`/`image_or_media` — visual assets; `visual_layout` — page/typographic layout; `supplementary_material` — appendices/supplements; `other` — anything else, explained in `rationale`. Closed enum: an unrecognised omission-kind is a reviewable schema change, not a silent free-text value."
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1,
+            "description": "This project's own explanation of why the item above was not stored (e.g. 'per-value atoms captured instead; reproducing the table would retain third-party expression, REG_002 uncleared'). It states the reason for an omission — it is NOT a place to transcribe the omitted third-party text, which would reintroduce exactly what D1 forbids."
+          }
+        }
+      }
+    },
+    "numericRecapture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resolution", "reason", "atoms"],
+      "description": "EPR3-T6 (FR-WP3-05, AC-WP3-NUMERICS, D1). The resolution of ONE numeric-omission passage to exactly one of two states — never to neither. `per_value_atoms` carries at least one atom in `atoms`; `no_reported_value_available` carries an empty `atoms` and states its `reason`. The atoms-present-iff-`per_value_atoms` invariant is enforced by the `allOf` below and re-asserted by the `evidence-numeric-recapture-resolution` coverage gate. This object records HOW MUCH was captured and WHY; it makes no clearance or legal determination (D7).",
+      "properties": {
+        "resolution": {
+          "enum": ["per_value_atoms", "no_reported_value_available"],
+          "description": "`per_value_atoms`: the source's reported numeric values were present in the retrievable in-repo provenance and are captured as per-value atoms (state a). `no_reported_value_available`: the reported values are absent from the retrievable provenance (the source is quarantined / not independently retrievable and the extraction retained no numeric value), so nothing could be captured without authoring it — which this project does not do (no invented thresholds). Closed enum: there is no third 'partial' state, because partiality is expressed WITHIN state (a) by an atom whose `structured_locator.unresolved_components` names what stayed unknown."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "This project's own explanation of the resolution: for `per_value_atoms`, what was transcribed and what stayed unresolved; for `no_reported_value_available`, why no reported value could be captured. Never a transcription of the omitted third-party expression (that would trip EPR3-T1's negative invariant)."
+        },
+        "atoms": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/numericAtom" },
+          "description": "The per-value typed atoms (state a). Empty on `no_reported_value_available` (state b). Each atom is an independently-worded record of ONE reported value at ONE component-addressable locator — never a reproduced row/column table."
+        }
+      },
+      "allOf": [
+        {
+          "description": "EPR3-T6: atoms present iff per_value_atoms. `per_value_atoms` requires at least one atom (a state (a) with no atom captured nothing); `no_reported_value_available` forbids any (a state (b) that carried an atom is really state (a)). This clause references only `resolution` and `atoms` — neither is a taxonomy axis field — so it couples no axes (D2).",
+          "if": {
+            "type": "object",
+            "required": ["resolution"],
+            "properties": { "resolution": { "const": "per_value_atoms" } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["atoms"],
+            "properties": { "atoms": { "minItems": 1 } }
+          },
+          "else": {
+            "type": "object",
+            "required": ["atoms"],
+            "properties": { "atoms": { "maxItems": 0 } }
+          }
+        }
+      ]
+    },
+    "numericAtom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "value",
+        "unit",
+        "evidence_item_type",
+        "rights_component_class",
+        "judgment_basis",
+        "judgment_basis_attestation",
+        "structured_locator",
+        "not_captured"
+      ],
+      "description": "EPR3-T6 (FR-WP3-05, D1, D2). ONE re-captured numeric value as a self-contained per-value atom — the rights-safe alternative to a reproduced table. It carries the source's *reported* `value` (transcribed, never authored/adjusted/interpolated — no invented thresholds), its `unit`, an independently-worded `label`, its own three taxonomy axes (`evidence_item_type` x `rights_component_class` x `judgment_basis`, none derived from another — AC-WP3-AXES), a component-addressable `structured_locator` (the same $def the passage uses; the atom's cell is addressed by table/row/column or the unresolved facet is named in `unresolved_components`, D2), and a `not_captured[]` recording the omitted table structure (D1). `judgment_basis_attestation` is `const: null` here for the same D6 reason as on the passage: no human attestation exists and none may be agent-authored.",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "This project's own independent wording of what this value is — never source phrasing (D1)."
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The source's reported value, transcribed exactly as a single atom (e.g. `<105 g/L`). A string, not a number, so a cutoff operator, an interval, or a unit annotation is representable without loss. Transcribed from a recorded in-repo provenance; never authored, rounded, or interpolated (no invented thresholds)."
+        },
+        "unit": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The unit the value is reported in (e.g. `g/L`), or null when the value carries no separable unit."
+        },
+        "evidence_item_type": {
+          "$ref": "#/$defs/evidenceItemType",
+          "description": "The atom's epistemic kind — axis 1, independent of the other axes (AC-WP3-AXES)."
+        },
+        "rights_component_class": {
+          "$ref": "#/$defs/rightsComponentClass",
+          "description": "Which rights component the atom draws on — axis 3, independent of `evidence_item_type` (a per-value atom is very often a `table`, but need not be)."
+        },
+        "judgment_basis": {
+          "$ref": "#/$defs/judgmentBasis",
+          "description": "`unassessed` today (OQ-1 routes the measured-vs-judged determination to counsel); a non-`unassessed` value is structurally unreachable while `judgment_basis_attestation` is `const: null` and paired by the `allOf` below."
+        },
+        "judgment_basis_attestation": {
+          "const": null,
+          "description": "REQUIRED and forced `null` (D6) — the same posture as the passage's field; no attestation may be agent-authored."
+        },
+        "structured_locator": {
+          "$ref": "#/$defs/structuredLocator",
+          "description": "The atom's component-addressable provenance (D1). For a table-derived value the specific cell is addressed by table/row/column, or the unresolved facet (e.g. the age/sex band) is named in `unresolved_components` (D2 — missingness never treated as normal)."
+        },
+        "not_captured": {
+          "$ref": "#/$defs/notCaptured",
+          "description": "What the atom deliberately did not store — at minimum the omitted table structure for a table-derived value (D1: the atom is captured, the table itself is named as not stored; REG_002 uncleared)."
+        }
+      },
+      "allOf": [
+        {
+          "description": "EPR3-T6 (mirrors the passage's D6 pairing rule): an atom may leave `judgment_basis: unassessed` only against a human attestation record, and `judgment_basis_attestation` is `const: null`, so every non-`unassessed` value is structurally unreachable. Written against the attestation SHAPE so it stays operative if a future process relaxes the const. Coverage/consistency on an unassessed atom, never a clearance gate (D7).",
+          "if": {
+            "type": "object",
+            "required": ["judgment_basis"],
+            "properties": { "judgment_basis": { "not": { "const": "unassessed" } } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["judgment_basis_attestation"],
+            "properties": { "judgment_basis_attestation": { "$ref": "#/$defs/judgmentBasisAttestation" } }
+          }
+        }
+      ]
+    },
+    "guidelineRecommendationCapture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuing_body", "restatement", "scope_or_population"],
+      "description": "EPR3-T8 (FR-WP3-08, D2 'captured, not avoided'; D1). The FACT of a guideline recommendation, captured — never the recommendation's prose. A `guideline_recommendation` item records THAT a named body recommends something and WHO it applies to, restated in this project's OWN words; the addressable 'where' is the enclosing passage's `structured_locator`. This object exists so a guideline is captured rather than avoided (D2): the recommendation's authority (which body) and substance (an independent restatement of the fact) become queryable without ever retaining the source's sentence (D1). It carries NO clearance authority (D7): naming an issuing body and restating a recommendation makes no legal determination about reuse — that lives on the joined `rights/` record. `restatement` is scanned by EPR3-T1's negative invariant exactly like any capture surface, so a near-verbatim span here fails that gate.",
+      "properties": {
+        "issuing_body": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "abbreviation"],
+          "description": "The body that ISSUES the recommendation, captured as a STRUCTURED field (FR-WP3-08 names the issuing body as a first-class field, not a phrase buried in prose): the fact 'the AAP recommends ...' is addressable as an organisation, distinct from any of that organisation's copyrighted text. Drawn from the enclosing source's `organization`; a proper-noun fact, not source expression.",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The issuing body's name (e.g. `American Academy of Pediatrics`). The organisation itself — a fact, never a quotation."
+            },
+            "abbreviation": {
+              "type": ["string", "null"],
+              "minLength": 1,
+              "description": "The body's common abbreviation (e.g. `AAP`) when it has one; `null` when it does not (D2: an explicit not-applicable, never an omitted key)."
+            }
+          }
+        },
+        "restatement": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The recommendation restated in THIS PROJECT'S OWN words — the fact of WHAT is recommended, never a quotation of the source sentence (FR-WP3-08 'captured, not avoided'; D1). Independently worded even for a passage whose `exactPassage` is `withheld` (a near-verbatim span pending REG-002): the fact of the recommendation is captured at a level the addressable `structured_locator` anchors, without reconstructing the withheld prose. A verbatim/near-verbatim span here fails EPR3-T1's negative invariant, which scans this field as a capture surface."
+        },
+        "scope_or_population": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Who or what the recommendation is qualified to apply to (e.g. `children and adolescents with microcytic anaemia`), when the source qualifies it; `null` when the recommendation is unqualified by population (e.g. a regulatory recommendation about a software function) — an explicit not-applicable, never an omitted key (D2). This is the RECOMMENDATION's own stated scope, distinct from the passage-level clinical `applicability` claim and from the `structured_locator`'s `population_or_scope` locator facet; all three may legitimately coexist."
+        }
+      }
+    },
+    "derivedSynthesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "evidence_item_type", "synthesis"],
+      "description": "EPR3-T7 (FR-WP3-07, D3/D6). ONE first-party derived-synthesis evidence item — a clinical claim this project authored over two or more input items. It carries no `rights_record` (RF handoff §9.5, DEF-R4): `rights_record` cannot describe first-party content, so authorship is modelled here on the item itself, not through a misfitting third-party record. `additionalProperties: false` — there is deliberately no `rights_record`, `rights_extension`, `overall_status`, or any clearance-bearing key on this object; first-party rights posture is `synthesis.first_party_rights_holder` (a fact, not a clearance) and human attestation is `synthesis.attestation` (candidate-only, D6).",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^SYNTH_[A-Z0-9_]+$",
+          "description": "First-party synthesis identifier, in a namespace disjoint from source passage ids (`<SOURCE>#ev_NNN` / `#implementation-proposal`) so a synthesis can never be confused with a source-drawn passage — it is first-party, and its id says so."
+        },
+        "evidence_item_type": {
+          "const": "derived_synthesis",
+          "description": "Always `derived_synthesis` — this container holds nothing else. `derived_synthesis` is a member of the shared `$defs/evidenceItemType` enum (an assertion in tests/rights-derived-synthesis.test.mjs keeps this `const` a member of that enum, so the vocabulary cannot silently drift); it is pinned by `const` rather than `$ref`'d so a synthesis item cannot be re-typed as a source-drawn kind."
+        },
+        "synthesis": {
+          "$ref": "#/$defs/synthesis",
+          "description": "The attribution-and-authorship record: the ordered contributing inputs, how they were combined, the substantial-similarity signal, the first-party rights holder, and the candidate-only human-attestation gate (handoff §4.3/§4.4)."
+        }
+      }
+    },
+    "synthesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_refs", "method", "divergence_notes", "reproduces_source_arrangement", "first_party_rights_holder", "attestation"],
+      "description": "EPR3-T7 (FR-WP3-07, handoff §4.3, D3/D6). The load-bearing attribution structure of a first-party synthesis, modelled from day one because attribution — unlike every other field — cannot be backfilled (D3). It records WHAT inputs the synthesis draws on and HOW, never a transcription of any input's third-party expression (D1). Carries no clearance authority (D7): `reproduces_source_arrangement` and `first_party_rights_holder` are recorded FACTS for a human to weigh, not determinations this schema makes.",
+      "properties": {
+        "input_refs": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/synthesisInputRef" },
+          "description": "The ORDERED list of contributing input items. `minItems: 2` — a 'synthesis' over a single input is not a synthesis (handoff §4.3). Order is itself meaningful attribution (the D3 provenance that can never be reconstructed after the claim is written). A synthesis with no input attribution — this array empty or the key absent — fails validation (acceptance criterion FR-WP3-07)."
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1,
+          "description": "This project's own account of HOW the inputs were combined — required and non-empty. It is a description of the method, never a transcription of any input's third-party text (D1); a pasted source paragraph is not a method statement."
+        },
+        "divergence_notes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Where the inputs disagreed and how that was resolved (handoff §4.3). Legitimately empty when they did not diverge (an empty array is a captured fact, not a missing one). Each entry is this project's own wording, never source text (D1)."
+        },
+        "reproduces_source_arrangement": {
+          "type": "boolean",
+          "description": "handoff §4.3 / spec §15 substantial-similarity question: whether this synthesis reproduces the selection or arrangement of any input source. A REQUIRED, explicit boolean — never left to inference. `true` is representable so the fact can be recorded honestly; it is a rights SIGNAL for a human to weigh, and nothing here clears it (D7)."
+        },
+        "first_party_rights_holder": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The named first-party rights holder for this authored content, or null when unassessed (D2: null is an explicit 'not yet determined', never an omitted key). This is the item-level home for the first-party authorship fact that `rights_record` structurally cannot describe (handoff §9.5, DEF-R4) — it is a fact about who owns the authored claim, NOT a clearance and carrying no release authority (D7)."
+        },
+        "attestation": {
+          "$ref": "#/$defs/synthesisAttestation",
+          "description": "The candidate-only human-attestation gate (handoff §4.4, D6). A derived synthesis is a clinical claim and needs the same human attestation as any binding clinical assertion; no agent may author one as authoritative."
+        }
+      }
+    },
+    "synthesisInputRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_item_id", "contribution"],
+      "description": "EPR3-T7 (handoff §4.3). One attributed input to a synthesis: WHICH item it draws on and HOW that item contributed. The join to the input's own third-party rights record is via `rights/rights-ledger.json` (D4), not an inline rights record here — and it is the INPUT's rights record, never the synthesis's (the synthesis itself has none, §9.5).",
+      "properties": {
+        "evidence_item_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The contributing evidence item's id — e.g. a source passage id (`AAP2026_IDA#ev_002`) or another synthesis's id (`SYNTH_...`). Load-bearing: this is the attribution D3 says cannot be reconstructed once a synthesis is written."
+        },
+        "rights_record_id": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "OPTIONAL pointer to the INPUT's third-party rights record — the input is third-party even though the synthesis over it is first-party. Null or absent when the input carries no separate rights record or the join is left to `rights/rights-ledger.json` (D4). Never the synthesis's own rights record: a `derived_synthesis` has none (handoff §9.5)."
+        },
+        "contribution": {
+          "enum": ["anchor", "corroborating", "contradicting", "scope_limiting"],
+          "description": "How this input contributed (handoff §4.3). Deliberately coarse — the goal is reconstructability, not a full argument graph. Closed enum: an unrecognised value fails."
+        }
+      }
+    },
+    "synthesisAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "attestation_record"],
+      "description": "EPR3-T7 (FR-WP3-07, handoff §4.4, D6). The human-attestation gate on a first-party synthesis, modelled EXACTLY like `$defs/passage`'s `judgment_basis` D6 pattern. `status` may leave `candidate` ONLY against an `attestation_record` matching `$defs/synthesisAttestationRecord`, and `attestation_record` is `const: null` in this schema version — so the authoritative (`attested`) state is STRUCTURALLY UNREACHABLE, not merely unset: no enum value, flag, or field combination reaches it without a human attestation record this feature does not create, and a fixture attempting to mark one attested fails whether it leaves the record null (fails the pairing rule) or supplies a real record (fails the `const`). This is a coverage/consistency constraint on a candidate, never a clearance gate: a synthesis at `status: candidate` validates cleanly and always will (D7).",
+      "properties": {
+        "status": {
+          "enum": ["candidate", "attested"],
+          "default": "candidate",
+          "description": "Agents may only ever write `candidate`. `attested` exists so the answer is representable once a qualified human attests — its reachability is gated by the pairing rule below (written against the attestation SHAPE, so it stays operative the day a real attestation process relaxes the `const`), NOT by its absence from this enum. This is the same posture `$defs/judgmentBasis` takes toward its non-`unassessed` members. `default` is an inert annotation (`scripts/lib/json-schema-lite.mjs` ignores it); `status` is REQUIRED, so no record relies on a default being applied."
+        },
+        "attestation_record": {
+          "const": null,
+          "description": "REQUIRED key, forced `const: null` under this schema version (D6) — the same posture `$defs/passage.judgment_basis_attestation` and `schemas/rule.schema.json`'s `clinicalApprovers[]` take. The human attestation that would move a synthesis off `candidate` does not exist in this project and MUST NOT be agent-authored. Its shape for a future real process is specified at `$defs/synthesisAttestationRecord` and applied by the pairing rule below; relaxing this `const` is the deliberate, reviewable act by which a synthesis would first become authoritative — never done to make a build pass. Carries no clearance authority and is not a clearance surface (D7)."
+        }
+      },
+      "allOf": [
+        {
+          "description": "EPR3-T7 (handoff §4.4, D6): `status` may leave `candidate` ONLY against a human attestation record. Combined with `attestation_record`'s `const: null`, this makes `attested` structurally unreachable in this schema version. Written against the attestation SHAPE (`$defs/synthesisAttestationRecord`), not a bare `false`, so it remains the operative constraint the day a real process relaxes the const. Direction matters: this is a coverage/consistency constraint on a candidate record, not a clearance gate — a synthesis at `status: candidate` validates cleanly (D7).",
+          "if": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "not": { "const": "candidate" } } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["attestation_record"],
+            "properties": { "attestation_record": { "$ref": "#/$defs/synthesisAttestationRecord" } }
+          }
+        }
+      ]
+    },
+    "synthesisAttestationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attested_by", "attestation_ref", "attested_on"],
+      "description": "EPR3-T7 (handoff §4.4, D6). The shape a human synthesis-attestation would take IF one existed. NOTHING IN THIS REPOSITORY VALIDATES AGAINST THIS DEFINITION TODAY and nothing may be authored against it by an agent: `$defs/synthesisAttestation.attestation_record` is `const: null`, so this shape is reachable only after a deliberate, reviewable schema change made alongside a real attestation process. Specified now so the pairing rule above constrains something real rather than a bare `false`, and so the element shape is already agreed when that process exists — the same posture `$defs/judgmentBasisAttestation` and `schemas/rule.schema.json`'s `clinicalApprovers[]`'s `items` take under `maxItems: 0`.",
+      "properties": {
+        "attested_by": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The named human who attested this synthesis as a clinical claim. Never an agent, an ARC/council run, a Research Foundry run id, or a role name standing in for a person."
+        },
+        "attestation_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Addressable reference to the attestation record itself (the record, not a summary). No attestation ledger with a resolvable id space exists for synthesis today; establishing one is out of scope for this feature (DEF-R4)."
+        },
+        "attested_on": {
+          "type": "string",
+          "format": "date",
+          "description": "The date the human attested — supplied by the attesting human, never by wall-clock time inside a generator (the feature's determinism rule)."
+        }
       }
     },
     "applicability": {

@@ -50,6 +50,31 @@
       "surveillanceQuery": "CALIPER pediatric hematology reference intervals (Beckman Coulter DxH 900) update after 2020",
       "supersessionStatus": "not_superseded",
       "recencyNote": "Retained per module.json evidence_policy.older_source_rule (\"foundational_not_superseded_with_reason\"): published 2020-08 is outside the module's 1825-day (five-year) recent-source window (evidence_policy.recent_window_days), but it is the RF-CBC-001 fixture's sole grounding for clm_009/clm_011/clm_026/clm_027 (age-partitioned, analyzer-specific reference-interval evidence), all cited by dec_cbc_local_range_precedence_001; no more recent equivalent-scope study is present in this bundle.",
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": "Canadian Laboratory Initiative on Pediatric Reference Intervals (CALIPER)",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "CALIPER2020_HEMATOLOGY_I#implementation-proposal",
@@ -64,6 +89,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "CALIPER2020_HEMATOLOGY_I",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -119,6 +161,31 @@
       "reviewBy": "2031-07-20",
       "surveillanceQuery": "CALIPER pediatric hematology reference intervals (Mindray BC-6800Plus) update after 2023",
       "supersessionStatus": "not_superseded",
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": "Canadian Laboratory Initiative on Pediatric Reference Intervals (CALIPER)",
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "CALIPER2023_MINDRAY_79PARAM#implementation-proposal",
@@ -133,6 +200,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "CALIPER2023_MINDRAY_79PARAM",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -188,6 +272,31 @@
       "surveillanceQuery": "ELANE-associated congenital neutropenia mutation/outcome review update after 2015",
       "supersessionStatus": "not_superseded",
       "recencyNote": "Retained per module.json evidence_policy.older_source_rule (\"foundational_not_superseded_with_reason\"): published 2015-01 is outside the module's 1825-day (five-year) recent-source window (evidence_policy.recent_window_days), but it is the RF-CBC-001 fixture's sole grounding for clm_053 (SCN vs cyclic-neutropenia MDS/AML incidence), cited directly by dec_cbc_marrow_red_flag_001; no more recent equivalent-scope study is present in this bundle.",
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "COH2015_ELANE_MUTATIONS#implementation-proposal",
@@ -202,6 +311,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "COH2015_ELANE_MUTATIONS",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -257,6 +383,31 @@
       "surveillanceQuery": "SCNIR severe congenital neutropenia leukemia-risk registry update after 2010",
       "supersessionStatus": "not_superseded",
       "recencyNote": "Retained per module.json evidence_policy.older_source_rule (\"foundational_not_superseded_with_reason\"): published 2010-04 is outside the module's 1825-day (five-year) recent-source window (evidence_policy.recent_window_days), but it is the RF-CBC-001 fixture's sole grounding for clm_033 (clinical SCN diagnostic definition), which grounds the unit-normalization inference clm_inf01 cited by dec_cbc_local_range_precedence_001; no more recent equivalent-scope study is present in this bundle.",
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "BJHAEM2010_SCNIR_LEUKEMIA_RISK#implementation-proposal",
@@ -271,6 +422,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "BJHAEM2010_SCNIR_LEUKEMIA_RISK",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -333,6 +501,31 @@
       "surveillanceQuery": "Pediatric isolated neutropenia referral-outcomes study update after 2020",
       "supersessionStatus": "not_superseded",
       "recencyNote": "Retained per module.json evidence_policy.older_source_rule (\"foundational_not_superseded_with_reason\"): published 2020-09 is outside the module's 1825-day (five-year) recent-source window (evidence_policy.recent_window_days), but it is the RF-CBC-001 fixture's sole grounding for clm_074 (race-associated persistent mild neutropenia), cited directly by dec_cbc_benign_neutropenia_differential_pattern_001; no more recent equivalent-scope study is present in this bundle.",
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES#implementation-proposal",
@@ -347,6 +540,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -409,6 +619,31 @@
       "reviewBy": "2031-07-20",
       "surveillanceQuery": "SCNIR severe chronic neutropenia G-CSF outcomes registry update after 2022",
       "supersessionStatus": "not_superseded",
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "SCNIR2022_GCSF_OUTCOMES#implementation-proposal",
@@ -423,6 +658,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "SCNIR2022_GCSF_OUTCOMES",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -480,6 +732,31 @@
       "reviewBy": "2031-07-20",
       "surveillanceQuery": "Pediatric neutropenia diagnostic-approach narrative review update after 2024",
       "supersessionStatus": "not_superseded",
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "HEMATOLREP2024_NEUTROPENIA_REVIEW#implementation-proposal",
@@ -494,6 +771,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "HEMATOLREP2024_NEUTROPENIA_REVIEW",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -548,6 +842,31 @@
       "reviewBy": "2031-07-20",
       "surveillanceQuery": "Duffy-null / benign ethnic neutropenia pediatric referral-etiology study update after 2023",
       "supersessionStatus": "not_superseded",
+      "access_basis": "unknown",
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "not_captured",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "passages": [
         {
           "id": "JPEDS2023_DUFFY_NULL_NEUTROPENIA#implementation-proposal",
@@ -562,6 +881,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,

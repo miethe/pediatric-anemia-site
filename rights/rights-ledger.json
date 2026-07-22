@@ -1,0 +1,362 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Top-level rights/ tree (D4): the join ledger. This is the ONLY link between a clinical KB identifier (an evidence.json source id, a rule id, a candidate id, a reference-ranges.json entry) and a rights/ record id (rights-records.json / rights-failures.json). No clinical JSON file (rules.json, candidates.json, evidence.json, reference-ranges.json) may carry an inline rights key of any kind, including under an `extensions.rights` path — that inline shape is explicitly rejected by D4 and is asserted against in tests/rights-substrate.test.mjs. EPR0-T1 creates this ledger empty; EPR0-T4 populates it while seeding the 6 triage-only rights records, joining each KB-cited source id to its rights_record_id. Entry shape: `clinical_identifier_type` names the kind of clinical identifier being joined (`evidence_source_id` per EPR0-T4; `kb_json_file_path` per EPR1-T2, below), `clinical_identifier` is the identifier value as it appears in the clinical KB JSON (a source id, or — for `kb_json_file_path` — the `modules/<id>/<filename>` artifact path itself), and `rights_record_id` is the joined entry's id in rights/rights-records.json. EPR1-T1 (FR-WP1-01) adds a second entry against the existing `evidence_source_id`/`AAP2026_IDA` identifier, joining it to a new component-scoped record for modules/anemia/reference-ranges.json (the derived-fact channel) — a deliberate second join against the same identifier, not a duplicate; scripts/validate-rights.mjs's coverage gate treats every ledger entry's rights_record_id independently, so both the source-level and component-level records stay reachable. EPR1-T2 (FR-WP1-02/03) adds the anticipated `kb_json_file_path`-shaped entries below: one per `scripts/sign-kb.mjs` `KB_JSON_FILES` artifact path (`rules.json`, `candidates.json`, `evidence.json`, `reference-ranges.json`), resolved bidirectionally by scripts/validate-rights.mjs gate (e) `checkKbJsonFileCoverage` via scripts/validate-kb.mjs's exported `resolveRightsRecordsForIdentifier`. `reference-ranges.json` joins 1:1 to its dedicated component-scoped record (RR-AAP2026_IDA-REFERENCE-RANGES, EPR1-T1); `rules.json`/`candidates.json`/`evidence.json` each join to all 6 EPR0-T4 source-level records — the fixed, already-covered set every rule/candidate evidence citation and every evidence.json source is a validated subset or member of (scripts/validate-kb.mjs's own `unknown evidence` / `sources[].id` checks) — as a structural coverage envelope, not a per-citation precision claim about which of the 6 sources each rule or candidate happens to cite today.",
+  "entries": [
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "AAP2026_IDA",
+      "rights_record_id": "RR-AAP2026_IDA",
+      "notes": "modules/anemia/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "AAP2026_IDA",
+      "rights_record_id": "RR-AAP2026_IDA-REFERENCE-RANGES",
+      "notes": "modules/anemia/reference-ranges.json (EPR1-T1, FR-WP1-01) — component-scoped record for the AAP2026_IDA Table 1 derived-fact channel (reference-ranges.json -> deriveFacts() -> all 91 rules). Second ledger entry against the same evidence_source_id as RR-AAP2026_IDA (source-level record) because reference-ranges.json's 32 values re-express the same AAP2026_IDA Table 1 that source-level record already covers; see rights-records.json RR-AAP2026_IDA-REFERENCE-RANGES."
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "WHO2024_HB",
+      "rights_record_id": "RR-WHO2024_HB",
+      "notes": "modules/anemia/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "BLOOD2022_PED_ANEMIA",
+      "rights_record_id": "RR-BLOOD2022_PED_ANEMIA",
+      "notes": "modules/anemia/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "CDC2025_LEAD",
+      "rights_record_id": "RR-CDC2025_LEAD",
+      "notes": "modules/anemia/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "FDA2026_CDS",
+      "rights_record_id": "RR-FDA2026_CDS",
+      "notes": "modules/anemia/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "BSH2020_G6PD",
+      "rights_record_id": "RR-BSH2020_G6PD",
+      "notes": "modules/anemia/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/reference-ranges.json",
+      "rights_record_id": "RR-AAP2026_IDA-REFERENCE-RANGES",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. 1:1 join to the component-scoped record EPR1-T1 authored specifically for this artifact — the derived-fact channel (reference-ranges.json -> deriveFacts() -> all 91 rules) that sat outside passage-level gating before this phase."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/evidence.json",
+      "rights_record_id": "RR-AAP2026_IDA",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. evidence.json's sources[] enumerates AAP2026_IDA as one of the module's 6 sources; this entry joins the artifact itself, not merely its constituent source id (already separately covered via the evidence_source_id entry above)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/evidence.json",
+      "rights_record_id": "RR-WHO2024_HB",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. evidence.json's sources[] enumerates WHO2024_HB as one of the module's 6 sources."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/evidence.json",
+      "rights_record_id": "RR-BLOOD2022_PED_ANEMIA",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. evidence.json's sources[] enumerates BLOOD2022_PED_ANEMIA as one of the module's 6 sources."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/evidence.json",
+      "rights_record_id": "RR-CDC2025_LEAD",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. evidence.json's sources[] enumerates CDC2025_LEAD as one of the module's 6 sources."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/evidence.json",
+      "rights_record_id": "RR-FDA2026_CDS",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. evidence.json's sources[] enumerates FDA2026_CDS as one of the module's 6 sources."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/evidence.json",
+      "rights_record_id": "RR-BSH2020_G6PD",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. evidence.json's sources[] enumerates BSH2020_G6PD as one of the module's 6 sources."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/rules.json",
+      "rights_record_id": "RR-AAP2026_IDA",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. rules.json's rule.evidence[] citations are validated (scripts/validate-kb.mjs's `unknown evidence` check) to be a subset of evidence.json's 6-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, not a claim that every rule cites AAP2026_IDA specifically."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/rules.json",
+      "rights_record_id": "RR-WHO2024_HB",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/rules.json",
+      "rights_record_id": "RR-BLOOD2022_PED_ANEMIA",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/rules.json",
+      "rights_record_id": "RR-CDC2025_LEAD",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/rules.json",
+      "rights_record_id": "RR-FDA2026_CDS",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration); no rule currently cites FDA2026_CDS, so this join is deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/rules.json",
+      "rights_record_id": "RR-BSH2020_G6PD",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/candidates.json",
+      "rights_record_id": "RR-AAP2026_IDA",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. candidates.json's candidate.evidence[] citations are validated (scripts/validate-kb.mjs's `unknown evidence` check) to be a subset of evidence.json's 6-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, not a claim that every candidate cites AAP2026_IDA specifically."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/candidates.json",
+      "rights_record_id": "RR-WHO2024_HB",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration); no candidate currently cites WHO2024_HB, so this join is deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/candidates.json",
+      "rights_record_id": "RR-BLOOD2022_PED_ANEMIA",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/candidates.json",
+      "rights_record_id": "RR-CDC2025_LEAD",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/candidates.json",
+      "rights_record_id": "RR-FDA2026_CDS",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration); no candidate currently cites FDA2026_CDS, so this join is deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/anemia/candidates.json",
+      "rights_record_id": "RR-BSH2020_G6PD",
+      "notes": "EPR1-T2 (FR-WP1-02/03) direct file-path-level coverage. See the AAP2026_IDA entry above for this join's rationale (structural envelope over evidence.json's 6-source enumeration)."
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "CALIPER2020_HEMATOLOGY_I",
+      "rights_record_id": "RR-CALIPER2020_HEMATOLOGY_I",
+      "notes": "modules/cbc_suite_v1/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "CALIPER2023_MINDRAY_79PARAM",
+      "rights_record_id": "RR-CALIPER2023_MINDRAY_79PARAM",
+      "notes": "modules/cbc_suite_v1/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "COH2015_ELANE_MUTATIONS",
+      "rights_record_id": "RR-COH2015_ELANE_MUTATIONS",
+      "notes": "modules/cbc_suite_v1/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "BJHAEM2010_SCNIR_LEUKEMIA_RISK",
+      "rights_record_id": "RR-BJHAEM2010_SCNIR_LEUKEMIA_RISK",
+      "notes": "modules/cbc_suite_v1/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES",
+      "rights_record_id": "RR-PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES",
+      "notes": "modules/cbc_suite_v1/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "SCNIR2022_GCSF_OUTCOMES",
+      "rights_record_id": "RR-SCNIR2022_GCSF_OUTCOMES",
+      "notes": "modules/cbc_suite_v1/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "HEMATOLREP2024_NEUTROPENIA_REVIEW",
+      "rights_record_id": "RR-HEMATOLREP2024_NEUTROPENIA_REVIEW",
+      "notes": "modules/cbc_suite_v1/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "rights_record_id": "RR-JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "notes": "modules/cbc_suite_v1/evidence.json sources[].id"
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/evidence.json",
+      "rights_record_id": "RR-CALIPER2020_HEMATOLOGY_I",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. evidence.json's sources[] enumerates CALIPER2020_HEMATOLOGY_I as one of the module's 8 sources; this entry joins the artifact itself, not merely its constituent source id (already separately covered via the evidence_source_id entry)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/evidence.json",
+      "rights_record_id": "RR-CALIPER2023_MINDRAY_79PARAM",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. evidence.json's sources[] enumerates CALIPER2023_MINDRAY_79PARAM as one of the module's 8 sources; this entry joins the artifact itself, not merely its constituent source id (already separately covered via the evidence_source_id entry)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/evidence.json",
+      "rights_record_id": "RR-COH2015_ELANE_MUTATIONS",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. evidence.json's sources[] enumerates COH2015_ELANE_MUTATIONS as one of the module's 8 sources; this entry joins the artifact itself, not merely its constituent source id (already separately covered via the evidence_source_id entry)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/evidence.json",
+      "rights_record_id": "RR-BJHAEM2010_SCNIR_LEUKEMIA_RISK",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. evidence.json's sources[] enumerates BJHAEM2010_SCNIR_LEUKEMIA_RISK as one of the module's 8 sources; this entry joins the artifact itself, not merely its constituent source id (already separately covered via the evidence_source_id entry)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/evidence.json",
+      "rights_record_id": "RR-PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. evidence.json's sources[] enumerates PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES as one of the module's 8 sources; this entry joins the artifact itself, not merely its constituent source id (already separately covered via the evidence_source_id entry)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/evidence.json",
+      "rights_record_id": "RR-SCNIR2022_GCSF_OUTCOMES",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. evidence.json's sources[] enumerates SCNIR2022_GCSF_OUTCOMES as one of the module's 8 sources; this entry joins the artifact itself, not merely its constituent source id (already separately covered via the evidence_source_id entry)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/evidence.json",
+      "rights_record_id": "RR-HEMATOLREP2024_NEUTROPENIA_REVIEW",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. evidence.json's sources[] enumerates HEMATOLREP2024_NEUTROPENIA_REVIEW as one of the module's 8 sources; this entry joins the artifact itself, not merely its constituent source id (already separately covered via the evidence_source_id entry)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/evidence.json",
+      "rights_record_id": "RR-JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. evidence.json's sources[] enumerates JPEDS2023_DUFFY_NULL_NEUTROPENIA as one of the module's 8 sources; this entry joins the artifact itself, not merely its constituent source id (already separately covered via the evidence_source_id entry)."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/rules.json",
+      "rights_record_id": "RR-CALIPER2020_HEMATOLOGY_I",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. rules.json's rule.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, not a claim that every rule cites CALIPER2020_HEMATOLOGY_I specifically."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/rules.json",
+      "rights_record_id": "RR-CALIPER2023_MINDRAY_79PARAM",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. rules.json's rule.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, not a claim that every rule cites CALIPER2023_MINDRAY_79PARAM specifically."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/rules.json",
+      "rights_record_id": "RR-COH2015_ELANE_MUTATIONS",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. rules.json's rule.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, not a claim that every rule cites COH2015_ELANE_MUTATIONS specifically."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/rules.json",
+      "rights_record_id": "RR-BJHAEM2010_SCNIR_LEUKEMIA_RISK",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. rules.json's rule.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, not a claim that every rule cites BJHAEM2010_SCNIR_LEUKEMIA_RISK specifically."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/rules.json",
+      "rights_record_id": "RR-PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. rules.json's rule.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, not a claim that every rule cites PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES specifically."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/rules.json",
+      "rights_record_id": "RR-SCNIR2022_GCSF_OUTCOMES",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. rules.json's rule.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, not a claim that every rule cites SCNIR2022_GCSF_OUTCOMES specifically."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/rules.json",
+      "rights_record_id": "RR-HEMATOLREP2024_NEUTROPENIA_REVIEW",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. rules.json's rule.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, not a claim that every rule cites HEMATOLREP2024_NEUTROPENIA_REVIEW specifically."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/rules.json",
+      "rights_record_id": "RR-JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. rules.json's rule.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, not a claim that every rule cites JPEDS2023_DUFFY_NULL_NEUTROPENIA specifically."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/candidates.json",
+      "rights_record_id": "RR-CALIPER2020_HEMATOLOGY_I",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. candidates.json's candidate.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/candidates.json",
+      "rights_record_id": "RR-CALIPER2023_MINDRAY_79PARAM",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. candidates.json's candidate.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/candidates.json",
+      "rights_record_id": "RR-COH2015_ELANE_MUTATIONS",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. candidates.json's candidate.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/candidates.json",
+      "rights_record_id": "RR-BJHAEM2010_SCNIR_LEUKEMIA_RISK",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. candidates.json's candidate.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/candidates.json",
+      "rights_record_id": "RR-PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. candidates.json's candidate.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/candidates.json",
+      "rights_record_id": "RR-SCNIR2022_GCSF_OUTCOMES",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. candidates.json's candidate.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/candidates.json",
+      "rights_record_id": "RR-HEMATOLREP2024_NEUTROPENIA_REVIEW",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. candidates.json's candidate.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/candidates.json",
+      "rights_record_id": "RR-JPEDS2023_DUFFY_NULL_NEUTROPENIA",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. candidates.json's candidate.evidence[] citations are validated (scripts/validate-kb.mjs's \"unknown evidence\" check) to be a subset of evidence.json's 8-source enumeration; this joins the artifact to that full, already-covered source set as a structural envelope, deliberately over-inclusive rather than under-inclusive."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/cbc_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-AAP2026_IDA-REFERENCE-RANGES",
+      "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. modules/cbc_suite_v1/reference-ranges.json's own \"source\" field is AAP2026_IDA (cbc_suite_v1 has no fact-derivation code of its own in E0 and delegates to modules/anemia/facts.anemia.js, OQ-1) -- the same derived-fact channel EPR1-T1's RR-AAP2026_IDA-REFERENCE-RANGES already covers for modules/anemia/reference-ranges.json. This joins the cbc_suite_v1 artifact path to that existing component-scoped record rather than minting a duplicate."
+    }
+  ],
+  "rights_decisions_description": "EPR4-T4 (FR-WP4-04, D4): the RIGHTS-DECISION LEDGER. A separate array from `entries` above — `entries` joins a CLINICAL KB identifier to a rights_record (the coverage join, EPR0-T1+); `rights_decisions` is the shape a future rights owner (OQ-2) fills in to record their actual per-passage rights DETERMINATION, joined BIDIRECTIONALLY to (1) a rights_record_id here in rights/rights-records.json and (2) a passage id ('evidence item') in a module's evidence.json. Entry shape, deliberately identical to scripts/evidence/lib/attested-passage-map.mjs's existing attestation-entry shape so a future entry validates through that SAME reused machinery (validateAttestationEntries — the RG-9 seam) rather than a second implementation: { rights_decision_id, rights_record_id, passageId, attestedBy, credential, attestedOn, attestationRef }. `passageId` -- not `evidence_item_id` -- deliberately: a derived_synthesis item carries no rights_record of its own (RF handoff Section 9.5, decisions-block D3/D6; see scripts/rights/build-decision-brief.mjs), so a rights decision is always about a passage, the thing that actually joins to a rights_record. Validated by scripts/rights/lib/rights-decision-ledger-gate.mjs's checkRightsDecisionLedgerCoverage gate (scripts/validate-rights.mjs GATES id 'rights-decision-ledger-coverage'): the passageId/attestation-shaped half reuses validateAttestationEntries unmodified; the rights_record_id half is a plain existence-join lookup. No code path in this repository may write a live entry here (D6) -- the array ships and stays EMPTY until a named rights owner exists (OQ-2) and a real determination is recorded through whatever write path a future rights-clearance workflow specifies (see docs/project_plans/design-specs/rights-clearance-workflow.md, idea-stage, DEF-R1). A record's own `decision`/`overall_status` disposition never lives in this array -- only the join to the record that carries it; this array is coverage/join plumbing, never a clearance value (D7).",
+  "rights_decisions": []
+}

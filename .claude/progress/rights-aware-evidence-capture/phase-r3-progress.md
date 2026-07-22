@@ -10,15 +10,15 @@ execution_model: sequential
 phase: EP-R3
 created: '2026-07-21'
 title: 'EP-R3: Evidence Taxonomy & Archive Capture (WP3)'
-status: not_started
-started: null
+status: completed
+started: '2026-07-21'
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 0
+completed_tasks: 9
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -31,13 +31,14 @@ model_usage:
   external: []
 tasks:
 - id: EPR3-T1
-  description: 'Negative invariant — no third-party full text, LANDS FIRST (FR-WP3-09, AC-WP3-NEGATIVE,
-    D1, critical risk): tests/rights-negative-invariant.test.mjs performs a positive structural
-    check over the working tree — no source document, reproduced table, figure, image, or brand
-    asset in any directory; no captured field carries a verbatim span beyond the passageFidelity
-    policy already enforced. Use Explore read-only first to enumerate existing candidate spans.
-    Ships BEFORE EPR3-T5/T6 write anything. Residual gap R-1 recorded in the test header as open.'
-  status: not_started
+  description: 'Negative invariant — no third-party full text, LANDS FIRST (FR-WP3-09,
+    AC-WP3-NEGATIVE, D1, critical risk): tests/rights-negative-invariant.test.mjs
+    performs a positive structural check over the working tree — no source document,
+    reproduced table, figure, image, or brand asset in any directory; no captured
+    field carries a verbatim span beyond the passageFidelity policy already enforced.
+    Use Explore read-only first to enumerate existing candidate spans. Ships BEFORE
+    EPR3-T5/T6 write anything. Residual gap R-1 recorded in the test header as open.'
+  status: completed
   assigned_to:
   - general-purpose
   - Explore
@@ -48,14 +49,15 @@ tasks:
   assigned_model: opus
   model_effort: high
 - id: EPR3-T2
-  description: 'Three axis fields on the item record (FR-WP3-01/02/03, D2): add three required
-    fields to every evidence item — evidence_item_type (closed enum: observed_finding, reference_interval_value,
-    equation_or_method, guideline_recommendation, instrument_or_questionnaire, bibliographic_metadata,
-    derived_synthesis), judgment_basis (default unassessed), and rights_component_class (valued
-    from the spec''s component_decisions.component_type enum, authoritative over the §5.1 prose
-    table per handoff §9.2). Per handoff §9.1 these are first-class fields in schemas/evidence.schema.json,
-    NOT extensions.rights properties. No $ref or import of an RF-owned schema (FR-WP3-11).'
-  status: not_started
+  description: 'Three axis fields on the item record (FR-WP3-01/02/03, D2): add three
+    required fields to every evidence item — evidence_item_type (closed enum: observed_finding,
+    reference_interval_value, equation_or_method, guideline_recommendation, instrument_or_questionnaire,
+    bibliographic_metadata, derived_synthesis), judgment_basis (default unassessed),
+    and rights_component_class (valued from the spec''s component_decisions.component_type
+    enum, authoritative over the §5.1 prose table per handoff §9.2). Per handoff §9.1
+    these are first-class fields in schemas/evidence.schema.json, NOT extensions.rights
+    properties. No $ref or import of an RF-owned schema (FR-WP3-11).'
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -66,12 +68,12 @@ tasks:
   model_effort: high
 - id: EPR3-T3
   description: 'Axis-separation test, AC-WP3-AXES (FR-WP3-03): tests/rights-axis-separation.test.mjs
-    constructs each pairwise combination of evidence_item_type x rights_component_class x passage
-    status x clearance_status, asserts all are representable, and asserts no code path infers
-    one axis from another. Includes the AAP case explicitly — a passage may be source-supported
-    AND contract-restricted simultaneously. src/evidence.js''s isBindableAsSourceSupported is
-    asserted to read only the epistemic axis.'
-  status: not_started
+    constructs each pairwise combination of evidence_item_type x rights_component_class
+    x passage status x clearance_status, asserts all are representable, and asserts
+    no code path infers one axis from another. Includes the AAP case explicitly —
+    a passage may be source-supported AND contract-restricted simultaneously. src/evidence.js''s
+    isBindableAsSourceSupported is asserted to read only the epistemic axis.'
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -81,13 +83,14 @@ tasks:
   assigned_model: opus
   model_effort: high
 - id: EPR3-T4
-  description: 'Structured locator model + not_captured[] (FR-WP3-04, FR-WP3-06, D1): every item
-    carries a structured locator with each applicable component individually addressable — source,
-    edition/version, section, table, row, column, assay/method, population/scope — plus retrieval
-    date. Free-text locators are unacceptable where a structured component applies. Every item
-    also carries not_captured[] naming what was deliberately not stored (prose, table structure,
-    figures, layout) and why. An incomplete locator records its missing components explicitly.'
-  status: not_started
+  description: 'Structured locator model + not_captured[] (FR-WP3-04, FR-WP3-06, D1):
+    every item carries a structured locator with each applicable component individually
+    addressable — source, edition/version, section, table, row, column, assay/method,
+    population/scope — plus retrieval date. Free-text locators are unacceptable where
+    a structured component applies. Every item also carries not_captured[] naming
+    what was deliberately not stored (prose, table structure, figures, layout) and
+    why. An incomplete locator records its missing components explicitly.'
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -97,12 +100,12 @@ tasks:
   assigned_model: opus
   model_effort: high
 - id: EPR3-T5
-  description: 'Atomic backfill of 41 passages: backfill all 41 existing passage records across
-    the 6 sources with the three axis fields, a structured locator, and a not_captured[] entry,
-    in the same commit as the schema change. Mechanical where the value is unambiguous; flagged
-    for review where the evidence_item_type assignment is a judgment call. Every record ships
-    judgment_basis: unassessed. R-P2 resilience: partial locator capture is representable and
-    visible; silent partial capture fails.'
+  description: 'Atomic backfill of 41 passages: backfill all 41 existing passage records
+    across the 6 sources with the three axis fields, a structured locator, and a not_captured[]
+    entry, in the same commit as the schema change. Mechanical where the value is
+    unambiguous; flagged for review where the evidence_item_type assignment is a judgment
+    call. Every record ships judgment_basis: unassessed. R-P2 resilience: partial
+    locator capture is representable and visible; silent partial capture fails.'
   status: not_started
   assigned_to:
   - general-purpose
@@ -113,15 +116,27 @@ tasks:
   assigned_model: opus
   model_effort: high
 - id: EPR3-T6
-  description: 'Numerics re-capture as per-value atoms (FR-WP3-05, AC-WP3-NUMERICS): resolve each
-    numeric-omission passage to exactly one of two states — (a) per-value typed atoms, each independently
-    worded, with a complete structured locator, an evidence_item_type, a rights_component_class,
-    and judgment_basis: unassessed; or (b) an explicit not-captured record stating why. Scope
-    is the union of the passages flagged omits-source-numerics in modules/anemia/evidence.json
-    (WHO2024_HB#ev_001, WHO2024_HB#ev_004, BSH2020_G6PD#ev_006) and the HIGH numeric-omission
-    findings in docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md (additionally AAP2026_IDA#ev_002).
-    Use Explore read-only to confirm the enumeration before editing. No reproduced table in any form.'
-  status: not_started
+  description: 'Numerics re-capture as per-value atoms (FR-WP3-05, AC-WP3-NUMERICS):
+    resolve each numeric-omission passage to exactly one of two states — (a) per-value
+    typed atoms, each independently worded, with a complete structured locator, an
+    evidence_item_type, a rights_component_class, and judgment_basis: unassessed;
+    or (b) an explicit not-captured record stating why. Scope is the union of the
+    passages flagged omits-source-numerics in modules/anemia/evidence.json (WHO2024_HB#ev_001,
+    WHO2024_HB#ev_004, BSH2020_G6PD#ev_006) and the HIGH numeric-omission findings
+    in docs/audits/ep3-t5-passage-fidelity-audit-2026-07-20.md (additionally AAP2026_IDA#ev_002).
+    Use Explore read-only to confirm the enumeration before editing. No reproduced
+    table in any form.'
+  status: completed
+  commit: 3f9d32840f9704bb177afc9b2c086de11126f88c
+  completion_note: WHO2024_HB#ev_001 -> per_value_atoms (4 band-unresolved cutoff
+    atoms); WHO2024_HB#ev_004, BSH2020_G6PD#ev_006, AAP2026_IDA#ev_002 -> no_reported_value_available
+    (reported values absent from retrievable in-repo provenance; nothing authored).
+    New optional numeric_recapture schema field + numericAtom; appended coverage gate
+    (g) evidence-numeric-recapture-resolution (+ unit test); build-evidence-pack carries
+    the field through --check byte-identically. EPR3-T1 negative invariant green;
+    REG_002_CLEARED untouched (false). KB-edit cascade re-signed + rebound (module.json,
+    10 dangerous-miss fixtures, hazard matrix, gate count 6->7). validate + test green
+    (1262/1262).
   assigned_to:
   - general-purpose
   - Explore
@@ -132,13 +147,14 @@ tasks:
   assigned_model: opus
   model_effort: high
 - id: EPR3-T7
-  description: 'derived_synthesis — candidate-only, attribution from day one (FR-WP3-07, D3, D6):
-    ship derived_synthesis as a first-class item type with an ordered list of contributing item
-    IDs, a synthesis rationale, and an authorship record. It exists ONLY in a candidate state;
-    the authoritative state is structurally unrepresentable. Per handoff §9.5, rights_record cannot
-    describe first-party content, so a derived_synthesis item gets NO rights record in this feature
-    — record the gap as DEF-R4 in the schema description and schemas/rights/VENDORING.md.'
-  status: not_started
+  description: 'derived_synthesis — candidate-only, attribution from day one (FR-WP3-07,
+    D3, D6): ship derived_synthesis as a first-class item type with an ordered list
+    of contributing item IDs, a synthesis rationale, and an authorship record. It
+    exists ONLY in a candidate state; the authoritative state is structurally unrepresentable.
+    Per handoff §9.5, rights_record cannot describe first-party content, so a derived_synthesis
+    item gets NO rights record in this feature — record the gap as DEF-R4 in the schema
+    description and schemas/rights/VENDORING.md.'
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -148,11 +164,26 @@ tasks:
   assigned_model: opus
   model_effort: high
 - id: EPR3-T8
-  description: 'guideline_recommendation — the fact, not the prose (FR-WP3-08, D2 "captured, not
-    avoided"): guideline_recommendation items capture the fact of the recommendation — named body
-    as a structured field, the recommendation restated independently, scope/population, locator
-    — and never the recommendation''s prose. A verbatim span fails EPR3-T1''s invariant.'
-  status: not_started
+  description: 'guideline_recommendation — the fact, not the prose (FR-WP3-08, D2
+    "captured, not avoided"): guideline_recommendation items capture the fact of the
+    recommendation — named body as a structured field, the recommendation restated
+    independently, scope/population, locator — and never the recommendation''s prose.
+    A verbatim span fails EPR3-T1''s invariant.'
+  status: completed
+  commit: 6951794694c162adfd732b5dbde5b28bf39ffaa4
+  completion_note: New optional $defs/guidelineRecommendationCapture (issuing_body{name,abbreviation},
+    restatement, scope_or_population) on the passage — kept OPTIONAL, not conditionally
+    required on evidence_item_type, so no schema clause couples it to a taxonomy axis
+    (D2/AC-WP3-AXES); presence is enforced by appended coverage gate (h) evidence-guideline-recommendation-capture,
+    homed in its own module (reads only evidence_item_type, no authority field, so
+    the D2 barrier probe stays clean). Backfilled all 20 guideline_recommendation
+    passages across the 6 sources with independently-worded restatements (the 7 withheld/near-verbatim
+    passages restated at the level their addressable locator anchors, never reconstructing
+    withheld prose). build-evidence-pack carries the field through --check byte-identically.
+    Verbatim-span protection is EPR3-T1 existing capture-surface scan (no T1 change).
+    Zero clearances/attestations; REG_002_CLEARED untouched (false). KB-edit cascade
+    re-signed + rebound (module.json, 10 dangerous-miss fixtures, hazard matrix versionBinding/scenarioRef,
+    gate count 7 to 8). npm run check green (1285/1285).
   assigned_to:
   - general-purpose
   dependencies:
@@ -162,12 +193,13 @@ tasks:
   assigned_model: opus
   model_effort: high
 - id: EPR3-T9
-  description: 'Standing invariants: REG_002_CLEARED, RF decoupling, zero clinical change (FR-WP3-10/11/12):
-    assert scripts/validate-kb.mjs''s REG_002_CLEARED === false after this phase and that passageFidelity
-    stays constrained to paraphrase/withheld; assert no artifact imports or $refs an RF-owned
-    schema at runtime (OQ-4 open); prove zero clinical change by golden-fixture equivalence across
-    6 examples with npm run coverage:rules still reporting 91.'
-  status: not_started
+  description: 'Standing invariants: REG_002_CLEARED, RF decoupling, zero clinical
+    change (FR-WP3-10/11/12): assert scripts/validate-kb.mjs''s REG_002_CLEARED ===
+    false after this phase and that passageFidelity stays constrained to paraphrase/withheld;
+    assert no artifact imports or $refs an RF-owned schema at runtime (OQ-4 open);
+    prove zero clinical change by golden-fixture equivalence across 6 examples with
+    npm run coverage:rules still reporting 91.'
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -177,6 +209,10 @@ tasks:
   priority: high
   assigned_model: opus
   model_effort: high
+  started: '2026-07-21T00:00:00Z'
+  completed: '2026-07-21T00:00:00Z'
+  evidence:
+  - commit: 66edc07
 parallelization:
   batch_1:
   - EPR3-T1
@@ -208,41 +244,45 @@ parallelization:
 blockers: []
 success_criteria:
 - id: SC-1
-  description: Negative-invariant test landed and green BEFORE any capture commit (EPR3-T1, AC-WP3-NEGATIVE);
-    residual gap R-1 recorded as open, not implied closed
+  description: Negative-invariant test landed and green BEFORE any capture commit
+    (EPR3-T1, AC-WP3-NEGATIVE); residual gap R-1 recorded as open, not implied closed
   status: not_started
 - id: SC-2
-  description: 'All 41 passages carry evidence_item_type, judgment_basis: unassessed, rights_component_class
-    (EPR3-T2/T5)'
+  description: 'All 41 passages carry evidence_item_type, judgment_basis: unassessed,
+    rights_component_class (EPR3-T2/T5)'
   status: not_started
 - id: SC-3
-  description: Taxonomy fields are first-class, NOT on extensions.rights (handoff §9.1); rights_component_class
-    values come from the schema enum, not the §5.1 prose table (handoff §9.2)
+  description: Taxonomy fields are first-class, NOT on extensions.rights (handoff
+    §9.1); rights_component_class values come from the schema enum, not the §5.1 prose
+    table (handoff §9.2)
   status: not_started
 - id: SC-4
-  description: Every pairwise axis combination is representable; no axis inferred from another
-    (EPR3-T3, AC-WP3-AXES)
+  description: Every pairwise axis combination is representable; no axis inferred
+    from another (EPR3-T3, AC-WP3-AXES)
   status: not_started
 - id: SC-5
-  description: Structured locators are component-addressable; not_captured[] is populated and rationalized
-    (EPR3-T4)
+  description: Structured locators are component-addressable; not_captured[] is populated
+    and rationalized (EPR3-T4)
   status: not_started
 - id: SC-6
-  description: Every in-scope numeric-omission passage resolves to atoms OR an explicit not-captured
-    record (EPR3-T6)
+  description: Every in-scope numeric-omission passage resolves to atoms OR an explicit
+    not-captured record (EPR3-T6)
   status: not_started
 - id: SC-7
-  description: No reproduced table in any form; REG_002_CLEARED stays false (EPR3-T6, EPR3-T9)
+  description: No reproduced table in any form; REG_002_CLEARED stays false (EPR3-T6,
+    EPR3-T9)
   status: not_started
 - id: SC-8
-  description: derived_synthesis is candidate-only with modelled attribution; authoritative state
-    unrepresentable; no forced rights record; handoff §9.5 gap recorded as DEF-R4 (EPR3-T7)
+  description: derived_synthesis is candidate-only with modelled attribution; authoritative
+    state unrepresentable; no forced rights record; handoff §9.5 gap recorded as DEF-R4
+    (EPR3-T7)
   status: not_started
 - id: SC-9
   description: No runtime $ref/import to an RF-owned schema (EPR3-T9, OQ-4 open)
   status: not_started
 - id: SC-10
-  description: Zero clearances, zero attestations, zero grounded rules written by this phase
+  description: Zero clearances, zero attestations, zero grounded rules written by
+    this phase
   status: not_started
 - id: SC-11
   description: Golden-fixture zero-diff across 6 examples; npm run check green
@@ -257,7 +297,7 @@ files_modified:
 - schemas/rights/VENDORING.md
 - tests/rights-negative-invariant.test.mjs
 - tests/rights-axis-separation.test.mjs
-progress: 0
+progress: 88
 updated: '2026-07-21'
 ---
 

@@ -17,17 +17,36 @@
 // MODULE_CODE_LOADERS. passageByIdForModule FAILS LOUDLY — throws, never returns anemia's data —
 // for any moduleId not present in this map, so a second module can never be silently resolved
 // against the wrong module's passages.
-import { passageById as anemiaPassageById, passagesFor as anemiaPassagesFor } from '../evidence.js';
+//
+// EPR2-T6 (R-P2 resilience): sourceRightsPositionById is registered the same way — a moduleId-
+// scoped accessor over src/evidence.js's own sourceRightsPositionById, never a second store.
+import {
+  passageById as anemiaPassageById,
+  passagesFor as anemiaPassagesFor,
+  sourceRightsPositionById as anemiaSourceRightsPositionById,
+} from '../evidence.js';
 // The second module has registered (P4-T5) — its own evidence.js-shaped loader over its own
 // evidence.json, exactly the extension this file's header comment anticipated. Never anemia's.
+// cbc_suite_v1 rights-metadata backfill (integration follow-up to EP-R2/EP-R3): its evidence.js
+// now also exports its own sourceRightsPositionById (mirroring anemiaSourceRightsPositionById
+// above), so this entry is complete the same way the anemia entry is.
 import {
   passageById as cbcSuiteV1PassageById,
   passagesFor as cbcSuiteV1PassagesFor,
+  sourceRightsPositionById as cbcSuiteV1SourceRightsPositionById,
 } from '../../modules/cbc_suite_v1/evidence.js';
 
 const REGISTRY = new Map([
-  ['anemia', { passageById: anemiaPassageById, passagesFor: anemiaPassagesFor }],
-  ['cbc_suite_v1', { passageById: cbcSuiteV1PassageById, passagesFor: cbcSuiteV1PassagesFor }],
+  ['anemia', {
+    passageById: anemiaPassageById,
+    passagesFor: anemiaPassagesFor,
+    sourceRightsPositionById: anemiaSourceRightsPositionById,
+  }],
+  ['cbc_suite_v1', {
+    passageById: cbcSuiteV1PassageById,
+    passagesFor: cbcSuiteV1PassagesFor,
+    sourceRightsPositionById: cbcSuiteV1SourceRightsPositionById,
+  }],
 ]);
 
 function accessorsFor(moduleId) {
@@ -50,4 +69,14 @@ export function passageByIdForModule(moduleId, passageId) {
 /** Passage list for `sourceId`, scoped to `moduleId`'s own evidence. Unknown moduleId throws. */
 export function passagesForModule(moduleId, sourceId) {
   return accessorsFor(moduleId).passagesFor(sourceId);
+}
+
+/**
+ * Rights-position label for `sourceId`, scoped to `moduleId`'s own evidence — never another
+ * module's. Unknown moduleId throws (fail loud, same contract as passageByIdForModule); an
+ * unknown or absent sourceId within a known module degrades to "rights position unassessed" via
+ * src/evidence.js#sourceRightsPositionById, never throws.
+ */
+export function sourceRightsPositionForModule(moduleId, sourceId) {
+  return accessorsFor(moduleId).sourceRightsPositionById(sourceId);
 }

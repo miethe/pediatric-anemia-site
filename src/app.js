@@ -1,5 +1,5 @@
 import { assessPediatricAnemia } from './engine.js';
-import { EVIDENCE, KNOWLEDGE_BASE_VERSION } from './evidence.js';
+import { EVIDENCE, KNOWLEDGE_BASE_VERSION, sourceRightsPosition } from './evidence.js';
 import { initializeAlgorithmExplorer } from './algorithmExplorer.js';
 import { toTri } from './facts/tristate.js';
 
@@ -396,6 +396,11 @@ function renderResult(result) {
   $('.results-column')?.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// EPR2-T6 (R-P2 resilience, FR-WP2-07): rights-position label rendered via
+// src/evidence.js#sourceRightsPosition, which degrades a legacy-shape source (or one with no
+// determined license.status) to "rights position unassessed" rather than throwing or being
+// silently omitted — an omitted label would read to a clinician as "nothing to worry about",
+// which is exactly the false "unrestricted" reading this task exists to prevent.
 function renderEvidence() {
   const entries = Object.values(EVIDENCE).sort((a, b) => b.year - a.year || a.id.localeCompare(b.id));
   $('#evidence-list').innerHTML = entries.map((entry) => `
@@ -403,6 +408,7 @@ function renderEvidence() {
       <span class="priority-pill ${(entry.priority ?? '').includes('foundational') ? 'foundational' : ''}">${escapeHtml(entry.priority)}</span>
       <h3>${escapeHtml(entry.title)}</h3>
       <p class="meta">${escapeHtml(entry.organization)} · ${escapeHtml(entry.journal)} · ${entry.doi ? `DOI ${escapeHtml(entry.doi)}` : ''}</p>
+      <p class="meta rights-position">Rights position: ${escapeHtml(sourceRightsPosition(entry))}</p>
       ${list(entry.supports)}
       ${entry.recencyNote ? `<p class="meta"><strong>Recency note:</strong> ${escapeHtml(entry.recencyNote)}</p>` : ''}
       <a href="${escapeHtml(entry.url)}" target="_blank" rel="noopener noreferrer">Open authoritative source</a>

@@ -13,6 +13,27 @@
 // existing `supports[]` prose arrays or any other pre-existing source field. It exists to add
 // (or refresh) the `passages[]` array on each source record.
 //
+// EPR3-T5 (FR-WP3-01..06): each passage now also carries six evidence-item taxonomy fields
+// (`evidence_item_type`, `judgment_basis`, `judgment_basis_attestation`, `rights_component_class`,
+// `structured_locator`, `not_captured`). These are AUTHORED content — a per-passage epistemic and
+// provenance judgment (which item kind, which rights component, the component-addressable locator,
+// and what was deliberately not stored) that is NOT mechanically derivable from the vendored pack.
+// So this generator PRESERVES them from the existing `modules/anemia/evidence.json` record of the
+// same passage id and re-emits them verbatim — exactly as `buildEvidenceDocument` already preserves
+// the authored source-level `license`/`access_basis`/`terms`/`terms_snapshot` fields (EPR2-T1..T4),
+// which are likewise not in the pack. The six mechanical-vs-authored halves stay separable: the 14
+// pack-derived fields are still regenerated from `pack.json` on every run (so `--check` still proves
+// their determinism), and the six taxonomy fields are carried through unchanged (there is nothing to
+// re-derive; a byte diff on them would be an out-of-band hand-edit, which is exactly what a reviewer
+// wants to see). A source with no prior passage of a given id carries no authored taxonomy, so the
+// EP-3-era record shape is emitted unchanged for it — the mid-migration/legacy tolerance
+// tests/evidence-rights-resilience.test.mjs pins.
+//
+// EPR3-T6/T8: two further authored, OPTIONAL passage keys are preserved the same way — `numeric_recapture`
+// (on numeric-omission passages) and `guideline_recommendation_capture` (on guideline_recommendation
+// passages, the fact of the recommendation). Neither is pack-derivable; both are carried through
+// verbatim from the committed record, so a byte diff on either under `--check` is an out-of-band edit.
+//
 // EP3-T5: this script also reads evidence-packs/rf-ev-001/fidelity-findings.json (an independent
 // cross-family audit, mechanically applied — see that file's header comment) and stamps every
 // minted passage record with `reviewFlags`/`reviewFindingIds`. Both are `[]` on a clean record.
@@ -26,6 +47,14 @@ import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// EPR2-T6 (R-P2 resilience, FR-WP2-07): reused from src/evidence.js rather than re-implemented —
+// no second evidence store (DEF-1). This script never touches `license`/`terms` itself (see
+// buildEvidenceDocument below, which passes every non-`passages` source key through unchanged), so
+// it already tolerates a legacy-shape source missing those fields entirely; sourceRightsPosition is
+// imported here so that fact is asserted directly (countUnassessedRightsPositions) rather than left
+// implicit, and so the generation log surfaces it to a reviewer scanning the diff.
+import { sourceRightsPosition, RIGHTS_POSITION_UNASSESSED } from '../../src/evidence.js';
+
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const PACK_PATH = path.join(REPO_ROOT, 'evidence-packs', 'rf-ev-001', 'pack.json');
 const EVIDENCE_PATH = path.join(REPO_ROOT, 'modules', 'anemia', 'evidence.json');
@@ -37,6 +66,10 @@ const WITHHOLDING_FLAG = 'near-verbatim-span-pending-rights';
 // record got here, not what it says. This ordering has to be explicit, not an artefact of the
 // order of `Object.assign` calls elsewhere in the file, so a subtle refactor cannot change the
 // output.
+// EPR3-T5: the six authored taxonomy fields sit immediately after `passageFidelity` and before
+// `reviewFlags`, matching schemas/evidence.schema.json's own `$defs/passage` property-declaration
+// order, so the emitted key order and the schema read the same way top-to-bottom. `provenance`
+// stays last (it is metadata about how the record got here, not what it says).
 const PASSAGE_KEY_ORDER = [
   'id',
   'sourceId',
@@ -44,6 +77,14 @@ const PASSAGE_KEY_ORDER = [
   'sourceLocator',
   'exactPassage',
   'passageFidelity',
+  'evidence_item_type',
+  'judgment_basis',
+  'judgment_basis_attestation',
+  'rights_component_class',
+  'structured_locator',
+  'not_captured',
+  'numeric_recapture',
+  'guideline_recommendation_capture',
   'reviewFlags',
   'reviewFindingIds',
   'evidenceGrade',
@@ -53,6 +94,35 @@ const PASSAGE_KEY_ORDER = [
   'surveillanceQuery',
   'provenance',
 ];
+
+// EPR3-T5: the six authored taxonomy keys, in their emitted order. Listed as a plain key array (no
+// conditional, no cross-field comparison) so tests/rights-axis-separation.test.mjs's line-level D2
+// probe reads it as an ordering constant, never as one axis being derived from another. These keys
+// are OPTIONAL in `orderPassageKeys` below: a legacy/absent source record that never carried them
+// emits the EP-3-era shape, while a backfilled record carries all six.
+const TAXONOMY_KEY_ORDER = [
+  'evidence_item_type',
+  'judgment_basis',
+  'judgment_basis_attestation',
+  'rights_component_class',
+  'structured_locator',
+  'not_captured',
+];
+// EPR3-T6 (FR-WP3-05): `numeric_recapture` is a SEVENTH authored, optional passage key — present
+// only on the handful of passages the EP3-T5 fidelity audit found dropped source numerics (plus the
+// audit-named AAP2026_IDA#ev_002). Like the six taxonomy fields it is authored content this
+// generator cannot re-derive from the pack, so it is carried through verbatim from the committed
+// record (numericRecaptureOverlayFor below) and re-emitted between `not_captured` and `reviewFlags`,
+// exactly at its schemas/evidence.schema.json property-declaration position. It is OPTIONAL: a
+// passage with no numeric omission carries none, and the EP-3-era shape is unaffected.
+// EPR3-T8 (FR-WP3-08): `guideline_recommendation_capture` is an EIGHTH authored, optional passage
+// key — present only on passages whose evidence_item_type is guideline_recommendation, where it
+// carries the fact of the recommendation (named issuing body, independently-worded restatement,
+// scope). Like the taxonomy fields and numeric_recapture it is authored content this generator
+// cannot re-derive from the pack, so it is carried through verbatim from the committed record
+// (guidelineRecommendationCaptureOverlayFor below) and re-emitted between numeric_recapture and
+// reviewFlags, exactly at its schemas/evidence.schema.json property-declaration position.
+const OPTIONAL_PASSAGE_KEYS = new Set([...TAXONOMY_KEY_ORDER, 'numeric_recapture', 'guideline_recommendation_capture']);
 
 const SOURCE_LOCATOR_KEY_ORDER = ['raw', 'page', 'section', 'table', 'figure'];
 const APPLICABILITY_KEY_ORDER = ['age', 'sex', 'assay'];
@@ -68,6 +138,70 @@ function orderKeys(obj, order) {
   const extras = Object.keys(obj).filter((k) => !order.includes(k));
   if (extras.length) throw new Error(`unexpected keys in object: ${extras.join(', ')}`);
   return ordered;
+}
+
+// EPR3-T5. A passage-specific variant of `orderKeys`: the 14 mechanical (pack-derived) keys are
+// still each REQUIRED, but the six taxonomy keys in `OPTIONAL_PASSAGE_KEYS` are included only when
+// the record actually carries them. That is what lets one function emit both a backfilled record
+// (all 20 keys) and an EP-3-era/legacy record with no authored taxonomy (14 keys) — the
+// mid-migration shape tests/evidence-rights-resilience.test.mjs pins. Surplus keys are still
+// rejected, so a shape change still has to go through this file.
+function orderPassageKeys(obj) {
+  const ordered = {};
+  for (const key of PASSAGE_KEY_ORDER) {
+    if (Object.hasOwn(obj, key)) {
+      ordered[key] = obj[key];
+    } else if (!OPTIONAL_PASSAGE_KEYS.has(key)) {
+      throw new Error(`missing required key "${key}" in passage: ${JSON.stringify(obj)}`);
+    }
+  }
+  const extras = Object.keys(obj).filter((k) => !PASSAGE_KEY_ORDER.includes(k));
+  if (extras.length) throw new Error(`unexpected keys in passage: ${extras.join(', ')}`);
+  return ordered;
+}
+
+// EPR3-T5. Reads the six authored taxonomy fields off the existing passage record (keyed by id) so
+// they can be carried through the regeneration unchanged. Returns `{}` when there is no existing
+// record, or when the existing record predates the taxonomy entirely (the EP-3/legacy shape) — in
+// both cases the emitted record keeps the 14-field EP-3 shape. A record that carries SOME but not
+// all six is a fail-closed error: the six are backfilled atomically by EPR3-T5, so a partial set
+// signals a corrupted or half-applied edit, not a legitimate state. Reads the six values by
+// variable key (never by axis-field literal) so it names no evidence-item axis in executable code.
+function taxonomyOverlayFor(existingPassage) {
+  if (!existingPassage) return {};
+  const present = TAXONOMY_KEY_ORDER.filter((key) => Object.hasOwn(existingPassage, key));
+  if (present.length === 0) return {};
+  if (present.length !== TAXONOMY_KEY_ORDER.length) {
+    throw new Error(
+      `passage "${existingPassage.id}" carries a partial evidence-item taxonomy (${present.join(', ')}) — `
+      + 'the six taxonomy fields are authored and backfilled atomically (EPR3-T5); a partial set is a defect',
+    );
+  }
+  const overlay = {};
+  for (const key of TAXONOMY_KEY_ORDER) overlay[key] = existingPassage[key];
+  return overlay;
+}
+
+// EPR3-T6 (FR-WP3-05). Reads the authored `numeric_recapture` field off the existing passage record
+// (keyed by id) so it can be carried through the regeneration unchanged — the same preserve-authored-
+// content pattern as `taxonomyOverlayFor`. Returns `{}` when the record does not carry it (the common
+// case: only numeric-omission passages do), so spreading the result is a no-op for every other record.
+// The generator authors nothing here; a byte diff on `numeric_recapture` under `--check` is therefore
+// always an out-of-band hand-edit, which is exactly what a reviewer wants to see.
+function numericRecaptureOverlayFor(existingPassage) {
+  if (!existingPassage || !Object.hasOwn(existingPassage, 'numeric_recapture')) return {};
+  return { numeric_recapture: existingPassage.numeric_recapture };
+}
+
+// EPR3-T8 (FR-WP3-08). Reads the authored `guideline_recommendation_capture` field off the existing
+// passage record (keyed by id) so it can be carried through the regeneration unchanged — the same
+// preserve-authored-content pattern as `numericRecaptureOverlayFor`. Returns `{}` when the record
+// does not carry it (every non-guideline_recommendation passage), so spreading the result is a no-op
+// there. The generator authors nothing here; a byte diff on `guideline_recommendation_capture` under
+// `--check` is therefore always an out-of-band hand-edit, exactly what a reviewer wants to see.
+function guidelineRecommendationCaptureOverlayFor(existingPassage) {
+  if (!existingPassage || !Object.hasOwn(existingPassage, 'guideline_recommendation_capture')) return {};
+  return { guideline_recommendation_capture: existingPassage.guideline_recommendation_capture };
 }
 
 // Explicit codepoint comparator (EP3T5-F11): `String.prototype.localeCompare` is locale-dependent
@@ -102,7 +236,12 @@ function buildFidelityIndex(fidelityFindings) {
   };
 }
 
-function buildPassageRecords(packSource, pack, fidelityIndex) {
+// `existingPassagesById` (EPR3-T5) maps passage id -> the currently-committed passage record, so the
+// authored taxonomy on each can be carried through the regeneration (see `taxonomyOverlayFor`).
+// Defaults to an empty Map so pre-EPR3-T5 callers (and the legacy-shape resilience tests) that pass
+// only three arguments keep the exact EP-3 behaviour — every emitted record simply carries no
+// taxonomy overlay.
+export function buildPassageRecords(packSource, pack, fidelityIndex, existingPassagesById = new Map()) {
   const records = [];
   // Source-supported records — one per extracted point marked source_supported_fact in the pack.
   // Order: by RF evidence_id ascending, which for this bundle is ev_001..ev_00N in file order.
@@ -124,7 +263,7 @@ function buildPassageRecords(packSource, pack, fidelityIndex) {
     // own --check regeneration can never drift apart. A minted `implementation-proposal` sentinel
     // never carries flags (see the loop appending it below), so it is untouched by this rule.
     const status = passage.status === 'source-supported' && reviewFlags.length > 0 ? 'quarantined' : passage.status;
-    records.push(orderKeys({
+    records.push(orderPassageKeys({
       id: passageId,
       sourceId: packSource.kbSourceId,
       status,
@@ -134,6 +273,16 @@ function buildPassageRecords(packSource, pack, fidelityIndex) {
       // field records the current reality (REG-002 has not cleared verbatim reuse).
       exactPassage: passage.summary,
       passageFidelity,
+      // EPR3-T5: authored taxonomy carried through verbatim from the committed record (or nothing,
+      // for a legacy source that never had it). `orderPassageKeys` slots these six between
+      // passageFidelity and reviewFlags.
+      ...taxonomyOverlayFor(existingPassagesById.get(passageId)),
+      // EPR3-T6: the authored numeric_recapture resolution, carried through verbatim when present
+      // (only numeric-omission passages carry it); `orderPassageKeys` slots it after not_captured.
+      ...numericRecaptureOverlayFor(existingPassagesById.get(passageId)),
+      // EPR3-T8: the authored guideline_recommendation_capture, carried through verbatim when present
+      // (only guideline_recommendation passages carry it); slotted after numeric_recapture.
+      ...guidelineRecommendationCaptureOverlayFor(existingPassagesById.get(passageId)),
       reviewFlags,
       reviewFindingIds,
       evidenceGrade: passage.evidenceGrade,
@@ -146,14 +295,15 @@ function buildPassageRecords(packSource, pack, fidelityIndex) {
         sourceCardId: packSource.sourceCardId,
         evidenceId: passage.evidenceId,
       }, PROVENANCE_KEY_ORDER),
-    }, PASSAGE_KEY_ORDER));
+    }));
   }
 
   // Exactly one implementation-proposal sentinel per source (D-EP3-3). Appended after the
   // source-supported records so a reviewer sees "here's what we located, here's the fallback."
   // The sentinel is not a located passage, so it never carries a fidelity-audit flag.
-  records.push(orderKeys({
-    id: `${packSource.kbSourceId}#implementation-proposal`,
+  const sentinelId = `${packSource.kbSourceId}#implementation-proposal`;
+  records.push(orderPassageKeys({
+    id: sentinelId,
     sourceId: packSource.kbSourceId,
     status: 'implementation-proposal',
     sourceLocator: orderKeys({
@@ -165,6 +315,10 @@ function buildPassageRecords(packSource, pack, fidelityIndex) {
     }, SOURCE_LOCATOR_KEY_ORDER),
     exactPassage: '',
     passageFidelity: 'paraphrase',
+    // EPR3-T5: the sentinel captured nothing from a source, so its authored taxonomy (when present)
+    // is the structurally-legal placeholder shape — bibliographic_metadata axes, a source-only
+    // structured_locator, and an empty not_captured (the sentinel exemption in the schema).
+    ...taxonomyOverlayFor(existingPassagesById.get(sentinelId)),
     reviewFlags: [],
     reviewFindingIds: [],
     evidenceGrade: null,
@@ -177,12 +331,12 @@ function buildPassageRecords(packSource, pack, fidelityIndex) {
       sourceCardId: packSource.sourceCardId,
       evidenceId: 'implementation-proposal',
     }, PROVENANCE_KEY_ORDER),
-  }, PASSAGE_KEY_ORDER));
+  }));
 
   return records;
 }
 
-function buildEvidenceDocument(existingDoc, pack, fidelityIndex) {
+export function buildEvidenceDocument(existingDoc, pack, fidelityIndex) {
   // Index the pack by kbSourceId so we can attach passages to each existing source without
   // reordering the sources[] array (that ordering is set by the evidence file itself, not by us).
   const packByKb = new Map(pack.sources.map((s) => [s.kbSourceId, s]));
@@ -192,9 +346,16 @@ function buildEvidenceDocument(existingDoc, pack, fidelityIndex) {
     if (!packSource) {
       throw new Error(`no pack entry for existing evidence source "${source.id}"`);
     }
-    const passages = buildPassageRecords(packSource, pack, fidelityIndex);
+    // EPR3-T5: index this source's currently-committed passages by id so buildPassageRecords can
+    // carry each record's authored taxonomy through. A legacy source with no `passages` yields an
+    // empty map, and every regenerated record then keeps its EP-3 (no-taxonomy) shape.
+    const existingPassagesById = new Map((source.passages ?? []).map((existing) => [existing.id, existing]));
+    const passages = buildPassageRecords(packSource, pack, fidelityIndex, existingPassagesById);
     // Preserve every existing property; only add or replace `passages`. This is intentionally
-    // additive so we do not clobber the `supports[]` prose or per-source metadata.
+    // additive so we do not clobber the `supports[]` prose or per-source metadata. EPR2-T6
+    // (R-P2 resilience): this loop never reads or requires `license`/`access_basis`/`terms`/
+    // `terms_snapshot` — a legacy-shape `source` missing any (or all) of them passes through
+    // exactly as it arrived, so this function cannot throw on their absence.
     const next = {};
     for (const key of Object.keys(source)) {
       if (key === 'passages') continue;
@@ -217,6 +378,19 @@ function buildEvidenceDocument(existingDoc, pack, fidelityIndex) {
     ...existingDoc,
     sources: nextSources,
   };
+}
+
+/**
+ * EPR2-T6 (R-P2 resilience, FR-WP2-07): counts sources whose rights position is unassessed —
+ * either genuinely absent (legacy-shape source) or explicitly `license.status: "unknown"` — via
+ * the shared src/evidence.js#sourceRightsPosition accessor (DEF-1, single source of truth). Pure
+ * and side-effect-free; never throws on a `doc.sources` entry missing `license` entirely, which is
+ * exactly the mid-migration shape this task exists to tolerate. Used by main() below to surface the
+ * count in the generation log, not to block generation — this script is D7 coverage-shaped only,
+ * never a clearance gate.
+ */
+export function countUnassessedRightsPositions(doc) {
+  return (doc.sources ?? []).filter((source) => sourceRightsPosition(source) === RIGHTS_POSITION_UNASSESSED).length;
 }
 
 function serialize(doc) {
@@ -279,11 +453,13 @@ async function main() {
   const nextDoc = buildEvidenceDocument(existing, pack, fidelityIndex);
   const nextSerialised = serialize(nextDoc);
 
+  const unassessedCount = countUnassessedRightsPositions(nextDoc);
+
   if (check) {
     const current = await readFile(EVIDENCE_PATH, 'utf8');
     if (current === nextSerialised) {
       const totalPassages = nextDoc.sources.reduce((n, s) => n + s.passages.length, 0);
-      console.log(`build-evidence-pack --check: ${path.relative(REPO_ROOT, EVIDENCE_PATH)} matches regenerated output (${nextDoc.sources.length} sources, ${totalPassages} passages).`);
+      console.log(`build-evidence-pack --check: ${path.relative(REPO_ROOT, EVIDENCE_PATH)} matches regenerated output (${nextDoc.sources.length} sources, ${totalPassages} passages, ${unassessedCount} with rights position unassessed).`);
       return;
     }
     const diff = firstDiffLines(current, nextSerialised);
@@ -294,10 +470,18 @@ async function main() {
 
   await writeFile(EVIDENCE_PATH, nextSerialised, 'utf8');
   const totalPassages = nextDoc.sources.reduce((n, s) => n + s.passages.length, 0);
-  console.log(`Wrote ${path.relative(REPO_ROOT, EVIDENCE_PATH)}: ${nextDoc.sources.length} sources, ${totalPassages} passages.`);
+  console.log(`Wrote ${path.relative(REPO_ROOT, EVIDENCE_PATH)}: ${nextDoc.sources.length} sources, ${totalPassages} passages, ${unassessedCount} with rights position unassessed.`);
 }
 
-main().catch((error) => {
-  console.error(`build-evidence-pack: ${error.stack ?? error.message}`);
-  process.exit(1);
-});
+// EPR2-T6 (R-P2 resilience): guarded the same way scripts/validate-kb.mjs is — importing this
+// module for its exported pure functions (buildEvidenceDocument, buildPassageRecords,
+// countUnassessedRightsPositions; tests/evidence-rights-resilience.test.mjs does exactly this)
+// must not also run the CLI and overwrite modules/anemia/evidence.json as a side effect of import.
+const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isMain) {
+  main().catch((error) => {
+    console.error(`build-evidence-pack: ${error.stack ?? error.message}`);
+    process.exit(1);
+  });
+}

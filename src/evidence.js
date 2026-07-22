@@ -103,3 +103,41 @@ export function isBindableAsSourceSupported(passage) {
   if (!Array.isArray(passage.reviewFlags)) return false;
   return passage.reviewFlags.length === 0;
 }
+
+// EPR2-T6 (R-P2 resilience, FR-WP2-07): source-level accessor over the same EVIDENCE import
+// above — no second evidence store (DEF-1), mirroring the passage accessors' degrade-never-throw
+// contract. EP-R2 (EPR2-T1/T2/T3/T4) made `license`/`access_basis`/`terms`/`terms_snapshot`
+// required fields on schemas/evidence.schema.json's $defs/source going forward, but a legacy-shape
+// source record encountered mid-migration (no `license` at all, or one with no `status`) must
+// still render something honest rather than throw or silently read as permitted.
+export const RIGHTS_POSITION_UNASSESSED = 'rights position unassessed';
+
+/**
+ * Render-safe rights-position label for a source record. Mirrors `license.status`'s own closed
+ * enum verbatim for every explicitly determined value (`copyrighted`, `open_license`,
+ * `public_domain`, `us_federal_government_work`, `mixed_or_third_party`). Degrades to the literal
+ * `RIGHTS_POSITION_UNASSESSED` — never fabricates "unrestricted" from absence — for:
+ *   - a nullish or non-object `source`;
+ *   - a legacy-shape source with no `license` object at all;
+ *   - a `license` object with no `status`, or `status` missing entirely;
+ *   - the explicit typed-unknown enum member `license.status === "unknown"`.
+ * This is a label only; it carries no clearance authority (D6/D7) and never reads `overall_status`
+ * or any other rights-authority field — the authoritative record lives in rights/, joined via
+ * rights/rights-ledger.json (D4). Never throws.
+ */
+export function sourceRightsPosition(source) {
+  const status = source && typeof source === 'object' ? source.license?.status : undefined;
+  return typeof status === 'string' && status.length > 0 && status !== 'unknown'
+    ? status
+    : RIGHTS_POSITION_UNASSESSED;
+}
+
+/**
+ * Same contract as `sourceRightsPosition`, resolved by source id against this module's own
+ * EVIDENCE registry — the source-level sibling of `passageById` above. An unknown id degrades to
+ * `RIGHTS_POSITION_UNASSESSED` (we know nothing about it, which must never read as "unrestricted"),
+ * never throws.
+ */
+export function sourceRightsPositionById(sourceId) {
+  return sourceRightsPosition(EVIDENCE[sourceId]);
+}

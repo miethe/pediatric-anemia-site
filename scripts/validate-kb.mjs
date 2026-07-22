@@ -142,6 +142,105 @@ async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, 'utf8'));
 }
 
+// --- EPR1-T2 (R-P3 integration_owner = EP-R1; FR-WP1-02/03) --------------------------------------
+//
+// This is the seam: `scripts/validate-kb.mjs` is the R-P3-designated owner of the shared
+// ledger-resolution helper. `scripts/validate-rights.mjs`'s EPR1-T2 gate calls it below to resolve
+// KB_JSON_FILES artifact paths; EP-R2's EPR2-T5 is the intra-wave-ordered CONSUMER — it adds a call
+// site for `evidence_source_id` resolution and MUST NOT restructure, rename, or re-signature this
+// function (docs/project_plans/implementation_plans/infrastructure/rights-aware-evidence-capture-v1/
+// phase-r1-derived-fact-coverage.md, "Integration Ownership (R-P3)"; phase-r2's mirror section). A
+// needed shape change is an escalation to the plan owner, never a unilateral edit.
+
+/**
+ * Resolves every rights/rights-ledger.json entry that joins a given clinical identifier
+ * (`identifierType`/`identifierId` — e.g. `('evidence_source_id', 'AAP2026_IDA')` or
+ * `('kb_json_file_path', 'modules/anemia/reference-ranges.json')`) to its rights_record_id(s),
+ * verifying each resolves to a real record in `rights/rights-records.json`.
+ *
+ * Pure and call-site-agnostic: takes the already-loaded ledger/records data via `{ rightsLedger,
+ * rightsRecords }` rather than reading disk itself, so it can be called identically from
+ * `scripts/validate-rights.mjs`'s gate context (built by `loadRightsContext`) and from a future
+ * `scripts/validate-kb.mjs` call site (EPR2-T5) that loads `rights/` data on its own.
+ *
+ * Returns `{ recordIds: string[], errors: string[] }`:
+ *   - `recordIds` — the `rights_record_id` of every matching ledger entry that resolves to a real
+ *     record (order-preserving; may legitimately contain more than one entry for the same
+ *     identifier — see `rights/rights-ledger.json`'s own description of the AAP2026_IDA double-join
+ *     between its source-level and component-scoped records).
+ *   - `errors` — one message per matching ledger entry whose `rights_record_id` does NOT resolve to
+ *     any record (a dangling reference), reported even when other entries for the same identifier
+ *     DO resolve, so a coverage gap is never silently swallowed by unrelated valid coverage.
+ *
+ * An identifier with zero matching ledger entries returns `{ recordIds: [], errors: [] }` — that is
+ * a coverage GAP, but this function does not itself judge that a gap is a failure; callers combine
+ * an empty `recordIds` with their own presence check to raise a message naming the specific artifact
+ * or identifier at fault (never a generic "coverage failed"). D7: this function never reads
+ * `overall_status`, `review.review_status`, or any other rights-authority field — only that the join
+ * exists and resolves to a record, never what that record concludes.
+ */
+export function resolveRightsRecordsForIdentifier(identifierType, identifierId, { rightsLedger, rightsRecords }) {
+  const recordsById = new Map((rightsRecords?.records ?? []).map((record) => [record.rights_record_id, record]));
+  const recordIds = [];
+  const errors = [];
+
+  for (const entry of rightsLedger?.entries ?? []) {
+    if (entry.clinical_identifier_type !== identifierType || entry.clinical_identifier !== identifierId) continue;
+    if (!recordsById.has(entry.rights_record_id)) {
+      errors.push(`rights-ledger entry for ${identifierType}:${identifierId} references unknown rights_record_id "${entry.rights_record_id}"`);
+      continue;
+    }
+    recordIds.push(entry.rights_record_id);
+  }
+
+  return { recordIds, errors };
+}
+
+// --- EPR2-T5 (R-P3 seam CONSUMER; FR-WP2-06) --------------------------------------------------------
+//
+// Source -> rights-record coverage gate. Adds a call site to `resolveRightsRecordsForIdentifier`
+// above (EP-R1's exported ledger-resolution helper, landed EPR1-T2) — it does not modify that
+// function's signature or body. Every `evidence.json` source must join to >=1 `rights/rights-ledger.json`
+// entry that itself resolves to a real `rights/rights-records.json` record; a source with zero
+// resolving entries is a coverage gap and fails `npm run validate`, naming the source id.
+//
+// D7: coverage-shaped only, mirroring `scripts/validate-rights.mjs`'s own gates. This function never
+// reads `overall_status`, `review.review_status`, or any other rights-authority field — only that the
+// join exists and resolves to a record, never what that record concludes. A record sitting at
+// `overall_status: "UNKNOWN"` satisfies this gate exactly like any other.
+
+/**
+ * Validates that every source in `evidenceData.sources[]` resolves to >=1 rights record via
+ * `resolveRightsRecordsForIdentifier('evidence_source_id', source.id, { rightsLedger, rightsRecords })`.
+ * Pure function over in-memory data (mirrors `validateEvidenceDocument`/`validateFidelityFindings`
+ * above), so it is independently unit-testable against a tampered ledger/records fixture without
+ * touching disk.
+ *
+ * A source missing its own `id` is skipped here — `validateEvidenceDocument`'s schema check already
+ * reports that defect, and this gate has no identifier to resolve against without one.
+ */
+export function validateSourceRightsCoverage(evidenceData, moduleId, { rightsLedger, rightsRecords }) {
+  const errors = [];
+  for (const source of evidenceData.sources ?? []) {
+    if (!source?.id) continue;
+    const { recordIds, errors: resolutionErrors } = resolveRightsRecordsForIdentifier(
+      'evidence_source_id',
+      source.id,
+      { rightsLedger, rightsRecords },
+    );
+    for (const message of resolutionErrors) {
+      errors.push(`${moduleId}/evidence.json#${source.id}: ${message}`);
+    }
+    if (recordIds.length === 0) {
+      errors.push(
+        `${moduleId}/evidence.json#${source.id}: no rights/rights-ledger.json entry resolves this `
+        + 'evidence_source_id to a rights record (FR-WP2-06)',
+      );
+    }
+  }
+  return errors;
+}
+
 // P1-T2 (evidence-foundry-buildout Phase 1): the 8 module-variable-envelope fields every
 // module manifest must declare — the scoping contract (who the module is for, which patients,
 // what it outputs, what it explicitly refuses to do, where it applies, what surfaces it
@@ -666,6 +765,27 @@ export async function validateModule(moduleId, rootDir) {
   errors.push(...evidenceValidation.errors);
   warnings.push(...evidenceValidation.warnings);
   const { passageIndex, sourcesWithPassages } = evidenceValidation;
+
+  // EPR2-T5 (R-P3 seam CONSUMER; FR-WP2-06): every evidence.json source resolves to a rights
+  // record via EP-R1's exported `resolveRightsRecordsForIdentifier` helper (call site only, helper
+  // unmodified). rights/ is a top-level tree shared across modules, not a per-module artifact
+  // (D4), so it is read fresh here alongside this module's other cross-file inputs.
+  //
+  // Integration resilience (R-P2 "consumer handles absence"): the source->rights-record coverage
+  // gate applies only where a rights/ tree actually exists under rootDir. In the real repo it always
+  // does (committed), so the gate always runs and still fails closed on a missing record — the
+  // rights-coverage / gate-failsclosed suites prove that. A SYNTHETIC rootDir built by a test to
+  // exercise an unrelated gate (e.g. tests/rule-schema-seeded-invalid.test.mjs seeds only
+  // schemas/ + modules/<id>/) legitimately has no rights/ tree; skipping there validates nothing
+  // that isn't present rather than ENOENT-ing on an absent shared substrate. This narrows nothing in
+  // production: deleting rights/ from the real repo breaks the rights-substrate suite loudly.
+  const rightsLedgerPath = path.join(rootDir, 'rights', 'rights-ledger.json');
+  const rightsRecordsPath = path.join(rootDir, 'rights', 'rights-records.json');
+  if ((await fileExists(rightsLedgerPath)) && (await fileExists(rightsRecordsPath))) {
+    const rightsLedger = await readJson(rightsLedgerPath);
+    const rightsRecords = await readJson(rightsRecordsPath);
+    errors.push(...validateSourceRightsCoverage(evidenceData, moduleId, { rightsLedger, rightsRecords }));
+  }
 
   // EP3-T5: fidelity-findings.json is specific to the RF-EV-001 bundle backing the anemia
   // module's evidence.json (mirrors src/modules/registry.js's own "revisit the day a second

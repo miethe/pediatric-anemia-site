@@ -85,7 +85,7 @@ A commercial release must be blocked when rights are **unknown**, **materially d
 
 ### 3.1 Facts, methods, systems, procedures, and discoveries
 
-Under 17 U.S.C. § 102(b), copyright protection does not extend to an idea, procedure, process, system, method of operation, concept, principle, or discovery, regardless of how it is described or illustrated. The U.S. Copyright Office likewise states that copyright does not protect facts, ideas, systems, or methods of operation, though it may protect the way they are expressed. [S1][S2]
+Under 17 U.S.C. § 102(b), copyright protection does not extend to an idea, procedure, process, system, method of operation, concept, principle, or discovery, regardless of how it is described or illustrated. The U.S. Copyright Office likewise states that copyright does not protect facts, ideas, systems, or methods of operation, though it may protect the way they are expressed. [S1][S2] The controlling U.S. Supreme Court authority for this fact/expression line is *Feist Publications v. Rural Telephone Service*, 499 U.S. 340 (1991) [S16], which holds that facts are not original to their discoverer and that copyright protects only the original selection, coordination, or arrangement contributed by an author — not the underlying facts themselves. [Amendment 2026-07-21, EPR5-T2, per FR-WP5-02]
 
 Operational consequence:
 
@@ -100,10 +100,10 @@ A compilation may receive copyright protection for original selection, coordinat
 Operational consequence:
 
 - Encoding one independently stated threshold is different from reproducing a publisher’s entire age-by-risk-by-time threshold table.
-- A complete table, nomogram, taxonomy, or curated set may create compilation risk even when individual values are factual.
+- A complete table, nomogram, taxonomy, or curated set may create compilation risk even when individual values are factual — a coding taxonomy of numbering plus short descriptions was held copyrightable in *ADA v. Delta Dental Plans Ass'n*, 126 F.3d 977 (7th Cir. 1997) [S18], and a compiled set of values reflecting professional judgment, not bare measurement, was held protected expression in *CCC Information Services v. Maclean Hunter Market Reports*, 44 F.3d 61 (2d Cir. 1994) [S17]. [Amendment 2026-07-21, EPR5-T2, per FR-WP5-02]
 - The risk increases when the shipped product preserves the source’s same scope, selection, sequence, labels, categories, and arrangement and can substitute for the source product.
 
-Outside the United States, additional rights may exist. European Union law, for example, recognizes a sui generis database right protecting substantial investment in obtaining, verifying, or presenting database contents. [S13]
+Outside the United States, additional rights may exist. European Union law, for example, recognizes a sui generis database right protecting substantial investment in obtaining, verifying, or presenting database contents. [S13] Two qualifications scope that statement for this project. **Territorial scoping:** Directive 96/9/EC is EU/EEA law; it does not attach to a US-only product's US operations on its own terms, though it can still matter if a database is sourced from an EU-based publisher or the product is distributed into the EU/EEA. **The creation-vs-obtaining carve-out:** the Court of Justice of the European Union held, in a line of judgments including *The British Horseracing Board Ltd and Others v William Hill Organization Ltd*, Case C-203/02, [2004] ECR I-10415 (9 November 2004), and *Fixtures Marketing Ltd v Organismos Prognostikon Agonon Podosfairou AE (OPAP)*, Case C-444/02 (9 November 2004), that the sui generis right protects investment in **obtaining** (collecting from existing sources), verifying, and presenting data — not investment in **creating** it. An organization that generates its own measurements — a laboratory establishing its own reference intervals from its own patient population, for example — is plausibly on the creating side of that line, and the sui generis right is correspondingly less likely to reach that data. [Amendment 2026-07-21, EPR5-T3, per FR-WP5-05]
 
 ### 3.3 Access agreements and contracts
 
@@ -154,13 +154,28 @@ Operational policy:
 
 ### 3.7 Government works and public domain
 
-Copyright protection is generally unavailable for works of the United States Government under 17 U.S.C. § 105, subject to statutory nuances and third-party content. [S14]
+Copyright protection is generally unavailable for **works of the United States Government** — a work
+prepared by an officer or employee of the federal government as part of that person's official duties
+— under 17 U.S.C. § 105, subject to statutory nuances and third-party content. [S1] [Amendment
+2026-07-21, EPR5-T4, per FR-WP5-06: citation consolidated from the retired [S14] into [S1] — see
+Appendix B and Appendix D] That rule does
+**not** extend to **government-*funded*** works: federal grant or contract funding does not itself
+divest the authoring university, researcher, or publisher of copyright in the resulting article. §105
+turns on federal *authorship*, not on federal *funding*. [Amendment 2026-07-21, EPR5-T3, per
+FR-WP5-03]
 
 Operational consequence:
 
-- U.S. federal guidance and datasets are often excellent reuse candidates.
+- U.S. federal guidance and datasets **authored by a federal officer or employee as part of official
+  duties** are often excellent reuse candidates.
 - Confirm authorship and ownership; a government-hosted page may include copyrighted third-party content.
 - Government agency names, seals, and logos may have separate restrictions.
+- **The PMC trap.** NIH-funded articles by university-affiliated authors are copyrighted, not §105
+  government works, and they are abundant in exactly the PubMed Central corpus this project searches
+  (§3.5). A grant acknowledgment, an `.gov`-adjacent funder, or PMC hosting is not evidence of federal
+  authorship. Confirm the byline is a federal officer or employee writing in that official capacity
+  before treating an article as a §105 government work; absent that, treat it under §3.5 (article-level
+  license controls) instead. [Amendment 2026-07-21, EPR5-T3, per FR-WP5-03]
 
 ### 3.8 Patents
 
@@ -173,7 +188,7 @@ Operational consequence:
 
 ### 3.9 Trademarks and endorsement
 
-Trademarks identify the source of goods or services. A source name may be cited descriptively, but logos, branding, and product positioning must not suggest sponsorship or endorsement without authorization. [S11]
+Trademarks identify the source of goods or services. A source name may be cited descriptively, but logos, branding, and product positioning must not suggest sponsorship or endorsement without authorization. [S11] [Amendment 2026-07-21, EPR5-T4, per FR-WP5-06: pin-cite corrected — see Appendix B and Appendix D]
 
 Operational consequence:
 
@@ -192,7 +207,7 @@ Operational consequence:
 
 ### 3.11 Regulatory transparency is separate from content permission
 
-FDA’s January 2026 CDS guidance addresses when clinicians can independently review the basis of recommendations and distinguishes certain non-device CDS from device software functions. It does not grant copyright or reuse rights. [S15]
+FDA’s Clinical Decision Support Software final guidance, re-issued January 29, 2026 (superseding the January 6, 2026 version, itself superseding the September 2022 final guidance), addresses when clinicians can independently review the basis of recommendations and distinguishes certain non-device CDS from device software functions. It does not grant copyright or reuse rights. [S15] [Amendment 2026-07-21, EPR5-T4, per FR-WP5-06: date pinned — see Appendix B and Appendix D]
 
 Operational consequence:
 
@@ -815,7 +830,8 @@ Reassess when:
 |---|---|---|
 | Store DOI, PMID, title, authors, date | Cleared | Verify accuracy; metadata only |
 | Store original paraphrase of one study finding | Facts-only candidate | Lawful access, locator, no blocking terms, no copied expression |
-| Encode a reported numeric threshold | Facts-only candidate | Preserve population/assay limits; assess contract and compilation dependence |
+| Encode a measured/observed numeric value (e.g., a cohort's reported sensitivity, specificity, or other quantity at a stated cutoff, drawn from a primary study) [Amendment 2026-07-21, EPR5-T1] | Facts-only candidate | Preserve population/assay limits; assess contract and compilation dependence |
+| Encode a consensus/judgment-derived numeric recommendation (e.g., a guideline committee's threshold, cutoff, or scoring recommendation) [Amendment 2026-07-21, EPR5-T1] | `LEGAL_REVIEW_REQUIRED` | Represents the drafting body's professional judgment, not a bare measured fact — do not route to Facts-only candidate; preserve population/assay limits and assess contract/compilation dependence pending review; see Appendix D |
 | Encode an equation | Facts-only candidate | Check patent, branded method, license, inputs, validity |
 | Combine several studies into an original rule | Facts-only candidate | Document synthesis and expert judgment; do not reproduce source organization |
 | Display a citation and link | Usually cleared | No copied preview or endorsement; use stable identifier |
@@ -833,6 +849,17 @@ Reassess when:
 | Bulk-download subscription content for RAG | Contract/legal review | Requires explicit TDM, automated retrieval, storage, and model-use rights |
 | Train a model on source full text | Legal review required | Separate use not implied by reading or clinical subscription |
 | Use AAP logo or “AAP-approved” claim | Prohibited absent authorization | Citation is not endorsement |
+
+> **Amendment note (EPR5-T1):** the two numeric-value rows above replace what was originally a single
+> "Encode a reported numeric threshold → Facts-only candidate" row. See Appendix D for the dated
+> amendment entry, its rationale, and its scope. This row split states a routing rule only; it makes
+> no determination about any specific threshold family. Whether a given clinical threshold is measured
+> or committee-judged is open question **OQ-1** and routes to counsel — it is not decided here or
+> anywhere in this document. The judgment-derived row's routing rests on *CCC Information Services v.
+> Maclean Hunter Market Reports*, 44 F.3d 61 (2d Cir. 1994) [S17], which held that valuations
+> reflecting the compiler's predictions and professional judgment — not bare measurement — were
+> protected expression, not facts, in a commercial-database context. [Amendment 2026-07-21, EPR5-T2,
+> per FR-WP5-02]
 
 ---
 
@@ -860,12 +887,26 @@ Subject to source and legal review, the product may often:
 - build original explanations and safety logic;
 - independently validate the implementation.
 
+**Contract caveat, carried inline from §16.1.** Every item above answers a *copyright* question; none
+of them, by itself, answers the separate *contract* question §16.1 raises. The AAP Pediatric Care
+Online subscription bars, absent separate written approval, incorporating the licensed Materials into
+other materials. Re-wording a clinical fact or recommendation does not defeat that contractual
+prohibition when the item was extracted from the AAP-licensed Materials, or when its selection and
+organization tracks them — copyright and contract are separate questions, as §3.3 already states, and
+this list's facts-only framing answers only the copyright question. Before treating any item above as
+cleared, confirm the access basis is not the AAP subscription itself: an independently accessible
+primary source, a compatible open-license source, a separately licensed feed, or direct permission,
+per §3.3's operational consequence. [Amendment 2026-07-21, EPR5-T3, per FR-WP5-04]
+
 ### 16.3 What should not be assumed usable
 
 Do not assume the right to:
 
 - copy AAP prose;
-- reproduce an AAP figure, table, chart, nomogram, algorithm, form, handout, or slide;
+- reproduce an AAP figure, table, chart, nomogram, algorithm, form, handout, or slide — AAP's own
+  author instructions govern figures, tables, and supplementary material and impose their own reuse
+  constraints on top of the subscription terms above [S7] [Amendment 2026-07-21, EPR5-T4, per
+  FR-WP5-06: [S7] was defined in Appendix B but never cited from the body — cited here];
 - extract and redistribute the full AAP threshold or knowledge set;
 - incorporate Pediatric Care Online Materials into the commercial knowledge base in violation of the subscription terms;
 - use AAP trademarks or imply endorsement.
@@ -1314,8 +1355,13 @@ This specification is implemented when:
 
 ## Appendix B — Authoritative source register
 
-**[S1]** U.S. Copyright Office, *Title 17, Chapter 1*, §§ 102–103. Verified 2026-07-21.  
-https://www.copyright.gov/title17/92chap1.html
+**[S1]** U.S. Copyright Office, *Title 17, Chapter 1*, §§ 102, 103, 105. Verified 2026-07-21.  
+https://www.copyright.gov/title17/92chap1.html  
+*[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* Section coverage extended from §§102–103 to include
+§105: the §105 citation previously carried under a separate entry, [S14], pointed at this identical
+URL. Citing the same chapter page under two source numbers for different subsections overstated it as
+two independently identified sources rather than one page consulted for three sections. [S14] is
+retired below and folded into this entry; see Appendix D.
 
 **[S2]** U.S. Copyright Office, *What Does Copyright Protect?* Verified 2026-07-21.  
 https://www.copyright.gov/help/faq/faq-protect.html
@@ -1334,7 +1380,18 @@ https://publications.aap.org/pediatriccare/pages/terms
 https://publications.aap.org/pages/licensing-permissions
 
 **[S7]** American Academy of Pediatrics, *Pediatrics Author Instructions: Figures, Tables, and Supplementary Material*. Verified 2026-07-21.  
-https://publications.aap.org/pediatrics/pages/author-instructions
+https://publications.aap.org/pediatrics/pages/author-instructions  
+*[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* Now cited from the body at §16.3 (previously
+defined here but never cited).
+
+**Automated-retrieval note on [S5]/[S6]/[S7]** *[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* All
+three `publications.aap.org` URLs above return HTTP 403 Forbidden to automated/scripted clients
+(confirmed by direct fetch during this amendment, consistent with the review finding). A human
+browser session can reach the pages; an automated agent cannot. The "Verified 2026-07-21" stamps on
+[S5], [S6], and [S7] therefore record a human verification and are **not machine-reproducible** — an
+agent re-running this citation set will see a 403, not confirmation, and must not treat that 403 as
+evidence the source changed or went away. This is mildly ironic given §8.2's ban on unapproved
+automated retrieval, and is recorded here rather than silently left implicit.
 
 **[S8]** Creative Commons, *Attribution 4.0 International*. Verified 2026-07-21.  
 https://creativecommons.org/licenses/by/4.0/
@@ -1346,20 +1403,59 @@ https://creativecommons.org/licenses/by-nc/4.0/
 https://pmc.ncbi.nlm.nih.gov/about/copyright/  
 https://pmc.ncbi.nlm.nih.gov/tools/openftlist/
 
-**[S11]** U.S. Patent and Trademark Office, *Trademark Basics*. Verified 2026-07-21.  
-https://www.uspto.gov/trademarks/basics
+**[S11]** U.S. Patent and Trademark Office, *What Is a Trademark?* (Trademark Basics: Learning the
+Essentials). Verified 2026-07-21.  
+https://www.uspto.gov/trademarks/basics/what-trademark  
+*[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* Pin-cite corrected: previously pointed at the
+`/trademarks/basics` section landing page, one page up from the specific page that states a trademark
+"identifies your goods or services" and discusses logos/branding distinguishing a business in the
+marketplace — the actual textual basis for §3.9's citation.
 
 **[S12]** U.S. Patent and Trademark Office, *Patent Essentials*. Verified 2026-07-21.  
 https://www.uspto.gov/patents/basics/essentials
 
-**[S13]** EUR-Lex, *Directive 96/9/EC on the Legal Protection of Databases*. Verified 2026-07-21.  
-https://eur-lex.europa.eu/legal-content/en/LSU/?uri=CELEX:31996L0009
+**[S13]** EUR-Lex, *Directive 96/9/EC of the European Parliament and of the Council of 11 March 1996 on
+the legal protection of databases* — ELI permalink. Verified 2026-07-21.  
+https://eur-lex.europa.eu/eli/dir/1996/9/oj/eng  
+*[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* Replaced the prior `legal-content/.../LSU/?uri=CELEX:...`
+URL, which returns a bot challenge to automated clients, with the European Legislation Identifier
+(ELI) permalink — a stable, canonical identifier for the same instrument that resolves cleanly.
 
-**[S14]** U.S. Copyright Office, 17 U.S.C. § 105, *United States Government Works*. Verified 2026-07-21.  
-https://www.copyright.gov/title17/92chap1.html
+**[S14]** *Retired — folded into [S1].* *[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* Previously:
+U.S. Copyright Office, 17 U.S.C. § 105, *United States Government Works*, at
+`https://www.copyright.gov/title17/92chap1.html` — the identical URL already cited as [S1]. Retained
+here as a numbering placeholder, not deleted silently, so a reader following an existing [S14]
+reference elsewhere is redirected rather than met with a gap; see [S1] and Appendix D. No text in this
+document cites [S14] after this amendment.
 
-**[S15]** U.S. Food and Drug Administration, *Clinical Decision Support Software: Final Guidance*, January 2026. Verified 2026-07-21.  
-https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software
+**[S15]** U.S. Food and Drug Administration, *Clinical Decision Support Software: Final Guidance*,
+re-issued January 29, 2026 (docket FDA-2017-D-6569, CDRH GUI01400062). Verified 2026-07-21.  
+https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software  
+*[Amendment 2026-07-21, EPR5-T4, per FR-WP5-06.]* Date pinned to the exact re-issue date per the
+review finding: FDA issued a revised final CDS guidance on 2026-01-06, superseded five days later by
+a further re-issue on 2026-01-29, which is the controlling version. `fda.gov` returns a spurious 404 to
+automated fetchers (bot-blocking, not a dead link); the "Verified" stamp reflects human verification
+against the guidance PDF cover page, the FDA guidance-database entry, an FDA CDRH town hall transcript,
+and three independent law-firm analyses, not an automated fetch of this URL.
+
+**Case law** — added [Amendment 2026-07-21, EPR5-T2, per FR-WP5-02]. These are judicial authorities,
+not verified web sources; they are transcribed from
+`.claude/findings/rights-governance-spec-v1.0-review-findings.md` (review determination at commit
+`cd15b4a`), not reconstructed from memory, and no "Verified" date applies to case citations the way it
+does to [S1]–[S15]'s URLs. See Appendix D for the full rationale; each is also cited from the body at
+the section noted below.
+
+**[S16]** *Feist Publications v. Rural Telephone Service*, 499 U.S. 340 (1991). Controlling U.S.
+Supreme Court authority for the fact/expression (originality) distinction underlying §3.1's
+facts-are-not-copyrightable framing. Cited from the body at §3.1.
+
+**[S17]** *CCC Information Services v. Maclean Hunter Market Reports*, 44 F.3d 61 (2d Cir. 1994). Held
+that used-car valuations reflecting the editors' predictions and professional judgment were protected
+expression, not facts, in a commercial-database context — the authority for §15's measured-vs-judged
+routing split. Cited from the body at §3.2 and §15.
+
+**[S18]** *ADA v. Delta Dental Plans Ass'n*, 126 F.3d 977 (7th Cir. 1997). Held a coding taxonomy
+(numbering plus short descriptions) copyrightable. Cited from the body at §3.2.
 
 ---
 
@@ -1372,3 +1468,192 @@ https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinica
 - Medical knowledge reuse does not establish clinical validity or regulatory compliance.
 - Legal clearance does not establish that a rule is clinically correct, safe, or appropriately validated.
 - Clinical authority does not establish product reuse rights.
+
+---
+
+## Appendix D — Amendment log (Phase EP-R5, declared local amendments)
+
+This document is a vendored copy of the reviewed spec bundle: it is checksummed at vendoring time in
+`docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/checksums.sha256` and that
+checksum is recorded in `schemas/rights/VENDORING.md` (`EPR0-T2` provenance record) alongside the
+bundle's vendored schemas. Every edit made to this file after vendoring is a **declared amendment**,
+recorded below with a date, task ID, section touched, and rationale — **never a silent edit**. As of
+the first entry below, this file's SHA-256 no longer matches the value recorded in `checksums.sha256`;
+that divergence is expected and is exactly what "declared amendment" means (the same convention
+`schemas/rights/VENDORING.md` uses for the vendored schema files).
+
+Every amendment entry below draws solely on
+`.claude/findings/rights-governance-spec-v1.0-review-findings.md` (the review determination recorded
+at commit `cd15b4a`) for its facts and citations. Per the phase's standing constraint, case law is
+cited here as the reason a data model needs a particular axis — **never** as a determination of how
+any specific item, source, or threshold should be classified. This log draws no legal conclusion and
+states none.
+
+- **2026-07-21 — EPR5-T1 (FR-WP5-01), §15 decision matrix.** Split the single "Encode a reported
+  numeric threshold → Facts-only candidate" row into two rows, distinguishing what §15 previously
+  treated as one case:
+  - a **measured/observed value** from a primary study (e.g., a cohort's reported sensitivity or
+    specificity at a stated cutoff) — routing unchanged: *Facts-only candidate*, subject to the
+    existing conditions (preserve population/assay limits; assess contract and compilation
+    dependence);
+  - a **consensus/judgment-derived recommendation** (e.g., a guideline committee's threshold, cutoff,
+    or scoring recommendation) — now routes to **`LEGAL_REVIEW_REQUIRED`** (§6) rather than
+    Facts-only candidate.
+
+  **Rationale.** The published spec never cited *CCC Information Services, Inc. v. Maclean Hunter
+  Market Reports, Inc.*, 44 F.3d 61 (2d Cir. 1994), which held that used-car valuations reflecting the
+  editors' predictions and professional judgment were **protected expression, not facts** — in a
+  commercial-database context. A guideline consensus cutoff is a committee's professional judgment,
+  which is exactly the fact pattern *CCC* found protectable; a measured value from a primary study is
+  close to the strong end of the facts argument instead. Treating both under a single "Facts-only
+  candidate" disposition, as originally published, understated the exposure of the judgment-derived
+  case. *Feist*, *CCC*, and *ADA* are added to Appendix B, and cited from the body, by **EPR5-T2**
+  (not by this entry — EPR5-T1's scope is the §15 routing split only).
+
+  **Scope of this amendment — what it does *not* do.** This amendment states a routing *rule*
+  (judgment-derived → `LEGAL_REVIEW_REQUIRED`; measured → unchanged). It makes **no determination**
+  about how any specific existing or future threshold family should be classified as measured or
+  judged. That determination is a case-by-case legal question and remains open question **OQ-1**
+  (`.claude/worknotes/rights-aware-evidence-capture/decisions-block.md` §6 "Open questions"; also
+  tracked in the plan's Quality Gates table,
+  `docs/project_plans/implementation_plans/infrastructure/rights-aware-evidence-capture-v1.md`), which
+  routes to counsel and is explicitly **not closable by this phase or by any agent**. No item in this
+  project's knowledge base is reclassified, reassessed, or assigned `judgment_basis` by this
+  amendment; every item continues to carry `judgment_basis: unassessed` until OQ-1 is answered.
+
+- **2026-07-21 — EPR5-T2 (FR-WP5-02), Appendix B and citing sections.** Added three case-law
+  authorities to Appendix B's new "Case law" subsection — [S16] *Feist Publications v. Rural
+  Telephone Service*, 499 U.S. 340 (1991); [S17] *CCC Information Services v. Maclean Hunter Market
+  Reports*, 44 F.3d 61 (2d Cir. 1994); [S18] *ADA v. Delta Dental Plans Ass'n*, 126 F.3d 977 (7th Cir.
+  1997) — and cited each from the body, not merely listed in the appendix:
+  - [S16] *Feist* is cited at §3.1, as the controlling authority for the fact/expression (originality)
+    distinction that §3.1 already stated without a case citation.
+  - [S17] *CCC* is cited at §3.2 (compilation/taxonomy risk discussion) and at §15 (the amendment
+    note EPR5-T1 added, which named the case in prose in Appendix D but not in the visible §15 body
+    text until this entry).
+  - [S18] *ADA* is cited at §3.2 (taxonomy/compilation risk discussion), as the authority for a coding
+    taxonomy (numbering plus short descriptions) being independently copyrightable.
+
+  **Rationale.** FR-WP5-02 and the review findings (`.claude/findings/rights-governance-spec-v1.0-review-findings.md`
+  §2.A) identify all three cases as omitted from the originally published spec despite being directly
+  relevant to the fact/expression and compilation-risk analysis the spec's operational guidance
+  depends on. All three citations are transcribed verbatim from the review findings document and the
+  phase task table (`docs/project_plans/implementation_plans/infrastructure/rights-aware-evidence-capture-v1/phase-r5-spec-amendments.md`,
+  EPR5-T2 row), not reconstructed from memory.
+
+  **Scope of this amendment — what it does *not* do.** This amendment adds citations only. It draws no
+  legal conclusion about any specific source, threshold, taxonomy, or compilation in this project's
+  knowledge base, and reclassifies nothing. §3.7's works/funded-works conflation, §16.2's contract
+  caveat placement, and §3.2's EU sui generis scoping are **not** addressed by this entry — they are
+  **EPR5-T3**'s scope (FR-WP5-03/04/05), sequenced after this task. The six citation-hygiene items
+  ([S7], [S1]/[S14] overload, [S11] pin-cite, [S13] permalink, [S5]/[S6]/[S7] 403 annotation, [S15]
+  date pin) are **EPR5-T4**'s scope (FR-WP5-06), also not addressed here.
+
+- **2026-07-21 — EPR5-T3 (FR-WP5-03/04/05), §3.7, §16.2, §3.2 corrections.** Three independent
+  corrections, each drawn from review findings §2.B–§2.D:
+
+  - **§3.7 (FR-WP5-03) — government works vs. government-*funded* works.** The published §3.7 stated
+    that "works of the United States Government" are generally uncopyrightable under 17 U.S.C. § 105
+    and moved directly to operational consequences, without distinguishing a work *authored* by a
+    federal officer or employee (§105 — uncopyrightable) from a work merely *funded* by federal money
+    (ordinary copyright applies to the authoring institution). Added a sentence drawing that line
+    explicitly and a new operational-consequence bullet naming **the PMC trap**: NIH-funded articles by
+    university-affiliated authors are copyrighted, not §105 government works, and are abundant in
+    exactly the PubMed Central corpus this project searches (§3.5) — a live risk, not a hypothetical
+    one, for a research agent that treats "government-funded" or "found via a `.gov`-adjacent portal"
+    as a proxy for "public domain."
+  - **§16.2 (FR-WP5-04) — re-attach §16.1's contract caveat inline.** §16.1 correctly states the AAP
+    subscription bars incorporating the licensed Materials into other materials absent separate written
+    approval. The published §16.2 then listed "state independently worded clinical facts or
+    recommendations" and similar items as often usable, without re-stating that caveat — inviting a
+    reader to treat re-wording as sufficient on its own. Added an inline "Contract caveat" paragraph
+    stating that re-wording does not defeat a contractual incorporation prohibition when the item was
+    extracted from, or tracks the selection/organization of, the AAP-licensed Materials, and that
+    copyright and contract are separate questions (§3.3). The caveat is now inline in §16.2, not reached
+    only by a reader who separately visits §16.1 or §3.3.
+  - **§3.2 (FR-WP5-05) — scope the EU sui generis database-right discussion.** The published §3.2 stated
+    the EU sui generis database right (Directive 96/9/EC Art. 7(1)) without territorial scoping or the
+    creation-vs-obtaining carve-out, which read as an unconditional discouragement of a viable path (a
+    laboratory generating its own reference intervals). Added two qualifications: **territorial
+    scoping** (an EU/EEA instrument that does not attach to a US-only product's US operations on its own
+    terms), and the **creation-vs-obtaining carve-out** established by the Court of Justice of the
+    European Union in *The British Horseracing Board Ltd and Others v William Hill Organization Ltd*,
+    Case C-203/02, [2004] ECR I-10415 (9 November 2004), and *Fixtures Marketing Ltd v Organismos
+    Prognostikon Agonon Podosfairou AE (OPAP)*, Case C-444/02 (9 November 2004) — both part of the same
+    Grand Chamber judgment day restricting sui generis protection to investment in *obtaining*,
+    verifying, and presenting data, excluding investment in *creating* it.
+
+  **Rationale.** All three items are identified in the review findings
+  (`.claude/findings/rights-governance-spec-v1.0-review-findings.md` §2.B "§3.7 conflates government
+  *works* with government-*funded* works", §2.C "EU sui generis database right is overstated as
+  applied", §2.D "§16.2 drops its own contract caveat") as material or moderate defects in the
+  originally published spec's operational guidance. The two CJEU case citations (Case numbers, court,
+  and judgment date) were independently verified against public case-reporting sources during this
+  amendment because the findings document names the cases but does not carry their case numbers; no
+  other fact in this entry required verification, since every other figure and citation is transcribed
+  from the findings document or the phase task table
+  (`docs/project_plans/implementation_plans/infrastructure/rights-aware-evidence-capture-v1/phase-r5-spec-amendments.md`,
+  EPR5-T3 row).
+
+  **Scope of this amendment — what it does *not* do.** This amendment corrects the three named passages
+  only. It draws no legal conclusion about any specific source, article, laboratory dataset, or AAP-
+  derived item in this project's knowledge base — it states the applicable legal *frameworks* (the
+  works/funded-works line, the contract/copyright separation, the EU creation/obtaining line), not a
+  determination of which side of any line a specific item falls on. No PMC article, no AAP-derived
+  content item, and no locally generated reference-interval dataset is reclassified, cleared, or
+  assigned a rights disposition by this entry. The six citation-hygiene items ([S7], [S1]/[S14]
+  overload, [S11] pin-cite, [S13] permalink, [S5]/[S6]/[S7] 403 annotation, [S15] date pin) remain
+  **EPR5-T4**'s scope (FR-WP5-06), not addressed here.
+
+- **2026-07-21 — EPR5-T4 (FR-WP5-06), citation hygiene.** Per the review findings §2.E ("Minor
+  citation hygiene"), resolved all six items the finding named. **The review found no fabricated
+  citations anywhere in the source register — all 15 originally published sources ([S1]–[S15]) were
+  independently checked and hold up (findings §1).** This entry is refinement of a clean register, not
+  a fabrication remediation; a future reader should not infer a fabrication problem from the volume of
+  changes below.
+
+  1. **[S7] cited, not removed.** [S7] (AAP *Pediatrics Author Instructions: Figures, Tables, and
+     Supplementary Material*) was defined in Appendix B but never cited from the body. It is a real,
+     independently-checked source (findings §1), so it is cited, not deleted: added to §16.3's bullet
+     on AAP figures/tables/charts/nomograms, where it is directly on point — AAP's own author
+     instructions for exactly that content class.
+  2. **[S1]/[S14] de-overloaded.** [S1] (Title 17, Chapter 1) and [S14] (17 U.S.C. §105) cited the
+     identical URL (`copyright.gov/title17/92chap1.html`) under two different source numbers for
+     different subsections, presenting one page as two independently identified authorities. [S14] is
+     retired (Appendix B entry kept as a redirect placeholder, not deleted, so an existing [S14]
+     cross-reference is not silently orphaned) and folded into [S1], whose section coverage is
+     extended from §§102–103 to §§102, 103, 105. §3.7's body citation, previously [S14], now reads
+     [S1].
+  3. **[S11] pin-cite corrected.** [S11] pointed at the `/trademarks/basics` section landing page.
+     Verified by direct fetch during this amendment: the specific page stating a trademark "identifies
+     your goods or services" — the textual basis for §3.9's citation — is one page deeper, at
+     `/trademarks/basics/what-trademark`. Corrected the URL to that page.
+  4. **[S13] uses the ELI permalink.** [S13]'s prior EUR-Lex `legal-content/.../LSU/?uri=CELEX:...` URL
+     returns a bot challenge to automated clients. Verified by direct fetch during this amendment: the
+     European Legislation Identifier (ELI) permalink for the same instrument,
+     `https://eur-lex.europa.eu/eli/dir/1996/9/oj/eng`, is stable and resolves cleanly. Swapped to it.
+  5. **[S5]/[S6]/[S7] 403 annotated.** Verified by direct fetch during this amendment: all three
+     `publications.aap.org` URLs return HTTP 403 Forbidden to automated clients, confirming the review
+     finding. Added an Appendix B note stating this explicitly, so the "Verified 2026-07-21" stamps on
+     these three entries are understood as human-only verification, not machine-reproducible — a
+     re-running agent will see a 403 and must not read it as evidence the source moved or lapsed.
+  6. **[S15] date pinned.** Per findings §1's [S15] check, pinned the FDA CDS guidance citation to its
+     exact controlling date, **January 29, 2026** (re-issue of docket FDA-2017-D-6569,
+     CDRH GUI01400062, superseding the 2026-01-06 version, itself superseding the September 2022 final
+     guidance) — in both the Appendix B entry and the §3.11 body citation.
+
+  **Rationale.** All six items and their resolutions are named in
+  `.claude/findings/rights-governance-spec-v1.0-review-findings.md` §2.E and the phase task table
+  (`docs/project_plans/implementation_plans/infrastructure/rights-aware-evidence-capture-v1/phase-r5-spec-amendments.md`,
+  EPR5-T4 row). The specific corrected URLs for [S11] and [S13], the 403 status of [S5]/[S6]/[S7], and
+  the exact FDA re-issue framing for [S15] were independently verified by direct fetch during this
+  amendment, since the finding names the defect but not always the corrected value; every fact drawn
+  directly from the finding is used as published, not reconstructed from memory.
+
+  **Scope of this amendment — what it does *not* do.** This amendment is citation hygiene only. It
+  adds, retires, or repoints source-register entries and their in-body citation markers; it draws no
+  legal conclusion about any specific source, threshold, taxonomy, or compilation in this project's
+  knowledge base, reclassifies nothing, and clears nothing. No item in this project's knowledge base is
+  reclassified, reassessed, or assigned a rights disposition by this amendment. OQ-1 stays open. This
+  is the final task-level amendment of Phase EP-R5's spec-amendment set; EPR5-T5–T7 touch other files
+  (`CLAUDE.md`, `NOTICE.md`, `docs/architecture.md`), not this document.
