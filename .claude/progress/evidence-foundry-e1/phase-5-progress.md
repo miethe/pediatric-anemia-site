@@ -93,7 +93,7 @@ deferred_items_triage_status:
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 13
-completed_tasks: 6
+completed_tasks: 7
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -398,7 +398,7 @@ tasks:
     score) against the committed state — one line per guardrail/non-goal, pass/fail.
     Include the PRD §11 seeded-violation checklist status (all 8 classes) and the
     FR coverage table spot-check.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -407,6 +407,29 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  note: 'Re-ran npm run check end to end against the committed diff (main...HEAD, 62 commits, 225
+    files): GREEN — 1837/1837 tests, npm run validate green (anemia + cbc_suite_v1 + roster +
+    registry all schema-valid), coverage:rules 91/91, build + verify:d4 (clinicalApprovers[] empty
+    on all 95 built rules) + check:imports + smoke:browser + smoke all green. Independently
+    re-verified (by reading committed schemas/tools/fixtures/docs directly, not by trusting prior
+    task notes) 11/11 guardrails (6 CLAUDE.md hard guardrails + 5 task-specific guardrails from
+    this task''s own prompt) PASS, 13/13 PRD §7 non-goals (incl. the 6-item §6.4 verbatim list)
+    PASS, 8/8 PRD §11 seeded-violation classes PASS with fail-closed-asserting test coverage
+    confirmed per class, and an 18-FR spot-check across all four workstreams found zero coverage
+    gaps. Independent full-diff sweep (94 non-test changed files) for risky clinical-validity/
+    safety/regulatory assertion patterns found zero non-negated hits, corroborating P5-T2''s 9/9
+    honesty-audit result from outside its 9-surface scope. One non-blocking finding recorded (not
+    a guardrail/non-goal violation): P5-T4/T6/T8/T10 each have real, committed, functioning
+    deliverables (verified via git log/diff) but their own `status:` rows in this file were left
+    `pending` after landing — a tracking-document bug, not a missing artifact; flagged for
+    P5-GATE1/karen attention rather than silently corrected here (out of this task''s AC scope,
+    and this file is shared with other in-flight Phase 5 agents per the git-discipline
+    instructions). Full one-line-per-item tables + the staleness finding:
+    .claude/worknotes/evidence-foundry-e1-v1/p5-t11-gate-guardrail-crosscheck.md.'
+  started: 2026-07-22T06:00:00Z
+  completed: 2026-07-22T06:45:00Z
+  evidence:
+  - doc: .claude/worknotes/evidence-foundry-e1-v1/p5-t11-gate-guardrail-crosscheck.md
 - id: P5-GATE1
   description: 'task-completion-validator gate: verify Phase 5 exit gate — E2E dry-run
     green; 9/9 honesty surfaces pass; architecture + CHANGELOG landed; gates encoded
@@ -552,7 +575,7 @@ files_modified:
 - tools/release-sign/**
 - tools/retro-validate/**
 - tools/review-record/**
-progress: 46
+progress: 54
 updated: '2026-07-22'
 ---
 
