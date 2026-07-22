@@ -165,6 +165,11 @@ test('cli.mjs scaffold (subprocess) succeeds for all five roles, prints a DRAFT 
       '--rationale', `Fixture draft rationale for role ${role}.`,
       '--reviewed-at', '2026-02-01T00:00:00Z',
       '--root', FIXTURES_ROOT,
+      // CRW-F5 revision (BLOCKER 2): scaffold_target_v1 carries no non-reviews/ content under
+      // FIXTURES_ROOT by design (a narrow CLI-behavior fixture, not a full module package) -- F5
+      // now hard-fails on an uncomputable module hash by default; this test is about the five-role
+      // preview mechanism, not F5 itself, so the loud, explicit escape hatch is used.
+      '--allow-historical-subject',
     ]);
     assert.equal(status, EXIT_OK, `role ${role} stderr: ${stderr}`);
     assert.match(stdout, /DRAFT ONLY — NOT WRITTEN TO DISK/);
@@ -183,6 +188,7 @@ test('cli.mjs scaffold never actually writes a file for a synthetic roster perso
     'scaffold', '--module', 'scaffold_target_v1', '--role', 'clinical-1', '--subject', SUBJECT_HASH,
     '--reviewer-id', 'synthetic-multirole-reviewer', '--decision', 'approve', '--rationale', 'x'.repeat(10),
     '--root', FIXTURES_ROOT,
+    '--allow-historical-subject', // CRW-F5 revision (BLOCKER 2) -- see the test above's own comment
   ]);
   const after = await listModuleReviewRecords(FIXTURES_ROOT, 'scaffold_target_v1');
   assert.deepEqual(after, [], 'scaffold must not write a file when the resolved roster entry is synthetic:true');
@@ -198,6 +204,10 @@ test('scaffold fails closed on an unknown reviewerId', async () => {
       module: 'scaffold_target_v1', role: 'clinical-1', subject: SUBJECT_HASH,
       reviewerId: 'nobody-on-the-roster', decision: 'approve', rationale: 'x'.repeat(10),
       root: FIXTURES_ROOT,
+      // CRW-F5 revision (BLOCKER 2): scaffold_target_v1 has no on-disk content under FIXTURES_ROOT
+      // -- F5 now hard-fails by default before ever reaching roster resolution. This test is about
+      // roster resolution, not F5, so the loud, explicit escape hatch is used.
+      allowHistoricalSubject: true,
     }),
     UnknownReviewerError,
   );
@@ -208,6 +218,7 @@ test('cli.mjs scaffold (subprocess) rejects an unknown reviewerId with exit 1', 
     'scaffold', '--module', 'scaffold_target_v1', '--role', 'clinical-1', '--subject', SUBJECT_HASH,
     '--reviewer-id', 'nobody-on-the-roster', '--decision', 'approve', '--rationale', 'x'.repeat(10),
     '--root', FIXTURES_ROOT,
+    '--allow-historical-subject', // CRW-F5 revision (BLOCKER 2) -- see the test above's own comment
   ]);
   assert.equal(status, EXIT_USAGE);
   assert.match(stderr, /UnknownReviewerError/);
@@ -220,6 +231,7 @@ test('scaffold fails closed on a reviewerId whose moduleScopes do not include th
       module: 'scaffold_target_v1', role: 'clinical-1', subject: SUBJECT_HASH,
       reviewerId: 'synthetic-out-of-scope', decision: 'approve', rationale: 'x'.repeat(10),
       root: FIXTURES_ROOT,
+      allowHistoricalSubject: true, // CRW-F5 revision (BLOCKER 2) -- see the test above's own comment
     }),
     ReviewerNotInScopeError,
   );
@@ -262,6 +274,11 @@ test('scaffold accepts a valid --supersedes review_id and rejects a malformed on
     module: 'scaffold_target_v1', role: 'clinical-1', subject: SUBJECT_HASH,
     reviewerId: 'synthetic-multirole-reviewer', decision: 'approve', rationale: 'x'.repeat(10),
     root: FIXTURES_ROOT,
+    // CRW-F5 revision (BLOCKER 2): scaffold_target_v1 has no on-disk content under FIXTURES_ROOT --
+    // F5 now hard-fails by default. This test is about --supersedes validation, not F5, so the
+    // loud, explicit escape hatch is used (harmless to the two malformed-supersedes rejection
+    // cases below, which both throw earlier, at the supersedes check itself).
+    allowHistoricalSubject: true,
   };
   await assert.rejects(() => runScaffold({ ...base, supersedes: 'not-a-review-id' }), UsageError);
   // A validly-shaped (if fictitious) review_id is accepted at the flag-parsing level.
@@ -316,6 +333,10 @@ test('scaffold\'s explicit-subject code path is behaviorally unchanged by P1-T3\
     '--rationale', 'P1-T3 explicit-subject regression check against a fixture root, no clinical claim.',
     '--reviewed-at', '2026-02-04T00:05:00Z',
     '--root', FIXTURES_ROOT,
+    // CRW-F5 revision (BLOCKER 2): scaffold_target_v1 has no on-disk content under FIXTURES_ROOT --
+    // F5 now hard-fails on that by default (this test predates that revision; it is about P1-T3's
+    // auto-derivation addition leaving the explicit-subject path otherwise unchanged, not about F5).
+    '--allow-historical-subject',
   ]);
   assert.equal(status, EXIT_OK, stderr);
   assert.match(stdout, /DRAFT ONLY — NOT WRITTEN TO DISK/);
@@ -342,6 +363,11 @@ test('scaffold against the fixture roster\'s one synthetic:false entry writes a 
       rationale: 'Fixture-only real-identity write-path regression check — structural only, not a clinical review.',
       reviewedAt: '2026-02-05T00:00:00Z',
       root: tmp,
+      // CRW-F5 revision (BLOCKER 2): this tmp root carries only governance/reviewer-roster.yaml,
+      // no modules/real_entry_fixture_v1/ content -- F5 now hard-fails on that by default. This
+      // test is about the real-identity write path, not F5, so the loud, explicit escape hatch
+      // is used.
+      allowHistoricalSubject: true,
     });
     assert.equal(code, EXIT_OK);
 
@@ -421,15 +447,24 @@ test('F5: an explicit --subject that mismatches cbc_suite_v1\'s recomputed conte
   assert.match(withFlag.stdout, new RegExp(`subjectContentHash: ${transposedHash}`));
 });
 
-test('F5 design note (CRW-F5): when the target module has no on-disk content to recompute a hash from (module directory absent -- the shape of every bare CLI-test fixture module in this file, and of the already-shipped P4-T5 discordance->adjudication scaffold bridge\'s own fixture root), an explicit, non-matching --subject does NOT hard-fail -- "cannot verify" is distinct from "verified and it disagrees"', () => {
-  const { status, stdout, stderr } = runCli([
+test('F5 REVISION (CRW-F5, clinical-review-workflow-v1 Wave-2 codex gate, BLOCKER 2): when the target module has no on-disk content to recompute a hash from (module directory absent -- the shape of every bare CLI-test fixture module in this file, and of the already-shipped P4-T5 discordance->adjudication scaffold bridge\'s own fixture root), an explicit --subject now HARD-FAILS by default, naming the underlying failure -- "cannot verify" is no longer treated as "nothing to compare," it is treated exactly like "verified and it disagrees" -- and --allow-historical-subject proceeds anyway with a loud NOTICE', () => {
+  const baseArgs = [
     'scaffold', '--module', 'scaffold_target_v1', '--role', 'clinical-1', '--subject', SUBJECT_HASH,
     '--reviewer-id', 'synthetic-multirole-reviewer', '--decision', 'approve',
-    '--rationale', 'F5 design-note regression: cannot-compute must not be treated as mismatch.',
+    '--rationale', 'F5 revision regression: an uncomputable module hash must hard-fail by default.',
     '--root', FIXTURES_ROOT,
-  ]);
-  assert.equal(status, EXIT_OK, stderr);
-  assert.match(stdout, /DRAFT ONLY/);
+  ];
+
+  const withoutFlag = runCli(baseArgs);
+  assert.equal(withoutFlag.status, EXIT_USAGE, withoutFlag.stdout);
+  assert.match(withoutFlag.stderr, /could not be recomputed to verify it against/);
+  assert.match(withoutFlag.stderr, /--allow-historical-subject/);
+
+  const withFlag = runCli([...baseArgs, '--allow-historical-subject']);
+  assert.equal(withFlag.status, EXIT_OK, withFlag.stderr);
+  assert.match(withFlag.stdout, /NOTICE \(--allow-historical-subject\)/);
+  assert.match(withFlag.stdout, /was SKIPPED/);
+  assert.match(withFlag.stdout, /DRAFT ONLY/);
 });
 
 test('scaffold --draft writes the built record to <root>/.review-drafts/<moduleId>/<review_id>.draft.yaml, prints that path, and writes NOTHING under reviews/', async () => {
@@ -458,6 +493,10 @@ test('scaffold --draft writes the built record to <root>/.review-drafts/<moduleI
       '--rationale', 'P2-T1/CRW-F2 --draft staging regression check, no clinical claim.',
       '--reviewed-at', '2026-02-09T00:00:00Z',
       '--root', tmp, '--draft',
+      // CRW-F5 revision (BLOCKER 2): this tmp root carries only governance/reviewer-roster.yaml, no
+      // modules/draft_staging_v1/ content -- F5 now hard-fails on that by default. This test is
+      // about --draft staging, not F5, so the loud, explicit escape hatch is used.
+      '--allow-historical-subject',
     ]);
     assert.equal(status, EXIT_OK, stderr);
 
@@ -705,6 +744,10 @@ test('sign refuses a synthetic:false draft (real-identity gate, pre-G1/G2) -- fi
       decision: 'approve',
       rationale: 'Fixture-only real-identity sign-refusal regression check, structural only.',
       subject: SUBJECT_HASH, reviewedAt: '2026-02-13T00:00:00Z', root: tmp, draft: true,
+      // CRW-F5 revision (BLOCKER 2): this tmp root carries only governance/reviewer-roster.yaml, no
+      // modules/real_entry_fixture_v1/ content -- F5 now hard-fails on that by default. This test
+      // is about sign's synthetic:false refusal, not F5, so the loud, explicit escape hatch is used.
+      allowHistoricalSubject: true,
     });
     assert.equal(scaffoldCode, EXIT_OK);
     const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
@@ -766,6 +809,10 @@ test('cli.mjs scaffold --role clinical-2 never prints, embeds, or otherwise surf
     '--rationale', 'Independent clinical-2 assessment, formed without reading clinical-1.',
     '--reviewed-at', '2026-02-02T00:00:00Z',
     '--root', FIXTURES_ROOT,
+    // CRW-F5 revision (BLOCKER 2): independence_target_v1 carries only reviews/ under FIXTURES_ROOT
+    // -- F5 now hard-fails on that by default. This test is about FR-4 structural independence, not
+    // F5, so the loud, explicit escape hatch is used.
+    '--allow-historical-subject',
   ]);
   assert.equal(status, EXIT_OK, stderr);
   assert.doesNotMatch(stdout, new RegExp(SENTINEL));
@@ -824,6 +871,10 @@ test('cli.mjs scaffold --role clinical-2 over a chain with an earlier unparseabl
     '--rationale', 'Independent scaffold over a chain whose earlier sibling record cannot be parsed.',
     '--reviewed-at', '2026-02-03T00:00:00Z',
     '--root', FIXTURES_ROOT,
+    // CRW-F5 revision (BLOCKER 2): chain_isolation_v1 carries only reviews/ under FIXTURES_ROOT --
+    // F5 now hard-fails on that by default. This test is about chain-linkage isolation, not F5, so
+    // the loud, explicit escape hatch is used.
+    '--allow-historical-subject',
   ]);
   // A pre-fix implementation (listModuleReviewRecords-based) would have thrown YamlParseError
   // reading rr-0001 before ever reaching this point; a non-EXIT_OK status or a YamlParseError
@@ -1023,6 +1074,51 @@ test('writeNewReviewRecordFile fails closed (RecordAlreadyExistsError) rather th
   }
 });
 
+test('writeNewReviewRecordFile refuses (fail-closed) a reviewId whose computed path would escape modules/<id>/reviews/ -- additive containment guard, independent of any caller-side validation (BLOCKER 1(c), clinical-review-workflow-v1 Wave-2 codex gate)', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-review-record-write-traversal-'));
+  try {
+    const record = sampleRecord({ review_id: '../../escape' });
+    await assert.rejects(
+      () => writeNewReviewRecordFile(tmp, 'writepath_target_v1', '../../escape', record),
+      UsageError,
+    );
+    // path.join(modules/writepath_target_v1/reviews/, "../../escape.yaml") would land two levels
+    // up from reviews/ -- i.e. at modules/escape.yaml -- were the traversal not refused first.
+    const escapePath = path.join(tmp, 'modules', 'escape.yaml');
+    await assert.rejects(() => readFile(escapePath, 'utf8'), 'the escape path must never be created');
+    assert.deepEqual(await listModuleReviewRecords(tmp, 'writepath_target_v1'), []);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('writeNewReviewRecordFile: exclusive-create closes the TOCTOU window -- a file that already sits at the target path (simulating a second, concurrent writer that committed it between a caller\'s own existence check and this call) is refused, fail-closed, with the pre-existing file\'s bytes/mtime unchanged (MAJOR 4, clinical-review-workflow-v1 Wave-2 codex gate)', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-review-record-write-toctou-'));
+  try {
+    const record = sampleRecord();
+    const filePath = recordFilePathFor(tmp, 'writepath_target_v1', record.review_id);
+    // Pre-create the target path directly (bypassing writeNewReviewRecordFile entirely) --
+    // simulates the exact race MAJOR 4 closes: a second concurrent writer already committed this
+    // record between a caller's own (hypothetical) existence check and its own write attempt.
+    await mkdir(path.dirname(filePath), { recursive: true });
+    const preExistingBytes = 'schemaVersion: 1\nreview_id: rr-0001-clinical-1\n# pre-existing, untouched\n';
+    await writeFile(filePath, preExistingBytes, 'utf8');
+    const statBefore = await stat(filePath);
+
+    await assert.rejects(
+      () => writeNewReviewRecordFile(tmp, 'writepath_target_v1', record.review_id, { ...record, decision: 'reject' }),
+      RecordAlreadyExistsError,
+    );
+
+    const bytesAfter = await readFile(filePath, 'utf8');
+    const statAfter = await stat(filePath);
+    assert.equal(bytesAfter, preExistingBytes, 'pre-existing file bytes must be byte-identical, unchanged');
+    assert.equal(statAfter.mtimeMs, statBefore.mtimeMs, 'pre-existing file mtime must be unchanged');
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
 test('serializeReviewRecordYaml round-trips a signed synthetic record through parseYamlDocument', async () => {
   const tmp = await mkdtemp(path.join(tmpdir(), 'ef-review-record-write-signed-'));
   try {
@@ -1060,6 +1156,10 @@ test('scaffold and validate make zero network calls at runtime (patched global f
       module: 'scaffold_target_v1', role: 'clinical-1', subject: SUBJECT_HASH,
       reviewerId: 'synthetic-multirole-reviewer', decision: 'approve', rationale: 'x'.repeat(10),
       root: FIXTURES_ROOT,
+      // CRW-F5 revision (BLOCKER 2): scaffold_target_v1 has no on-disk content under FIXTURES_ROOT
+      // -- F5 now hard-fails on that by default. This test is about zero-network-calls, not F5, so
+      // the loud, explicit escape hatch is used.
+      allowHistoricalSubject: true,
     }));
     await assert.doesNotReject(() => runValidate({ module: 'independence_target_v1', root: FIXTURES_ROOT }));
   } finally {
@@ -1855,6 +1955,10 @@ test('the chain_isolation_v1 independence fixture still stays green end to end: 
     '--rationale', 'P1-T4 regression check: no new drift/independence test code path reads a sibling record.',
     '--reviewed-at', '2026-02-08T00:00:00Z',
     '--root', FIXTURES_ROOT,
+    // CRW-F5 revision (BLOCKER 2): chain_isolation_v1 carries only reviews/ under FIXTURES_ROOT --
+    // F5 now hard-fails on that by default. This test is about drift/independence, not F5, so the
+    // loud, explicit escape hatch is used.
+    '--allow-historical-subject',
   ]);
   assert.equal(status, EXIT_OK, stderr);
   assert.doesNotMatch(stdout, /BOOBYTRAP/);

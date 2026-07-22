@@ -414,6 +414,17 @@ async function writeStagedDraft(root, moduleId, reviewId, overrides = {}) {
   return writeDraftRecordFile(root, moduleId, reviewId, draft);
 }
 
+test('writeStagedDraft (this file\'s own draft-fixture helper) writes to the exact canonical draftFilePathFor(...) path -- proves every sign test in this file exercises the SAME staging-path convention lib/verbs/sign.mjs itself checks the --draft argument against', async () => {
+  const tmp = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-draftpath-'));
+  try {
+    const moduleId = 'p2t2_draftpath_check_v1';
+    const draftPath = await writeStagedDraft(tmp, moduleId, 'rr-0001-clinical-1');
+    assert.equal(draftPath, draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1'));
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
 test('sign refuses a synthetic:false draft with a message naming both G1 and G2 (FR-7, R1)', async () => {
   const tmp = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-real-'));
   try {
@@ -496,9 +507,80 @@ test('cli.mjs (subprocess): sign --keyfile/--key/--test-keys are each rejected, 
   }
 });
 
+// -------------------------------------------------------------------------------------------
+// sign -- BLOCKER 1 (clinical-review-workflow-v1 Wave-2 codex gate): a staged, synthetic:true
+// draft's own CONTENT (never validated beyond moduleId/synthetic before this fix) must be refused,
+// fail-closed, with NOTHING written anywhere, in three distinct ways -- a path-traversal review_id,
+// a schema-invalid field value with no bearing on synthetic/moduleId, and a role/review_id
+// cross-check mismatch (proving the full schema-conformance pass catches what the review_id PATTERN
+// check alone does not). Every case below stages the malformed draft at the FILE's own legitimate,
+// canonical path (writeStagedDraft's positional reviewId argument) -- only the draft's own parsed
+// FIELDS are malformed, exercising exactly the gap BLOCKER 1 closes (the pre-existing --draft
+// path-argument checks (1)/(2) in lib/verbs/sign.mjs cannot catch any of these; they validate the
+// file argument's location, never its content).
+// -------------------------------------------------------------------------------------------
+
+test('sign refuses a staged draft whose own review_id FIELD is a path-traversal payload -- refused BEFORE any path is constructed from it, and the escape path is never created (BLOCKER 1(b), clinical-review-workflow-v1 Wave-2 codex gate)', async () => {
+  const tmp = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-traversal-'));
+  try {
+    const moduleId = 'p2t2_traversal_v1';
+    // The staged FILE lives at the normal, canonical staging path (draftFilePathFor,
+    // 'rr-0001-clinical-1') -- only the draft's own review_id FIELD is overridden to a
+    // path-traversal payload. sign.mjs's own --draft path checks (1)/(2) validate the FILE
+    // ARGUMENT's location only, never the parsed content, so they cannot catch this on their own.
+    const draftPath = await writeStagedDraft(tmp, moduleId, 'rr-0001-clinical-1', { review_id: '../../escape' });
+
+    await assert.rejects(() => runSign({ draft: draftPath, module: moduleId, root: tmp }), UsageError);
+
+    // path.join(modules/<moduleId>/reviews/, "../../escape.yaml") would land two levels up from
+    // reviews/ -- i.e. at modules/escape.yaml -- were the traversal not refused first.
+    const escapePath = path.join(tmp, 'modules', 'escape.yaml');
+    await assert.rejects(() => readFile(escapePath, 'utf8'), 'the escape path must never be created');
+    assert.deepEqual(await listModuleReviewRecords(tmp, moduleId), []);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('sign refuses a malformed, non-scaffold-produced draft (an out-of-enum decision, unrelated to synthetic/moduleId) -- the full schema-conformance check on the signed record runs before any committed write (BLOCKER 1(a), clinical-review-workflow-v1 Wave-2 codex gate)', async () => {
+  const tmp = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-malformed-'));
+  try {
+    const moduleId = 'p2t2_malformed_v1';
+    const draftPath = await writeStagedDraft(tmp, moduleId, 'rr-0001-clinical-1', { decision: 'maybe' });
+
+    await assert.rejects(
+      () => runSign({ draft: draftPath, module: moduleId, root: tmp }),
+      (err) => {
+        assert.ok(err instanceof UsageError);
+        assert.match(err.message, /schemas\/review-record\.schema\.json/);
+        return true;
+      },
+    );
+    assert.deepEqual(await listModuleReviewRecords(tmp, moduleId), []);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('sign refuses a staged draft whose role does not match its own review_id suffix (schema allOf cross-check) -- a schema-invalid draft distinct from a review_id PATTERN violation, proving the full schema-conformance pass catches what the pattern check alone does not (BLOCKER 1(a), clinical-review-workflow-v1 Wave-2 codex gate)', async () => {
+  const tmp = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-role-mismatch-'));
+  try {
+    const moduleId = 'p2t2_role_mismatch_v1';
+    // review_id "rr-0001-clinical-1" is itself a perfectly valid, pattern-conforming review_id
+    // (passes BLOCKER 1(b)'s parseReviewId check) -- only the role field disagrees with its suffix.
+    const draftPath = await writeStagedDraft(tmp, moduleId, 'rr-0001-clinical-1', { role: 'clinical-2' });
+
+    await assert.rejects(() => runSign({ draft: draftPath, module: moduleId, root: tmp }), UsageError);
+    assert.deepEqual(await listModuleReviewRecords(tmp, moduleId), []);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
 test(
   'lib/verbs/sign.mjs contains zero key-reading code -- no fs.readFile call beyond the staged ' +
-    'draft itself, no environment-variable read (static grep, FR-7/23, R1)',
+    'draft itself and the fixed schemas/review-record.schema.json path (BLOCKER 1(a)), no ' +
+    'environment-variable read (static grep, FR-7/23, R1)',
   async () => {
     const raw = await readFile(SIGN_MJS_PATH, 'utf8');
     // Strip BOTH // line comments and /* ... */ block comments (this file carries both styles)
@@ -511,12 +593,19 @@ test(
     assert.doesNotMatch(code, /createReadStream/, 'sign.mjs must never open a raw file read stream');
     assert.doesNotMatch(code, /\brequire\(/, 'sign.mjs is ESM-only -- no CommonJS require() escape hatch');
 
+    // BLOCKER 1 (clinical-review-workflow-v1 Wave-2 codex gate) added a SECOND readFile() call
+    // site: loadSchema() reads schemas/review-record.schema.json to run the same schema-conformance
+    // check `validate` runs post-commit (BLOCKER 1(a)) -- a fixed, hard-coded repo-relative path,
+    // never anything derived from a flag/env var, so it carries none of the key-reading risk this
+    // test guards against. The count below is now 2, not 1; the assertion is exact (never "at least
+    // 2") so any FUTURE third call site still fails this test closed until independently reviewed.
     const readFileCallCount = (code.match(/\breadFile\(/g) || []).length;
     assert.equal(
       readFileCallCount,
-      1,
-      'sign.mjs must call readFile() exactly once -- to read the staged --draft file itself, never ' +
-        'a key file (a second call site would be new, unreviewed key-reading capability)',
+      2,
+      'sign.mjs must call readFile() exactly twice -- the staged --draft file, and (BLOCKER 1(a)) ' +
+        'schemas/review-record.schema.json -- never a key file (a third call site would be new, ' +
+        'unreviewed key-reading capability)',
     );
   },
 );

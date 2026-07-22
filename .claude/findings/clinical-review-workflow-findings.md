@@ -312,8 +312,12 @@ that file plus `tests/ef-review-workflow.test.mjs` together, 2292/2292 full `npm
 ## CRW-F5 — F5's literal "recompute and compare" text would break the already-shipped
 `--role adjudication` scaffold bridge; scoped to "computed mismatch," not "cannot compute"
 
-**Severity**: informational (scope note, deliberate narrowing) · **Status**: resolved by executing
-agent (P2-T1), implemented as described below.
+**Severity**: informational (scope note, deliberate narrowing), **REVISED to MAJOR/exploitable by
+Wave-2 codex adjudication** (BLOCKER 2) — see section (e) below. **Status**: exemption from (a)-(c)
+below REPLACED by a hard-fail-by-default + explicit, loud escape hatch, after codex `gpt-5.6-terra`'s
+Wave-2 adversarial review of `clinical-review-workflow-v1` flagged the original exemption as a real
+gap (BLOCKER 2). Sections (a)–(d) below are kept verbatim as the historical record of why the original
+narrowing shipped; section (e) is the revision itself and is the CURRENT behavior.
 
 ### (a) What the plan's F5 text says, read literally
 
@@ -373,6 +377,71 @@ either pass `--allow-historical-subject` explicitly or reconsider whether F5's c
 role-scoped (e.g. skipped entirely for `--role adjudication`, whose `subjectContentHash` is
 structurally never a module-content hash) rather than module-content-presence-scoped as implemented
 here. Not resolved by this task: `tools/retro-validate/lib/discordance.mjs` is not a target surface.
+
+### (e) Revision (clinical-review-workflow-v1 Wave-2 codex gate, BLOCKER 2) — exemption replaced by
+hard-fail + explicit escape
+
+**What codex found**: `gpt-5.6-terra`'s Wave-2 adversarial review of the `sign` verb's fix cycle
+flagged that (c)'s exemption is exploitable, not merely a scoping compromise: "the F5 subject-hash
+comparison currently converts ANY `computeModuleContentHash` error into 'nothing to compare,' so a
+root with a valid roster but missing/empty module can stage+sign a wrong pattern-valid `--subject`
+that `validate` never catches." Concretely — once G1 clears and a real `governance/reviewer-roster.yaml`
+entry exists — a caller (malicious or merely buggy) could `scaffold --subject <any pattern-valid
+sha256:... hash>` against a module whose directory happens to be absent or empty, and the resulting
+record would carry a `subjectContentHash` nobody ever verified against real content, with no later
+check (`validate` has nothing to recompute against either) ever catching it. This is exactly the
+class of gap (b)'s own worked example warns about ("a transposed-but-pattern-valid hash silently
+pointing at the WRONG... module content"), except worse: not merely the wrong EXISTING content, but
+no content-linkage verification at all.
+
+**The fix**: `lib/verbs/scaffold.mjs`'s F5 comparison now treats an UNCOMPUTABLE
+`computeModuleContentHash` (module directory absent, or present but empty of non-`reviews/` content)
+EXACTLY like a computed MISMATCH — it hard-fails by default, naming the underlying failure (the
+propagated `computeModuleContentHash` error message), rather than silently accepting the supplied
+`--subject` as "nothing to compare." `--allow-historical-subject` remains the ONLY suppression for
+either condition (an actual mismatch OR an uncomputable hash), and using it is now always LOUD in
+this verb's own stdout output — a `NOTICE (--allow-historical-subject): ...` line naming exactly what
+was skipped or suppressed and why — never a silent skip as (c)'s original exemption was.
+
+**Every legitimate caller this revision affects was updated to pass the escape hatch explicitly**,
+per (d)'s own residual-risk recommendation, rather than the check being weakened back to (c)'s
+behavior:
+- `tools/retro-validate/lib/discordance.mjs`'s `toAdjudicationScaffoldInput` (the bridge (b)/(d)
+  name) now sets `allowHistoricalSubject: true` unconditionally on its returned options, with a
+  header comment explaining why (its `subject` is a discordance record's own `candidateDigest`, a
+  structurally different hash concept than a module-content hash, by design — not touched by this
+  task's declared target-surfaces list, but not concurrently owned by anyone else either; a minimal,
+  documented, out-of-scope touch in the same spirit as CRW-F6/CRW-F7's own precedent, required to
+  keep `tests/ef-retro-discordance.test.mjs` and `tests/ef-e2e-dryrun.test.mjs` green).
+- Every pre-existing `tests/ef-review-workflow.test.mjs` fixture invocation that legitimately
+  scaffolds an explicit `--subject`/`subject:` against a `FIXTURES_ROOT` module or a throwaway tmp
+  root with no real module content (`scaffold_target_v1`, `independence_target_v1`,
+  `chain_isolation_v1`, `draft_staging_v1`, `real_entry_fixture_v1`) now passes
+  `--allow-historical-subject`/`allowHistoricalSubject: true` explicitly, with an inline comment at
+  each call site naming this revision and what the test is actually about (none of them are testing
+  F5 itself). The two dedicated F5 tests are UNCHANGED in spirit: the real-content transposed-hash
+  test (still exercises an actual COMPUTED mismatch against the real `cbc_suite_v1` module,
+  unaffected by this revision) and the former "cannot-compute is not a mismatch" test (renamed to
+  the F5 REVISION test — now proves the OPPOSITE: cannot-compute now hard-fails by default, and
+  succeeds with a loud NOTICE only when `--allow-historical-subject` is passed).
+
+**Known residual gap, NOT resolved by this task** (outside this task's declared file ownership —
+`tools/review-record/lib/verbs/scaffold.mjs`/`sign.mjs`/`store.mjs`,
+`tests/ef-review-workflow.test.mjs`/`ef-review-record-cli.test.mjs`, and this findings doc only; a
+sibling agent was concurrently, actively editing `tools/review-record/lib/validate-cache.mjs` and
+`tests/ef-review-validate-cache.test.mjs` in the SAME worktree during this fix cycle, so touching
+that test file here risked clobbering concurrent, uncommitted work and was avoided on purpose):
+`tests/ef-review-validate-cache.test.mjs`'s `buildSignedChain` helper (one call site,
+`subject: SUBJECT_HASH`) and its `"a warm per-record cache never masks a module-wide... violation"`
+test (two call sites, same pattern) all scaffold against throwaway tmp roots that carry a fixture
+roster but no `modules/<moduleId>/` content — the exact "uncomputable module" shape this revision now
+hard-fails on by default. **These three call sites will fail under `npm test` until
+`allowHistoricalSubject: true` is added to each**, the same one-line addition applied everywhere else
+in this findings entry. This is flagged here, loudly, rather than silently worked around, so whoever
+next touches `tests/ef-review-validate-cache.test.mjs` (the concurrent sibling task, or the
+integrator reconciling both fix cycles) sees the exact, minimal fix needed and does not mistake the
+resulting failures for a new regression in `validate-cache.mjs` itself — they are the direct,
+expected, and correctly-attributed consequence of BLOCKER 2's security fix landing in `scaffold.mjs`.
 
 ## CRW-F6 — `writeFile` structural invariant (owned by a non-target-surface test file) required a
 small, additive `lib/store.mjs` change outside this task's declared target surfaces
