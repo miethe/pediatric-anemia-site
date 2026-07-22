@@ -139,10 +139,8 @@ wave_plan:
 **Plan ID**: `IMPL-2026-07-22-CLINICAL-REVIEW-WORKFLOW`
 **Date**: 2026-07-22
 **Author**: implementation-planner (sonnet), expanding the Opus decisions block
-**Human Brief**: `docs/project_plans/human-briefs/clinical-review-workflow.md` (not yet created —
-scaffold on first execution wave per the creation heuristic; this plan's Estimation Sanity Check
-output is drafted at the bottom of this file, inside an HTML comment, for migration into that
-brief rather than duplicated in-line here)
+**Human Brief**: `docs/project_plans/human-briefs/clinical-review-workflow.md` (holds this plan's
+Estimation Sanity Check in its §2, migrated from this file — not duplicated in-line here)
 **Related Documents**:
 - **PRD**: `docs/project_plans/PRDs/infrastructure/clinical-review-workflow-v1.md`
 - **Decisions block**: `.claude/worknotes/clinical-review-workflow/decisions-block.md` (phase
@@ -472,67 +470,3 @@ plan's Executive Summary — no CHANGELOG entry per the OQ-5 decision recorded a
 
 **Implementation Plan Version**: 1.0
 **Last Updated**: 2026-07-22
-
-<!-- H1-H6 DRAFT FOR HUMAN BRIEF ("Estimation Sanity Check") — migrate verbatim into
-     docs/project_plans/human-briefs/clinical-review-workflow.md §2 on first execution wave.
-     Not part of the plan's normative body; retained here only so the analysis is not lost.
-
-### Estimation Sanity Check (draft — migrate to Human Brief §2)
-
-**Noun count (H1)**: 2 new CLI verbs (`status`, `sign`) + 1 shared derived-state library + 1
-incremental-validate cache + 1 render section + 1 runbook + 1 portal-promotion framework ≈ 7 new
-"nouns," but none are CRUD-with-RBAC domain tables (H1's literal ≥2pt/table rule does not apply to
-a CLI-verb-and-docs feature) — treated instead as decisions block §4's H1 base: ≈12 pts across the
-12 identified units (2 verbs + 2 verb mods + 1 runbook + 1 framework + render section, expanded
-across the 5 phases below). No under-count risk from H1 specifically; the real risk in this feature
-is H3 (algorithmic derived-state + caching), addressed next.
-
-**Dual-impl multiplier (H2)**: N/A — this repo has no local/enterprise dual-implementation split;
-single Node CLI target throughout. Not applied.
-
-**Algorithmic flag (H3)**: Two services flagged: (1) the derived-state computation `status`/
-`validate` share (state-machine inference over an append-only chain — P1-T1/T2, budgeted 3.0 pts
-combined across P1); (2) the incremental-validate content-hash-keyed cache with fail-closed
-recompute semantics (P2-T3/T4, budgeted 2.0 pts combined). Both enumerate ≥5 adversarial scenarios
-in their ACs (chain-broken, disputed, transposed hash, out-of-order sequence, stale-cache
-bit-flip, superseded chain, `--history` union) — the ≥5-scenario bar for "flagged and understood"
-is met; no SPIKE precursor required.
-
-**Bundle decomposition (H4)**: This PRD bundles ≥3 capability areas under one slug.
-
-| Capability Area | Independent Estimate | Notes |
-|-----------------|----------------------:|-------|
-| Derived status + scaffold ergonomics | 5 pts | includes R2/R3/R7/R8 mitigation tests |
-| Sign verb + validate performance | 4 pts | crypto-adjacent; algorithmic (H3) |
-| Render queue view + runbook | 4 pts | docs-heavy; parallel sub-tracks |
-| Portal-promotion framework + assets | 3 pts | policy + image-gen, not code |
-| Hardening, docs & deferred items | 3 pts | H6 plumbing budget lands here |
-| **Σ** | **19 pts** | matches decisions block §4 exactly — no compression below Σ |
-
-**Anchor (H5)**: `evidence-foundry-e1-v1` Phase 2 (P2-T1..P2-T8) — built the entire
-`tools/review-record/` substrate from scratch: 5 verbs, 11 lib modules, 2 schemas, roster,
-Ed25519 signing lib, dry-run fixtures — actual cost 8 pts (per that plan's Phase Summary). This
-plan's surface (2 new verbs + 2 verb mods + 1 new lib + 1 cache + 1 render section + 1 runbook + 1
-framework, all consuming already-shipped libs) is additive-only and strictly smaller in kind (no
-new schema, no new module-package concept, no new signing primitive) — yet totals 19 pts, ~2.4×
-the anchor. Justification: the anchor built machinery once; this plan pays a per-verb ergonomics +
-derived-state + incremental-cache + docs tax (runbook, framework, render, honesty pass) that the
-anchor's own P2-T8 dry-run explicitly deferred as "friction observations," i.e. this is exactly the
-follow-on cost the anchor's scope intentionally excluded. Delta is justified, not a re-derivation
-trigger.
-
-**Plumbing budget (H6)**: ~3 pts (~18% of the 16.7-pt pre-plumbing subtotal: P1 4.0 build-only +
-P2 3.5 + P3 3.0 + P4 2.5 + P5-minus-plumbing 0.7 ≈ 13.7, plumbing = tests/README/architecture-§11/
-check-gate wiring spread across P1's R2/R7/R8 test task, P2's grep+microbenchmark task, P3's honesty
-pass, and all of P5 minus the adversarial-sweep task) — landed explicitly in P1-T4, P2-T2/T4's grep
-+ microbenchmark components, P3-T4, and P5-T2/T3, rather than as one lump sum, per H6's "prefer
-estimating once, but this feature's plumbing is verb-local enough to attach to the owning task"
-exception.
-
-**Bottom-up total**: 19 pts (Σ of the bundle table = the floor; no compression applied).
-**Top-down intuition**: "two new CLI verbs and some docs" reads as ~10-12 pts on first glance.
-**Locked estimate**: 19 pts — bottom-up wins per H4; the top-down intuition undercounts the
-derived-state/cache algorithmic surface (H3) and the docs/framework/honesty-pass plumbing (H6) that
-a "just add a verb" framing glosses over, exactly the failure mode H1-H6 exists to catch.
-
--->
