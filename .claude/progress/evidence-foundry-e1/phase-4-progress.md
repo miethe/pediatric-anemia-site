@@ -176,7 +176,7 @@ tasks:
     \ trigger, replay-pinning obligations, de-identification standard (Safe Harbor\
     \ / Expert Determination), and explicit success/verdict criteria for the future\
     \ SPIKE run."
-  status: pending
+  status: completed
   assigned_to:
   - spike-writer
   dependencies:
