@@ -36,6 +36,21 @@
 // Structural validity proven here never implies clinical validity, safety, or that a named human
 // clinician reviewed anything — see schemas/review-record.schema.json's own top-level description
 // for that standing caveat.
+//
+// P5-T2 additions (clinical-review-workflow-v1 Phase 5, FR-20/21/22/28, F10): a discovery-guard test
+// proving every `*.test.mjs` file under `tests/` matches one of `npm test`'s own two flat,
+// non-recursive globs (`tests/*.test.mjs`, `tests/witness/*.test.mjs`) and that `package.json`'s own
+// `scripts.test` field is unchanged; a byte-exact `status --json` determinism test (two real CLI
+// invocations, unchanged input); a `sign` non-signature-field determinism test (two independent
+// invocations of the same staged-draft content, `signature` excepted); and an extension of this
+// file's existing tool-wide static import-specifier walk (`listAllToolFiles`, already used by the
+// zero-network/zero-model-import test above) proving zero third-party (non-relative, non-`node:`)
+// import specifiers anywhere under `tools/review-record/` — dynamically, over the SAME recursive
+// file walk (not a hardcoded file list), so it already covers every `lib/*.mjs`/`lib/verbs/*.mjs`
+// file this whole feature (Phases 1–5) added, with an explicit assertion naming the four files that
+// are genuinely new to `clinical-review-workflow-v1` itself (`lib/derived-state.mjs`,
+// `lib/validate-cache.mjs`, `lib/verbs/status.mjs`, `lib/verbs/sign.mjs` — everything else under
+// `tools/review-record/` predates this feature, shipped by `evidence-foundry-e1-v1` Phase 2).
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -46,6 +61,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { parseFlags, dispatchVerb } from '../tools/review-record/cli.mjs';
+import { parseYamlDocument } from '../tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs';
 import { CliError, EXIT_OK, EXIT_USAGE, NotImplementedError, UsageError } from '../tools/review-record/lib/errors.mjs';
 import {
   REVIEW_ROLES,
@@ -683,4 +699,161 @@ test('parseFlags converts kebab-case flags to camelCase and supports boolean fla
 
 test('parseFlags rejects a positional argument', () => {
   assert.throws(() => parseFlags(['not-a-flag']), CliError);
+});
+
+// -------------------------------------------------------------------------------------------
+// P5-T2 (clinical-review-workflow-v1 Phase 5, FR-20/21/22/28, F10): discovery-guard, determinism,
+// and a zero-new-deps extension of the tool-wide static import-specifier walk above. See this
+// file's own header for the full rationale.
+// -------------------------------------------------------------------------------------------
+
+const TESTS_ROOT = path.join(REPO_ROOT, 'tests');
+const WITNESS_ROOT = path.join(TESTS_ROOT, 'witness');
+
+/**
+ * Recursively collects every file under `tests/` whose name ends in `.test.mjs` — the exact set
+ * `npm test`'s own `node --test tests/*.test.mjs tests/witness/*.test.mjs` invocation is trying to
+ * discover. A dynamic walk (not a hardcoded list), so this catches a FUTURE misplaced file the same
+ * way it would catch one already on disk today.
+ */
+async function listAllTestFiles() {
+  const out = [];
+  async function walk(dir) {
+    const entries = await readdir(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        await walk(full);
+      } else if (entry.isFile() && entry.name.endsWith('.test.mjs')) {
+        out.push(full);
+      }
+    }
+  }
+  await walk(TESTS_ROOT);
+  return out;
+}
+
+test('F10 discovery-guard: every *.test.mjs file under tests/ matches one of npm test\'s own two flat, non-recursive discovery globs (tests/*.test.mjs or tests/witness/*.test.mjs) -- a file placed any deeper would silently never run', async () => {
+  const files = await listAllTestFiles();
+  assert.ok(files.length >= 100, 'expected to find the full repo-wide test suite, not a partial listing (walk is broken)');
+
+  const misplaced = files
+    .filter((file) => path.dirname(file) !== TESTS_ROOT && path.dirname(file) !== WITNESS_ROOT)
+    .map((file) => path.relative(REPO_ROOT, file));
+
+  assert.deepEqual(
+    misplaced, [],
+    'every test file must live directly under tests/ or tests/witness/ (F10) -- found file(s) ' +
+      `npm test's non-recursive glob would silently never discover: ${misplaced.join(', ')}`,
+  );
+});
+
+test('package.json\'s scripts.test remains the exact two flat, non-recursive globs npm test has always used (F10) -- this task does not change it', async () => {
+  const pkg = JSON.parse(await readFile(path.join(REPO_ROOT, 'package.json'), 'utf8'));
+  assert.equal(pkg.scripts.test, 'node --test tests/*.test.mjs tests/witness/*.test.mjs');
+});
+
+test('package.json declares zero dependencies and zero devDependencies -- this feature adds none anywhere across its five phases (Hard Guardrail: zero new runtime dependencies)', async () => {
+  const pkg = JSON.parse(await readFile(path.join(REPO_ROOT, 'package.json'), 'utf8'));
+  assert.equal(pkg.dependencies, undefined, 'package.json must carry no dependencies block at all');
+  assert.equal(pkg.devDependencies, undefined, 'package.json must carry no devDependencies block at all');
+});
+
+const RELATIVE_OR_BUILTIN_SPECIFIER = /^(\.\.?\/|node:)/;
+
+test('zero-new-deps (F10): every import specifier anywhere under tools/review-record/ resolves to a relative path or a node: builtin -- zero third-party package imports, over the SAME dynamic tool-wide file walk (listAllToolFiles) the zero-network test above already uses -- so it already covers every lib/*.mjs / lib/verbs/*.mjs file this whole feature added across all five phases, and any future one', async () => {
+  const files = await listAllToolFiles();
+  assert.ok(files.length >= 20, 'expected the full lib/verbs tree, not a partial listing');
+
+  const specifierPattern = /from\s+['"]([^'"]+)['"]/g;
+  for (const file of files) {
+    const raw = await readFile(file, 'utf8');
+    const code = stripLineComments(raw.replace(/\/\*[\s\S]*?\*\//g, ''));
+    let match;
+    while ((match = specifierPattern.exec(code)) !== null) {
+      const specifier = match[1];
+      assert.match(
+        specifier, RELATIVE_OR_BUILTIN_SPECIFIER,
+        `${path.relative(REPO_ROOT, file)} imports third-party specifier "${specifier}" -- ` +
+          'tools/review-record/ must ship zero new runtime dependencies (Hard Guardrail).',
+      );
+    }
+  }
+});
+
+test('the tool-wide static-grep file walk (listAllToolFiles) reaches every lib/*.mjs file genuinely NEW to clinical-review-workflow-v1 itself (not merely inherited from evidence-foundry-e1-v1\'s already-shipped substrate) -- proves the dynamic walk\'s "every new lib/*.mjs file" coverage claim is not vacuous', async () => {
+  const files = (await listAllToolFiles()).map((f) => path.relative(TOOL_ROOT, f).split(path.sep).join('/'));
+  // Confirmed via `git log --diff-filter=A --follow` against each file: everything else under
+  // tools/review-record/ (store.mjs, chain.mjs, roster.mjs, signature.mjs, render.mjs, errors.mjs,
+  // history.mjs, independence.mjs, adjudication.mjs, wave0-migration.mjs, and verbs/list.mjs,
+  // scaffold.mjs, validate.mjs, dry-run.mjs, render.mjs) was already shipped by
+  // evidence-foundry-e1-v1 Phase 2 (commit 60c6e30) before this feature's P1 opened.
+  const newThisFeature = [
+    'lib/derived-state.mjs',   // P1-T1
+    'lib/validate-cache.mjs',  // P2-T3
+    'lib/verbs/status.mjs',    // P1-T2
+    'lib/verbs/sign.mjs',      // P2-T1
+  ];
+  for (const rel of newThisFeature) {
+    assert.ok(files.includes(rel), `expected the tool-wide file walk to include ${rel}`);
+  }
+});
+
+test('status --json: two independent real CLI invocations over unchanged committed input produce byte-identical stdout (determinism, F10/R-P4/OQ-2 -- no wall-clock bytes)', () => {
+  const first = runCli(['status', '--module', 'fixture_module_v1', '--root', FIXTURES_ROOT, '--json']);
+  const second = runCli(['status', '--module', 'fixture_module_v1', '--root', FIXTURES_ROOT, '--json']);
+  assert.equal(first.status, second.status);
+  assert.ok(first.stdout.length > 0, 'status --json must produce non-empty stdout');
+  assert.equal(
+    first.stdout, second.stdout,
+    'status --json bytes must be stable across two invocations on unchanged input',
+  );
+});
+
+test('status --json: byte-stability holds over a TERMINAL (all-committed) module too, not just an in-progress one (determinism, F10/R-P4/OQ-2)', async () => {
+  const renderFixtureRoot = path.join(REPO_ROOT, 'tests', 'fixtures', 'ef-review-render', 'input');
+  const first = runCli(['status', '--module', 'render_fixture_v1', '--root', renderFixtureRoot, '--json']);
+  const second = runCli(['status', '--module', 'render_fixture_v1', '--root', renderFixtureRoot, '--json']);
+  assert.equal(first.status, second.status);
+  assert.ok(first.stdout.length > 0);
+  assert.equal(first.stdout, second.stdout);
+});
+
+test('sign: two independent invocations over the SAME staged-draft content (distinct roots, so neither collides with the other\'s append-only write) produce byte-identical non-signature fields in the committed record -- only `signature` legitimately differs (fresh ephemeral TESTKEY- keypair per call) (determinism, F10/R-P4)', async () => {
+  const tmpA = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-determinism-a-'));
+  const tmpB = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-determinism-b-'));
+  try {
+    const moduleId = 'p5t2_sign_determinism_v1';
+    const draftPathA = await writeStagedDraft(tmpA, moduleId, 'rr-0001-clinical-1');
+    const draftPathB = await writeStagedDraft(tmpB, moduleId, 'rr-0001-clinical-1');
+
+    const resultA = runCli(['sign', '--draft', draftPathA, '--module', moduleId, '--root', tmpA]);
+    const resultB = runCli(['sign', '--draft', draftPathB, '--module', moduleId, '--root', tmpB]);
+    assert.equal(resultA.status, EXIT_OK, `sign A exited non-zero; stderr: ${resultA.stderr}`);
+    assert.equal(resultB.status, EXIT_OK, `sign B exited non-zero; stderr: ${resultB.stderr}`);
+
+    const recordA = parseYamlDocument(
+      await readFile(recordFilePathFor(tmpA, moduleId, 'rr-0001-clinical-1'), 'utf8'),
+    );
+    const recordB = parseYamlDocument(
+      await readFile(recordFilePathFor(tmpB, moduleId, 'rr-0001-clinical-1'), 'utf8'),
+    );
+
+    const { signature: signatureA, ...nonSignatureA } = recordA;
+    const { signature: signatureB, ...nonSignatureB } = recordB;
+
+    assert.deepEqual(
+      nonSignatureA, nonSignatureB,
+      'every non-signature field of the committed record must be byte-stable across two ' +
+        'independent sign invocations of the same staged-draft content',
+    );
+    // The one field that must legitimately DIFFER -- a fresh, ephemeral, per-call Ed25519 keypair
+    // (lib/signature.mjs's own OQ-6 guarantee) means both keyId and value differ every call.
+    assert.notEqual(signatureA.keyId, signatureB.keyId, 'each sign call generates its own fresh ephemeral keypair');
+    assert.notEqual(signatureA.value, signatureB.value);
+    assert.equal(signatureA.algorithm, signatureB.algorithm, 'the algorithm itself is not ephemeral');
+  } finally {
+    await rm(tmpA, { recursive: true, force: true });
+    await rm(tmpB, { recursive: true, force: true });
+  }
 });
