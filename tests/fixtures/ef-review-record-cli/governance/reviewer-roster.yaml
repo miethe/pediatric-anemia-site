@@ -33,6 +33,7 @@ reviewers:
     moduleScopes:
       - scaffold_target_v1
       - independence_target_v1
+      - chain_isolation_v1
     synthetic: true
   - reviewerId: synthetic-out-of-scope
     name: "SYNTHETIC -- NOT A CREDENTIALED REVIEWER (fixture out-of-scope persona)"

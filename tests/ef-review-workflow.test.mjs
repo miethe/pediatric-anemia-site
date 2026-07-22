@@ -52,6 +52,7 @@ import {
   writeNewReviewRecordFile,
 } from '../tools/review-record/lib/store.mjs';
 import { canonicalRecordHash, nextChainLink } from '../tools/review-record/lib/chain.mjs';
+import { parseYamlDocument } from '../tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs';
 import { loadRosterIndex, resolveReviewer, buildRosterIndex } from '../tools/review-record/lib/roster.mjs';
 import { checkReviewerIndependence, longestCommonSubstringLength } from '../tools/review-record/lib/independence.mjs';
 import { buildDraftRecord, run as runScaffold } from '../tools/review-record/lib/verbs/scaffold.mjs';
@@ -272,6 +273,54 @@ test('nextChainLink returns only a seq + hash string, never the record object (t
   assert.match(link.previousRecordHash, /^sha256:[0-9a-f]{64}$/);
   const expected = await listModuleReviewRecords(FIXTURES_ROOT, 'independence_target_v1');
   assert.equal(link.previousRecordHash, canonicalRecordHash(expected[0].record));
+});
+
+// -------------------------------------------------------------------------------------------
+// FR-4 reviewer-2 independence — STRUCTURAL sibling isolation (P2-fix)
+//
+// chain_isolation_v1/reviews/ carries TWO prior records: rr-0001-clinical-1.yaml is deliberately
+// unparseable (a `|` block scalar tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs always throws
+// YamlParseError on), and rr-0002-lab.yaml is an ordinary, parseable immediate predecessor. Before
+// this fix, `nextChainLink` called `listModuleReviewRecords`, which reads AND PARSES every `.yaml`
+// file in the directory (rr-0001 included) before returning — so this exact fixture would have
+// thrown a YamlParseError before scaffold could ever produce rr-0003. The fixed `nextChainLink`
+// derives `seq` from filenames alone and opens only the single highest-numbered (immediate
+// predecessor) file to compute its hash, so rr-0001 is never read at all.
+// -------------------------------------------------------------------------------------------
+
+test('nextChainLink never opens a sibling record other than the immediate predecessor -- an earlier unparseable file does not throw', async () => {
+  const link = await nextChainLink(FIXTURES_ROOT, 'chain_isolation_v1');
+  assert.deepEqual(Object.keys(link).sort(), ['previousRecordHash', 'seq']);
+  assert.equal(link.seq, 3); // rr-0001, rr-0002 exist on disk -> next is 3, regardless of rr-0001's content
+  assert.match(link.previousRecordHash, /^sha256:[0-9a-f]{64}$/);
+  // Proves the hash was computed FROM rr-0002 (the real predecessor), not fabricated / skipped:
+  const raw = await readFile(
+    path.join(FIXTURES_ROOT, 'modules', 'chain_isolation_v1', 'reviews', 'rr-0002-lab.yaml'),
+    'utf8',
+  );
+  const rr0002 = parseYamlDocument(raw);
+  assert.equal(link.previousRecordHash, canonicalRecordHash(rr0002));
+});
+
+test('cli.mjs scaffold --role clinical-2 over a chain with an earlier unparseable sibling still succeeds, and its output contains no booby-trap sentinel content', () => {
+  const { status, stdout, stderr } = runCli([
+    'scaffold', '--module', 'chain_isolation_v1', '--role', 'clinical-2', '--subject', SUBJECT_HASH,
+    '--reviewer-id', 'synthetic-multirole-reviewer', '--decision', 'approve',
+    '--rationale', 'Independent scaffold over a chain whose earlier sibling record cannot be parsed.',
+    '--reviewed-at', '2026-02-03T00:00:00Z',
+    '--root', FIXTURES_ROOT,
+  ]);
+  // A pre-fix implementation (listModuleReviewRecords-based) would have thrown YamlParseError
+  // reading rr-0001 before ever reaching this point; a non-EXIT_OK status or a YamlParseError
+  // trace in stderr would mean the fix regressed back to reading every sibling record.
+  assert.equal(status, EXIT_OK, stderr);
+  assert.doesNotMatch(stderr, /YamlParseError/);
+  assert.match(stdout, /review_id: rr-0003-clinical-2/);
+  assert.doesNotMatch(stdout, /BOOBYTRAP/);
+  assert.doesNotMatch(stderr, /BOOBYTRAP/);
+  // The chain link DID fire (non-null previousRecordHash, computed from the real rr-0002
+  // predecessor) — proving success isn't just "the chain silently broke."
+  assert.doesNotMatch(stdout, /previousRecordHash: null/);
 });
 
 // -------------------------------------------------------------------------------------------

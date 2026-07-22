@@ -1,0 +1,27 @@
+# tests/fixtures/ef-review-record-cli/modules/chain_isolation_v1/reviews/rr-0002-lab.yaml
+#
+# P2-fix CLI-test fixture ONLY -- see rr-0001-clinical-1.yaml (sibling) for this module's purpose.
+# This IS the immediate predecessor `nextChainLink` must read when scaffolding this module's
+# rr-0003-clinical-2 -- the one file the structural-independence fix is allowed to open. It is
+# ordinary, fully parseable YAML (unlike rr-0001, deliberately not).
+#
+# `previousRecordHash` below is NOT recomputed against rr-0001's real canonical hash -- rr-0001 is
+# permanently unparseable by design (see its own header), so no tool in this repo could compute
+# that value without violating this fixture's whole point. This module is used ONLY by the
+# scaffold-isolation tests in tests/ef-review-workflow.test.mjs, never by `validate`/`list`
+# fixture-chain-correctness tests, so an internally-inconsistent `previousRecordHash` here is
+# intentional and harmless for this fixture's purpose.
+
+schemaVersion: 1
+review_id: rr-0002-lab
+role: lab
+moduleId: chain_isolation_v1
+subjectContentHash: sha256:537d2dcf29f8e2871a4b91129ec3da3d0012d48ee90af0784ea8c93db7398c6d
+previousRecordHash: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+supersedes: null
+reviewerId: synthetic-multirole-reviewer
+decision: approve
+rationale: "Real, parseable immediate-predecessor fixture record for chain_isolation_v1 -- ordinary lab-role rationale text, no sentinel content."
+reviewedAt: 2026-01-02T00:00:00Z
+synthetic: true
+signature: null

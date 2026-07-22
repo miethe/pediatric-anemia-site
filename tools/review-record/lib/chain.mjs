@@ -1,5 +1,5 @@
 // tools/review-record/lib/chain.mjs — OQ-2 hash-chain primitive + read-only linkage reporting
-// (P2-T1 scaffold).
+// (P2-T1 scaffold; P2-fix hardened reviewer-2 structural independence, see `nextChainLink` below).
 //
 // This module defines the ONE canonical `previousRecordHash` hashing convention every later task
 // in this phase must reuse rather than re-derive: `canonicalRecordHash` — SHA-256 over a
@@ -27,10 +27,26 @@
 // only compares each LISTED record against its immediately preceding LISTED record. Detecting a
 // wholesale-missing predecessor is exactly the kind of thing P2-T3's git-history validator exists
 // for, not an in-memory listing.
+//
+// STRUCTURAL SCOPING (P2-fix): `checkModuleChainLinkage` (this file) and `validate`/`list`
+// (P2-T3/P2-T1) legitimately parse EVERY committed record in a module — a validator's whole job is
+// to read everything and check it, and `list`'s per-module summary is likewise allowed full read
+// access. That full-read posture is explicitly NOT extended to `nextChainLink` below: it is the one
+// scaffold-facing channel FR-4/ADR-0004 reviewer-2 independence depends on, and it is scoped to
+// touch at most ONE predecessor file's bytes, never "every prior record." Do not refactor
+// `nextChainLink` to route through `listModuleReviewRecords` (or any other full-module read) again
+// — that reintroduces the exact structural gap this comment documents the fix for (Codex
+// second-opinion finding against the original ADR-0004 reviewer-2 claim: the old implementation's
+// documented guarantee was contractual — "the return value is narrow" — not structural, because the
+// full parsed array of every sibling record, decision/rationale included, existed in memory on the
+// call stack en route to that narrow return).
 
 import { createHash } from 'node:crypto';
+import { readdir, readFile } from 'node:fs/promises';
+import path from 'node:path';
 
-import { listModuleReviewRecords } from './store.mjs';
+import { parseReviewId, reviewsDirFor } from './store.mjs';
+import { parseYamlDocument } from '../../rf-bundle-to-kb-pack/lib/yaml-lite.mjs';
 
 /**
  * Deterministic, sorted-key JSON serialization of any JSON-compatible value (the same recursive
@@ -110,23 +126,67 @@ export function checkModuleChainLinkage(records) {
 }
 
 /**
- * P2-T2: the ONE channel `scaffold` (any role, including `clinical-2`) uses to link a new record
- * into a module's chain. Deliberately returns ONLY a sequence number and a hash STRING — never the
- * preceding record's parsed object — so nothing built on top of this function can ever access a
- * sibling record's `decision`/`rationale`/`reviewerId` content through it. This is the concrete
- * mechanism that makes reviewer-2 independence (FR-4, ADR-0004 "no read dependency") structural
+ * Hash-only reader for exactly ONE review-record file. Reads the file's raw bytes, parses them
+ * PURELY LOCALLY to compute the canonical hash, and returns nothing but that hash string — the
+ * parsed record object is a local variable in this function's own stack frame and is never
+ * returned, stored, or passed to any caller. This is deliberately the narrowest possible interface
+ * over "what does this one predecessor file's content hash to": callers get a `sha256:<64 hex>`
+ * string and nothing else, structurally, not merely by convention.
+ *
+ * @param {string} filePath absolute path to one `rr-<seq4>-<role>.yaml` file
+ * @returns {Promise<string>} `sha256:<64 hex>`
+ */
+async function hashRecordFile(filePath) {
+  const raw = await readFile(filePath, 'utf8');
+  const record = parseYamlDocument(raw); // scoped to this function only; never propagated further
+  return canonicalRecordHash(record);
+}
+
+/**
+ * P2-T2 (P2-fix hardened): the ONE channel `scaffold` (any role, including `clinical-2`) uses to
+ * link a new record into a module's chain. Structurally — not just by return-type convention —
+ * incapable of exposing more than one predecessor's canonical hash to its caller:
+ *
+ *   1. The sequence number comes from directory FILENAMES ALONE (`rr-<seq4>-<role>.yaml` naming is
+ *      authoritative per OQ-2/`store.mjs`'s own header) — sorted, highest wins, +1. No file's
+ *      CONTENT is read to compute `seq`.
+ *   2. `previousRecordHash` is computed by opening and hashing ONLY the single highest-numbered
+ *      (immediately preceding) file via `hashRecordFile` above — never "every prior record." A
+ *      module with N>1 existing records never has records 1..N-1 read at all by this function; only
+ *      record N (the immediate predecessor) is ever touched, and even then only its hash — never
+ *      its parsed `decision`/`rationale`/`reviewerId` — leaves this function.
+ *
+ * This is what makes reviewer-2 independence (FR-4, ADR-0004 "no read dependency") structural
  * rather than a convention every role's scaffold code has to remember to respect: `clinical-2`'s
- * draft-building code calls this exact same function every other role calls, and it is
- * mechanically incapable of handing back clinical-1's content — see `lib/independence.mjs`'s header
- * for the supplementary (non-structural) heuristic layer `validate` runs on top of this guarantee.
+ * draft-building code calls this exact same function every other role calls, and there is no data
+ * path through it — not even an unreturned one sitting on the call stack — by which a sibling
+ * record's content could reach `clinical-2`'s scaffold. See `lib/independence.mjs`'s header for the
+ * supplementary (non-structural) heuristic layer `validate` runs on top of this guarantee, and this
+ * file's own top-of-file "STRUCTURAL SCOPING" note for why `checkModuleChainLinkage`/`validate`/
+ * `list` are correctly exempt from this narrow-touch discipline.
  *
  * @param {string} rootDir
  * @param {string} moduleId
  * @returns {Promise<{ seq: number, previousRecordHash: string|null }>}
  */
 export async function nextChainLink(rootDir, moduleId) {
-  const records = await listModuleReviewRecords(rootDir, moduleId);
-  if (records.length === 0) return { seq: 1, previousRecordHash: null };
-  const last = records[records.length - 1];
-  return { seq: last.seq + 1, previousRecordHash: canonicalRecordHash(last.record) };
+  const reviewsDir = reviewsDirFor(rootDir, moduleId);
+  let entries;
+  try {
+    entries = await readdir(reviewsDir, { withFileTypes: true });
+  } catch (err) {
+    if (err.code === 'ENOENT') return { seq: 1, previousRecordHash: null };
+    throw err;
+  }
+
+  const filenames = entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.yaml'))
+    .map((entry) => entry.name)
+    .sort(); // fixed-width zero-padded <seq4> ⇒ lexicographic sort == seq order (matches store.mjs)
+  if (filenames.length === 0) return { seq: 1, previousRecordHash: null };
+
+  const lastFilename = filenames[filenames.length - 1];
+  const { seq: lastSeq } = parseReviewId(lastFilename.slice(0, -'.yaml'.length)); // filename only
+  const previousRecordHash = await hashRecordFile(path.join(reviewsDir, lastFilename));
+  return { seq: lastSeq + 1, previousRecordHash };
 }

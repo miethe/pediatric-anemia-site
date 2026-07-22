@@ -202,6 +202,26 @@ flags verbatim textual overlap or a direct reference to the sibling reviewer's i
 heuristic catches copy-paste, not paraphrase — see that module's own header for the honest scope of
 what it can and cannot detect.
 
+**The (1) STRUCTURAL guarantee is scoped to the scaffold path only, not to this tool as a whole.**
+`nextChainLink` is deliberately narrow: it derives `seq` from `reviews/` directory FILENAMES alone
+(never file content), and it opens and hashes exactly ONE file — the single highest-numbered
+(immediate predecessor) record — never "every prior record" in the module. A module with several
+existing records never has records 1..N-1 read at all when record N+1 is scaffolded; only record
+N's bytes are ever touched, and even then only its canonical hash — never its parsed
+`decision`/`rationale`/`reviewerId` — leaves `lib/chain.mjs`. `validate` and `list`, by contrast,
+legitimately parse EVERY committed record in a module (`lib/store.mjs`'s `listModuleReviewRecords`
+feeding `checkModuleChainLinkage`) — a validator's whole job is to read everything and check it, and
+`list`'s per-module summary is likewise allowed full read access. Do not read that full-read
+posture as extending to `nextChainLink`, and do not refactor `nextChainLink` to route through
+`listModuleReviewRecords` (or any other full-module read) — doing so reintroduces a real gap a
+second-opinion review caught once already: the original P2-T2 implementation's independence claim
+was CONTRACTUAL ("the return value is narrow") rather than STRUCTURAL, because the full parsed array
+of every sibling record — decision/rationale included — existed in memory on the call stack en
+route to that narrow return, even though nothing in `scaffold` ever read past it.
+`tests/ef-review-workflow.test.mjs` proves the current, hardened behavior with a fixture module
+(`chain_isolation_v1`) carrying a deliberately unparseable non-immediate-predecessor sibling record:
+`scaffold --role clinical-2` over that module still succeeds, because that sibling is never opened.
+
 ## Why this tool exists (and why it is not `scripts/validate-kb.mjs`)
 
 `scripts/validate-kb.mjs` already schema- and cross-record-validates every
@@ -245,7 +265,7 @@ responsibility plus a `lib/verbs/` directory of thin verb handlers:
 | CLI dispatch | `cli.mjs` | Arg parsing, `--help`, verb routing, top-level exit-code handling | **P2-T1** (this task) | — |
 | Error taxonomy | `lib/errors.mjs` | `CliError` base + `EXIT_OK`/`EXIT_USAGE` + `NotImplementedError` + (P2-T2) `UnknownReviewerError`/`ReviewerNotInScopeError`/`RecordAlreadyExistsError`/`ValidationFailedError` | **P2-T1**, extended **P2-T2** | — |
 | **Store** | `lib/store.mjs` | OQ-2 path layout (`modules/<id>/reviews/rr-<seq4>-<role>.yaml`), `review_id` <-> `{seq, role}`, read-only listing of a module's committed records, next-sequence lookup; (P2-T2) `serializeReviewRecordYaml` + `writeNewReviewRecordFile` — the ONE append-only write path in this tool | **P2-T1**, write path **P2-T2** | errors, `../rf-bundle-to-kb-pack/lib/yaml-lite.mjs` |
-| **Chain** | `lib/chain.mjs` | The one canonical `previousRecordHash` hashing convention (`canonicalRecordHash`/`stableStringify`) + a read-only, informational chain-linkage report `list` uses; (P2-T2) `nextChainLink` — the one channel `scaffold` uses to link a new draft into a module's chain, returning only a seq + hash string, never sibling record content (the FR-4 structural-independence mechanism). `checkModuleChainLinkage`'s report is ALSO (P2-T3) `validate`'s fail-closed chain-enforcement input — one implementation, two consumers (informational `list`, fail-closed `validate`) | **P2-T1 primitive; P2-T2 `nextChainLink`; P2-T3 consumed as enforcement input by `validate`** | store |
+| **Chain** | `lib/chain.mjs` | The one canonical `previousRecordHash` hashing convention (`canonicalRecordHash`/`stableStringify`) + a read-only, informational chain-linkage report `list`/`validate` use (both legitimately full-read, via `store.mjs`'s `listModuleReviewRecords`); (P2-T2, P2-fix hardened) `nextChainLink` — the one channel `scaffold` uses to link a new draft into a module's chain, deriving `seq` from filenames alone and hashing ONLY the single immediate-predecessor file's bytes, structurally never touching any other sibling record's content (the FR-4 structural-independence mechanism — see this README's "reviewer-2 independence" section for the scoping distinction). `checkModuleChainLinkage`'s report is ALSO (P2-T3) `validate`'s fail-closed chain-enforcement input — one implementation, two consumers (informational `list`, fail-closed `validate`) | **P2-T1 primitive; P2-T2 `nextChainLink`; P2-T3 consumed as enforcement input by `validate`; P2-fix hardened `nextChainLink` to single-file touch** | store |
 | **History** | `lib/history.mjs` | Layer (b) of FR-9/OQ-2 append-only enforcement — `checkAppendOnlyHistory` runs a local, offline `git log --name-status` scoped to a module's `reviews/` path and reports (structured, deterministic) whether any record path was ever touched by more than one commit. Opt-in (`validate --history`), fail-closed on a genuine tool-usage failure (not a git repo), never throws for a detected mutation itself (that is `validate`'s call) | **P2-T3** | errors |
 | **Roster** | `lib/roster.mjs` | Resolve `reviewerId` against `governance/reviewer-roster.yaml` (unknown identity / out-of-scope module both fail closed, FR-3) | **P2-T2** | errors, `../rf-bundle-to-kb-pack/lib/yaml-lite.mjs` |
 | **Independence** | `lib/independence.mjs` | Supplementary, heuristic FR-4 reviewer-2-independence check (`checkReviewerIndependence`) — verbatim textual overlap / direct sibling-identity reference between a module's `clinical-1`/`clinical-2` records. NOT the primary enforcement (see Roster/Chain above and this file's own header) | **P2-T2** | — |
