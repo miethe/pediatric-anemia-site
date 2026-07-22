@@ -53,15 +53,10 @@ import { fileURLToPath } from 'node:url';
 import { validate as validateAgainstSchema } from '../../../../scripts/lib/json-schema-lite.mjs';
 import { listModuleReviewRecords } from '../store.mjs';
 import { loadRosterIndex, resolveReviewer } from '../roster.mjs';
-import { checkReviewerIndependence } from '../independence.mjs';
-import { checkModuleChainLinkage } from '../chain.mjs';
 import { checkAppendOnlyHistory } from '../history.mjs';
-import {
-  computeAuthorshipUnion,
-  evaluateReleaseAuthorization,
-  rosterEntryInAuthorshipUnion,
-} from '../adjudication.mjs';
+import { computeAuthorshipUnion } from '../adjudication.mjs';
 import { verifyRecordSignature } from '../signature.mjs';
+import { computeDerivedReviewState } from '../derived-state.mjs';
 import { EXIT_OK, UsageError, ValidationFailedError } from '../errors.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -124,43 +119,19 @@ export async function run(options = {}) {
     }
   }
 
-  // Reviewer-2 independence (FR-4) is pairwise and module-scoped, not per-record — always computed
-  // over the module's full clinical-1/clinical-2 pair (if both exist), independent of --record.
-  const clinical1 = allRecords.find((r) => r.role === 'clinical-1');
-  const clinical2 = allRecords.find((r) => r.role === 'clinical-2');
-  violations.push(...checkReviewerIndependence(clinical1?.record, clinical2?.record));
+  // P1-T1 (Clinical Review Workflow v1, FR-2/R2): every module-wide check below — FR-4 reviewer-2
+  // independence, FR-9/OQ-2 chain linkage (always) + optional git-history layer, PRD OQ-5
+  // authorship-union / FR-5 adjudicator-authorship, and FR-6 release-authorization validity — used
+  // to be computed inline, here, in this verb. That reasoning now lives in the ONE shared
+  // `computeDerivedReviewState` (`lib/derived-state.mjs`), so `validate` and any future consumer
+  // (the `status` verb, P1-T2) share a single derived-state implementation rather than forking it.
+  // This verb still owns every I/O-dependent input that function needs (roster resolution,
+  // authorship-union git computation, the opt-in git-history walk) — `computeDerivedReviewState`
+  // itself is a pure function over already-loaded data, exactly as its own header documents.
 
-  // P2-T3 layer (a) — previousRecordHash chain, ALWAYS enforced (fail-closed), module-scoped like
-  // the independence check above, independent of --record. Reuses lib/chain.mjs's
-  // checkModuleChainLinkage verbatim — the exact same structured, deterministic report `list`
-  // already prints informationally (P2-T1) is now ALSO this verb's fail-closed enforcement input;
-  // there is exactly one chain-recomputation implementation in this tool, not two.
-  const chainReport = checkModuleChainLinkage(allRecords);
-  for (const link of chainReport) {
-    if (!link.ok) violations.push(`chain: ${link.reviewId}: ${link.reason}`);
-  }
-
-  // P2-T3 layer (b) — git-history append-only check, OPT-IN via --history (see this file's own
-  // header for why it is not unconditional). NotAGitRepositoryError/GitHistoryCheckError (a genuine
-  // tool-usage failure, not a detected mutation) propagate straight out of this verb rather than
-  // being folded into `violations` — those two error classes are already UsageError subclasses
-  // (lib/history.mjs), so cli.mjs's dispatcher maps them to the same fail-closed exit code a
-  // collected-violations rejection would use, without this verb pretending a tooling failure was a
-  // content finding.
-  if (options.history === true) {
-    const historyReport = checkAppendOnlyHistory(rootDir, moduleId);
-    for (const entry of historyReport.paths) {
-      if (!entry.ok) violations.push(`git-history: ${entry.path}: ${entry.reason}`);
-    }
-  }
-
-  // P2-T4 — PRD OQ-5 authorship-union computation + FR-5 (adjudicator/release-authorizer must not
-  // be in the authorship union of the proposal they are reviewing) + FR-6 (release-authorization
-  // chain validity). Both module-wide, like the independence/chain checks above, and always
-  // computed over the FULL module record set (`allRecords`), independent of --record. Roster
-  // resolution is recomputed once here, module-wide, deliberately independent of the per-scoped-
-  // record loop above (which is narrowed by --record and does not retain resolved entries) —
-  // mirrors this tool's existing "small, independently-reasoned-about functions" posture
+  // Roster resolution is recomputed once here, module-wide, deliberately independent of the
+  // per-scoped-record loop above (which is narrowed by --record and does not retain resolved
+  // entries) — mirrors this tool's existing "small, independently-reasoned-about functions" posture
   // (lib/roster.mjs's own header) rather than threading extra state through the scoped loop.
   const rosterVerifiedByReviewId = new Map();
   const resolvedRosterEntryByReviewId = new Map();
@@ -180,35 +151,23 @@ export async function run(options = {}) {
   }
 
   const authorship = computeAuthorshipUnion(rootDir, moduleId);
-  const adjudicationLikeRecords = allRecords.filter(
-    (entry) => entry.role === 'adjudication' || entry.role === 'release-auth',
-  );
-  if (authorship.incomplete && adjudicationLikeRecords.length > 0) {
-    violations.push(
-      `authorship-union (PRD OQ-5) could not be fully computed for module "${moduleId}" — ` +
-        `${authorship.notes.join(' ')} Failing closed: no adjudication/release-auth record can be ` +
-        'validated without a complete authorship union.',
-    );
-  } else {
-    for (const entry of adjudicationLikeRecords) {
-      const rosterEntry = resolvedRosterEntryByReviewId.get(entry.reviewId);
-      if (rosterEntry && rosterEntryInAuthorshipUnion(rosterEntry, authorship)) {
-        violations.push(
-          `${entry.reviewId}: reviewerId "${entry.record.reviewerId}" (name "${rosterEntry.name}") is in ` +
-            'the authorship union of the proposal it reviews (PRD OQ-5/FR-5) — an author of a proposal, ' +
-            'or the git author of the commit that introduced it, may not adjudicate or release-authorize ' +
-            'its own review.',
-        );
-      }
-    }
-  }
 
-  // FR-6: a release-auth record is valid only over a complete, chain-valid, roster-verified,
-  // non-synthetic record set. Always non-qualifying for any record this tool can currently produce
-  // (governance/reviewer-roster.yaml ships synthetic-only pre-G1, FR-3) — by design, not a bug.
-  for (const entry of allRecords.filter((r) => r.role === 'release-auth')) {
-    violations.push(...evaluateReleaseAuthorization(allRecords, entry, rosterVerifiedByReviewId));
-  }
+  // P2-T3 layer (b) — git-history append-only check, OPT-IN via --history (see this file's own
+  // header for why it is not unconditional). NotAGitRepositoryError/GitHistoryCheckError (a genuine
+  // tool-usage failure, not a detected mutation) propagate straight out of this verb rather than
+  // being folded into `violations` — those two error classes are already UsageError subclasses
+  // (lib/history.mjs), so cli.mjs's dispatcher maps them to the same fail-closed exit code a
+  // collected-violations rejection would use, without this verb pretending a tooling failure was a
+  // content finding.
+  const historyReport = options.history === true ? checkAppendOnlyHistory(rootDir, moduleId) : null;
+
+  const derived = computeDerivedReviewState(allRecords, rosterVerifiedByReviewId, {
+    resolvedRosterEntryByReviewId,
+    authorship,
+    historyReport,
+    moduleId,
+  });
+  violations.push(...derived.blockers);
 
   if (violations.length > 0) throw new ValidationFailedError(violations);
 
