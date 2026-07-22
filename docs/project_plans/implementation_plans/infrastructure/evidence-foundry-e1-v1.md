@@ -50,7 +50,7 @@ adr_refs:
 deferred_items_spec_refs: []
 findings_doc_ref: null
 charter_ref: null
-changelog_ref: null
+changelog_ref: CHANGELOG.md
 changelog_required: true
 test_plan_ref: null
 plan_structure: independent
