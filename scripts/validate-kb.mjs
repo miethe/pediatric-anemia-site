@@ -543,12 +543,103 @@ export function validateReviewRecord(recordData, moduleId, reviewId, reviewRecor
 }
 
 /**
+ * Codex second-opinion review fix (D-4 layer 3, `.claude/worknotes/evidence-foundry-e1-v1/
+ * contracts-design.md` §(a)'s "three-layer guarantee"): builds a `reviewerId -> roster entry`
+ * lookup from an already-parsed `governance/reviewer-roster.yaml` document. Pure function over
+ * in-memory data (mirrors every other `validate*`/`build*` helper in this file), independently
+ * unit-testable without touching disk. An entry whose `reviewerId` is not a string is skipped
+ * rather than thrown on — `validateReviewerRoster`'s own schema pass is what reports that shape
+ * defect; this index only needs to be usable, not itself authoritative on roster shape.
+ */
+export function buildReviewerRosterIndex(rosterData) {
+  const index = new Map();
+  const reviewers = Array.isArray(rosterData?.reviewers) ? rosterData.reviewers : [];
+  for (const reviewer of reviewers) {
+    if (typeof reviewer?.reviewerId === 'string') index.set(reviewer.reviewerId, reviewer);
+  }
+  return index;
+}
+
+/**
+ * D-4 layer 3: loads and parses `governance/reviewer-roster.yaml` (if present) into a
+ * `reviewerId -> roster entry` index for cross-checking review records. NOT existence-required
+ * the way `loadAndValidateReviewerRoster` is for the whole-tree, once-per-run schema check below —
+ * a caller here (`validateModuleReviews`) only reaches this when it has at least one review record
+ * to cross-check, and an absent roster file must still fail closed on that record (every
+ * `reviewerId` is unresolvable) rather than crash. An absent file therefore degrades to an empty
+ * index — the same outcome as a present-but-empty `reviewers: []` roster (the current shipped
+ * state, FR-3) — never a thrown error.
+ */
+export async function loadReviewerRosterIndex(rootDir) {
+  const rosterPath = path.join(rootDir, 'governance', 'reviewer-roster.yaml');
+  if (!(await fileExists(rosterPath))) return new Map();
+  const raw = await readFile(rosterPath, 'utf8');
+  const rosterData = parseYamlDocument(raw);
+  return buildReviewerRosterIndex(rosterData);
+}
+
+/**
+ * D-4 layer 3 (the gap a codex second-opinion review found: `validateModuleReviews` and
+ * `validateReviewerRoster`/`loadAndValidateReviewerRoster` validated review records and the roster
+ * independently, with no cross-check between them — a review record naming an unknown `reviewerId`,
+ * or a `synthetic: false` record pointing at a `synthetic: true` roster persona, passed
+ * `npm run validate` with exit 0). Cross-checks one already-parsed review record against the
+ * `rosterIndex` built by `buildReviewerRosterIndex`/`loadReviewerRosterIndex`:
+ *
+ *   1. `reviewerId` must resolve to a roster entry at all — fail closed on an unknown reviewer,
+ *      including the vacuous "roster ships empty" case (FR-3's current shipped state): zero
+ *      roster entries + zero review records passes trivially (this function is never called);
+ *      zero roster entries + any review record is a hard error every time.
+ *   2. the record's own `synthetic` flag must agree with the resolved roster entry's `synthetic`
+ *      flag — a `synthetic: true` dry-run persona can never be laundered into a `synthetic: false`
+ *      ("real") review act (or vice versa) merely by a record/roster synthetic-flag mismatch.
+ *
+ * Pure function over in-memory data, independently unit-testable against a tampered/seeded-bad
+ * fixture without touching disk (mirrors every other `validate*` helper in this file). Both checks
+ * are skipped, not silently passed, when the relevant field is absent/wrong-typed on the record
+ * itself — that shape defect is `validateReviewRecord`'s (the schema's) job to report, not this
+ * cross-record check's.
+ */
+export function validateReviewRecordAgainstRoster(recordData, moduleId, reviewId, rosterIndex) {
+  const errors = [];
+  const reviewerId = recordData?.reviewerId;
+  if (typeof reviewerId !== 'string') return errors;
+
+  const rosterEntry = rosterIndex.get(reviewerId);
+  if (!rosterEntry) {
+    errors.push(
+      `${moduleId}/reviews/${reviewId}.yaml: reviewerId "${reviewerId}" does not resolve to any entry in ` +
+        'governance/reviewer-roster.yaml (D-4 layer 3 cross-check)',
+    );
+    return errors;
+  }
+
+  const recordSynthetic = recordData?.synthetic;
+  const rosterSynthetic = rosterEntry?.synthetic;
+  if (
+    typeof recordSynthetic === 'boolean'
+    && typeof rosterSynthetic === 'boolean'
+    && recordSynthetic !== rosterSynthetic
+  ) {
+    errors.push(
+      `${moduleId}/reviews/${reviewId}.yaml: synthetic:${recordSynthetic} record references reviewerId ` +
+        `"${reviewerId}", whose governance/reviewer-roster.yaml entry is synthetic:${rosterSynthetic} ` +
+        '(D-4 layer 3 cross-check requires the two to agree)',
+    );
+  }
+
+  return errors;
+}
+
+/**
  * P1-T7: existence-gated across `modules/<moduleId>/reviews/` — this directory is NET-NEW (OQ-2
  * store layout, `.claude/worknotes/evidence-foundry-e1-v1/contracts-design.md` §(b)) and no
  * module ships any review-act files yet (P2-T2's CLI is what will eventually write them); its
  * absence, or its presence-but-empty, is not itself an error — same existence-gate posture
  * `evidence-assertions.json`/`authoring-decisions.yaml` already use above. Every `.yaml` file
- * found there IS fully schema- and cross-record-validated, never silently skipped.
+ * found there IS fully schema- and cross-record-validated, never silently skipped — including,
+ * per the codex second-opinion review fix above, the D-4 layer 3 `reviewerId`/roster cross-check
+ * (`validateReviewRecordAgainstRoster`), which this function now also runs for every record.
  */
 export async function validateModuleReviews(moduleDir, moduleId, rootDir) {
   const reviewsDir = path.join(moduleDir, 'reviews');
@@ -569,11 +660,16 @@ export async function validateModuleReviews(moduleDir, moduleId, rootDir) {
   if (yamlFilenames.length === 0) return { errors, reviewCount };
 
   const reviewRecordSchema = await readJson(path.join(rootDir, 'schemas', 'review-record.schema.json'));
+  // Loaded once per call, only reached when there's at least one record to cross-check (the
+  // existence-gate above already returns early on zero records) — mirrors the ledger load below
+  // in `validateModule`, which likewise loads once per module rather than once per rule/candidate.
+  const rosterIndex = await loadReviewerRosterIndex(rootDir);
   for (const filename of yamlFilenames) {
     const reviewId = filename.slice(0, -'.yaml'.length);
     const raw = await readFile(path.join(reviewsDir, filename), 'utf8');
     const recordData = parseYamlDocument(raw);
     errors.push(...validateReviewRecord(recordData, moduleId, reviewId, reviewRecordSchema));
+    errors.push(...validateReviewRecordAgainstRoster(recordData, moduleId, reviewId, rosterIndex));
     reviewCount += 1;
   }
   return { errors, reviewCount };

@@ -39,6 +39,9 @@ import {
   validateKbPackReleaseManifests,
   validateModuleReviews,
   validateReviewRecord,
+  validateReviewRecordAgainstRoster,
+  buildReviewerRosterIndex,
+  loadReviewerRosterIndex,
   validateReviewerRoster,
   loadAndValidateReviewerRoster,
   loadAndValidateReleaseRegistry,
@@ -265,6 +268,23 @@ test('validateModuleReviews(): a well-formed review-record YAML file validates c
     const moduleId = 'synthetic_valid_review';
     const moduleDir = path.join(tempRoot, 'modules', moduleId);
     await mkdir(path.join(moduleDir, 'reviews'), { recursive: true });
+    // D-4 layer 3 cross-check now requires a matching, synthetic-agreeing roster entry for this
+    // record's reviewerId or `validateModuleReviews` fails closed (the fix this task adds) —
+    // without this, the "well-formed record validates cleanly" claim would no longer hold.
+    await mkdir(path.join(tempRoot, 'governance'), { recursive: true });
+    await writeFile(
+      path.join(tempRoot, 'governance', 'reviewer-roster.yaml'),
+      [
+        'schemaVersion: 1',
+        'reviewers:',
+        '  - reviewerId: synthetic-reviewer-clinical-1-01',
+        '    name: "Synthetic Dry-Run Clinician 1"',
+        '    credentialRef: "credential-registry:SYNTHETIC-0001"',
+        '    moduleScopes: [synthetic_valid_review]',
+        '    synthetic: true',
+        '',
+      ].join('\n'),
+    );
     const yamlBody = [
       'schemaVersion: 1',
       'review_id: rr-0001-clinical-1',
@@ -345,6 +365,190 @@ test('validateReviewRecord() cross-checks review_id and moduleId against the fil
 
   const mismatchedModule = validateReviewRecord(good, 'anemia', 'rr-0001-clinical-1', {});
   assert.ok(mismatchedModule.some((e) => e.includes('does not match the modules/anemia/ directory')));
+});
+
+// --- 005/006: reviewerId roster cross-check (D-4 layer 3; codex second-opinion review gap) ------
+//
+// A codex second-opinion review of P1-T7's landed wiring found that `validateModuleReviews`
+// (review records) and `validateReviewerRoster`/`loadAndValidateReviewerRoster` (the roster)
+// validated their own artifact in isolation with no cross-check between them -- so a review record
+// naming a `reviewerId` absent from the roster, or a `synthetic:false` record pointing at a
+// `synthetic:true` roster persona, passed `npm run validate` with exit 0 even though the design
+// note's own D-4 "three-layer guarantee" names this exact cross-check as layer 3. Fixtures 005/006
+// are each schema-valid review records on their own (the violation is a cross-file reference, not
+// a shape defect) -- proven below before each is exercised through the new cross-check.
+
+test('seeded fixture 005 is schema-valid on its own (review-record.schema.json) -- the violation is a cross-file reviewerId reference, not a shape defect', async () => {
+  const doc = await loadJson(fixture('invalid-review-record-unknown-reviewerid-005.json.txt'));
+  const reviewRecordSchema = await loadJson(REVIEW_RECORD_SCHEMA_PATH);
+  const shapeErrors = validateReviewRecord(doc, 'cbc_suite_v1', 'rr-0001-clinical-1', reviewRecordSchema);
+  assert.deepEqual(shapeErrors, [], `fixture 005 must be schema-valid on its own: ${JSON.stringify(shapeErrors)}`);
+});
+
+test('005: validateReviewRecordAgainstRoster() fails closed on a reviewerId absent from the roster (including the vacuous empty-roster case, FR-3\'s current shipped state)', async () => {
+  const doc = await loadJson(fixture('invalid-review-record-unknown-reviewerid-005.json.txt'));
+  const emptyRosterIndex = buildReviewerRosterIndex({ schemaVersion: 1, reviewers: [] });
+  const errors = validateReviewRecordAgainstRoster(doc, 'cbc_suite_v1', 'rr-0001-clinical-1', emptyRosterIndex);
+  assert.ok(
+    errors.some((e) => e.includes('reviewerId "seeded-bad-unknown-reviewer-005"') && e.includes('does not resolve to any entry in governance/reviewer-roster.yaml')),
+    `expected an unknown-reviewerId error, got: ${JSON.stringify(errors)}`,
+  );
+});
+
+test('005 (full wiring): validateModuleReviews() -- the exact function npm run validate calls -- fails closed when a review record\'s reviewerId is absent from governance/reviewer-roster.yaml', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'ef-contract-forced-empty-roster-xcheck-unknown-'));
+  try {
+    await mkdir(path.join(tempRoot, 'schemas'), { recursive: true });
+    await cp(REVIEW_RECORD_SCHEMA_PATH, path.join(tempRoot, 'schemas', 'review-record.schema.json'));
+    await mkdir(path.join(tempRoot, 'governance'), { recursive: true });
+    // Roster ships empty -- the current shipped state (FR-3) -- so ANY reviewerId is unknown.
+    await writeFile(path.join(tempRoot, 'governance', 'reviewer-roster.yaml'), 'schemaVersion: 1\nreviewers: []\n');
+
+    const moduleId = 'synthetic_roster_xcheck_unknown';
+    const moduleDir = path.join(tempRoot, 'modules', moduleId);
+    await mkdir(path.join(moduleDir, 'reviews'), { recursive: true });
+    const yamlBody = [
+      'schemaVersion: 1',
+      'review_id: rr-0001-clinical-1',
+      'role: clinical-1',
+      `moduleId: ${moduleId}`,
+      'subjectContentHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"',
+      'previousRecordHash: null',
+      'supersedes: null',
+      'reviewerId: seeded-bad-unknown-reviewer-005',
+      'decision: approve',
+      'rationale: "SYNTHETIC-INVALID fixture 005: this reviewerId is absent from the roster."',
+      'reviewedAt: "2026-07-21T14:00:00Z"',
+      'synthetic: true',
+      'signature:',
+      '  algorithm: ed25519',
+      '  keyId: TESTKEY-p1t7-fix-005',
+      '  value: ZmFrZS1zaWduYXR1cmU=',
+      '',
+    ].join('\n');
+    await writeFile(path.join(moduleDir, 'reviews', 'rr-0001-clinical-1.yaml'), yamlBody);
+
+    const result = await validateModuleReviews(moduleDir, moduleId, tempRoot);
+    assert.equal(result.reviewCount, 1);
+    assert.ok(
+      result.errors.some((e) => e.includes('reviewerId "seeded-bad-unknown-reviewer-005"') && e.includes('does not resolve to any entry in governance/reviewer-roster.yaml')),
+      `expected an unknown-reviewerId error, got: ${JSON.stringify(result.errors)}`,
+    );
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('seeded fixture 006 is schema-valid on its own (review-record.schema.json) -- the violation is a cross-file synthetic-flag mismatch, not a shape defect', async () => {
+  const doc = await loadJson(fixture('invalid-review-record-synthetic-mismatch-006.json.txt'));
+  const reviewRecordSchema = await loadJson(REVIEW_RECORD_SCHEMA_PATH);
+  const shapeErrors = validateReviewRecord(doc, 'cbc_suite_v1', 'rr-0002-clinical-1', reviewRecordSchema);
+  assert.deepEqual(shapeErrors, [], `fixture 006 must be schema-valid on its own: ${JSON.stringify(shapeErrors)}`);
+});
+
+test('006: validateReviewRecordAgainstRoster() fails closed on a synthetic:false record referencing a synthetic:true roster entry', async () => {
+  const doc = await loadJson(fixture('invalid-review-record-synthetic-mismatch-006.json.txt'));
+  const rosterIndex = buildReviewerRosterIndex({
+    schemaVersion: 1,
+    reviewers: [{
+      reviewerId: 'synthetic-only-reviewer-006',
+      name: 'Synthetic Dry-Run Clinician (fixture 006)',
+      credentialRef: 'credential-registry:SYNTHETIC-0006',
+      moduleScopes: ['cbc_suite_v1'],
+      synthetic: true,
+    }],
+  });
+  const errors = validateReviewRecordAgainstRoster(doc, 'cbc_suite_v1', 'rr-0002-clinical-1', rosterIndex);
+  assert.ok(
+    errors.some((e) => e.includes('synthetic:false record references reviewerId "synthetic-only-reviewer-006"') && e.includes('synthetic:true') && e.includes('D-4 layer 3 cross-check requires the two to agree')),
+    `expected a synthetic-flag-mismatch error, got: ${JSON.stringify(errors)}`,
+  );
+});
+
+test('006: validateReviewRecordAgainstRoster() does NOT flag a resolvable reviewerId whose synthetic flag agrees (regression: only the mismatch is an error)', async () => {
+  const rosterIndex = buildReviewerRosterIndex({
+    schemaVersion: 1,
+    reviewers: [{
+      reviewerId: 'synthetic-only-reviewer-006',
+      name: 'Synthetic Dry-Run Clinician (fixture 006)',
+      credentialRef: 'credential-registry:SYNTHETIC-0006',
+      moduleScopes: ['cbc_suite_v1'],
+      synthetic: true,
+    }],
+  });
+  const agreeingRecord = {
+    reviewerId: 'synthetic-only-reviewer-006',
+    synthetic: true,
+  };
+  const errors = validateReviewRecordAgainstRoster(agreeingRecord, 'cbc_suite_v1', 'rr-0003-clinical-1', rosterIndex);
+  assert.deepEqual(errors, []);
+});
+
+test('006 (full wiring): validateModuleReviews() -- the exact function npm run validate calls -- fails closed when a synthetic:false record references a synthetic:true roster entry', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'ef-contract-forced-empty-roster-xcheck-mismatch-'));
+  try {
+    await mkdir(path.join(tempRoot, 'schemas'), { recursive: true });
+    await cp(REVIEW_RECORD_SCHEMA_PATH, path.join(tempRoot, 'schemas', 'review-record.schema.json'));
+    await mkdir(path.join(tempRoot, 'governance'), { recursive: true });
+    await writeFile(
+      path.join(tempRoot, 'governance', 'reviewer-roster.yaml'),
+      [
+        'schemaVersion: 1',
+        'reviewers:',
+        '  - reviewerId: synthetic-only-reviewer-006',
+        '    name: "Synthetic Dry-Run Clinician (fixture 006)"',
+        '    credentialRef: "credential-registry:SYNTHETIC-0006"',
+        '    moduleScopes: [synthetic_roster_xcheck_mismatch]',
+        '    synthetic: true',
+        '',
+      ].join('\n'),
+    );
+
+    const moduleId = 'synthetic_roster_xcheck_mismatch';
+    const moduleDir = path.join(tempRoot, 'modules', moduleId);
+    await mkdir(path.join(moduleDir, 'reviews'), { recursive: true });
+    const yamlBody = [
+      'schemaVersion: 1',
+      'review_id: rr-0002-clinical-1',
+      'role: clinical-1',
+      `moduleId: ${moduleId}`,
+      'subjectContentHash: "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"',
+      'previousRecordHash: null',
+      'supersedes: null',
+      'reviewerId: synthetic-only-reviewer-006',
+      'decision: approve',
+      'rationale: "SYNTHETIC-INVALID fixture 006: synthetic:false record referencing a synthetic:true roster entry."',
+      'reviewedAt: "2026-07-21T14:05:00Z"',
+      'synthetic: false',
+      'signature: null',
+      '',
+    ].join('\n');
+    await writeFile(path.join(moduleDir, 'reviews', 'rr-0002-clinical-1.yaml'), yamlBody);
+
+    const result = await validateModuleReviews(moduleDir, moduleId, tempRoot);
+    assert.equal(result.reviewCount, 1);
+    assert.ok(
+      result.errors.some((e) => e.includes('synthetic:false record references reviewerId "synthetic-only-reviewer-006"') && e.includes('synthetic:true')),
+      `expected a synthetic-flag-mismatch error, got: ${JSON.stringify(result.errors)}`,
+    );
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('loadReviewerRosterIndex(): an absent governance/reviewer-roster.yaml degrades to an empty index, never a crash', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'ef-contract-forced-empty-roster-index-absent-'));
+  try {
+    const index = await loadReviewerRosterIndex(tempRoot);
+    assert.equal(index.size, 0);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('loadReviewerRosterIndex(): loads the real committed governance/reviewer-roster.yaml (ships empty, FR-3) into an empty index', async () => {
+  const index = await loadReviewerRosterIndex(REPO_ROOT);
+  assert.equal(index.size, 0);
 });
 
 // --- new wiring: releases/registry.json (existence-gated across the whole tree) -----------------

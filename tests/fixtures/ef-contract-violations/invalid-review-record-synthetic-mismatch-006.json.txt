@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "review_id": "rr-0002-clinical-1",
+  "role": "clinical-1",
+  "moduleId": "cbc_suite_v1",
+  "subjectContentHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "previousRecordHash": null,
+  "supersedes": null,
+  "reviewerId": "synthetic-only-reviewer-006",
+  "decision": "approve",
+  "rationale": "SYNTHETIC-INVALID fixture (P1-T7 fix, D-4 layer 3 cross-check): this record claims synthetic:false (a real review act) but its reviewerId resolves to a synthetic:true roster entry — a synthetic dry-run persona must never be laundered into a real review act merely by a mismatched record-level synthetic flag. Must be rejected.",
+  "reviewedAt": "2026-07-21T14:05:00Z",
+  "synthetic": false,
+  "signature": null
+}
