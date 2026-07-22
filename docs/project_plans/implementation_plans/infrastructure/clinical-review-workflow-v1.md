@@ -2,7 +2,7 @@
 title: "Clinical Review Workflow v1 (DF-E1-01) \u2014 Implementation Plan"
 schema_version: 2
 doc_type: implementation_plan
-status: draft
+status: in_progress
 created: '2026-07-22'
 updated: '2026-07-22'
 feature_slug: clinical-review-workflow

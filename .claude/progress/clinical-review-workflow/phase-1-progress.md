@@ -8,18 +8,18 @@ prd_ref: docs/project_plans/PRDs/infrastructure/clinical-review-workflow-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/clinical-review-workflow-v1.md
 execution_model: batch-parallel
 phase: 1
-title: "Clinical Review Workflow v1 — Phase 1: Derived Status & Scaffold Ergonomics"
+title: "Clinical Review Workflow v1 \u2014 Phase 1: Derived Status & Scaffold Ergonomics"
 status: pending
 created: '2026-07-22'
 updated: '2026-07-22'
-started: null
+started: 2026-07-22T12:30Z
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 85
 completion_estimate: on-track
 total_tasks: 7
-completed_tasks: 0
+completed_tasks: 6
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -31,17 +31,20 @@ contributors:
 - codex-gpt-5.6-terra
 model_usage:
   primary: sonnet
-  external: [gpt-5.6-terra]
+  external:
+  - gpt-5.6-terra
 tasks:
 - id: P1-T1
   description: "Extract shared derived-state library (FR-2, R2). Explore recons validate's\
     \ existing release-authorization evaluator; extract its logic into new tools/review-record/lib/derived-state.mjs\
     \ (exported computeDerivedReviewState); refactor lib/verbs/validate.mjs to import\
-    \ and call it — no output-shape change to validate's existing behavior."
-  status: pending
-  assigned_to: [general-purpose, Explore]
+    \ and call it \u2014 no output-shape change to validate's existing behavior."
+  status: completed
+  assigned_to:
+  - general-purpose
+  - Explore
   dependencies: []
-  estimated_effort: "1.5 pts"
+  estimated_effort: 1.5 pts
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
@@ -49,19 +52,27 @@ tasks:
   - tools/review-record/lib/derived-state.mjs
   - tools/review-record/lib/verbs/validate.mjs
   - tests/ef-review-workflow.test.mjs
-  acceptance_criteria: "tests/ef-review-workflow.test.mjs and tests/ef-review-adjudication.test.mjs\
-    \ pass unchanged; new grep test asserts lib/verbs/validate.mjs contains zero duplicated\
-    \ derived-state logic."
+  acceptance_criteria: tests/ef-review-workflow.test.mjs and tests/ef-review-adjudication.test.mjs
+    pass unchanged; new grep test asserts lib/verbs/validate.mjs contains zero duplicated
+    derived-state logic.
+  started: 2026-07-22T12:31Z
+  completed: 2026-07-22T12:55Z
+  evidence:
+  - commit: d44009e
+  verified_by:
+  - P1-GATE1
 - id: P1-T2
-  description: "status verb + frozen --json shape (FR-1, OQ-2). Add status to cli.mjs\
-    \ dispatch + new tools/review-record/lib/verbs/status.mjs, consuming P1-T1's library.\
-    \ Frozen --json shape: { moduleId, subjectContentHash, records[], derivedState,\
-    \ nextExpectedRole }. Human-readable default output names the next-expected role\
-    \ or terminal state."
-  status: pending
-  assigned_to: [general-purpose]
-  dependencies: [P1-T1]
-  estimated_effort: "1.5 pts"
+  description: 'status verb + frozen --json shape (FR-1, OQ-2). Add status to cli.mjs
+    dispatch + new tools/review-record/lib/verbs/status.mjs, consuming P1-T1''s library.
+    Frozen --json shape: { moduleId, subjectContentHash, records[], derivedState,
+    nextExpectedRole }. Human-readable default output names the next-expected role
+    or terminal state.'
+  status: completed
+  assigned_to:
+  - general-purpose
+  dependencies:
+  - P1-T1
+  estimated_effort: 1.5 pts
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
@@ -69,20 +80,28 @@ tasks:
   - tools/review-record/cli.mjs
   - tools/review-record/lib/verbs/status.mjs
   - tests/ef-review-workflow.test.mjs
-  acceptance_criteria: "status --module cbc_suite_v1 --json output validates against a\
-    \ committed JSON-shape fixture; human output names next-expected role/terminal state;\
-    \ --help lists status."
+  acceptance_criteria: status --module cbc_suite_v1 --json output validates against
+    a committed JSON-shape fixture; human output names next-expected role/terminal
+    state; --help lists status.
+  started: 2026-07-22T12:56Z
+  completed: 2026-07-22T13:20Z
+  evidence:
+  - commit: 34c471d
+  verified_by:
+  - P1-GATE1
 - id: P1-T3
   description: "Scaffold ergonomics: auto-derived subject + real-identity write path\
-    \ (FR-3/4/5, R7/R8). (a) --subject becomes optional on scaffold; when omitted, derive\
-    \ via lib/subject.mjs's computeModuleContentHash (same function dry-run already uses).\
-    \ (b) scaffold writes a schema-valid record (signature: null) for a synthetic: false\
-    \ roster entry, exercised only against a new fixture roster — governance/reviewer-roster.yaml\
-    \ itself is never read/written by this task's tests."
-  status: pending
-  assigned_to: [general-purpose]
+    \ (FR-3/4/5, R7/R8). (a) --subject becomes optional on scaffold; when omitted,\
+    \ derive via lib/subject.mjs's computeModuleContentHash (same function dry-run\
+    \ already uses). (b) scaffold writes a schema-valid record (signature: null) for\
+    \ a synthetic: false roster entry, exercised only against a new fixture roster\
+    \ \u2014 governance/reviewer-roster.yaml itself is never read/written by this\
+    \ task's tests."
+  status: completed
+  assigned_to:
+  - general-purpose
   dependencies: []
-  estimated_effort: "1.5 pts"
+  estimated_effort: 1.5 pts
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
@@ -90,43 +109,63 @@ tasks:
   - tools/review-record/lib/verbs/scaffold.mjs
   - tests/fixtures/clinical-review-workflow/roster-with-real-entry.yaml
   - tests/ef-review-workflow.test.mjs
-  acceptance_criteria: "scaffold without --subject on cbc_suite_v1 produces a byte-identical\
-    \ subjectContentHash to dry-run's auto-derivation (R8 test); scaffold against the fixture\
-    \ roster's one synthetic: false entry writes a file with signature: null; scaffold against\
-    \ the real governance/reviewer-roster.yaml is behaviorally unchanged; a diff-check asserts\
-    \ zero writes to governance/reviewer-roster.yaml by any test in this task."
+  acceptance_criteria: 'scaffold without --subject on cbc_suite_v1 produces a byte-identical
+    subjectContentHash to dry-run''s auto-derivation (R8 test); scaffold against the
+    fixture roster''s one synthetic: false entry writes a file with signature: null;
+    scaffold against the real governance/reviewer-roster.yaml is behaviorally unchanged;
+    a diff-check asserts zero writes to governance/reviewer-roster.yaml by any test
+    in this task.'
+  started: 2026-07-22T12:31Z
+  completed: 2026-07-22T12:54Z
+  evidence:
+  - commit: 30a6159
+  - finding: CRW-F2
+  verified_by:
+  - P1-GATE1
 - id: P1-T4
-  description: "Drift guard + independence-unchanged tests (R2/R3/R7/R8, FR-24). Add a\
-    \ drift test comparing status --json's derivedState to validate's evaluator result\
-    \ on (a) the committed cbc_suite_v1 fixture, (b) a chain-broken adversarial fixture,\
-    \ (c) a disputed adversarial fixture. Assert chain_isolation_v1 and nextChainLink\
-    \ remain untouched. Grep-assert zero diff to ADR-0004's status field and to governance/reviewer-roster.yaml."
-  status: pending
-  assigned_to: [general-purpose]
-  dependencies: [P1-T1, P1-T2, P1-T3]
-  estimated_effort: "0.5 pts"
+  description: Drift guard + independence-unchanged tests (R2/R3/R7/R8, FR-24). Add
+    a drift test comparing status --json's derivedState to validate's evaluator result
+    on (a) the committed cbc_suite_v1 fixture, (b) a chain-broken adversarial fixture,
+    (c) a disputed adversarial fixture. Assert chain_isolation_v1 and nextChainLink
+    remain untouched. Grep-assert zero diff to ADR-0004's status field and to governance/reviewer-roster.yaml.
+  status: completed
+  assigned_to:
+  - general-purpose
+  dependencies:
+  - P1-T1
+  - P1-T2
+  - P1-T3
+  estimated_effort: 0.5 pts
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
   target_surfaces:
   - tests/ef-review-workflow.test.mjs
   - tests/fixtures/clinical-review-workflow/
-  acceptance_criteria: "3/3 drift-comparison fixtures agree between status and validate;\
-    \ chain_isolation_v1 stays green; ADR-status and roster-content grep checks pass."
+  acceptance_criteria: 3/3 drift-comparison fixtures agree between status and validate;
+    chain_isolation_v1 stays green; ADR-status and roster-content grep checks pass.
+  started: 2026-07-22T13:21Z
+  completed: 2026-07-22T13:32Z
+  evidence:
+  - commit: 40aa3d2
+  verified_by:
+  - P1-GATE1
 - id: P1-T5
-  description: "Adjudication conditional-completeness reconciliation (FR-26, R2/R7, F2) —\
-    \ governance-sensitive. Update computeDerivedReviewState (P1-T1) and\
+  description: "Adjudication conditional-completeness reconciliation (FR-26, R2/R7,\
+    \ F2) \u2014 governance-sensitive. Update computeDerivedReviewState (P1-T1) and\
     \ evaluateReleaseAuthorization (lib/adjudication.mjs) so a release-auth record's\
-    \ completeness check requires the adjudication role IFF the resolved clinical-1 and\
-    \ clinical-2 decision fields disagree; on documented agreement, the four remaining roles\
-    \ (clinical-1, clinical-2, lab, release-auth) are sufficient. Encodes ADR-0004 decision\
-    \ item 5 into code — does NOT touch ADR-0004's status field (stays proposed, G0). Flagged\
-    \ for the P1 validator gate + codex per-wave review as a governance-sensitive behavior\
-    \ change."
-  status: pending
-  assigned_to: [general-purpose]
-  dependencies: [P1-T1]
-  estimated_effort: "1.0 pts"
+    \ completeness check requires the adjudication role IFF the resolved clinical-1\
+    \ and clinical-2 decision fields disagree; on documented agreement, the four remaining\
+    \ roles (clinical-1, clinical-2, lab, release-auth) are sufficient. Encodes ADR-0004\
+    \ decision item 5 into code \u2014 does NOT touch ADR-0004's status field (stays\
+    \ proposed, G0). Flagged for the P1 validator gate + codex per-wave review as\
+    \ a governance-sensitive behavior change."
+  status: completed
+  assigned_to:
+  - general-purpose
+  dependencies:
+  - P1-T1
+  estimated_effort: 1.0 pts
   priority: critical
   assigned_model: sonnet
   model_effort: extended
@@ -135,63 +174,94 @@ tasks:
   - tools/review-record/lib/adjudication.mjs
   - tools/review-record/lib/derived-state.mjs
   - tests/ef-review-adjudication.test.mjs
-  acceptance_criteria: "Fixtures on BOTH paths: an agree-path five-record set MINUS\
-    \ adjudication evaluates as complete (no missing-role blocker); a disagree-path set\
-    \ MINUS adjudication reports the adjudication-missing blocker; the committed cbc_suite_v1\
-    \ dry-run fixture's existing terminal behavior is unchanged; a grep test confirms\
-    \ ADR-0004 status is untouched."
+  acceptance_criteria: 'Fixtures on BOTH paths: an agree-path five-record set MINUS
+    adjudication evaluates as complete (no missing-role blocker); a disagree-path
+    set MINUS adjudication reports the adjudication-missing blocker; the committed
+    cbc_suite_v1 dry-run fixture''s existing terminal behavior is unchanged; a grep
+    test confirms ADR-0004 status is untouched.'
+  started: 2026-07-22T12:56Z
+  completed: 2026-07-22T13:15Z
+  evidence:
+  - commit: 742f9d8
+  - finding: CRW-F3
+  verified_by:
+  - P1-GATE1
 - id: P1-GATE1
-  description: "task-completion-validator gate: verify Phase 1 exit gate — status\
-    \ --json matches validate's derived semantics on the committed cbc_suite_v1 set + 2\
-    \ adversarial fixtures; zero new runtime dependencies; explicitly re-check FR-26's\
-    \ governance-sensitive adjudication change against ADR-0004 decision item 5 on both\
-    \ agree/disagree paths; npm run check green."
-  status: pending
-  assigned_to: [task-completion-validator]
-  dependencies: [P1-T1, P1-T2, P1-T3, P1-T4, P1-T5]
-  estimated_effort: "—"
+  description: "task-completion-validator gate: verify Phase 1 exit gate \u2014 status\
+    \ --json matches validate's derived semantics on the committed cbc_suite_v1 set\
+    \ + 2 adversarial fixtures; zero new runtime dependencies; explicitly re-check\
+    \ FR-26's governance-sensitive adjudication change against ADR-0004 decision item\
+    \ 5 on both agree/disagree paths; npm run check green."
+  status: completed
+  assigned_to:
+  - task-completion-validator
+  dependencies:
+  - P1-T1
+  - P1-T2
+  - P1-T3
+  - P1-T4
+  - P1-T5
+  estimated_effort: "\u2014"
   priority: critical
   assigned_model: sonnet
   model_effort: adaptive
-  acceptance_criteria: "All exit-gate criteria pass; recorded in phase progress note."
+  acceptance_criteria: All exit-gate criteria pass; recorded in phase progress note.
+  started: 2026-07-22T13:32Z
+  completed: 2026-07-22T13:40Z
+  evidence:
+  - workflow: wf_a5629d24-af9 validator approved, npm run check green, 2290/2290
 - id: P1-GATE2
-  description: "codex gpt-5.6-terra read-only second-opinion diff review of the full P1\
-    \ changeset against decisions block R2/R3/R7/R8 and PRD FR-1..5/FR-24 — no write\
-    \ access; flags any fail-closed gap or drift risk missed by the automated suite."
+  description: "codex gpt-5.6-terra read-only second-opinion diff review of the full\
+    \ P1 changeset against decisions block R2/R3/R7/R8 and PRD FR-1..5/FR-24 \u2014\
+    \ no write access; flags any fail-closed gap or drift risk missed by the automated\
+    \ suite."
   status: pending
-  assigned_to: ["codex (read-only)"]
-  dependencies: [P1-GATE1]
-  estimated_effort: "—"
+  assigned_to:
+  - codex (read-only)
+  dependencies:
+  - P1-GATE1
+  estimated_effort: "\u2014"
   priority: high
   assigned_model: gpt-5.6-terra
   model_effort: high
-  acceptance_criteria: "Review recorded; any flagged gap becomes a task before Phase 2 opens."
-
+  acceptance_criteria: Review recorded; any flagged gap becomes a task before Phase
+    2 opens.
 parallelization:
-  batch_1: [P1-T1, P1-T3]
-  batch_2: [P1-T2, P1-T5]
-  batch_3: [P1-T4]
-  batch_4: [P1-GATE1]
-  batch_5: [P1-GATE2]
-  critical_path: [P1-T1, P1-T2, P1-T4, P1-GATE1, P1-GATE2]
-  estimated_total_time: "~2 engineer-days"
-
+  batch_1:
+  - P1-T1
+  - P1-T3
+  batch_2:
+  - P1-T2
+  - P1-T5
+  batch_3:
+  - P1-T4
+  batch_4:
+  - P1-GATE1
+  batch_5:
+  - P1-GATE2
+  critical_path:
+  - P1-T1
+  - P1-T2
+  - P1-T4
+  - P1-GATE1
+  - P1-GATE2
+  estimated_total_time: ~2 engineer-days
 blockers: []
-
 success_criteria:
 - id: SC-1
-  description: "status --json matches validate's derived semantics on cbc_suite_v1 + 2 adversarial fixtures"
+  description: status --json matches validate's derived semantics on cbc_suite_v1
+    + 2 adversarial fixtures
   status: pending
 - id: SC-2
-  description: "Zero new runtime dependencies introduced"
+  description: Zero new runtime dependencies introduced
   status: pending
 - id: SC-3
-  description: "npm run check green"
+  description: npm run check green
   status: pending
 - id: SC-4
-  description: "Reviewer-2 structural independence (chain_isolation_v1, nextChainLink) unchanged"
+  description: Reviewer-2 structural independence (chain_isolation_v1, nextChainLink)
+    unchanged
   status: pending
-
 files_modified:
 - tools/review-record/lib/derived-state.mjs
 - tools/review-record/lib/verbs/status.mjs
@@ -203,13 +273,13 @@ files_modified:
 - tests/ef-review-adjudication.test.mjs
 - tests/fixtures/clinical-review-workflow/roster-with-real-entry.yaml
 - tests/fixtures/clinical-review-workflow/
-
-notes: "Wave 1 (no dependencies) — opens the critical path. Hard guardrails apply\
-  \ verbatim (see .claude/worknotes/clinical-review-workflow/context.md). P1-T1's derived-state\
-  \ library is the single source of truth P2/P3 both consume — do not fork the logic.\
-  \ Revision 1 added P1-T5 (FR-26 adjudication conditional-completeness reconciliation) —\
-  \ governance-sensitive: touches lib/adjudication.mjs's completeness policy without ratifying\
-  \ ADR-0004; flagged for both P1-GATE1 and P1-GATE2 review."
+notes: "Wave 1 (no dependencies) \u2014 opens the critical path. Hard guardrails apply\
+  \ verbatim (see .claude/worknotes/clinical-review-workflow/context.md). P1-T1's\
+  \ derived-state library is the single source of truth P2/P3 both consume \u2014\
+  \ do not fork the logic. Revision 1 added P1-T5 (FR-26 adjudication conditional-completeness\
+  \ reconciliation) \u2014 governance-sensitive: touches lib/adjudication.mjs's completeness\
+  \ policy without ratifying ADR-0004; flagged for both P1-GATE1 and P1-GATE2 review."
+progress: 85
 ---
 
 # clinical-review-workflow — Phase 1: Derived Status & Scaffold Ergonomics
