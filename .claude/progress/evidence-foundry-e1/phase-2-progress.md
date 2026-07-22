@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 3
+completed_tasks: 4
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -161,7 +161,7 @@ tasks:
     and is non-empty well-formed HTML; unvalidated-prototype banner and synthetic
     non-qualifying labels present; zero network calls occur during render; output
     under build/ is ignored by git (E0 P1-T7 precedent).'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -170,6 +170,10 @@ tasks:
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
+  started: '2026-07-22T07:00:00Z'
+  completed: '2026-07-22T07:30:00Z'
+  evidence:
+  - test: tests/ef-review-render-smoke.test.mjs
 - id: P2-T8
   description: 'Five-role synthetic dry-run, FR-11 (ruling R4): execute one full end-to-end
     dry-run via cli.mjs dry-run — scaffold → sign (TESTKEY, P2-T5) → chain-validate
@@ -275,7 +279,7 @@ files_modified:
 - tests/ef-review-render-smoke.test.mjs
 - tests/fixtures/ef-review-render/**
 - .claude/worknotes/evidence-foundry-e1-v1/dryrun-friction.md
-progress: 33
+progress: 44
 updated: '2026-07-22'
 ---
 
