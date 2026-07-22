@@ -1,0 +1,33 @@
+# tests/fixtures/clinical-review-workflow/roster-with-real-entry.yaml
+#
+# clinical-review-workflow P1-T3 fixture ONLY (FR-3/FR-4/FR-5, R7) -- exercises
+# tools/review-record/lib/verbs/scaffold.mjs's real-identity (`synthetic: false`) disk-write path.
+#
+# THIS IS NOT governance/reviewer-roster.yaml. The real, committed roster ships (and, per this
+# feature's Hard Guardrails, MUST continue to ship) exactly 5 `synthetic: true` entries and ZERO
+# `synthetic: false` entries -- see that file's own header and
+# .claude/worknotes/clinical-review-workflow/context.md. This fixture is never read from its own
+# path by any real workflow or by scripts/validate-kb.mjs; tests copy its bytes into a throwaway
+# tmp directory's own `governance/reviewer-roster.yaml` (never into the real `governance/` tree)
+# before invoking `scaffold` against that tmp root, exactly as
+# tests/fixtures/ef-review-record-cli/governance/reviewer-roster.yaml is used for the synthetic-only
+# roster-resolution fixtures.
+#
+# The one entry below carries `synthetic: false` plus the `verificationRef` its own presence
+# schema-forces (schemas/reviewer-roster.schema.json's `allOf`) -- an out-of-band
+# credential-verification reference this fixture INVENTS purely to make the entry schema-shaped.
+# This is NOT a real, credentialed, out-of-band-verified reviewer; it does NOT represent gate G1
+# clearing; and it confers no clinical-validity, credentialing, or safety claim whatsoever. It
+# exists solely so a test can prove `scaffold`'s real-identity write path (still unsigned,
+# `signature: null`) produces a schema-valid file when a `synthetic: false` roster entry resolves,
+# without the real roster ever being touched.
+
+schemaVersion: 1
+reviewers:
+  - reviewerId: fixture-real-reviewer-1
+    name: "FIXTURE-ONLY TEST IDENTITY -- NOT A REAL CREDENTIALED REVIEWER"
+    credentialRef: fixture-placeholder-credential-real-1
+    moduleScopes:
+      - real_entry_fixture_v1
+    synthetic: false
+    verificationRef: fixture-placeholder-verification-ref-real-1

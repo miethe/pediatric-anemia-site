@@ -36,6 +36,21 @@
 // Structural validity proven here never implies clinical validity, safety, or that a named human
 // clinician reviewed anything — see schemas/review-record.schema.json's own top-level description
 // for that standing caveat.
+//
+// P5-T2 additions (clinical-review-workflow-v1 Phase 5, FR-20/21/22/28, F10): a discovery-guard test
+// proving every `*.test.mjs` file under `tests/` matches one of `npm test`'s own two flat,
+// non-recursive globs (`tests/*.test.mjs`, `tests/witness/*.test.mjs`) and that `package.json`'s own
+// `scripts.test` field is unchanged; a byte-exact `status --json` determinism test (two real CLI
+// invocations, unchanged input); a `sign` non-signature-field determinism test (two independent
+// invocations of the same staged-draft content, `signature` excepted); and an extension of this
+// file's existing tool-wide static import-specifier walk (`listAllToolFiles`, already used by the
+// zero-network/zero-model-import test above) proving zero third-party (non-relative, non-`node:`)
+// import specifiers anywhere under `tools/review-record/` — dynamically, over the SAME recursive
+// file walk (not a hardcoded file list), so it already covers every `lib/*.mjs`/`lib/verbs/*.mjs`
+// file this whole feature (Phases 1–5) added, with an explicit assertion naming the four files that
+// are genuinely new to `clinical-review-workflow-v1` itself (`lib/derived-state.mjs`,
+// `lib/validate-cache.mjs`, `lib/verbs/status.mjs`, `lib/verbs/sign.mjs` — everything else under
+// `tools/review-record/` predates this feature, shipped by `evidence-foundry-e1-v1` Phase 2).
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -46,6 +61,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { parseFlags, dispatchVerb } from '../tools/review-record/cli.mjs';
+import { parseYamlDocument } from '../tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs';
 import { CliError, EXIT_OK, EXIT_USAGE, NotImplementedError, UsageError } from '../tools/review-record/lib/errors.mjs';
 import {
   REVIEW_ROLES,
@@ -54,12 +70,15 @@ import {
   MalformedReviewIdError,
   reviewsDirFor,
   recordFilePathFor,
+  draftFilePathFor,
+  writeDraftRecordFile,
   listModuleReviewRecords,
   nextSequenceFor,
 } from '../tools/review-record/lib/store.mjs';
 import { stableStringify, canonicalRecordHash, checkModuleChainLinkage } from '../tools/review-record/lib/chain.mjs';
 import { run as runList, formatModuleState } from '../tools/review-record/lib/verbs/list.mjs';
 import { run as runRender } from '../tools/review-record/lib/verbs/render.mjs';
+import { run as runSign } from '../tools/review-record/lib/verbs/sign.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const TOOL_ROOT = path.join(REPO_ROOT, 'tools', 'review-record');
@@ -375,6 +394,239 @@ test('checkModuleChainLinkage rejects a first record whose previousRecordHash is
 });
 
 // -------------------------------------------------------------------------------------------
+// sign — P2-T2 fail-closed refusal (synthetic:false naming G1+G2; no --keyfile/--key/--test-keys/
+// --record seam) + static key-reading grep (FR-7/23/25, R1). P2-T1's own round-trip/F1/moduleId-
+// mismatch/missing-required-flag coverage lives in tests/ef-review-workflow.test.mjs (a sibling
+// task's file, not this one) — this file covers exactly this task's own target surfaces:
+// lib/verbs/sign.mjs and this test file.
+// -------------------------------------------------------------------------------------------
+
+const SIGN_MJS_PATH = path.join(TOOL_ROOT, 'lib', 'verbs', 'sign.mjs');
+
+/**
+ * Builds + writes a minimal, hand-shaped staged draft directly under
+ * `<root>/.review-drafts/<moduleId>/` via `lib/store.mjs`'s own `writeDraftRecordFile` — bypasses
+ * `scaffold --draft` entirely (a sibling task's target surface, not this one) since `sign` itself
+ * never consults the roster; only the draft's own `moduleId`/`synthetic`/`review_id` fields matter
+ * for the checks this task adds.
+ */
+async function writeStagedDraft(root, moduleId, reviewId, overrides = {}) {
+  const draft = {
+    schemaVersion: 1,
+    review_id: reviewId,
+    role: 'clinical-1',
+    moduleId,
+    subjectContentHash: `sha256:${'0'.repeat(64)}`,
+    previousRecordHash: null,
+    supersedes: null,
+    reviewerId: 'p2-t2-fixture-reviewer',
+    decision: 'approve',
+    rationale: 'P2-T2 sign-refusal fixture draft, structural only, no clinical claim.',
+    reviewedAt: '2026-02-15T00:00:00Z',
+    synthetic: true,
+    signature: null,
+    ...overrides,
+  };
+  return writeDraftRecordFile(root, moduleId, reviewId, draft);
+}
+
+test('writeStagedDraft (this file\'s own draft-fixture helper) writes to the exact canonical draftFilePathFor(...) path -- proves every sign test in this file exercises the SAME staging-path convention lib/verbs/sign.mjs itself checks the --draft argument against', async () => {
+  const tmp = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-draftpath-'));
+  try {
+    const moduleId = 'p2t2_draftpath_check_v1';
+    const draftPath = await writeStagedDraft(tmp, moduleId, 'rr-0001-clinical-1');
+    assert.equal(draftPath, draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1'));
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('sign refuses a synthetic:false draft with a message naming both G1 and G2 (FR-7, R1)', async () => {
+  const tmp = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-real-'));
+  try {
+    const moduleId = 'p2t2_real_v1';
+    const draftPath = await writeStagedDraft(tmp, moduleId, 'rr-0001-clinical-1', { synthetic: false });
+
+    await assert.rejects(
+      () => runSign({ draft: draftPath, module: moduleId, root: tmp }),
+      (err) => {
+        assert.ok(err instanceof UsageError);
+        assert.match(err.message, /\bG1\b/, 'refusal message must name G1');
+        assert.match(err.message, /\bG2\b/, 'refusal message must name G2');
+        return true;
+      },
+    );
+
+    // Never actually written -- the refusal is truly fail-closed, not a partial write.
+    assert.deepEqual(await listModuleReviewRecords(tmp, moduleId), []);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('cli.mjs (subprocess): sign on a synthetic:false draft exits non-zero with a message naming both G1 and G2', async () => {
+  const tmp = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-real-cli-'));
+  try {
+    const moduleId = 'p2t2_real_cli_v1';
+    const draftPath = await writeStagedDraft(tmp, moduleId, 'rr-0001-clinical-1', { synthetic: false });
+
+    const { status, stderr } = runCli(['sign', '--draft', draftPath, '--module', moduleId, '--root', tmp]);
+    assert.equal(status, EXIT_USAGE);
+    assert.match(stderr, /\bG1\b/);
+    assert.match(stderr, /\bG2\b/);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('sign refuses --record over an already-committed file (FR-25, R1)', async () => {
+  // fixture_module_v1 (tests/fixtures/ef-review-record-cli/) already carries a real committed
+  // rr-0001-clinical-1.yaml -- proving the refusal holds even when --record legitimately names a
+  // real committed file, not just an arbitrary/unresolvable id.
+  await assert.rejects(
+    () => runSign({ module: 'fixture_module_v1', root: FIXTURES_ROOT, record: 'rr-0001-clinical-1' }),
+    (err) => {
+      assert.ok(err instanceof UsageError);
+      assert.match(err.message, /--record/);
+      return true;
+    },
+  );
+});
+
+test('cli.mjs (subprocess): sign --record over a committed file is rejected, exit 1', () => {
+  const { status, stderr } = runCli([
+    'sign', '--module', 'fixture_module_v1', '--root', FIXTURES_ROOT, '--record', 'rr-0001-clinical-1',
+  ]);
+  assert.equal(status, EXIT_USAGE);
+  assert.match(stderr, /--record/);
+});
+
+test('sign refuses --keyfile/--key/--test-keys unconditionally, even with no other flags present (OQ-1, FR-7/23, R1)', async () => {
+  for (const flag of ['keyfile', 'key', 'testKeys']) {
+    await assert.rejects(
+      () => runSign({ [flag]: '/tmp/not-a-real-key' }),
+      (err) => {
+        assert.ok(err instanceof UsageError);
+        assert.match(err.message, /OQ-1/);
+        return true;
+      },
+      `expected sign to refuse --${flag} even without --draft/--module/--root`,
+    );
+  }
+});
+
+test('cli.mjs (subprocess): sign --keyfile/--key/--test-keys are each rejected, exit 1', () => {
+  for (const cliFlag of ['--keyfile', '--key', '--test-keys']) {
+    const { status, stderr } = runCli(['sign', cliFlag, '/tmp/not-a-real-key']);
+    assert.equal(status, EXIT_USAGE, `expected ${cliFlag} to exit non-zero`);
+    assert.match(stderr, /keyfile\/key-material seam/, `expected ${cliFlag}'s refusal message`);
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// sign -- BLOCKER 1 (clinical-review-workflow-v1 Wave-2 codex gate): a staged, synthetic:true
+// draft's own CONTENT (never validated beyond moduleId/synthetic before this fix) must be refused,
+// fail-closed, with NOTHING written anywhere, in three distinct ways -- a path-traversal review_id,
+// a schema-invalid field value with no bearing on synthetic/moduleId, and a role/review_id
+// cross-check mismatch (proving the full schema-conformance pass catches what the review_id PATTERN
+// check alone does not). Every case below stages the malformed draft at the FILE's own legitimate,
+// canonical path (writeStagedDraft's positional reviewId argument) -- only the draft's own parsed
+// FIELDS are malformed, exercising exactly the gap BLOCKER 1 closes (the pre-existing --draft
+// path-argument checks (1)/(2) in lib/verbs/sign.mjs cannot catch any of these; they validate the
+// file argument's location, never its content).
+// -------------------------------------------------------------------------------------------
+
+test('sign refuses a staged draft whose own review_id FIELD is a path-traversal payload -- refused BEFORE any path is constructed from it, and the escape path is never created (BLOCKER 1(b), clinical-review-workflow-v1 Wave-2 codex gate)', async () => {
+  const tmp = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-traversal-'));
+  try {
+    const moduleId = 'p2t2_traversal_v1';
+    // The staged FILE lives at the normal, canonical staging path (draftFilePathFor,
+    // 'rr-0001-clinical-1') -- only the draft's own review_id FIELD is overridden to a
+    // path-traversal payload. sign.mjs's own --draft path checks (1)/(2) validate the FILE
+    // ARGUMENT's location only, never the parsed content, so they cannot catch this on their own.
+    const draftPath = await writeStagedDraft(tmp, moduleId, 'rr-0001-clinical-1', { review_id: '../../escape' });
+
+    await assert.rejects(() => runSign({ draft: draftPath, module: moduleId, root: tmp }), UsageError);
+
+    // path.join(modules/<moduleId>/reviews/, "../../escape.yaml") would land two levels up from
+    // reviews/ -- i.e. at modules/escape.yaml -- were the traversal not refused first.
+    const escapePath = path.join(tmp, 'modules', 'escape.yaml');
+    await assert.rejects(() => readFile(escapePath, 'utf8'), 'the escape path must never be created');
+    assert.deepEqual(await listModuleReviewRecords(tmp, moduleId), []);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('sign refuses a malformed, non-scaffold-produced draft (an out-of-enum decision, unrelated to synthetic/moduleId) -- the full schema-conformance check on the signed record runs before any committed write (BLOCKER 1(a), clinical-review-workflow-v1 Wave-2 codex gate)', async () => {
+  const tmp = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-malformed-'));
+  try {
+    const moduleId = 'p2t2_malformed_v1';
+    const draftPath = await writeStagedDraft(tmp, moduleId, 'rr-0001-clinical-1', { decision: 'maybe' });
+
+    await assert.rejects(
+      () => runSign({ draft: draftPath, module: moduleId, root: tmp }),
+      (err) => {
+        assert.ok(err instanceof UsageError);
+        assert.match(err.message, /schemas\/review-record\.schema\.json/);
+        return true;
+      },
+    );
+    assert.deepEqual(await listModuleReviewRecords(tmp, moduleId), []);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('sign refuses a staged draft whose role does not match its own review_id suffix (schema allOf cross-check) -- a schema-invalid draft distinct from a review_id PATTERN violation, proving the full schema-conformance pass catches what the pattern check alone does not (BLOCKER 1(a), clinical-review-workflow-v1 Wave-2 codex gate)', async () => {
+  const tmp = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-role-mismatch-'));
+  try {
+    const moduleId = 'p2t2_role_mismatch_v1';
+    // review_id "rr-0001-clinical-1" is itself a perfectly valid, pattern-conforming review_id
+    // (passes BLOCKER 1(b)'s parseReviewId check) -- only the role field disagrees with its suffix.
+    const draftPath = await writeStagedDraft(tmp, moduleId, 'rr-0001-clinical-1', { role: 'clinical-2' });
+
+    await assert.rejects(() => runSign({ draft: draftPath, module: moduleId, root: tmp }), UsageError);
+    assert.deepEqual(await listModuleReviewRecords(tmp, moduleId), []);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test(
+  'lib/verbs/sign.mjs contains zero key-reading code -- no fs.readFile call beyond the staged ' +
+    'draft itself and the fixed schemas/review-record.schema.json path (BLOCKER 1(a)), no ' +
+    'environment-variable read (static grep, FR-7/23, R1)',
+  async () => {
+    const raw = await readFile(SIGN_MJS_PATH, 'utf8');
+    // Strip BOTH // line comments and /* ... */ block comments (this file carries both styles)
+    // before scanning -- prose explaining a guardrail must never trip a grep test looking for
+    // actual code.
+    const code = stripLineComments(raw.replace(/\/\*[\s\S]*?\*\//g, ''));
+
+    assert.doesNotMatch(code, /process\.env/, 'sign.mjs must never read any environment variable');
+    assert.doesNotMatch(code, /readFileSync/, 'sign.mjs must never use a synchronous file-read primitive');
+    assert.doesNotMatch(code, /createReadStream/, 'sign.mjs must never open a raw file read stream');
+    assert.doesNotMatch(code, /\brequire\(/, 'sign.mjs is ESM-only -- no CommonJS require() escape hatch');
+
+    // BLOCKER 1 (clinical-review-workflow-v1 Wave-2 codex gate) added a SECOND readFile() call
+    // site: loadSchema() reads schemas/review-record.schema.json to run the same schema-conformance
+    // check `validate` runs post-commit (BLOCKER 1(a)) -- a fixed, hard-coded repo-relative path,
+    // never anything derived from a flag/env var, so it carries none of the key-reading risk this
+    // test guards against. The count below is now 2, not 1; the assertion is exact (never "at least
+    // 2") so any FUTURE third call site still fails this test closed until independently reviewed.
+    const readFileCallCount = (code.match(/\breadFile\(/g) || []).length;
+    assert.equal(
+      readFileCallCount,
+      2,
+      'sign.mjs must call readFile() exactly twice -- the staged --draft file, and (BLOCKER 1(a)) ' +
+        'schemas/review-record.schema.json -- never a key file (a third call site would be new, ' +
+        'unreviewed key-reading capability)',
+    );
+  },
+);
+
+// -------------------------------------------------------------------------------------------
 // Zero network / zero model-invocation, structurally (static) and dynamically (patched fetch)
 // -------------------------------------------------------------------------------------------
 
@@ -447,4 +699,161 @@ test('parseFlags converts kebab-case flags to camelCase and supports boolean fla
 
 test('parseFlags rejects a positional argument', () => {
   assert.throws(() => parseFlags(['not-a-flag']), CliError);
+});
+
+// -------------------------------------------------------------------------------------------
+// P5-T2 (clinical-review-workflow-v1 Phase 5, FR-20/21/22/28, F10): discovery-guard, determinism,
+// and a zero-new-deps extension of the tool-wide static import-specifier walk above. See this
+// file's own header for the full rationale.
+// -------------------------------------------------------------------------------------------
+
+const TESTS_ROOT = path.join(REPO_ROOT, 'tests');
+const WITNESS_ROOT = path.join(TESTS_ROOT, 'witness');
+
+/**
+ * Recursively collects every file under `tests/` whose name ends in `.test.mjs` — the exact set
+ * `npm test`'s own `node --test tests/*.test.mjs tests/witness/*.test.mjs` invocation is trying to
+ * discover. A dynamic walk (not a hardcoded list), so this catches a FUTURE misplaced file the same
+ * way it would catch one already on disk today.
+ */
+async function listAllTestFiles() {
+  const out = [];
+  async function walk(dir) {
+    const entries = await readdir(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        await walk(full);
+      } else if (entry.isFile() && entry.name.endsWith('.test.mjs')) {
+        out.push(full);
+      }
+    }
+  }
+  await walk(TESTS_ROOT);
+  return out;
+}
+
+test('F10 discovery-guard: every *.test.mjs file under tests/ matches one of npm test\'s own two flat, non-recursive discovery globs (tests/*.test.mjs or tests/witness/*.test.mjs) -- a file placed any deeper would silently never run', async () => {
+  const files = await listAllTestFiles();
+  assert.ok(files.length >= 100, 'expected to find the full repo-wide test suite, not a partial listing (walk is broken)');
+
+  const misplaced = files
+    .filter((file) => path.dirname(file) !== TESTS_ROOT && path.dirname(file) !== WITNESS_ROOT)
+    .map((file) => path.relative(REPO_ROOT, file));
+
+  assert.deepEqual(
+    misplaced, [],
+    'every test file must live directly under tests/ or tests/witness/ (F10) -- found file(s) ' +
+      `npm test's non-recursive glob would silently never discover: ${misplaced.join(', ')}`,
+  );
+});
+
+test('package.json\'s scripts.test remains the exact two flat, non-recursive globs npm test has always used (F10) -- this task does not change it', async () => {
+  const pkg = JSON.parse(await readFile(path.join(REPO_ROOT, 'package.json'), 'utf8'));
+  assert.equal(pkg.scripts.test, 'node --test tests/*.test.mjs tests/witness/*.test.mjs');
+});
+
+test('package.json declares zero dependencies and zero devDependencies -- this feature adds none anywhere across its five phases (Hard Guardrail: zero new runtime dependencies)', async () => {
+  const pkg = JSON.parse(await readFile(path.join(REPO_ROOT, 'package.json'), 'utf8'));
+  assert.equal(pkg.dependencies, undefined, 'package.json must carry no dependencies block at all');
+  assert.equal(pkg.devDependencies, undefined, 'package.json must carry no devDependencies block at all');
+});
+
+const RELATIVE_OR_BUILTIN_SPECIFIER = /^(\.\.?\/|node:)/;
+
+test('zero-new-deps (F10): every import specifier anywhere under tools/review-record/ resolves to a relative path or a node: builtin -- zero third-party package imports, over the SAME dynamic tool-wide file walk (listAllToolFiles) the zero-network test above already uses -- so it already covers every lib/*.mjs / lib/verbs/*.mjs file this whole feature added across all five phases, and any future one', async () => {
+  const files = await listAllToolFiles();
+  assert.ok(files.length >= 20, 'expected the full lib/verbs tree, not a partial listing');
+
+  const specifierPattern = /from\s+['"]([^'"]+)['"]/g;
+  for (const file of files) {
+    const raw = await readFile(file, 'utf8');
+    const code = stripLineComments(raw.replace(/\/\*[\s\S]*?\*\//g, ''));
+    let match;
+    while ((match = specifierPattern.exec(code)) !== null) {
+      const specifier = match[1];
+      assert.match(
+        specifier, RELATIVE_OR_BUILTIN_SPECIFIER,
+        `${path.relative(REPO_ROOT, file)} imports third-party specifier "${specifier}" -- ` +
+          'tools/review-record/ must ship zero new runtime dependencies (Hard Guardrail).',
+      );
+    }
+  }
+});
+
+test('the tool-wide static-grep file walk (listAllToolFiles) reaches every lib/*.mjs file genuinely NEW to clinical-review-workflow-v1 itself (not merely inherited from evidence-foundry-e1-v1\'s already-shipped substrate) -- proves the dynamic walk\'s "every new lib/*.mjs file" coverage claim is not vacuous', async () => {
+  const files = (await listAllToolFiles()).map((f) => path.relative(TOOL_ROOT, f).split(path.sep).join('/'));
+  // Confirmed via `git log --diff-filter=A --follow` against each file: everything else under
+  // tools/review-record/ (store.mjs, chain.mjs, roster.mjs, signature.mjs, render.mjs, errors.mjs,
+  // history.mjs, independence.mjs, adjudication.mjs, wave0-migration.mjs, and verbs/list.mjs,
+  // scaffold.mjs, validate.mjs, dry-run.mjs, render.mjs) was already shipped by
+  // evidence-foundry-e1-v1 Phase 2 (commit 60c6e30) before this feature's P1 opened.
+  const newThisFeature = [
+    'lib/derived-state.mjs',   // P1-T1
+    'lib/validate-cache.mjs',  // P2-T3
+    'lib/verbs/status.mjs',    // P1-T2
+    'lib/verbs/sign.mjs',      // P2-T1
+  ];
+  for (const rel of newThisFeature) {
+    assert.ok(files.includes(rel), `expected the tool-wide file walk to include ${rel}`);
+  }
+});
+
+test('status --json: two independent real CLI invocations over unchanged committed input produce byte-identical stdout (determinism, F10/R-P4/OQ-2 -- no wall-clock bytes)', () => {
+  const first = runCli(['status', '--module', 'fixture_module_v1', '--root', FIXTURES_ROOT, '--json']);
+  const second = runCli(['status', '--module', 'fixture_module_v1', '--root', FIXTURES_ROOT, '--json']);
+  assert.equal(first.status, second.status);
+  assert.ok(first.stdout.length > 0, 'status --json must produce non-empty stdout');
+  assert.equal(
+    first.stdout, second.stdout,
+    'status --json bytes must be stable across two invocations on unchanged input',
+  );
+});
+
+test('status --json: byte-stability holds over a TERMINAL (all-committed) module too, not just an in-progress one (determinism, F10/R-P4/OQ-2)', async () => {
+  const renderFixtureRoot = path.join(REPO_ROOT, 'tests', 'fixtures', 'ef-review-render', 'input');
+  const first = runCli(['status', '--module', 'render_fixture_v1', '--root', renderFixtureRoot, '--json']);
+  const second = runCli(['status', '--module', 'render_fixture_v1', '--root', renderFixtureRoot, '--json']);
+  assert.equal(first.status, second.status);
+  assert.ok(first.stdout.length > 0);
+  assert.equal(first.stdout, second.stdout);
+});
+
+test('sign: two independent invocations over the SAME staged-draft content (distinct roots, so neither collides with the other\'s append-only write) produce byte-identical non-signature fields in the committed record -- only `signature` legitimately differs (fresh ephemeral TESTKEY- keypair per call) (determinism, F10/R-P4)', async () => {
+  const tmpA = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-determinism-a-'));
+  const tmpB = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-determinism-b-'));
+  try {
+    const moduleId = 'p5t2_sign_determinism_v1';
+    const draftPathA = await writeStagedDraft(tmpA, moduleId, 'rr-0001-clinical-1');
+    const draftPathB = await writeStagedDraft(tmpB, moduleId, 'rr-0001-clinical-1');
+
+    const resultA = runCli(['sign', '--draft', draftPathA, '--module', moduleId, '--root', tmpA]);
+    const resultB = runCli(['sign', '--draft', draftPathB, '--module', moduleId, '--root', tmpB]);
+    assert.equal(resultA.status, EXIT_OK, `sign A exited non-zero; stderr: ${resultA.stderr}`);
+    assert.equal(resultB.status, EXIT_OK, `sign B exited non-zero; stderr: ${resultB.stderr}`);
+
+    const recordA = parseYamlDocument(
+      await readFile(recordFilePathFor(tmpA, moduleId, 'rr-0001-clinical-1'), 'utf8'),
+    );
+    const recordB = parseYamlDocument(
+      await readFile(recordFilePathFor(tmpB, moduleId, 'rr-0001-clinical-1'), 'utf8'),
+    );
+
+    const { signature: signatureA, ...nonSignatureA } = recordA;
+    const { signature: signatureB, ...nonSignatureB } = recordB;
+
+    assert.deepEqual(
+      nonSignatureA, nonSignatureB,
+      'every non-signature field of the committed record must be byte-stable across two ' +
+        'independent sign invocations of the same staged-draft content',
+    );
+    // The one field that must legitimately DIFFER -- a fresh, ephemeral, per-call Ed25519 keypair
+    // (lib/signature.mjs's own OQ-6 guarantee) means both keyId and value differ every call.
+    assert.notEqual(signatureA.keyId, signatureB.keyId, 'each sign call generates its own fresh ephemeral keypair');
+    assert.notEqual(signatureA.value, signatureB.value);
+    assert.equal(signatureA.algorithm, signatureB.algorithm, 'the algorithm itself is not ephemeral');
+  } finally {
+    await rm(tmpA, { recursive: true, force: true });
+    await rm(tmpB, { recursive: true, force: true });
+  }
 });

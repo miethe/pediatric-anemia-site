@@ -17,7 +17,7 @@
 // Every function here is pure w.r.t. its inputs plus (for the two `async` functions) read-only
 // filesystem access — nothing in this module ever writes, renames, or deletes a path.
 
-import { access, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { RecordAlreadyExistsError, UsageError } from './errors.mjs';
@@ -154,9 +154,72 @@ export async function nextSequenceFor(rootDir, moduleId) {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Write path (P2-T2). Everything above this line is read-only, per this file's own header. This
-// is the ONLY place in the whole `review-record` tool that ever writes a `modules/<id>/reviews/`
-// file — `scaffold` (lib/verbs/scaffold.mjs) is its sole caller.
+// Draft staging path (Clinical Review Workflow v1, P1-T3(c)/P2-T1, CRW-F2/CRW-F8 gap closure).
+//
+// `.review-drafts/<moduleId>/<reviewId>.draft.yaml` — OUTSIDE `modules/<id>/reviews/`, gitignored
+// (`.gitignore`), never git-tracked. `scaffold --draft` (`lib/verbs/scaffold.mjs`) writes here; the
+// `sign` verb (`lib/verbs/sign.mjs`) reads ONLY from here, never a path already inside `reviews/`
+// (F1). These path helpers and the write function below live in `store.mjs` — not in
+// `scaffold.mjs`/`sign.mjs` themselves — so `writeFile` is called from exactly one place in this
+// whole tool, matching `tests/ef-review-adjudication.test.mjs`'s pre-existing structural invariant
+// ("writeFile is called only from lib/store.mjs ... and lib/verbs/render.mjs ... — no other write
+// path") without weakening it: this is the SAME `store.mjs` `writeFile` caller that invariant
+// already names, gaining a second, disjoint write target (`.review-drafts/`, never
+// `modules/<id>/reviews/`) rather than a new caller appearing elsewhere.
+//
+// UNLIKE `writeNewReviewRecordFile` below, this write path is NOT append-only-guarded — a re-run of
+// `scaffold --draft` for the same `moduleId`+`reviewId` (e.g. abandoning and redrafting the SAME
+// pending act before it has been signed) simply overwrites the prior draft. This is a deliberate,
+// narrow relaxation scoped to this one ephemeral, gitignored, never-committed staging file — it does
+// not touch, and has no bearing on, the append-only guarantee `writeNewReviewRecordFile` enforces
+// for the real `modules/<id>/reviews/` store.
+// ---------------------------------------------------------------------------------------------
+
+/** Directory name (direct child of `rootDir`) holding staged, unsigned draft records. */
+export const DRAFTS_DIR_NAME = '.review-drafts';
+
+/**
+ * @param {string} rootDir
+ * @param {string} moduleId
+ * @returns {string} absolute path to `<rootDir>/.review-drafts/<moduleId>/`
+ */
+export function draftsDirFor(rootDir, moduleId) {
+  return path.join(rootDir, DRAFTS_DIR_NAME, moduleId);
+}
+
+/**
+ * @param {string} rootDir
+ * @param {string} moduleId
+ * @param {string} reviewId
+ * @returns {string} absolute path to `<rootDir>/.review-drafts/<moduleId>/<reviewId>.draft.yaml`
+ */
+export function draftFilePathFor(rootDir, moduleId, reviewId) {
+  return path.join(draftsDirFor(rootDir, moduleId), `${reviewId}.draft.yaml`);
+}
+
+/**
+ * Writes (or overwrites — see this section's header) one draft record to the `.review-drafts/`
+ * staging area. Creates the target directory if needed. NOT append-only-guarded — see this
+ * section's header for why that is deliberate and narrowly scoped.
+ *
+ * @param {string} rootDir
+ * @param {string} moduleId
+ * @param {string} reviewId
+ * @param {object} record a fully-built review-record document (e.g. `lib/verbs/scaffold.mjs`'s
+ *   `buildDraftRecord` output — `signature: null`, `synthetic` either value)
+ * @returns {Promise<string>} the absolute path written
+ */
+export async function writeDraftRecordFile(rootDir, moduleId, reviewId, record) {
+  const filePath = draftFilePathFor(rootDir, moduleId, reviewId);
+  await mkdir(draftsDirFor(rootDir, moduleId), { recursive: true });
+  await writeFile(filePath, serializeReviewRecordYaml(record), 'utf8');
+  return filePath;
+}
+
+// ---------------------------------------------------------------------------------------------
+// Write path (P2-T2). Everything above the draft-staging section is read-only, per this file's own
+// header. This remains the ONLY place in the whole `review-record` tool that ever writes a
+// `modules/<id>/reviews/` file — `scaffold` (lib/verbs/scaffold.mjs) is its sole caller.
 // ---------------------------------------------------------------------------------------------
 
 /**
@@ -218,15 +281,83 @@ export function serializeReviewRecordYaml(record) {
 }
 
 /**
- * @param {string} filePath
- * @returns {Promise<boolean>}
+ * Whether `candidatePath` resolves to a path STRICTLY inside `dirPath` (never equal to it).
+ * Path-traversal containment guard (clinical-review-workflow-v1 Wave-2 codex gate, BLOCKER 1(c)):
+ * `writeNewReviewRecordFile` below uses this to refuse a computed target path that would land
+ * outside `modules/<moduleId>/reviews/`, independent of whatever upstream validation (or lack of
+ * it) a caller already ran on `reviewId` -- mirrors `lib/verbs/sign.mjs`'s own identically-shaped,
+ * independently-defined helper of the same name (that one checks a caller-supplied `--draft`
+ * argument against the drafts directory; this one checks a path THIS module itself computed
+ * against `reviews/`, one layer deeper and never dependent on what ran upstream).
+ *
+ * @param {string} candidatePath
+ * @param {string} dirPath
+ * @returns {boolean}
  */
-async function fileExists(filePath) {
-  try {
-    await access(filePath);
-    return true;
-  } catch {
-    return false;
+function resolvesStrictlyInside(candidatePath, dirPath) {
+  const resolvedCandidate = path.resolve(candidatePath);
+  const resolvedDir = path.resolve(dirPath);
+  const rel = path.relative(resolvedDir, resolvedCandidate);
+  return rel !== '' && rel !== '.' && !rel.startsWith(`..${path.sep}`) && rel !== '..' && !path.isAbsolute(rel);
+}
+
+/**
+ * Refuses (fail-closed) if any of `modules/`, `modules/<moduleId>/`, or `modules/<moduleId>/reviews/`
+ * (whichever of these already exist under `rootDir`) is a SYMBOLIC LINK rather than a real directory
+ * (clinical-review-workflow-v1 Wave-2 codex RE-PASS, still-open vector on BLOCKER 1(c)).
+ *
+ * This is LAYER ONE of `writeNewReviewRecordFile`'s path-traversal defense, checked BEFORE the
+ * lexical containment check (`resolvesStrictlyInside`) below -- that check (and `path.resolve`/
+ * `path.relative` generally) operates on the path STRING alone and never touches the filesystem, so
+ * a symlinked `modules/<moduleId>/reviews/` -- lexically "inside" the module's own tree, but
+ * pointing anywhere on disk -- would pass it, and `writeFile` would silently follow the link. This
+ * is not merely a same-user-trust concern: git CAN carry a committed symlink into any clone, so a
+ * malicious or corrupted `modules/<moduleId>/reviews/` symlink can arrive via an ordinary checkout,
+ * not just a local attacker.
+ *
+ * The FINAL path component (the `<reviewId>.yaml` file itself) is deliberately NOT checked here --
+ * `writeNewReviewRecordFile`'s exclusive-create write (`writeFile(..., { flag: 'wx' })`, MAJOR 4)
+ * already refuses (`EEXIST`) if ANYTHING -- including a symlink -- already sits at that exact path,
+ * so a symlinked terminal path is refused by that layer regardless of this one; only the ANCESTOR
+ * directory components need an explicit check.
+ *
+ * Residual, adjudicated limitation (documented, not hedged): this check is `lstat`-then-mkdir/write,
+ * NOT race-free -- a concurrent SAME-USER process could swap a checked real directory for a symlink
+ * between the `lstat` here and the `mkdir`/`writeFile` below. That active race is OUTSIDE this
+ * tool's threat model, the same same-user trust boundary CRW-F7 already documents for the validate
+ * cache (a same-user attacker with write access here could already replace the CLI or `node` binary
+ * itself; a race-free fix would need openat-style dirfd-relative writes, unavailable in Node without
+ * a new dependency -- guardrail-forbidden). This check's actual target -- the git-transmissible
+ * COMMITTED-symlink vector described above -- IS closed regardless.
+ *
+ * @param {string} rootDir
+ * @param {string} moduleId
+ * @returns {Promise<void>}
+ */
+async function assertNoSymlinkedAncestor(rootDir, moduleId) {
+  const candidates = [
+    path.join(rootDir, 'modules'),
+    path.join(rootDir, 'modules', moduleId),
+    path.join(rootDir, 'modules', moduleId, 'reviews'),
+  ];
+  for (const candidatePath of candidates) {
+    let stats;
+    try {
+      stats = await lstat(candidatePath);
+    } catch (err) {
+      if (err.code === 'ENOENT') continue; // does not exist yet -- mkdir below creates a REAL directory
+      throw err;
+    }
+    if (stats.isSymbolicLink()) {
+      throw new UsageError(
+        `writeNewReviewRecordFile refuses to write into moduleId "${moduleId}" -- "${candidatePath}" ` +
+          'is a SYMBOLIC LINK, not a real directory. A symlinked path component here would let the ' +
+          'lexical containment check below pass while the actual write followed the link outside ' +
+          'modules/<moduleId>/reviews/ -- including outside this repository entirely, since git can ' +
+          'carry a committed symlink into any clone. This store never writes through a symlinked ' +
+          'directory component, regardless of caller.',
+      );
+    }
   }
 }
 
@@ -238,6 +369,30 @@ async function fileExists(filePath) {
  * `listModuleReviewRecords`'s own existence-gate posture for reads). This is the only function in
  * this whole tool that writes to `modules/<id>/reviews/` — see this section's header.
  *
+ * Three additive, fail-closed hardenings from the clinical-review-workflow-v1 Wave-2 codex gate (the
+ * first two from the initial gate, the third from a codex RE-PASS), all defense-in-depth on top of
+ * whatever an upstream caller (e.g. `lib/verbs/sign.mjs`'s own `parseReviewId`/schema-conformance
+ * checks) already validated -- neither changes behavior for any well-formed `reviewId`/first-time
+ * write against real (non-symlinked) directories:
+ *   - BLOCKER 1(c) symlink vector (RE-PASS): `assertNoSymlinkedAncestor` refuses if `modules/`,
+ *     `modules/<moduleId>/`, or `modules/<moduleId>/reviews/` is a SYMBOLIC LINK, BEFORE the lexical
+ *     containment check below -- a symlinked ancestor directory passes that check trivially (it
+ *     never touches the filesystem) while the actual write would follow the link anywhere on disk.
+ *   - BLOCKER 1(c) lexical containment: `filePath` is resolved and checked to sit STRICTLY inside
+ *     `modules/<moduleId>/reviews/` before any I/O happens. A `reviewId` containing path-traversal
+ *     segments (e.g. `"../../escape"`) is refused here even if it somehow reached this function
+ *     without having been pattern-validated first.
+ *   - MAJOR 4: the existence check and the write are now a SINGLE atomic OS-level operation
+ *     (`writeFile(..., { flag: 'wx' })`, exclusive create) instead of a separate
+ *     `fileExists()`-then-`writeFile()` pair. The prior two-step form left a TOCTOU window open: two
+ *     concurrent `sign` processes could both observe "does not exist yet" and both proceed to write,
+ *     the second silently clobbering the first's already-committed record. `EEXIST` from the
+ *     exclusive-create attempt maps to the exact same `RecordAlreadyExistsError` this store has
+ *     always thrown on a path collision; every other error propagates unchanged. This same `'wx'`
+ *     behavior is ALSO the reason the symlink check above never needs to inspect the FINAL path
+ *     component itself: `EEXIST` fires on anything -- including a symlink -- already sitting at that
+ *     exact terminal path, so a symlinked terminal path is refused by this layer regardless.
+ *
  * @param {string} rootDir
  * @param {string} moduleId
  * @param {string} reviewId
@@ -245,9 +400,26 @@ async function fileExists(filePath) {
  * @returns {Promise<string>} the absolute path written
  */
 export async function writeNewReviewRecordFile(rootDir, moduleId, reviewId, record) {
+  const reviewsDir = reviewsDirFor(rootDir, moduleId);
   const filePath = recordFilePathFor(rootDir, moduleId, reviewId);
-  if (await fileExists(filePath)) throw new RecordAlreadyExistsError(filePath);
-  await mkdir(reviewsDirFor(rootDir, moduleId), { recursive: true });
-  await writeFile(filePath, serializeReviewRecordYaml(record), 'utf8');
+
+  await assertNoSymlinkedAncestor(rootDir, moduleId);
+
+  if (!resolvesStrictlyInside(filePath, reviewsDir)) {
+    throw new UsageError(
+      `writeNewReviewRecordFile refuses to write review_id "${reviewId}" for moduleId "${moduleId}" ` +
+        `-- the computed target path does not resolve strictly inside modules/${moduleId}/reviews/ ` +
+        '(path-traversal containment guard). This store writes exclusively inside that one directory ' +
+        'per module; a reviewId that escapes it is always refused, regardless of caller.',
+    );
+  }
+
+  await mkdir(reviewsDir, { recursive: true });
+  try {
+    await writeFile(filePath, serializeReviewRecordYaml(record), { encoding: 'utf8', flag: 'wx' });
+  } catch (err) {
+    if (err.code === 'EEXIST') throw new RecordAlreadyExistsError(filePath);
+    throw err;
+  }
   return filePath;
 }

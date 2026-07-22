@@ -32,6 +32,17 @@
 // for that standing caveat. The fixture module's five review records are all `synthetic: true` and
 // carry non-qualifying language; they are not real review activity (phase-2-progress.md's own
 // named honesty-posture risk).
+//
+// P5-T2 addition (clinical-review-workflow-v1 Phase 5, FR-20/21/22, R-P4): extends this file's
+// existing real-CLI smoke coverage with the queue-section `NEXT`/`TERMINAL` marker literals
+// (`lib/render.mjs`'s P3-T1 `QUEUE_NEXT_MARKER`/`QUEUE_TERMINAL_MARKER` exports) asserted directly
+// in the HTML a real spawned `cli.mjs render` invocation writes to disk — never re-derived from
+// `renderModuleHtml`'s in-process return value the way `tests/ef-review-render.test.mjs`'s own
+// `computeQueueState`/queue-section unit tests already do. The already-committed
+// `render_fixture_v1` fixture (all five roles committed) proves `TERMINAL`; the already-committed
+// `fixture_module_v1` fixture under `tests/fixtures/ef-review-record-cli/` (two of five roles
+// committed, the same fixture `tests/ef-review-render.test.mjs`'s own `PARTIAL_MODULE_ID` already
+// exercises in-process) proves `NEXT` — no new fixture is authored here.
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -48,6 +59,8 @@ import { EXIT_OK } from '../tools/review-record/lib/errors.mjs';
 import {
   UNVALIDATED_PROTOTYPE_BANNER,
   NON_QUALIFYING_RECORD_LABEL,
+  QUEUE_NEXT_MARKER,
+  QUEUE_TERMINAL_MARKER,
   escapeHtml,
 } from '../tools/review-record/lib/render.mjs';
 
@@ -55,6 +68,14 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 const CLI_PATH = path.join(REPO_ROOT, 'tools', 'review-record', 'cli.mjs');
 const FIXTURE_ROOT = path.join(REPO_ROOT, 'tests', 'fixtures', 'ef-review-render', 'input');
 const MODULE_ID = 'render_fixture_v1';
+
+// P5-T2: a second, already-committed fixture module (same one tests/ef-review-record-cli.test.mjs's
+// own `list`/`sign` coverage and tests/ef-review-render.test.mjs's own in-process `PARTIAL_MODULE_ID`
+// unit tests already exercise) whose review chain is only two of five roles deep, so its queue
+// section carries the `NEXT` marker rather than `TERMINAL` -- the complementary case `MODULE_ID`
+// above cannot exercise (a fully-committed chain can only ever render `TERMINAL`).
+const PARTIAL_FIXTURE_ROOT = path.join(REPO_ROOT, 'tests', 'fixtures', 'ef-review-record-cli');
+const PARTIAL_MODULE_ID = 'fixture_module_v1';
 
 // Matches lib/verbs/render.mjs's own default: `path.join(process.cwd(), 'build', 'review-render')`,
 // with the subprocess spawned at cwd: REPO_ROOT below.
@@ -105,6 +126,19 @@ test('cli.mjs render --module render_fixture_v1 --root <committed fixture> (no -
       'each of the fixture\'s five synthetic:true records must carry its own non-qualifying label',
     );
 
+    // P5-T2 (FR-20/21/22, R-P4): the queue section's TERMINAL marker, in the REAL emitted HTML —
+    // render_fixture_v1 has all five ADR-0004 roles committed, so its queue section can only ever
+    // read TERMINAL, never NEXT.
+    assert.match(
+      html, new RegExp(`>${QUEUE_TERMINAL_MARKER}\\b`),
+      'a fully-committed (five of five roles) module\'s real rendered HTML must carry the queue ' +
+        'section\'s TERMINAL marker',
+    );
+    assert.doesNotMatch(
+      html, new RegExp(`>${QUEUE_NEXT_MARKER}\\b`),
+      'a TERMINAL record set\'s real rendered HTML must carry no NEXT marker anywhere in the queue section',
+    );
+
     // (4) the emitted file lives under a path git itself recognizes as ignored.
     const ignoreCheck = spawnSync('git', ['check-ignore', '-q', DEFAULT_OUTPUT_FILE], { cwd: REPO_ROOT });
     assert.equal(
@@ -120,6 +154,36 @@ test('cli.mjs render --module render_fixture_v1 --root <committed fixture> (no -
     assert.notEqual(lsFiles.status, 0, `${DEFAULT_OUTPUT_FILE} must not be a git-tracked file`);
   } finally {
     await rm(DEFAULT_OUT_DIR, { recursive: true, force: true });
+  }
+});
+
+test('cli.mjs render --module fixture_module_v1 --root <partial-chain fixture> (real CLI, real committed fixture, explicit --out) writes real HTML whose queue section carries the NEXT marker naming the awaited role, and no TERMINAL marker (P5-T2, FR-20/21/22, R-P4)', async () => {
+  const outDir = await mkdtemp(path.join(os.tmpdir(), 'ef-review-render-smoke-next-'));
+  try {
+    const result = spawnSync(
+      process.execPath,
+      [CLI_PATH, 'render', '--module', PARTIAL_MODULE_ID, '--root', PARTIAL_FIXTURE_ROOT, '--out', outDir],
+      { cwd: REPO_ROOT, encoding: 'utf8' },
+    );
+    assert.equal(result.error, undefined, `spawnSync itself failed: ${result.error}`);
+    assert.equal(result.status, EXIT_OK, `render exited non-zero; stderr: ${result.stderr}`);
+
+    const outputFile = path.join(outDir, PARTIAL_MODULE_ID, 'index.html');
+    const html = await readFile(outputFile, 'utf8');
+
+    assert.match(html, /^<!doctype html>/);
+    assert.match(html, /<\/html>\s*$/);
+
+    assert.match(
+      html, new RegExp(`${QUEUE_NEXT_MARKER}: lab`),
+      'a two-of-five-committed module\'s real rendered HTML must name "lab" as the NEXT expected role',
+    );
+    assert.doesNotMatch(
+      html, new RegExp(`>${QUEUE_TERMINAL_MARKER}\\b`),
+      'a partial (non-terminal) record set\'s real rendered HTML must carry no TERMINAL marker',
+    );
+  } finally {
+    await rm(outDir, { recursive: true, force: true });
   }
 });
 

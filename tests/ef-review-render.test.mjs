@@ -18,6 +18,13 @@
 //   - `--record` naming a review_id that does not exist fails closed
 //     (`ReviewRecordNotFoundError`, exit 1), never a silent full-module or blank render.
 //
+// Also covers Clinical Review Workflow v1, Phase 3, P3-T1 (FR-11) — the "Review queue & turn
+// state" section: the five ADR-0004 roles, in canonical order, each with a textual (never
+// `<a href>`) reference to its existing committed record, plus a QUEUE_NEXT_MARKER/
+// QUEUE_TERMINAL_MARKER summary sourced from the P1-T1/P1-T5 derived-state primitives
+// (`resolveEffectiveRoleRecord`/`isAdjudicationRequired`, `lib/adjudication.mjs`) `computeQueueState`
+// reuses rather than reimplements. See "queue/turn-state section" below.
+//
 // tests/fixtures/ef-review-render/input/ is a hand-authored, non-real fixture module
 // ("render_fixture_v1") that lives entirely under tests/fixtures/ — it is never read by
 // scripts/validate-kb.mjs and can never be mistaken for a real modules/<id>/reviews/ tree. See that
@@ -39,6 +46,8 @@ import {
   UNVALIDATED_PROTOTYPE_BANNER,
   NON_QUALIFYING_RECORD_LABEL,
   RIGHTS_RESTRICTED_LABEL,
+  QUEUE_NEXT_MARKER,
+  QUEUE_TERMINAL_MARKER,
   escapeHtml,
   loadModuleMeta,
   loadTraceabilityIndex,
@@ -46,6 +55,7 @@ import {
   indexAssertionsById,
   loadModuleRenderData,
   selectRecord,
+  computeQueueState,
   renderModuleHtml,
 } from '../tools/review-record/lib/render.mjs';
 import { run as runRender } from '../tools/review-record/lib/verbs/render.mjs';
@@ -59,6 +69,13 @@ const GOLDEN_PATH = path.join(
   REPO_ROOT, 'tests', 'fixtures', 'ef-review-render', 'golden', 'render_fixture_v1.html',
 );
 const MODULE_ID = 'render_fixture_v1';
+
+// A second, pre-existing fixture root (P2-T2's `list`/`validate` CLI fixtures) that happens to carry
+// a module with exactly TWO of the five roles committed (clinical-1, clinical-2, both `approve` —
+// agreeing) — a real, non-terminal record set this file reuses read-only to exercise the queue
+// section's NEXT branch, rather than hand-authoring a third fixture tree for one narrow case.
+const PARTIAL_FIXTURE_ROOT = path.join(REPO_ROOT, 'tests', 'fixtures', 'ef-review-record-cli');
+const PARTIAL_MODULE_ID = 'fixture_module_v1';
 
 async function withTempDir(fn) {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'ef-review-render-test-'));
@@ -182,16 +199,27 @@ test('renderModuleHtml: full module render carries the banner (header + footer),
   }
 });
 
-test('renderModuleHtml: --record filter narrows to exactly one record', async () => {
+test('renderModuleHtml: --record filter narrows the detailed record CARD to exactly one record; the module-wide queue/turn-state and rule-chain sections still reflect the full module (P3-T1, FR-11)', async () => {
   const data = await loadModuleRenderData(FIXTURE_ROOT, MODULE_ID);
   const html = renderModuleHtml({ ...data, recordFilter: 'rr-0003-lab' });
   assert.match(html, /rr-0003-lab/);
-  assert.doesNotMatch(html, /rr-0001-clinical-1/);
-  assert.doesNotMatch(html, /rr-0002-clinical-2/);
-  assert.doesNotMatch(html, /rr-0004-adjudication/);
-  assert.doesNotMatch(html, /rr-0005-release-auth/);
+  // The full detailed record CARD (reviewer/decision/rationale) is narrowed to rr-0003-lab only --
+  // matching on each OTHER record's own card heading (reviewId immediately followed by its
+  // role-badge span), not the bare reviewId string, since the queue section below legitimately
+  // still names every role's reviewId as a lightweight, content-free cross-reference.
+  assert.doesNotMatch(html, /<h3>rr-0001-clinical-1 <span/);
+  assert.doesNotMatch(html, /<h3>rr-0002-clinical-2 <span/);
+  assert.doesNotMatch(html, /<h3>rr-0004-adjudication <span/);
+  assert.doesNotMatch(html, /<h3>rr-0005-release-auth <span/);
   // The rule-chain section is module-wide, not record-scoped -- still present.
   assert.match(html, /FIXTURE-RULE-001/);
+  // The queue/turn-state section (P3-T1, FR-11) is ALSO module-wide, like the rule-chain section --
+  // turn-taking is a whole-module concept, so it still names every role's reviewId (existence
+  // only -- no reviewer/decision/rationale content) regardless of --record narrowing.
+  assert.match(html, /Review queue &amp; turn state/);
+  for (const reviewId of ['rr-0001-clinical-1', 'rr-0002-clinical-2', 'rr-0003-lab', 'rr-0004-adjudication', 'rr-0005-release-auth']) {
+    assert.match(html, new RegExp(`Committed review act: <code>${reviewId}</code>`));
+  }
 });
 
 test('renderModuleHtml: a module with no committed traceability-index.json prints an explicit not-yet-committed note, not a blank/thrown error', async () => {
@@ -199,6 +227,136 @@ test('renderModuleHtml: a module with no committed traceability-index.json print
   const html = renderModuleHtml(data);
   assert.match(html, /No committed traceability-index\.json rule chain/);
   assert.match(html, /No committed review records found/);
+});
+
+// -------------------------------------------------------------------------------------------
+// computeQueueState — pure unit tests (P3-T1, FR-11)
+// -------------------------------------------------------------------------------------------
+
+function record(role, seq, overrides = {}) {
+  return {
+    reviewId: `rr-${String(seq).padStart(4, '0')}-${role}`,
+    seq,
+    role,
+    record: { decision: 'approve', supersedes: null, ...overrides },
+  };
+}
+
+test('computeQueueState: zero records -- not-started, NEXT is clinical-1 (the first role), not terminal', () => {
+  const result = computeQueueState([]);
+  assert.equal(result.terminal, false);
+  assert.equal(result.nextExpectedRole, 'clinical-1');
+  assert.deepEqual(result.roles.map((r) => r.role), ['clinical-1', 'clinical-2', 'lab', 'adjudication', 'release-auth']);
+  for (const roleEntry of result.roles) assert.equal(roleEntry.reviewId, null);
+  assert.equal(result.roles[0].isNext, true);
+});
+
+test('computeQueueState: clinical-1/clinical-2 present and AGREEING -- NEXT is lab (adjudication not required)', () => {
+  const records = [record('clinical-1', 1, { decision: 'approve' }), record('clinical-2', 2, { decision: 'approve' })];
+  const result = computeQueueState(records);
+  assert.equal(result.terminal, false);
+  assert.equal(result.nextExpectedRole, 'lab');
+  assert.equal(result.roles.find((r) => r.role === 'clinical-1').reviewId, 'rr-0001-clinical-1');
+  assert.equal(result.roles.find((r) => r.role === 'lab').isNext, true);
+});
+
+test('computeQueueState: clinical-1/clinical-2/lab present and DISAGREEING -- NEXT is adjudication (FR-26)', () => {
+  const records = [
+    record('clinical-1', 1, { decision: 'approve' }),
+    record('clinical-2', 2, { decision: 'request-changes' }),
+    record('lab', 3, { decision: 'approve' }),
+  ];
+  const result = computeQueueState(records);
+  assert.equal(result.terminal, false);
+  assert.equal(result.nextExpectedRole, 'adjudication');
+});
+
+test('computeQueueState: all four non-adjudication roles present, AGREEING -- NEXT is release-auth (adjudication skipped, FR-26)', () => {
+  const records = [
+    record('clinical-1', 1, { decision: 'approve' }),
+    record('clinical-2', 2, { decision: 'approve' }),
+    record('lab', 3, { decision: 'approve' }),
+  ];
+  const result = computeQueueState(records);
+  assert.equal(result.nextExpectedRole, 'release-auth');
+});
+
+test('computeQueueState: all five roles present -- TERMINAL, nextExpectedRole null', () => {
+  const records = [
+    record('clinical-1', 1, { decision: 'approve' }),
+    record('clinical-2', 2, { decision: 'approve' }),
+    record('lab', 3, { decision: 'approve' }),
+    record('release-auth', 4, { decision: 'approve' }),
+  ];
+  const result = computeQueueState(records);
+  assert.equal(result.terminal, true);
+  assert.equal(result.nextExpectedRole, null);
+  for (const roleEntry of result.roles) assert.equal(roleEntry.isNext, false);
+});
+
+test('computeQueueState: a superseded clinical-1 original is ignored -- only the EFFECTIVE (correcting) record counts, per resolveEffectiveRoleRecord (FR-26 effective-act rule)', () => {
+  const original = record('clinical-1', 1, { decision: 'approve' });
+  const correction = record('clinical-1', 3, { decision: 'approve', supersedes: original.reviewId });
+  const records = [original, record('clinical-2', 2, { decision: 'approve' }), correction];
+  const result = computeQueueState(records);
+  const clinical1Entry = result.roles.find((r) => r.role === 'clinical-1');
+  assert.equal(clinical1Entry.reviewId, correction.reviewId, 'the EFFECTIVE (correcting) record, not the stale superseded original, must be reported');
+});
+
+// -------------------------------------------------------------------------------------------
+// Queue/turn-state section — rendered HTML (P3-T1, FR-11)
+// -------------------------------------------------------------------------------------------
+
+/** Extracts just the `<section class="queue">...</section>` fragment for section-scoped assertions
+ * (e.g. the grep-test AC: zero `<script`/`<a href` WITHIN the new section specifically). */
+function extractQueueSection(html) {
+  const match = html.match(/<section class="queue">[\s\S]*?<\/section>/);
+  assert.ok(match, 'expected exactly one <section class="queue"> block in the render output');
+  return match[0];
+}
+
+test('renderModuleHtml: the queue/turn-state section names all five ADR-0004 roles, in canonical order, each under its own <h3> (semantic headings for screen-reader navigation)', async () => {
+  const data = await loadModuleRenderData(FIXTURE_ROOT, MODULE_ID);
+  const html = renderModuleHtml(data);
+  const queueSection = extractQueueSection(html);
+
+  assert.match(queueSection, /<h2>Review queue &amp; turn state<\/h2>/);
+  const headings = [...queueSection.matchAll(/<h3>([^<]+)<\/h3>/g)].map((m) => m[1]);
+  assert.deepEqual(headings, ['clinical-1', 'clinical-2', 'lab', 'adjudication', 'release-auth']);
+});
+
+test('renderModuleHtml: the queue/turn-state section carries zero <script and zero <a href (AC: grep-test scoped to the new section)', async () => {
+  const data = await loadModuleRenderData(FIXTURE_ROOT, MODULE_ID);
+  const html = renderModuleHtml(data);
+  const queueSection = extractQueueSection(html);
+  assert.doesNotMatch(queueSection, /<script/i);
+  assert.doesNotMatch(queueSection, /<a\s+href/i);
+});
+
+test('renderModuleHtml: a module with all five roles committed shows the TERMINAL marker and every role\'s existing committed-record reference', async () => {
+  const data = await loadModuleRenderData(FIXTURE_ROOT, MODULE_ID);
+  const html = renderModuleHtml(data);
+  const queueSection = extractQueueSection(html);
+
+  assert.match(queueSection, new RegExp(`>${QUEUE_TERMINAL_MARKER}\\b`));
+  assert.doesNotMatch(queueSection, new RegExp(`>${QUEUE_NEXT_MARKER}\\b`), 'a TERMINAL record set must carry no NEXT marker anywhere in the queue section');
+  for (const reviewId of ['rr-0001-clinical-1', 'rr-0002-clinical-2', 'rr-0003-lab', 'rr-0004-adjudication', 'rr-0005-release-auth']) {
+    assert.match(queueSection, new RegExp(`Committed review act: <code>${reviewId}</code>`));
+  }
+});
+
+test('renderModuleHtml: a module with only two of five roles committed shows the NEXT marker naming the third role, and "not yet committed" for the rest', async () => {
+  const data = await loadModuleRenderData(PARTIAL_FIXTURE_ROOT, PARTIAL_MODULE_ID);
+  const html = renderModuleHtml(data);
+  const queueSection = extractQueueSection(html);
+
+  assert.match(queueSection, new RegExp(`${QUEUE_NEXT_MARKER}: lab`));
+  assert.doesNotMatch(queueSection, new RegExp(`>${QUEUE_TERMINAL_MARKER}\\b`));
+  assert.match(queueSection, /Committed review act: <code>rr-0001-clinical-1<\/code>/);
+  assert.match(queueSection, /Committed review act: <code>rr-0002-clinical-2<\/code>/);
+  // lab/adjudication/release-auth have no committed act yet.
+  const notYetCommittedCount = (queueSection.match(/Not yet committed\./g) || []).length;
+  assert.equal(notYetCommittedCount, 2, 'adjudication and release-auth (lab is the NEXT role, not "not yet committed" text) should read "Not yet committed."');
 });
 
 // -------------------------------------------------------------------------------------------
@@ -316,7 +474,10 @@ test('cli.mjs render --record writes a distinctly named file (not index.html)', 
     assert.equal(status, EXIT_OK);
     const html = await readFile(path.join(outDir, MODULE_ID, 'rr-0004-adjudication.html'), 'utf8');
     assert.match(html, /rr-0004-adjudication/);
-    assert.doesNotMatch(html, /rr-0001-clinical-1/);
+    // The detailed record CARD for rr-0001-clinical-1 is narrowed away; its bare reviewId still
+    // legitimately appears in the module-wide queue/turn-state section (P3-T1, FR-11) -- see the
+    // "renderModuleHtml: --record filter narrows..." test above for the full rationale.
+    assert.doesNotMatch(html, /<h3>rr-0001-clinical-1 <span/);
   });
 });
 

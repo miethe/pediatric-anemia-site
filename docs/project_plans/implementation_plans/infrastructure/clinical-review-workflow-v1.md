@@ -2,7 +2,7 @@
 title: "Clinical Review Workflow v1 (DF-E1-01) \u2014 Implementation Plan"
 schema_version: 2
 doc_type: implementation_plan
-status: draft
+status: completed
 created: '2026-07-22'
 updated: '2026-07-22'
 feature_slug: clinical-review-workflow
@@ -42,8 +42,11 @@ spike_ref: null
 adr_refs:
 - docs/adr/0004-clinical-approval-identity-adjudication.md
 - docs/adr/0005-kb-serialization-signing-key-custody.md
-deferred_items_spec_refs: []
-findings_doc_ref: null
+deferred_items_spec_refs:
+- docs/project_plans/design-specs/clinical-review-portal-workflow.md
+- docs/project_plans/design-specs/real-reviewer-onboarding-g1.md
+- docs/project_plans/design-specs/df-e1-04-retrospective-validation-linkage.md
+findings_doc_ref: .claude/findings/clinical-review-workflow-findings.md
 charter_ref: null
 changelog_ref: null
 test_plan_ref: null
@@ -148,6 +151,7 @@ wave_plan:
     - P4
   - - P3
   - - P5
+planning_maturity: shipped
 ---
 
 # Implementation Plan: Clinical Review Workflow v1 (DF-E1-01)

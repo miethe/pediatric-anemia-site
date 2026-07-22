@@ -119,6 +119,10 @@ const FIRST_PARTY_BINARY_ALLOWLIST = Object.freeze([
   'docs/project_plans/pediatric-cds-commercialization-package-2026-07-16/Pediatric_CDS_Commercialization_Strategy.pdf',
   // First-party Agentic-OS specification (Research Foundry rights governance spec, operator-authored).
   'docs/project_plans/research/research_foundry_rights_governance_spec_v1.0/Research_Foundry_Source_Reuse_and_Rights_Governance_Spec_v1.0.docx',
+  // First-party AI-generated CONCEPT-ONLY watermarked portal mockup (operator-directed gpt-5.6 image
+  // tool), ratified by implementation plan P4-T2 (PRs #23/#25); adjudication recorded in
+  // .claude/findings/clinical-review-workflow-findings.md (CRW-F1).
+  'docs/project_plans/design-specs/assets/clinical-review-portal-concept-v2.png',
 ]);
 
 /**

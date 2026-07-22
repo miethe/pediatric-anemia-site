@@ -23,6 +23,14 @@
 //   dry-run   — full five-role synthetic dry-run cycle. IMPLEMENTED (P2-T8) — see
 //               lib/verbs/dry-run.mjs for the scaffold -> sign -> chain-validate composition and
 //               the expected structural FR-6 non-qualifying terminal state.
+//   status    — derived review-chain state + next-expected role/terminal disposition. IMPLEMENTED
+//               (Clinical Review Workflow v1, Phase 1, P1-T2, FR-1/FR-27/FR-28/FR-29) — see
+//               lib/verbs/status.mjs for the frozen --json shape, the independence-preserving
+//               redaction default (FR-27), and the fail-closed `invalid` state (FR-28).
+//   sign      — sign a staged scaffold --draft record, TESTKEY-only synthetic path. IMPLEMENTED
+//               (Clinical Review Workflow v1, Phase 2, P2-T1, FR-6/FR-25, OQ-1, F1) — see
+//               lib/verbs/sign.mjs for the staged-draft-only lifecycle (never opens/rewrites a
+//               path already inside reviews/) and the ephemeral in-memory TESTKEY- Ed25519 signing.
 //
 // Zero network calls, zero LLM/generative-model invocations, ever (FR-7). No file in this tool
 // imports `node:http`, `node:https`, `node:dgram`, `fetch`, or any AI/model SDK — see
@@ -33,6 +41,8 @@ import { run as runValidate } from './lib/verbs/validate.mjs';
 import { run as runList } from './lib/verbs/list.mjs';
 import { run as runRender } from './lib/verbs/render.mjs';
 import { run as runDryRun } from './lib/verbs/dry-run.mjs';
+import { run as runStatus } from './lib/verbs/status.mjs';
+import { run as runSign } from './lib/verbs/sign.mjs';
 import { CliError, EXIT_OK, EXIT_USAGE } from './lib/errors.mjs';
 
 const VERB_HANDLERS = Object.freeze({
@@ -41,6 +51,8 @@ const VERB_HANDLERS = Object.freeze({
   list: runList,
   render: runRender,
   'dry-run': runDryRun,
+  status: runStatus,
+  sign: runSign,
 });
 
 const HELP_TEXT = `review-record — offline, deterministic CLI for the ADR-0004 five-role
@@ -50,14 +62,29 @@ Usage:
   node tools/review-record/cli.mjs <verb> [options]
 
 Verbs:
-  scaffold --module <id> --role <role> --subject <content-hash> --reviewer-id <id>
+  scaffold --module <id> --role <role> --reviewer-id <id>
            --decision <approve|reject|request-changes> --rationale <text>
-           [--reviewed-at <iso>] [--supersedes <review_id>] [--root <dir>]
+           [--subject <content-hash>] [--reviewed-at <iso>] [--supersedes <review_id>]
+           [--allow-historical-subject] [--draft] [--root <dir>]
       Build a schema-shaped draft record for one of the five roles. reviewerId must resolve
       against governance/reviewer-roster.yaml (unknown identity / out-of-scope module both fail
-      closed, FR-3). If the resolved roster entry is synthetic (the only case that can currently
-      exist pre-G1), the draft is PRINTED as a preview and NOT written — it needs a TESTKEY-
-      signature (P2-T5/P2-T8) first. IMPLEMENTED (P2-T2).
+      closed, FR-3). --subject is OPTIONAL (FR-3/R8): when omitted, subjectContentHash is
+      auto-derived via lib/subject.mjs's computeModuleContentHash (the same function dry-run
+      uses); when supplied, its sha256:<64 hex> shape is validated AND (by default, whenever the
+      module's current content can be recomputed) compared against a fresh
+      computeModuleContentHash -- a mismatch hard-fails (F5), since the pattern check alone cannot
+      catch a transposed-but-pattern-valid hash pointing at the wrong content.
+      --allow-historical-subject suppresses ONLY that comparison (never the pattern check), for
+      the legitimate case of reviewing historical content that no longer matches the module's
+      current on-disk bytes. --draft writes the built record to
+      <root>/.review-drafts/<moduleId>/<review_id>.draft.yaml (outside reviews/, gitignored)
+      instead of the preview-or-write behavior below, and prints that path -- feeds the "sign"
+      verb. Without --draft: if the resolved roster entry is synthetic (the only case that can
+      currently exist pre-G1), the draft is PRINTED as a preview and NOT written -- it needs a
+      TESTKEY- signature ("sign", or the P2-T8 dry-run composition) first; a synthetic:false entry
+      (cannot legitimately exist pre-G1) is written directly to reviews/, still unsigned
+      (signature: null). IMPLEMENTED (P2-T2; F5/--draft added Clinical Review Workflow v1
+      Phase 1/2, P1-T3(c)/P2-T1, CRW-F2 gap closure).
 
   validate --module <id> [--root <dir>] [--record <review_id>] [--history]
       Validate a module's committed records. IMPLEMENTED: per-record schema shape, D-4 roster
@@ -94,6 +121,35 @@ Verbs:
       finding ("this entire record set is synthetic:true") — this is the correct terminal state,
       not a dry-run failure; any OTHER validation finding at any step still fails closed.
       IMPLEMENTED (P2-T8).
+
+  status --module <id> [--root <dir>] [--json] [--history] [--unredacted]
+      Derived review-chain state + next-expected role from a module's committed records, computed
+      via the ONE shared derived-state library (lib/derived-state.mjs). --json emits the frozen
+      shape { moduleId, subjectContentHash, records[], derivedState, nextExpectedRole, blockers[] }
+      whose derivedState enum is not-started | in-progress | disputed | structurally-non-qualifying
+      | acts-complete-unauthorized | invalid -- NEVER a release-ready-like label (FR-29): the
+      all-real terminal state names only that the five-role act set is structurally complete,
+      chain-valid, and roster-verified, not that any release authorization occurred. By default,
+      reviewerId/decision/rationale of an independence-sensitive sibling record are REDACTED in both
+      human and --json output while independence still matters (FR-27); --unredacted lifts this and
+      prints a visible warning (adjudicator/release-authorizer use only). status exits non-zero with
+      derivedState "invalid" whenever validate would reject the same input (FR-28) -- schema shape,
+      D-4 roster resolution, chain break, signature tamper, or (with --history) an append-only
+      git-history failure; --history is opt-in, matching validate's own default. IMPLEMENTED
+      (Clinical Review Workflow v1, Phase 1, P1-T2).
+
+  sign --draft <path> --module <id> --root <dir>
+      Sign a staged draft record written by "scaffold --draft" (TESTKEY-only synthetic path, OQ-1,
+      F1). Reads ONLY <root>/.review-drafts/<moduleId>/<review_id>.draft.yaml -- never a path
+      already inside reviews/. On a synthetic:true draft with signature: null, signs it with a
+      fresh, ephemeral, in-memory-only Ed25519 TESTKEY- keypair (lib/signature.mjs's
+      signRecordDryRun -- private key discarded the instant that call returns, never written to
+      disk) and performs the record's FIRST and ONLY committed write via lib/store.mjs's
+      append-only writeNewReviewRecordFile. Refuses (fails closed) a synthetic:false draft -- real
+      signing remains structurally impossible pre-G1 (named credentialed reviewer roster) and
+      pre-G2 (signing custodian + offline key ceremony, ADR-0005). No --keyfile seam anywhere in
+      this tool (OQ-1); sign never accepts a --record flag pointing at an already-committed file.
+      IMPLEMENTED (Clinical Review Workflow v1, Phase 2, P2-T1).
 
 Global:
   -h, --help    Show this help and exit 0.

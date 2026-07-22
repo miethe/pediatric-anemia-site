@@ -28,11 +28,16 @@ import {
   AUTHORSHIP_SOURCE_GIT_COMMIT_AUTHOR,
   computeAuthorshipUnion,
   evaluateReleaseAuthorization,
+  isAdjudicationRequired,
+  resolveEffectiveRoleRecord,
   rosterEntryInAuthorshipUnion,
 } from '../tools/review-record/lib/adjudication.mjs';
 import { canonicalRecordHash } from '../tools/review-record/lib/chain.mjs';
+import { computeDerivedReviewState } from '../tools/review-record/lib/derived-state.mjs';
+import { checkReviewerIndependence } from '../tools/review-record/lib/independence.mjs';
 import { signRecordDryRun } from '../tools/review-record/lib/signature.mjs';
 import { run as runValidate } from '../tools/review-record/lib/verbs/validate.mjs';
+import { isExpectedTerminalNonQualifyingViolations } from '../tools/review-record/lib/verbs/dry-run.mjs';
 import { ValidationFailedError } from '../tools/review-record/lib/errors.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -327,6 +332,336 @@ test('evaluateReleaseAuthorization rejects an unverified reviewerId', () => {
 });
 
 // -------------------------------------------------------------------------------------------
+// FR-26 adjudication conditional-completeness (P1-T5, governance-sensitive, ADR-0004 decision
+// item 5) -- `resolveEffectiveRoleRecord` / `isAdjudicationRequired` (pure, no I/O),
+// `evaluateReleaseAuthorization`'s conditional role-set, and the shared `computeDerivedReviewState`
+// consumer (F2: single source of truth -- `validate` and any future `status` consumer must never
+// see a forked copy of this policy).
+// -------------------------------------------------------------------------------------------
+
+const FR26_SUBJECT_HASH = `sha256:${'11'.repeat(32)}`;
+
+/**
+ * Builds an ascending-seq, correctly hash-linked module record set from a flat list of
+ * `{ role, decision, supersedes? }` specs -- unlike `buildFiveRoleChain` above (fixed five roles,
+ * one each), this allows an arbitrary role sequence, including a role appearing more than once
+ * (e.g. a `clinical-1` correction), so FR-26's supersedes-aware effective-record fixtures can be
+ * built directly rather than by post-hoc splicing a five-role chain (which would break the hash
+ * chain linking every record to its immediate predecessor).
+ *
+ * @param {{ role: string, decision: string, supersedes?: string, rationale?: string }[]} specs
+ *   `rationale` is optional -- defaults to an auto-generated, deliberately non-overlapping fixture
+ *   string; CRW-F5's independence fixtures below override it per-record so they can seed a
+ *   controlled verbatim-substring overlap (or its absence) between specific records.
+ * @returns {{ reviewId: string, seq: number, role: string, record: object }[]}
+ */
+function buildRecordSequence(specs) {
+  const records = [];
+  let previous = null;
+  specs.forEach((spec, i) => {
+    const seq = i + 1;
+    const reviewId = `rr-${String(seq).padStart(4, '0')}-${spec.role}`;
+    const record = {
+      schemaVersion: 1,
+      review_id: reviewId,
+      role: spec.role,
+      moduleId: 'fr26_target_v1',
+      subjectContentHash: FR26_SUBJECT_HASH,
+      previousRecordHash: previous === null ? null : canonicalRecordHash(previous),
+      supersedes: spec.supersedes ?? null,
+      reviewerId: `fixture-${spec.role}-${seq}`,
+      decision: spec.decision,
+      rationale: spec.rationale ?? `Fixture rationale for role ${spec.role}, seq ${seq}.`,
+      reviewedAt: '2026-02-01T00:00:00Z',
+      synthetic: false,
+      signature: null,
+    };
+    records.push({ reviewId, seq, role: spec.role, record });
+    previous = record;
+  });
+  return records;
+}
+
+/** @param {{ reviewId: string }[]} records @returns {Map<string, boolean>} every reviewId -> true */
+function allRosterVerified(records) {
+  return new Map(records.map((r) => [r.reviewId, true]));
+}
+
+test('resolveEffectiveRoleRecord returns the sole record for a role with no correction', () => {
+  const records = buildRecordSequence([
+    { role: 'clinical-1', decision: 'approve' },
+    { role: 'clinical-2', decision: 'approve' },
+  ]);
+  const effective = resolveEffectiveRoleRecord(records, 'clinical-1');
+  assert.equal(effective.reviewId, 'rr-0001-clinical-1');
+});
+
+test('resolveEffectiveRoleRecord returns the correcting record, never the superseded original, once a role is corrected', () => {
+  const records = buildRecordSequence([
+    { role: 'clinical-1', decision: 'reject' },
+    { role: 'clinical-1', decision: 'approve', supersedes: 'rr-0001-clinical-1' },
+    { role: 'clinical-2', decision: 'approve' },
+  ]);
+  const effective = resolveEffectiveRoleRecord(records, 'clinical-1');
+  assert.equal(effective.reviewId, 'rr-0002-clinical-1');
+  assert.equal(effective.record.decision, 'approve');
+});
+
+test('resolveEffectiveRoleRecord returns undefined when no record of the role exists in the set', () => {
+  const records = buildRecordSequence([{ role: 'clinical-1', decision: 'approve' }]);
+  assert.equal(resolveEffectiveRoleRecord(records, 'clinical-2'), undefined);
+});
+
+test('isAdjudicationRequired is false (agree path) when the resolved clinical-1/clinical-2 decisions agree', () => {
+  const records = buildRecordSequence([
+    { role: 'clinical-1', decision: 'approve' },
+    { role: 'clinical-2', decision: 'approve' },
+  ]);
+  assert.equal(isAdjudicationRequired(records), false);
+});
+
+test('isAdjudicationRequired is true (disagree path) when the resolved clinical-1/clinical-2 decisions disagree', () => {
+  const records = buildRecordSequence([
+    { role: 'clinical-1', decision: 'approve' },
+    { role: 'clinical-2', decision: 'reject' },
+  ]);
+  assert.equal(isAdjudicationRequired(records), true);
+});
+
+test('isAdjudicationRequired fails closed (true) when clinical-1 or clinical-2 is entirely missing from the set', () => {
+  const records = buildRecordSequence([{ role: 'clinical-1', decision: 'approve' }]);
+  assert.equal(isAdjudicationRequired(records), true);
+});
+
+test('isAdjudicationRequired resolves the EFFECTIVE (post-correction) clinical-1 decision, not the superseded original -- FR-26 effective-act rule', () => {
+  // clinical-1's ORIGINAL decision (reject) disagrees with clinical-2 (approve); the CORRECTION
+  // (approve) agrees. The superseded original must never re-enter the agree/disagree predicate.
+  const records = buildRecordSequence([
+    { role: 'clinical-1', decision: 'reject' },
+    { role: 'clinical-1', decision: 'approve', supersedes: 'rr-0001-clinical-1' },
+    { role: 'clinical-2', decision: 'approve' },
+  ]);
+  assert.equal(isAdjudicationRequired(records), false);
+});
+
+test('evaluateReleaseAuthorization: agree-path five-record set MINUS adjudication evaluates as complete (no missing-role blocker) -- FR-26', () => {
+  const records = buildRecordSequence([
+    { role: 'clinical-1', decision: 'approve' },
+    { role: 'clinical-2', decision: 'approve' },
+    { role: 'lab', decision: 'approve' },
+    { role: 'release-auth', decision: 'approve' },
+  ]);
+  const rosterVerified = allRosterVerified(records);
+  const releaseAuth = records.find((r) => r.role === 'release-auth');
+  const violations = evaluateReleaseAuthorization(records, releaseAuth, rosterVerified);
+  assert.ok(
+    !violations.some((v) => v.includes('incomplete record set')),
+    `expected no incomplete-record-set violation on the agree path, got: ${JSON.stringify(violations)}`,
+  );
+});
+
+test('evaluateReleaseAuthorization: disagree-path set MINUS adjudication reports the adjudication-missing blocker -- FR-26', () => {
+  const records = buildRecordSequence([
+    { role: 'clinical-1', decision: 'approve' },
+    { role: 'clinical-2', decision: 'reject' },
+    { role: 'lab', decision: 'approve' },
+    { role: 'release-auth', decision: 'approve' },
+  ]);
+  const rosterVerified = allRosterVerified(records);
+  const releaseAuth = records.find((r) => r.role === 'release-auth');
+  const violations = evaluateReleaseAuthorization(records, releaseAuth, rosterVerified);
+  assert.ok(
+    violations.some((v) => v.includes('incomplete record set') && v.includes('adjudication')),
+    `expected an adjudication-missing violation on the disagree path, got: ${JSON.stringify(violations)}`,
+  );
+});
+
+test('evaluateReleaseAuthorization: a superseded-correction fixture applies FR-26\'s predicate to the EFFECTIVE (latest non-superseded) records only -- the superseded clinical-1 decision must not trigger a spurious adjudication requirement', () => {
+  const records = buildRecordSequence([
+    { role: 'clinical-1', decision: 'reject' }, // superseded original -- disagreed with clinical-2
+    { role: 'clinical-1', decision: 'approve', supersedes: 'rr-0001-clinical-1' }, // correction -- now agrees
+    { role: 'clinical-2', decision: 'approve' },
+    { role: 'lab', decision: 'approve' },
+    { role: 'release-auth', decision: 'approve' },
+  ]);
+  const rosterVerified = allRosterVerified(records);
+  const releaseAuth = records.find((r) => r.role === 'release-auth');
+  const violations = evaluateReleaseAuthorization(records, releaseAuth, rosterVerified);
+  assert.ok(
+    !violations.some((v) => v.includes('incomplete record set')),
+    'expected no incomplete-record-set violation once the superseded clinical-1 record is excluded ' +
+      `from the agree/disagree predicate, got: ${JSON.stringify(violations)}`,
+  );
+});
+
+test('computeDerivedReviewState: agree-path set MINUS adjudication produces zero adjudication-missing blockers (single derived-state consumer, F2)', () => {
+  const records = buildRecordSequence([
+    { role: 'clinical-1', decision: 'approve' },
+    { role: 'clinical-2', decision: 'approve' },
+    { role: 'lab', decision: 'approve' },
+    { role: 'release-auth', decision: 'approve' },
+  ]);
+  const { blockers } = computeDerivedReviewState(records, allRosterVerified(records), {});
+  assert.ok(
+    !blockers.some((b) => b.includes('incomplete record set')),
+    `expected no incomplete-record-set blocker, got: ${JSON.stringify(blockers)}`,
+  );
+});
+
+test('computeDerivedReviewState: disagree-path set MINUS adjudication reports the adjudication-missing blocker (single derived-state consumer, F2)', () => {
+  const records = buildRecordSequence([
+    { role: 'clinical-1', decision: 'approve' },
+    { role: 'clinical-2', decision: 'reject' },
+    { role: 'lab', decision: 'approve' },
+    { role: 'release-auth', decision: 'approve' },
+  ]);
+  const { blockers } = computeDerivedReviewState(records, allRosterVerified(records), {});
+  assert.ok(
+    blockers.some((b) => b.includes('incomplete record set') && b.includes('adjudication')),
+    `expected an adjudication-missing blocker, got: ${JSON.stringify(blockers)}`,
+  );
+});
+
+// -------------------------------------------------------------------------------------------
+// CRW-F5 (P1-GATE2 finding 3, MAJOR): `computeDerivedReviewState`'s FR-4 independence check used
+// to resolve its clinical-1/clinical-2 pair via a plain `allModuleRecords.find(...)` -- the FIRST
+// record of that role, never the FR-26 supersedes-aware EFFECTIVE (latest non-superseded) act
+// `resolveEffectiveRoleRecord` already resolves for the release-authorization completeness check
+// above. Fixed by reusing `resolveEffectiveRoleRecord` for the independence check too (see
+// `lib/derived-state.mjs`'s updated comment). Both failure directions, adversarially:
+//   (a) a superseded clinical-1 ORIGINAL is independence-clean, but its EFFECTIVE correction
+//       verbatim-overlaps clinical-2's rationale -- must now be FLAGGED (previously a false
+//       negative: the violation lived only in the correction, which the old `.find()` never saw).
+//   (b) a superseded clinical-1 ORIGINAL verbatim-overlaps clinical-2's rationale, but its
+//       EFFECTIVE correction is independence-clean -- must now be CLEAN (previously a false
+//       `invalid`/wrong derived state: the old `.find()` kept flagging the stale, already-corrected
+//       violation forever).
+// -------------------------------------------------------------------------------------------
+
+const CRW_F4_OVERLAP_TEXT =
+  'abnormal reticulocyte response was overlooked during the initial pass through the labs';
+
+test('computeDerivedReviewState (CRW-F5, direction a): a clean superseded clinical-1 ORIGINAL passes independence in isolation, but the EFFECTIVE clinical-1 correction verbatim-overlaps clinical-2 -- must now be flagged', () => {
+  const records = buildRecordSequence([
+    {
+      role: 'clinical-1',
+      decision: 'reject',
+      rationale:
+        'Initial independent impression: findings are most consistent with a microcytic anemia given the ferritin and iron panel drawn at intake.',
+    },
+    {
+      role: 'clinical-1',
+      decision: 'approve',
+      supersedes: 'rr-0001-clinical-1',
+      rationale: `Correcting my initial read after further thought: ${CRW_F4_OVERLAP_TEXT}; revising to approve.`,
+    },
+    {
+      role: 'clinical-2',
+      decision: 'approve',
+      rationale: `Reviewer 2 independently found that ${CRW_F4_OVERLAP_TEXT}; recommend proceeding.`,
+    },
+  ]);
+
+  const originalClinical1 = records.find((r) => r.reviewId === 'rr-0001-clinical-1');
+  const correctionClinical1 = records.find((r) => r.reviewId === 'rr-0002-clinical-1');
+  const clinical2 = records.find((r) => r.role === 'clinical-2');
+
+  // Sanity check on the bug itself: the stale (superseded) original, taken in isolation, is
+  // independence-clean -- confirming any violation below can only come from resolving the
+  // EFFECTIVE act, not from accidentally still comparing the original.
+  assert.deepEqual(
+    checkReviewerIndependence(originalClinical1.record, clinical2.record),
+    [],
+    'expected the superseded clinical-1 ORIGINAL to be independence-clean in isolation',
+  );
+  // And the EFFECTIVE correction, compared directly, DOES violate -- this is the fixture's seeded
+  // violation; the assertion below on computeDerivedReviewState proves the shared library actually
+  // finds it once resolved via resolveEffectiveRoleRecord, not just that checkReviewerIndependence
+  // itself can detect verbatim overlap.
+  assert.ok(
+    checkReviewerIndependence(correctionClinical1.record, clinical2.record).length > 0,
+    'expected the EFFECTIVE clinical-1 correction to violate independence against clinical-2',
+  );
+
+  const { blockers } = computeDerivedReviewState(records, allRosterVerified(records), {});
+  assert.ok(
+    blockers.some((b) => b.includes('reviewer-2 independence')),
+    `expected an independence blocker sourced from the EFFECTIVE clinical-1 correction, got: ${JSON.stringify(blockers)}`,
+  );
+});
+
+test('computeDerivedReviewState (CRW-F5, direction b): a superseded clinical-1 ORIGINAL violates independence in isolation, but the EFFECTIVE clinical-1 correction is clean -- must now be clean (no stale-violation blocker)', () => {
+  const records = buildRecordSequence([
+    {
+      role: 'clinical-1',
+      decision: 'reject',
+      rationale: `Initial impression: ${CRW_F4_OVERLAP_TEXT}; recommend rejecting pending further workup.`,
+    },
+    {
+      role: 'clinical-1',
+      decision: 'approve',
+      supersedes: 'rr-0001-clinical-1',
+      rationale:
+        'Correction after independent re-review of the primary labs: findings support a normocytic anemia; approving without reference to any other reviewer\'s notes.',
+    },
+    {
+      role: 'clinical-2',
+      decision: 'approve',
+      rationale: `Reviewer 2 independently found that ${CRW_F4_OVERLAP_TEXT}; recommend approval.`,
+    },
+  ]);
+
+  const originalClinical1 = records.find((r) => r.reviewId === 'rr-0001-clinical-1');
+  const correctionClinical1 = records.find((r) => r.reviewId === 'rr-0002-clinical-1');
+  const clinical2 = records.find((r) => r.role === 'clinical-2');
+
+  // Sanity check: the stale (superseded) original DOES violate independence in isolation -- this is
+  // the exact shape that used to produce a false blocker/`invalid` derived state forever, since the
+  // old `.find()` always picked this original (seq 1) over the later correction (seq 2).
+  assert.ok(
+    checkReviewerIndependence(originalClinical1.record, clinical2.record).length > 0,
+    'expected the superseded clinical-1 ORIGINAL to violate independence against clinical-2',
+  );
+  // And the EFFECTIVE correction, compared directly, is clean.
+  assert.deepEqual(
+    checkReviewerIndependence(correctionClinical1.record, clinical2.record),
+    [],
+    'expected the EFFECTIVE clinical-1 correction to be independence-clean against clinical-2',
+  );
+
+  const { blockers } = computeDerivedReviewState(records, allRosterVerified(records), {});
+  assert.ok(
+    !blockers.some((b) => b.includes('reviewer-2 independence')),
+    `expected no independence blocker once the EFFECTIVE (corrected) clinical-1 record is clean, got: ${JSON.stringify(blockers)}`,
+  );
+});
+
+test('the committed cbc_suite_v1 dry-run fixture\'s existing terminal behavior is UNCHANGED by the FR-26 conditional-completeness policy (clinical-1/clinical-2 agree, adjudication present anyway; the only expected violation is still the FR-6 synthetic:true one)', async () => {
+  await assert.rejects(
+    () => runValidate({ module: 'cbc_suite_v1', root: REPO_ROOT }),
+    (err) => {
+      assert.ok(err instanceof ValidationFailedError);
+      assert.ok(
+        isExpectedTerminalNonQualifyingViolations(err.violations),
+        `expected exactly the FR-6 synthetic-set violation (unchanged by FR-26), got: ${JSON.stringify(err.violations)}`,
+      );
+      return true;
+    },
+  );
+});
+
+test('ADR-0004 status field is untouched by this task -- stays "proposed" (G0 uncleared, hard guardrail)', async () => {
+  const adrPath = path.join(REPO_ROOT, 'docs', 'adr', '0004-clinical-approval-identity-adjudication.md');
+  const content = await readFile(adrPath, 'utf8');
+  assert.match(
+    content,
+    /^status: proposed$/m,
+    'ADR-0004 frontmatter `status` must remain exactly "proposed" -- P1-T5 encodes decision item 5 ' +
+      'into code without ratifying the ADR itself',
+  );
+});
+
+// -------------------------------------------------------------------------------------------
 // End-to-end seeded violation (a): adjudicator whose roster identity IS an authorship-union
 // identity, exercised through the real `validate` verb (integration, temp git repo).
 // -------------------------------------------------------------------------------------------
@@ -512,12 +847,20 @@ async function walkJsFiles(dir) {
 // review-record store) -- that invariant is unchanged. P2-T6 adds a second, legitimate, and
 // entirely disjoint `writeFile` caller: `lib/verbs/render.mjs`, whose only write target is
 // `build/review-render/` (OQ-3, git-ignored) -- never `modules/`, never anything this tool's other
-// write-path guarantees are about (see `lib/verbs/render.mjs`'s own header). Any FUTURE writeFile
-// caller beyond these two named, narrow-purpose files is still exactly the kind of drift this test
-// exists to catch.
+// write-path guarantees are about (see `lib/verbs/render.mjs`'s own header). Clinical Review
+// Workflow v1 P2-T3 (FR-8/R9/F3) adds a THIRD, equally disjoint caller: `lib/validate-cache.mjs`,
+// whose only write target is its own persistent `validate` cache file, resolved via
+// `resolveCacheRootDir()` -- an OS temp/XDG cache directory that is, by construction, ALWAYS
+// OUTSIDE the repo working tree entirely (never `modules/`, never `build/`, never any path
+// `rootDir` names) and carries nothing but composite-key metadata plus already-derived violation
+// strings for four narrow per-record checks -- structurally incapable of setting `release-ready`,
+// or populating `approvedBy[]`/`clinicalApprovers[]`, exactly like the other two callers. Any
+// FUTURE writeFile caller beyond these three named, narrow-purpose files is still exactly the kind
+// of drift this test exists to catch.
 const ALLOWED_WRITE_FILE_CALLERS = Object.freeze([
   path.join('lib', 'store.mjs'),
   path.join('lib', 'verbs', 'render.mjs'),
+  path.join('lib', 'validate-cache.mjs'),
 ]);
 
 test('writeFile is called only from lib/store.mjs (modules/<id>/reviews/) and lib/verbs/render.mjs (build/review-render/) across the whole tool — no other write path (structural)', async () => {

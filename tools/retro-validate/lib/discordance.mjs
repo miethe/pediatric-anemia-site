@@ -290,9 +290,20 @@ export function buildDiscordanceRationale(record) {
  * `reviewerId`/`decision` are the human adjudicator's own identity/verdict and are NEVER derived
  * from the record itself -- `humanInput` MUST supply both, or this function throws (fails closed
  * rather than fabricating either).
+ * CRW-F6 revision (clinical-review-workflow-v1 Wave-2 codex gate, BLOCKER 2 -- see
+ * .claude/findings/clinical-review-workflow-findings.md's CRW-F6 entry for the full history): the
+ * returned options always carry `allowHistoricalSubject: true`, explicitly. `scaffold`'s F5 check
+ * now hard-fails BY DEFAULT whenever an explicitly-supplied `--subject` cannot be verified against
+ * the target module's own recomputed content hash -- which this bridge's `subject` (a discordance
+ * record's own `candidateDigest`, a structurally different hash concept than a module-content hash,
+ * see this function's own header above) never can be, by design. This is the loud, explicit escape
+ * hatch CRW-F6's own residual-risk note already anticipated for this exact bridge, not a weakening
+ * of `scaffold`'s check: every `scaffold` invocation built from this function's output prints a
+ * `NOTICE (--allow-historical-subject): ...` line confirming the comparison was intentionally
+ * skipped, rather than silently proceeding.
  * @param {object} record a discordance record (`computeDiscordanceRecords`'s own shape)
  * @param {{ reviewerId: string, decision: string, rationale?: string, reviewedAt?: string, supersedes?: string, root?: string }} humanInput
- * @returns {{ module: string, role: 'adjudication', subject: string, reviewerId: string, decision: string, rationale: string, reviewedAt?: string, supersedes?: string, root?: string }}
+ * @returns {{ module: string, role: 'adjudication', subject: string, reviewerId: string, decision: string, rationale: string, allowHistoricalSubject: true, reviewedAt?: string, supersedes?: string, root?: string }}
  */
 export function toAdjudicationScaffoldInput(record, humanInput = {}) {
   if (!record || typeof record !== 'object') {
@@ -318,6 +329,9 @@ export function toAdjudicationScaffoldInput(record, humanInput = {}) {
     reviewerId: humanInput.reviewerId,
     decision: humanInput.decision,
     rationale: humanInput.rationale ?? buildDiscordanceRationale(record),
+    // CRW-F6 revision (BLOCKER 2, see this function's own header above) -- loud, explicit opt-out,
+    // never a silent one.
+    allowHistoricalSubject: true,
   };
   if (humanInput.reviewedAt !== undefined) options.reviewedAt = humanInput.reviewedAt;
   if (humanInput.supersedes !== undefined) options.supersedes = humanInput.supersedes;
