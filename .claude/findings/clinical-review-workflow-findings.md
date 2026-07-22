@@ -675,3 +675,62 @@ than cache-cold on 3/3 repeated runs. 89/89 targeted in `tests/ef-review-workflo
 reviewer signing, no ADR-0004 status edit, no `synthetic: false` roster entries in the real
 `governance/reviewer-roster.yaml`, `scripts/verify-d4-built.mjs` unmodified, zero new runtime
 dependencies, zero network, zero LLM anywhere under `tools/review-record/`.
+
+## CRW-F10 — P3 batch_2 parallelization put P3-T2 and P3-T4 on the same file (`lib/render.mjs`)
+concurrently; the plan's own P2/P3-vs-`validate.mjs` wave-barrier precedent was not applied a
+second time within Phase 3 itself; P3-T4's target-surfaces list also omitted the test file its own
+AC requires
+
+**Severity**: informational (process/scheduling note, not a defect in either task's delivered
+content) · **Status**: resolved by executing agent (P3-T4) via index-level hunk isolation; flagged
+for P3-GATE1/P3-GATE2 awareness and for a phase-progress-file correction before Phase 5 opens.
+
+### (a) What happened
+
+The plan's own Phase 3 wave-scheduling section explains, in detail, why Phase 3 as a WHOLE is
+pushed to wave 3 rather than wave 2: "P2 and P3 both write `tools/review-record/lib/verbs/
+validate.mjs`... a shared-file collision per the two-pass wave algorithm... P3 is pushed one wave
+later to avoid a concurrent write to `validate.mjs`" (Implementation Plan, "Parallel Work
+Opportunities"). That barrier-intersection check was applied ACROSS phases (P2 vs P3) but the
+phase-3-progress.md's own `parallelization` block does not re-apply the same check WITHIN Phase 3:
+`batch_2` lists `P3-T2` and `P3-T4` as parallel, and the plan's own task table names
+`tools/review-record/lib/render.mjs` as a target surface for BOTH rows (P3-T2: "validate.mjs,
+status.mjs, render.mjs"; P3-T4: "reviewer-runbook.md, render.mjs, README.md"). Dispatching both in
+the same wave/batch produces exactly the concurrent-write collision the plan's own P2/P3 precedent
+was designed to prevent — this executing agent (P3-T4) observed a mid-task system notification that
+`lib/render.mjs` had been externally modified (P3-T2's FR-12 `STRUCTURALLY_NON_QUALIFYING_
+TERMINUS_NOTE` work landing in the same shared worktree while P3-T4 was still mid-edit), and a
+subsequent race also affected the `render_fixture_v1` golden fixture (a sibling process's own
+golden-fixture overwrite landed in the ~1-2 second window between this agent's own diff-check and
+`git add` calls).
+
+### (b) Resolution applied (no scope crossed)
+
+Rather than block or silently absorb the sibling task's in-flight content, this agent isolated its
+own contribution at the git-object level: `git apply --cached` staged only the two P3-T4 hunks of
+`lib/render.mjs` (the header-comment note and the queue-section honesty paragraph) against `HEAD`,
+leaving P3-T2's concurrent, uncommitted hunks (the `STRUCTURALLY_NON_QUALIFYING_TERMINUS_NOTE`
+export, `allEffectiveSynthetic` computation, and the FR-12 terminus paragraph) untouched in the
+working tree for P3-T2 to commit separately. The golden fixture race was resolved by rendering
+against the exact INDEX-staged (P3-T4-only) copy of `render.mjs` in an isolated scratch directory
+(bypassing the live, still-racing working-tree file entirely) and inserting the resulting blob
+directly into the index via `git hash-object -w` + `git update-index --cacheinfo`, then verified
+byte-for-byte against a fresh render of the final committed `HEAD` state. No sibling-owned file
+(`validate.mjs`, `status.mjs`, `tests/ef-review-workflow.test.mjs`, or P3-T2's own hunks of
+`render.mjs`) was staged or committed by this task; commit `6cc8288` contains exactly the four
+P3-T4-owned files (`docs/governance/reviewer-runbook.md` required no edit — already satisfied by
+P3-T3 — so it is not in the diff).
+
+### (c) Recommendation
+
+Before Phase 5 opens (or the next multi-task phase reuses this batch-parallelization pattern), the
+phase-progress-file author should re-run the same barrier-intersection check the Implementation
+Plan already applies across phases WITHIN a phase's own `parallelization.batch_*` blocks — any two
+tasks in the same batch that share a target-surface file should be serialized into successive
+batches, exactly as P2-vs-P3's `validate.mjs` collision was already handled at the phase level.
+Separately: the plan's P3-T4 row lists target surfaces of `reviewer-runbook.md`, `lib/render.mjs`,
+and `README.md` only, with no test file — yet its own AC is explicitly "Docs-truth test asserts...".
+This agent added `tests/ef-review-honesty-boundary.test.mjs` (a new, unowned file, not touching any
+sibling task's declared surface) to make the AC machine-verified, consistent with this task's own
+CRW-F6/CRW-F7/CRW-F8 precedent for minimal, additive, out-of-declared-surface changes required to
+prove an AC or keep `npm test` green.
