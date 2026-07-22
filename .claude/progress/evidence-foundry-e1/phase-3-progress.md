@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 8
-completed_tasks: 2
+completed_tasks: 3
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -85,7 +85,7 @@ tasks:
     (3) unknown keyId, (4) registry inconsistency, (5) TESTKEY- identity on a non-dry-run
     candidate. Non-zero exit → no partial output. Seeded tamper fixtures for all 5
     classes. Verify-only is the CI/agent-reachable surface — CI can never sign (R3).'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -94,6 +94,21 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: extended
+  note: 'verify verb implemented (FR-13): fail-closed 5-class exit-code taxonomy (2=byte
+    drift, 3=digest mismatch, 4=unknown keyId, 5=registry inconsistency, 6=TESTKEY-on-real),
+    0/1 unchanged. Checks re-read canonical bytes via canonical-bytes.mjs (never re-derived),
+    Ed25519 crypto.verify against fresh bytes, keyId classification (only dry-run
+    TESTKEY- candidates can ever verify successfully in E1 -- no signing-custodian
+    roster exists pre-G2), registry schema+entry cross-check. Non-zero exit -> zero
+    stdout. Added sign --out-candidate (full reporting-object persistence for verify''s
+    self-contained candidate input). README exit-code table + errors.mjs mirror documented.
+    Fixed 2 stale P3-T1-era tests expecting verify as unimplemented stub. 33 new/extended
+    tests; 119/119 release-sign-scoped tests green; npm run validate clean.'
+  started: 2026-07-22T00:00Z
+  completed: 2026-07-22T00:00Z
+  evidence:
+  - test: tests/ef-release-sign-verify.test.mjs
+  - commit: 930c430
 - id: P3-T4
   description: 'Registry seed + append-only validator (FR-14, OQ-4): create releases/registry.json
     (top-level schemaVersion + empty entries[]) validating against P1-T5''s schema;
@@ -262,7 +277,7 @@ files_modified:
 - tests/ef-release-registry.test.mjs
 - tests/ef-release-no-keys.test.mjs
 - tests/fixtures/ef-release/**
-progress: 25
+progress: 37
 updated: '2026-07-22'
 ---
 
