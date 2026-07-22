@@ -1,0 +1,88 @@
+id: ext_20260718_695c1167_001
+source_card_id: src_20260718_rfgro002_00
+created_at: '2026-07-18T16:33:55-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: CDC recommends the 2006 WHO growth charts for children aged <24 months and continued use of CDC
+    growth charts for persons aged 2-19 years, transitioning at 24 months.
+  locator: Summary; and Recommendations > Use of WHO Growth Charts for Children Aged <24 Months / Continued
+    Use of CDC Growth Charts for Children Aged 24-59 Months
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: On WHO charts for children <24 months, the 2.3rd and 97.7th percentiles (equal to +/-2 SD; labeled
+    2nd/98th on the charts) are the recommended screening cutoffs, not the 5th and 95th.
+  locator: Recommendations > Use of WHO Growth Charts for Children Aged <24 Months; corroborated in Summary
+    and in 'Selection of Percentiles'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: WHO charts are growth STANDARDS (how healthy children should grow under optimal conditions) whereas
+    CDC charts are a growth REFERENCE (how certain children grew at a place and time).
+  locator: Summary; and Creation of the WHO and CDC Growth Curves > Growth Reference Versus Growth Standard
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: 'The WHO growth-standard reference population was fully breastfed: 100% breastfed for 12 months
+    and predominantly breastfed for at least 4 months.'
+  locator: Rationale for Recommendations > Children Aged <24 Months > Breastfeeding and Growth Patterns;
+    corroborated in Table 1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: For low weight-for-age at ages 6-23 months, the CDC reference (5th/95th) flags 7%-11% of children
+    whereas the WHO standard (2.3rd/97.7th) flags <3%.
+  locator: Rationale for Recommendations > Selection of Percentiles
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: Misapplying the 5th/95th percentiles to the WHO weight charts would label 10% of an all-healthy
+    reference population as underweight or overweight.
+  locator: Rationale for Recommendations > Selection of Percentiles
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Summary; and Recommendations > Use of WHO Growth Charts for Children Aged <24 Months / Continued
+    Use of CDC Growth Charts for Children Aged 24-59 Months
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Recommendations > Use of WHO Growth Charts for Children Aged <24 Months; corroborated in Summary
+    and in 'Selection of Percentiles'
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Rationale for Recommendations > Children Aged <24 Months > Breastfeeding and Growth Patterns;
+    corroborated in Table 1
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Rationale for Recommendations > Selection of Percentiles
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Rationale for Recommendations > Selection of Percentiles
+contradictions_or_cautions:
+- text: An erratum exists for this article — corrections not reviewed here.
+  locator: card/trust
+- text: Percentile cutoffs are chart-set-specific (WHO vs CDC), not interchangeable; do not merge.
+  locator: card/trust
+- text: Recommendation is for growth-chart selection/screening, not diagnosis or treatment.
+  locator: card/trust

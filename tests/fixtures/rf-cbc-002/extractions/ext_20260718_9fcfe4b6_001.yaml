@@ -1,0 +1,54 @@
+id: ext_20260718_9fcfe4b6_001
+source_card_id: src_20260718_rfcbc002_03
+created_at: '2026-07-18T15:42:52-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: Acquired aplastic anemia incidence is 2-3 per million population per year in the Western world
+    and about three times higher in East Asia.
+  locator: Abstract, sentence 2 (Blood Cells Mol Dis 2024;108:102860)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Acquired aplastic anemia is defined as pancytopenia with a hypoplastic bone marrow, framing the
+    diagnostic construct for the guideline.
+  locator: Abstract, sentence 1 (definition)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: The guideline states that in severe aplastic anemia, matched-sibling-donor HSCT is the first-line
+    treatment (reported as guideline content, not an executable directive).
+  locator: Abstract, treatment sentences (first-line)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: If no matched sibling donor is available, the guideline lists immunosuppressive therapy, matched-unrelated-donor
+    HSCT, or haploidentical HSCT as options (reported as guideline content).
+  locator: Abstract, treatment sentences (second-line options)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: The document is an AIEOP Bone Marrow Failure Study Group evidence-based consensus practice guideline,
+    developed through consensus conferences and validated by the AIEOP Board of Directors.
+  locator: Abstract, closing sentence + PubMed article-type metadata (Practice Guideline)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract, sentence 2 (Blood Cells Mol Dis 2024;108:102860)
+contradictions_or_cautions:
+- text: Full text not open-access (isOpenAccess=N, not in PMC/EPMC); severity-classification thresholds
+    not extractable
+  locator: card/trust
+- text: National (Italian) consensus scope
+  locator: card/trust

@@ -1,0 +1,113 @@
+id: ext_20260718_ae8290ae_001
+source_card_id: src_20260718_rfgro002_09
+created_at: '2026-07-18T16:33:56-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: NG75 frames the weight-centile-fall values as thresholds for concern about faltering growth in
+    infants and children, i.e. triggers for further assessment, not diagnoses.
+  locator: Recommendation 1.2.1, intro clause
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: For an infant whose birthweight was below the 9th centile, a fall across 1 or more weight centile
+    spaces is a threshold for concern.
+  locator: Recommendation 1.2.1, bullet (birthweight below 9th centile)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: For an infant whose birthweight was between the 9th and 91st centiles, a fall across 2 or more
+    weight centile spaces is a threshold for concern.
+  locator: Recommendation 1.2.1, bullet (birthweight 9th-91st centiles)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: For an infant whose birthweight was above the 91st centile, a fall across 3 or more weight centile
+    spaces is a threshold for concern.
+  locator: Recommendation 1.2.1, bullet (birthweight above 91st centile)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: A current weight below the 2nd centile for age is a threshold for concern regardless of birthweight.
+  locator: Recommendation 1.2.1, bullet (current weight below 2nd centile)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: NG75 defines a 'centile space' as the space between adjacent centile lines on the UK-WHO growth
+    charts, which the centile-fall thresholds are measured in.
+  locator: Recommendation 1.2.1, parenthetical definition of centile space
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: In children older than 2 years, a BMI below the 0.4th centile suggests probable undernutrition
+    that needs assessment and intervention.
+  locator: Recommendation 1.2.4 (children over 2 years, BMI)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_008
+  text: A child's length or height centile more than 2 centile spaces below the mid-parental centile is
+    below the range predicted from parental heights and suggests undernutrition or a primary growth disorder.
+  locator: Recommendation 1.2.3 (length/height vs mid-parental centile)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Recommendation 1.2.1, intro clause
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Recommendation 1.2.1, bullet (birthweight below 9th centile)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Recommendation 1.2.1, bullet (birthweight 9th-91st centiles)
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Recommendation 1.2.1, bullet (birthweight above 91st centile)
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Recommendation 1.2.1, bullet (current weight below 2nd centile)
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Recommendation 1.2.1, parenthetical definition of centile space
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: Recommendation 1.2.4 (children over 2 years, BMI)
+- metric_name: evidence_point
+  value: ev_008
+  unit: null
+  date_context: null
+  locator: Recommendation 1.2.3 (length/height vs mid-parental centile)
+contradictions_or_cautions:
+- text: Thresholds are chart-relative (UK-WHO centile spaces / centile lines), not standalone anthropometric
+    cutoffs; correct chart and correctly plotted measurements are prerequisites.
+  locator: card/trust
+- text: '''Centile space'' semantics depend on the specific UK-WHO chart used; applying the rule requires
+    the chart''s centile-line spacing.'
+  locator: card/trust
+- text: Guideline scope is UK practice; centile conventions (2nd, 0.4th, 9th, 91st centiles) follow UK-WHO
+    chart lines and may differ from CDC/WHO percentile conventions used elsewhere.
+  locator: card/trust

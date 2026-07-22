@@ -1,0 +1,2128 @@
+{
+  "schemaVersion": "1.0",
+  "moduleId": "kidney_suite_v1",
+  "rfProvenance": {
+    "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+    "rfBundleId": "bundle_20260718_intent_research_20260717_rf_kid_001",
+    "fixturePath": "tests/fixtures/rf-kid-001/"
+  },
+  "assertions": [
+    {
+      "assertionId": "evas_kid_clm_001",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_07",
+      "sourceId": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_001",
+      "passageId": "psg_30eef65448c1afecaaa1db7d5268c3856d22d44c966e0ded3c2898d885b2c2fe",
+      "locator": {
+        "raw": "Laboratory Testing / Urine dipstick paragraph (\"The intensity of color changes...\")",
+        "page": null,
+        "section": "Laboratory Testing / Urine dipstick paragraph (\"The intensity of color changes...\")",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:30eef65448c1afecaaa1db7d5268c3856d22d44c966e0ded3c2898d885b2c2fe",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children (general pediatric screening population); no age band, sex, or GA/PNA stratification specified",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Colorimetric urine reagent dipstick; primarily detects albuminuria with specificity and sensitivity >99%, not sensitive for non-albumin proteins (method-dependent semiquantitative color grade)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_002",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_07",
+      "sourceId": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_002",
+      "passageId": "psg_21423f2ec1bcc9993999339f56e82b2209e8b69aec3face455ff90781bfd24af",
+      "locator": {
+        "raw": "Evaluation / spot UPr/Cr paragraph (\"If the UPr/Cr ratio is 0.2 or less...\")",
+        "page": null,
+        "section": "Evaluation / spot UPr/Cr paragraph (\"If the UPr/Cr ratio is 0.2 or less...\")",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:21423f2ec1bcc9993999339f56e82b2209e8b69aec3face455ff90781bfd24af",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children >2 years (cutoff 0.2); children six to 24 months of age (cutoff 0.5); no sex stratification",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Spot first-morning urine protein-to-creatinine ratio (excludes postural effect); reliable substitute for 24-hour collection. Ratio value is analyzer/units convention dependent (mass/mass mg/mg)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_003",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_07",
+      "sourceId": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_003",
+      "passageId": "psg_26c45b0e9ec66bde1e0ebf98b211f563172b4cc8dd1a9106c8fca73bbbdd06fe",
+      "locator": {
+        "raw": "Laboratory Testing / 24-hour excretion paragraph (\"In children, the normal amount of protein...\")",
+        "page": null,
+        "section": "Laboratory Testing / 24-hour excretion paragraph (\"In children, the normal amount of protein...\")",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:26c45b0e9ec66bde1e0ebf98b211f563172b4cc8dd1a9106c8fca73bbbdd06fe",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children (general; no age band, sex, or GA/PNA subdivision given for this normal value)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "24-hour timed urine protein excretion (total protein, body-surface-area normalized); noted as often impractical/difficult in children"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_004",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_07",
+      "sourceId": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_004",
+      "passageId": "psg_d9b6e5b6f99a912713344e8839542bc06188a1a165f63bbcd1c79ef6dc8fc629",
+      "locator": {
+        "raw": "Nephrotic syndrome paragraph (\"Nephrotic syndrome is characterized by heavy proteinuria...\")",
+        "page": null,
+        "section": "Nephrotic syndrome paragraph (\"Nephrotic syndrome is characterized by heavy proteinuria...\")",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d9b6e5b6f99a912713344e8839542bc06188a1a165f63bbcd1c79ef6dc8fc629",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with nephrotic syndrome (general pediatric; no age/sex band specified in this definition)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "24-hour urine protein excretion (mg/m2/day) OR spot protein-to-creatinine ratio; two interchangeable measures given"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_005",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_07",
+      "sourceId": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_005",
+      "passageId": "psg_5a808092cc4c5891d19eaf70115779078980b54155c9939d5cbd56f32eaeb77a",
+      "locator": {
+        "raw": "Introduction / CKD risk paragraph (\"The Chronic Kidney Disease in Children study demonstrated...\")",
+        "page": null,
+        "section": "Introduction / CKD risk paragraph (\"The Chronic Kidney Disease in Children study demonstrated...\")",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:5a808092cc4c5891d19eaf70115779078980b54155c9939d5cbd56f32eaeb77a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with chronic kidney disease, stratified by nonglomerular vs glomerular disease etiology; no age/sex band given",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Urine protein-to-creatinine ratio (mass/mass); prognostic threshold from the CKiD cohort study"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_006",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_07",
+      "sourceId": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_006",
+      "passageId": "psg_3dfd712670d856a4e4f55198c12556caf46ad4374961a612cc597f6b657440d8",
+      "locator": {
+        "raw": "Referral / nephrology criteria paragraph (\"...renal insufficiency with depressed glomerular filtration rate...\")",
+        "page": null,
+        "section": "Referral / nephrology criteria paragraph (\"...renal insufficiency with depressed glomerular filtration rate...\")",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:3dfd712670d856a4e4f55198c12556caf46ad4374961a612cc597f6b657440d8",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with proteinuria plus renal insufficiency; no age/sex band specified",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Estimated/measured glomerular filtration rate, body-surface-area normalized to 1.73 m2; not a single-analyzer measure"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_007",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_07",
+      "sourceId": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_007",
+      "passageId": "psg_b7aa55c5231b5612ce70931636da589fda415e527bc8f40a9d20c2128b38f00b",
+      "locator": {
+        "raw": "Abstract / Orthostatic proteinuria and Referral sections",
+        "page": null,
+        "section": "Abstract / Orthostatic proteinuria and Referral sections",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b7aa55c5231b5612ce70931636da589fda415e527bc8f40a9d20c2128b38f00b",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children, especially adolescent males (orthostatic proteinuria); qualitative — no numeric cutoff attached",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (clinical classification, not a single-analyzer numeric threshold)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_008",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_03",
+      "sourceId": "KDIGO_CKD_GUIDELINE_2024",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_008",
+      "passageId": "psg_0ea8b16cae112ae2408ec7befe4dc345919ee295cfe0ad43ccfa2c079f3e619c",
+      "locator": {
+        "raw": "Ch. Definition and classification of CKD, 'Defining CKD' (p. S181; PDF p.21); also CGA nomenclature figure (p. S126; PDF p.10)",
+        "page": null,
+        "section": "Ch. Definition and classification of CKD, 'Defining CKD' (p. S181; PDF p.21); also CGA nomenclature figure (p. S126; PDF p.10)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:0ea8b16cae112ae2408ec7befe4dc345919ee295cfe0ad43ccfa2c079f3e619c",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "All ages (children and adults); the guideline title covers 'Children and Adults'. The >=3-month chronicity criterion is not age-stratified.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (definitional duration criterion)."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_009",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_03",
+      "sourceId": "KDIGO_CKD_GUIDELINE_2024",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_009",
+      "passageId": "psg_431255d943a0699de93e67b3ec1f4c6424f8c416a130c9f1969d80f2e2ecf1aa",
+      "locator": {
+        "raw": "Ch.1 Special considerations — Pediatric considerations, Practice Point 1.2.3.5 (p. S186; PDF p.70)",
+        "page": null,
+        "section": "Ch.1 Special considerations — Pediatric considerations, Practice Point 1.2.3.5 (p. S186; PDF p.70)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:431255d943a0699de93e67b3ec1f4c6424f8c416a130c9f1969d80f2e2ecf1aa",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children and adolescents over the age of 2 years (both sexes); not applied to children <=2 years.",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "eGFR from creatinine (eGFRcr) via a validated estimating equation; value depends on the creatinine assay and equation used (see ev_005, ev_006)."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_010",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_03",
+      "sourceId": "KDIGO_CKD_GUIDELINE_2024",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_010",
+      "passageId": "psg_84424e207835f3137707ac47217c2a4fea56a6d2c25e241c7474e323b78c9c47",
+      "locator": {
+        "raw": "CGA nomenclature figure, 'GFR categories (ml/min/1.73 m2), Description and range' (p. S126; PDF p.10)",
+        "page": null,
+        "section": "CGA nomenclature figure, 'GFR categories (ml/min/1.73 m2), Description and range' (p. S126; PDF p.10)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:84424e207835f3137707ac47217c2a4fea56a6d2c25e241c7474e323b78c9c47",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Population-general CKD staging categories (children and adults). Note: in children/adolescents the 'low GFR' flag is <90 (ev_002), so category G2 already denotes reduced GFR pediatrically.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Derived from eGFR; equation- and creatinine-assay-dependent."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_011",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_03",
+      "sourceId": "KDIGO_CKD_GUIDELINE_2024",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_011",
+      "passageId": "psg_53304bfb829c2cb1c37920b170793392dc4461b5bd02a731b6854104e4eb04ab",
+      "locator": {
+        "raw": "CGA nomenclature figure, 'Persistent albuminuria categories, Description and range' (p. S126; PDF p.10)",
+        "page": null,
+        "section": "CGA nomenclature figure, 'Persistent albuminuria categories, Description and range' (p. S126; PDF p.10)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:53304bfb829c2cb1c37920b170793392dc4461b5bd02a731b6854104e4eb04ab",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Population-general (children and adults) ACR categories; the guideline does not provide separate pediatric ACR cutoffs in this figure.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Urine albumin-to-creatinine ratio (ACR); assay for urine albumin and creatinine; mg/g vs mg/mmol unit systems both given."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_012",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_03",
+      "sourceId": "KDIGO_CKD_GUIDELINE_2024",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_012",
+      "passageId": "psg_644d7854aee237dc1e2bb0683cbfbb53eff1cbc50d3141073252e709e2abdb41",
+      "locator": {
+        "raw": "Ch.1.2.4 Selection of GFR estimating equations — Pediatric considerations, Practice Point 1.2.4.3 (p. S190; PDF p.74) and Table 14 'Validated GFR estimating equations' (p. S189; PDF p.73)",
+        "page": null,
+        "section": "Ch.1.2.4 Selection of GFR estimating equations — Pediatric considerations, Practice Point 1.2.4.3 (p. S190; PDF p.74) and Table 14 'Validated GFR estimating equations' (p. S189; PDF p.73)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:644d7854aee237dc1e2bb0683cbfbb53eff1cbc50d3141073252e709e2abdb41",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children (CKiD U25 developmental range 1-25 years; both sexes); performance uncertain in the very young, very low GFR, or outside Europe/North America.",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Method-dependent: pediatric eGFRcr equation (CKiD U25 2021) taking age, sex, and height; equations differ between adults and children within a region (Practice Point 1.2.4.1)."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_013",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_03",
+      "sourceId": "KDIGO_CKD_GUIDELINE_2024",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_013",
+      "passageId": "psg_bee5c4b4673baaba7754ca635074ed939dda1f47f7287f39946e8891fc401cb7",
+      "locator": {
+        "raw": "Ch.1 Special considerations — Pediatric considerations, Practice Points 1.2.3.3 and 1.2.3.4 (p. S186; PDF p.70)",
+        "page": null,
+        "section": "Ch.1 Special considerations — Pediatric considerations, Practice Points 1.2.3.3 and 1.2.3.4 (p. S186; PDF p.70)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:bee5c4b4673baaba7754ca635074ed939dda1f47f7287f39946e8891fc401cb7",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants, small children, neonates (neonatal period called out for icteric/hemolyzed samples).",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Strongly method-dependent: enzymatic creatinine assay preferred over Jaffe in children; laboratory QC must cover the lowest end of the expected creatinine range for the group."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_014",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_10",
+      "sourceId": "SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_014",
+      "passageId": "psg_8748e18169ad6d7c137e8cb9c323ae06204d22844d6dd992759bfc38c1c2a46a",
+      "locator": {
+        "raw": "Abstract (structured summary), results sentence 1",
+        "page": null,
+        "section": "Abstract (structured summary), results sentence 1",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:8748e18169ad6d7c137e8cb9c323ae06204d22844d6dd992759bfc38c1c2a46a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Not age-specified in the passage; review scope spans adults, pregnancy, and a separate pediatric section — this general proteinuria-detection cutoff is not stated as pediatric-specific.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Method-dependent per this source (see ev_004): the cutoff depends on urine creatinine methodology (Jaffe vs enzymatic) and the protein assay; analyzer not specified in the passage."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_015",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_10",
+      "sourceId": "SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_015",
+      "passageId": "psg_8748e18169ad6d7c137e8cb9c323ae06204d22844d6dd992759bfc38c1c2a46a",
+      "locator": {
+        "raw": "Abstract (structured summary), results sentence 1",
+        "page": null,
+        "section": "Abstract (structured summary), results sentence 1",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:8748e18169ad6d7c137e8cb9c323ae06204d22844d6dd992759bfc38c1c2a46a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Not age-specified in the passage; nephrotic-range cutoff stated generally, not flagged as pediatric-specific in this abstract.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Method-dependent per this source (see ev_004): depends on urine creatinine methodology (Jaffe vs enzymatic) and protein assay; analyzer not specified in the passage."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_016",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_10",
+      "sourceId": "SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_016",
+      "passageId": "psg_92dbd73530bc8fb789fe1f4ef17eb2414ef19d64ee39ca42cdb31c5e654a3f96",
+      "locator": {
+        "raw": "Abstract (structured summary), results sentence 2",
+        "page": null,
+        "section": "Abstract (structured summary), results sentence 2",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:92dbd73530bc8fb789fe1f4ef17eb2414ef19d64ee39ca42cdb31c5e654a3f96",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pregnant women at risk of preeclampsia (adult obstetric population) — NOT a pediatric population; recorded for cross-standard context and to preserve the conflicting cutoff value.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Depends on urine creatinine and protein methodology (see ev_004); analyzer not specified in the passage."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_017",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_10",
+      "sourceId": "SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_017",
+      "passageId": "psg_b6bf2d5efdf83e6cc5864e6036a4d0fc115ffacbe6c6fb1b716129de1a108dc2",
+      "locator": {
+        "raw": "Abstract (structured summary), closing recommendation",
+        "page": null,
+        "section": "Abstract (structured summary), closing recommendation",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b6bf2d5efdf83e6cc5864e6036a4d0fc115ffacbe6c6fb1b716129de1a108dc2",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "All populations, including children — the source explicitly makes the cutoff population- and method-dependent rather than universal.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Method-dependent: creatinine determination method (the abstract's keywords name 'Jaffe versus enzymatic creatinine methods') and the urine protein method both affect the calculated ratio and the appropriate cutoff."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_018",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_10",
+      "sourceId": "SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_018",
+      "passageId": "psg_0f15edd1eedbcd886318f21025b1f501eecba49a2aee19ac1ce7feec723fb221",
+      "locator": {
+        "raw": "Abstract (structured summary), correlation sentence",
+        "page": null,
+        "section": "Abstract (structured summary), correlation sentence",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:0f15edd1eedbcd886318f21025b1f501eecba49a2aee19ac1ce7feec723fb221",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Not age-specified in the passage (general statement across the review's disease states).",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (qualitative correlation statement, not a numeric threshold)."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_019",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_05",
+      "sourceId": "PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_019",
+      "passageId": "psg_2a73e9862691e5f24a62300c4b8116ecaf6859ac5d58be183adcac23143be38a",
+      "locator": {
+        "raw": "Results — 'Formula performance ...' section (also Abstract/Results and Conclusions); Bland-Altman / ROC paragraph",
+        "page": null,
+        "section": "Results — 'Formula performance ...' section (also Abstract/Results and Conclusions); Bland-Altman / ROC paragraph",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2a73e9862691e5f24a62300c4b8116ecaf6859ac5d58be183adcac23143be38a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric kidney transplant recipients aged 1-18 years (mixed sex) receiving adult-donor kidneys; agreement was stronger in the 10-18 year subgroup",
+        "sex": "mixed sex"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Equation-dependent thresholds; underlying PCr by enzymatic method and CystC by particle-enhanced immunoturbidimetric assay; reference = CKiD 2012 combined PCr-CystC equation (NOT measured GFR)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_020",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_05",
+      "sourceId": "PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_020",
+      "passageId": "psg_b678350d6e151bb40c43279015ff82ffdcf132e95bb4515dbe4cd8f3757b1fb0",
+      "locator": {
+        "raw": "Results — 'Formula performance of 12 PCr-based eGFR equations...' paragraph; also Abstract Results",
+        "page": null,
+        "section": "Results — 'Formula performance of 12 PCr-based eGFR equations...' paragraph; also Abstract Results",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b678350d6e151bb40c43279015ff82ffdcf132e95bb4515dbe4cd8f3757b1fb0",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric kidney transplant recipients aged 1-18 years receiving adult-donor kidneys",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Plasma creatinine by enzymatic method; performance measured against CKiD 2012 combined PCr-CystC reference equation"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_021",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_05",
+      "sourceId": "PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_021",
+      "passageId": "psg_9a630a43bd632b21ce1accf7b8192f628c059138866decbc6bc8d388f44143c5",
+      "locator": {
+        "raw": "Results — 'Correlation between the CKiD 2012 and U25 combined PCr-CysC equations' paragraph",
+        "page": null,
+        "section": "Results — 'Correlation between the CKiD 2012 and U25 combined PCr-CysC equations' paragraph",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:9a630a43bd632b21ce1accf7b8192f628c059138866decbc6bc8d388f44143c5",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric kidney transplant recipients aged 1-18 years receiving adult-donor kidneys",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Combined plasma creatinine (enzymatic) + cystatin C (particle-enhanced immunoturbidimetric); reference = CKiD 2012 combined PCr-CystC equation"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_022",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_05",
+      "sourceId": "PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_022",
+      "passageId": "psg_677541e3e5f04e8bb9ef8e36940791ca9f553b5c7487b8e02bdaea8618a96c32",
+      "locator": {
+        "raw": "Results — 'Formula performance...' paragraph and Abstract Results",
+        "page": null,
+        "section": "Results — 'Formula performance...' paragraph and Abstract Results",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:677541e3e5f04e8bb9ef8e36940791ca9f553b5c7487b8e02bdaea8618a96c32",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric kidney transplant recipients aged 1-18 years receiving adult-donor kidneys",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Plasma creatinine by enzymatic method (single-marker equations); reference = CKiD 2012 combined PCr-CystC equation"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_023",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_05",
+      "sourceId": "PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_023",
+      "passageId": "psg_1a719184acd3679b061b339f0cf69dde16cb6036d3706351f66cbcb344233242",
+      "locator": {
+        "raw": "Methods — 'Measurement of Pcr and CystC' paragraph",
+        "page": null,
+        "section": "Methods — 'Measurement of Pcr and CystC' paragraph",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:1a719184acd3679b061b339f0cf69dde16cb6036d3706351f66cbcb344233242",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric kidney transplant recipients aged 1-18 years receiving adult-donor kidneys",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "PCr: enzymatic method; CystC: particle-enhanced immunoturbidimetric assay — thresholds/equations are assay-standardization dependent"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_024",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_05",
+      "sourceId": "PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_024",
+      "passageId": "psg_904cf2091d3b64c1de10f56840d1112744842232bb55dbc5ec995c5ed0068da2",
+      "locator": {
+        "raw": "Results — 'Demographic and clinical characteristics' paragraph; also Abstract Results",
+        "page": null,
+        "section": "Results — 'Demographic and clinical characteristics' paragraph; also Abstract Results",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:904cf2091d3b64c1de10f56840d1112744842232bb55dbc5ec995c5ed0068da2",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "23 pediatric kidney transplant recipients aged 1-18 years (mean 14.2 +/- 3.4 y), mixed sex, adult-donor kidneys (donor mean 31.7 +/- 10.0 y); 120 samples total",
+        "sex": "mixed sex"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (cohort descriptor)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_025",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_06",
+      "sourceId": "HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_025",
+      "passageId": "psg_1446805e19edb1795a30fa61caaab3ac1a340131fbaa21531eb9cb86f59dad64",
+      "locator": {
+        "raw": "HEMATURIA > Definitions and Measurement Methods, para 2",
+        "page": null,
+        "section": "HEMATURIA > Definitions and Measurement Methods, para 2",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:1446805e19edb1795a30fa61caaab3ac1a340131fbaa21531eb9cb86f59dad64",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "School-aged children (both sexes); definition derived from school-age screening studies. Not specified for neonates/infants.",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Method-dependent: urine microscopy of spun (centrifuged) sediment vs uncentrifuged count; UA-with-microscopy is laboratory-dependent per the source. Confirmed only after a positive dipstick."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_026",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_06",
+      "sourceId": "HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_026",
+      "passageId": "psg_1fbaacf3092fc1d19a490fbb257043ed0615603d5c06ef702bea0bef0a29f6df",
+      "locator": {
+        "raw": "HEMATURIA > Classification, final para",
+        "page": null,
+        "section": "HEMATURIA > Classification, final para",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:1fbaacf3092fc1d19a490fbb257043ed0615603d5c06ef702bea0bef0a29f6df",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with microscopic hematuria (both sexes); menses exclusion implies post-menarchal adolescents among the confounders. Age band not further specified.",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Repeated urinalysis with microscopy over a 4-6 week window; must exclude exercise/menses/trauma confounders."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_027",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_06",
+      "sourceId": "HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_027",
+      "passageId": "psg_7f417290daeab23d9ec178e4b841891a32af25a3637250016f530ca225783981",
+      "locator": {
+        "raw": "HEMATURIA > Nonglomerular Causes of Hematuria, para 1",
+        "page": null,
+        "section": "HEMATURIA > Nonglomerular Causes of Hematuria, para 1",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:7f417290daeab23d9ec178e4b841891a32af25a3637250016f530ca225783981",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Age-banded, both sexes: children >2 years (cutoff >0.2); infants <6 months (acceptable <0.8); infants 6-12 months (acceptable <0.6). Infants have higher calcium excretion + lower urine creatinine per source.",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Spot urine calcium/creatinine ratio (mg/mg). Not stated as analyzer-dependent."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_028",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_06",
+      "sourceId": "HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_028",
+      "passageId": "psg_b62157ccff9c11b1d255ae42bc505aba120119d21185031ddee15d64bb38b728",
+      "locator": {
+        "raw": "PROTEINURIA > Definition, para 1 (and Measurement Methods for the >2 yr U p/c normal)",
+        "page": null,
+        "section": "PROTEINURIA > Definition, para 1 (and Measurement Methods for the >2 yr U p/c normal)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b62157ccff9c11b1d255ae42bc505aba120119d21185031ddee15d64bb38b728",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Age-banded, both sexes: children >2 years (U p/c normal <0.2); infants/children 6-24 months (normal U p/c <0.5); neonates and infants allowed up to 300 mg/m2 per day.",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Spot (single) urine protein/creatinine ratio, preferably first-morning; 24-hr collection alternative. Dipstick detects albumin (surrogate), not LMW proteins. U p/c falsely elevated with low creatinine excretion; underestimated with concentrated high-creatinine urine."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_029",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_06",
+      "sourceId": "HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_029",
+      "passageId": "psg_bde6acbb736012cd5dc307f25a45adb4e56b7cbceeb2007b5cb9f6388d5650df",
+      "locator": {
+        "raw": "PROTEINURIA > Definition, para 1 (final sentence)",
+        "page": null,
+        "section": "PROTEINURIA > Definition, para 1 (final sentence)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:bde6acbb736012cd5dc307f25a45adb4e56b7cbceeb2007b5cb9f6388d5650df",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children (both sexes); age band not restricted in the definition itself.",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "24-hr collection (mg/m2/day or mg/kg/day) or single spot urine protein/creatinine ratio."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_030",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_06",
+      "sourceId": "HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_030",
+      "passageId": "psg_cb4c52d3c8d065b0836c097de16804c37b9472ec44fe458041c30715784f1004",
+      "locator": {
+        "raw": "PROTEINURIA > Classification, orthostatic proteinuria para",
+        "page": null,
+        "section": "PROTEINURIA > Classification, orthostatic proteinuria para",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:cb4c52d3c8d065b0836c097de16804c37b9472ec44fe458041c30715784f1004",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Adolescents (stated as one of the most common causes of proteinuria in adolescents); both sexes.",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Paired samples: first-morning-void spot U p/c (bladder emptied before sleep, collected on awakening) vs a random daytime U p/c; ratio-based, method as for spot U p/c."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_031",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_02",
+      "sourceId": "AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_031",
+      "passageId": "psg_2c7ccadaebeadcc94e21d2815c4f9d8b36880e19b46b16ac220e3ec986a599ed",
+      "locator": {
+        "raw": "Abstract, para 1; and Section 3.1 'Definition of HTN', p.6 (col 3): 'the term \"prehypertension\" has been replaced by the term \"elevated blood pressure\"'",
+        "page": null,
+        "section": "Abstract, para 1; and Section 3.1 'Definition of HTN', p.6 (col 3): 'the term \"prehypertension\" has been replaced by the term \"elevated blood pressure\"'",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2c7ccadaebeadcc94e21d2815c4f9d8b36880e19b46b16ac220e3ec986a599ed",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children and adolescents 1-18 y (terminology change applies across the pediatric age range)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (terminology change)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_032",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_02",
+      "sourceId": "AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_032",
+      "passageId": "psg_37073b8c38655fdad93297cf62cd809e82a615c100a845a7faea68fd9c226463",
+      "locator": {
+        "raw": "Table 3 'Updated Definitions of BP Categories and Stages', column 'For Children Aged 1–13 y', p.6",
+        "page": null,
+        "section": "Table 3 'Updated Definitions of BP Categories and Stages', column 'For Children Aged 1–13 y', p.6",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:37073b8c38655fdad93297cf62cd809e82a615c100a845a7faea68fd9c226463",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children aged 1 to <13 years, both sexes; interpretation requires age, sex, and height percentile (BP interpreted 'on the basis of sex, age, and height')",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Auscultatory reference; normative percentiles collected by auscultatory technique (oscillometric/ABPM may differ). Percentile staging requires the age/sex/height normative tables (Tables 4/5)."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_033",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_02",
+      "sourceId": "AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_033",
+      "passageId": "psg_2c09b5e7a2b1e113ddf22db3c8fd1d20aeb10c501fd0ac5498e8e48a4ea525fd",
+      "locator": {
+        "raw": "Table 3 'Updated Definitions of BP Categories and Stages', column 'For Children Aged ≥13 y', p.6",
+        "page": null,
+        "section": "Table 3 'Updated Definitions of BP Categories and Stages', column 'For Children Aged ≥13 y', p.6",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2c09b5e7a2b1e113ddf22db3c8fd1d20aeb10c501fd0ac5498e8e48a4ea525fd",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Adolescents aged >=13 years, both sexes (static cut points independent of height/sex percentile)",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Auscultatory-confirmed office BP for diagnosis (oscillometric screening allowed, confirm by auscultation per KAS 5)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_034",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_02",
+      "sourceId": "AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_034",
+      "passageId": "psg_ea15a3e62a88edb465627829b81552ea703909c77e168027bab112d3446d58f9",
+      "locator": {
+        "raw": "Table 1, KAS 3, p.2",
+        "page": null,
+        "section": "Table 1, KAS 3, p.2",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:ea15a3e62a88edb465627829b81552ea703909c77e168027bab112d3446d58f9",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children and adolescents >=3 y of age (office diagnostic pathway)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Auscultatory-confirmed office BP measurement across 3 separate visits (method-dependent; oscillometric screening must be confirmed by auscultation)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_035",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_02",
+      "sourceId": "AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_035",
+      "passageId": "psg_4582bc674753199c1fdf992919de8bca2f0fd07770946ac5b75aa6946d468c41",
+      "locator": {
+        "raw": "Table 1, KAS 15-2, p.3; and Section 'Key Action Statement 15' (part 2), p.~24",
+        "page": null,
+        "section": "Table 1, KAS 15-2, p.3; and Section 'Key Action Statement 15' (part 2), p.~24",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:4582bc674753199c1fdf992919de8bca2f0fd07770946ac5b75aa6946d468c41",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children and adolescents older than 8 years (age >8 y) for the g/m2.7 criterion; sex-specific BSA-indexed criterion (boys vs girls)",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Echocardiography (LV mass by echo); allometric indexing to height^2.7 or to body surface area (BSA). Value is measurement-modality dependent (echo, not ECG — KAS 14 advises against ECG for LVH)."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_036",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_02",
+      "sourceId": "AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_036",
+      "passageId": "psg_b247fa6da545472b9fd76dbe53c28fd4f5f3c266e1bd56b4bb12decf7f8d866b",
+      "locator": {
+        "raw": "Section 3.2 'New BP Tables', p.6-7; and screening-table footnote (Tables 6/7 derivation note)",
+        "page": null,
+        "section": "Section 3.2 'New BP Tables', p.6-7; and screening-table footnote (Tables 6/7 derivation note)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b247fa6da545472b9fd76dbe53c28fd4f5f3c266e1bd56b4bb12decf7f8d866b",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Normal-weight children (BMI <85th percentile) used to build the normative reference; tables applied to children/adolescents 1-<13 y by age, sex, height",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Quantile regression on auscultatory normative data; excludes overweight/obese children (BMI >=85th pct) from the reference population (differs from 2004 Fourth Report tables)."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_037",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_02",
+      "sourceId": "AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_037",
+      "passageId": "psg_19f16d2633b1bb8b33b11cd4cc930e252b39c6167dc9461f46fc73b932d3aca9",
+      "locator": {
+        "raw": "Table 1, KAS 1 and KAS 2, p.2",
+        "page": null,
+        "section": "Table 1, KAS 1 and KAS 2, p.2",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:19f16d2633b1bb8b33b11cd4cc930e252b39c6167dc9461f46fc73b932d3aca9",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children and adolescents >=3 y of age (annual); high-risk subgroups (obesity, BP-raising meds, renal disease, aortic coarctation, diabetes) at every encounter",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Office BP measurement (auscultatory or validated oscillometric per KAS 5)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_038",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_11",
+      "sourceId": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_038",
+      "passageId": "psg_4e7118898f2c91d4376f7397a044fced4de1546041b582fd6964bded58a617d2",
+      "locator": {
+        "raw": "Results, cohort description (para 2)",
+        "page": null,
+        "section": "Results, cohort description (para 2)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:4e7118898f2c91d4376f7397a044fced4de1546041b582fd6964bded58a617d2",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric kidney transplant recipients, age 1-18 y (median 12.5 y), 66.7% male, >=6 months post-transplant, stable graft function; iohexol-measured GFR",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Reference standard = iohexol plasma clearance (Omnipaque 300; blood at 10/30/120/300 min); Cr enzymatic (Olympus), CysC turbidimetric (Gentian AS, IFCC-standardized)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_039",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_11",
+      "sourceId": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_039",
+      "passageId": "psg_73be01dffd010386fc646fbcec970318095682a6304945bb37e2e79208b0e377",
+      "locator": {
+        "raw": "Results, accuracy paragraph (whole cohort) + Abstract Results",
+        "page": null,
+        "section": "Results, accuracy paragraph (whole cohort) + Abstract Results",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:73be01dffd010386fc646fbcec970318095682a6304945bb37e2e79208b0e377",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric kidney transplant recipients age 1-18 y, whole cohort (n=45)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "U25-CysC equation (CKiD under-25, sex-/age-dependent K, 1/CysC); CysC via Gentian AS turbidimetric, IFCC-standardized; equation-dependent performance metric"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_040",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_11",
+      "sourceId": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_040",
+      "passageId": "psg_a7651f756bd641ea5d71a9684d9ac3a20317e8757ac5373f4dc1b2f27b45842b",
+      "locator": {
+        "raw": "Results, bias paragraph + Abstract Results",
+        "page": null,
+        "section": "Results, bias paragraph + Abstract Results",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:a7651f756bd641ea5d71a9684d9ac3a20317e8757ac5373f4dc1b2f27b45842b",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric kidney transplant recipients age 1-18 y, whole cohort (n=45) and histological-change subgroup (n=24)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Gentian CysC equation (eGFR = 79.901 x CysC^..., IFCC-standardized); bias = mean(eGFR - mGFR); equation-/assay-dependent"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_041",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_11",
+      "sourceId": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_041",
+      "passageId": "psg_53aab2f88b7baf6b94cfdabb3ffdce7c311bb891eb765bd55c2c68bf757ca244",
+      "locator": {
+        "raw": "Results, CKD staging paragraph + Abstract Results",
+        "page": null,
+        "section": "Results, CKD staging paragraph + Abstract Results",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:53aab2f88b7baf6b94cfdabb3ffdce7c311bb891eb765bd55c2c68bf757ca244",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric kidney transplant recipients age 1-18 y; whole cohort (n=45) and histological-change subgroup (n=24)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "CAPA equation (Caucasian-Asian-pediatric-adult CysC); CKD stage per K/DOQI; misclassification vs mGFR-derived stage; equation-dependent"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_042",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_11",
+      "sourceId": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_042",
+      "passageId": "psg_aaf3572fd4bf1d09a75b685ae53db8d1db0797b53eec5bb62db02e072bb2c09f",
+      "locator": {
+        "raw": "Results, Bland-Altman paragraph + Abstract Results",
+        "page": null,
+        "section": "Results, Bland-Altman paragraph + Abstract Results",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:aaf3572fd4bf1d09a75b685ae53db8d1db0797b53eec5bb62db02e072bb2c09f",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric kidney transplant recipients age 1-18 y with mGFR >100 mL/min/1.73 m2",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Bland-Altman agreement across Bedside Schwartz, Gentian CysC, CAPA, U25-CysC equations vs iohexol mGFR; equation-dependent overestimation region"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_043",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_11",
+      "sourceId": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_043",
+      "passageId": "psg_4084c76c87af865c66182a98d0fd784c09a29c7e318c0c7a65398a3c33c0cd8a",
+      "locator": {
+        "raw": "Materials and methods, Estimation of GFR, equation 1 (Bedside Schwartz)",
+        "page": null,
+        "section": "Materials and methods, Estimation of GFR, equation 1 (Bedside Schwartz)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:4084c76c87af865c66182a98d0fd784c09a29c7e318c0c7a65398a3c33c0cd8a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric (Bedside Schwartz was validated in children with mild-moderate CKD, median mGFR ~41 mL/min/1.73 m2 per source Discussion)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Enzymatic serum creatinine (mg/dL); height in cm; coefficient 0.413 is calibration-/assay-specific (IDMS-traceable enzymatic Cr)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_044",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_11",
+      "sourceId": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_044",
+      "passageId": "psg_5a3ff68109b8ca4a049bd3ba80bf475d98983d2fee181de53778a2fcd678b084",
+      "locator": {
+        "raw": "Materials and methods — Measurement of creatinine and cystatin C; Estimation of GFR (IFCC calibration note)",
+        "page": null,
+        "section": "Materials and methods — Measurement of creatinine and cystatin C; Estimation of GFR (IFCC calibration note)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:5a3ff68109b8ca4a049bd3ba80bf475d98983d2fee181de53778a2fcd678b084",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric kidney transplant recipients age 1-18 y (assay/calibration methodology, applies cohort-wide)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "CysC: Gentian AS turbidimetric, IFCC-standardized; pre-IFCC CKiD Cr-CysC equation requires dividing Gentian CysC by 1.17 — thresholds/equations are assay-calibration dependent"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_045",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_08",
+      "sourceId": "PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_045",
+      "passageId": "psg_b33d63999c24c36967c7c8c01ec9d614a69086b05d5fbd172592f895133c38f0",
+      "locator": {
+        "raw": "Abstract (published abstract, PubMed/ScienceDirect)",
+        "page": null,
+        "section": "Abstract (published abstract, PubMed/ScienceDirect)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b33d63999c24c36967c7c8c01ec9d614a69086b05d5fbd172592f895133c38f0",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children in ambulatory/outpatient setting (age band not specified in accessible text); both sexes; not applicable for gestational/postnatal age",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (qualitative classification, no numeric threshold)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_046",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_08",
+      "sourceId": "PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_046",
+      "passageId": "psg_6181af874f94ec1beaa9e47bb2fd4b3274f99699b18e488b9f4442952fec72a0",
+      "locator": {
+        "raw": "Abstract (published abstract, PubMed/ScienceDirect)",
+        "page": null,
+        "section": "Abstract (published abstract, PubMed/ScienceDirect)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:6181af874f94ec1beaa9e47bb2fd4b3274f99699b18e488b9f4442952fec72a0",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children in ambulatory/outpatient setting (age band not specified); both sexes; not applicable for gestational/postnatal age",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (qualitative significance statement, no numeric threshold)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_047",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_08",
+      "sourceId": "PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_047",
+      "passageId": "psg_3b1f10b5f6c3e78132897971ac6139b3ab3de93f087993275d35d1bc2afcb11e",
+      "locator": {
+        "raw": "Abstract (published abstract, PubMed/ScienceDirect)",
+        "page": null,
+        "section": "Abstract (published abstract, PubMed/ScienceDirect)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:3b1f10b5f6c3e78132897971ac6139b3ab3de93f087993275d35d1bc2afcb11e",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children in ambulatory/outpatient setting (age band not specified); both sexes; not applicable for gestational/postnatal age",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Definitional; body of source (paywalled) is expected to specify a microscopy RBC/HPF cutoff, but that number is NOT in the accessible abstract — see Limitations (GAP)."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_048",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_08",
+      "sourceId": "PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_048",
+      "passageId": "psg_49e5c16c4cab9deb07c0dd588f9b28205331fdab0860cdc809ab6bb0e337ac89",
+      "locator": {
+        "raw": "Abstract (published abstract, PubMed/ScienceDirect)",
+        "page": null,
+        "section": "Abstract (published abstract, PubMed/ScienceDirect)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:49e5c16c4cab9deb07c0dd588f9b28205331fdab0860cdc809ab6bb0e337ac89",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children in ambulatory/outpatient setting (age band not specified); both sexes; not applicable for gestational/postnatal age",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (qualitative anatomic-origin statement, no numeric threshold)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_049",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_08",
+      "sourceId": "PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_049",
+      "passageId": "psg_044465ec4c274e34cb65422b19325532b9b658dc126ebc8c54fbe30b33ef14ee",
+      "locator": {
+        "raw": "Abstract (published abstract, PubMed/ScienceDirect)",
+        "page": null,
+        "section": "Abstract (published abstract, PubMed/ScienceDirect)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:044465ec4c274e34cb65422b19325532b9b658dc126ebc8c54fbe30b33ef14ee",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Otherwise healthy children, asymptomatic, ambulatory setting (age band not specified); both sexes; not applicable for gestational/postnatal age",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (risk-stratification statement, no numeric threshold; 'mild' proteinuria not quantified in accessible text)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_050",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_08",
+      "sourceId": "PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_050",
+      "passageId": "psg_8a63eb892ff230c5ee29bbf974a726592d0b036a90eb342194f56cb9ec741ac6",
+      "locator": {
+        "raw": "Abstract (published abstract, PubMed/ScienceDirect)",
+        "page": null,
+        "section": "Abstract (published abstract, PubMed/ScienceDirect)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:8a63eb892ff230c5ee29bbf974a726592d0b036a90eb342194f56cb9ec741ac6",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children in ambulatory/outpatient setting with concurrent hematuria and proteinuria (age band not specified); both sexes; not applicable for gestational/postnatal age",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (referral/monitoring trigger, no numeric threshold)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_051",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_00",
+      "sourceId": "CKID_U25_GFR_EQUATIONS_2021",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_051",
+      "passageId": "psg_901e98d7f6c5962423178602c249396a459428cf3e9c476b43658e66f4b64406",
+      "locator": {
+        "raw": "Abstract; Methods → Statistical analysis",
+        "page": null,
+        "section": "Abstract; Methods → Statistical analysis",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:901e98d7f6c5962423178602c249396a459428cf3e9c476b43658e66f4b64406",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children and young adults aged 1-25 years with mild-to-moderate CKD (CKiD cohort); both sexes",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "sCr in mg/dL (enzymatic, IDMS-standardized) with height in meters; cysC in mg/L (IFCC-standardized); output eGFR in mL/min/1.73 m2"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_052",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_00",
+      "sourceId": "CKID_U25_GFR_EQUATIONS_2021",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_052",
+      "passageId": "psg_e23ff8c094b5cb1e040ddfe1b0a1abc92701c92bbb882efcfd261f4da768bfd7",
+      "locator": {
+        "raw": "Abstract; Results → Estimating values of K for the U25 equations",
+        "page": null,
+        "section": "Abstract; Results → Estimating values of K for the U25 equations",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:e23ff8c094b5cb1e040ddfe1b0a1abc92701c92bbb882efcfd261f4da768bfd7",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children and young adults aged 1-25 years with CKD; sex-specific (male 41.8 / female 37.6), age-independent",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "sCr assayed enzymatically (Advia 2400, Siemens), IDMS-standardized; height in meters; sCr in mg/dL"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_053",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_00",
+      "sourceId": "CKID_U25_GFR_EQUATIONS_2021",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_053",
+      "passageId": "psg_b3b9a01c13a4f16d31f2e6ff49f9b1f61f7c300630edd0d186270a5790d4b958",
+      "locator": {
+        "raw": "Abstract; Results → Estimating values of K for the U25 equations",
+        "page": null,
+        "section": "Abstract; Results → Estimating values of K for the U25 equations",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b3b9a01c13a4f16d31f2e6ff49f9b1f61f7c300630edd0d186270a5790d4b958",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Ages 1-25 y with CKD; K is age- AND sex-dependent (piecewise-linear, knots at 12 and 18 y; constant for age >=18 y)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "sCr enzymatic (Advia 2400, Siemens), IDMS-standardized; height in meters; sCr in mg/dL"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_054",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_00",
+      "sourceId": "CKID_U25_GFR_EQUATIONS_2021",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_054",
+      "passageId": "psg_b1ee9a2bf9dcfe0be6a2d95850ba12dd2761a3d77b5694763118406a2641b5b0",
+      "locator": {
+        "raw": "Results → Estimating values of K for the U25 equations (cystatin-C paragraph)",
+        "page": null,
+        "section": "Results → Estimating values of K for the U25 equations (cystatin-C paragraph)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b1ee9a2bf9dcfe0be6a2d95850ba12dd2761a3d77b5694763118406a2641b5b0",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Ages 1-25 y with CKD; sex-specific (male 81.9 / female 74.9), age-independent cystatin C variant",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "cysC assayed nephelometrically (Siemens Diagnostics), IFCC-standardized; cysC in mg/L"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_055",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_00",
+      "sourceId": "CKID_U25_GFR_EQUATIONS_2021",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_055",
+      "passageId": "psg_2598a786991bf3f22c5cefd4e0dcd03f620c7429f9a40c1251c1935d9ac6d657",
+      "locator": {
+        "raw": "Abstract; Results → Estimating values of K for the U25 equations (cystatin-C paragraph)",
+        "page": null,
+        "section": "Abstract; Results → Estimating values of K for the U25 equations (cystatin-C paragraph)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2598a786991bf3f22c5cefd4e0dcd03f620c7429f9a40c1251c1935d9ac6d657",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Ages 1-25 y with CKD; age+sex-dependent cystatin C variant (piecewise-linear; knots at 15/18 y males, 12/18 y females; constant >=18 y)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "cysC nephelometric (Siemens), IFCC-standardized; cysC in mg/L"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_056",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_00",
+      "sourceId": "CKID_U25_GFR_EQUATIONS_2021",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_056",
+      "passageId": "psg_ad24df49b39cb42cd9a49a9a2cd9859a2def68fb15796c5b2f13019ea699cb1a",
+      "locator": {
+        "raw": "Methods (biochemistry/assay description)",
+        "page": null,
+        "section": "Methods (biochemistry/assay description)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:ad24df49b39cb42cd9a49a9a2cd9859a2def68fb15796c5b2f13019ea699cb1a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Ages 1-25 y with CKD (CKiD central biochemistry lab)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "sCr: enzymatic, Advia 2400 (Siemens Diagnostics), IDMS-traceable. cysC: nephelometric (Siemens Diagnostics), IFCC-standardized. Applying U25 K constants to non-standardized/differently-calibrated assays is not supported by the source."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_057",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_00",
+      "sourceId": "CKID_U25_GFR_EQUATIONS_2021",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_057",
+      "passageId": "psg_715712f542a50586152e534f853ec5f486bf3c6a12d772f31040aa75992ec66c",
+      "locator": {
+        "raw": "Abstract; Discussion (comparison to other published equations)",
+        "page": null,
+        "section": "Abstract; Discussion (comparison to other published equations)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:715712f542a50586152e534f853ec5f486bf3c6a12d772f31040aa75992ec66c",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children aged 1-18 y and young adults aged 18-25 y with CKD; both sexes; all races (no race term in equations)",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "iohexol plasma-disappearance mGFR as reference standard; not method-dependent for the performance claim"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_058",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_09",
+      "sourceId": "PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_058",
+      "passageId": "psg_28a2b951ccda5048d09dc85c108f4fad2e4755bf569430f57cf728bb7ada98a5",
+      "locator": {
+        "raw": "Abstract (Results) — Pediatr Nephrol 38(12):4051-4059",
+        "page": null,
+        "section": "Abstract (Results) — Pediatr Nephrol 38(12):4051-4059",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:28a2b951ccda5048d09dc85c108f4fad2e4755bf569430f57cf728bb7ada98a5",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children (pediatric; CKiD-style cohort) with mild CKD, stages 1-2, normal/near-normal GFR; sex and specific age band not reported in abstract",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Method-dependent: creatinine-based eGFR vs cystatin-C-based eGFR (discordance is the delta between the two assay bases)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_059",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_09",
+      "sourceId": "PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_059",
+      "passageId": "psg_eb9837f2d6a99f72f965840060b135773c1871aeebb7fb100ce76b7da8af245b",
+      "locator": {
+        "raw": "Abstract (Results) — Pediatr Nephrol 38(12):4051-4059",
+        "page": null,
+        "section": "Abstract (Results) — Pediatr Nephrol 38(12):4051-4059",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:eb9837f2d6a99f72f965840060b135773c1871aeebb7fb100ce76b7da8af245b",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with mild CKD (stages 1-2), normal/near-normal GFR; sex and specific age band not reported in abstract",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "eGFR by 6 equations (3 CKiD U25 formulas, FAS-combined, EKFC-creatinine, CKD-EPI cystatin-C) vs measured plasma iohexol clearance (iGFR, 2-point and 4-point)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_060",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_09",
+      "sourceId": "PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_060",
+      "passageId": "psg_bc14d72f2787e21a954e9e16c545346656d429f42a6e9764e3076e4fa1764b67",
+      "locator": {
+        "raw": "Abstract (Results) — Pediatr Nephrol 38(12):4051-4059",
+        "page": null,
+        "section": "Abstract (Results) — Pediatr Nephrol 38(12):4051-4059",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:bc14d72f2787e21a954e9e16c545346656d429f42a6e9764e3076e4fa1764b67",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with mild CKD (stages 1-2), normal/near-normal GFR with discordant creatinine vs cystatin-C eGFR",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Creatinine-based eGFR (U25 creatinine) vs cystatin-C-based eGFR vs U25-combined; reference = 4-point iohexol clearance (iGFR-4pt)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_061",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_09",
+      "sourceId": "PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_061",
+      "passageId": "psg_625295f3a3d8de25cc95314476b199f165327b81e57a70d757784c371292bb21",
+      "locator": {
+        "raw": "Abstract (Conclusions) — Pediatr Nephrol 38(12):4051-4059",
+        "page": null,
+        "section": "Abstract (Conclusions) — Pediatr Nephrol 38(12):4051-4059",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:625295f3a3d8de25cc95314476b199f165327b81e57a70d757784c371292bb21",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with normal/near-normal or discordant GFR (screening context)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "U25-combined uses both creatinine and cystatin-C; recommendation is equation-selection guidance, not a numeric cutoff"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_062",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_09",
+      "sourceId": "PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_062",
+      "passageId": "psg_bc44ff26c04de5d724ecd963b3e6275277ba61823f144e0e59e8b0ab841add7c",
+      "locator": {
+        "raw": "Abstract (Conclusions) — Pediatr Nephrol 38(12):4051-4059",
+        "page": null,
+        "section": "Abstract (Conclusions) — Pediatr Nephrol 38(12):4051-4059",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:bc44ff26c04de5d724ecd963b3e6275277ba61823f144e0e59e8b0ab841add7c",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with mild CKD (stages 1-2), normal/near-normal GFR",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "eGFR (6 equations) vs measured 4-point iohexol clearance (iGFR-4pt) — reliability caveat, method-dependent"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_063",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_04",
+      "sourceId": "CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_063",
+      "passageId": "psg_9fae8675b1f9f0d6bfdab49460d1b4f7d7956c9740f4701c549bfe4cdb0580cf",
+      "locator": {
+        "raw": "Abstract — Results sentence",
+        "page": null,
+        "section": "Abstract — Results sentence",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:9fae8675b1f9f0d6bfdab49460d1b4f7d7956c9740f4701c549bfe4cdb0580cf",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric to young-adult, ages 6 months to 22 years, mixed races/ethnicities, N=57; both sexes; clinical context = patients referred for nuclear-medicine mGFR at a tertiary children's hospital (mixed CKD and non-CKD).",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "mGFR (reference standard) measured by intravenous Tc-99m DTPA tracer clearance; not a laboratory assay threshold."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_064",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_04",
+      "sourceId": "CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_064",
+      "passageId": "psg_df178e664f98ea2e5b6b1cc09dee377e14a1dc0a9f4e0465ecd6954966b2b35b",
+      "locator": {
+        "raw": "Abstract — Results sentence (creatinine equations)",
+        "page": null,
+        "section": "Abstract — Results sentence (creatinine equations)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:df178e664f98ea2e5b6b1cc09dee377e14a1dc0a9f4e0465ecd6954966b2b35b",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric to young-adult, 6 months to 22 years, mixed races/ethnicities, N=57 (same cohort).",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "eGFR from non-race-corrected (NRC) serum creatinine-based equations vs Tc-99m DTPA mGFR; creatinine assay method/standardization not specified in abstract (method-dependent in principle)."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_065",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_04",
+      "sourceId": "CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_065",
+      "passageId": "psg_5c851fcf6b62b2ccbbe659f89b0a8be2bdc63c41b42f2900d6ef554ed92bd537",
+      "locator": {
+        "raw": "Abstract — Results sentence (cystatin C equations)",
+        "page": null,
+        "section": "Abstract — Results sentence (cystatin C equations)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:5c851fcf6b62b2ccbbe659f89b0a8be2bdc63c41b42f2900d6ef554ed92bd537",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric to young-adult, 6 months to 22 years, mixed races/ethnicities, N=57 (same cohort).",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "eGFR from serum cystatin C-based equations (CKiD U25-CysC; Schwartz CysC) vs Tc-99m DTPA mGFR; cystatin C assay/calibrator not specified in abstract (cystatin C values are assay/standardization dependent)."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_066",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_04",
+      "sourceId": "CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_066",
+      "passageId": "psg_67416e354066521c23457a46192a214193eb24841012412f44ef8c524d312e50",
+      "locator": {
+        "raw": "Abstract — Methods sentence",
+        "page": null,
+        "section": "Abstract — Methods sentence",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:67416e354066521c23457a46192a214193eb24841012412f44ef8c524d312e50",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "N=57 patients, age band 6 months to 22 years, mixed races/ethnicities; retrospective design; both sexes (per MeSH Male/Female).",
+        "sex": "both sexes"
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Reference standard = intravenous Tc-99m DTPA tracer clearance (nuclear-medicine mGFR)."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_067",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_04",
+      "sourceId": "CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_067",
+      "passageId": "psg_0d353d2ab66e8d43abe5ef7b52ad6855e5938e20711d56435bdb9ab0acd41c94",
+      "locator": {
+        "raw": "Abstract — Conclusion sentence",
+        "page": null,
+        "section": "Abstract — Conclusion sentence",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:0d353d2ab66e8d43abe5ef7b52ad6855e5938e20711d56435bdb9ab0acd41c94",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric to young-adult, 6 months to 22 years, mixed races/ethnicities, N=57 (same cohort).",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Comparison of cystatin C-based eGFR equations against Tc-99m DTPA mGFR; conclusion is a recommendation of equation preference, not a numeric threshold."
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_068",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_01",
+      "sourceId": "CKID_RACE_CR_CYSC_GFR_2021",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_068",
+      "passageId": "psg_76e166ef289affbc351d7d7cffc6559b7e7c5e17431c7aebe6429479a09e4f03",
+      "locator": {
+        "raw": "Results, section 'Under 25 (U25) estimating equation performance by self-reported race', para 1",
+        "page": null,
+        "section": "Results, section 'Under 25 (U25) estimating equation performance by self-reported race', para 1",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:76e166ef289affbc351d7d7cffc6559b7e7c5e17431c7aebe6429479a09e4f03",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children and young adults under age 25 with CKD; self-reported Black race subgroup; sexes combined",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "eGFR from U25 equations using IFCC-calibrated serum creatinine (mg/dL); measured GFR by plasma iohexol clearance, BSA-standardized (Haycock)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_069",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_01",
+      "sourceId": "CKID_RACE_CR_CYSC_GFR_2021",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_069",
+      "passageId": "psg_0eb911767af30ccb780873c7057aa50f5a76e5c4166e475846910545a273cfef",
+      "locator": {
+        "raw": "Results, section 'Racial differences in measured GFR and serum creatinine', para 2",
+        "page": null,
+        "section": "Results, section 'Racial differences in measured GFR and serum creatinine', para 2",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:0eb911767af30ccb780873c7057aa50f5a76e5c4166e475846910545a273cfef",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children and young adults with CKD (ages <6 to >=18, combined); self-reported Black vs non-Black race",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Serum creatinine, IFCC-calibrated, reported in mg/dL; outcome measured GFR by iohexol clearance (BSA-standardized, Haycock)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_070",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_01",
+      "sourceId": "CKID_RACE_CR_CYSC_GFR_2021",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_070",
+      "passageId": "psg_05fc605b57c9391a05197e8abc6679ca0f945c0765a1174a290dc72c81f9f7f1",
+      "locator": {
+        "raw": "Results, section 'Racial differences in measured GFR and serum cystatin c', para 2",
+        "page": null,
+        "section": "Results, section 'Racial differences in measured GFR and serum cystatin c', para 2",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:05fc605b57c9391a05197e8abc6679ca0f945c0765a1174a290dc72c81f9f7f1",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children and young adults with CKD (all ages combined); self-reported Black vs non-Black race; effect not significant for those over 12 years",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Serum cystatin C, IFCC-calibrated, reported in mg/L; outcome measured GFR by iohexol clearance (BSA-standardized, Haycock)"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_071",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_01",
+      "sourceId": "CKID_RACE_CR_CYSC_GFR_2021",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_071",
+      "passageId": "psg_372ea3f8becf423628ea42a095b5269ec7f308f75db905374bc62642969aa569",
+      "locator": {
+        "raw": "Results, section 'Under 25 (U25) estimating equation performance by self-reported race', para 1",
+        "page": null,
+        "section": "Results, section 'Under 25 (U25) estimating equation performance by self-reported race', para 1",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:372ea3f8becf423628ea42a095b5269ec7f308f75db905374bc62642969aa569",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children and young adults under age 25 with CKD; all self-reported race groups",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Average of U25 creatinine (mg/dL) and U25 cystatin C (mg/L) equations, both IFCC-calibrated; validated against iohexol-clearance mGFR"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_072",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_01",
+      "sourceId": "CKID_RACE_CR_CYSC_GFR_2021",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_072",
+      "passageId": "psg_2a984445142e2d9d91a1d62f3d391ae76ed3695e41c9af37611aab80c6a80ab4",
+      "locator": {
+        "raw": "Methods, section 'Kidney function measurement and serum creatinine and cystatin c'",
+        "page": null,
+        "section": "Methods, section 'Kidney function measurement and serum creatinine and cystatin c'",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2a984445142e2d9d91a1d62f3d391ae76ed3695e41c9af37611aab80c6a80ab4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "not applicable (assay/method specification for the CKiD cohort)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Measured GFR = plasma iohexol clearance, BSA-standardized by Haycock; serum creatinine and cystatin C centrally measured, IFCC-calibrated (method-dependent) — SCr in mg/dL, CysC in mg/L"
+      },
+      "reviewBy": "2031-07-21"
+    },
+    {
+      "assertionId": "evas_kid_clm_073",
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfkid001_01",
+      "sourceId": "CKID_RACE_CR_CYSC_GFR_2021",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_073",
+      "passageId": "psg_7c4d08a0c491e1a7f8699b88b0d560e26555d31dec42272b2a14d1174bd82fd5",
+      "locator": {
+        "raw": "Results, opening paragraph (Table 1 cohort characteristics)",
+        "page": null,
+        "section": "Results, opening paragraph (Table 1 cohort characteristics)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:7c4d08a0c491e1a7f8699b88b0d560e26555d31dec42272b2a14d1174bd82fd5",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "CKiD cohort, median age 9 years; 66.2% male (Black) / 61.3% male (non-Black); CKD diagnosis; ages <6 to >=18 years",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Median serum creatinine and cystatin C from IFCC-calibrated central-lab assays; median mGFR by iohexol clearance"
+      },
+      "reviewBy": "2031-07-21"
+    }
+  ]
+}

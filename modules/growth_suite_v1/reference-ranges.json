@@ -1,0 +1,8 @@
+{
+  "moduleId": "growth_suite_v1",
+  "status": "not-yet-implemented",
+  "note": "growth_suite_v1 does not yet author or consume any growth-specific reference ranges. This file is a package-shape scaffold placeholder (P3-T2, RF-GRO-002) only — no threshold values have been sourced, reviewed, or wired into src/ranges/registry.js, and this module is not registered there. Populating real growth reference-range content (e.g. WHO/CDC anthropometric or growth-velocity bands, evidence-linked) is out-of-scope work for a later, separately reviewed phase.",
+  "source": null,
+  "units": {},
+  "ranges": []
+}

@@ -1,0 +1,4 @@
+# Synthetic, test-only claim ledger (EF-WP1 fixture). Zero claims — this fixture exists only to
+# exercise the bundle-wide, unconditional EF-WP1 structural pre-flight (stage 0 of
+# checkEligibility), which runs before any per-claim work regardless of claim content.
+claims: []

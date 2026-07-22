@@ -1,0 +1,1599 @@
+{
+  "redactions": [
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:901e98d7f6c5962423178602c249396a459428cf3e9c476b43658e66f4b64406",
+      "length": 332
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:fa007c2b8d37c131b1a398645b9c94bb4e540d593c9153a4310862677a5b3560",
+      "length": 110
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:e23ff8c094b5cb1e040ddfe1b0a1abc92701c92bbb882efcfd261f4da768bfd7",
+      "length": 95
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:bf5bc030a044d399c1541c0a84e8a6b61c2cd6f70570b29027545de249d36e4d",
+      "length": 107
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:b3b9a01c13a4f16d31f2e6ff49f9b1f61f7c300630edd0d186270a5790d4b958",
+      "length": 134
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:9591ed3b1201238232dc562c7cd4877620600cd81d1aa3dcef84da129d4f34c7",
+      "length": 146
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:b1ee9a2bf9dcfe0be6a2d95850ba12dd2761a3d77b5694763118406a2641b5b0",
+      "length": 208
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:b20969796602b78f2ee2346100645e2d3dce952a90911274017506502f323958",
+      "length": 131
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:2598a786991bf3f22c5cefd4e0dcd03f620c7429f9a40c1251c1935d9ac6d657",
+      "length": 141
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:798bed01b2b15b0efcef0d6078928ad23f6030ed95c472672d46f309a51e095a",
+      "length": 100
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:ad24df49b39cb42cd9a49a9a2cd9859a2def68fb15796c5b2f13019ea699cb1a",
+      "length": 288
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 89,
+      "field": "quote",
+      "sha256": "sha256:715712f542a50586152e534f853ec5f486bf3c6a12d772f31040aa75992ec66c",
+      "length": 159
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 94,
+      "field": "passage_locator",
+      "sha256": "sha256:7e134f234121f40db0efae8132bcd2e723b6dc258a1238da5282aa7515122a58",
+      "length": 109
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 104,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:c26cf4caea1367dbe70c3bf4d6feb6553a993d7d2dc0ab204fcc658a7db908a1",
+      "length": 195
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 105,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:e23ff8c094b5cb1e040ddfe1b0a1abc92701c92bbb882efcfd261f4da768bfd7",
+      "length": 95
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 106,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:b3b9a01c13a4f16d31f2e6ff49f9b1f61f7c300630edd0d186270a5790d4b958",
+      "length": 134
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 107,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:d8f84d4b66e74e9ace4fbcef1acf9f84e23b3baf92c8ac0212201f0343ec55db",
+      "length": 120
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 108,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:5766355af6be07744570bb0309ae5f25b44dc40a01df2492d72367ef97f2174c",
+      "length": 88
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 109,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:5347a546edc4c42fb57ddb59a5ecf77615797166020a9ec70652c4bd25b72270",
+      "length": 208
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_00.md",
+      "line": 110,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:715712f542a50586152e534f853ec5f486bf3c6a12d772f31040aa75992ec66c",
+      "length": 159
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:76e166ef289affbc351d7d7cffc6559b7e7c5e17431c7aebe6429479a09e4f03",
+      "length": 258
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:3a8cabe6a66331172a7aaa1b555fb92e099d329a7a8058f506530876e2f4c072",
+      "length": 123
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:0eb911767af30ccb780873c7057aa50f5a76e5c4166e475846910545a273cfef",
+      "length": 138
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:c06b21c21516b674a7bd3a75e4dbcd3b085de1181f3ccfa881883fee1b572858",
+      "length": 122
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:05fc605b57c9391a05197e8abc6679ca0f945c0765a1174a290dc72c81f9f7f1",
+      "length": 200
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:a5344329a2f2e1c53e91de4f0e006065c9cfbdb55aaf4d02ee01a8e92ad53979",
+      "length": 108
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:372ea3f8becf423628ea42a095b5269ec7f308f75db905374bc62642969aa569",
+      "length": 160
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:2a984445142e2d9d91a1d62f3d391ae76ed3695e41c9af37611aab80c6a80ab4",
+      "length": 370
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:7c4d08a0c491e1a7f8699b88b0d560e26555d31dec42272b2a14d1174bd82fd5",
+      "length": 398
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:a83db3a37c59cab24738eff3878b91b88afeb159c706d22b5206e0327eaa0ced",
+      "length": 223
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 93,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:f2bea23b384cbaff82d5c7ffbbb7aad39bad2a627024423966c5100b3785496e",
+      "length": 174
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 94,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:5619fd582fb53c87a2ab5ceeaf34c932d715dbbeb68376e4d472691739ab019a",
+      "length": 89
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 95,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:c3a2879eb74e3c2e98ddb23ceaffd5bc316c286acfec48c12271b6bc07d28f95",
+      "length": 75
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 96,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:372ea3f8becf423628ea42a095b5269ec7f308f75db905374bc62642969aa569",
+      "length": 160
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 97,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:67112fdc902473d21cd81e42d3d5278a375ce0350d03b29c5d9c93b724d3b65a",
+      "length": 88
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_01.md",
+      "line": 98,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:ebbbc99990d9228e078e036aa851bca2fba5b56bcb129a902fae97bd9e97ad3c",
+      "length": 159
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:2c7ccadaebeadcc94e21d2815c4f9d8b36880e19b46b16ac220e3ec986a599ed",
+      "length": 236
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:37073b8c38655fdad93297cf62cd809e82a615c100a845a7faea68fd9c226463",
+      "length": 336
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:fc7cf9d0a779e523c03aa09516810117d7a1a7971cb6f8fa41479d260f5e304e",
+      "length": 199
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:2c09b5e7a2b1e113ddf22db3c8fd1d20aeb10c501fd0ac5498e8e48a4ea525fd",
+      "length": 134
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:a4a31a88fafab15e475a4a90846e8199c76fe4d7aa8f341883f1c958ab708dc4",
+      "length": 150
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:ea15a3e62a88edb465627829b81552ea703909c77e168027bab112d3446d58f9",
+      "length": 192
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:8c296784f65da58028200b1da413a8bda12add6a3fe337ce927a6d218911390a",
+      "length": 84
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:4582bc674753199c1fdf992919de8bca2f0fd07770946ac5b75aa6946d468c41",
+      "length": 184
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:100f06fabfb5546ec16f0d2022a165da9bd9126be8b414e579342dfcde1553e5",
+      "length": 159
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:b247fa6da545472b9fd76dbe53c28fd4f5f3c266e1bd56b4bb12decf7f8d866b",
+      "length": 256
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:7a883e0cd9abac34381888fc09daeb5e745ffb1abad98b5fdcff7ec1fbb1161b",
+      "length": 110
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 89,
+      "field": "quote",
+      "sha256": "sha256:19f16d2633b1bb8b33b11cd4cc930e252b39c6167dc9461f46fc73b932d3aca9",
+      "length": 330
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 94,
+      "field": "passage_locator",
+      "sha256": "sha256:5ebef572254818c4c0db9a4ec0977904b28418971b41b35ece47e9f00c5705a4",
+      "length": 81
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 104,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:d2adc9a3d7a73488cbcb3faa4a8824bedaae4f3092401d7a651882374db40224",
+      "length": 85
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 105,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:cb2fc5cd267e4ea0428d64e66a461eb1cefe723ba65b466761f1ae22920407ee",
+      "length": 108
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 106,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:260c8a952894f795c9591f9eb73e6d824d63ba4b1c7843e230be5780db61b2c8",
+      "length": 105
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 107,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:50f281fc475f7b7e13f20b99f7144278e31ced13e0cab7329c95356abd6563be",
+      "length": 74
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 108,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:f4f0b11d66965f48ca82c6235838b7c18ce2205935d204730cb1a2c499efd2e1",
+      "length": 135
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 109,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:ed273032cc911047f5304d15145f1cc5cfe6691581b38194d7383d03cc172db7",
+      "length": 81
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_02.md",
+      "line": 110,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:a8c516fb93a3c2af101266ace331f37cbd9bd23e849498f4017068af25548d38",
+      "length": 71
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:0ea8b16cae112ae2408ec7befe4dc345919ee295cfe0ad43ccfa2c079f3e619c",
+      "length": 139
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:240a954fd0013ddc4ca122f7943db939a3a55db40249d940eadd6066f4be62a1",
+      "length": 70
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:431255d943a0699de93e67b3ec1f4c6424f8c416a130c9f1969d80f2e2ecf1aa",
+      "length": 230
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:4ff1feec79a91aed7197d85f1d1bbb2e697df71686e8930eff1594cd9e368e69",
+      "length": 121
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:84424e207835f3137707ac47217c2a4fea56a6d2c25e241c7474e323b78c9c47",
+      "length": 123
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:09a78303c91575a5d3da50cb9cdaae5bb9dd2f7184c9d1284b88a7cd4686a22f",
+      "length": 69
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:53304bfb829c2cb1c37920b170793392dc4461b5bd02a731b6854104e4eb04ab",
+      "length": 188
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:dc1f3b5c2d3b7f11eca0be1a971d24679bba20657f6cf383376376e187b0522a",
+      "length": 96
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:644d7854aee237dc1e2bb0683cbfbb53eff1cbc50d3141073252e709e2abdb41",
+      "length": 282
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:602918f484f3192850888b422de5f758d2b84d535e2fefd997a64ac3e28e6c27",
+      "length": 55
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:bee5c4b4673baaba7754ca635074ed939dda1f47f7287f39946e8891fc401cb7",
+      "length": 307
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 93,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:0ea8b16cae112ae2408ec7befe4dc345919ee295cfe0ad43ccfa2c079f3e619c",
+      "length": 139
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 94,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:cb4ad1345056f722749d7ff2582e97d350306ea069177b84501e6e90179fa1f9",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 95,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:e199bf81167dc729fe0e928cc285432845b2994febfb1be6feef26e008eaaa9c",
+      "length": 62
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 96,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:40f71e337cebe4ddc29438ac993138b573b1367408566d5a02e8c7cffc28b2f2",
+      "length": 59
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 97,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:8ba4ee84957972bf8ae02e783eb0b0dce27f78a569499ea6c15ad11b27771bf7",
+      "length": 179
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_03.md",
+      "line": 98,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:7b98c1e45ed4a755e4fe834c99a69ffa76c395e2dc9d03e559d66336afeae22f",
+      "length": 224
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:9fae8675b1f9f0d6bfdab49460d1b4f7d7956c9740f4701c549bfe4cdb0580cf",
+      "length": 57
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:9f25a07554adaab66926dc95f290997b7449bc318a0c09d908cf5235bd2d12cc",
+      "length": 78
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:df178e664f98ea2e5b6b1cc09dee377e14a1dc0a9f4e0465ecd6954966b2b35b",
+      "length": 135
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:24433accb5ccd7c099e007f1b3f351add5877a123c8e56715889ea721882d9af",
+      "length": 79
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:5c851fcf6b62b2ccbbe659f89b0a8be2bdc63c41b42f2900d6ef554ed92bd537",
+      "length": 170
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:a40494f8fad65168a29a4261124a4f219272d8a8232aefbe9042b2fd2a352e8e",
+      "length": 127
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:67416e354066521c23457a46192a214193eb24841012412f44ef8c524d312e50",
+      "length": 202
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:f8c440711a2d51e8650c4ed0fffe466d92a3b3b0d9d1b6038906520694c3797b",
+      "length": 95
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:0d353d2ab66e8d43abe5ef7b52ad6855e5938e20711d56435bdb9ab0acd41c94",
+      "length": 169
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 82,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:9fae8675b1f9f0d6bfdab49460d1b4f7d7956c9740f4701c549bfe4cdb0580cf",
+      "length": 57
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 83,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:df178e664f98ea2e5b6b1cc09dee377e14a1dc0a9f4e0465ecd6954966b2b35b",
+      "length": 135
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 84,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:5c851fcf6b62b2ccbbe659f89b0a8be2bdc63c41b42f2900d6ef554ed92bd537",
+      "length": 170
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 85,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:67416e354066521c23457a46192a214193eb24841012412f44ef8c524d312e50",
+      "length": 202
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_04.md",
+      "line": 86,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:0d353d2ab66e8d43abe5ef7b52ad6855e5938e20711d56435bdb9ab0acd41c94",
+      "length": 169
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:2a73e9862691e5f24a62300c4b8116ecaf6859ac5d58be183adcac23143be38a",
+      "length": 233
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:d8679158d9e20c40d4a2f9c1263cf1b9f3b5235c2ae238f95363ef85935d1f0f",
+      "length": 162
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:b678350d6e151bb40c43279015ff82ffdcf132e95bb4515dbe4cd8f3757b1fb0",
+      "length": 143
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:00ab9a65e18274f8f72269839376d7b8bb6ee796b7ffe39992336f7352f321cd",
+      "length": 149
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:9a630a43bd632b21ce1accf7b8192f628c059138866decbc6bc8d388f44143c5",
+      "length": 253
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:e145143594670914be553f30aec3cacb3aa0c781b35f91235480741949105962",
+      "length": 127
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:677541e3e5f04e8bb9ef8e36940791ca9f553b5c7487b8e02bdaea8618a96c32",
+      "length": 282
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:523cb48c6344af85c50564a3605a07c8bae22d166bb68d83bbc399997cd775f1",
+      "length": 149
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:1a719184acd3679b061b339f0cf69dde16cb6036d3706351f66cbcb344233242",
+      "length": 191
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:904cf2091d3b64c1de10f56840d1112744842232bb55dbc5ec995c5ed0068da2",
+      "length": 135
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 93,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:191a29759aec23ceef7aa74d07559f1c405174fc174a322447f43fc410d1ac82",
+      "length": 202
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 94,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:b678350d6e151bb40c43279015ff82ffdcf132e95bb4515dbe4cd8f3757b1fb0",
+      "length": 143
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 95,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:d38f481c265d35af739205e3e8ea951468861852956d7545802a8d64d8a0308f",
+      "length": 101
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 96,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:1c524ea6f7435aca77021d64e1738b6a91c7f23b1dd87afad8856863ed35b54b",
+      "length": 139
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 97,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:a9da198273ef84e2b572f5b3bee4f2d5d9b524418b6e6d2cc7708d6b20fce966",
+      "length": 121
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_05.md",
+      "line": 98,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:904cf2091d3b64c1de10f56840d1112744842232bb55dbc5ec995c5ed0068da2",
+      "length": 135
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:1446805e19edb1795a30fa61caaab3ac1a340131fbaa21531eb9cb86f59dad64",
+      "length": 296
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:d3999cd85b0a24591fad01319e8d6e48f2d3e81a9783a631b980d9c5cfa490ac",
+      "length": 171
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:1fbaacf3092fc1d19a490fbb257043ed0615603d5c06ef702bea0bef0a29f6df",
+      "length": 259
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:53fc452de16d9af7a8b97a50bdab48fe9faaeaf3812262cc369806273d08ab79",
+      "length": 147
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:7f417290daeab23d9ec178e4b841891a32af25a3637250016f530ca225783981",
+      "length": 277
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:4eba880d512b09ba2cdf478e510cedb7e2e84e9da9530dfab25c55f40d7aa32d",
+      "length": 179
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:b62157ccff9c11b1d255ae42bc505aba120119d21185031ddee15d64bb38b728",
+      "length": 247
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:a93125d7cbc4306d03009ad378bba30bb1c1e74991440248f888f179f10b2d8b",
+      "length": 224
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:bde6acbb736012cd5dc307f25a45adb4e56b7cbceeb2007b5cb9f6388d5650df",
+      "length": 169
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:d776a382aecc6e714868d1d4f6c902ab4d2445bc9f9bb53fa215e10000da25d3",
+      "length": 140
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:cb4c52d3c8d065b0836c097de16804c37b9472ec44fe458041c30715784f1004",
+      "length": 205
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:e24f39e55330a57f641937064a115b69b39972e7fc7dfe2b3b10a44d5b7ce7c7",
+      "length": 263
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 93,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:2383865954c7b88d84c80f827f6ac7cebd536b8ac8e16594d962621845d6c35b",
+      "length": 168
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 94,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:fff684a625920f95194c2d5d3bed019ffde7cba6818474f3f12f0ed33075b4cb",
+      "length": 112
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 95,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:4f7500633075d472726a4dc4d8bde62ea1c95d6d6c8050823a0b7f7d2409cb14",
+      "length": 156
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 96,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:4190640315011cf285c87ee1875f978f678db6104fe8693c7ca2e492642f6c27",
+      "length": 119
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 97,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:1afa6d9c8397c650b6efe8a1762955b3c4b64678a2fd243e888a3fe02378c907",
+      "length": 137
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_06.md",
+      "line": 98,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:b3839fb7ecc7bae3c0096642c8be2b6698276671d90e24b668f1bf8566e4b4d6",
+      "length": 137
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:30eef65448c1afecaaa1db7d5268c3856d22d44c966e0ded3c2898d885b2c2fe",
+      "length": 265
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:9b9b0bcceafbd76c92f3243acf34470f7504057b5aef03d52a5abb7d8a04b87d",
+      "length": 192
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:21423f2ec1bcc9993999339f56e82b2209e8b69aec3face455ff90781bfd24af",
+      "length": 168
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:2a165730ed458f0ca3dfaf5e87130eb52f1dd6b8271e29c620b391ae98dd074a",
+      "length": 170
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:26c45b0e9ec66bde1e0ebf98b211f563172b4cc8dd1a9106c8fca73bbbdd06fe",
+      "length": 78
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:38b4764891f577c56430e820f3d39680d64f4edb1c5c4a00fa1351cb7c1def72",
+      "length": 80
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:d9b6e5b6f99a912713344e8839542bc06188a1a165f63bbcd1c79ef6dc8fc629",
+      "length": 191
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:620465451b852389e81f353e8c8e7ad91b9b322a273ffce22184d84433cfc84a",
+      "length": 89
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:5a808092cc4c5891d19eaf70115779078980b54155c9939d5cbd56f32eaeb77a",
+      "length": 294
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:58768a90ea5492495935d3132a6f2f049c75f0732e40b9e0effc651f9f64c79d",
+      "length": 158
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:3dfd712670d856a4e4f55198c12556caf46ad4374961a612cc597f6b657440d8",
+      "length": 256
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:b6a96a65eb02fe035c6636237f3da32f25d63647f9ff30a597cf9c3c0caacb37",
+      "length": 107
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 89,
+      "field": "quote",
+      "sha256": "sha256:b7aa55c5231b5612ce70931636da589fda415e527bc8f40a9d20c2128b38f00b",
+      "length": 148
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 104,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:f2df1e70a2dbeea4d5e5201f4d35dabbaaf7dfa4ac3fff2af7ff6dbbda85d6ec",
+      "length": 162
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 105,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:21423f2ec1bcc9993999339f56e82b2209e8b69aec3face455ff90781bfd24af",
+      "length": 168
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 106,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:26c45b0e9ec66bde1e0ebf98b211f563172b4cc8dd1a9106c8fca73bbbdd06fe",
+      "length": 78
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 107,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:d03a6bf354e60d4204032d38c3edec56f48269e3d6bd66f4b42a34fda7473ac0",
+      "length": 87
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 108,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:cf58cff6b6b541237368e64c4b0c0c0ad66d4a26bb0483c55becdfa11d5f7097",
+      "length": 156
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 109,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:45f38b76b47a50059b2eef80ae3c69a9ae4ad8c99768518d03216a21ce699e73",
+      "length": 105
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_07.md",
+      "line": 110,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:b7aa55c5231b5612ce70931636da589fda415e527bc8f40a9d20c2128b38f00b",
+      "length": 148
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_08.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:b33d63999c24c36967c7c8c01ec9d614a69086b05d5fbd172592f895133c38f0",
+      "length": 107
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_08.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:6181af874f94ec1beaa9e47bb2fd4b3274f99699b18e488b9f4442952fec72a0",
+      "length": 71
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_08.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:3b1f10b5f6c3e78132897971ac6139b3ab3de93f087993275d35d1bc2afcb11e",
+      "length": 122
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_08.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:49e5c16c4cab9deb07c0dd588f9b28205331fdab0860cdc809ab6bb0e337ac89",
+      "length": 79
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_08.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:044465ec4c274e34cb65422b19325532b9b658dc126ebc8c54fbe30b33ef14ee",
+      "length": 131
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_08.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:8a63eb892ff230c5ee29bbf974a726592d0b036a90eb342194f56cb9ec741ac6",
+      "length": 77
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_08.md",
+      "line": 93,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:b33d63999c24c36967c7c8c01ec9d614a69086b05d5fbd172592f895133c38f0",
+      "length": 107
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_08.md",
+      "line": 94,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:6181af874f94ec1beaa9e47bb2fd4b3274f99699b18e488b9f4442952fec72a0",
+      "length": 71
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_08.md",
+      "line": 95,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:3b1f10b5f6c3e78132897971ac6139b3ab3de93f087993275d35d1bc2afcb11e",
+      "length": 122
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_08.md",
+      "line": 96,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:49e5c16c4cab9deb07c0dd588f9b28205331fdab0860cdc809ab6bb0e337ac89",
+      "length": 79
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_08.md",
+      "line": 97,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:044465ec4c274e34cb65422b19325532b9b658dc126ebc8c54fbe30b33ef14ee",
+      "length": 131
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_08.md",
+      "line": 98,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:8a63eb892ff230c5ee29bbf974a726592d0b036a90eb342194f56cb9ec741ac6",
+      "length": 77
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:28a2b951ccda5048d09dc85c108f4fad2e4755bf569430f57cf728bb7ada98a5",
+      "length": 123
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:167c5d0564e37a4363801be5c420205f156c683238fc06951b9cab4f73312210",
+      "length": 94
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:eb9837f2d6a99f72f965840060b135773c1871aeebb7fb100ce76b7da8af245b",
+      "length": 128
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:e812c1fd15a0d8cbbf6876ebbf471b3ace2419b402c77544408e40815fc1a0c9",
+      "length": 99
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:bc14d72f2787e21a954e9e16c545346656d429f42a6e9764e3076e4fa1764b67",
+      "length": 171
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:aa94365673b325b5f738c2a92d7a9dec2c9e3adca5610622fb557047b6bbac4a",
+      "length": 125
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:625295f3a3d8de25cc95314476b199f165327b81e57a70d757784c371292bb21",
+      "length": 189
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:bc44ff26c04de5d724ecd963b3e6275277ba61823f144e0e59e8b0ab841add7c",
+      "length": 176
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:97a8dcdf4ba5ac789d9ff7f8c5d2216666beec51b9aa8e16e13b59ab843cd669",
+      "length": 106
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 82,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:d5e42cd7e0b5316fde70e0ae0684c4fb8a36da8bb4badd1b4e111df748242b48",
+      "length": 122
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 83,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:8dc1898e74d4ab0597d3f7f2663fa4e1677204021e667510e528407911806854",
+      "length": 76
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 84,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:9adf52efd7d96e554b749377458750e594db9cacfe26767c43651e627b456a9a",
+      "length": 170
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 85,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:cc306f3c5f7413ebcab5cfea878c0c41a51e411c0959d381122fa8f84633a9f8",
+      "length": 87
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_09.md",
+      "line": 86,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:bdc4c60db205745b06d4d489789fa45ba79752787bd6a9b9ba09c536b9a22dd9",
+      "length": 79
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_10.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:8748e18169ad6d7c137e8cb9c323ae06204d22844d6dd992759bfc38c1c2a46a",
+      "length": 197
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_10.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:e22dd14819ff07aa6e4e96d5c9f16b16cb11e561803fd08b11cc52d03fa66347",
+      "length": 149
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_10.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:8748e18169ad6d7c137e8cb9c323ae06204d22844d6dd992759bfc38c1c2a46a",
+      "length": 197
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_10.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:68120143b19562b8c4aa2d41f60f303385a86344465a7da2ec46ca1877797f7b",
+      "length": 107
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_10.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:92dbd73530bc8fb789fe1f4ef17eb2414ef19d64ee39ca42cdb31c5e654a3f96",
+      "length": 198
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_10.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:391213263c4bb0309a8f70bd7c9960ecb296aad14cdb89164d8c97f8a415e413",
+      "length": 162
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_10.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:b6bf2d5efdf83e6cc5864e6036a4d0fc115ffacbe6c6fb1b716129de1a108dc2",
+      "length": 152
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_10.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:0f15edd1eedbcd886318f21025b1f501eecba49a2aee19ac1ce7feec723fb221",
+      "length": 123
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_10.md",
+      "line": 82,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:22a13e59ea622a97d1e3c739e07f1a91572e82775f5ac17eba0031adcc8f7ece",
+      "length": 118
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_10.md",
+      "line": 83,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:2f42c2709e7ceb8370c6262a2e96e9c7202a98e3f69279ec60f479fa061aa3bf",
+      "length": 77
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_10.md",
+      "line": 84,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:d5a6ec5cc77f660ab4136ff412bb52ebf58826df08d91eeddb0fb8725e32c320",
+      "length": 120
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_10.md",
+      "line": 85,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:b6bf2d5efdf83e6cc5864e6036a4d0fc115ffacbe6c6fb1b716129de1a108dc2",
+      "length": 152
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_10.md",
+      "line": 86,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:0f15edd1eedbcd886318f21025b1f501eecba49a2aee19ac1ce7feec723fb221",
+      "length": 123
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:4e7118898f2c91d4376f7397a044fced4de1546041b582fd6964bded58a617d2",
+      "length": 203
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:132d199e006b9c01c935123daca9633d1c6311b3feb42bd274c0fef85d5a5c00",
+      "length": 131
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:73be01dffd010386fc646fbcec970318095682a6304945bb37e2e79208b0e377",
+      "length": 127
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:2331b78daa6e281ff40bd125f3a2cd37e579840dc94d6e50f20b178ea0f0781d",
+      "length": 114
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:a7651f756bd641ea5d71a9684d9ac3a20317e8757ac5373f4dc1b2f27b45842b",
+      "length": 235
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:19fa3de1f1d6e7177f962681a806f09bca0f7350074b5d4439439a328dfa3bb2",
+      "length": 185
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:53aab2f88b7baf6b94cfdabb3ffdce7c311bb891eb765bd55c2c68bf757ca244",
+      "length": 244
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:a7cba357122ea05c77c079bb5bb864f1fa49aaff7491e66fadb21e1ab586ce09",
+      "length": 170
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:aaf3572fd4bf1d09a75b685ae53db8d1db0797b53eec5bb62db02e072bb2c09f",
+      "length": 138
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:96e0be6a9731da0b56b494763067529d7775fdf379f8d14025eeeb7a48d43580",
+      "length": 174
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:4084c76c87af865c66182a98d0fd784c09a29c7e318c0c7a65398a3c33c0cd8a",
+      "length": 83
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:5fd2518ccfd12cd4819e290351bf6a358139f902390f73d9a9c283491b1c3b9c",
+      "length": 95
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 89,
+      "field": "quote",
+      "sha256": "sha256:5a3ff68109b8ca4a049bd3ba80bf475d98983d2fee181de53778a2fcd678b084",
+      "length": 342
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 94,
+      "field": "passage_locator",
+      "sha256": "sha256:075088190883c6ca5e1d58f53e67c8be28ee0360d59f5587be7da5e69513a9ad",
+      "length": 109
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 104,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:998b8106c2b2be55f6df3c0badd3011f8883b99bcbd0e29a41e24707c5bcd250",
+      "length": 112
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 105,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:a43bd61f1dfc2b4f314a84b352b0b88a9eeba22d0e12b232fc7a5f119c45d839",
+      "length": 103
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 106,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:3bb1cff2f282b302d316f8110919027df167a3e44b40fbd73d2ef6d84b860790",
+      "length": 139
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 107,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:b2a1e0fc8d8f7fc1fe035ae48aaf3c1102242ef1ef8f55d8f6a6d5c8fff2a1e2",
+      "length": 163
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 108,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:7ae0d42be35ed060e3f015e55a2b1cc9f8df4a442ba16db280e26af596c79858",
+      "length": 121
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 109,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:faaa1222a69b7398b2de6c627df1ce33180f78ff81e4f2af5d6f77ff9fbcd9f4",
+      "length": 60
+    },
+    {
+      "file": "sources/src_20260718_rfkid001_11.md",
+      "line": 110,
+      "field": "quote (markdown bullet)",
+      "sha256": "sha256:0def8d9334e9e9650530ad6c3bd6e051a0e7535ef224c824d13f7b53d350b37e",
+      "length": 88
+    }
+  ],
+  "files": [
+    {
+      "path": "claims/claim_ledger.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:df1b42fa5cd7ec302f76cbfdb68bcb056932b0acc1dc70d7637f7bdfe5566860",
+      "fixtureSha256": "sha256:df1b42fa5cd7ec302f76cbfdb68bcb056932b0acc1dc70d7637f7bdfe5566860"
+    },
+    {
+      "path": "evidence_bundle.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:ed679a51c138401582b16d75cdcafa8c69cfb42dc9964fb74da05f51b0f55897",
+      "fixtureSha256": "sha256:ed679a51c138401582b16d75cdcafa8c69cfb42dc9964fb74da05f51b0f55897"
+    },
+    {
+      "path": "extractions/ext_20260718_00381761_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:aba2f7d9804f6b521290ee5e647fc1a7236b0bfd72aceabb9be27320fb9c8e5c",
+      "fixtureSha256": "sha256:aba2f7d9804f6b521290ee5e647fc1a7236b0bfd72aceabb9be27320fb9c8e5c"
+    },
+    {
+      "path": "extractions/ext_20260718_10595dd6_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:bc1c13d91b2508e93ddcf8d8a29c790e76df342ca6e5e78690a23c1aad139cf2",
+      "fixtureSha256": "sha256:bc1c13d91b2508e93ddcf8d8a29c790e76df342ca6e5e78690a23c1aad139cf2"
+    },
+    {
+      "path": "extractions/ext_20260718_259a7463_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:2054690a567b11d127ce4bacb69c8cc255124a2f88265924a8383c0cfea6c920",
+      "fixtureSha256": "sha256:2054690a567b11d127ce4bacb69c8cc255124a2f88265924a8383c0cfea6c920"
+    },
+    {
+      "path": "extractions/ext_20260718_281cdb67_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:04b2f7c46637a7e88f6bad2d17158364428f2c8203b89f0081db1e6945b44094",
+      "fixtureSha256": "sha256:04b2f7c46637a7e88f6bad2d17158364428f2c8203b89f0081db1e6945b44094"
+    },
+    {
+      "path": "extractions/ext_20260718_34334a3d_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:113f2c68c35abd387c3d761c7f8bd33814899351d875181ea0b3613a584d8539",
+      "fixtureSha256": "sha256:113f2c68c35abd387c3d761c7f8bd33814899351d875181ea0b3613a584d8539"
+    },
+    {
+      "path": "extractions/ext_20260718_3cb2024f_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:35da911399a34d8979ecfa19e9cf3e9172ee7c5de0011692309b5bc223486e44",
+      "fixtureSha256": "sha256:35da911399a34d8979ecfa19e9cf3e9172ee7c5de0011692309b5bc223486e44"
+    },
+    {
+      "path": "extractions/ext_20260718_852d2d7c_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:001d41462e4447987cb86386eb1f7f3244dbb607a7b4f88527e2563b4778a58b",
+      "fixtureSha256": "sha256:001d41462e4447987cb86386eb1f7f3244dbb607a7b4f88527e2563b4778a58b"
+    },
+    {
+      "path": "extractions/ext_20260718_a266f21e_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:24bf0decb2dfa2bec26ab482286e92fa7be5d1020f0bf9c32b5c95e1b0ad1fd9",
+      "fixtureSha256": "sha256:24bf0decb2dfa2bec26ab482286e92fa7be5d1020f0bf9c32b5c95e1b0ad1fd9"
+    },
+    {
+      "path": "extractions/ext_20260718_c712c1df_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:5b7165387abd1a3d239f3e4d9c78dc4435b8e652f13551d8b9a247b57456d1fe",
+      "fixtureSha256": "sha256:5b7165387abd1a3d239f3e4d9c78dc4435b8e652f13551d8b9a247b57456d1fe"
+    },
+    {
+      "path": "extractions/ext_20260718_ce896fbe_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:b693cd57352598a11acb9b7dea2286c7045c442654e674e557637a320adaa754",
+      "fixtureSha256": "sha256:b693cd57352598a11acb9b7dea2286c7045c442654e674e557637a320adaa754"
+    },
+    {
+      "path": "extractions/ext_20260718_e0ba0cfe_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:feccc62c43d9be2b1927548abeaa5564cd8db7c9c25570c8d89760fd3e657531",
+      "fixtureSha256": "sha256:feccc62c43d9be2b1927548abeaa5564cd8db7c9c25570c8d89760fd3e657531"
+    },
+    {
+      "path": "extractions/ext_20260718_ed023aed_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:25f9119b8513dec02cd604b474a37ec1052a15221732d300c43870b4fa21de61",
+      "fixtureSha256": "sha256:25f9119b8513dec02cd604b474a37ec1052a15221732d300c43870b4fa21de61"
+    },
+    {
+      "path": "reports/report_draft.md",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:761c2ca0c54e6510c77741aca10239824858461ebafad24fb013f28681aea5fe",
+      "fixtureSha256": "sha256:761c2ca0c54e6510c77741aca10239824858461ebafad24fb013f28681aea5fe"
+    },
+    {
+      "path": "research_brief.md",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:fa7390b0bac9f2492665bf8b73e78a2a293971e2aff64a53268bde1b210b9d1c",
+      "fixtureSha256": "sha256:fa7390b0bac9f2492665bf8b73e78a2a293971e2aff64a53268bde1b210b9d1c"
+    },
+    {
+      "path": "reviews/verification.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:e7e132b423245ca9a58fc6d091f9569287177bb26ea5338a0a2946be9e8f2b6e",
+      "fixtureSha256": "sha256:e7e132b423245ca9a58fc6d091f9569287177bb26ea5338a0a2946be9e8f2b6e"
+    },
+    {
+      "path": "sources/src_20260718_rfkid001_00.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:6456741a305c6944f04341ef12425902d97abd978dca440a38e7930c5f041de5",
+      "fixtureSha256": "sha256:3501427f14cefd18232060d212315ed68863d8777adc7c3d1178d260d3aca92a"
+    },
+    {
+      "path": "sources/src_20260718_rfkid001_01.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:7bb768dcac25b5bdd83b162167022fa52afb6ef9e05b894e2b2a067cd06f86b4",
+      "fixtureSha256": "sha256:d9bfdd39c2ccd80477e7c3a7343b5683f484393225ef95168331997271b4a7f4"
+    },
+    {
+      "path": "sources/src_20260718_rfkid001_02.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:5ee8becb9729f2a415727e4e92179a0ca04a14bec8be4a7193c2028597f27f64",
+      "fixtureSha256": "sha256:23c9a2524b8c887bef4f2abd2ec4e5ac276ac4f97f4bd325390d7762845219bb"
+    },
+    {
+      "path": "sources/src_20260718_rfkid001_03.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:9b0bd426765553548b7f30724c80c414988dec292a4e041f5850f2e862d1d591",
+      "fixtureSha256": "sha256:e66d4159695ff515300647cd7da40ea74031f7e89e45c73d1d35099c50d97c96"
+    },
+    {
+      "path": "sources/src_20260718_rfkid001_04.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:d823dc5a7b26f9303f58a6aa992ee5ea25590bca4c02f407b9444d0a837db6bf",
+      "fixtureSha256": "sha256:4ee004c9b05bf7cafb5a3295ec6210cd49cac6e8e9595cbeb9781d0066b9ef7a"
+    },
+    {
+      "path": "sources/src_20260718_rfkid001_05.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:af4462bd7f50e2c32f8c85bb740e399e778da8ad45935eb3829e182db1e2153a",
+      "fixtureSha256": "sha256:f60cb8b139071ba71965db1a66d01e5d1efeb78badc15fa7387b185c11d49b6d"
+    },
+    {
+      "path": "sources/src_20260718_rfkid001_06.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:6c25d12861b397e6601de3cd73be970e75d7359cd16dd6831309a477e68e1a3c",
+      "fixtureSha256": "sha256:ce39e900dfde744d8e45a129177aa26ac927565cb0d7116be189e3a35f47afba"
+    },
+    {
+      "path": "sources/src_20260718_rfkid001_07.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:3dd500f8d6bdca55e45d168743ac87b06545b24eeac10ea73c1c080f21c50b30",
+      "fixtureSha256": "sha256:cfb88973e5d2f87b39458a040dd4ba26a79b1e1b2b234b8dce2e9abb5aedcc63"
+    },
+    {
+      "path": "sources/src_20260718_rfkid001_08.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:c17c2b79e48aec9a65ce1a879a224911f49f825a51d89f3b5d8050afceed0d28",
+      "fixtureSha256": "sha256:719f7b043e6572c134ed48e0ab903a1a2baad8c72b4c64ae4a6b80aa83d41d5f"
+    },
+    {
+      "path": "sources/src_20260718_rfkid001_09.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:29eeeea64f8fc2312f6e5c56ab802f3eb7f57f5a228e3e8ddf2ef579fd3f12b9",
+      "fixtureSha256": "sha256:83a62461be073659cffcfe02d45264529b2088c77e6514502a4e77d341f1c168"
+    },
+    {
+      "path": "sources/src_20260718_rfkid001_10.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:d00fb759bd8f3bc3e8c1388313cdb9633aff9508c7e667f3893b7921de3d2792",
+      "fixtureSha256": "sha256:10bb99f92ce82b089df9e595131be8a433da452b6ddfc8d85b6ceb2a840ec11a"
+    },
+    {
+      "path": "sources/src_20260718_rfkid001_11.md",
+      "action": "sanitized (verbatim source-article excerpts redacted to sha256 + selector)",
+      "sourceSha256": "sha256:053d74fe4a70a3d4f86f0173b3d2128c4c3381e62c5382a932eed2f2045583e7",
+      "fixtureSha256": "sha256:6543848afd0af7846150f48985e6acd17e9abeecee730c4d6820c8e4ed982917"
+    },
+    {
+      "path": "swarm_plan.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:9db5e7674e03e3ebdd5a4f19dd0578cf3750aa65513464a1405166bdb2b6088b",
+      "fixtureSha256": "sha256:9db5e7674e03e3ebdd5a4f19dd0578cf3750aa65513464a1405166bdb2b6088b"
+    },
+    {
+      "path": "writebacks/ccdash_event.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:eed4c74ea7c0d380051b3be80f30e984027a76311fe1012969283509724c66e2",
+      "fixtureSha256": "sha256:eed4c74ea7c0d380051b3be80f30e984027a76311fe1012969283509724c66e2"
+    }
+  ]
+}

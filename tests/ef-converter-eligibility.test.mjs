@@ -30,12 +30,25 @@ import {
   checkEligibility,
   BundleNotVerifiedError,
   VerificationStateMismatchError,
+  MissingPediatricCdsExtensionError,
   CLAIM_CATEGORIES,
 } from '../tools/rf-bundle-to-kb-pack/lib/eligibility.mjs';
 import { SchemaError, EXIT_SCHEMA } from '../tools/rf-bundle-to-kb-pack/lib/errors.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FIXTURE_DIR = path.join(REPO_ROOT, 'tests', 'fixtures', 'rf-cbc-001');
+
+// P2-T1 (FR-16, EF-WP1): the full set of 5 fixtures this converter-eligibility gate must pass —
+// the 4 new fixtures (P1-T3..T6) plus the pre-existing rf-cbc-001 regression check. Source-card
+// counts per docs/project_plans/expansion/rf-handoff/RESULTS.md §1/§3 provenance note ("6/6 for
+// RF-EV-001, 12/12 for each of the other six runs").
+const EF_WP1_FIXTURES = [
+  { slug: 'rf-ev-001', sourceCardCount: 6 },
+  { slug: 'rf-cbc-001', sourceCardCount: 12 },
+  { slug: 'rf-cbc-002', sourceCardCount: 12 },
+  { slug: 'rf-kid-001', sourceCardCount: 12 },
+  { slug: 'rf-gro-002', sourceCardCount: 12 },
+];
 
 // Same synthetic-module-with-decisions convention `tests/ef-converter-loader.test.mjs` uses: a
 // throwaway module.json + authoring-decisions.yaml pair so this file can drive `loadBundle`
@@ -56,10 +69,10 @@ async function makeTempModuleWithDecisions() {
  * through exercises this task against real bundle data without depending on `hashing.mjs`
  * (P2-T3), which is a separate, independently-scheduled task in this same phase batch.
  */
-async function loadRealFixtureAsPinnedBundle() {
+async function loadRealFixtureAsPinnedBundle(fixtureDir = FIXTURE_DIR) {
   const { dir: moduleDir, modulePath } = await makeTempModuleWithDecisions();
   try {
-    return await loadBundle({ runDir: FIXTURE_DIR, modulePath });
+    return await loadBundle({ runDir: fixtureDir, modulePath });
   } finally {
     await rm(moduleDir, { recursive: true, force: true });
   }
@@ -141,6 +154,24 @@ test('P2-T4: checkEligibility is deterministic over the real fixture (identical 
   const reportB = checkEligibility(pinnedBundleB);
   assert.deepEqual(reportA, reportB);
 });
+
+// ----- 1b. P2-T1 (FR-16, EF-WP1): every source card in all 5 real fixtures carries the -----------
+// `pediatric_cds` extension on every extracted point -- the structural pre-flight gate must pass
+// cleanly for all of them (never throw MissingPediatricCdsExtensionError), and each fixture's
+// loaded source-card count matches the RESULTS.md provenance note exactly.
+for (const { slug, sourceCardCount } of EF_WP1_FIXTURES) {
+  test(`P2-T1: EF-WP1 structural pre-flight passes for ${slug} (${sourceCardCount} source cards, all carry pediatric_cds)`, async () => {
+    const fixtureDir = path.join(REPO_ROOT, 'tests', 'fixtures', slug);
+    const pinnedBundle = await loadRealFixtureAsPinnedBundle(fixtureDir);
+    assert.equal(
+      pinnedBundle.artifacts.sourceCards.length,
+      sourceCardCount,
+      `${slug} should have exactly ${sourceCardCount} source cards per RESULTS.md`,
+    );
+    // Does not throw -- the whole point of the gate is that it lets a fully-carded bundle through.
+    assert.doesNotThrow(() => checkEligibility(pinnedBundle));
+  });
+}
 
 // ----- 2. AC 1: a seeded non-`verified` bundle status is rejected, non-zero exit, no output -----
 
@@ -553,4 +584,111 @@ test('P2-T4: claim.confidence has no bearing on eligibility routing (no confiden
   const reportWith = checkEligibility(withConfidence);
   const reportWithout = checkEligibility(withoutConfidence);
   assert.deepEqual(reportWith.claims, reportWithout.claims);
+});
+
+
+// ----- 6. P2-T1 (FR-16, EF-WP1): structural pre-flight gate, synthetic seeded failures ----------
+// These seed the exact failure this task's own acceptance criteria names: a bundle with >=1
+// source card missing the `pediatric_cds` extension is rejected before any bundle-status or
+// per-claim work runs, naming the specific card ID(s) -- never a generic failure.
+
+test('P2-T1: a source card with a point missing pediatric_cds entirely is rejected, naming the card', () => {
+  const noExtensionPoint = { ...GOOD_POINT, pediatric_cds: undefined };
+  const pinnedBundle = makeSyntheticBundle({
+    sourceCards: [sourceCard({ source_card_id: 'src_missing_ext', extracted_points: [noExtensionPoint] })],
+  });
+  assert.throws(
+    () => checkEligibility(pinnedBundle),
+    (err) => {
+      assert.ok(
+        err instanceof MissingPediatricCdsExtensionError,
+        `expected MissingPediatricCdsExtensionError, got ${err.constructor.name}`,
+      );
+      assert.ok(err instanceof SchemaError);
+      assert.equal(err.exitCode, EXIT_SCHEMA);
+      assert.notEqual(err.exitCode, 0, 'AC: non-zero exit');
+      assert.deepEqual(err.cardIds, ['src_missing_ext']);
+      assert.match(err.message, /src_missing_ext/);
+      return true;
+    },
+  );
+});
+
+test('P2-T1: a source card whose pediatric_cds is explicitly null is rejected (not treated as present)', () => {
+  const nullExtensionPoint = { ...GOOD_POINT, pediatric_cds: null };
+  const pinnedBundle = makeSyntheticBundle({
+    sourceCards: [sourceCard({ source_card_id: 'src_null_ext', extracted_points: [nullExtensionPoint] })],
+  });
+  assert.throws(() => checkEligibility(pinnedBundle), (err) => {
+    assert.ok(err instanceof MissingPediatricCdsExtensionError);
+    assert.deepEqual(err.cardIds, ['src_null_ext']);
+    return true;
+  });
+});
+
+test('P2-T1: a source card with zero extracted points does not carry the extension and is rejected', () => {
+  const pinnedBundle = makeSyntheticBundle({
+    sourceCards: [sourceCard({ source_card_id: 'src_no_points', extracted_points: [] })],
+  });
+  assert.throws(() => checkEligibility(pinnedBundle), (err) => {
+    assert.ok(err instanceof MissingPediatricCdsExtensionError);
+    assert.deepEqual(err.cardIds, ['src_no_points']);
+    return true;
+  });
+});
+
+test('P2-T1: a card with ONE of several points missing the extension is rejected (every point must carry it)', () => {
+  const noExtensionPoint = { ...GOOD_POINT, evidence_id: 'ev_002', pediatric_cds: undefined };
+  const pinnedBundle = makeSyntheticBundle({
+    sourceCards: [
+      sourceCard({ source_card_id: 'src_partial', extracted_points: [GOOD_POINT, noExtensionPoint] }),
+    ],
+  });
+  assert.throws(() => checkEligibility(pinnedBundle), (err) => {
+    assert.ok(err instanceof MissingPediatricCdsExtensionError);
+    assert.deepEqual(err.cardIds, ['src_partial']);
+    return true;
+  });
+});
+
+test('P2-T1: multiple source cards missing the extension are ALL named, not just the first', () => {
+  const noExtensionPoint = { ...GOOD_POINT, pediatric_cds: undefined };
+  const pinnedBundle = makeSyntheticBundle({
+    sourceCards: [
+      sourceCard({ source_card_id: 'src_bad_one', extracted_points: [noExtensionPoint] }),
+      sourceCard({ source_card_id: 'src_good', extracted_points: [GOOD_POINT] }),
+      sourceCard({ source_card_id: 'src_bad_two', extracted_points: [noExtensionPoint] }),
+    ],
+  });
+  assert.throws(() => checkEligibility(pinnedBundle), (err) => {
+    assert.ok(err instanceof MissingPediatricCdsExtensionError);
+    assert.deepEqual(err.cardIds, ['src_bad_one', 'src_bad_two']);
+    assert.match(err.message, /src_bad_one/);
+    assert.match(err.message, /src_bad_two/);
+    assert.doesNotMatch(err.message, /src_good/);
+    return true;
+  });
+});
+
+test('P2-T1: the structural pre-flight runs BEFORE bundle-status reconciliation (stage 0 before stage 1)', () => {
+  // Bundle status is "draft" (would normally trigger BundleNotVerifiedError at stage 1) AND a
+  // source card is missing the extension (stage 0). Stage 0 must win -- it is checked first.
+  const noExtensionPoint = { ...GOOD_POINT, pediatric_cds: undefined };
+  const pinnedBundle = makeSyntheticBundle({
+    status: 'draft',
+    sourceCards: [sourceCard({ source_card_id: 'src_missing_ext', extracted_points: [noExtensionPoint] })],
+  });
+  assert.throws(() => checkEligibility(pinnedBundle), MissingPediatricCdsExtensionError);
+});
+
+test('P2-T1: a bundle with zero source cards vacuously passes the structural pre-flight (nothing to reject)', () => {
+  const pinnedBundle = makeSyntheticBundle({ sourceCards: [] });
+  assert.doesNotThrow(() => checkEligibility(pinnedBundle));
+});
+
+test('P2-T1: a fully-carded source card (every point has pediatric_cds) passes the structural pre-flight', () => {
+  const pinnedBundle = makeSyntheticBundle({
+    sourceCards: [sourceCard({ source_card_id: 'src_real', extracted_points: [GOOD_POINT] })],
+  });
+  assert.doesNotThrow(() => checkEligibility(pinnedBundle));
 });

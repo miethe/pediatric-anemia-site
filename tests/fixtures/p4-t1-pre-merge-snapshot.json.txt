@@ -1,0 +1,109 @@
+{
+  "$schema": "p4-t1-pre-merge-snapshot@1",
+  "taskId": "P4-T1",
+  "planPath": "docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1/phase-3-4-scaffolds-and-backfill.md",
+  "purpose": "Baseline byte-identity / record-identity snapshot captured BEFORE any propose run in Phase 4 (multi-bundle-conversion-e1). Backs the decisions-block Risk 1 (modules/anemia/ additive-only RF-EV-001 backfill) and Risk 2 (modules/cbc_suite_v1/ collision-safe RF-CBC-002 merge) byte-identity proofs consumed by P4-T4 and P4-T7. Regenerate only via scripts/capture-p4-t1-snapshot.mjs, only from a clean pre-Phase-4 checkout, only with review — this fixture IS the frozen baseline, not a live derivation.",
+  "capturedAt": "2026-07-22T06:25:50.768Z",
+  "wholeFileInvariants": [
+    "modules/anemia/evidence.json",
+    "modules/anemia/rules.json",
+    "modules/anemia/candidates.json",
+    "modules/cbc_suite_v1/rules.json",
+    "modules/cbc_suite_v1/candidates.json",
+    "modules/cbc_suite_v1/authoring-decisions.yaml",
+    "modules/cbc_suite_v1/rule-provenance.json"
+  ],
+  "recordInvariants": [
+    {
+      "relPath": "modules/cbc_suite_v1/evidence.json",
+      "arrayField": "sources",
+      "idField": "id"
+    },
+    {
+      "relPath": "modules/cbc_suite_v1/evidence-assertions.json",
+      "arrayField": "assertions",
+      "idField": "assertionId"
+    }
+  ],
+  "files": {
+    "modules/anemia/evidence.json": {
+      "sha256": "sha256:9bf5a47a66c4d6e2af02a4f6b3f8fc870fc8ddfa3aa57e5c3134de202bb948e0",
+      "byteLength": 66558
+    },
+    "modules/anemia/rules.json": {
+      "sha256": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
+      "byteLength": 158133
+    },
+    "modules/anemia/candidates.json": {
+      "sha256": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
+      "byteLength": 18685
+    },
+    "modules/cbc_suite_v1/rules.json": {
+      "sha256": "sha256:3114219af0a1e0e2a45f55f001e637376c15b4703aea0593544a18592422ba04",
+      "byteLength": 7649
+    },
+    "modules/cbc_suite_v1/candidates.json": {
+      "sha256": "sha256:c2e8baac3af42842358e539c12d74a4a543f2293a6f5c32139c6657d9fbc0fef",
+      "byteLength": 1517
+    },
+    "modules/cbc_suite_v1/authoring-decisions.yaml": {
+      "sha256": "sha256:d3190106acb8f1bb0508be5873b5f40950e8c725e56da709a346ba35e0aafa6f",
+      "byteLength": 11362
+    },
+    "modules/cbc_suite_v1/rule-provenance.json": {
+      "sha256": "sha256:8c8e5225323ba7ff6618ee07eb80155f65e4d6c2106fe845fbd5ba7871e0c037",
+      "byteLength": 9182
+    },
+    "modules/cbc_suite_v1/evidence.json": {
+      "sha256": "sha256:c263c59a4274b1fc5a1258ba720bf3be008e6d978b9aa6368e432c49f4adfed8",
+      "byteLength": 32720
+    },
+    "modules/cbc_suite_v1/evidence-assertions.json": {
+      "sha256": "sha256:01dda59e7a4fe7415938e754cd8ba3dc2126bae1f55d722c02ffab84c06c08e3",
+      "byteLength": 21692
+    }
+  },
+  "records": {
+    "modules/cbc_suite_v1/evidence.json": {
+      "arrayField": "sources",
+      "idField": "id",
+      "recordCount": 8,
+      "byId": {
+        "CALIPER2020_HEMATOLOGY_I": "sha256:fc9ff230d3c83dd2e2cebb37514653d4f5c0c981078381c19c6bddce3413a264",
+        "CALIPER2023_MINDRAY_79PARAM": "sha256:639e96156d0a7e51855e9bc0803a329354064d3e4e3f1a939d087672efb948e3",
+        "COH2015_ELANE_MUTATIONS": "sha256:5e5e3f574c9bc033b341fa6644838ae897079204264f01e6929a8643a1f9465e",
+        "BJHAEM2010_SCNIR_LEUKEMIA_RISK": "sha256:299e7bc4e840f8c1ba899814c5cbdadf608c3f355f93c60eca4dd33a57dfbf3b",
+        "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES": "sha256:e42d6670b8121c1a7775b5a8b1b8018e1a37fe7468f0c2b05b213284604f5f7f",
+        "SCNIR2022_GCSF_OUTCOMES": "sha256:86a8989419ec59451cd7fa40b3e16d0e5a8fe7609d9447913af6012f5d000afc",
+        "HEMATOLREP2024_NEUTROPENIA_REVIEW": "sha256:fb1aa0ae267dd8a2d8c9e0f5517dd454d220867a6c6408f0b12fb027bfbe855e",
+        "JPEDS2023_DUFFY_NULL_NEUTROPENIA": "sha256:7c6f7c382ba11f77bc14d201ead0d7714c15f551c786526ac1d01ed122057bba"
+      }
+    },
+    "modules/cbc_suite_v1/evidence-assertions.json": {
+      "arrayField": "assertions",
+      "idField": "assertionId",
+      "recordCount": 19,
+      "byId": {
+        "evas_cbc_age_interval_001": "sha256:7072acb40c84db754052c652e224cf39e97ed67d4fc1ad1ab24770c3f28d687d",
+        "evas_cbc_analyzer_specificity_001": "sha256:a308bd38bcb95c26b7df3e4cdd5fcaa11bfc1d06d3113701c59b0f1f043e6b96",
+        "evas_cbc_analyzer_specificity_002": "sha256:b7eff121e0e4ed401638d6fa69c9dcb2ecfffb68ccd05b886bea3ea6f1d21198",
+        "evas_cbc_benign_neutropenia_differential_001": "sha256:e029ff1f7aec7b467fa9d780aa74b2b6c4052cb598761673398fc154661eeb95",
+        "evas_cbc_benign_neutropenia_differential_002": "sha256:4dfe99cbd2379b8b28bebeae5d122de513ee5feaaf0d10be727b8fb0e8179f67",
+        "evas_cbc_benign_neutropenia_differential_003": "sha256:072828fa266960585a683fb288fca99a12b8523584e785d2a01f70b8180f7428",
+        "evas_cbc_benign_neutropenia_differential_004": "sha256:4981b83d024ebb4f4aa797ce0a9fb5fbc07d690ee81e5682aa305a17526d95a6",
+        "evas_cbc_benign_neutropenia_differential_005": "sha256:7f89967ab2547643c032fded6e739c049e73c5e0c7dd29879dbefc3cb070a8a4",
+        "evas_cbc_caliper_dxh900_intervals_001": "sha256:543024cde11bc7005243e55e836db0d4243820d14efb0c6db8930ef2b8c61818",
+        "evas_cbc_marrow_malignancy_risk_001": "sha256:9654e763fa3c08a090d67aeeab3e1f21ebe396242033bbd409fd927b1f7b8f98",
+        "evas_cbc_marrow_malignancy_risk_002": "sha256:ec24203df213f528d90ce63364c1fed9e565472c369d61cfe14db454221200b0",
+        "evas_cbc_marrow_malignancy_risk_003": "sha256:88425546ae3aba65c156f3cb01b94e6cf0d3a41ac6ea94620a0244a6499285e9",
+        "evas_cbc_marrow_malignancy_risk_004": "sha256:0968146e3bed706555b6afabd47df8cca05fc09991f2c9399d58bea0c951fdc5",
+        "evas_cbc_unit_normalization_001": "sha256:8c7f03316110a907b5665bf0e1802ec48441511dacf29ecb3a7d88f4d32fe87a",
+        "evas_cbc_unit_normalization_002": "sha256:ade0904e5cbc39f45eac24d9b914f2fe4b1297e0cc0739206f6170b316f258d9",
+        "evas_cbc_unit_normalization_003": "sha256:f4710430b440bf30d0537232139456b77b73a48511552e07985bd84b44fdb1cb",
+        "evas_cbc_unit_normalization_004": "sha256:9d2b4567d867a7adeb37f4a09015212f4e25cf85898e9e8d03c929e07576a5d0",
+        "evas_cbc_young_infant_anc_001": "sha256:8e79fd12e00af4939d006822b0d80899f92a3f6035fdfa80a79bcffd491c60ef",
+        "evas_cbc_young_infant_anc_002": "sha256:0835a777377488cbc187761c43f26439b248918e443ad42bd63c345f392984a2"
+      }
+    }
+  }
+}

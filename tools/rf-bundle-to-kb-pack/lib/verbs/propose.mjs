@@ -587,9 +587,16 @@ export async function run(options) {
     throw new SchemaError(`${evidenceAssertionsFile.path} is not valid JSON: ${err.message}`, { cause: err });
   }
 
+  // rfRunId-scoped (multi-bundle-conversion-e1, P4-T5, FR-7/FR-8): modules/cbc_suite_v1/
+  // evidence-assertions.json may now hold more than one upstream rf run's assertions (RF-CBC-001 +
+  // RF-CBC-002, appended by P4-T5) sharing the same clm_NNN claim-id namespace -- this run's own
+  // routing must only ever match against ITS OWN bundle's assertions (see
+  // ../claim-routing.mjs's routeClaims() rfRunId option doc for the full rationale), never a
+  // different bundle's identically-numbered claim.
   const routingReport = routeClaims(
     pinned.artifacts.claimLedger.parsed.claims,
     evidenceAssertionsDoc.assertions,
+    { rfRunId: pinned.runId },
   );
 
   // Seam invariant 8 (02 §2.3 item 8, FR-13, this task's own AC): fail closed before writing

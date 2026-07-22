@@ -155,9 +155,12 @@ test('P5-T5/P5-T2: a real propose run\'s conversion-report.json enumerates every
     const loaded = await loadBundle({ runDir: FIXTURE_DIR, modulePath: REAL_MODULE_PATH });
     const pinned = await pinArtifacts(loaded);
     const evidenceAssertionsDoc = await loadJson(path.join(REAL_MODULE_DIR, 'evidence-assertions.json'));
+    // rfRunId-scoped (multi-bundle-conversion-e1, P4-T5): matches propose.mjs's own now-corrected
+    // call site -- see tests/ef-converter-conversion-report.test.mjs's identical comment.
     const routingReport = routeClaims(
       pinned.artifacts.claimLedger.parsed.claims,
       evidenceAssertionsDoc.assertions,
+      { rfRunId: pinned.runId },
     );
 
     const conversionReport = await loadJson(path.join(outDir, 'conversion-report.json'));

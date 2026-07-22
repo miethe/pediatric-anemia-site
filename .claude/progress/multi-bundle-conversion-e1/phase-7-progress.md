@@ -29,7 +29,7 @@ tasks:
     model_effort: "adaptive"
     estimated_effort: "0.5 pts"
     dependencies: ["P6-GATE2"]
-    description: "DOC-006a. Design spec: rule-authoring workflow per module. Author docs/project_plans/design-specs/rule-authoring-workflow-per-module.md (maturity: idea — needs ADR-0001 accepted first) for Deferred Item DF-E1-M1, prd_ref set to this feature's PRD. Append path to plan's deferred_items_spec_refs frontmatter."
+    description: "DOC-006a. Design spec: rule-authoring workflow per module. Author docs/project_plans/design-specs/rule-authoring-workflow-per-module.md (maturity: idea — needs ADR-0001 accepted first) for Deferred Item DF-E1-M1, prd_ref set to this feature's PRD. Append path to plan's deferred_items_spec_refs frontmatter. CONSTRAINT (added post-Phase-6 review): only rf-cbc-002 -> cbc_suite_v1 completed the converter's inspect->verify->propose pipeline end to end (FR-14 module scoping, tools/rf-bundle-to-kb-pack/lib/batch.mjs:26-40); anemia/kidney_suite_v1/growth_suite_v1's evidence artifacts were produced by bespoke, uncommitted projection scripts, not the converter (DF-E1-M1). This doc MUST describe only rf-cbc-002 -> cbc_suite_v1 as an end-to-end converter conversion, and the other 3 as bespoke evidence projections pending DF-E1-M1."
   - id: "P7-T2"
     status: "not_started"
     assigned_to: ["general-purpose"]
@@ -37,7 +37,7 @@ tasks:
     model_effort: "adaptive"
     estimated_effort: "0.5 pts"
     dependencies: ["P6-GATE2"]
-    description: "DOC-006b. Design spec: clinical-review-portal intake of E1 artifacts. Author docs/project_plans/design-specs/clinical-review-portal-intake-e1-artifacts.md (maturity: idea — needs ADR-0004 accepted first) for Deferred Item DF-E1-M2, describing how a future portal would surface this pass's conflict objects, unresolved.json, and candidate scaffolds. Append path to deferred_items_spec_refs."
+    description: "DOC-006b. Design spec: clinical-review-portal intake of E1 artifacts. Author docs/project_plans/design-specs/clinical-review-portal-intake-e1-artifacts.md (maturity: idea — needs ADR-0004 accepted first) for Deferred Item DF-E1-M2, describing how a future portal would surface this pass's conflict objects, unresolved.json, and candidate scaffolds. Append path to deferred_items_spec_refs. CONSTRAINT (added post-Phase-6 review): only rf-cbc-002 -> cbc_suite_v1 completed the converter's inspect->verify->propose pipeline end to end (FR-14 module scoping, tools/rf-bundle-to-kb-pack/lib/batch.mjs:26-40); anemia/kidney_suite_v1/growth_suite_v1's evidence artifacts were produced by bespoke, uncommitted projection scripts, not the converter (DF-E1-M1). This doc MUST describe only rf-cbc-002 -> cbc_suite_v1 as an end-to-end converter conversion, and the other 3 as bespoke evidence projections pending DF-E1-M1."
   - id: "P7-T3"
     status: "not_started"
     assigned_to: ["general-purpose"]
@@ -45,7 +45,7 @@ tasks:
     model_effort: "adaptive"
     estimated_effort: "0.5 pts"
     dependencies: ["P6-GATE2"]
-    description: "DOC-006c. Design spec: REG-001/REG-004 legal sign-off routing. Author docs/project_plans/design-specs/reg-001-004-legal-signoff-routing.md (maturity: idea, category: policy-flavored) for Deferred Item DF-EXT-M1, cross-referencing P6-T1's HOLD record and rf-handoff/RESULTS.md §5. States explicitly this is an owner/legal-team action, not an engineering task. Append path to deferred_items_spec_refs."
+    description: "DOC-006c. Design spec: REG-001/REG-004 legal sign-off routing. Author docs/project_plans/design-specs/reg-001-004-legal-signoff-routing.md (maturity: idea, category: policy-flavored) for Deferred Item DF-EXT-M1, cross-referencing P6-T1's HOLD record and rf-handoff/RESULTS.md §5. States explicitly this is an owner/legal-team action, not an engineering task. Append path to deferred_items_spec_refs. CONSTRAINT (added post-Phase-6 review): only rf-cbc-002 -> cbc_suite_v1 completed the converter's inspect->verify->propose pipeline end to end (FR-14 module scoping, tools/rf-bundle-to-kb-pack/lib/batch.mjs:26-40); anemia/kidney_suite_v1/growth_suite_v1's evidence artifacts were produced by bespoke, uncommitted projection scripts, not the converter (DF-E1-M1). This doc MUST describe only rf-cbc-002 -> cbc_suite_v1 as an end-to-end converter conversion, and the other 3 as bespoke evidence projections pending DF-E1-M1."
   - id: "P7-T4"
     status: "not_started"
     assigned_to: ["general-purpose"]
@@ -53,7 +53,7 @@ tasks:
     model_effort: "adaptive"
     estimated_effort: "0.75 pts"
     dependencies: ["P6-GATE2", "P4-T3"]
-    description: "DOC-006d. Design spec: anemia backfill reconciliation procedure. Author docs/project_plans/design-specs/anemia-backfill-reconciliation-procedure.md (maturity: idea) for Deferred Item DF-E1-M3, expanding P4-T3's in-repo seam note into the 3 candidate reconciliation options the PRD names (leave-parallel / generate-citations-from-assertions / deprecate-EP-3-pipeline-role) without deciding among them. Append path to deferred_items_spec_refs; update P4-T3's note with a forward link."
+    description: "DOC-006d. Design spec: anemia backfill reconciliation procedure. Author docs/project_plans/design-specs/anemia-backfill-reconciliation-procedure.md (maturity: idea) for Deferred Item DF-E1-M3, expanding P4-T3's in-repo seam note into the 3 candidate reconciliation options the PRD names (leave-parallel / generate-citations-from-assertions / deprecate-EP-3-pipeline-role) without deciding among them. Append path to deferred_items_spec_refs; update P4-T3's note with a forward link. CONSTRAINT (added post-Phase-6 review): only rf-cbc-002 -> cbc_suite_v1 completed the converter's inspect->verify->propose pipeline end to end (FR-14 module scoping, tools/rf-bundle-to-kb-pack/lib/batch.mjs:26-40); anemia/kidney_suite_v1/growth_suite_v1's evidence artifacts were produced by bespoke, uncommitted projection scripts, not the converter (DF-E1-M1). This doc MUST describe only rf-cbc-002 -> cbc_suite_v1 as an end-to-end converter conversion, and the other 3 as bespoke evidence projections pending DF-E1-M1."
   - id: "P7-T5"
     status: "not_started"
     assigned_to: ["general-purpose"]
@@ -61,7 +61,7 @@ tasks:
     model_effort: "adaptive"
     estimated_effort: "0.25 pts"
     dependencies: ["P6-GATE2"]
-    description: "CHANGELOG [Unreleased] entry (FR-23, changelog_required: true): add an entry describing the batch pass, the 2 new module scaffolds, and the explicit 'zero new rules produced' outcome — never described as a content release or a step toward one. Follow .claude/specs/changelog-spec.md categorization. Set changelog_ref: CHANGELOG.md in plan frontmatter."
+    description: "CHANGELOG [Unreleased] entry (FR-23, changelog_required: true): add an entry describing the batch pass, the 2 new module scaffolds, and the explicit 'zero new rules produced' outcome — never described as a content release or a step toward one. Follow .claude/specs/changelog-spec.md categorization. Set changelog_ref: CHANGELOG.md in plan frontmatter. CONSTRAINT (added post-Phase-6 review): only rf-cbc-002 -> cbc_suite_v1 completed the converter's inspect->verify->propose pipeline end to end (FR-14 module scoping, tools/rf-bundle-to-kb-pack/lib/batch.mjs:26-40); anemia/kidney_suite_v1/growth_suite_v1's evidence artifacts were produced by bespoke, uncommitted projection scripts, not the converter (DF-E1-M1). This doc MUST describe only rf-cbc-002 -> cbc_suite_v1 as an end-to-end converter conversion, and the other 3 as bespoke evidence projections pending DF-E1-M1."
   - id: "P7-T6"
     status: "not_started"
     assigned_to: ["general-purpose"]
@@ -69,7 +69,7 @@ tasks:
     model_effort: "adaptive"
     estimated_effort: "0.5 pts"
     dependencies: ["P6-GATE2"]
-    description: "docs/architecture.md module inventory update (FR-23): update §2a's module inventory to list all 4 modules (anemia, cbc_suite_v1, kidney_suite_v1, growth_suite_v1) and note the REG-001/REG-004 HOLD-record convention as the pattern for any future legal-review-flagged bundle."
+    description: "docs/architecture.md module inventory update (FR-23): update §2a's module inventory to list all 4 modules (anemia, cbc_suite_v1, kidney_suite_v1, growth_suite_v1) and note the REG-001/REG-004 HOLD-record convention as the pattern for any future legal-review-flagged bundle. CONSTRAINT (added post-Phase-6 review): only rf-cbc-002 -> cbc_suite_v1 completed the converter's inspect->verify->propose pipeline end to end (FR-14 module scoping, tools/rf-bundle-to-kb-pack/lib/batch.mjs:26-40); anemia/kidney_suite_v1/growth_suite_v1's evidence artifacts were produced by bespoke, uncommitted projection scripts, not the converter (DF-E1-M1). This doc MUST describe only rf-cbc-002 -> cbc_suite_v1 as an end-to-end converter conversion, and the other 3 as bespoke evidence projections pending DF-E1-M1."
   - id: "P7-T7"
     status: "not_started"
     assigned_to: ["general-purpose"]
@@ -85,7 +85,7 @@ tasks:
     model_effort: "adaptive"
     estimated_effort: "0.5 pts"
     dependencies: ["P7-T1", "P7-T2", "P7-T3", "P7-T4", "P7-T5", "P7-T6", "P7-T7"]
-    description: "Human brief close-out + plan frontmatter finalization: update docs/project_plans/human-briefs/multi-bundle-conversion-e1.md §9 Running Log with a closing entry; set this plan's frontmatter status: completed (only after karen sign-off at P7-GATE2), populate commit_refs, pr_refs, finalize files_affected against the actual diff, set changelog_ref."
+    description: "Human brief close-out + plan frontmatter finalization: update docs/project_plans/human-briefs/multi-bundle-conversion-e1.md §9 Running Log with a closing entry; set this plan's frontmatter status: completed (only after karen sign-off at P7-GATE2), populate commit_refs, pr_refs, finalize files_affected against the actual diff, set changelog_ref. CONSTRAINT (added post-Phase-6 review): only rf-cbc-002 -> cbc_suite_v1 completed the converter's inspect->verify->propose pipeline end to end (FR-14 module scoping, tools/rf-bundle-to-kb-pack/lib/batch.mjs:26-40); anemia/kidney_suite_v1/growth_suite_v1's evidence artifacts were produced by bespoke, uncommitted projection scripts, not the converter (DF-E1-M1). This doc MUST describe only rf-cbc-002 -> cbc_suite_v1 as an end-to-end converter conversion, and the other 3 as bespoke evidence projections pending DF-E1-M1."
   - id: "P7-GATE1"
     status: "not_started"
     assigned_to: ["task-completion-validator"]
@@ -93,7 +93,7 @@ tasks:
     model_effort: "adaptive"
     estimated_effort: "—"
     dependencies: ["P7-T1", "P7-T2", "P7-T3", "P7-T4", "P7-T5", "P7-T6", "P7-T7", "P7-T8"]
-    description: "Reviewer gate: verify exit criteria — all 4 design specs exist and are linked in deferred_items_spec_refs; CHANGELOG entry present; architecture/RESULTS.md docs updated; plan frontmatter finalized."
+    description: "Reviewer gate: verify exit criteria — all 4 design specs exist and are linked in deferred_items_spec_refs; CHANGELOG entry present; architecture/RESULTS.md docs updated; plan frontmatter finalized; every design spec/CHANGELOG entry/architecture.md/human brief this phase produced describes only rf-cbc-002 -> cbc_suite_v1 as an end-to-end converter conversion and the other 3 bundles' evidence artifacts as bespoke evidence projections pending DF-E1-M1."
   - id: "P7-GATE2"
     status: "not_started"
     assigned_to: ["karen"]
@@ -159,6 +159,7 @@ final `karen` end-of-feature review before the plan is considered complete.
 - [ ] `CHANGELOG.md` `[Unreleased]` entry present, correctly categorized
 - [ ] `docs/architecture.md` and `rf-handoff/RESULTS.md` §7 updated
 - [ ] Plan frontmatter finalized (`commit_refs`, `pr_refs`, `files_affected`, `changelog_ref`)
+- [ ] Every design spec, the CHANGELOG entry, `architecture.md`, and the human brief describe only `rf-cbc-002` -> `cbc_suite_v1` as an end-to-end converter conversion, and `anemia`/`kidney_suite_v1`/`growth_suite_v1`'s evidence artifacts as bespoke evidence projections pending DF-E1-M1
 
 *Validated at P7-GATE2 (`karen` end-of-feature review):*
 - [ ] Every CLAUDE.md hard guardrail and PRD §7 non-goal explicitly checked against the actual diff

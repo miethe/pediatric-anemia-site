@@ -1,0 +1,101 @@
+id: ext_20260718_8fe131fc_001
+source_card_id: src_20260718_rfgro002_03
+created_at: '2026-07-18T16:33:56-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: Growth faltering (GF) is defined longitudinally as a weight-for-age z-score fall of at least 1.0
+    SD from birth to discharge, per applied ESPGHAN criteria.
+  locator: Section 2 (Materials and Methods), 'At discharge' classification paragraph
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Undernutrition (UN) is defined cross-sectionally as a weight-for-age OR length-for-age z-score
+    below −2 SD at discharge, per applied ESPGHAN criteria.
+  locator: Section 2 (Materials and Methods), 'At discharge' classification paragraph
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: ESPGHAN flags infants whose weight or length z-score drops exceed 2 SD as requiring attention
+    and tailored nutritional support.
+  locator: Section 1 (Introduction), paragraph 1
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: Small for gestational age (SGA) is defined at birth as a birth-weight centile below the 3rd percentile.
+  locator: Section 2 (Materials and Methods), 'At birth' classification paragraph
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: Growth restriction (GR) at birth is defined by BW <3rd centile or <−2 SD, OR by at least three
+    of five listed criteria (BW <10th, HC <10th, length <10th, prenatal IUGR diagnosis, or maternal hypertension/preeclampsia).
+  locator: Section 2 (Materials and Methods), 'At birth' classification paragraph
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: In this cohort of 402 very preterm infants with available data, GF occurred in 45.3% and UN in
+    33.1% at discharge — cohort prevalence, not a decision threshold.
+  locator: Section 3 (Results), opening paragraph
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: All growth z-scores and centiles in this study are computed against INTERGROWTH-21st prescriptive
+    standards, making every threshold reference-chart dependent.
+  locator: Section 4 (Discussion), growth-curve paragraph
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Section 2 (Materials and Methods), 'At discharge' classification paragraph
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Section 2 (Materials and Methods), 'At discharge' classification paragraph
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Section 1 (Introduction), paragraph 1
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Section 2 (Materials and Methods), 'At birth' classification paragraph
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Section 2 (Materials and Methods), 'At birth' classification paragraph
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Section 3 (Results), opening paragraph
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: Section 4 (Discussion), growth-curve paragraph
+contradictions_or_cautions:
+- text: Single level-IV NICU (Bologna, Italy), 2013-2019 cohort — prevalence figures are cohort-specific,
+    not reference-interval norms
+  locator: card/trust
+- text: Definitions are quoted as applied ESPGHAN criteria; the primary ESPGHAN position paper is the
+    upstream authority for the thresholds
+  locator: card/trust
+- text: Retrospective design; ~3% missingness; small growth-restriction subgroup precluded some multivariate
+    analysis
+  locator: card/trust

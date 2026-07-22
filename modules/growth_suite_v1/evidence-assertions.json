@@ -1,0 +1,2302 @@
+{
+  "schemaVersion": "1.0",
+  "moduleId": "growth_suite_v1",
+  "rfProvenance": {
+    "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+    "rfBundleId": "bundle_20260718_intent_research_20260717_rf_gro_002",
+    "fixturePath": "tests/fixtures/rf-gro-002/"
+  },
+  "assertions": [
+    {
+      "assertionId": "evas_gro_clm_001",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_05",
+      "sourceId": "ANM2024_FALTERING_GROWTH_UPDATE",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_001",
+      "passageId": "psg_441745e191ebee00d1260f0951a3e57adfb59b0a074008686e3b0c0506918a59",
+      "locator": {
+        "raw": "Introduction, para after Box 2 (Cooke et al. expert-opinion definition)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:441745e191ebee00d1260f0951a3e57adfb59b0a074008686e3b0c0506918a59",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants and young children (age band not numerically bounded in this passage; explicitly excludes the first 2 weeks of life); sex not specified; term/preterm not distinguished here",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometric (weight measured per WHO technique); z-score computed via WHO Anthro Software against WHO growth standards; not laboratory/analyzer-dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_002",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_05",
+      "sourceId": "ANM2024_FALTERING_GROWTH_UPDATE",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_002",
+      "passageId": "psg_b76646a1b836e5fc37623c001d513ed5ba8b2d0f0670eaee7736868d6ed3cae0",
+      "locator": {
+        "raw": "Abstract (Summary)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b76646a1b836e5fc37623c001d513ed5ba8b2d0f0670eaee7736868d6ed3cae0",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Young children (age/sex not specified in abstract)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometric; not analyzer-dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_003",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_05",
+      "sourceId": "ANM2024_FALTERING_GROWTH_UPDATE",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_003",
+      "passageId": "psg_bb4fe8abb482a4b7d583b6b540c446a6938cd1265cf0e537d3d505e7a04fc114",
+      "locator": {
+        "raw": "Box 1, 'WHO definitions for undernutrition'",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:bb4fe8abb482a4b7d583b6b540c446a6938cd1265cf0e537d3d505e7a04fc114",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children under 5 (WHO undernutrition framework); sex not specified",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometric (weight, length/height, age) against WHO growth standards; not laboratory-dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_004",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_05",
+      "sourceId": "ANM2024_FALTERING_GROWTH_UPDATE",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_004",
+      "passageId": "psg_e07079bd5882450137560ea173a7bcc9e976d193cb4491521b552b537a3fbba4",
+      "locator": {
+        "raw": "Box 1, 'United Kingdom (UK) NICE guidelines 2017' + z-score conversion note",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:e07079bd5882450137560ea173a7bcc9e976d193cb4491521b552b537a3fbba4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants/children graded by birthweight centile band (<9th; 9th-91st; >91st) on WHO-UK growth charts; sex-specific charts implied",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometric on WHO-UK / RCPCH growth centile charts; centile-to-z conversion 1 centile space = 0.67 z-score; chart-choice dependent (result not transferable across non-RCPCH charts per author)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_005",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_05",
+      "sourceId": "ANM2024_FALTERING_GROWTH_UPDATE",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_005",
+      "passageId": "psg_de9af07887b19a1fcc9c76d5307d869dab17fc74733aab9e14b20472468e1b36",
+      "locator": {
+        "raw": "Table 1 (Theoretical energy and protein intake for catch-up growth) + surrounding text",
+        "page": null,
+        "section": null,
+        "table": "Table 1",
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:de9af07887b19a1fcc9c76d5307d869dab17fc74733aab9e14b20472468e1b36",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants <1 year of age (FAO/WHO/UNU requirements 'appropriate for infants <1 year of age'); protein requirements based on actual body weight",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not analyzer-dependent; theoretical intake targets derived from FAO/WHO/UNU 2007 (ref 35) and Ramsay/Golden; body-composition assumption 73% lean / 27% fat in accrued tissue"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_006",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_05",
+      "sourceId": "ANM2024_FALTERING_GROWTH_UPDATE",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_006",
+      "passageId": "psg_3320741b6b9b82352ffc00179680f9137e1ff82f90751ee0fc2607096fe2285a",
+      "locator": {
+        "raw": "Table 3 (Rates of weight gain required to catch-up, adjusted from Golden 2009)",
+        "page": null,
+        "section": null,
+        "table": "Table 3",
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:3320741b6b9b82352ffc00179680f9137e1ff82f90751ee0fc2607096fe2285a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children with a length of between 65 and 80 cm; sex-specific (male/female rows); stratified by target z-score recovery (-1 to 0 vs -2 to 0) and days-to-catch-up (14/20/30/40)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometric weight-velocity targets; not analyzer-dependent; adjusted from Golden M 2009 (ref 22)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_007",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_05",
+      "sourceId": "ANM2024_FALTERING_GROWTH_UPDATE",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_007",
+      "passageId": "psg_bbcad68cbfea8352154aee1ae4f059b39c91ced3e717e1cff4c8f1d9c2777d57",
+      "locator": {
+        "raw": "Table 2 (Reference nutrient intake, source British Nutrition Foundation)",
+        "page": null,
+        "section": null,
+        "table": "Table 2",
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:bbcad68cbfea8352154aee1ae4f059b39c91ced3e717e1cff4c8f1d9c2777d57",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children by age band 0-3 months, 4-6, 7-9, 10-12 months, 1-3 years, 4-6 years (this point: 1-3 years); sex not differentiated in table",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Dietary reference intake values (British Nutrition Foundation); not a laboratory assay threshold"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_008",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_05",
+      "sourceId": "ANM2024_FALTERING_GROWTH_UPDATE",
+      "rfEvidenceId": "ev_008",
+      "rfClaimId": "clm_008",
+      "passageId": "psg_0c7b46222b1a340693bfa847c19fba1d6d68b175919ad84fb1e054c72ecc63bf",
+      "locator": {
+        "raw": "Box 1 (Gomez and Waterlow criteria)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:0c7b46222b1a340693bfa847c19fba1d6d68b175919ad84fb1e054c72ecc63bf",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children (historical criteria; age/sex not bounded in passage)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometric percentage-of-median; not analyzer-dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_009",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_11",
+      "sourceId": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_009",
+      "passageId": "psg_04a895d3e276555f5e69cb0573f72d18b454582e90dc37148aeffa477c1ad0cc",
+      "locator": {
+        "raw": "Abstract (author summary), recommended-indicators sentence",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:04a895d3e276555f5e69cb0573f72d18b454582e90dc37148aeffa477c1ad0cc",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric population ages 1 month to 18 years; sex-specific (z-scores computed on sex-specific growth references)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not laboratory-analyzer dependent; anthropometric z-scores (weight-for-height/length, BMI-for-age, length/height-for-age, MUAC) are growth-reference-standard dependent (WHO vs CDC growth charts) — the per-age reference mapping is in the full-text body, not asserted here"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_010",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_11",
+      "sourceId": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_010",
+      "passageId": "psg_d66f1edb2b64aeb65a55dfe90b85fe4f5d85f2f7e98f0d9465e154d8b39a696f",
+      "locator": {
+        "raw": "Abstract (author summary), two-or-more-data-points sentence",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d66f1edb2b64aeb65a55dfe90b85fe4f5d85f2f7e98f0d9465e154d8b39a696f",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Weight-gain-velocity indicator applies to children age <2 years; weight-loss indicator applies to ages 2-20 years; deceleration and inadequate-intake indicators are not age-banded in the quoted passage",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not laboratory-analyzer dependent; longitudinal anthropometric change (weight-gain velocity, weight loss, z-score deceleration) plus dietary intake assessment; growth-reference-standard dependent for z-scores"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_011",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_11",
+      "sourceId": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_011",
+      "passageId": "psg_c855ce82a4d47e26606731b80a382d0e2a61173883d36ed5c2144e299c5c8b08",
+      "locator": {
+        "raw": "Abstract (author summary), purpose/scope sentence",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:c855ce82a4d47e26606731b80a382d0e2a61173883d36ed5c2144e299c5c8b08",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric population ages 1 month to 18 years (whole-population scope of the indicator set)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable (scope statement, not a measurement)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_012",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_11",
+      "sourceId": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_012",
+      "passageId": "psg_d1f5b4b94f564e32c8fe274e81626c561efdbb69bfef866fd9c90c5a01e5843e",
+      "locator": {
+        "raw": "Abstract (author summary), settings sentence",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d1f5b4b94f564e32c8fe274e81626c561efdbb69bfef866fd9c90c5a01e5843e",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric patients (1 month to 18 years) across acute, ambulatory/outpatient, and residential care settings",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable (setting/context statement)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_013",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_11",
+      "sourceId": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_013",
+      "passageId": "psg_c065a72d94fecf15b26d001bd36a6b9c6fcb47a10c11fc46a56a6b3e87db592e",
+      "locator": {
+        "raw": "Abstract (author summary), scope-exclusion sentence",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:c065a72d94fecf15b26d001bd36a6b9c6fcb47a10c11fc46a56a6b3e87db592e",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "not applicable (scope boundary between diagnosis/documentation and risk screening)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": null
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_014",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_11",
+      "sourceId": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_014",
+      "passageId": "psg_556021e326b6c4216906fb3ae002897f758f31ed74aa4c126c98c57fe803e9cc",
+      "locator": {
+        "raw": "Abstract (author summary), clinician-guidance sentence",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:556021e326b6c4216906fb3ae002897f758f31ed74aa4c126c98c57fe803e9cc",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric patients (1 month to 18 years)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable (data-utilization guidance)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_015",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_08",
+      "sourceId": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_015",
+      "passageId": "psg_dcf39e49ced055e95eee455823fbaa1be3e17eff2181e15d68440477e9077209",
+      "locator": {
+        "raw": "Results (weight-based growth failure) / Discussion, para 1",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": "1"
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:dcf39e49ced055e95eee455823fbaa1be3e17eff2181e15d68440477e9077209",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants born extremely preterm, 24-26 weeks gestation, both sexes (sex-specific z-scores), assessed at 36 weeks postmenstrual age; US NICHD Neonatal Research Network 2008-2018.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometric weight converted to INTERGROWTH-21st sex-specific z-score via the 'Postnatal Growth of Preterm Infants' app; standard-dependent (differs from Fenton curves)."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_016",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_08",
+      "sourceId": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_016",
+      "passageId": "psg_fb54aac29882fac0f5dbb45e3bad37472d0cdcc1c4cdc010341d9e9c41803115",
+      "locator": {
+        "raw": "Abstract (Results); Results para 'diagnostic accuracy ... length and head circumference'; Discussion para 1",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": "1"
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:fb54aac29882fac0f5dbb45e3bad37472d0cdcc1c4cdc010341d9e9c41803115",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants born extremely preterm, 24-26 weeks gestation, both sexes (sex-specific z-scores), assessed at 36 weeks postmenstrual age; US NRN 2008-2018.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Recumbent length converted to INTERGROWTH-21st sex-specific z-score via the 'Postnatal Growth of Preterm Infants' app; standard-dependent."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_017",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_08",
+      "sourceId": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_017",
+      "passageId": "psg_306922a2a73865561aef05b108a00202d160c79c41c21d7fcdefeac7edcea0a2",
+      "locator": {
+        "raw": "Abstract (Results); Results para 'diagnostic accuracy ... length and head circumference'; Discussion para 1",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": "1"
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:306922a2a73865561aef05b108a00202d160c79c41c21d7fcdefeac7edcea0a2",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants born extremely preterm, 24-26 weeks gestation, both sexes (sex-specific z-scores); decline computed from birth to 36 weeks PMA; US NRN 2008-2018.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Head-circumference z-score at birth ('Newborn Size for Very Preterm Infants' app) minus z-score at 36 wk PMA ('Postnatal Growth of Preterm Infants' app), INTERGROWTH-21st; standard-dependent."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_018",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_08",
+      "sourceId": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_018",
+      "passageId": "psg_72520018ac4bf63b909e950054b68dc5bd4c303ad42f38987ba654a69e5da5f4",
+      "locator": {
+        "raw": "Results (weight-based growth faltering), para on CART decline cut point",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:72520018ac4bf63b909e950054b68dc5bd4c303ad42f38987ba654a69e5da5f4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants born extremely preterm, 24-26 weeks gestation, both sexes; weight z-score decline birth to 36 wk PMA; US NRN 2008-2018.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Weight z-score decline (birth minus 36 wk PMA), INTERGROWTH-21st standards; standard-dependent."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_019",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_08",
+      "sourceId": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_019",
+      "passageId": "psg_e597dda2249effea92a5201939766e05cf2d342f0111b19d6b00ba27d6a735e3",
+      "locator": {
+        "raw": "Results (baseline), para 'Using the INTERGROWTH-21 standards, growth failure using the standard definition'",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:e597dda2249effea92a5201939766e05cf2d342f0111b19d6b00ba27d6a735e3",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants born extremely preterm, 24-26 weeks gestation, both sexes; weight at 36 wk PMA; US NRN 2008-2018.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Weight-for-age INTERGROWTH-21st z-score; -1.28 corresponds to the 10th percentile; standard-dependent."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_020",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_08",
+      "sourceId": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_020",
+      "passageId": "psg_16cc0e3fe4a18798484fd8a0543c450995797f13ad68046c8bbebe455aa7efd1",
+      "locator": {
+        "raw": "Methods (diagnostic accuracy of standard cut points); Results (weight-based growth faltering)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:16cc0e3fe4a18798484fd8a0543c450995797f13ad68046c8bbebe455aa7efd1",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants born extremely preterm, 24-26 weeks gestation, both sexes; weight z-score decline birth to 36 wk PMA; US NRN 2008-2018.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Weight z-score decline (birth minus 36 wk PMA), INTERGROWTH-21st standards; standard-dependent."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_021",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_08",
+      "sourceId": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_021",
+      "passageId": "psg_86aabceef4cc2195edc58bd19e500291e0cd9d451cbeafe7c587886e9078f94f",
+      "locator": {
+        "raw": "Methods (primary outcome); Results (baseline), para on prevalence",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:86aabceef4cc2195edc58bd19e500291e0cd9d451cbeafe7c587886e9078f94f",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants born extremely preterm, 24-26 weeks gestation; cognitive assessment at 2 years corrected gestational age; US NRN follow-up 2008-2018.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Bayley Scales of Infant and Toddler Development, Third Edition (BSID-III) cognitive composite score; instrument-dependent."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_022",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_08",
+      "sourceId": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "rfEvidenceId": "ev_008",
+      "rfClaimId": "clm_022",
+      "passageId": "psg_ff84ad7f2cff71f5fe68bed76b146f1b924685ce8c735cf033aa691d863501b9",
+      "locator": {
+        "raw": "Results, para 'Using the Fenton growth curves'",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:ff84ad7f2cff71f5fe68bed76b146f1b924685ce8c735cf033aa691d863501b9",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Same cohort of infants born extremely preterm, 24-26 weeks gestation, at 36 wk PMA; US NRN 2008-2018.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Weight-for-age z-score computed on Fenton growth curves vs INTERGROWTH-21st standards; growth-standard-dependent (prevalence 57% Fenton vs 32% INTERGROWTH-21st for the identical -1.28 cut point)."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_023",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_01",
+      "sourceId": "WHO2006_WFL_WFH_STANDARD",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_023",
+      "passageId": "psg_0c8b284ddbb45298773f0f92a41e6a16020e65bf3e9b3d0d9e802b8a25fbc918",
+      "locator": {
+        "raw": "Download section labels — 'Weight-for-length: Birth to 2 years' subsections (Charts / Tables)",
+        "page": null,
+        "section": "labels — 'Weight-for-length: Birth to 2 years' subsections (Charts / Tables)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:0c8b284ddbb45298773f0f92a41e6a16020e65bf3e9b3d0d9e802b8a25fbc918",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants and toddlers, birth to <2 years, both sexes (published separately for girls and boys); term reference standard (no gestational-age adjustment defined on this page)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometry — recumbent length (indicator named 'weight-for-length' by WHO convention); not laboratory-assay dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_024",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_01",
+      "sourceId": "WHO2006_WFL_WFH_STANDARD",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_024",
+      "passageId": "psg_07d3ed3e06941c3735bb3b18fb2a4312174566e8af18d03af5d8e05455e358f8",
+      "locator": {
+        "raw": "Download section labels — 'Weight-for-height: 2 to 5 years' subsections (Charts / Tables)",
+        "page": null,
+        "section": "labels — 'Weight-for-height: 2 to 5 years' subsections (Charts / Tables)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:07d3ed3e06941c3735bb3b18fb2a4312174566e8af18d03af5d8e05455e358f8",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children 2 to 5 years, both sexes (published separately for girls and boys)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometry — standing height (indicator named 'weight-for-height' by WHO convention); not laboratory-assay dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_025",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_01",
+      "sourceId": "WHO2006_WFL_WFH_STANDARD",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_025",
+      "passageId": "psg_4e7284951072ddc0e62a27a2ecab8b61ceee4fde291a640ff6fcb9e59adc7ea3",
+      "locator": {
+        "raw": "Download section labels — combined 'Birth to 5 years' weight-for-length/height subsections",
+        "page": null,
+        "section": "labels — combined 'Birth to 5 years' weight-for-length/height subsections",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:4e7284951072ddc0e62a27a2ecab8b61ceee4fde291a640ff6fcb9e59adc7ea3",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children birth to 5 years, both sexes; combined indicator spanning the length (birth-2y) and height (2-5y) measurement segments",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometry — recumbent length for birth-2y then standing height for 2-5y; the length-vs-height measurement basis changes at the 2-year boundary (adjustment magnitude not stated on this page — see Limitations)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_026",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_01",
+      "sourceId": "WHO2006_WFL_WFH_STANDARD",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_026",
+      "passageId": "psg_0018d15f4312b2659068b22305d1d4e2c2c43f99c98b39f18117d73d9389c756",
+      "locator": {
+        "raw": "Charts and Tables sections — 'z-scores: girls', 'Percentiles: girls', 'z-scores: boys', 'Percentiles: boys'",
+        "page": null,
+        "section": "s — 'z-scores: girls'",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:0018d15f4312b2659068b22305d1d4e2c2c43f99c98b39f18117d73d9389c756",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Both sexes, published as sex-specific reference distributions (separate girls and boys tables/charts)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometric reference distributions expressed as z-scores (SD units) and percentiles; not laboratory-assay dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_027",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_01",
+      "sourceId": "WHO2006_WFL_WFH_STANDARD",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_027",
+      "passageId": "psg_5e1559c9c8a5e9be41938f2c16b719da78653e9689cad23a62dd2589b3d45de3",
+      "locator": {
+        "raw": "Resource-category headings — 'Charts', 'Tables', 'Simplified field tables', 'Expanded tables for constructing national health cards'",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:5e1559c9c8a5e9be41938f2c16b719da78653e9689cad23a62dd2589b3d45de3",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Not applicable (describes publication artifacts, applies across birth-to-5-years population)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable — describes the form of the published reference tables/charts"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_028",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_07",
+      "sourceId": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_028",
+      "passageId": "psg_4e0dc9439b0be3b21664ea27dc1e5189eb85903f4165c3be2755e268c24cecc4",
+      "locator": {
+        "raw": "Abstract, purpose sentence (Nutr Clin Pract 2015;30(1):147-61)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:4e0dc9439b0be3b21664ea27dc1e5189eb85903f4165c3be2755e268c24cecc4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric, ages 1 month to 18 years; sex not stratified in this scope statement; term/PNA not specified (post-neonatal general pediatric population).",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not laboratory-assay-dependent; anthropometry/growth-based indicators."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_029",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_07",
+      "sourceId": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_029",
+      "passageId": "psg_04a895d3e276555f5e69cb0573f72d18b454582e90dc37148aeffa477c1ad0cc",
+      "locator": {
+        "raw": "Abstract, recommended-indicators sentence (single data point)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:04a895d3e276555f5e69cb0573f72d18b454582e90dc37148aeffa477c1ad0cc",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric 1 month to 18 years; single-data-point (cross-sectional) assessment context.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometry (weight, length/height, BMI, MUAC) expressed as z-scores vs a growth reference; growth-reference standard not named in the accessed abstract. Not a blood/lab assay."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_030",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_07",
+      "sourceId": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_030",
+      "passageId": "psg_d66f1edb2b64aeb65a55dfe90b85fe4f5d85f2f7e98f0d9465e154d8b39a696f",
+      "locator": {
+        "raw": "Abstract, recommended-indicators sentence (2+ data points)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d66f1edb2b64aeb65a55dfe90b85fe4f5d85f2f7e98f0d9465e154d8b39a696f",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric; weight gain velocity applies to age <2 years; weight loss applies to age 2-20 years; longitudinal (>=2 time points) context.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Serial anthropometry / intake assessment; not laboratory-assay-dependent."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_031",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_07",
+      "sourceId": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_031",
+      "passageId": "psg_d1f5b4b94f564e32c8fe274e81626c561efdbb69bfef866fd9c90c5a01e5843e",
+      "locator": {
+        "raw": "Abstract, settings sentence",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d1f5b4b94f564e32c8fe274e81626c561efdbb69bfef866fd9c90c5a01e5843e",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric 1 month to 18 years across acute, ambulatory/outpatient, and residential care.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable (setting-scope statement)."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_032",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_07",
+      "sourceId": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_032",
+      "passageId": "psg_599bbf7066fe63d68cf1db3b170ffc7f10f98e94407112470609b194be8e8862",
+      "locator": {
+        "raw": "Abstract, scope-exclusion sentence",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:599bbf7066fe63d68cf1db3b170ffc7f10f98e94407112470609b194be8e8862",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric 1 month to 18 years.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable (scope-boundary statement)."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_033",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_07",
+      "sourceId": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_033",
+      "passageId": "psg_556021e326b6c4216906fb3ae002897f758f31ed74aa4c126c98c57fe803e9cc",
+      "locator": {
+        "raw": "Abstract, clinician-guidance sentence",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:556021e326b6c4216906fb3ae002897f758f31ed74aa4c126c98c57fe803e9cc",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric 1 month to 18 years.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable (procedural guidance)."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_034",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_10",
+      "sourceId": "AFP2023_GROWTH_FALTERING_REVIEW",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_034",
+      "passageId": "psg_2771c2c9b138c900a6a54e175b80beefdbeff2ab9e8377e0667bcb9a264612fe",
+      "locator": {
+        "raw": "Section: Diagnosis",
+        "page": null,
+        "section": "Diagnosis",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2771c2c9b138c900a6a54e175b80beefdbeff2ab9e8377e0667bcb9a264612fe",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children (growth-charted pediatric population; article scope is infancy through childhood); sex not distinguished for this criterion; anthropometric measurement context",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (anthropometry: weight, length/height, BMI plotted on percentile growth charts); percentile depends on which chart (WHO vs CDC — see ev_003)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_035",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_10",
+      "sourceId": "AFP2023_GROWTH_FALTERING_REVIEW",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_035",
+      "passageId": "psg_589f6a80ad33dba47c19f7ef7e8a242b8bc20bb346b65ca6f13af04f5e4ccc23",
+      "locator": {
+        "raw": "Section: Diagnosis",
+        "page": null,
+        "section": "Diagnosis",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:589f6a80ad33dba47c19f7ef7e8a242b8bc20bb346b65ca6f13af04f5e4ccc23",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children being tracked longitudinally on growth charts; exception carved out for infants large for gestational age at birth (compensatory decrease)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (z-score derived from anthropometric percentile on growth chart)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_036",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_10",
+      "sourceId": "AFP2023_GROWTH_FALTERING_REVIEW",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_036",
+      "passageId": "psg_f4b43a1b5ed264c731403f7d3e91b98db0e6da7d7a8c10700afd5d9ff2b8a0a2",
+      "locator": {
+        "raw": "Section: Diagnosis",
+        "page": null,
+        "section": "Diagnosis",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:f4b43a1b5ed264c731403f7d3e91b98db0e6da7d7a8c10700afd5d9ff2b8a0a2",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Two age bands: < 2 years (WHO charts, gestational-age-adjusted) and 2-20 years (CDC charts); both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Chart selection is method-dependent for percentile/z-score derivation: WHO vs CDC reference population changes the resulting percentile; < 2y requires gestational-age (corrected-age) adjustment"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_037",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_10",
+      "sourceId": "AFP2023_GROWTH_FALTERING_REVIEW",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_037",
+      "passageId": "psg_c52bd2c30d03b037b42263a6fa61bbc7102347c28ade47f0909373b3412873d8",
+      "locator": {
+        "raw": "Section: Further Evaluation and Treatment",
+        "page": null,
+        "section": "Further Evaluation and Treatment",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:c52bd2c30d03b037b42263a6fa61bbc7102347c28ade47f0909373b3412873d8",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children under treatment/recovery for growth faltering",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (z-score from anthropometric growth chart)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_038",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_10",
+      "sourceId": "AFP2023_GROWTH_FALTERING_REVIEW",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_038",
+      "passageId": "psg_bfa5c97ca42205fbc5cdd786129c774abc154d01d32bda3fdccdb57e2aaa626b",
+      "locator": {
+        "raw": "Section: Further Evaluation and Treatment",
+        "page": null,
+        "section": "Further Evaluation and Treatment",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:bfa5c97ca42205fbc5cdd786129c774abc154d01d32bda3fdccdb57e2aaa626b",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants 1-6 months and infants 6-12 months of age",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable (monitoring cadence, not an assay); measurement is serial anthropometry"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_039",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_10",
+      "sourceId": "AFP2023_GROWTH_FALTERING_REVIEW",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_039",
+      "passageId": "psg_b929d3ba6718f3d63ef602282f6ec666c39b032f9b80f32a0cfc4f2d2153f584",
+      "locator": {
+        "raw": "Section: Diagnosis",
+        "page": null,
+        "section": "Diagnosis",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b929d3ba6718f3d63ef602282f6ec666c39b032f9b80f32a0cfc4f2d2153f584",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Pediatric growth-charted population; both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (interpretive convention for anthropometric z-scores)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_040",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_06",
+      "sourceId": "WHO2007_BMI_5_19Y_REFERENCE",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_040",
+      "passageId": "psg_aed51cdf48be8cf774b1457ea1f31ef956fcf89a7d5ba32015946a793104bd87",
+      "locator": {
+        "raw": "Abstract (Findings); repeated in Results and Discussion",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:aed51cdf48be8cf774b1457ea1f31ef956fcf89a7d5ba32015946a793104bd87",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "School-aged children and adolescents, 5-19 years; sex-specific (boys vs girls); value quoted at exactly 19 years of age; not gestational/postnatal-age dependent",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (anthropometric BMI = weight/height^2); statistically derived SD-score curve anchored to adult BMI cutoff, not an analyzer assay"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_041",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_06",
+      "sourceId": "WHO2007_BMI_5_19Y_REFERENCE",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_041",
+      "passageId": "psg_7ab8e48de8eb90228012eb7807050d5dea7a83864bf0e0e64987771bef80417f",
+      "locator": {
+        "raw": "Abstract (Findings); repeated verbatim in Discussion",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:7ab8e48de8eb90228012eb7807050d5dea7a83864bf0e0e64987771bef80417f",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "School-aged children and adolescents, 5-19 years; both sexes (single value); quoted at exactly 19 years of age",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (anthropometric BMI); statistically derived SD-score curve anchored to adult BMI cutoff"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_042",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_06",
+      "sourceId": "WHO2007_BMI_5_19Y_REFERENCE",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_042",
+      "passageId": "psg_fd8845ba81792b803fe3f16446640d59c90839a4162b2ecfb5cdcfc98862fdc5",
+      "locator": {
+        "raw": "Results (transition at 5 years); Abstract (Findings)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:fd8845ba81792b803fe3f16446640d59c90839a4162b2ecfb5cdcfc98862fdc5",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children at the 5-year transition boundary (join between WHO 0-5y Child Growth Standards and WHO 2007 5-19y reference); all centiles; both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (anthropometric BMI-for-age curve comparison)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_043",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_06",
+      "sourceId": "WHO2007_BMI_5_19Y_REFERENCE",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_043",
+      "passageId": "psg_a11e8a7de5eeead3f7cda97b4d8b9c4d33d59e22bdd080fbf218aaa7096b1c5f",
+      "locator": {
+        "raw": "Discussion (weight-for-age scope)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:a11e8a7de5eeead3f7cda97b4d8b9c4d33d59e22bdd080fbf218aaa7096b1c5f",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Older children / adolescents through puberty; weight-for-age indicator only (height-for-age and BMI-for-age extend to 19y)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable (indicator-scope constraint, not an assay threshold)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_044",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_06",
+      "sourceId": "WHO2007_BMI_5_19Y_REFERENCE",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_044",
+      "passageId": "psg_4ef962808e4621350e1286a43e4827e8daeb8b54d05f4626d14985549cc82e14",
+      "locator": {
+        "raw": "Discussion (upper age limit); Abstract (Conclusion)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:4ef962808e4621350e1286a43e4827e8daeb8b54d05f4626d14985549cc82e14",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "School-aged children and adolescents, 5 to 19 years (upper bound 19y = WHO adolescence limit); height-for-age and BMI-for-age indicators; both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable (age-range scope of the reference)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_045",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_06",
+      "sourceId": "WHO2007_BMI_5_19Y_REFERENCE",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_045",
+      "passageId": "psg_38ec4748bf222fbad9d6b277b6d30015f7bfd87f036a56a99e9e267186e314b4",
+      "locator": {
+        "raw": "Methods (statistical method)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:38ec4748bf222fbad9d6b277b6d30015f7bfd87f036a56a99e9e267186e314b4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Not applicable (methodology governing curve construction for the full 5-19y reference)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not applicable (statistical modelling method: BCPE with cubic-spline smoothing)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_046",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_00",
+      "sourceId": "CDC2010_WHO_CDC_CHART_USE_REC",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_046",
+      "passageId": "psg_d44f41eb9d75233113b93c806f7e0f566275d6b27467a29b47e3279abb59730b",
+      "locator": {
+        "raw": "Summary; and Recommendations > Use of WHO Growth Charts for Children Aged <24 Months / Continued Use of CDC Growth Charts for Children Aged 24-59 Months",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d44f41eb9d75233113b93c806f7e0f566275d6b27467a29b47e3279abb59730b",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children aged 0-24 months (both sexes; term infants, breastfed or formula-fed) use WHO charts; persons aged 2-19 years use CDC charts; US clinical settings",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometric growth charting (weight/length/stature/BMI/head-circumference for age); not laboratory-assay dependent; chart-set choice is age-band dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_047",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_00",
+      "sourceId": "CDC2010_WHO_CDC_CHART_USE_REC",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_047",
+      "passageId": "psg_0c88a83219ecc430990ed5f8db13f6dff00e4ce8311fa1f2ee06bc32d30adfe0",
+      "locator": {
+        "raw": "Recommendations > Use of WHO Growth Charts for Children Aged <24 Months; corroborated in Summary and in 'Selection of Percentiles'",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:0c88a83219ecc430990ed5f8db13f6dff00e4ce8311fa1f2ee06bc32d30adfe0",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children aged <24 months, both sexes, assessed on the WHO growth-standard charts",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "WHO growth-standard percentile/z-score charting (LMS method); cutoff is chart-set specific (WHO, not CDC) — do not apply to CDC charts"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_048",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_00",
+      "sourceId": "CDC2010_WHO_CDC_CHART_USE_REC",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_048",
+      "passageId": "psg_7992a30f0da7e6ea232d13d3b2abd144ab5ba734b2b4eb0ac07fd9464dec5c8a",
+      "locator": {
+        "raw": "Summary; and Creation of the WHO and CDC Growth Curves > Growth Reference Versus Growth Standard",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:7992a30f0da7e6ea232d13d3b2abd144ab5ba734b2b4eb0ac07fd9464dec5c8a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "not applicable (conceptual distinction governing interpretation of any deviation)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": null
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_049",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_00",
+      "sourceId": "CDC2010_WHO_CDC_CHART_USE_REC",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_049",
+      "passageId": "psg_5a2e77451133b901032d752afd3805e749e21d82d8d4fea9602f8b3c1c395031",
+      "locator": {
+        "raw": "Rationale for Recommendations > Children Aged <24 Months > Breastfeeding and Growth Patterns; corroborated in Table 1",
+        "page": null,
+        "section": null,
+        "table": "Table 1",
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:5a2e77451133b901032d752afd3805e749e21d82d8d4fea9602f8b3c1c395031",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "WHO MGRS reference infants aged 0-12 months (the population defining the standard); constituent sites Brazil/Ghana/India/Norway/Oman/USA",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (composition of the growth-standard reference population, not a lab assay)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_050",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_00",
+      "sourceId": "CDC2010_WHO_CDC_CHART_USE_REC",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_050",
+      "passageId": "psg_a8355d44dac07032cce6b9adff4b82f84d08776a88cb4d8ba6c67cb6e29b1d16",
+      "locator": {
+        "raw": "Rationale for Recommendations > Selection of Percentiles",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:a8355d44dac07032cce6b9adff4b82f84d08776a88cb4d8ba6c67cb6e29b1d16",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "US children aged 6-23 months, both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Weight-for-age percentile screening; result is chart-set dependent (CDC reference w/ 5th-95th vs WHO standard w/ 2.3rd-97.7th)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_051",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_00",
+      "sourceId": "CDC2010_WHO_CDC_CHART_USE_REC",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_051",
+      "passageId": "psg_6ed2dd431ffd323baa6562f82e674215d1e9b4e8dbe88751f27d5ecc95e392ce",
+      "locator": {
+        "raw": "Rationale for Recommendations > Selection of Percentiles",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:6ed2dd431ffd323baa6562f82e674215d1e9b4e8dbe88751f27d5ecc95e392ce",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "WHO growth-standard reference population (healthy, internationally-fed infants and children aged <24 months)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Weight-chart percentile screening; illustrates that cutoff and chart set must be matched (WHO chart => WHO percentiles)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_052",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_03",
+      "sourceId": "NUTRIENTS2026_PRETERM_ESPGHAN",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_052",
+      "passageId": "psg_e707d6601c2ea9fc57737515518c821473a8ae803f45d638c0bc17983c1ccc6f",
+      "locator": {
+        "raw": "Section 2 (Materials and Methods), 'At discharge' classification paragraph",
+        "page": null,
+        "section": "2 (Materials and Methods)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:e707d6601c2ea9fc57737515518c821473a8ae803f45d638c0bc17983c1ccc6f",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Very preterm / very-low-birth-weight infants (gestational age < 32 weeks and/or birth weight < 1500 g); both sexes; longitudinal change measured from birth to hospital discharge",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometric z-score derived on INTERGROWTH-21st growth standards; chart/reference dependent (z-score changes if a different growth chart is used)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_053",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_03",
+      "sourceId": "NUTRIENTS2026_PRETERM_ESPGHAN",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_053",
+      "passageId": "psg_325ab40922a481aa6519f98c53690d3cd1f06b2b7501a5c8fe51322bc87d87ad",
+      "locator": {
+        "raw": "Section 2 (Materials and Methods), 'At discharge' classification paragraph",
+        "page": null,
+        "section": "2 (Materials and Methods)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:325ab40922a481aa6519f98c53690d3cd1f06b2b7501a5c8fe51322bc87d87ad",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Very preterm / VLBW infants (GA < 32 weeks and/or BW < 1500 g); both sexes; assessed cross-sectionally at hospital discharge",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometric z-score (weight-for-age and length-for-age) on INTERGROWTH-21st standards; reference-chart dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_054",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_03",
+      "sourceId": "NUTRIENTS2026_PRETERM_ESPGHAN",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_054",
+      "passageId": "psg_30c3063363da8a7fe6208e03ce36bf76da5b829ea40bec1f8be31b3d6ef7d9fd",
+      "locator": {
+        "raw": "Section 1 (Introduction), paragraph 1",
+        "page": null,
+        "section": "1 (Introduction)",
+        "table": null,
+        "paragraph": "1"
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:30c3063363da8a7fe6208e03ce36bf76da5b829ea40bec1f8be31b3d6ef7d9fd",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Preterm infants during continuous post-discharge growth monitoring (per ESPGHAN); both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Longitudinal anthropometric z-score change (weight or length); growth-chart dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_055",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_03",
+      "sourceId": "NUTRIENTS2026_PRETERM_ESPGHAN",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_055",
+      "passageId": "psg_a0a41ad8e94e166fa6d5f8561a63c61b975f964aa5f00e4f2945401caf6a4791",
+      "locator": {
+        "raw": "Section 2 (Materials and Methods), 'At birth' classification paragraph",
+        "page": null,
+        "section": "2 (Materials and Methods)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:a0a41ad8e94e166fa6d5f8561a63c61b975f964aa5f00e4f2945401caf6a4791",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Newborn preterm infants (GA < 32 weeks and/or BW < 1500 g) at birth; both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Birth-weight centile on INTERGROWTH-21st standards; reference-chart dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_056",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_03",
+      "sourceId": "NUTRIENTS2026_PRETERM_ESPGHAN",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_056",
+      "passageId": "psg_e1f1b8ec2e085ab240b9b36b8bb4d5c6c820ff2a33a8f5472634253052b2f96f",
+      "locator": {
+        "raw": "Section 2 (Materials and Methods), 'At birth' classification paragraph",
+        "page": null,
+        "section": "2 (Materials and Methods)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:e1f1b8ec2e085ab240b9b36b8bb4d5c6c820ff2a33a8f5472634253052b2f96f",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Newborn preterm infants (GA < 32 weeks and/or BW < 1500 g) at birth; both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Composite: birth-weight centile/z-score on INTERGROWTH-21st, head circumference and length centiles, plus prenatal clinical criteria; reference-chart dependent"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_057",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_03",
+      "sourceId": "NUTRIENTS2026_PRETERM_ESPGHAN",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_057",
+      "passageId": "psg_72dbacc01ddd3523ee7c96f0e9f7d6873cd3029f038478b3ee14f87cdb53645a",
+      "locator": {
+        "raw": "Section 3 (Results), opening paragraph",
+        "page": null,
+        "section": "3 (Results)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:72dbacc01ddd3523ee7c96f0e9f7d6873cd3029f038478b3ee14f87cdb53645a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Cohort of 402 very preterm / VLBW infants (GA < 32 weeks and/or BW < 1500 g) with available growth data at discharge, single level-IV NICU, Bologna 2013-2019",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Prevalence derived from GF/UN classifications on INTERGROWTH-21st standards; not a numeric decision cutoff"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_058",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_03",
+      "sourceId": "NUTRIENTS2026_PRETERM_ESPGHAN",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_058",
+      "passageId": "psg_8c4ba08e666b337e2996686101324253ef21bb00b3741134011741b20c667f0e",
+      "locator": {
+        "raw": "Section 4 (Discussion), growth-curve paragraph",
+        "page": null,
+        "section": "4 (Discussion)",
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:8c4ba08e666b337e2996686101324253ef21bb00b3741134011741b20c667f0e",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Very preterm / VLBW infants; applies to all z-score/centile thresholds in this source",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "INTERGROWTH-21st prescriptive growth standards — a different chart (e.g., Fenton) yields different z-scores and would shift every SD/centile cutoff above"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_059",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_04",
+      "sourceId": "PEDS2025_GRADUAL_TRANSITION_CHART",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_059",
+      "passageId": "psg_966c4c44cab42b2689c82651cd27a0917f472e9502897124625917d43d895331",
+      "locator": {
+        "raw": "Abstract — Background (first sentence)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:966c4c44cab42b2689c82651cd27a0917f472e9502897124625917d43d895331",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children at the 2-year growth-chart transition point (approx. 24 months); both sexes; term reference population (WHO 0-2y standard, CDC 2000 reference >=2y); ambulatory growth-monitoring context",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (anthropometric growth reference, not a laboratory assay)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_060",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_04",
+      "sourceId": "PEDS2025_GRADUAL_TRANSITION_CHART",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_060",
+      "passageId": "psg_b97768fbc16002be9946ef47685297a9cbb7b4455cbd7fcebcbf71b1f200c900",
+      "locator": {
+        "raw": "Abstract — Methods (final sentence)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:b97768fbc16002be9946ef47685297a9cbb7b4455cbd7fcebcbf71b1f200c900",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Young children spanning the 1.5-2 year growth-chart transition; both sexes; growth-monitoring context",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (growth z-score change metric, not method-dependent)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_061",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_04",
+      "sourceId": "PEDS2025_GRADUAL_TRANSITION_CHART",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_061",
+      "passageId": "psg_da6cdd97e62d1fe68c74596619d99b730c7718e908fea85a082bc165e477e6b4",
+      "locator": {
+        "raw": "Abstract — Results (first sentence)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:da6cdd97e62d1fe68c74596619d99b730c7718e908fea85a082bc165e477e6b4",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children ages 2-5 years (24-60 months); both sexes; BMI-, weight-, and length/height-for-age growth-monitoring context",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (chart construction method)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_062",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_04",
+      "sourceId": "PEDS2025_GRADUAL_TRANSITION_CHART",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_062",
+      "passageId": "psg_2451fc587b071a0a2356bc831bbc2c79bfc13f79c7db515c96784d867f4a9a9c",
+      "locator": {
+        "raw": "Abstract — Results (second sentence)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2451fc587b071a0a2356bc831bbc2c79bfc13f79c7db515c96784d867f4a9a9c",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "n=7429 children assessed between 1.5 and 2 years of age; both sexes; real-world retrospective cohort",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (mean growth z-score change)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_063",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_04",
+      "sourceId": "PEDS2025_GRADUAL_TRANSITION_CHART",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_063",
+      "passageId": "psg_16246eecdb03aa65924c4b928251b754805cc4e7c7ee4ab7a586e6638a896169",
+      "locator": {
+        "raw": "Abstract — Results (third sentence)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:16246eecdb03aa65924c4b928251b754805cc4e7c7ee4ab7a586e6638a896169",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children assessed across the 1.5-2y transition (retrospective cohort, n=7429); both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "not applicable (proportion with z-score drop <-1)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_064",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_04",
+      "sourceId": "PEDS2025_GRADUAL_TRANSITION_CHART",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_064",
+      "passageId": "psg_d851fac2418c5c454cc131aa6419c1691d6d54c28d45df3e191b2a5a602355ac",
+      "locator": {
+        "raw": "Abstract — Conclusions",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:d851fac2418c5c454cc131aa6419c1691d6d54c28d45df3e191b2a5a602355ac",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Young children in growth-monitoring / slow-weight-gain screening context; both sexes",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": null
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_065",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_09",
+      "sourceId": "NICE2017_NG75_FALTERING_GROWTH",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_065",
+      "passageId": "psg_41c8092c3d63611f02b67065c6d5a3138326b4733618925c5b29547531b5ec56",
+      "locator": {
+        "raw": "Recommendation 1.2.1, intro clause",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:41c8092c3d63611f02b67065c6d5a3138326b4733618925c5b29547531b5ec56",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants and children (UK-WHO growth-chart age range, birth through childhood); sex-neutral wording (applied on sex-specific UK-WHO charts)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (anthropometric weight plotted on UK-WHO growth charts); no analyzer/assay"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_066",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_09",
+      "sourceId": "NICE2017_NG75_FALTERING_GROWTH",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_066",
+      "passageId": "psg_1168523f9864b7d8dcafdba49a438b15bbc49bf5dadcb5c0faedcd0044996369",
+      "locator": {
+        "raw": "Recommendation 1.2.1, bullet (birthweight below 9th centile)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:1168523f9864b7d8dcafdba49a438b15bbc49bf5dadcb5c0faedcd0044996369",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants/children with birthweight below the 9th centile (UK-WHO chart)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (weight on UK-WHO growth charts)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_067",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_09",
+      "sourceId": "NICE2017_NG75_FALTERING_GROWTH",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_067",
+      "passageId": "psg_9acb4c013b0a97d6c6cb45d3f0d75ee58b74b69e224e5b323ac0a76f8e90f81e",
+      "locator": {
+        "raw": "Recommendation 1.2.1, bullet (birthweight 9th-91st centiles)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:9acb4c013b0a97d6c6cb45d3f0d75ee58b74b69e224e5b323ac0a76f8e90f81e",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants/children with birthweight between the 9th and 91st centiles (UK-WHO chart)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (weight on UK-WHO growth charts)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_068",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_09",
+      "sourceId": "NICE2017_NG75_FALTERING_GROWTH",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_068",
+      "passageId": "psg_28977897b1daa52403a5223888ac6bdd54031954c7d09c3cb45e053f67ef577c",
+      "locator": {
+        "raw": "Recommendation 1.2.1, bullet (birthweight above 91st centile)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:28977897b1daa52403a5223888ac6bdd54031954c7d09c3cb45e053f67ef577c",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants/children with birthweight above the 91st centile (UK-WHO chart)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (weight on UK-WHO growth charts)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_069",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_09",
+      "sourceId": "NICE2017_NG75_FALTERING_GROWTH",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_069",
+      "passageId": "psg_2e28f0825a546e1ba6113c12f83de76149d322cf806c1e45f635f9c3ee1bf056",
+      "locator": {
+        "raw": "Recommendation 1.2.1, bullet (current weight below 2nd centile)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2e28f0825a546e1ba6113c12f83de76149d322cf806c1e45f635f9c3ee1bf056",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Infants/children of any birthweight (current weight assessed for age on UK-WHO chart)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (weight-for-age on UK-WHO growth charts)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_070",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_09",
+      "sourceId": "NICE2017_NG75_FALTERING_GROWTH",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_070",
+      "passageId": "psg_c7b8d76960fe354301a0eabfbddff064f89f707ffae0c7da769c71fe0c728c01",
+      "locator": {
+        "raw": "Recommendation 1.2.1, parenthetical definition of centile space",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:c7b8d76960fe354301a0eabfbddff064f89f707ffae0c7da769c71fe0c728c01",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "not applicable (unit definition for the centile-fall thresholds)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (definition tied to UK-WHO chart centile-line spacing)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_071",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_09",
+      "sourceId": "NICE2017_NG75_FALTERING_GROWTH",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_071",
+      "passageId": "psg_4557d0a1d2fc48fc08e1f8b37ad11d1fce5e660c467204d2cc8203b5d041d977",
+      "locator": {
+        "raw": "Recommendation 1.2.4 (children over 2 years, BMI)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:4557d0a1d2fc48fc08e1f8b37ad11d1fce5e660c467204d2cc8203b5d041d977",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children over 2 years of age (BMI centile on UK-WHO chart)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (BMI-for-age from weight and height on UK-WHO growth charts)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_072",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_09",
+      "sourceId": "NICE2017_NG75_FALTERING_GROWTH",
+      "rfEvidenceId": "ev_008",
+      "rfClaimId": "clm_072",
+      "passageId": "psg_3f0888cc2f59cf8d67c26f6de8b328f446297090c4912a393bfe7cd1f0692da7",
+      "locator": {
+        "raw": "Recommendation 1.2.3 (length/height vs mid-parental centile)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:3f0888cc2f59cf8d67c26f6de8b328f446297090c4912a393bfe7cd1f0692da7",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children (length/height compared with mid-parental centile on UK-WHO chart)",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not method-dependent (length/height centile vs mid-parental centile on UK-WHO growth charts)"
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_073",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_02",
+      "sourceId": "WHO2006_LHFA_STANDARD",
+      "rfEvidenceId": "ev_001",
+      "rfClaimId": "clm_073",
+      "passageId": "psg_35396c2a9a06050c95aaf3dc0fd58f329a0c581d5a0b2bd7b6a218703ea25f7a",
+      "locator": {
+        "raw": "WHO Anthro for PC Manual v3.2.2, §3.2 'Recumbent length and standing height' (measurement-type rule); mirrors WHO standards page length-vs-height indicator split",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:35396c2a9a06050c95aaf3dc0fd58f329a0c581d5a0b2bd7b6a218703ea25f7a",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children 0-5 years, both sexes; healthy-growth reference population (WHO MGRS).",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometry; method-dependent — recumbent (lying) length below the age boundary, standing height at/above it. Board vs stadiometer."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_074",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_02",
+      "sourceId": "WHO2006_LHFA_STANDARD",
+      "rfEvidenceId": "ev_002",
+      "rfClaimId": "clm_074",
+      "passageId": "psg_aad9680000f422f4f33df1f84f3fd79314e32fb478927543514461dd6d175686",
+      "locator": {
+        "raw": "WHO Anthro for PC Manual v3.2.2, §3.3 'Recumbent length and standing height' (indicator-naming / age-in-days rule)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:aad9680000f422f4f33df1f84f3fd79314e32fb478927543514461dd6d175686",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children 0-5 years, both sexes; indicator-selection logic keyed to age in completed days.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Not assay-dependent — a calendar-age computation (postnatal age in days) that governs which standard is applied."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_075",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_02",
+      "sourceId": "WHO2006_LHFA_STANDARD",
+      "rfEvidenceId": "ev_003",
+      "rfClaimId": "clm_075",
+      "passageId": "psg_2aa2a580e5b32066766706f03138a0bfe042cb3cdf5711bb4320a9814c22cdef",
+      "locator": {
+        "raw": "WHO Anthro for PC Manual v3.2.2, §3.3 'Recumbent length and standing height' (measurement-conversion rule)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2aa2a580e5b32066766706f03138a0bfe042cb3cdf5711bb4320a9814c22cdef",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children 0-5 years, both sexes; applied when measurement position departs from the age-appropriate method.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Measurement-method dependent — recumbent length vs standing height are not interchangeable; the 0.7 cm offset reconciles them before indicator derivation."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_076",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_02",
+      "sourceId": "WHO2006_LHFA_STANDARD",
+      "rfEvidenceId": "ev_004",
+      "rfClaimId": "clm_076",
+      "passageId": "psg_2cef0407a58b8691094514c960b4c3f4e5a027cf42ee57d393330d513e80f2fd",
+      "locator": {
+        "raw": "WHO Anthro for PC Manual v3.2.2, §3.3 'Recumbent length and standing height' (basis of the offset)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:2cef0407a58b8691094514c960b4c3f4e5a027cf42ee57d393330d513e80f2fd",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "MGRS children 18-30 months, both sexes (empirical basis for the offset).",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Paired recumbent-length and standing-height measurement on the same children; not a per-child clinical measurement."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_077",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_02",
+      "sourceId": "WHO2006_LHFA_STANDARD",
+      "rfEvidenceId": "ev_005",
+      "rfClaimId": "clm_077",
+      "passageId": "psg_87091b20f1a82b9da5c1bf613096e8c47afe84048c48c9dd702577c14ad46e2e",
+      "locator": {
+        "raw": "WHO Anthro for PC Manual v3.2.2, §3.3 (fallback when age and measurement type are both unknown)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:87091b20f1a82b9da5c1bf613096e8c47afe84048c48c9dd702577c14ad46e2e",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children of unknown age with unknown measurement position; sex-specific medians at 24 months for boys and girls.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Software fallback heuristic; the 87 cm cutoff substitutes for the age/method rule when both are missing."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_078",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_02",
+      "sourceId": "WHO2006_LHFA_STANDARD",
+      "rfEvidenceId": "ev_006",
+      "rfClaimId": "clm_078",
+      "passageId": "psg_7e396cf42f54d6178d38b979a569753500d694849df74eae1bbfbce7c6e30ab0",
+      "locator": {
+        "raw": "WHO Anthro for PC Manual v3.2.2, data-quality / biologically-implausible exclusion bounds (length and height NA rules)",
+        "page": null,
+        "section": null,
+        "table": null,
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:7e396cf42f54d6178d38b979a569753500d694849df74eae1bbfbce7c6e30ab0",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Children < 24 mo (length bounds) and children >= 24 mo (height bounds), both sexes; measurement-plausibility gate, not a clinical cutoff.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Anthropometry input-validation bounds; flags implausible entered length/height values before indicator computation."
+      },
+      "reviewBy": "2027-07-21"
+    },
+    {
+      "assertionId": "evas_gro_clm_079",
+      "rfRunId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+      "rfSourceCardId": "src_20260718_rfgro002_02",
+      "sourceId": "WHO2006_LHFA_STANDARD",
+      "rfEvidenceId": "ev_007",
+      "rfClaimId": "clm_079",
+      "passageId": "psg_1c372153baee90d368f13df73b1ec1cae6d8c8f87fd2f6cacad5580d47a53532",
+      "locator": {
+        "raw": "WHO standards page 'Length/height-for-age' — chart & table download index (verbatim item labels)",
+        "page": null,
+        "section": null,
+        "table": "table download",
+        "paragraph": null
+      },
+      "exactPassage": null,
+      "exactPassageSha256": "sha256:1c372153baee90d368f13df73b1ec1cae6d8c8f87fd2f6cacad5580d47a53532",
+      "displayPolicy": "hash_and_selector_only",
+      "claimStatus": "supported",
+      "applicability": {
+        "ageRange": "Boys and girls, birth to 5 years; length subrange birth-2 y, height subrange 2-5 y, combined birth-5 y.",
+        "sex": null
+      },
+      "laboratory": {
+        "analyzer": null,
+        "assayMethod": "Recumbent length (birth-2 y) vs standing height (2-5 y); artifacts issued as z-score and percentile charts and tabulated values."
+      },
+      "reviewBy": "2027-07-21"
+    }
+  ]
+}

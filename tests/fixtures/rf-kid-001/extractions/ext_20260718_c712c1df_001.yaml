@@ -1,0 +1,102 @@
+id: ext_20260718_c712c1df_001
+source_card_id: src_20260718_rfkid001_00
+created_at: '2026-07-18T16:10:09-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: The U25 equations take the form eGFR = K x (height/serum creatinine) or eGFR = K x (1/cystatin
+    C), reported in mL/min per 1.73 m2, with two variants (sex-dependent K, or sex-and-age-dependent K)
+    per biomarker.
+  locator: Abstract; Methods → Statistical analysis
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: The sex-specific (age-independent) creatinine K constant is 41.8 for males and 37.6 for females.
+  locator: Abstract; Results → Estimating values of K for the U25 equations
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: In the age-dependent creatinine model, K rises monotonically from age 1 to 18 then stays constant
+    to 25; males 35.7 (age 1) to 50.8 (>=18), females 33.1 to 41.4.
+  locator: Abstract; Results → Estimating values of K for the U25 equations
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The constant cystatin C K is 81.9 for males and 74.9 for females (eGFR = K x 1/cysC, cysC in mg/L).
+  locator: Results → Estimating values of K for the U25 equations (cystatin-C paragraph)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: In the age-dependent cystatin C model K is non-monotonic, peaking at age 15 for males (K=87.2,
+    rising from 74.8) and age 12 for females (K=79.9, rising from 76.5).
+  locator: Abstract; Results → Estimating values of K for the U25 equations (cystatin-C paragraph)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: 'The K constants are assay-specific: serum creatinine was assayed enzymatically on an Advia 2400
+    (Siemens) and IDMS-standardized, and cystatin C nephelometrically (Siemens) and calibrated to IFCC
+    standards; using differently calibrated assays can invalidate the constants.'
+  locator: Methods (biochemistry/assay description)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: Developed/internally validated on 2655 iohexol-mGFR observations from 928 CKiD participants; among
+    13 equations compared, only the two U25 age-dependent equations achieved non-significant bias and
+    P30 accuracy >85% in both children (<18 y) and young adults (>=18 y); the equations contain no race
+    coefficient.
+  locator: Abstract; Discussion (comparison to other published equations)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract; Methods → Statistical analysis
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Abstract; Results → Estimating values of K for the U25 equations
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Abstract; Results → Estimating values of K for the U25 equations
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Results → Estimating values of K for the U25 equations (cystatin-C paragraph)
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Abstract; Results → Estimating values of K for the U25 equations (cystatin-C paragraph)
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Methods (biochemistry/assay description)
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: Abstract; Discussion (comparison to other published equations)
+contradictions_or_cautions:
+- text: Internal validation only (CKiD subset), no external validation performed by the authors
+  locator: card/trust
+- text: Population is mild-to-moderate CKD (median mGFR ~48); not validated in healthy children or for
+    screening
+  locator: card/trust
+- text: sCr-based equations require patient height
+  locator: card/trust

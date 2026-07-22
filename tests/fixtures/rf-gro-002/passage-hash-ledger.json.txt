@@ -1,0 +1,1725 @@
+{
+  "redactions": [
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:d44f41eb9d75233113b93c806f7e0f566275d6b27467a29b47e3279abb59730b",
+      "length": 271
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:e28dd1d68b0d1c86a86e411f4974f91f18c7ac4e9c1e49bbb85e0c6823029db9",
+      "length": 227
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:0c88a83219ecc430990ed5f8db13f6dff00e4ce8311fa1f2ee06bc32d30adfe0",
+      "length": 303
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:fb514a88e003372ffec65c710f13f00477907d79bce5baa495e425bda5e8e225",
+      "length": 170
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:7992a30f0da7e6ea232d13d3b2abd144ab5ba734b2b4eb0ac07fd9464dec5c8a",
+      "length": 273
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:5a2e77451133b901032d752afd3805e749e21d82d8d4fea9602f8b3c1c395031",
+      "length": 147
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:54c5dd04633e68454dd3b71afcefc169e5db0e71586071c4f22156d7fabeafb9",
+      "length": 165
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:a8355d44dac07032cce6b9adff4b82f84d08776a88cb4d8ba6c67cb6e29b1d16",
+      "length": 137
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:ed990619afe86bacbc0d340908351a637db357beff08d9689a399b0b481d89eb",
+      "length": 165
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:6ed2dd431ffd323baa6562f82e674215d1e9b4e8dbe88751f27d5ecc95e392ce",
+      "length": 276
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:d1ed04b6d3210c46ab03d504d2fc261710c17014fdeee37ce4a0da231dac329c",
+      "length": 193
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 93,
+      "field": "quote",
+      "sha256": "sha256:a0a73be05619844a56f84038b1839d47f17920fbd54ba40f8772b32897e29453",
+      "length": 219
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 94,
+      "field": "quote",
+      "sha256": "sha256:cb400b30b5cd1b39636f6ea2489f76ffc08ebfe407fc686b3fff60db03f90850",
+      "length": 206
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 95,
+      "field": "quote",
+      "sha256": "sha256:8443d632279b26698abec6fcc159c7d51d75e0c3a6954f9b9ba70a0d3ae7a5bd",
+      "length": 105
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 96,
+      "field": "quote",
+      "sha256": "sha256:2aa4d06ce0d9e50892a56e82bfc6266a1c8ad1035176b60204bd74f87e1d08a9",
+      "length": 128
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 97,
+      "field": "quote",
+      "sha256": "sha256:a8355d44dac07032cce6b9adff4b82f84d08776a88cb4d8ba6c67cb6e29b1d16",
+      "length": 137
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_00.md",
+      "line": 98,
+      "field": "quote",
+      "sha256": "sha256:226d238dd81a1d8c3a1e2fc721f0b3c82a915a7090fe5123607cdfe6a18704d6",
+      "length": 165
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_01.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:0c8b284ddbb45298773f0f92a41e6a16020e65bf3e9b3d0d9e802b8a25fbc918",
+      "length": 35
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_01.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:ed172d738aac915b8abfbced73208381ee31c9243ef99bb44ecf022ac10eeceb",
+      "length": 78
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_01.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:07d3ed3e06941c3735bb3b18fb2a4312174566e8af18d03af5d8e05455e358f8",
+      "length": 31
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_01.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:6b4d0379c72f38570737cb28e90d73c0582991cbf9406a23ba29833cf3649f9b",
+      "length": 74
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_01.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:4e7284951072ddc0e62a27a2ecab8b61ceee4fde291a640ff6fcb9e59adc7ea3",
+      "length": 16
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_01.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:2a45fe93b9911fe2f736f5fc635e025650c1d73a09988aff0b823793d377422d",
+      "length": 60
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_01.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:0018d15f4312b2659068b22305d1d4e2c2c43f99c98b39f18117d73d9389c756",
+      "length": 73
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_01.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:5e1559c9c8a5e9be41938f2c16b719da78653e9689cad23a62dd2589b3d45de3",
+      "length": 98
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_01.md",
+      "line": 82,
+      "field": "quote",
+      "sha256": "sha256:0c8b284ddbb45298773f0f92a41e6a16020e65bf3e9b3d0d9e802b8a25fbc918",
+      "length": 35
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_01.md",
+      "line": 83,
+      "field": "quote",
+      "sha256": "sha256:07d3ed3e06941c3735bb3b18fb2a4312174566e8af18d03af5d8e05455e358f8",
+      "length": 31
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_01.md",
+      "line": 84,
+      "field": "quote",
+      "sha256": "sha256:4e7284951072ddc0e62a27a2ecab8b61ceee4fde291a640ff6fcb9e59adc7ea3",
+      "length": 16
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_01.md",
+      "line": 85,
+      "field": "quote",
+      "sha256": "sha256:0018d15f4312b2659068b22305d1d4e2c2c43f99c98b39f18117d73d9389c756",
+      "length": 73
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_01.md",
+      "line": 86,
+      "field": "quote",
+      "sha256": "sha256:5e1559c9c8a5e9be41938f2c16b719da78653e9689cad23a62dd2589b3d45de3",
+      "length": 98
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:35396c2a9a06050c95aaf3dc0fd58f329a0c581d5a0b2bd7b6a218703ea25f7a",
+      "length": 181
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:fbae922a751a467d9116081f89f9a2ea500a2f34df96a2ae0a692eb7acd20341",
+      "length": 143
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:aad9680000f422f4f33df1f84f3fd79314e32fb478927543514461dd6d175686",
+      "length": 157
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:389e2313a0613e36b27cd6247810050a147379e9d24143be576a58b0d2ea8eef",
+      "length": 68
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:2aa2a580e5b32066766706f03138a0bfe042cb3cdf5711bb4320a9814c22cdef",
+      "length": 231
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:211740e31b33423b5605f9ae68a1e9924798dfee0f7786078f749b15cc2a2f76",
+      "length": 110
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:2cef0407a58b8691094514c960b4c3f4e5a027cf42ee57d393330d513e80f2fd",
+      "length": 176
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:4312db4cc84388168aca8f52a2f3220fa122b909d6336ee6e9c027e47380ad1a",
+      "length": 119
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:87091b20f1a82b9da5c1bf613096e8c47afe84048c48c9dd702577c14ad46e2e",
+      "length": 168
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:481c10eb1c6ea77e29325e36b5f80757cf8caf0f70944692a516b8555bf9b035",
+      "length": 179
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:7e396cf42f54d6178d38b979a569753500d694849df74eae1bbfbce7c6e30ab0",
+      "length": 251
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:c55cba90ab036cf13ee99f2fd037530c94e0ec8d0357c42971aac41410eb64bd",
+      "length": 153
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 89,
+      "field": "quote",
+      "sha256": "sha256:1c372153baee90d368f13df73b1ec1cae6d8c8f87fd2f6cacad5580d47a53532",
+      "length": 109
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 94,
+      "field": "passage_locator",
+      "sha256": "sha256:ef423fb632500bf009d9a585046a5118136c52973e655abcaac428ea28195316",
+      "length": 141
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 104,
+      "field": "quote",
+      "sha256": "sha256:266d6672dd068f47f24b9ce5ab195451d57e8b3e6c17493028e68a950a2cd12a",
+      "length": 122
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 105,
+      "field": "quote",
+      "sha256": "sha256:a8fd24852354bb8378c9243e48f52fadd671ffe6b39b3aeac34a01e80af330f0",
+      "length": 47
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 106,
+      "field": "quote",
+      "sha256": "sha256:1a3066d206520ef61e0ed682dd4cfc1ea15d19e0dd4e737112d7489e3342646f",
+      "length": 89
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 107,
+      "field": "quote",
+      "sha256": "sha256:32464d93fc018b84190e53cd0f832a929bc01fb94cea89e52476e4ccaed29bb2",
+      "length": 110
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 108,
+      "field": "quote",
+      "sha256": "sha256:40369106fd7bd5f8fc89376427e4d901c4394dbec72f59792033bc985a3b6415",
+      "length": 98
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_02.md",
+      "line": 109,
+      "field": "quote",
+      "sha256": "sha256:bdcd95ad0a084ab32e3e8ce33d811af520cc561ee0bb197ebe8f75fbabb4cc94",
+      "length": 68
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:e707d6601c2ea9fc57737515518c821473a8ae803f45d638c0bc17983c1ccc6f",
+      "length": 87
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:8635c0b734a08b85225081e1276222aca5cdc8e29649e7c55384e6987e8aa2c2",
+      "length": 102
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:325ab40922a481aa6519f98c53690d3cd1f06b2b7501a5c8fe51322bc87d87ad",
+      "length": 86
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:20855514534c94624531544b4c452af2ecc529ae6b6330b4e6e1f44f985be42d",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:30c3063363da8a7fe6208e03ce36bf76da5b829ea40bec1f8be31b3d6ef7d9fd",
+      "length": 209
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:e7930ff9371ec577daf8b8e93edc6fcbd31fe9c9393aba75740104d6f757fe19",
+      "length": 97
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:a0a41ad8e94e166fa6d5f8561a63c61b975f964aa5f00e4f2945401caf6a4791",
+      "length": 97
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:d0ba7c0df3e00c3c10d78bf8df74a15e25f74c76be5737dea337af137e8fd228",
+      "length": 99
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:e1f1b8ec2e085ab240b9b36b8bb4d5c6c820ff2a33a8f5472634253052b2f96f",
+      "length": 259
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:befcdfd875dfa7bfbaab16eadb28d8f78478eee8c6e89421fc179dcf2576dcd4",
+      "length": 118
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:72dbacc01ddd3523ee7c96f0e9f7d6873cd3029f038478b3ee14f87cdb53645a",
+      "length": 165
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 89,
+      "field": "quote",
+      "sha256": "sha256:8c4ba08e666b337e2996686101324253ef21bb00b3741134011741b20c667f0e",
+      "length": 181
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 104,
+      "field": "quote",
+      "sha256": "sha256:e707d6601c2ea9fc57737515518c821473a8ae803f45d638c0bc17983c1ccc6f",
+      "length": 87
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 105,
+      "field": "quote",
+      "sha256": "sha256:325ab40922a481aa6519f98c53690d3cd1f06b2b7501a5c8fe51322bc87d87ad",
+      "length": 86
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 106,
+      "field": "quote",
+      "sha256": "sha256:ea2f1df4dcf95a8580dfe443a5ed205259ddd5f548051430d1498f81dc1ce36c",
+      "length": 84
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 107,
+      "field": "quote",
+      "sha256": "sha256:03d4a98f14d812a8e36d3403eccdcb2f8da39d5fa55afda9fc21b48d3c7389fc",
+      "length": 74
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 108,
+      "field": "quote",
+      "sha256": "sha256:1d78d5acc960c61044ceb962494478114dfbe20c19158548c07201c5e9f4daf1",
+      "length": 238
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 109,
+      "field": "quote",
+      "sha256": "sha256:f51fbfc4087507acfc74aab19b6d702b9ff3cb4c01fd97aeaeb1b2b541dd2a85",
+      "length": 76
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_03.md",
+      "line": 110,
+      "field": "quote",
+      "sha256": "sha256:72a177d819ca909bdecaee052d7dfa14755e6caba6f59cb02807f6c795616bcd",
+      "length": 136
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:966c4c44cab42b2689c82651cd27a0917f472e9502897124625917d43d895331",
+      "length": 181
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:3fa1bd899be746623c5a1f8b650c152561cd5995111845ef7a9e109dfc8f47d3",
+      "length": 204
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:b97768fbc16002be9946ef47685297a9cbb7b4455cbd7fcebcbf71b1f200c900",
+      "length": 86
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:f891e911209566806cd8e877de73b9479b3485b98fdf745d49699d295206bcc5",
+      "length": 70
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:da6cdd97e62d1fe68c74596619d99b730c7718e908fea85a082bc165e477e6b4",
+      "length": 83
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:9e6f1ea6a6d9e4d2a5c7e0a8f4cc84f6b5084148d8484da07c1be6f035f9ebd4",
+      "length": 103
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:2451fc587b071a0a2356bc831bbc2c79bfc13f79c7db515c96784d867f4a9a9c",
+      "length": 243
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:ea4b31ef29800586605304fa4477518b92a992207f427bdd14103d0c7fe8883c",
+      "length": 263
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:16246eecdb03aa65924c4b928251b754805cc4e7c7ee4ab7a586e6638a896169",
+      "length": 187
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:7621351d720ead97d95852898697f32f5e8aa70648fd997d5cf9433b785d5ab6",
+      "length": 172
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:d851fac2418c5c454cc131aa6419c1691d6d54c28d45df3e191b2a5a602355ac",
+      "length": 183
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 93,
+      "field": "quote",
+      "sha256": "sha256:966c4c44cab42b2689c82651cd27a0917f472e9502897124625917d43d895331",
+      "length": 181
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 94,
+      "field": "quote",
+      "sha256": "sha256:b97768fbc16002be9946ef47685297a9cbb7b4455cbd7fcebcbf71b1f200c900",
+      "length": 86
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 95,
+      "field": "quote",
+      "sha256": "sha256:da6cdd97e62d1fe68c74596619d99b730c7718e908fea85a082bc165e477e6b4",
+      "length": 83
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 96,
+      "field": "quote",
+      "sha256": "sha256:2451fc587b071a0a2356bc831bbc2c79bfc13f79c7db515c96784d867f4a9a9c",
+      "length": 243
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 97,
+      "field": "quote",
+      "sha256": "sha256:a1d7ec7b4c2f0963e2385d82b8e36340a7f1038136db8531ab34be58db4ce012",
+      "length": 153
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_04.md",
+      "line": 98,
+      "field": "quote",
+      "sha256": "sha256:b62db5417918d464bfe01ccfe93ca663b5b3a27832478601c2b4f39097d2b4b8",
+      "length": 125
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:441745e191ebee00d1260f0951a3e57adfb59b0a074008686e3b0c0506918a59",
+      "length": 216
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:0280ce77252bab0af44ddc04cb188fa25374db94d00b11c537e791a256864f91",
+      "length": 155
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:b76646a1b836e5fc37623c001d513ed5ba8b2d0f0670eaee7736868d6ed3cae0",
+      "length": 118
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:e41e831220246a0df7ebfe36525da4b02bdaf90cde848459b6fb3d139bce1e78",
+      "length": 86
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:bb4fe8abb482a4b7d583b6b540c446a6938cd1265cf0e537d3d505e7a04fc114",
+      "length": 120
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:f117fd51f956ef161c9879f7baec4a63713f767bbc4cd5d20353863f0f9e76ac",
+      "length": 133
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:e07079bd5882450137560ea173a7bcc9e976d193cb4491521b552b537a3fbba4",
+      "length": 209
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:b664e5fd5a52cfa6e5ffdb5c8f324f469eaef57a7de4444ccbb8f6f0a1d8fcd2",
+      "length": 100
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:de9af07887b19a1fcc9c76d5307d869dab17fc74733aab9e14b20472468e1b36",
+      "length": 194
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:2d67696558864bbb24db7c9fc307c2e878ed3eb8d3af820f5e4ff29e180720d6",
+      "length": 104
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:3320741b6b9b82352ffc00179680f9137e1ff82f90751ee0fc2607096fe2285a",
+      "length": 142
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:2de416b5898bd249b9abe6a2f0e3a9e1271d6982b95b4cb5c2dc3c3333af5f70",
+      "length": 41
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 89,
+      "field": "quote",
+      "sha256": "sha256:bbcad68cbfea8352154aee1ae4f059b39c91ced3e717e1cff4c8f1d9c2777d57",
+      "length": 22
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 94,
+      "field": "passage_locator",
+      "sha256": "sha256:d787f77e9f48dd3ad76470b5306a248e3de4865afa06c4b18e47feeb8f620c86",
+      "length": 104
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 100,
+      "field": "quote",
+      "sha256": "sha256:0c7b46222b1a340693bfa847c19fba1d6d68b175919ad84fb1e054c72ecc63bf",
+      "length": 171
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 105,
+      "field": "passage_locator",
+      "sha256": "sha256:41965908cacf6cbee640792bd919ffba0ab2a54fb3daf01afa13ccef906908db",
+      "length": 152
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 115,
+      "field": "quote",
+      "sha256": "sha256:8d826ede4d08b4b3255f114dd4a6654ce64498ebe401a8415da0d10d19264b89",
+      "length": 140
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 116,
+      "field": "quote",
+      "sha256": "sha256:35e4e5c74548a64e116e27c28c577a896ad7c2d4c777615f5b07dde699112c3b",
+      "length": 75
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 117,
+      "field": "quote",
+      "sha256": "sha256:bb4fe8abb482a4b7d583b6b540c446a6938cd1265cf0e537d3d505e7a04fc114",
+      "length": 120
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 118,
+      "field": "quote",
+      "sha256": "sha256:93219ae4457e4c77a31db2f38a151a0f7ac4b9e2caa0a941aed01c4773426f43",
+      "length": 90
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 119,
+      "field": "quote",
+      "sha256": "sha256:aaac02f7bb59b104af3d9414965d3be7e2c0ec104f4254fbf94b25d0fa496a81",
+      "length": 86
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 120,
+      "field": "quote",
+      "sha256": "sha256:583127dad288449dcdf748dfbcf35a53bbcc4e0a5f1308b5088f58f3ca7cc8b2",
+      "length": 30
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 121,
+      "field": "quote",
+      "sha256": "sha256:bbcad68cbfea8352154aee1ae4f059b39c91ced3e717e1cff4c8f1d9c2777d57",
+      "length": 22
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_05.md",
+      "line": 122,
+      "field": "quote",
+      "sha256": "sha256:380025cb2e71f8a07e6c558da73c02da6e139c23658002a449569f5223e70930",
+      "length": 140
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:aed51cdf48be8cf774b1457ea1f31ef956fcf89a7d5ba32015946a793104bd87",
+      "length": 193
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:24bfbbe0fd48403379bc59a1a0d428eebaff258b61ee1d889d6535b7bc7046b7",
+      "length": 188
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:7ab8e48de8eb90228012eb7807050d5dea7a83864bf0e0e64987771bef80417f",
+      "length": 106
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:bf25a631b84ef5fedb8e6e374914728e7b5c81d98066edd032c4088a8d38db66",
+      "length": 128
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:fd8845ba81792b803fe3f16446640d59c90839a4162b2ecfb5cdcfc98862fdc5",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:b658649286215d8c933e37e5a31110383c7a2e07f97c8990c2809e76acfe82c7",
+      "length": 168
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:a11e8a7de5eeead3f7cda97b4d8b9c4d33d59e22bdd080fbf218aaa7096b1c5f",
+      "length": 163
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:dda68a65d07b58a84604ca664c5434501334302595fb8ff18fff8332fc90ff9c",
+      "length": 207
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:4ef962808e4621350e1286a43e4827e8daeb8b54d05f4626d14985549cc82e14",
+      "length": 129
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:218d6bbe3cdfa72122abd5c6c9e30fc779d19a3410e661896d7699bab838a3af",
+      "length": 153
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:38ec4748bf222fbad9d6b277b6d30015f7bfd87f036a56a99e9e267186e314b4",
+      "length": 214
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 93,
+      "field": "quote",
+      "sha256": "sha256:aed51cdf48be8cf774b1457ea1f31ef956fcf89a7d5ba32015946a793104bd87",
+      "length": 193
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 94,
+      "field": "quote",
+      "sha256": "sha256:7ab8e48de8eb90228012eb7807050d5dea7a83864bf0e0e64987771bef80417f",
+      "length": 106
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 95,
+      "field": "quote",
+      "sha256": "sha256:fd8845ba81792b803fe3f16446640d59c90839a4162b2ecfb5cdcfc98862fdc5",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 96,
+      "field": "quote",
+      "sha256": "sha256:a11e8a7de5eeead3f7cda97b4d8b9c4d33d59e22bdd080fbf218aaa7096b1c5f",
+      "length": 163
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 97,
+      "field": "quote",
+      "sha256": "sha256:4ef962808e4621350e1286a43e4827e8daeb8b54d05f4626d14985549cc82e14",
+      "length": 129
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_06.md",
+      "line": 98,
+      "field": "quote",
+      "sha256": "sha256:38ec4748bf222fbad9d6b277b6d30015f7bfd87f036a56a99e9e267186e314b4",
+      "length": 214
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:4e0dc9439b0be3b21664ea27dc1e5189eb85903f4165c3be2755e268c24cecc4",
+      "length": 191
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:9ee2cec097ca0b5107e89ea58ef35718da0277598e1afa81c8fbdb0d5382127b",
+      "length": 65
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:04a895d3e276555f5e69cb0573f72d18b454582e90dc37148aeffa477c1ad0cc",
+      "length": 193
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:d66f1edb2b64aeb65a55dfe90b85fe4f5d85f2f7e98f0d9465e154d8b39a696f",
+      "length": 224
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:172ade8b066b2858716bc5e80d5b6a46a90b2aa1e6924966150f3e7818d26bb4",
+      "length": 84
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:d1f5b4b94f564e32c8fe274e81626c561efdbb69bfef866fd9c90c5a01e5843e",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:599bbf7066fe63d68cf1db3b170ffc7f10f98e94407112470609b194be8e8862",
+      "length": 105
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:556021e326b6c4216906fb3ae002897f758f31ed74aa4c126c98c57fe803e9cc",
+      "length": 109
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 93,
+      "field": "quote",
+      "sha256": "sha256:4e0dc9439b0be3b21664ea27dc1e5189eb85903f4165c3be2755e268c24cecc4",
+      "length": 191
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 94,
+      "field": "quote",
+      "sha256": "sha256:04a895d3e276555f5e69cb0573f72d18b454582e90dc37148aeffa477c1ad0cc",
+      "length": 193
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 95,
+      "field": "quote",
+      "sha256": "sha256:d66f1edb2b64aeb65a55dfe90b85fe4f5d85f2f7e98f0d9465e154d8b39a696f",
+      "length": 224
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 96,
+      "field": "quote",
+      "sha256": "sha256:d1f5b4b94f564e32c8fe274e81626c561efdbb69bfef866fd9c90c5a01e5843e",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 97,
+      "field": "quote",
+      "sha256": "sha256:599bbf7066fe63d68cf1db3b170ffc7f10f98e94407112470609b194be8e8862",
+      "length": 105
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_07.md",
+      "line": 98,
+      "field": "quote",
+      "sha256": "sha256:556021e326b6c4216906fb3ae002897f758f31ed74aa4c126c98c57fe803e9cc",
+      "length": 109
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:dcf39e49ced055e95eee455823fbaa1be3e17eff2181e15d68440477e9077209",
+      "length": 281
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:88526e149874e427bc258264b3c81afb098f5d086729ff2cf28c9fabfa7aeecf",
+      "length": 131
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:fb54aac29882fac0f5dbb45e3bad37472d0cdcc1c4cdc010341d9e9c41803115",
+      "length": 219
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:a5590139239f60beebb989de35731248f5a520f80efb7af30e38a42756edd00d",
+      "length": 102
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:306922a2a73865561aef05b108a00202d160c79c41c21d7fcdefeac7edcea0a2",
+      "length": 214
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:8fe3045a2cf0ebd1351b7d76d2bf47f6d1a9672d5ad5c2e64106e7b07458307d",
+      "length": 104
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:72520018ac4bf63b909e950054b68dc5bd4c303ad42f38987ba654a69e5da5f4",
+      "length": 283
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:7b94ac25cb92e66e65b1bd0022369516d71de6fd3de0bb7276bb4ca41ad01bc5",
+      "length": 111
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:e597dda2249effea92a5201939766e05cf2d342f0111b19d6b00ba27d6a735e3",
+      "length": 160
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:bf4128ea377f663b77d10ba15fc74c8c2a56a72ec2d6201942399064504828e8",
+      "length": 70
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:16cc0e3fe4a18798484fd8a0543c450995797f13ad68046c8bbebe455aa7efd1",
+      "length": 182
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:b271d2452f8610611ad83d9d43c593be150f49a2da31e90621f8994cf39bc293",
+      "length": 68
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 89,
+      "field": "quote",
+      "sha256": "sha256:86aabceef4cc2195edc58bd19e500291e0cd9d451cbeafe7c587886e9078f94f",
+      "length": 179
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 94,
+      "field": "passage_locator",
+      "sha256": "sha256:369dea5fd6762c0ea2ba310ae7c5c7515c0fb6e8a5fdeae35256ce868e7725bb",
+      "length": 97
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 100,
+      "field": "quote",
+      "sha256": "sha256:ff84ad7f2cff71f5fe68bed76b146f1b924685ce8c735cf033aa691d863501b9",
+      "length": 163
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 105,
+      "field": "passage_locator",
+      "sha256": "sha256:80c1c7509c654ae59fd9557fb9c31d72de41cf17627c38ce18aeb76de7c597ae",
+      "length": 164
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 115,
+      "field": "quote",
+      "sha256": "sha256:84c3c5a201ab13f59cc4cd76f93d04cbb31794a65c23c26056c56e18c66103eb",
+      "length": 162
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 116,
+      "field": "quote",
+      "sha256": "sha256:99f4e3f6a39659edcaade500335e02eb190524111f71d0d17a73aed15b8d127f",
+      "length": 100
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 117,
+      "field": "quote",
+      "sha256": "sha256:450c3a61549bfeca6c6f77013d7092e8b665bcef4ffd3c5a7ee3b2b5f16a6d1c",
+      "length": 102
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 118,
+      "field": "quote",
+      "sha256": "sha256:38f34d73589c1341a41464b2dc38ad571a8b79dfa67446ba938b97e600d965dd",
+      "length": 96
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 119,
+      "field": "quote",
+      "sha256": "sha256:820e4a25c28d40f8311f856266ea70b238c90c5e057f5ba0cef2615a7df6ac25",
+      "length": 101
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 120,
+      "field": "quote",
+      "sha256": "sha256:1aac435ebfdf378b372665eac1c945073908c29369d26771d6d09403dca834f0",
+      "length": 97
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 121,
+      "field": "quote",
+      "sha256": "sha256:a542b1596613dfb3442c1dbbff2f26806419d501341960d10e2024233391f627",
+      "length": 95
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_08.md",
+      "line": 122,
+      "field": "quote",
+      "sha256": "sha256:26ee53102df37c5bffcf26920ee49ac32329488876f6f788216ba918d5efb9b8",
+      "length": 91
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:41c8092c3d63611f02b67065c6d5a3138326b4733618925c5b29547531b5ec56",
+      "length": 101
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:1168523f9864b7d8dcafdba49a438b15bbc49bf5dadcb5c0faedcd0044996369",
+      "length": 87
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:352eef4f484cca911bee8a092e586abe3c39e6bd7632ad09e8fd1f632d3420ab",
+      "length": 100
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:9acb4c013b0a97d6c6cb45d3f0d75ee58b74b69e224e5b323ac0a76f8e90f81e",
+      "length": 99
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:6a6b07903261047d24f770f3da7d4a9e81514439c5e0765f12a74274b414e495",
+      "length": 112
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:28977897b1daa52403a5223888ac6bdd54031954c7d09c3cb45e053f67ef577c",
+      "length": 88
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:fb69e1a746e581f64f026c9f1d1757d0775bfc5670b910f22aca7e7d93915768",
+      "length": 101
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:2e28f0825a546e1ba6113c12f83de76149d322cf806c1e45f635f9c3ee1bf056",
+      "length": 79
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:a60e1eb7248f4ab412985ae8caf7f715daad4191f5ceac97ae7f152a280d8933",
+      "length": 92
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:c7b8d76960fe354301a0eabfbddff064f89f707ffae0c7da769c71fe0c728c01",
+      "length": 90
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 83,
+      "field": "passage_locator",
+      "sha256": "sha256:a690b041a509b5592d2ad92000082bc175212d6fc456cba25745c3ef51aa8e1e",
+      "length": 103
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 89,
+      "field": "quote",
+      "sha256": "sha256:4557d0a1d2fc48fc08e1f8b37ad11d1fce5e660c467204d2cc8203b5d041d977",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 94,
+      "field": "passage_locator",
+      "sha256": "sha256:9fe3610369452effe8af2e69f4eabf19a4726dd01de82acf713d793bfdbbc6fa",
+      "length": 128
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 100,
+      "field": "quote",
+      "sha256": "sha256:3f0888cc2f59cf8d67c26f6de8b328f446297090c4912a393bfe7cd1f0692da7",
+      "length": 150
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 105,
+      "field": "passage_locator",
+      "sha256": "sha256:b5f3371def4217df220846a511e74f24ebbc6c09a9187c692df486c7722815a5",
+      "length": 70
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 115,
+      "field": "quote",
+      "sha256": "sha256:41c8092c3d63611f02b67065c6d5a3138326b4733618925c5b29547531b5ec56",
+      "length": 101
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 116,
+      "field": "quote",
+      "sha256": "sha256:1168523f9864b7d8dcafdba49a438b15bbc49bf5dadcb5c0faedcd0044996369",
+      "length": 87
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 117,
+      "field": "quote",
+      "sha256": "sha256:9acb4c013b0a97d6c6cb45d3f0d75ee58b74b69e224e5b323ac0a76f8e90f81e",
+      "length": 99
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 118,
+      "field": "quote",
+      "sha256": "sha256:28977897b1daa52403a5223888ac6bdd54031954c7d09c3cb45e053f67ef577c",
+      "length": 88
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 119,
+      "field": "quote",
+      "sha256": "sha256:2e28f0825a546e1ba6113c12f83de76149d322cf806c1e45f635f9c3ee1bf056",
+      "length": 79
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 120,
+      "field": "quote",
+      "sha256": "sha256:c7b8d76960fe354301a0eabfbddff064f89f707ffae0c7da769c71fe0c728c01",
+      "length": 90
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 121,
+      "field": "quote",
+      "sha256": "sha256:4557d0a1d2fc48fc08e1f8b37ad11d1fce5e660c467204d2cc8203b5d041d977",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_09.md",
+      "line": 122,
+      "field": "quote",
+      "sha256": "sha256:3f0888cc2f59cf8d67c26f6de8b328f446297090c4912a393bfe7cd1f0692da7",
+      "length": 150
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:2771c2c9b138c900a6a54e175b80beefdbeff2ab9e8377e0667bcb9a264612fe",
+      "length": 184
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 28,
+      "field": "passage_locator",
+      "sha256": "sha256:8a9a6e883f2b841c74c95dd6f4c0fd7838bb1b293ad0966efd9bdd40a8adfd54",
+      "length": 146
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:589f6a80ad33dba47c19f7ef7e8a242b8bc20bb346b65ca6f13af04f5e4ccc23",
+      "length": 184
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:4ee94c56710500fa51cf2356b35f351146acacc683048592422d7089f74fb55c",
+      "length": 88
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:f4b43a1b5ed264c731403f7d3e91b98db0e6da7d7a8c10700afd5d9ff2b8a0a2",
+      "length": 225
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:7c0f9334766089834832917fda666abda68e7556b81d463c21cbf86f33e5401a",
+      "length": 153
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:c52bd2c30d03b037b42263a6fa61bbc7102347c28ade47f0909373b3412873d8",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 61,
+      "field": "passage_locator",
+      "sha256": "sha256:a7cf50f846c300f76a1f96c720f7484a6838bc62b0eb72dbd370b8c3f689e91e",
+      "length": 125
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:bfa5c97ca42205fbc5cdd786129c774abc154d01d32bda3fdccdb57e2aaa626b",
+      "length": 130
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 72,
+      "field": "passage_locator",
+      "sha256": "sha256:1071ae685fb5fe2820e86f0f74e78ea47a32783f261789a1a564ed36d25f525e",
+      "length": 147
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:b929d3ba6718f3d63ef602282f6ec666c39b032f9b80f32a0cfc4f2d2153f584",
+      "length": 117
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 93,
+      "field": "quote",
+      "sha256": "sha256:2771c2c9b138c900a6a54e175b80beefdbeff2ab9e8377e0667bcb9a264612fe",
+      "length": 184
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 94,
+      "field": "quote",
+      "sha256": "sha256:589f6a80ad33dba47c19f7ef7e8a242b8bc20bb346b65ca6f13af04f5e4ccc23",
+      "length": 184
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 95,
+      "field": "quote",
+      "sha256": "sha256:f4b43a1b5ed264c731403f7d3e91b98db0e6da7d7a8c10700afd5d9ff2b8a0a2",
+      "length": 225
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 96,
+      "field": "quote",
+      "sha256": "sha256:c52bd2c30d03b037b42263a6fa61bbc7102347c28ade47f0909373b3412873d8",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 97,
+      "field": "quote",
+      "sha256": "sha256:bfa5c97ca42205fbc5cdd786129c774abc154d01d32bda3fdccdb57e2aaa626b",
+      "length": 130
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_10.md",
+      "line": 98,
+      "field": "quote",
+      "sha256": "sha256:b929d3ba6718f3d63ef602282f6ec666c39b032f9b80f32a0cfc4f2d2153f584",
+      "length": 117
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 23,
+      "field": "quote",
+      "sha256": "sha256:04a895d3e276555f5e69cb0573f72d18b454582e90dc37148aeffa477c1ad0cc",
+      "length": 193
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 34,
+      "field": "quote",
+      "sha256": "sha256:d66f1edb2b64aeb65a55dfe90b85fe4f5d85f2f7e98f0d9465e154d8b39a696f",
+      "length": 224
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 39,
+      "field": "passage_locator",
+      "sha256": "sha256:26138d2ce054a5e79d29b288dfbc3da33390a9c0e558b29e085c4b31a11e204b",
+      "length": 83
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 45,
+      "field": "quote",
+      "sha256": "sha256:c855ce82a4d47e26606731b80a382d0e2a61173883d36ed5c2144e299c5c8b08",
+      "length": 145
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 50,
+      "field": "passage_locator",
+      "sha256": "sha256:16557ab85ef4888f02374d82fd3d05984c105f92174606cd8d69c869170bafcf",
+      "length": 61
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 56,
+      "field": "quote",
+      "sha256": "sha256:d1f5b4b94f564e32c8fe274e81626c561efdbb69bfef866fd9c90c5a01e5843e",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 67,
+      "field": "quote",
+      "sha256": "sha256:c065a72d94fecf15b26d001bd36a6b9c6fcb47a10c11fc46a56a6b3e87db592e",
+      "length": 96
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 78,
+      "field": "quote",
+      "sha256": "sha256:556021e326b6c4216906fb3ae002897f758f31ed74aa4c126c98c57fe803e9cc",
+      "length": 109
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 93,
+      "field": "quote",
+      "sha256": "sha256:04a895d3e276555f5e69cb0573f72d18b454582e90dc37148aeffa477c1ad0cc",
+      "length": 193
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 94,
+      "field": "quote",
+      "sha256": "sha256:d66f1edb2b64aeb65a55dfe90b85fe4f5d85f2f7e98f0d9465e154d8b39a696f",
+      "length": 224
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 95,
+      "field": "quote",
+      "sha256": "sha256:c855ce82a4d47e26606731b80a382d0e2a61173883d36ed5c2144e299c5c8b08",
+      "length": 145
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 96,
+      "field": "quote",
+      "sha256": "sha256:d1f5b4b94f564e32c8fe274e81626c561efdbb69bfef866fd9c90c5a01e5843e",
+      "length": 115
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 97,
+      "field": "quote",
+      "sha256": "sha256:c065a72d94fecf15b26d001bd36a6b9c6fcb47a10c11fc46a56a6b3e87db592e",
+      "length": 96
+    },
+    {
+      "file": "sources/src_20260718_rfgro002_11.md",
+      "line": 98,
+      "field": "quote",
+      "sha256": "sha256:556021e326b6c4216906fb3ae002897f758f31ed74aa4c126c98c57fe803e9cc",
+      "length": 109
+    }
+  ],
+  "files": [
+    {
+      "path": "evidence_bundle.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:54e2ed8b14c97d0b09ec79559cad4fd90fc22c1f099f093a7004045ea3e89e3a",
+      "fixtureSha256": "sha256:54e2ed8b14c97d0b09ec79559cad4fd90fc22c1f099f093a7004045ea3e89e3a"
+    },
+    {
+      "path": "research_brief.md",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:56deffa7f416d09af4744160de49e00cdbae00364d1d1a66b0b44defb4d03cdd",
+      "fixtureSha256": "sha256:56deffa7f416d09af4744160de49e00cdbae00364d1d1a66b0b44defb4d03cdd"
+    },
+    {
+      "path": "swarm_plan.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:1de10917e8014b058552af99a527e0c92203dbd540f2b4a3894e895d1311673b",
+      "fixtureSha256": "sha256:1de10917e8014b058552af99a527e0c92203dbd540f2b4a3894e895d1311673b"
+    },
+    {
+      "path": "claims/claim_ledger.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:25c834a3f5865afe849638aad105f8b0b9c9b671705c1bc88decec7384623422",
+      "fixtureSha256": "sha256:25c834a3f5865afe849638aad105f8b0b9c9b671705c1bc88decec7384623422"
+    },
+    {
+      "path": "reports/report_draft.md",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:8133d25d1af25169d058097065036b8bb6e55385538f7d6bf27a0d7f25c4ef12",
+      "fixtureSha256": "sha256:8133d25d1af25169d058097065036b8bb6e55385538f7d6bf27a0d7f25c4ef12"
+    },
+    {
+      "path": "reviews/verification.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:e9b72bf5e287d15b43492a2b9445c49cd0c78ea9a750c043a7aff220bde04975",
+      "fixtureSha256": "sha256:e9b72bf5e287d15b43492a2b9445c49cd0c78ea9a750c043a7aff220bde04975"
+    },
+    {
+      "path": "writebacks/ccdash_event.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:faf3aa9a068a944bcfcea92ef0099e509a489ffd0304b14d16f3606a19d61212",
+      "fixtureSha256": "sha256:faf3aa9a068a944bcfcea92ef0099e509a489ffd0304b14d16f3606a19d61212"
+    },
+    {
+      "path": "extractions/ext_20260718_11280716_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:97b9587efc2f45f27dae65733ed0de7f0b50e8ec7b4fef13f869b83df2051192",
+      "fixtureSha256": "sha256:97b9587efc2f45f27dae65733ed0de7f0b50e8ec7b4fef13f869b83df2051192"
+    },
+    {
+      "path": "extractions/ext_20260718_1911b6c8_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:df74ba652e4166c4083c6329ee40beeb78ae4e5deff093a140e815ce7db92030",
+      "fixtureSha256": "sha256:df74ba652e4166c4083c6329ee40beeb78ae4e5deff093a140e815ce7db92030"
+    },
+    {
+      "path": "extractions/ext_20260718_2224d9de_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:f7aa971d418a4093fb3dab4c7b005b87b1d3c801a47cfcdc3cbab71d659715e3",
+      "fixtureSha256": "sha256:f7aa971d418a4093fb3dab4c7b005b87b1d3c801a47cfcdc3cbab71d659715e3"
+    },
+    {
+      "path": "extractions/ext_20260718_2fd0c8d0_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:1001a5e93fe2d9ffa9bc5bbfbdb7bdb096b7cbafce334965d6d0db6f0a4b12b9",
+      "fixtureSha256": "sha256:1001a5e93fe2d9ffa9bc5bbfbdb7bdb096b7cbafce334965d6d0db6f0a4b12b9"
+    },
+    {
+      "path": "extractions/ext_20260718_31369bd2_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:69613aefb4e292a5d35830e1dde7867d3e8303b2b66217b3cbae18e2170c7fef",
+      "fixtureSha256": "sha256:69613aefb4e292a5d35830e1dde7867d3e8303b2b66217b3cbae18e2170c7fef"
+    },
+    {
+      "path": "extractions/ext_20260718_3832a977_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:9cf7e2417e5f7754709bec90ede1e609556d5aa91951e61b1d7cdc693d0c4b1f",
+      "fixtureSha256": "sha256:9cf7e2417e5f7754709bec90ede1e609556d5aa91951e61b1d7cdc693d0c4b1f"
+    },
+    {
+      "path": "extractions/ext_20260718_3ce3bd3d_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:57ce3c6f580fe0a7ea339ccf068cf338412234aaa42a5180e66a86a0482b42eb",
+      "fixtureSha256": "sha256:57ce3c6f580fe0a7ea339ccf068cf338412234aaa42a5180e66a86a0482b42eb"
+    },
+    {
+      "path": "extractions/ext_20260718_695c1167_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:f61b55f5f850558da2318e034f1e33672295d043f48c14b92c9647dbb1340076",
+      "fixtureSha256": "sha256:f61b55f5f850558da2318e034f1e33672295d043f48c14b92c9647dbb1340076"
+    },
+    {
+      "path": "extractions/ext_20260718_8fe131fc_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:fb9ac281c77727b058026698a6ce07060731c4291e7cf845a631b594be86a9b6",
+      "fixtureSha256": "sha256:fb9ac281c77727b058026698a6ce07060731c4291e7cf845a631b594be86a9b6"
+    },
+    {
+      "path": "extractions/ext_20260718_9360c6a7_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:d36f36d4f4269616f83eba27c7cea60437f94e6d138649ec3d52ab3c5e2f963b",
+      "fixtureSha256": "sha256:d36f36d4f4269616f83eba27c7cea60437f94e6d138649ec3d52ab3c5e2f963b"
+    },
+    {
+      "path": "extractions/ext_20260718_ae8290ae_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:4b6daf132fdf7e9c065cb05ea0beb4ad600b752516e6c139b8d32b00111c87a3",
+      "fixtureSha256": "sha256:4b6daf132fdf7e9c065cb05ea0beb4ad600b752516e6c139b8d32b00111c87a3"
+    },
+    {
+      "path": "extractions/ext_20260718_f4cd1236_001.yaml",
+      "action": "copied-unmodified",
+      "sourceSha256": "sha256:c16b46b72f21ed3c768d22d60eace5fc6502ff223c964bcf06b3cceedad23f5a",
+      "fixtureSha256": "sha256:c16b46b72f21ed3c768d22d60eace5fc6502ff223c964bcf06b3cceedad23f5a"
+    },
+    {
+      "path": "sources/src_20260718_rfgro002_00.md",
+      "action": "redacted (restricted disposition)",
+      "sourceSha256": "sha256:cdfd3529fb31760f7366f768b3dc8c00e67c5eb6004a2eada54a33a8af342fd7",
+      "fixtureSha256": "sha256:b84e3153a1d97009be7f031debc6e96f425f40b6ce077b723140a47c9ca35de6"
+    },
+    {
+      "path": "sources/src_20260718_rfgro002_01.md",
+      "action": "redacted (restricted disposition)",
+      "sourceSha256": "sha256:f2702ba7858fb802cf5f624a735f99263041ba4f5f9432fb625f61277b7ac9a9",
+      "fixtureSha256": "sha256:3e9123c13377e8cda59ae8456a6028ccab3ec550fcf1dda53532be7995871bea"
+    },
+    {
+      "path": "sources/src_20260718_rfgro002_02.md",
+      "action": "redacted (restricted disposition)",
+      "sourceSha256": "sha256:2ccc24fac5974143c6301faa6047e8cbefc1c1a39eb6ad680f2907cddb498820",
+      "fixtureSha256": "sha256:ce4979c37fff8bf01af87b5ea506b5d5e47fad8203471d9e5c1e5eb25bac497a"
+    },
+    {
+      "path": "sources/src_20260718_rfgro002_03.md",
+      "action": "redacted (restricted disposition)",
+      "sourceSha256": "sha256:78a0f7cde870fe7551aa41d7d9435d22d2c40c792ea58fd2307b6d37824bccd9",
+      "fixtureSha256": "sha256:e6fbbaa69ec78f05e8876d7975e5c1cd2eb43b4ae2a703de938e478e0b925c2f"
+    },
+    {
+      "path": "sources/src_20260718_rfgro002_04.md",
+      "action": "redacted (restricted disposition)",
+      "sourceSha256": "sha256:23008bf628eeb784c52044cb5b9153b4540ae4b162697c8febf82bd1fd0295de",
+      "fixtureSha256": "sha256:df84017645ac0db6309d176143aa913901c9be42e771ced9f5c678889b80cc47"
+    },
+    {
+      "path": "sources/src_20260718_rfgro002_05.md",
+      "action": "redacted (restricted disposition)",
+      "sourceSha256": "sha256:c3fd47814e57c6af1f6813efddb5042d88217adcfe76273567a8211aade26080",
+      "fixtureSha256": "sha256:3b520bc0a5d348f8f16b958c97293505682d7fc8c5ba6ddc428f71ef04d6653c"
+    },
+    {
+      "path": "sources/src_20260718_rfgro002_06.md",
+      "action": "redacted (restricted disposition)",
+      "sourceSha256": "sha256:7302fde0a3d0d7e26f8daf5821895997ab0d8bed7d1d07d622c5da91f7aa5e2f",
+      "fixtureSha256": "sha256:adc79bf3faa0ddfe527d5f837b8e45b910147074d1165189e134c9a9a0acc8e8"
+    },
+    {
+      "path": "sources/src_20260718_rfgro002_07.md",
+      "action": "redacted (restricted disposition)",
+      "sourceSha256": "sha256:3d328c79bb0c08cde1f0595fa4ed571c37b0bb57cd5e6f44fb7e5ca4802f43c8",
+      "fixtureSha256": "sha256:16a3695ab9a0b15b138da3911f500d54cd3ca49d9cae828eecbf552eebb5f303"
+    },
+    {
+      "path": "sources/src_20260718_rfgro002_08.md",
+      "action": "redacted (restricted disposition)",
+      "sourceSha256": "sha256:45acbe8e7b4443ebe55a81f920a174331f49438ff569d444a8eba45a7c16153e",
+      "fixtureSha256": "sha256:b398c3aefae78467045a175c739ece20bca4905a55158779746f9764ce28bf17"
+    },
+    {
+      "path": "sources/src_20260718_rfgro002_09.md",
+      "action": "redacted (restricted disposition)",
+      "sourceSha256": "sha256:9d5df0c4f8bcd586faaba8d0f4f064ba6817eca553bad105915a45953d0884fb",
+      "fixtureSha256": "sha256:ed8d25103bf9076077aff37a2cfdc230c5c5ad2fa0acb65beceeeca2e6aa3694"
+    },
+    {
+      "path": "sources/src_20260718_rfgro002_10.md",
+      "action": "redacted (restricted disposition)",
+      "sourceSha256": "sha256:bd76de10cd778a68b09edb948c72a3b64f7a5395a3ac4cf69ddb3c3f32816347",
+      "fixtureSha256": "sha256:7ddf0f60641f5b56f1186e6769cd595d2627ace22a2cb97c342a7fd685dc76a4"
+    },
+    {
+      "path": "sources/src_20260718_rfgro002_11.md",
+      "action": "redacted (restricted disposition)",
+      "sourceSha256": "sha256:b8395c739d607b126ba243b62b25f4b67017d6edf545a3396f2fd4550256614e",
+      "fixtureSha256": "sha256:ac337b896bd71d6d73e9b5ba24edb40c86808bc79d73b0b7698b64e96fd53333"
+    }
+  ]
+}

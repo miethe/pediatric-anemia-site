@@ -1,0 +1,1564 @@
+id: claims_20260718_rf_run_20260717_rf_cbc_002
+intent_id: intent_research_20260717_rf_cbc_002_pediatric_cds_establish
+report_ref: reports/report_draft.md
+verification_status: passed
+claims:
+- claim_id: clm_001
+  text: In this observed RCC cohort, 84% (84/100) presented with a hypocellular diagnostic bone marrow,
+    consistent with the typical RCC presentation.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_02
+    evidence_id: ev_001
+    relation: supports
+    locator: 'Results — Patient characteristics at diagnosis (also Introduction: ''~80% of RCC cases'')'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_002
+  text: EWOG-MDS assigned early HSCT (scope-exit from observation) for RCC patients with transfusion dependency,
+    ANC <1×10^9/L, monosomy 7, del(7q), or >=2 chromosomal aberrations; others were observed.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_02
+    evidence_id: ev_002
+    relation: supports
+    locator: Introduction — risk-adapted therapy approach (EWOG-MDS stratification)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_003
+  text: The authors categorized 'significant' blood-count abnormalities during follow-up as Hb <10 g/dL,
+    ANC <1×10^9/L, and/or platelets <100×10^9/L.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_02
+    evidence_id: ev_003
+    relation: supports
+    locator: Results — Hematological course (severity categorization of follow-up blood counts, n=74)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_004
+  text: The authors categorized 'mild' blood-count abnormalities during follow-up as Hb 10-12 g/dL, ANC
+    1.0-1.5×10^9/L, platelets 100-150×10^9/L, and/or persistently high MCV.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_02
+    evidence_id: ev_004
+    relation: supports
+    locator: Results — Hematological course (mild-abnormality band, n=74)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_005
+  text: For observed normal-karyotype RCC without predisposition, 5- and 10-year transplant(HSCT)-free
+    survival were 94% and 88%, with all patients alive at median 7.2-year follow-up.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_02
+    evidence_id: ev_005
+    relation: supports
+    locator: Results — Clinical outcome (Kaplan-Meier transplant-free survival)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_006
+  text: Given low rates of clonal evolution/PNH, the authors state yearly bone-marrow exams can be omitted;
+    peripheral blood counts every 3-6 months, with marrow study only if counts deviate from baseline.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_02
+    evidence_id: ev_006
+    relation: supports
+    locator: Discussion — surveillance recommendation
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_007
+  text: Patients who later underwent HSCT had lower median diagnosis-time Hb (8.7 vs 10.6 g/dL) and platelets
+    (30 vs 64 ×10^9/L) than those never transplanted.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_02
+    evidence_id: ev_007
+    relation: supports
+    locator: Results — Clinical outcome (baseline predictors of later HSCT)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_008
+  text: Cohort median age at diagnosis was 10.9 years (range 1.4-17.3), slight male predominance (M/F
+    1.2); age-adjusted MCV was increased in ~half of patients.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_02
+    evidence_id: ev_008
+    relation: supports
+    locator: Results — Patient characteristics at diagnosis (age/sex/MCV)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_009
+  text: Severe aplastic anemia (SAA) is a rare, potentially fatal hematologic disorder for which overall
+    treatment outcomes are excellent, though management approaches vary and differ between adult and pediatric
+    patients.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_04
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract (PMID 38757488), sentences 1-2
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_010
+  text: Certain aspects of pediatric SAA treatment remain under active investigation in clinical trials,
+    so recommendations are not fully settled.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_04
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract (PMID 38757488), sentence 3
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_011
+  text: Because SAA is rare, some pediatric hematologists have relatively limited experience with its
+    complex management — the rationale for these consolidated recommendations.
+  materiality: background
+  claim_type: causal
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_04
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract (PMID 38757488), sentence 4
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_012
+  text: The panel's recommendations are framed as an up-to-date, evidence-based approach specifically
+    for children with newly diagnosed SAA.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_04
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract (PMID 38757488), sentence 5
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_013
+  text: The IAP consensus states a bone marrow biopsy is mandatory to establish a diagnosis of acquired
+    aplastic anemia in children.
+  materiality: background
+  claim_type: attribution
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_11
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract — Key recommendations, item (i)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_014
+  text: Before diagnosing acquired AA, the consensus requires excluding inherited bone marrow failure
+    syndromes, connective tissue disorders, viral infections, PNH, and drug/heavy-metal marrow suppression
+    in all cases.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_11
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract — Key recommendations, item (ii)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_015
+  text: For pediatric AA, the consensus recommends a conservative transfusion approach targeting hemoglobin
+    above 6 g/dL in children with no co-morbidities.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_11
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract — Key recommendations, item (iii)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_016
+  text: After immunosuppressive therapy, the consensus advises waiting 3-6 months before assessing response
+    and considering next-line therapy.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_11
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract — Key recommendations, item (vii)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_017
+  text: The consensus names HLA-matched sibling donor HSCT as the preferred first-line treatment for newly
+    diagnosed very severe/severe AA, and horse ATG plus cyclosporine as the recommended immunosuppressive
+    therapy.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_11
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract — Key recommendations, items (iv) and (vii)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_018
+  text: In 417 samples, the targeted-proteomic SBDS screen had 85.7% sensitivity / 93.4% specificity and
+    the ADH5 screen 100.0% sensitivity / 97.5% specificity for SDS and ADH5/ALDH2 deficiency respectively.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_10
+    evidence_id: ev_001
+    relation: supports
+    locator: Results — 'Establishment of a rapid diagnostic system for SDS and ADH5/ALDH2 deficiency',
+      final paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_019
+  text: The SBDS and ADH5 protein-expression cutoffs were defined as the cohort mean minus two standard
+    deviations, computed on the 417 samples excluding confirmed SDS and ADH5/ALDH2 cases.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_10
+    evidence_id: ev_002
+    relation: supports
+    locator: Results — 'Establishment of a rapid diagnostic system for SDS and ADH5/ALDH2 deficiency',
+      final paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_020
+  text: Six of six SDS patients showed significantly decreased SBDS protein, and two of them were not
+    diagnosed by DNA sequencing alone (monoallelic on short-read DNA-seq, second variant recovered by
+    RNA-seq).
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_10
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract; Results — 'Diagnosis of IBMFS through proteomic analysis', paragraph 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_021
+  text: The discovery cohort of 60 IBMFS patients had a median age at disease onset of 3 years (range
+    0-23) and included 27 men.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_10
+    evidence_id: ev_004
+    relation: supports
+    locator: Results — 'Clinical and genetic diagnoses of the discovery cohort', paragraph 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_022
+  text: The study's 'IBMFS not otherwise specified' operational definition uses early onset (<2 years)
+    and short telomere length (<2.0 SD) among its clinical criteria when no IBMFS pathogenic variant is
+    found.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_10
+    evidence_id: ev_005
+    relation: supports
+    locator: Materials and methods — 'Patients and samples', paragraph 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_023
+  text: SDS carries a 15-30% risk of progression to myelodysplastic syndrome and acute myeloid leukemia,
+    motivating early identification.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_10
+    evidence_id: ev_006
+    relation: supports
+    locator: Introduction, paragraph 2
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_024
+  text: The ADH5/ALDH2-deficiency-associated ALDH2 variant (c.1510G>A, p.E504K [rs671]) is a common SNP
+    present in 25.5% of East Asians, so ADH5 proteomics should be paired with genotyping in Asian IBMFS
+    work-ups.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_10
+    evidence_id: ev_007
+    relation: supports
+    locator: Introduction, paragraph 3
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_025
+  text: Mean mitomycin C (MMC)-induced chromosome breaks per cell were far higher in FA patients (6.67
+    ±3.92) than in non-FA patients (0.23 ±0.18).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_09
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract (Results summary)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_026
+  text: Of 100 children with suspected FA, 13 (13%) had a true FA cellular phenotype, 27 had possible
+    mosaic FA, and the remainder were classified non-FA.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_09
+    evidence_id: ev_002
+    relation: supports
+    locator: Results section + Patients section
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_027
+  text: Lymphocyte cultures were incubated for 72 h with MMC at 0, 50, 150, or 300 nM to induce clastogenic
+    breakage.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_09
+    evidence_id: ev_003
+    relation: supports
+    locator: Materials and methods section
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_028
+  text: The percentage of cells with spontaneous (baseline, non-MMC) chromosome aberrations was more than
+    9 times higher in FA than in non-FA patients.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_09
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract (Results summary)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_029
+  text: The MMC sensitivity test discriminates FA, possible somatic mosaicism, and non-FA marrow failure
+    at the first diagnostic step, but definitive diagnosis still requires follow-up mutation testing and
+    fibroblast chromosome breakage analysis.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_09
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract / Conclusions
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_030
+  text: The cohort comprised 231 individuals with dyskeratosis congenita/telomere biology disorders, 144
+    male, median age at diagnosis 19.4 years (range 0-71.6).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_07
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract; also Table 1 (cohort description)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_031
+  text: At last follow-up 42% of patients were deceased, with a median overall survival of 52.8 years
+    (95% CI 45.5-57.6).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_07
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract (Results summary)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_032
+  text: Transplant-free (HCT or solid-organ) median survival was 45.3 years, and overall survival was
+    significantly better for autosomal-dominant vs AR/XLR/TINF2 disease (P<.01).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_07
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract (Results summary)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_033
+  text: Severe bone marrow failure developed in 111 (48.1%) patients, and 70 (30.3%) underwent HCT at
+    a median age of 15.4 years (range 0.9-63.1).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_07
+    evidence_id: ev_004
+    relation: supports
+    locator: Results (bone marrow failure); Table 3
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_034
+  text: After adjustment for sex and pediatric-vs-adult diagnosis, AR/XLR patients had a hazard ratio
+    for any cancer of 8 (95% CI 1.93-33.51) versus autosomal-dominant disease.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_07
+    evidence_id: ev_005
+    relation: supports
+    locator: Results (cancer risk / Cox model)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_035
+  text: 'Median age at diagnosis differed sharply by inheritance mode: AD 36.1 years, AR/XLR 11.3 years,
+    and TINF2 8.1 years.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_07
+    evidence_id: ev_006
+    relation: supports
+    locator: Results (age at diagnosis by inheritance group); Table 1
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_036
+  text: Pulmonary fibrosis developed predominantly in adults with autosomal-dominant disease (19.6%),
+    versus 9.5% in AR/XLR (P=.09) and 8% in TINF2 (P=.25).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_07
+    evidence_id: ev_007
+    relation: supports
+    locator: Results (pulmonary fibrosis); Table 3
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_037
+  text: Acquired aplastic anemia incidence is 2-3 per million population per year in the Western world
+    and about three times higher in East Asia.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_03
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract, sentence 2 (Blood Cells Mol Dis 2024;108:102860)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_038
+  text: Acquired aplastic anemia is defined as pancytopenia with a hypoplastic bone marrow, framing the
+    diagnostic construct for the guideline.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_03
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract, sentence 1 (definition)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_039
+  text: The guideline states that in severe aplastic anemia, matched-sibling-donor HSCT is the first-line
+    treatment (reported as guideline content, not an executable directive).
+  materiality: background
+  claim_type: attribution
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_03
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract, treatment sentences (first-line)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_040
+  text: If no matched sibling donor is available, the guideline lists immunosuppressive therapy, matched-unrelated-donor
+    HSCT, or haploidentical HSCT as options (reported as guideline content).
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_03
+    evidence_id: ev_004
+    relation: supports
+    locator: Abstract, treatment sentences (second-line options)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_041
+  text: The document is an AIEOP Bone Marrow Failure Study Group evidence-based consensus practice guideline,
+    developed through consensus conferences and validated by the AIEOP Board of Directors.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_03
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract, closing sentence + PubMed article-type metadata (Practice Guideline)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_042
+  text: The consensus sets the acceptable haemoglobin target for DBA syndrome patients of all ages at
+    >=9-10 g/dL, individualized to keep the patient asymptomatic.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_05
+    evidence_id: ev_001
+    relation: supports
+    locator: Section 9 THERAPY RECOMMENDATIONS, opening paragraph (primary goal)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_043
+  text: Erythrocyte adenosine deaminase (eADA) activity helps differentiate DBA syndrome from other anaemias/IBMFS
+    with 84% sensitivity and 95% specificity, but must be measured pre-transfusion and a normal value
+    does not rule out DBA.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_05
+    evidence_id: ev_002
+    relation: supports
+    locator: Section 8 DIFFERENTIAL DIAGNOSES (eADA test performance)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_044
+  text: The target liver iron concentration (LIC), measured by MRI T2*/R2 (FerriScan), for transfusion-dependent
+    DBA syndrome patients is as close to normal as possible, i.e., lower than 3 mg Fe/g dry weight.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_05
+    evidence_id: ev_003
+    relation: supports
+    locator: Section 9 > Chelation therapy > Evaluation of iron overload (LIC target)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_045
+  text: Cardiac iron by MRI T2* should stay as close to normal as possible with an acceptable range of
+    20-35 msec; T2* <20 ms associates with decreased cardiac function/worse survival and <10 ms with imminent
+    heart-failure risk.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_05
+    evidence_id: ev_004
+    relation: supports
+    locator: Section 9 > Chelation therapy > Evaluation of iron overload (cardiac T2*)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_046
+  text: Panel lowered the prednisone maintenance ceiling to a maximum of 0.3 mg/kg/day; if Hb >=9 g/dL
+    cannot be sustained at <=0.3 mg/kg/day, steroids should be discontinued (some panelists proposed a
+    stricter 0.2 mg/kg/day, no consensus).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_05
+    evidence_id: ev_005
+    relation: supports
+    locator: Section 9 > Oral steroids (maintenance dose ceiling / discontinuation rule)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_047
+  text: Iron chelation is generally initiated after ~10 transfusions or evidence of iron load defined
+    as ferritin >500 ng/mL, transferrin saturation >60%, or elevated LIC.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_05
+    evidence_id: ev_006
+    relation: supports
+    locator: Section 9 > Chelation therapy > Practical considerations (chelation start triggers)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_048
+  text: Classic DBA presents with macrocytic anaemia and reticulocytopenia, with 90% of patients becoming
+    symptomatic in the first year of life at a median age of 3 months (though presentation can range from
+    in-utero hydrops to the sixth decade).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_05
+    evidence_id: ev_007
+    relation: supports
+    locator: Section 4 CLINICAL PRESENTATION (age at presentation)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_049
+  text: The ASTCT panel preferentially recommends bone marrow (not peripheral blood) as the graft source
+    for allogeneic HCT in severe aplastic anemia.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_06
+    evidence_id: ev_001
+    relation: supports
+    locator: Abstract (PubMed PMID 39307421); Recommendation — stem cell source (S, M)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_050
+  text: The panel recommends rabbit ATG over horse ATG as part of the HCT conditioning regimen for severe
+    aplastic anemia.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_06
+    evidence_id: ev_002
+    relation: supports
+    locator: Abstract (PubMed PMID 39307421); Recommendation — ATG selection (S, L)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_051
+  text: The panel does not endorse the historical 40-year age cutoff for upfront HCT in adults with SAA,
+    holding that fit older patients may also benefit.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_06
+    evidence_id: ev_003
+    relation: supports
+    locator: Abstract (PubMed PMID 39307421) — age-eligibility statement
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_052
+  text: The panel positively frames upfront HCT / MRD-HCT eligibility as extending up to 50 years of age
+    or beyond for suitable patients, replacing the historical 40-year threshold.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_06
+    evidence_id: ev_004
+    relation: supports
+    locator: Recommendation — age for upfront HCT (C, M) / MRD-HCT first-line (S, M) [Guideline Central
+      digest of the primary guideline]
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_053
+  text: Fludarabine-containing conditioning regimens are preferred for patients at high risk of graft
+    failure and for matched-unrelated or haploidentical donor transplants.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_06
+    evidence_id: ev_005
+    relation: supports
+    locator: Abstract (PubMed PMID 39307421); Recommendation — conditioning (S, L)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_054
+  text: For children and adults lacking a matched related donor, the panel prioritizes matched-unrelated
+    or haploidentical donor HCT over immunosuppressive therapy.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_06
+    evidence_id: ev_006
+    relation: supports
+    locator: Abstract (PubMed PMID 39307421); Recommendation — donor selection vs IST (C, L)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_055
+  text: 'Severe aplastic anemia (SAA) is defined by marrow cellularity <25% (or 25%-50% with <30% residual
+    hematopoietic cells) plus at least 2 of: neutrophils <0.5 x10^9/L, platelets <20 x10^9/L, reticulocytes
+    <60 x10^9/L.'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_00
+    evidence_id: ev_001
+    relation: supports
+    locator: Introduction — SAA classification paragraph (modified Camitta criteria)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_056
+  text: Very severe aplastic anemia fulfills the same criteria as SAA except that neutrophils are <0.2
+    x10^9/L.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_00
+    evidence_id: ev_002
+    relation: supports
+    locator: Introduction — very severe AA definition (sentence following SAA criteria)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_057
+  text: A complete hematologic response is defined as neutrophils >1 x10^9/L (1.5 x10^9/L in some trials),
+    platelets >100 x10^9/L, and Hgb >100 g/L.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_00
+    evidence_id: ev_003
+    relation: supports
+    locator: Subsequent management — hematologic response definition paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_058
+  text: A PNH granulocyte clone >1% has ~100% positive predictive value for acquired AA; a clone >0.1%
+    has ~95% specificity and 91% PPV, while clones <0.1% are less specific and seen in confirmed IBMF.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_00
+    evidence_id: ev_004
+    relation: supports
+    locator: Tests to diagnose acquired SAA — PNH flow cytometry paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_059
+  text: For IBMF exclusion, patients aged <=40 years are recommended to have chromosome breakage analysis
+    (Fanconi anemia) and telomere length analysis (telomere biology disorders); age 41-60 case-by-case;
+    >60 with prior normal counts not recommended.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_00
+    evidence_id: ev_005
+    relation: supports
+    locator: Tests to diagnose acquired SAA and rule out IBMF syndromes — IBMF testing paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_060
+  text: 'Descriptive supportive-care thresholds stated by the source: RBC transfusion at Hgb <7 g/L (verbatim;
+    probable source typo for 7 g/dL / 70 g/L) or symptomatic anemia, and platelet transfusion at <10 x10^9/L
+    (or <50 x10^9/L if bleeding or planned procedure).'
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_00
+    evidence_id: ev_006
+    relation: supports
+    locator: Supportive care before and during first-line therapy — transfusion paragraph
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_061
+  text: AA diagnosis requires pancytopenia with hypocellular marrow plus at least two of three peripheral-count
+    thresholds (Hb, platelets, neutrophils).
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_01
+    evidence_id: ev_001
+    relation: supports
+    locator: 'Section: Diagnosis / Introduction, para ''Aplastic anaemia (AA) is a rare and heterogeneous
+      disorder...'''
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_062
+  text: Severe AA (Camitta) is defined by marrow cellularity <25% (or 25–50% with <30% residual haematopoiesis)
+    plus at least two of neutrophils <0.5, platelets <20, reticulocytes <60 ×10⁹/L.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_01
+    evidence_id: ev_002
+    relation: supports
+    locator: 'Section: Assessment of severity — ''Severe AA (SAA):'' definition line'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_063
+  text: Very severe AA is defined identically to SAA except the neutrophil threshold is lowered to <0.2
+    ×10⁹/L.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_01
+    evidence_id: ev_003
+    relation: supports
+    locator: 'Section: Assessment of severity — ''Very severe AA (VSAA):'' definition line'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_064
+  text: The Camitta reticulocyte severity criterion has been modified from manual percentage to an absolute
+    count <60 ×10⁹/L when measured by automated analyzers, which over-estimate reticulocytes relative
+    to manual counts.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_01
+    evidence_id: ev_004
+    relation: supports
+    locator: Table (Investigations) — Reticulocyte count row / footnote on automated counting
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_065
+  text: Where marrow cellularity is patchy, an overall average cellularity of <30% (excluding lymphocytes
+    and plasma cells) should be ascertained to support the AA diagnosis.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_01
+    evidence_id: ev_005
+    relation: supports
+    locator: 'Section: Bone marrow examination / trephine biopsy morphology paragraph'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_066
+  text: AA incidence shows a biphasic age distribution with a first peak at 10–25 years (relevant to older
+    children/adolescents) and a second peak over 60 years; incidence is 2–3 per million per year in Europe.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_01
+    evidence_id: ev_006
+    relation: supports
+    locator: 'Section: Introduction / epidemiology, para ''Aplastic anaemia (AA) is a rare and heterogeneous
+      disorder...'''
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_067
+  text: Given the rarity and management complexity of AA, the guideline strongly recommends multidisciplinary
+    discussion and involvement of expert centres to improve outcomes — a referral/escalation trigger.
+  materiality: background
+  claim_type: factual
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_01
+    evidence_id: ev_007
+    relation: supports
+    locator: 'Section: Introduction / overall recommendations (mirrored in Abstract) — MDT and expert-centre
+      statement'
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_068
+  text: Study enrollment defined neutropenia for suspected pediatric BMF as an absolute neutrophil count
+    below 1.5 x10^9/L.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_08
+    evidence_id: ev_001
+    relation: supports
+    locator: Materials and Methods > Patients (para 2)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_069
+  text: Study enrollment defined thrombocytopenia for suspected pediatric BMF as a platelet count below
+    150 x10^9/L.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_08
+    evidence_id: ev_002
+    relation: supports
+    locator: Materials and Methods > Patients (para 2)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_070
+  text: In the WES variant-interpretation pipeline, sequence variants with a gnomAD population allele
+    frequency above 5% were excluded from further interpretation.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_08
+    evidence_id: ev_003
+    relation: supports
+    locator: Materials and Methods > Whole Exome Sequencing (para 1)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_071
+  text: A protocolized in-depth evaluation established a causative diagnosis in 40% (20/50) of pediatric
+    BMF patients, 18 of them by genetic analysis (14 mutations, 4 chromosomal deletions).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_08
+    evidence_id: ev_004
+    relation: supports
+    locator: Results > (Cyto)Genetic and Functional Analysis (para 1) / Abstract
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_072
+  text: The protocol's first diagnostic step is exclusion of malignant and transient/reversible causes
+    of BMF — patients are screened for leukemia and referred to a pediatric oncology center if indicated
+    — before extended genetic/functional workup begins.
+  materiality: background
+  claim_type: causal
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_08
+    evidence_id: ev_005
+    relation: supports
+    locator: Materials and Methods > Patients / Figure 1 (Diagnostic Flowchart)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_073
+  text: The authors recommend full genome-wide genetic analysis (WES with CNV plus SNP-array) complemented
+    by functional tests in all suspected BMF patients, because causative genetic defects occur even without
+    typical syndromic features.
+  materiality: background
+  claim_type: causal
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_08
+    evidence_id: ev_006
+    relation: supports
+    locator: Conclusion / Abstract > Conclusion
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_074
+  text: Median peripheral-blood NK-cell percentage of total lymphocytes was significantly lower in the
+    SAA group than in the identified-cause (constitutional) group (3.0 vs 9.0; P<0.05).
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_08
+    evidence_id: ev_007
+    relation: supports
+    locator: Results > Immunological Screening (para 2)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_075
+  text: The primary WES gene filter (BMF gene panel) contained 172 genes plus HPO-term-driven selection,
+    expanded to PID genes / open-WES / Trio-WES when primary analysis was negative.
+  materiality: material
+  claim_type: quantitative
+  status: supported
+  confidence: medium
+  sources:
+  - source_card_id: src_20260718_rfcbc002_08
+    evidence_id: ev_008
+    relation: supports
+    locator: Materials and Methods > Whole Exome Sequencing (para 2)
+  inference_basis:
+    from_claims: []
+    reasoning_summary: null
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf01
+  text: 'Pediatric per-lineage cytopenia cutoffs diverge by source intent and must be preserved as a conflict:
+    suspected-pediatric-BMF screening uses neutrophils <1.5x10^9/L and platelets <150x10^9/L (Atmar),
+    whereas the BSH acquired-AA diagnostic construct requires >=2 of Hb <100 g/L, platelets <50x10^9/L,
+    neutrophils <1.5x10^9/L; the platelet threshold differs 3-fold (150 vs 50 x10^9/L) and reflects screening-vs-diagnosis
+    intent, not a reconcilable single value.'
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_068
+    - clm_069
+    - clm_061
+    reasoning_summary: clm_068/clm_069 give the Atmar pediatric-BMF enrollment cutoffs (ANC <1.5, platelets
+      <150 x10^9/L); clm_061 gives the BSH adult AA diagnostic thresholds (platelets <50); the platelet
+      numbers differ 3-fold because one screens suspected BMF and the other defines diagnostic AA severity
+      — an intent-driven divergence to preserve, not average.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf02
+  text: 'Two independent 2024 guidelines converge on identical modified-Camitta severe-AA scope-exit thresholds:
+    both the all-ages Delphi consensus and the BSH guideline state marrow cellularity <25% (or 25-50%
+    with <30% residual) plus >=2 of neutrophils <0.5x10^9/L, platelets <20x10^9/L, reticulocytes <60x10^9/L
+    for SAA, and neutrophils <0.2x10^9/L for very-severe AA — cross-source agreement raising confidence
+    these are the stable multilineage-marrow-failure severity cutoffs.'
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_055
+    - clm_062
+    - clm_056
+    - clm_063
+    reasoning_summary: clm_055 (Delphi src_00) and clm_062 (BSH src_01) state numerically identical Camitta
+      SAA criteria; clm_056 and clm_063 state the identical vSAA neutrophils <0.2x10^9/L modifier — independent
+      concordance across two guidelines strengthens the thresholds.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf03
+  text: 'The severe-AA reticulocyte criterion (<60x10^9/L) is analyzer-method-dependent: BSH states it
+    was modified from a manual percentage to an absolute automated count because automated analyzers over-estimate
+    reticulocytes versus manual counts, so a pediatric CDS applying the <60x10^9/L cutoff must confirm
+    the value is an automated absolute count and must not apply it to a manual-percentage-derived reticulocyte
+    result.'
+  materiality: material
+  claim_type: causal
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_064
+    - clm_062
+    reasoning_summary: clm_064 states the Camitta reticulocyte criterion was changed to an absolute <60x10^9/L
+      specifically for automated analyzers (which over-estimate vs manual); clm_062 embeds that same automated
+      reticulocyte cutoff in the SAA definition — hence the cutoff is method-bound.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf09
+  text: 'First-line functional screens for inherited marrow failure are explicitly non-terminal and a
+    CBC-triggered referral must route to a confirmatory tier rather than clear on a single negative blood
+    assay: the MMC chromosome-breakage FA screen requires follow-up mutation testing plus skin-fibroblast
+    breakage analysis to catch somatic-reversion mosaicism, and short-read DNA sequencing missed 2 of
+    6 SDS cases recovered only by RNA-seq/proteomics.'
+  materiality: material
+  claim_type: causal
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_029
+    - clm_020
+    reasoning_summary: clm_029 states the MMC test is a first-step screen and definitive FA diagnosis
+      needs mutation + fibroblast testing (mosaicism false-negatives); clm_020 shows DNA-seq alone missed
+      2/6 SDS cases — together they establish that a negative first-line blood assay cannot exclude an
+      inherited marrow-failure syndrome.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf10
+  text: 'A pediatric CBC module carries a higher pre-test probability of an inherited (versus acquired)
+    marrow-failure cause than an adult module and should weight IBMFS triggers accordingly: inherited-marrow-failure
+    onset clusters in childhood — DC/TBD AR/XLR median diagnosis 11.3 y and TINF2 8.1 y, the IBMFS proteogenomic
+    cohort median onset 3 y, and classic DBA 90% symptomatic within the first year of life.'
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_035
+    - clm_021
+    - clm_048
+    reasoning_summary: clm_035 (DC/TBD AR/XLR 11.3 y, TINF2 8.1 y median dx), clm_021 (IBMFS median onset
+      3 y), and clm_048 (DBA 90% symptomatic in first year) all place inherited-syndrome presentation
+      in the pediatric band, implying elevated inherited-cause prior probability in a pediatric module.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf11
+  text: No source in this run supplies age-, sex-, or gestational/postnatal-age-partitioned pediatric
+    reference intervals for defining cytopenia per lineage; every located per-lineage number is an adult
+    AA severity cutoff, a study enrollment criterion, or a disease-specific target, so the module's normal/abnormal
+    boundaries — especially for neonates and infants — are an explicit evidence GAP that must be filled
+    from a dedicated reference-interval source (e.g., CALIPER) before deployment.
+  materiality: material
+  claim_type: factual
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_061
+    - clm_068
+    - clm_069
+    - clm_003
+    reasoning_summary: clm_061 (adult severity cutoffs), clm_068/clm_069 (study enrollment criteria),
+      and clm_003 (study-defined follow-up severity band) are the only per-lineage numbers available;
+      none is an age/sex-partitioned reference interval, exposing the missingness as a GAP.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf12
+  text: The count-based severe / very-severe AA definitions underpinning the three pediatric-authored
+    aplastic-anemia guidelines in this run (AIEOP, Shimano pediatric recommendations, IAP) could NOT be
+    located in accessible verbatim text, so the asserted Camitta SAA/vSAA numbers rest solely on the adult
+    BSH and all-ages Delphi sources — a pediatric CDS should flag that no pediatric-scoped source verbatim-confirmed
+    these thresholds in this evidence run.
+  materiality: material
+  claim_type: factual
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_055
+    - clm_062
+    reasoning_summary: The only verbatim Camitta SAA/vSAA numbers asserted come from clm_055 (Delphi,
+      all-ages) and clm_062 (BSH, adult); the pediatric-authored sources (AIEOP src_03, Shimano src_04,
+      IAP src_11) recorded these numbers as GAPs (paywalled full text), so the pediatric provenance is
+      unconfirmed.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_inf13
+  text: 'Reported hemoglobin targets diverge across pediatric-relevant sources and must be preserved as
+    context-specific conflicts, never averaged or emitted as a directive: IAP conservative transfusion
+    target Hb >6 g/dL in comorbidity-free children, DBA-syndrome acceptable Hb >=9-10 g/dL independent
+    of age, and the Delphi RBC-transfusion trigger stated verbatim as Hb <7 g/L [sic, a probable g/dL
+    unit error] — each is disease- and context-bound and one carries an unresolved unit artifact.'
+  materiality: material
+  claim_type: comparative
+  status: inference
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims:
+    - clm_015
+    - clm_042
+    - clm_060
+    reasoning_summary: clm_015 (IAP Hb >6 g/dL), clm_042 (DBA Hb >=9-10 g/dL age-independent), and clm_060
+      (Delphi Hb <7 g/L verbatim, flagged unit error) give three different Hb figures tied to different
+      diseases/contexts, one with a known g/L-vs-g/dL artifact — a preserved conflict, not a mergeable
+      value.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec01
+  text: 'PROPOSED SCOPE EXIT: a pediatric CBC showing multilineage cytopenia (>=2 of anemia, neutropenia
+    <1.5x10^9/L, thrombocytopenia <150x10^9/L) accompanied by reticulocytopenia should exit the CBC interpretation
+    module and refer to pediatric hematology for marrow evaluation, because acquired aplastic anemia is
+    defined as pancytopenia plus a hypoplastic marrow and a bone-marrow biopsy is stated as mandatory
+    for diagnosis — an implementation boundary the CBC module cannot resolve in-line.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: Implementation-boundary proposal synthesizing clm_068/clm_069 (pediatric multilineage-cytopenia
+      cutoffs), clm_038 (AA = pancytopenia + hypoplastic marrow), and clm_013 (bone-marrow biopsy mandatory
+      for AA diagnosis); the module cannot obtain marrow data, so it must refer — a proposed boundary,
+      not a directly-stated CDS rule.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec02
+  text: 'PROPOSED REFERRAL GATE (marrow infiltration / malignancy): before any inherited-marrow-failure
+    interpretation, a pediatric patient with cytopenia suspected for bone-marrow failure should first
+    be screened for leukemia or other malignant marrow disease and referred to a pediatric oncology center
+    if indicated, mirroring the Atmar protocol''s stated first diagnostic step — marrow infiltration is
+    a scope exit that must precede the IBMFS pathway.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: Proposal grounded in clm_072 (Atmar protocol first step = exclude malignant/transient
+      causes and refer to pediatric oncology before extended BMF workup); framed as a module boundary/ordering
+      proposal rather than a source-issued CDS directive.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec03
+  text: 'PROPOSED SCOPE EXIT (inherited-syndrome exclusion): acquired AA can be diagnosed only after excluding
+    inherited bone marrow failure syndromes, PNH, connective-tissue disorders, viral infection and drug/heavy-metal
+    suppression, and for patients aged <=40 years (encompassing the entire pediatric band) this entails
+    reflex Fanconi chromosome-breakage and telomere-length testing; because the CBC module cannot perform
+    these exclusions it must refer rather than label an acquired cause.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: high
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: Proposal built on clm_014 (IAP mandatory exclusion of IBMFS/PNH/CTD/viral/drug
+      before AA diagnosis) and clm_059 (reflex FA breakage + telomere-length testing recommended for age
+      <=40 y); an implementation boundary the CBC module cannot satisfy internally.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec04
+  text: 'PROPOSED URGENT-REFERRAL TRIGGER: a confirmed very-severe-AA count pattern (neutrophils <0.2x10^9/L
+    within the multilineage-failure picture) should be treated as an urgent (not routine) referral, since
+    it marks the highest-risk severity band and the guideline literature strongly recommends multidisciplinary
+    discussion and expert-centre involvement given AA rarity and management complexity.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: Proposal derived from clm_056/clm_063 (vSAA neutrophils <0.2x10^9/L = severest
+      band) plus clm_067 (BSH strong recommendation for MDT/expert-centre referral); the urgency stratification
+      is a proposed module boundary, not a source-stated CDS action.
+  report_locations: []
+  reviewer_notes: ''
+- claim_id: clm_spec05
+  text: 'PROPOSED SCOPE EXIT (refractory cytopenia of childhood vs AA indistinguishable on counts): because
+    84% of RCC present with a hypocellular marrow that is count-indistinguishable from acquired AA, and
+    EWOG-MDS scope-exit to early HSCT hinges on transfusion dependency, ANC <1x10^9/L, monosomy 7, del(7q)
+    or >=2 chromosomal aberrations, a pediatric multilineage-cytopenia module cannot separate RCC from
+    AA on the CBC alone and must refer for marrow morphology plus karyotype.'
+  materiality: material
+  claim_type: recommendation
+  status: speculation
+  confidence: medium
+  sources: []
+  inference_basis:
+    from_claims: []
+    reasoning_summary: Proposal synthesizing clm_001 (84% of RCC hypocellular marrow) and clm_002 (EWOG-MDS
+      early-HSCT scope-exit criteria incl. ANC <1x10^9/L and cytogenetics); counts alone cannot discriminate
+      RCC from AA, so marrow morphology + karyotype referral is proposed — a boundary, not a directive.
+  report_locations: []
+  reviewer_notes: ''
+unresolved_questions: []
