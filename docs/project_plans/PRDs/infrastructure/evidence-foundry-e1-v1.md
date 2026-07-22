@@ -8,7 +8,7 @@ updated: 2026-07-21
 feature_slug: "evidence-foundry-e1"
 feature_version: "v1"
 prd_ref: null
-plan_ref: null
+plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1.md
 related_documents:
   - docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
   - docs/adr/0004-clinical-approval-identity-adjudication.md
