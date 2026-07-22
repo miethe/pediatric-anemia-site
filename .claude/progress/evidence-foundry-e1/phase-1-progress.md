@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 1
+completed_tasks: 2
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -112,7 +112,7 @@ tasks:
     withdrawnAt/withdrawalReason const null); top-level schemaVersion; no surveillance/cadence
     fields. Registry seed file itself ships in P3-T4 — this task ships schemas + fixtures
     only.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -121,6 +121,18 @@ tasks:
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
+  note: Extended schemas/release-manifest.schema.json with the ADR-0005 dryRun/signature
+    slot (schema-forced null on real candidates, TESTKEY- required on dry-run); authored
+    schemas/release-registry.schema.json (OQ-4 entry shape, withdrawalState const
+    none, signature/signedAt/supersedes/withdrawnAt/withdrawalReason type null); fixtures
+    under tests/fixtures/ef-release/; updated 2 pre-existing tests whose assertions
+    predated this slot.
+  started: 2026-07-22T00:00Z
+  completed: 2026-07-22T01:30Z
+  evidence:
+  - test: tests/ef-contract-release-registry.test.mjs
+  - test: tests/release-manifest-schema.test.mjs
+  - test: tests/ef-converter-invariants.test.mjs
 - id: P1-T6
   description: 'Gates registry — G0–G4 (A1 + A2 encodings), FR-27: author docs/governance/gates-registry.md
     enumerating all five external human gates — G0 ADR ratification, G1 named credentialed
@@ -276,7 +288,7 @@ files_modified:
 - tests/ef-contract-forced-empty.test.mjs
 - tests/fixtures/**
 - .claude/worknotes/evidence-foundry-e1-v1/contracts-design.md
-progress: 11
+progress: 22
 updated: '2026-07-22'
 ---
 
