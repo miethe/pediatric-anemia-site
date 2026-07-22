@@ -1,0 +1,8 @@
+{
+  "moduleId": "kidney_suite_v1",
+  "status": "not_yet_implemented",
+  "note": "modules/kidney_suite_v1 is an unsigned-stub scaffold (module.json.status = \"unsigned-stub\"). No kidney-suite-specific reference ranges (e.g. creatinine, eGFR, cystatin C) have been authored, sourced, or approved yet -- this file exists only to satisfy the module package-shape contract established by modules/cbc_suite_v1/reference-ranges.json (a reference-ranges.json file present per module). It intentionally carries zero clinical thresholds; no numeric value in this file may be read as a clinical range.",
+  "source": null,
+  "scope": null,
+  "ranges": []
+}

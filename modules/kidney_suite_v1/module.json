@@ -1,0 +1,51 @@
+{
+  "id": "kidney_suite_v1",
+  "title": "Pediatric Kidney Suite",
+  "schemaVersion": 1,
+  "status": "unsigned-stub",
+  "knowledgeBaseVersion": "0.0.0-2026-07-22",
+  "evidenceReviewedThrough": "2026-07-22",
+  "engineLabel": "Pediatric Kidney Suite Deterministic CDSS (not yet implemented)",
+  "supportedAgeMonths": {
+    "min": 0,
+    "max": 216
+  },
+  "clinicalContentHash": null,
+  "governanceHash": null,
+  "approvedBy": [],
+  "validationRunId": null,
+  "supersedes": null,
+  "releasedAt": null,
+  "module_topic": "Pediatric Kidney Suite (greenfield scaffold -- not yet implemented, RF-KID-001)",
+  "intended_hcp_users": [
+    "general_pediatrician",
+    "family_physician",
+    "pediatric_advanced_practice_clinician",
+    "pediatric_nephrologist"
+  ],
+  "patient_population": {
+    "age_min_months": 0,
+    "age_max_months_exclusive": 216,
+    "settings": [
+      "not_yet_implemented_no_clinical_scope_defined"
+    ]
+  },
+  "intended_output": [
+    "not_yet_implemented"
+  ],
+  "explicit_exclusions": [
+    "all_patient_populations_pending_module_implementation"
+  ],
+  "jurisdictions": [
+    "US"
+  ],
+  "integration_targets": [
+    "web",
+    "api"
+  ],
+  "evidence_policy": {
+    "recent_window_days": 1825,
+    "older_source_rule": "foundational_not_superseded_with_reason",
+    "exact_passage_required_for_implementable_claim": true
+  }
+}
