@@ -1,10 +1,17 @@
 // tools/rf-bundle-to-kb-pack/lib/eligibility.mjs — converter-eligibility + status-reconciliation
-// checks (P2-T4, FR-9, 02 §2.3 invariants 1/3/4, 02 §3.7).
+// checks (P2-T4, FR-9, 02 §2.3 invariants 1/3/4, 02 §3.7; P2-T1/FR-16 EF-WP1 structural pre-flight).
 //
 //   checkEligibility(pinnedBundle) -> EligibilityReport
 //
-// Two responsibilities, run in this order:
+// Three responsibilities, run in this order:
 //
+//   0. `EF-WP1` structural pre-flight (P2-T1, FR-16): every source card in the bundle must carry
+//      the `pediatric_cds` evidence-card extension block on every one of its extracted points
+//      before the bundle is treated as converter-eligible AT ALL — this runs before bundle-status
+//      reconciliation and before any per-claim work. Fails closed (throws), naming every offending
+//      card ID (never a generic failure, never just the first), so this lives in the same
+//      fail-closed pipeline `inspect`/`verify`/`propose` already share via this one function,
+//      rather than as a standalone validator a caller could forget to invoke.
 //   1. Bundle-level status reconciliation (02 §2.3 invariants 1, 3, 4). Fails closed (throws) —
 //      no partial `EligibilityReport` is ever returned once this stage fails, matching this task's
 //      AC ("non-zero exit and zero output files").
@@ -18,12 +25,89 @@
 // claimLedger: { parsed }, sourceCards: [...] }, ... }` plus a per-artifact hash map this module
 // does not need to read). Because it never touches the filesystem, a thrown error here can never
 // have produced partial output — the "zero output files" half of this task's first AC is true by
-// construction, not by a separate guard.
+// construction, not by a separate guard. `propose.mjs` calls `checkEligibility(pinned)` before its
+// first `mkdir`/write of any kind (see `lib/verbs/propose.mjs`), so stage 0 rejecting a bundle here
+// structurally guarantees zero `propose` output is ever written for it.
 //
 // Zero network calls, zero LLM/generative-model invocations, ever (FR-10) — this file imports
 // nothing beyond `./errors.mjs`.
 
 import { SchemaError } from './errors.mjs';
+
+// ---------------------------------------------------------------------------------------------
+// 0. `EF-WP1` structural pre-flight: pediatric_cds evidence-card extension presence (P2-T1, FR-16)
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * `EF-WP1` (P2-T1, FR-16): a bundle is not converter-eligible AT ALL — before bundle-status
+ * reconciliation, before any per-claim work — unless every source card carries the `pediatric_cds`
+ * evidence-card extension block on every one of its extracted points (RESULTS.md §3: "Every source
+ * card carries the `pediatric_cds` evidence-card extension... per evidence point"). Exit 2 (schema)
+ * — this is a structural defect in the upstream `rf` artifact, the same taxonomy category
+ * `BundleNotVerifiedError`/`VerificationStateMismatchError` above use, not a usage mistake (exit 1)
+ * or a governance/human-review halt (exits 3/7).
+ *
+ * Names every offending source card ID — never just the first, never a generic "eligibility check
+ * failed" message — so a caller can fix the exact cards at fault without re-deriving which ones
+ * from a stack trace.
+ */
+export class MissingPediatricCdsExtensionError extends SchemaError {
+  constructor(cardIds) {
+    super(
+      `bundle is not converter-eligible: source card(s) missing the required "pediatric_cds" ` +
+        `evidence-card extension block on one or more extracted points: ${cardIds.join(', ')}. ` +
+        'Every source card must carry this extension on every extracted point before the bundle ' +
+        'is converter-eligible at all (EF-WP1, FR-16).',
+    );
+    this.cardIds = cardIds;
+  }
+}
+
+/**
+ * A source card's `extracted_points` entry structurally carries the `pediatric_cds` extension
+ * block when the key is present and resolves to a non-null object. This is a PRESENCE check only
+ * — it does not validate the block's internal fields (population/assay_method/threshold/lifecycle
+ * completeness). That deeper validation is the per-claim 02 §3.7 field-table gate below
+ * (`checkSourceAgainstFieldTable`), which runs only against sources actually cited by a claim.
+ * This stage-0 check is bundle-wide and unconditional: every source card, and every one of its
+ * extracted points, regardless of whether any claim currently cites it.
+ */
+function pointCarriesPediatricCdsExtension(point) {
+  return point?.pediatric_cds !== null && typeof point?.pediatric_cds === 'object';
+}
+
+/**
+ * A source card structurally "carries the pediatric_cds evidence-card extension" only when it has
+ * at least one extracted point AND every one of those points carries the extension. A card with no
+ * extracted points at all has zero pediatric_cds blocks, so it does not carry the extension either
+ * — absence is never read as an exemption (mirrors this module's broader "missingness is never
+ * treated as normal" posture, 02 §2.3 invariant 12's per-claim analogue applied structurally here).
+ */
+function sourceCardCarriesPediatricCdsExtension(card) {
+  const points = card?.frontmatter?.extracted_points;
+  if (!Array.isArray(points) || points.length === 0) return false;
+  return points.every(pointCarriesPediatricCdsExtension);
+}
+
+/**
+ * Runs the EF-WP1 structural pre-flight over every source card in the bundle. Throws (fails
+ * closed), naming every offending card ID, before any of this module's other work runs. A card
+ * with no `source_card_id` (itself a structural defect) is still named, using a placeholder that
+ * makes the gap visible rather than silently skipping it.
+ *
+ * @param {Array<{ path?: string, frontmatter?: object }>} sourceCards
+ */
+function checkPediatricCdsExtensionPresence(sourceCards) {
+  const missingCardIds = [];
+  for (const card of sourceCards ?? []) {
+    if (sourceCardCarriesPediatricCdsExtension(card)) continue;
+    const cardId = card?.frontmatter?.source_card_id;
+    missingCardIds.push(typeof cardId === 'string' && cardId !== '' ? cardId : '(unknown source card — no source_card_id)');
+  }
+  if (missingCardIds.length > 0) {
+    throw new MissingPediatricCdsExtensionError(missingCardIds);
+  }
+}
 
 // ---------------------------------------------------------------------------------------------
 // 1. Bundle-level status reconciliation (02 §2.3 invariants 1, 3, 4)
@@ -374,6 +458,12 @@ function checkClaim(claim, sourceCardIndex, bundleCreatedAt) {
  * }}
  */
 export function checkEligibility(pinnedBundle) {
+  // Stage 0: EF-WP1 structural pre-flight (P2-T1, FR-16). Throws (fails closed), naming every
+  // offending source card ID, before bundle-status reconciliation or any claim-level work runs —
+  // a bundle is not converter-eligible at all until every source card carries the pediatric_cds
+  // extension on every extracted point.
+  checkPediatricCdsExtensionPresence(pinnedBundle?.artifacts?.sourceCards);
+
   // Stage 1: bundle-level status reconciliation. Throws (fails closed) on any disagreement —
   // no claim-level work below ever runs, and no partial report is ever constructed, once this
   // stage rejects the bundle (this task's first AC: "non-zero exit and zero output files").
