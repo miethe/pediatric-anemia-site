@@ -35,12 +35,16 @@ model_usage:
   external: [haiku, gpt-5.6-terra]
 tasks:
 - id: P5-T1
-  description: "Full adversarial test sweep (transposed hash, out-of-order sequence,\
-    \ superseded chains). Extend tests/ef-review-workflow.test.mjs (or a sibling file)\
-    \ with three adversarial fixture classes — a transposed-character subjectContentHash,\
-    \ an out-of-order review-act sequence, and a supersedes-based correction — each driven\
-    \ through status, sign, and validate to confirm every verb/path this plan adds fails\
-    \ closed identically to the substrate's existing behavior."
+  description: "Full adversarial + fail-closed test sweep (FR-28, F8). Extend\
+    \ tests/ef-review-workflow.test.mjs (or a sibling directly under tests/) with adversarial\
+    \ fixture classes driven through status, sign, and validate so every verb/path fails\
+    \ closed identically: (i) transposed-character subjectContentHash, (ii) out-of-order\
+    \ review-act sequence, (iii) supersedes-based correction, and — enumerated per F8 — (iv)\
+    \ malformed YAML, (v) roster resolution failure, (vi) signature tampering, and (vii)\
+    \ append-only git-history failure (with --history active). Each of (iv)-(vii) is a NAMED\
+    \ negative fixture asserting status emits derivedState: \"invalid\" + non-zero exit\
+    \ wherever validate rejects (FR-28). Also drive the frozen scaffold --draft -> sign\
+    \ --draft -> validate command flow end-to-end (F9) through the real CLI."
   status: pending
   assigned_to: [general-purpose]
   dependencies: ["Phases 2, 3, 4 complete (P2-GATE2, P3-GATE2, P4-GATE3)"]
@@ -51,15 +55,19 @@ tasks:
   target_surfaces:
   - tests/ef-review-workflow.test.mjs
   - tests/fixtures/clinical-review-workflow/
-  acceptance_criteria: "3/3 adversarial fixtures produce the expected fail-closed error on\
-    \ status, sign, and validate; zero new fixture causes a silent pass."
+  acceptance_criteria: "7/7 adversarial/fail-closed classes produce the expected non-zero\
+    \ fail-closed result on status, sign, and validate; the four F8 classes each yield\
+    \ status's invalid state; zero fixture causes a silent pass."
 - id: P5-T2
   description: "CLI/render smoke + npm run check wiring + determinism/zero-dep gates\
-    \ (FR-20/21/22, R-P4). This repo has no *.tsx; the render target surface is the static\
-    \ HTML render emits. Extend tests/ef-review-render-smoke.test.mjs to spawn the real\
+    \ (FR-20/21/22, R-P4, F10). This repo has no *.tsx; the render target surface is the\
+    \ static HTML render emits. Extend tests/ef-review-render-smoke.test.mjs to spawn the real\
     \ cli.mjs render entry point over P3-T1's queue-section output and assert NEXT/TERMINAL\
-    \ markers appear. Confirm every new test file is picked up by package.json's existing\
-    \ glob with zero manual edits. Add determinism tests (status --json byte-stable;\
+    \ markers appear. F10: npm test is node --test tests/*.test.mjs tests/witness/*.test.mjs —\
+    \ two flat, NON-recursive globs; every new test file this feature adds MUST live directly\
+    \ under tests/ or tests/witness/ (no new nested test subdirectory), and this task does NOT\
+    \ change package.json's scripts.test. Add a guard test that asserts each new test file's\
+    \ path matches one of those two globs. Add determinism tests (status --json byte-stable;\
     \ sign's non-signature fields byte-stable). Extend zero-new-deps and zero-network grep\
     \ tests to cover every new lib/*.mjs file."
   status: pending
@@ -74,7 +82,8 @@ tasks:
   - tests/ef-review-record-cli.test.mjs
   - package.json
   acceptance_criteria: "Smoke test asserts NEXT/TERMINAL marker text in the real rendered\
-    \ HTML; npm test picks up every new test file automatically; status --json byte-diff\
+    \ HTML; a discovery-guard test confirms every new test file matches tests/*.test.mjs or\
+    \ tests/witness/*.test.mjs (F10) and scripts.test is unchanged; status --json byte-diff\
     \ across two invocations on unchanged input is empty; sign's non-signature fields are\
     \ byte-stable across invocations; zero-new-deps grep test is green with no package.json\
     \ dependency additions."
@@ -134,9 +143,11 @@ tasks:
 - id: P5-GATE2
   description: "karen feature-end review. Independently re-check against the actual\
     \ full-feature diff (not the plan's description): every Hard Guardrail holds\
-    \ byte-for-byte; all 24 PRD FRs have a passing test or docs-truth check; the three\
-    \ deferred-item design-specs exist with correct maturity; npm run check green\
-    \ end-to-end. Feature may not be marked status: completed without this sign-off."
+    \ byte-for-byte; all 29 PRD FRs (incl. FR-25..29 from Revision 1) have a passing test or\
+    \ docs-truth check; the FR-26 adjudication policy change is confirmed on both\
+    \ agree/disagree paths without ADR-0004 status mutation; the three deferred-item\
+    \ design-specs exist with correct maturity; npm run check green end-to-end. Feature may\
+    \ not be marked status: completed without this sign-off."
   status: pending
   assigned_to: [karen]
   dependencies: [P5-GATE1]
@@ -175,10 +186,10 @@ success_criteria:
   description: "npm run check green end-to-end"
   status: pending
 - id: SC-2
-  description: "Full adversarial sweep (transposed hash, out-of-order, superseded chains) passes on status/sign/validate"
+  description: "Full 7-class adversarial + fail-closed sweep (FR-28/F8: transposed hash, out-of-order, supersedes, malformed YAML, roster failure, signature tampering, history failure) passes on status/sign/validate"
   status: pending
 - id: SC-3
-  description: "All 24 PRD FRs have a passing test or docs-truth check"
+  description: "All 29 PRD FRs (incl. FR-25..29 from Revision 1) have a passing test or docs-truth check"
   status: pending
 - id: SC-4
   description: "Deferred-items triage table fully covered — 3 spec paths + 3 N/A rows with rationale"
@@ -239,8 +250,8 @@ fully covered; `docs/architecture.md` §11 and `tools/review-record/README.md` u
 
 | Task ID | Name | Assigned Subagent(s) | Model/Effort | Status | Dependencies |
 |---------|------|-----------------------|---------------|--------|---------------|
-| P5-T1 | Full adversarial test sweep | general-purpose | sonnet/adaptive | pending | Phases 2, 3, 4 complete |
-| P5-T2 | CLI/render smoke + `npm run check` wiring + determinism/zero-dep gates | general-purpose | sonnet/adaptive | pending | P5-T1 |
+| P5-T1 | Full adversarial + fail-closed test sweep (FR-28, F8) | general-purpose | sonnet/adaptive | pending | Phases 2, 3, 4 complete |
+| P5-T2 | CLI/render smoke + `npm run check` wiring + determinism/zero-dep gates (F10) | general-purpose | sonnet/adaptive | pending | P5-T1 |
 | P5-T3 | `docs/architecture.md` §11 + README update | documentation-writer | haiku/adaptive | pending | P3-T3 (external), P4-T3 (external) |
 | P5-T4 (DOC-006) | Deferred-items design-spec stubs | documentation-writer | sonnet/adaptive | pending | P4-T3 (external) |
 | P5-GATE1 | `task-completion-validator` gate | task-completion-validator | sonnet/adaptive | pending | P5-T1..T4 |
@@ -254,11 +265,15 @@ fully covered; `docs/architecture.md` §11 and `tools/review-record/README.md` u
 ### Batch 1 (parallel — after Phases 2, 3, 4 all complete)
 
 ```
-Task("general-purpose", "P5-T1: Full adversarial test sweep (transposed hash, out-of-order
-sequence, superseded chains). Extend tests/ef-review-workflow.test.mjs with three adversarial
-fixture classes, each driven through status, sign, AND validate to confirm every verb/path
-this plan adds fails closed identically to the substrate's existing behavior. See plan
-§Phase 5, P5-T1.")
+Task("general-purpose", "P5-T1: Full adversarial + fail-closed test sweep (FR-28, F8). Extend
+tests/ef-review-workflow.test.mjs with adversarial fixture classes driven through status,
+sign, AND validate so every verb/path fails closed identically: (i) transposed-character
+subjectContentHash, (ii) out-of-order review-act sequence, (iii) supersedes-based correction,
+and per F8 — (iv) malformed YAML, (v) roster resolution failure, (vi) signature tampering,
+(vii) append-only git-history failure (--history active). Each of (iv)-(vii) must assert
+status emits derivedState: \"invalid\" + non-zero exit wherever validate rejects (FR-28). Also
+drive the frozen scaffold --draft -> sign --draft -> validate flow end-to-end (F9) through the
+real CLI. See plan §Phase 5, P5-T1.")
 
 Task("documentation-writer", "P5-T3: docs/architecture.md §11 + README update (FR-18/19).
 Update architecture.md §11 (Review workflow, Evidence Foundry E1) documenting status/sign,
@@ -280,12 +295,14 @@ shaping, cross-ref ADR-0004 unblocks). Confirm clinical-review-portal-workflow.m
 
 ```
 Task("general-purpose", "P5-T2: CLI/render smoke + npm run check wiring + determinism/
-zero-dep gates (FR-20/21/22, R-P4). Extend tests/ef-review-render-smoke.test.mjs to spawn the
-real cli.mjs render entry point and assert NEXT/TERMINAL markers in the emitted HTML. Confirm
-every new test file is auto-picked-up by package.json's node --test glob. Add determinism
-tests (status --json and sign's non-signature fields byte-stable across invocations). Extend
-zero-new-deps/zero-network grep tests to cover every new lib/*.mjs file. See plan §Phase 5,
-P5-T2.")
+zero-dep gates (FR-20/21/22, R-P4, F10). Extend tests/ef-review-render-smoke.test.mjs to spawn
+the real cli.mjs render entry point and assert NEXT/TERMINAL markers in the emitted HTML. F10:
+npm test is node --test tests/*.test.mjs tests/witness/*.test.mjs — two flat, NON-recursive
+globs; every new test file MUST live directly under tests/ or tests/witness/ (no new nested
+subdirectory); do NOT change package.json's scripts.test. Add a guard test asserting every new
+test file's path matches one of those two globs. Add determinism tests (status --json and
+sign's non-signature fields byte-stable across invocations). Extend zero-new-deps/zero-network
+grep tests to cover every new lib/*.mjs file. See plan §Phase 5, P5-T2.")
 ```
 
 ### Gates
@@ -299,9 +316,11 @@ Task("karen", "P5-GATE2: Feature-end review of clinical-review-workflow. Indepen
 re-check against the actual FULL-FEATURE diff (not the plan's description): every Hard
 Guardrail holds byte-for-byte (no ADR-0004 status edit, zero real roster entries,
 clinicalApprovers[]/approvedBy[] untouched, D-4 untouched, zero new runtime deps/network/LLM
-in tools/review-record/); all 24 PRD FRs have a passing test or docs-truth check; the three
-deferred-item design-specs exist with correct maturity; npm run check green end-to-end. The
-feature may not be marked status: completed without this sign-off.")
+in tools/review-record/); all 29 PRD FRs (incl. FR-25..29 from Revision 1) have a passing test
+or docs-truth check; P1-T5's FR-26 adjudication policy change is confirmed on BOTH
+agree/disagree paths without any ADR-0004 status mutation; the three deferred-item
+design-specs exist with correct maturity; npm run check green end-to-end. The feature may not
+be marked status: completed without this sign-off.")
 ```
 
 codex `gpt-5.6-terra` read-only second-opinion (invoke via the `codex` skill, read-only diff
@@ -342,6 +361,10 @@ holds under the same attack classes the underlying substrate already defends aga
   non-null and not `status: accepted`.
 - karen's feature-end gate (P5-GATE2) is the binding sign-off for `status: completed` — no
   task or gate before it may claim that status on this feature's own tracking.
+- Revision 1 expanded P5-T1's adversarial sweep from 3 to 7 fixture classes (the 4 new ones —
+  malformed YAML, roster failure, signature tampering, history failure — map to F8's `status`
+  `invalid`-state requirement) and constrained P5-T2's test-file placement to two flat globs
+  (F10) — do not add a nested test subdirectory or touch `package.json`'s `scripts.test`.
 
 ---
 
