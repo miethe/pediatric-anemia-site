@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ef-retro-identifier-input-cbc-nested",
+  "description": "Seeded P4 fix-cycle violation (BLOCKER b, Codex second-opinion review): a case whose nested `input.cbc` clinical sub-object carries an identifier-shaped field (`mrn`) alongside legitimate lab values. Previously validated cleanly because `clinicalInput.properties.cbc` was `true` (unrestricted). Must now be rejected fail-closed by the schema layer's closed, patient-input-mirrored `clinicalCbc` shape.",
+  "sourceAttestation": {
+    "ref": "synthetic-generation-note-011",
+    "provenanceClass": "synthetic"
+  },
+  "cases": [
+    {
+      "caseId": "case-001",
+      "provenance": "synthetic",
+      "input": {
+        "patient": { "ageMonths": 12 },
+        "cbc": { "hemoglobin": 9.5, "mrn": "MRN-0000123" }
+      }
+    }
+  ]
+}

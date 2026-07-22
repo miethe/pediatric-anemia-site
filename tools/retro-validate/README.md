@@ -7,8 +7,10 @@ replaying a version-pinned candidate build against a **fixtures-only** corpus (s
 de-identified content ONLY, structurally enforced) and emitting **software-agreement** metrics --
 never sensitivity, specificity, clinical performance, or any other clinical-validity claim.
 
-**Status (as of P4-T4)**: `check-fixtures` is real -- it validates a corpus against
-`schemas/fixture-corpus.schema.json`. `run` and `report` both call that same boundary check FIRST,
+**Status (as of the P4 fix cycle)**: `check-fixtures` is real -- it validates a corpus against
+`schemas/fixture-corpus.schema.json` AND scans it with the identifier-denylist procedural layer
+(`lib/identifier-denylist.mjs`, added after a Codex second-opinion review found two BLOCKERs the
+schema alone could not close -- see "The fixture-corpus schema" below). `run` and `report` both call that same boundary check FIRST,
 unconditionally, and refuse to proceed on an unchecked (no `--corpus`) or failing corpus. `run` is
 real (FR-19, version-pinned deterministic replay, landed P4-T3): it resolves a candidate build
 exclusively via a registry-entry digest match (never "current tree"), replays every corpus case
@@ -101,7 +103,8 @@ same pattern `tools/rf-bundle-to-kb-pack/` already established for this repo's E
 | CLI dispatch | `cli.mjs` | Arg parsing, `--help`, verb routing, top-level exit-code forwarding | P4-T1 (this task) | -- |
 | Error taxonomy | `lib/errors.mjs` | 3-code exit taxonomy (OK/USAGE/BOUNDARY) + one error class per code | P4-T1 (this task) | -- |
 | **Corpus** | `lib/corpus.mjs` | Reads/parses `<dir>/corpus.json`; loads (and caches) the fixture-corpus schema. Pure I/O + parse, no validation, no writes. | **P4-T1** (this task) | errors |
-| **Boundary** | `lib/boundary.mjs` | `checkFixtures(corpusDir)` -- the schema-enforced (not procedural) de-identification gate (FR-20). Real schema-validation as of P4-T1; **P4-T2** hardened `run`/`report` (`lib/verbs/run.mjs`, `lib/verbs/report.mjs`) to call it FIRST, unconditionally, and refuse to proceed past an unchecked/failing corpus. | P4-T1 (initial), **P4-T2** (enforcement + hardening, landed) | corpus, errors |
+| **Boundary** | `lib/boundary.mjs` | `checkFixtures(corpusDir)` -- the TWO-LAYER de-identification gate (FR-20): the schema layer (structural) plus the identifier-denylist layer (procedural, `lib/identifier-denylist.mjs`, added in the P4 fix cycle after a Codex second-opinion review). Real schema-validation as of P4-T1; **P4-T2** hardened `run`/`report` (`lib/verbs/run.mjs`, `lib/verbs/report.mjs`) to call it FIRST, unconditionally, and refuse to proceed past an unchecked/failing corpus; the P4 fix cycle added the denylist layer alongside it, same call site, same fail-closed contract. | P4-T1 (initial), **P4-T2** (enforcement + hardening, landed), **P4 fix cycle** (denylist layer) | corpus, identifier-denylist, errors |
+| **Identifier denylist** | `lib/identifier-denylist.mjs` | `scanForIdentifiers(document)` -- the procedural backstop layer (FR-20, P4 fix cycle): recursively scans the ENTIRE parsed corpus document for identifier-shaped keys and PHI-marker value patterns, independent of the schema's own shape. The ONE sanctioned file permitted to hand-implement this kind of detection logic (test-pinned). | **P4 fix cycle** (landed) | -- |
 | **Replay** | `lib/replay.mjs` | Version-pinned deterministic engine replay (FR-19) -- `resolveCandidate()` resolves the candidate build exclusively via a registry-entry `packDigest` match (never "current tree"); `replayCorpus()`/`writeReplayOutput()` sort cases, strip `assess()`'s one non-deterministic field (`meta.generatedAt`), and write canonical (sorted-key) bytes; byte-identical double-run output, test-proven. Landed, **P4-T3**. | **P4-T3** (landed) | boundary, corpus, errors |
 | **Metrics** | `lib/metrics.mjs`, the discordance/adjudication-record model (`lib/discordance.mjs`, `schemas/discordance-record.schema.json`, **P4-T5**, FR-23), and the human-only protocol schema (`lib/protocol.mjs`, `schemas/protocol.schema.json`, **P4-T6**, FR-24) | Software-agreement `agreement-report.json` (5 OQ-5 measures) + `run-provenance.json` sidecar; FR-24 protocol-qualification banner (structurally always non-qualifying) AND, as of P4-T6, a structural `const:null`-threshold schema gate on any `--protocol` document, enforced fail-closed by `lib/verbs/report.mjs`; AND, as of P4-T5, `computeDiscordanceRecords()` (one adjudication-ready record per labeled-case-vs-reference-label disagreeing dimension) plus `toAdjudicationScaffoldInput()`, which maps a discordance record onto `tools/review-record`'s own `scaffold --role adjudication` options shape -- proven by a real integration test that invokes that verb's `run()` directly. Landed, **P4-T4**/**P4-T5**/**P4-T6**. | **P4-T4** (landed) / **P4-T5** (landed) / **P4-T6** (landed) | replay, errors, (P4-T5 only) `tools/review-record/lib/adjudication.mjs` |
 | **Access log** | `lib/access-log.mjs`, `access-log.jsonl` (generated, not committed) | Append-only, structured audit trail of every `check-fixtures`/`run`/`report` invocation (FR-22) -- distinct from the review-record chain (no shared files, no shared schema, no cross-import; test-asserted). Landed, P4-T7. | **P4-T7** (landed) | errors |
@@ -181,7 +184,7 @@ file-disjoint after Phase 1). It is validated with the repo's existing dependenc
 `scripts/lib/json-schema-lite.mjs` -- the same reuse decision `tools/rf-bundle-to-kb-pack/README.md`
 already documents for this zero-runtime-dependency repo.
 
-**Structural de-identification boundary (FR-20)**:
+**Structural de-identification boundary (FR-20), schema layer**:
 
 - Every case requires a `provenance` marker in `{synthetic, deidentified}` -- there is no "real"/
   "identified" enum value; a case cannot be marked as real patient data and still validate.
@@ -197,12 +200,59 @@ already documents for this zero-runtime-dependency repo.
   smuggled into an otherwise-permitted free-text field cannot ride along on a safe-looking key.
 - The `input` (clinical-facts) object mirrors the closed top-level key set of the engine's own
   `schemas/patient-input.schema.json` (`patient`, `cbc`, `reticulocytes`, `symptoms`, `history`,
-  `exam`, `labs`, `smear`) -- any other key, including an identifier field smuggled into the
-  clinical-input object itself, is structurally rejected at this boundary, one layer before the
-  harness ever reaches the engine's own patient-input validation (P4-T3).
+  `exam`, `labs`, `smear`), AND -- as of the P4 fix cycle below -- every nested clinical sub-object
+  (`patient`, `cbc` including its own `localRanges`/`localFlags`, `reticulocytes`, `labs`) is
+  ITSELF closed (`additionalProperties: false`) with an explicit field whitelist copied field-for-
+  field from `schemas/patient-input.schema.json`'s own corresponding sub-shape. `symptoms`/
+  `history`/`exam` remain intentionally open on key name (the SPIKE-003 RQ4 wire-compatibility
+  boolean-map decision, also mirrored verbatim) because their VALUES are constrained to booleans/
+  tristate-enum strings and can never carry free-text identifier content. An identifier field
+  smuggled ANYWHERE into the clinical-input object -- including one nesting level deeper than the
+  prior schema could see -- is now structurally rejected at this boundary, one layer before the
+  harness ever reaches the engine's own patient-input validation (P4-T3). A dedicated drift-
+  detection test (`tests/ef-retro-corpus.test.mjs`) re-reads both schemas at test time and fails if
+  the mirror ever silently diverges from `schemas/patient-input.schema.json`.
 
-**E1 corpus content is synthetic + de-identified only.** There is no schema path, CLI flag, or code
-path in this tool that admits real, identified patient data.
+**Structural de-identification boundary (FR-20), identifier-denylist layer (P4 fix cycle)**: a
+Codex second-opinion review found two BLOCKERs the schema layer above, by itself, could not close:
+(a) `description` (and other free-text fields) is necessarily unrestricted prose -- a corpus
+containing synthetic name/MRN/DOB markers inside `description` validated cleanly; (b) nested
+clinical `input` sub-objects previously had NO closed shape at all (`clinicalInput.properties.patient`
+etc. were `true`, unrestricted), so `input.patient` accepted arbitrary name/mrn/dob fields that
+`run` passed raw to `assess()`. The schema layer above closes (b) directly; a second, independent,
+procedural layer -- `lib/identifier-denylist.mjs`, called by `lib/boundary.mjs#checkFixtures`
+alongside (never instead of) the schema layer -- closes (a), and backstops (b) and the
+intentionally-open `symptoms`/`history`/`exam` boolean-map key names too:
+
+- Recursively scans the ENTIRE parsed corpus document, every object key at every depth, for
+  identifier-shaped keys (`name`, `mrn`, `dateOfBirth`, `ssn`, `address`, `phone`, `email`,
+  `contact`, and further variants -- normalized for casing/separator convention, exact match only,
+  never a substring match) -- catches a denylisted key even where the schema legitimately leaves a
+  field open (e.g. `history.patientName`, schema-valid because `history`'s VALUES are boolean/
+  tristate-constrained, but the KEY itself is still rejected here).
+- Recursively scans every STRING value, anywhere in the document, against a PHI-marker pattern set
+  (SSN-shaped values, MRN/DOB/SSN/"patient name" prose markers, phone-shaped values, email-shaped
+  values, street-address-shaped markers) -- this is what closes BLOCKER (a): a `description`
+  containing `"MRN: 123456"` or `"DOB: 2015-01-01"` is now rejected fail-closed even though no
+  schema `pattern`/`not` keyword targets that specific free-text field.
+- Every violation is combined with the schema layer's own violations into ONE `BoundaryError`
+  (fail-closed, non-zero exit, no partial output) -- both layers always run; neither is
+  short-circuited by the other already failing.
+- `lib/identifier-denylist.mjs` is the ONE sanctioned file permitted to hand-implement this kind of
+  procedural detection logic (test-pinned in `tests/ef-retro-boundary.test.mjs`, the same "single
+  sanctioned exception" pattern this repo already uses for `lib/discordance.mjs`'s cross-import of
+  `tools/review-record/lib/adjudication.mjs`) -- no other file under `tools/retro-validate/`
+  duplicates or bypasses it.
+
+Seeded proof fixtures (P4 fix cycle): `identifier-description-phi-marker` (BLOCKER a: PHI markers
+inside free-text `description`), `identifier-input-patient-nested` / `identifier-input-cbc-nested`
+(BLOCKER b: an identifier field smuggled into `input.patient`/`input.cbc`), and
+`identifier-denylist-nested-history` (a denylist-layer-ONLY proof: an identifier-shaped key inside
+the intentionally-open `history` boolean map passes schema validation cleanly but still fails
+`checkFixtures`, proving the procedural layer is load-bearing, not redundant).
+
+**E1 corpus content is synthetic + de-identified only.** There is no schema path, denylist-scan
+path, CLI flag, or code path in this tool that admits real, identified patient data.
 
 ## Version-pinned replay (`lib/replay.mjs`, P4-T3, FR-19)
 
@@ -394,7 +444,8 @@ tools/retro-validate/
   lib/
     errors.mjs                        exit taxonomy: OK/USAGE/BOUNDARY + RegistryError/ProtocolError classes (P4-T1, extended P4-T3/P4-T6)
     corpus.mjs                         CORPUS module: load/parse (P4-T1)
-    boundary.mjs                        BOUNDARY module: schema-enforced gate (P4-T1 / P4-T2)
+    identifier-denylist.mjs             IDENTIFIER-DENYLIST module: recursive key/PHI-marker scan, the one sanctioned procedural layer (P4 fix cycle)
+    boundary.mjs                        BOUNDARY module: two-layer gate -- schema (P4-T1/P4-T2) + identifier-denylist (P4 fix cycle)
     replay.mjs                           REPLAY module: resolveCandidate/replayCorpus/writeReplayOutput (P4-T3, landed)
     metrics.mjs                           METRICS module: computeAgreementMeasures/evaluateProtocolQualification/report+provenance builders+writers (P4-T4, landed)
     discordance.mjs                        DISCORDANCE module: computeDiscordanceRecords/toAdjudicationScaffoldInput/checkAdjudicatorNotAuthor (P4-T5, landed, FR-23 -- the ONE file in this tool that imports tools/review-record/)
@@ -419,6 +470,12 @@ Seeded rejection-class fixtures (P4-T1/P4-T2): `identifier-name` / `identifier-m
 (identifier-bearing case, >=6 classes), `missing-provenance` (case lacking its provenance marker),
 `missing-source-attestation` (corpus lacking corpus-level `sourceAttestation`, P4-T2) -- each fails
 closed with a distinct, class-identifiable error (`tests/ef-retro-boundary.test.mjs`).
+Seeded BLOCKER-shaped fixtures (P4 fix cycle): `identifier-description-phi-marker` (BLOCKER a: PHI
+markers inside free-text `description`), `identifier-input-patient-nested` /
+`identifier-input-cbc-nested` (BLOCKER b: an identifier field smuggled into a nested clinical
+`input` sub-object), `identifier-denylist-nested-history` (denylist-layer-only proof: an
+identifier-shaped key inside the intentionally-open `history` boolean map) -- see
+`tests/ef-retro-corpus.test.mjs`'s newest tests.
 
 **Replay fixtures (P4-T3)**: `tests/fixtures/ef-retro/replay-corpus/` (3 synthetic cases,
 deliberately declared out of `caseId` order) pairs with
@@ -438,8 +495,16 @@ branch of all 5 OQ-5 measures at once; each case's own `tags` name the branch it
 
 ## Test coverage index
 
-- `tests/ef-retro-corpus.test.mjs` (P4-T1) -- CORPUS + BOUNDARY module correctness in isolation.
-- `tests/ef-retro-boundary.test.mjs` (P4-T2, updated P4-T3) -- `run`/`report` call-order/refusal
+- `tests/ef-retro-corpus.test.mjs` (P4-T1, extended P4 fix cycle) -- CORPUS + BOUNDARY module
+  correctness in isolation, both BLOCKER-shaped seeded fixtures failing closed, the
+  denylist-layer-only proof (schema passes, `checkFixtures` still rejects), and a drift-detection
+  test cross-checking the fixture-corpus schema's clinical sub-object shapes against
+  `schemas/patient-input.schema.json` field-for-field.
+- `tests/ef-retro-identifier-denylist.test.mjs` (P4 fix cycle) -- unit coverage for
+  `lib/identifier-denylist.mjs` in isolation: key-normalization/exact-match behavior (not a
+  substring match), one positive + one negative example per PHI-marker pattern, recursive
+  walk/path-reporting correctness, and the standard zero-network/zero-LLM structural proof.
+- `tests/ef-retro-boundary.test.mjs` (P4-T2, updated P4-T3, updated P4 fix cycle) -- `run`/`report` call-order/refusal
   contract; `run`'s post-boundary expectation is now "requires --candidate-digest/--registry"
   (real, P4-T3) where `report`'s remains "scaffold NotImplementedError" (still P4-T4-pending).
 - `tests/ef-retro-determinism.test.mjs` (P4-T3) -- candidate resolution (success + every

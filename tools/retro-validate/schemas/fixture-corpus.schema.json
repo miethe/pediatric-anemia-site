@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/pediatric-anemia/tools/retro-validate/schemas/fixture-corpus.schema.json",
   "title": "Retrospective Validation Fixture Corpus",
-  "description": "Evidence Foundry E1 Phase 4 (FR-19/FR-20, ADR-0006). Structural de-identification boundary for the retrospective validation harness (tools/retro-validate/) -- TOOL-LOCAL BY DESIGN so no wave-2 phase touches scripts/validate-kb.mjs. E1 corpus content is restricted to synthetic + de-identified fixtures ONLY: every case MUST carry a `provenance` marker in {synthetic, deidentified} and the corpus document MUST carry a corpus-level `sourceAttestation` reference. This schema structurally FORBIDS identifier fields at the case envelope -- an enumerated denylist covering name, MRN (medical record number), DOB (date of birth), address, and contact fields is enforced by the closed `case` property set (`additionalProperties: false`: none of those keys are ever admitted, by omission, not by a hand-maintained blocklist keyword), plus a distinct SSN-like-value-pattern denylist (`not`/`pattern`) applied to every free-text case identifier/reference string, so a disguised identifier cannot ride along inside an otherwise-permitted field. Real (non-synthetic, non-deidentified) patient data can never satisfy this schema -- there is no `provenance` value for it. A corpus validating against this schema is a STRUCTURAL claim only: it proves the fixture-corpus shape and the de-identification boundary held. It is never a clinical-validity, safety, diagnostic-performance, or IRB/DUA-compliance claim, and it never certifies the underlying real-world de-identification process (if any) that produced a `deidentified` case upstream of this repo -- that is a human/governance act (gate G3, SPIKE-007), not something this schema, or any software, can attest to.",
+  "description": "Evidence Foundry E1 Phase 4 (FR-19/FR-20, ADR-0006). Structural de-identification boundary for the retrospective validation harness (tools/retro-validate/) -- TOOL-LOCAL BY DESIGN so no wave-2 phase touches scripts/validate-kb.mjs. E1 corpus content is restricted to synthetic + de-identified fixtures ONLY: every case MUST carry a `provenance` marker in {synthetic, deidentified} and the corpus document MUST carry a corpus-level `sourceAttestation` reference. This schema structurally FORBIDS identifier fields at the case envelope -- an enumerated denylist covering name, MRN (medical record number), DOB (date of birth), address, and contact fields is enforced by the closed `case` property set (`additionalProperties: false`: none of those keys are ever admitted, by omission, not by a hand-maintained blocklist keyword), plus a distinct SSN-like-value-pattern denylist (`not`/`pattern`) applied to every free-text case identifier/reference string, so a disguised identifier cannot ride along inside an otherwise-permitted field. The nested clinical `input` object (`$defs/clinicalInput`) is CLOSED RECURSIVELY, one level at a time, down to every leaf property it admits -- it is not just closed at its own top level: `input.patient`, `input.cbc` (including `localRanges`/`localFlags`), `input.reticulocytes`, and `input.labs` each carry their OWN `additionalProperties: false` and an explicit field whitelist mirroring the engine's own `schemas/patient-input.schema.json` (read at authoring time and copied field-for-field, not invented independently -- see `lib/identifier-denylist.mjs`'s doc comment and `tests/ef-retro-corpus.test.mjs`'s drift-detection test for how the two are kept in sync), so an identifier smuggled INTO an otherwise-permitted clinical sub-object (e.g. `input.patient.name`) is rejected by omission at that nested level too, not only at the case envelope. Real (non-synthetic, non-deidentified) patient data can never satisfy this schema -- there is no `provenance` value for it. A second, independent, procedural layer (`lib/identifier-denylist.mjs`, called by `lib/boundary.mjs#checkFixtures` immediately alongside this schema) recursively scans the ENTIRE parsed corpus document for identifier-shaped keys and PHI-marker value patterns -- including inside free-text fields this schema cannot structurally constrain (e.g. `description`, `sourceAttestation.ref`) and inside intentionally-open sub-objects (e.g. `input.symptoms`/`history`/`exam`'s wire-compatible boolean-map field names) -- so a disguised identifier riding along in prose, or under a denylisted key placed somewhere the schema's own closed-shape rules do not reach, still fails closed. A corpus validating against this schema (and clearing the denylist scan) is a STRUCTURAL claim only: it proves the fixture-corpus shape and the de-identification boundary held. It is never a clinical-validity, safety, diagnostic-performance, or IRB/DUA-compliance claim, and it never certifies the underlying real-world de-identification process (if any) that produced a `deidentified` case upstream of this repo -- that is a human/governance act (gate G3, SPIKE-007), not something this schema, or any software, can attest to.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "corpusId", "sourceAttestation", "cases"],
@@ -22,7 +22,7 @@
     "description": {
       "type": "string",
       "maxLength": 2000,
-      "description": "Free-text human summary of what this corpus covers. Authors MUST NOT place any patient-identifying detail here -- this field is not schema-checked against the identifier denylist (unstructured prose cannot be), so it is a documented human obligation, not a structural guarantee."
+      "description": "Free-text human summary of what this corpus covers. Authors MUST NOT place any patient-identifying detail here. This schema cannot itself parse free prose for PHI content, so it is ALSO scanned by the loader-level procedural denylist (`lib/identifier-denylist.mjs`) for identifier-shaped markers (e.g. \"MRN:\", \"DOB:\", \"Patient Name:\", SSN-/phone-/email-shaped values) -- a documented human obligation backstopped by an automated, fail-closed structural check, not a schema-only guarantee."
     },
     "sourceAttestation": { "$ref": "#/$defs/sourceAttestation" },
     "cases": {
@@ -44,7 +44,7 @@
           "minLength": 1,
           "maxLength": 512,
           "not": { "type": "string", "pattern": "\\d{3}-\\d{2}-\\d{4}" },
-          "description": "Attestation reference/citation id. Structurally rejected if it contains an SSN-like value (###-##-####)."
+          "description": "Attestation reference/citation id. Structurally rejected if it contains an SSN-like value (###-##-####); also scanned by the loader-level identifier-denylist for other PHI-marker patterns."
         },
         "provenanceClass": {
           "enum": ["synthetic", "deidentified"],
@@ -94,18 +94,154 @@
     "clinicalInput": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Deterministic clinical facts only -- mirrors the closed top-level key set of schemas/patient-input.schema.json (itself already additionalProperties:false, no free-text identifier fields, no PHI by construction). Any key outside this exact set -- in particular any direct or indirect identifier field -- is structurally rejected here, one level before the harness ever reaches the engine's own patient-input validation (P4-T3). Sub-shape depth is intentionally NOT re-validated here (that duplication belongs to the engine's own schema, not this tool-local boundary schema) -- FR-20's job is the identifier denylist, not a second copy of the full clinical schema.",
+      "description": "Deterministic clinical facts only -- mirrors the closed top-level key set of schemas/patient-input.schema.json (itself already additionalProperties:false, no free-text identifier fields, no PHI by construction). Any key outside this exact set -- in particular any direct or indirect identifier field -- is structurally rejected here, one level before the harness ever reaches the engine's own patient-input validation (P4-T3). Every nested sub-object below (`clinicalPatient`, `clinicalCbc`, `clinicalReticulocytes`, `clinicalLabs`, and `clinicalCbc`'s own `localRanges`/`localFlags`) is ALSO closed (`additionalProperties: false`) with its own explicit field whitelist mirroring `schemas/patient-input.schema.json`'s corresponding sub-shape field-for-field -- so an identifier smuggled into a nested clinical object (e.g. `input.patient.name`, `input.cbc.mrn`) is rejected at THIS boundary, not only detectable one layer downstream by the engine's own validation. `symptoms`/`history`/`exam` remain intentionally wire-compatible boolean maps (open field names, `$defs/booleanMap` -- unchanged from `schemas/patient-input.schema.json`'s own SPIKE-003 RQ4 decision) because their VALUES are constrained to booleans/tristate enum strings only and can never carry free-text identifier content; the loader-level `lib/identifier-denylist.mjs` scan independently catches an identifier-shaped KEY placed there (e.g. `history.patientName`) as a second, procedural layer this schema's `additionalProperties` cannot reach without closing off legitimate open-vocabulary clinical fact names.",
       "properties": {
-        "patient": true,
-        "cbc": true,
-        "reticulocytes": true,
-        "symptoms": true,
-        "history": true,
-        "exam": true,
-        "labs": true,
-        "smear": true
+        "patient": { "$ref": "#/$defs/clinicalPatient" },
+        "cbc": { "$ref": "#/$defs/clinicalCbc" },
+        "reticulocytes": { "$ref": "#/$defs/clinicalReticulocytes" },
+        "symptoms": { "$ref": "#/$defs/booleanMap" },
+        "history": { "$ref": "#/$defs/booleanMap" },
+        "exam": { "$ref": "#/$defs/booleanMap" },
+        "labs": { "$ref": "#/$defs/clinicalLabs" },
+        "smear": { "$ref": "#/$defs/clinicalSmear" }
       }
     },
+    "clinicalPatient": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Mirrors schemas/patient-input.schema.json#/properties/patient field-for-field. No name/DOB/MRN/contact field exists in this whitelist.",
+      "properties": {
+        "ageMonths": { "type": ["number", "null"], "minimum": 0, "maximum": 300 },
+        "sexAtBirth": { "type": ["string", "null"], "enum": ["female", "male", "unspecified", null] },
+        "menstruating": { "type": "boolean", "default": false },
+        "recentTransfusion": { "type": "boolean", "default": false },
+        "highAltitude": { "type": "boolean", "default": false }
+      }
+    },
+    "clinicalCbc": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Mirrors schemas/patient-input.schema.json#/properties/cbc field-for-field, including its nested closed localRanges/localFlags sub-objects.",
+      "properties": {
+        "hemoglobin": { "type": ["number", "null"], "minimum": 0, "maximum": 30, "description": "g/dL" },
+        "hemoglobinUnit": { "type": "string" },
+        "mcv": { "type": ["number", "null"], "minimum": 20, "maximum": 160, "description": "fL" },
+        "mcvUnit": { "type": "string" },
+        "rdw": { "type": ["number", "null"], "minimum": 5, "maximum": 40, "description": "%" },
+        "rdwUnit": { "type": "string" },
+        "rbc": { "type": ["number", "null"], "minimum": 0, "maximum": 12, "description": "10^12/L" },
+        "rbcUnit": { "type": "string" },
+        "wbc": { "type": ["number", "null"], "minimum": 0, "maximum": 100, "description": "10^9/L" },
+        "wbcUnit": { "type": "string" },
+        "anc": { "type": ["number", "null"], "minimum": 0, "maximum": 50, "description": "10^9/L" },
+        "ancUnit": { "type": "string" },
+        "platelets": { "type": ["number", "null"], "minimum": 0, "maximum": 2000, "description": "10^9/L" },
+        "plateletsUnit": { "type": "string" },
+        "rbcInterpretation": { "type": "string", "enum": ["unknown", "high-for-age", "normal", "low"] },
+        "localRanges": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "hbLower": { "type": ["number", "null"] },
+            "hbLowerUnit": { "type": "string" },
+            "mcvLower": { "type": ["number", "null"] },
+            "mcvLowerUnit": { "type": "string" },
+            "mcvUpper": { "type": ["number", "null"] },
+            "mcvUpperUnit": { "type": "string" },
+            "rdwUpper": { "type": ["number", "null"] },
+            "rdwUpperUnit": { "type": "string" },
+            "wbcLower": { "type": ["number", "null"] },
+            "wbcLowerUnit": { "type": "string" },
+            "ancLower": { "type": ["number", "null"] },
+            "ancLowerUnit": { "type": "string" },
+            "plateletsLower": { "type": ["number", "null"] },
+            "plateletsLowerUnit": { "type": "string" }
+          }
+        },
+        "localFlags": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "leukopenia": { "type": "boolean" },
+            "neutropenia": { "type": "boolean" },
+            "thrombocytopenia": { "type": "boolean" },
+            "thrombocytosis": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "clinicalReticulocytes": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Mirrors schemas/patient-input.schema.json#/properties/reticulocytes field-for-field.",
+      "properties": {
+        "response": { "type": "string", "enum": ["unknown", "low", "inappropriately-normal", "appropriate", "high"] },
+        "absolute": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "clinicalLabs": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Mirrors schemas/patient-input.schema.json#/properties/labs field-for-field. No name/DOB/MRN/contact field exists in this whitelist.",
+      "properties": {
+        "ferritin": { "type": ["number", "null"], "minimum": 0, "description": "ng/mL" },
+        "ferritinUnit": { "type": "string" },
+        "ferritinStatus": { "$ref": "#/$defs/genericStatus" },
+        "crpStatus": { "type": "string", "enum": ["unknown", "normal", "elevated"] },
+        "tsatStatus": { "$ref": "#/$defs/lowNormalHigh" },
+        "tibcStatus": { "$ref": "#/$defs/lowNormalHigh" },
+        "ironStatus": { "$ref": "#/$defs/lowNormalHigh" },
+        "stfrFerritinIndex": { "type": ["number", "null"], "minimum": 0 },
+        "stfrFerritinIndexUnit": { "type": "string" },
+        "indirectBilirubinStatus": { "type": "string", "enum": ["unknown", "normal", "high"] },
+        "ldhStatus": { "type": "string", "enum": ["unknown", "normal", "high"] },
+        "haptoglobinStatus": { "type": "string", "enum": ["unknown", "normal", "low"] },
+        "datStatus": { "type": "string", "enum": ["unknown", "negative", "positive"] },
+        "bloodLeadLevel": { "type": ["number", "null"], "minimum": 0, "description": "µg/dL" },
+        "bloodLeadLevelUnit": { "type": "string" },
+        "leadSpecimen": { "type": "string", "enum": ["unknown", "capillary", "venous"] },
+        "hbA2Status": { "type": "string", "enum": ["unknown", "normal", "elevated"] },
+        "hbBartNewbornScreen": { "type": "boolean" },
+        "alphaGlobinTestingPositive": { "type": "boolean" },
+        "betaGlobinTestingPositive": { "type": "boolean" },
+        "sicklingHemoglobinDetected": { "type": "boolean" },
+        "g6pdStatus": { "type": "string", "enum": ["unknown", "normal", "deficient"] },
+        "g6pdTestDuringAcuteHemolysis": { "type": "boolean" },
+        "g6pdTestSoonAfterTransfusion": { "type": "boolean" },
+        "b12Status": { "$ref": "#/$defs/lowNormalUnknown" },
+        "folateStatus": { "$ref": "#/$defs/lowNormalUnknown" },
+        "copperStatus": { "$ref": "#/$defs/lowNormalUnknown" },
+        "creatinineStatus": { "type": "string", "enum": ["unknown", "normal", "high"] },
+        "tshStatus": { "type": "string", "enum": ["unknown", "normal", "high"] },
+        "liverTestsStatus": { "type": "string", "enum": ["unknown", "normal", "abnormal"] }
+      }
+    },
+    "clinicalSmear": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Mirrors schemas/patient-input.schema.json#/properties/smear -- a closed enum-of-strings array, never free text.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "target-cells", "spherocytes", "schistocytes", "bite-or-blister-cells",
+          "sickle-cells", "basophilic-stippling", "hypersegmented-neutrophils",
+          "blasts", "teardrops", "nucleated-rbc", "elliptocytes"
+        ]
+      }
+    },
+    "booleanMap": {
+      "type": "object",
+      "description": "Mirrors schemas/patient-input.schema.json#/$defs/booleanMap verbatim. Wire-compatible boolean fact map: callers may continue sending bare JSON booleans or send the SPIKE-003 tri-state strings true, false, or unknown. Field names remain open here (same SPIKE-003 RQ4 decision the engine's own schema makes) -- but every VALUE is constrained to a boolean or a 3-value enum string, so this openness can never carry free-text identifier content. An identifier-shaped KEY placed here (e.g. `history.patientName`) is caught by the loader-level `lib/identifier-denylist.mjs` scan, not by this schema.",
+      "additionalProperties": {
+        "anyOf": [
+          { "type": "boolean" },
+          { "type": "string", "enum": ["true", "false", "unknown"] }
+        ]
+      }
+    },
+    "genericStatus": { "type": "string", "enum": ["unknown", "normal", "high"] },
+    "lowNormalHigh": { "type": "string", "enum": ["unknown", "low", "normal", "high"] },
+    "lowNormalUnknown": { "type": "string", "enum": ["unknown", "low", "normal"] },
     "referenceLabels": {
       "type": "object",
       "additionalProperties": false,

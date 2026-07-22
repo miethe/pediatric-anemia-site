@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "ef-retro-identifier-denylist-nested-history",
+  "description": "Seeded P4 fix-cycle violation, denylist-layer-only proof: an identifier-shaped key (`patientName`) placed inside `input.history`, the intentionally-open, wire-compatible boolean-map object (SPIKE-003 RQ4, mirrored from schemas/patient-input.schema.json's own booleanMap $def). The SCHEMA layer alone cannot reject this -- booleanMap deliberately admits any key name so real clinical fact names stay open -- so this fixture exists specifically to prove the identifier-denylist procedural layer (lib/identifier-denylist.mjs) is load-bearing, not redundant with the schema layer.",
+  "sourceAttestation": {
+    "ref": "synthetic-generation-note-012",
+    "provenanceClass": "synthetic"
+  },
+  "cases": [
+    {
+      "caseId": "case-001",
+      "provenance": "synthetic",
+      "input": {
+        "patient": { "ageMonths": 12 },
+        "history": { "patientName": true, "excessCowMilk": false }
+      }
+    }
+  ]
+}

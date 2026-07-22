@@ -183,6 +183,149 @@ for (const { name, dir } of IDENTIFIER_FIXTURE_CLASSES) {
 }
 
 // -------------------------------------------------------------------------------------------
+// P4 fix cycle (Codex second-opinion review, ADR-0006 hardening): the two BLOCKER-shaped corpora
+// the prior schema alone let through -- (a) a free-prose PHI marker, (b) an identifier smuggled
+// into a nested clinical `input` sub-object -- must now fail closed. Plus a proof that the
+// identifier-denylist layer (`lib/identifier-denylist.mjs`) is load-bearing, not merely redundant
+// with the schema layer: a fixture that the SCHEMA validates cleanly but `checkFixtures` (which
+// also runs the denylist scan) still rejects.
+// -------------------------------------------------------------------------------------------
+
+test('BLOCKER (a) shape: a corpus with a PHI-marker (name/MRN/DOB) in its free-text `description` fails closed via the identifier-denylist layer', async () => {
+  await assert.rejects(
+    () => checkFixtures(fixtureDir('identifier-description-phi-marker')),
+    (err) => {
+      assert.ok(err instanceof BoundaryError, `expected BoundaryError, got ${err?.constructor?.name}`);
+      assert.equal(err.exitCode, EXIT_BOUNDARY);
+      assert.match(err.message, /identifier-denylist layer \(([1-9]\d*)\)/, 'the denylist layer must report at least one violation');
+      assert.match(err.message, /PHI-marker pattern/, 'the violation detail must name the PHI-marker layer, not just the schema layer');
+      return true;
+    },
+  );
+});
+
+test('BLOCKER (a) shape: schema validation ALONE would have passed this fixture cleanly (proving the prior gap was real)', async () => {
+  const schema = await loadFixtureCorpusSchema();
+  const { parsed } = await loadCorpusDocument(fixtureDir('identifier-description-phi-marker'));
+  const errors = validate(schema, parsed);
+  assert.deepEqual(errors, [], 'the schema layer alone cannot structurally forbid PHI markers inside free prose -- this is exactly BLOCKER (a)');
+});
+
+for (const dir of ['identifier-input-patient-nested', 'identifier-input-cbc-nested']) {
+  test(`BLOCKER (b) shape: an identifier smuggled into nested clinical \`input\` sub-object ("${dir}") fails closed via the schema layer`, async () => {
+    const schema = await loadFixtureCorpusSchema();
+    const { parsed } = await loadCorpusDocument(fixtureDir(dir));
+    const errors = validate(schema, parsed);
+    assert.ok(errors.length > 0, `expected the closed, patient-input-mirrored clinical sub-object shape to reject fixture "${dir}"`);
+  });
+
+  test(`BLOCKER (b) shape: check-fixtures fails closed on "${dir}" (BoundaryError, exit 2)`, async () => {
+    await assert.rejects(
+      () => checkFixtures(fixtureDir(dir)),
+      (err) => {
+        assert.ok(err instanceof BoundaryError);
+        assert.equal(err.exitCode, EXIT_BOUNDARY);
+        return true;
+      },
+    );
+  });
+}
+
+test('denylist-layer-only proof: an identifier-shaped key inside the intentionally-open `history` boolean-map passes SCHEMA validation but still fails checkFixtures', async () => {
+  const schema = await loadFixtureCorpusSchema();
+  const { parsed } = await loadCorpusDocument(fixtureDir('identifier-denylist-nested-history'));
+  const schemaErrors = validate(schema, parsed);
+  assert.deepEqual(
+    schemaErrors,
+    [],
+    'booleanMap (history/symptoms/exam) is intentionally open on key name (SPIKE-003 RQ4 wire compat) -- the schema layer cannot reject an identifier-shaped key placed there',
+  );
+
+  await assert.rejects(
+    () => checkFixtures(fixtureDir('identifier-denylist-nested-history')),
+    (err) => {
+      assert.ok(err instanceof BoundaryError, `expected BoundaryError, got ${err?.constructor?.name}`);
+      assert.equal(err.exitCode, EXIT_BOUNDARY);
+      assert.match(err.message, /patientName/, 'the violation must name the exact denylisted key');
+      return true;
+    },
+  );
+});
+
+// -------------------------------------------------------------------------------------------
+// Drift detection: the fixture-corpus schema's clinical sub-object shapes (`clinicalPatient`,
+// `clinicalCbc`, `clinicalReticulocytes`, `clinicalLabs`, `booleanMap`, `genericStatus`,
+// `lowNormalHigh`, `lowNormalUnknown`) are copied field-for-field from the engine's own
+// `schemas/patient-input.schema.json` (read at authoring time, not invented independently -- the
+// P4 fix cycle's own instruction). This test mechanically re-reads BOTH files and cross-checks
+// their property key sets, so a future edit to patient-input.schema.json that silently drifts
+// from this tool-local mirror is a loud, failing test here -- never a silent divergence.
+// -------------------------------------------------------------------------------------------
+
+test('drift detection: fixture-corpus.schema.json clinical sub-object shapes mirror schemas/patient-input.schema.json field-for-field', async () => {
+  const engineSchema = JSON.parse(
+    await readFile(path.join(REPO_ROOT, 'schemas', 'patient-input.schema.json'), 'utf8'),
+  );
+  const corpusSchema = await loadFixtureCorpusSchema();
+
+  const sortedKeys = (obj) => Object.keys(obj ?? {}).sort();
+
+  // Top-level clinical fact keys (patient/cbc/reticulocytes/symptoms/history/exam/labs/smear).
+  assert.deepEqual(
+    sortedKeys(corpusSchema.$defs.clinicalInput.properties),
+    sortedKeys(engineSchema.properties),
+    'clinicalInput must admit exactly the same top-level clinical-fact keys as patient-input.schema.json',
+  );
+
+  // Field-level mirrors: [corpus $def name, engine property name].
+  const MIRRORED_OBJECT_PAIRS = [
+    ['clinicalPatient', 'patient'],
+    ['clinicalReticulocytes', 'reticulocytes'],
+    ['clinicalLabs', 'labs'],
+  ];
+  for (const [corpusDefName, engineProp] of MIRRORED_OBJECT_PAIRS) {
+    assert.deepEqual(
+      sortedKeys(corpusSchema.$defs[corpusDefName].properties),
+      sortedKeys(engineSchema.properties[engineProp].properties),
+      `$defs.${corpusDefName} must mirror patient-input.schema.json#/properties/${engineProp} field-for-field`,
+    );
+  }
+
+  // cbc has its own nested localRanges/localFlags sub-shapes -- mirror each independently.
+  assert.deepEqual(
+    sortedKeys(corpusSchema.$defs.clinicalCbc.properties),
+    sortedKeys(engineSchema.properties.cbc.properties),
+    '$defs.clinicalCbc must mirror patient-input.schema.json#/properties/cbc field-for-field',
+  );
+  assert.deepEqual(
+    sortedKeys(corpusSchema.$defs.clinicalCbc.properties.localRanges.properties),
+    sortedKeys(engineSchema.properties.cbc.properties.localRanges.properties),
+    'clinicalCbc.localRanges must mirror patient-input.schema.json#/properties/cbc/properties/localRanges field-for-field',
+  );
+  assert.deepEqual(
+    sortedKeys(corpusSchema.$defs.clinicalCbc.properties.localFlags.properties),
+    sortedKeys(engineSchema.properties.cbc.properties.localFlags.properties),
+    'clinicalCbc.localFlags must mirror patient-input.schema.json#/properties/cbc/properties/localFlags field-for-field',
+  );
+
+  // smear's closed enum vocabulary.
+  assert.deepEqual(
+    corpusSchema.$defs.clinicalSmear.items.enum,
+    engineSchema.properties.smear.items.enum,
+    'clinicalSmear must mirror patient-input.schema.json#/properties/smear\'s enum vocabulary exactly',
+  );
+
+  // Shared $defs copied verbatim (booleanMap/genericStatus/lowNormalHigh/lowNormalUnknown).
+  for (const defName of ['booleanMap', 'genericStatus', 'lowNormalHigh', 'lowNormalUnknown']) {
+    assert.deepEqual(
+      corpusSchema.$defs[defName].enum ?? null,
+      engineSchema.$defs[defName].enum ?? null,
+      `$defs.${defName}'s enum vocabulary must mirror patient-input.schema.json's own $defs.${defName}`,
+    );
+  }
+});
+
+// -------------------------------------------------------------------------------------------
 // `run`/`report` both land their real post-boundary logic in P4-T3/P4-T4 respectively (candidate
 // resolution + replay; software-agreement metrics) -- neither falls through to the scaffold
 // `NotImplementedError` placeholder once its own boundary check clears; see

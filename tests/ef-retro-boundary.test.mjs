@@ -231,12 +231,17 @@ for (const verb of ['run', 'report']) {
 }
 
 // -------------------------------------------------------------------------------------------
-// AC 4: schema-enforced (not procedural) -- no file under tools/retro-validate/ implements its
-// own ad hoc identifier-detection/redaction logic; the ONLY de-identification-boundary logic path
-// is the json-schema-lite `validate()` call inside lib/boundary.mjs.
+// AC 4 (updated, P4 fix cycle): schema-enforced PLUS exactly one sanctioned procedural layer --
+// `lib/identifier-denylist.mjs` is the ONE file permitted to hand-implement identifier-shaped-
+// key/PHI-marker-pattern detection (added after a Codex second-opinion review found the schema
+// alone could not close two BLOCKERs: free-prose fields, and intentionally-open boolean-map key
+// names -- see that module's own header). No OTHER file under tools/retro-validate/ may
+// re-implement, duplicate, or bypass that logic; the same "single sanctioned exception" pattern
+// this repo already uses for `lib/discordance.mjs`'s cross-import of
+// `tools/review-record/lib/adjudication.mjs`.
 // -------------------------------------------------------------------------------------------
 
-test('schema-enforced, not procedural: no file under tools/retro-validate/ hand-implements identifier-field detection outside boundary.mjs\'s schema-validate call', async () => {
+test('procedural identifier-denylist logic is confined to exactly one sanctioned file (lib/identifier-denylist.mjs)', async () => {
   async function collectSourceFiles(dir) {
     const entries = await readdir(dir, { withFileTypes: true });
     const files = [];
@@ -251,18 +256,20 @@ test('schema-enforced, not procedural: no file under tools/retro-validate/ hand-
     return files;
   }
 
-  // A hand-maintained identifier-field denylist (e.g. a literal array of field names checked with
-  // string comparisons/regex against object keys, rather than delegating to the schema) would be
-  // exactly the procedural pattern ADR-0006 and this task's own description rule out. The schema
-  // file itself (fixture-corpus.schema.json) is exempt -- it IS the structural enforcement
-  // mechanism, not a bypass of it.
+  // A SECOND, independent hand-maintained identifier-field denylist (a literal array of field
+  // names checked with string comparisons/regex against object keys, duplicated OUTSIDE the one
+  // sanctioned module) would silently fork the boundary's own source of truth -- exactly the
+  // failure mode "one sanctioned exception, test-pinned" exists to prevent. The schema file itself
+  // (fixture-corpus.schema.json) is exempt -- it IS the structural enforcement mechanism, not a
+  // bypass of it -- and so is `lib/identifier-denylist.mjs` itself, the one sanctioned exception.
   const proceduralPatterns = [
     /Object\.keys\([^)]*\)\.filter\([^)]*(?:name|mrn|dob|ssn|address|contact)/i,
     /delete\s+\w+\.(?:name|mrn|dob|ssn|address|contact)/i,
   ];
 
+  const SANCTIONED_FILE = path.join(RETRO_VALIDATE_ROOT, 'lib', 'identifier-denylist.mjs');
   const files = await collectSourceFiles(RETRO_VALIDATE_ROOT);
-  const mjsFiles = files.filter((f) => !f.endsWith('.json'));
+  const mjsFiles = files.filter((f) => !f.endsWith('.json') && f !== SANCTIONED_FILE);
   assert.ok(mjsFiles.length > 0, 'sanity: the retro-validate source tree must not be empty');
 
   for (const file of mjsFiles) {
@@ -270,10 +277,40 @@ test('schema-enforced, not procedural: no file under tools/retro-validate/ hand-
     for (const pattern of proceduralPatterns) {
       assert.ok(
         !pattern.test(source),
-        `${path.relative(REPO_ROOT, file)} appears to hand-implement identifier-field logic (matches ${pattern}) -- the boundary must be schema-enforced only`,
+        `${path.relative(REPO_ROOT, file)} appears to hand-implement identifier-field logic (matches ${pattern}) outside the one sanctioned module -- lib/identifier-denylist.mjs`,
       );
     }
   }
+});
+
+test('the only caller of identifier-denylist.mjs#scanForIdentifiers in tools/retro-validate/ is boundary.mjs', async () => {
+  async function collectSourceFiles(dir) {
+    const entries = await readdir(dir, { withFileTypes: true });
+    const files = [];
+    for (const entry of entries) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        files.push(...(await collectSourceFiles(full)));
+      } else if (entry.name.endsWith('.mjs') && !full.endsWith(`${path.sep}identifier-denylist.mjs`)) {
+        files.push(full);
+      }
+    }
+    return files;
+  }
+
+  const files = await collectSourceFiles(RETRO_VALIDATE_ROOT);
+  const callers = [];
+  for (const file of files) {
+    const source = await readFile(file, 'utf8');
+    if (/\bscanForIdentifiers\s*\(/.test(source)) {
+      callers.push(path.relative(RETRO_VALIDATE_ROOT, file));
+    }
+  }
+  assert.deepEqual(
+    callers,
+    [path.join('lib', 'boundary.mjs')],
+    'scanForIdentifiers must be called by exactly boundary.mjs -- no other file bypasses or duplicates the gate',
+  );
 });
 
 test('the only caller of boundary.mjs#checkFixtures in tools/retro-validate/ is check-fixtures.mjs, run.mjs, and report.mjs', async () => {
