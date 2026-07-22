@@ -1,42 +1,52 @@
 ---
-title: 'Implementation Plan: Evidence Foundry E1 — Review Workflow, Signed Preclinical Release, Retrospective Validation'
+title: "Implementation Plan: Evidence Foundry E1 \u2014 Review Workflow, Signed Preclinical\
+  \ Release, Retrospective Validation"
 schema_version: 2
 doc_type: implementation_plan
 status: draft
-created: 2026-07-21
-updated: 2026-07-21
+created: '2026-07-21'
+updated: '2026-07-21'
 feature_slug: evidence-foundry-e1
 feature_version: v1
 prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-e1-v1.md
 plan_ref: null
-scope: "Build the E1 clinical-governance triad as offline fail-closed machinery: append-only five-role review-record workflow (ADR-0004), Ed25519 sign/verify + flat release registry (ADR-0005), and a fixtures-only retrospective validation harness behind the ADR-0006 boundary — every human act modeled as an external gate, never a task."
+scope: "Build the E1 clinical-governance triad as offline fail-closed machinery: append-only\
+  \ five-role review-record workflow (ADR-0004), Ed25519 sign/verify + flat release\
+  \ registry (ADR-0005), and a fixtures-only retrospective validation harness behind\
+  \ the ADR-0006 boundary \u2014 every human act modeled as an external gate, never\
+  \ a task."
 effort_estimate: 35 pts
-architecture_summary: "Three new offline Node ESM CLIs following E0's tools/<name>/cli.mjs verb-dispatch convention — tools/review-record/, tools/release-sign/, tools/retro-validate/ — built on P1's unified schema contracts (canonical review-record model, reviewer roster, release-manifest signature slot, releases/registry.json). All signature/approver slots ship schema-forced empty; the anemia browser path's SPIKE-006 posture is untouched."
+architecture_summary: "Three new offline Node ESM CLIs following E0's tools/<name>/cli.mjs\
+  \ verb-dispatch convention \u2014 tools/review-record/, tools/release-sign/, tools/retro-validate/\
+  \ \u2014 built on P1's unified schema contracts (canonical review-record model,\
+  \ reviewer roster, release-manifest signature slot, releases/registry.json). All\
+  \ signature/approver slots ship schema-forced empty; the anemia browser path's SPIKE-006\
+  \ posture is untouched."
 related_documents:
-  - docs/project_plans/PRDs/infrastructure/evidence-foundry-e1-v1.md
-  - .claude/worknotes/evidence-foundry-e1-v1/decisions-block.md
-  - .claude/worknotes/evidence-foundry-e1-v1/planning-brief.md
-  - docs/adr/0004-clinical-approval-identity-adjudication.md
-  - docs/adr/0005-kb-serialization-signing-key-custody.md
-  - docs/adr/0006-validation-data-boundary-deidentification.md
-  - docs/project_plans/SPIKEs/spike-006-kb-signing-key-custody-verification.md
-  - docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md
+- docs/project_plans/PRDs/infrastructure/evidence-foundry-e1-v1.md
+- .claude/worknotes/evidence-foundry-e1-v1/decisions-block.md
+- .claude/worknotes/evidence-foundry-e1-v1/planning-brief.md
+- docs/adr/0004-clinical-approval-identity-adjudication.md
+- docs/adr/0005-kb-serialization-signing-key-custody.md
+- docs/adr/0006-validation-data-boundary-deidentification.md
+- docs/project_plans/SPIKEs/spike-006-kb-signing-key-custody-verification.md
+- docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md
 references:
   user_docs: []
   context: []
   specs:
-    - schemas/review-record.schema.json
-    - schemas/module-manifest.schema.json
-    - schemas/release-manifest.schema.json
-    - schemas/rule.schema.json
+  - schemas/review-record.schema.json
+  - schemas/module-manifest.schema.json
+  - schemas/release-manifest.schema.json
+  - schemas/rule.schema.json
   related_prds:
-    - docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
+  - docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
 spike_ref: docs/project_plans/SPIKEs/spike-006-kb-signing-key-custody-verification.md
 adr_refs:
-  - docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
-  - docs/adr/0004-clinical-approval-identity-adjudication.md
-  - docs/adr/0005-kb-serialization-signing-key-custody.md
-  - docs/adr/0006-validation-data-boundary-deidentification.md
+- docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
+- docs/adr/0004-clinical-approval-identity-adjudication.md
+- docs/adr/0005-kb-serialization-signing-key-custody.md
+- docs/adr/0006-validation-data-boundary-deidentification.md
 deferred_items_spec_refs: []
 findings_doc_ref: null
 charter_ref: null
@@ -47,123 +57,132 @@ plan_structure: independent
 progress_init: auto
 owner: Nick Miethe
 contributors:
-  - Opus orchestrator
-  - implementation-planner
+- Opus orchestrator
+- implementation-planner
 priority: high
 risk_level: high
 category: infrastructure
 tags:
-  - implementation
-  - evidence-foundry
-  - clinical-review
-  - signed-release
-  - retrospective-validation
-  - infrastructure
+- implementation
+- evidence-foundry
+- clinical-review
+- signed-release
+- retrospective-validation
+- infrastructure
 milestone: null
 commit_refs: []
-pr_refs: []
+pr_refs:
+- '#19'
 files_affected:
-  - tools/review-record/**
-  - tools/release-sign/**
-  - tools/retro-validate/**
-  - modules/cbc_suite_v1/reviews/**
-  - governance/reviewer-roster.yaml
-  - releases/registry.json
-  - schemas/review-record.schema.json
-  - schemas/reviewer-roster.schema.json
-  - schemas/release-manifest.schema.json
-  - schemas/release-registry.schema.json
-  - scripts/validate-kb.mjs
-  - docs/governance/gates-registry.md
-  - docs/governance/signing-ceremony-runbook.md
-  - docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md
-  - tests/ef-*.test.mjs
-  - tests/fixtures/**
-  - docs/architecture.md
-  - docs/project_plans/design-specs/*.md
-  - CHANGELOG.md
+- tools/review-record/**
+- tools/release-sign/**
+- tools/retro-validate/**
+- modules/cbc_suite_v1/reviews/**
+- governance/reviewer-roster.yaml
+- releases/registry.json
+- schemas/review-record.schema.json
+- schemas/reviewer-roster.schema.json
+- schemas/release-manifest.schema.json
+- schemas/release-registry.schema.json
+- scripts/validate-kb.mjs
+- docs/governance/gates-registry.md
+- docs/governance/signing-ceremony-runbook.md
+- docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md
+- tests/ef-*.test.mjs
+- tests/fixtures/**
+- docs/architecture.md
+- docs/project_plans/design-specs/*.md
+- CHANGELOG.md
 wave_plan:
   serialization_barriers:
-    - scripts/validate-kb.mjs
-    - CHANGELOG.md
-    - docs/architecture.md
+  - scripts/validate-kb.mjs
+  - CHANGELOG.md
+  - docs/architecture.md
   phases:
-    - id: P1
-      depends_on: []
-      isolation: shared
-      parallelizable: false
-      provider: claude
-      model: sonnet
-      effort: adaptive
-      files_affected:
-        - schemas/review-record.schema.json
-        - schemas/reviewer-roster.schema.json
-        - schemas/release-manifest.schema.json
-        - schemas/release-registry.schema.json
-        - governance/reviewer-roster.yaml
-        - docs/governance/gates-registry.md
-        - scripts/validate-kb.mjs
-        - tests/ef-review-record-migration.test.mjs
-        - tests/ef-contract-forced-empty.test.mjs
-        - tests/fixtures/**
-        - .claude/worknotes/evidence-foundry-e1-v1/contracts-design.md
-    - id: P2
-      depends_on: [P1]
-      isolation: shared
-      provider: claude
-      model: sonnet
-      effort: adaptive
-      files_affected:
-        - tools/review-record/**
-        - modules/cbc_suite_v1/reviews/**
-        - tests/ef-review-workflow.test.mjs
-        - tests/ef-review-appendonly.test.mjs
-        - tests/ef-review-render-smoke.test.mjs
-        - tests/fixtures/ef-review-render/**
-    - id: P3
-      depends_on: [P1]
-      isolation: shared
-      provider: claude
-      model: sonnet
-      effort: adaptive
-      files_affected:
-        - tools/release-sign/**
-        - releases/registry.json
-        - scripts/validate-kb.mjs
-        - docs/governance/signing-ceremony-runbook.md
-        - tests/ef-release-sign-verify.test.mjs
-        - tests/ef-release-registry.test.mjs
-        - tests/ef-release-no-keys.test.mjs
-        - tests/fixtures/ef-release/**
-    - id: P4
-      depends_on: [P1]
-      isolation: shared
-      provider: claude
-      model: sonnet
-      effort: adaptive
-      files_affected:
-        - tools/retro-validate/**
-        - tests/ef-retro-boundary.test.mjs
-        - tests/ef-retro-determinism.test.mjs
-        - tests/ef-retro-corpus.test.mjs
-        - tests/fixtures/ef-retro/**
-        - docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md
-    - id: P5
-      depends_on: [P2, P3, P4]
-      isolation: shared
-      provider: claude
-      model: sonnet
-      effort: adaptive
-      files_affected:
-        - tests/ef-e2e-dryrun.test.mjs
-        - docs/architecture.md
-        - CHANGELOG.md
-        - docs/project_plans/design-specs/*.md
-        - .claude/progress/evidence-foundry-e1/**
+  - id: P1
+    depends_on: []
+    isolation: shared
+    parallelizable: false
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - schemas/review-record.schema.json
+    - schemas/reviewer-roster.schema.json
+    - schemas/release-manifest.schema.json
+    - schemas/release-registry.schema.json
+    - governance/reviewer-roster.yaml
+    - docs/governance/gates-registry.md
+    - scripts/validate-kb.mjs
+    - tests/ef-review-record-migration.test.mjs
+    - tests/ef-contract-forced-empty.test.mjs
+    - tests/fixtures/**
+    - .claude/worknotes/evidence-foundry-e1-v1/contracts-design.md
+  - id: P2
+    depends_on:
+    - P1
+    isolation: shared
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - tools/review-record/**
+    - modules/cbc_suite_v1/reviews/**
+    - tests/ef-review-workflow.test.mjs
+    - tests/ef-review-appendonly.test.mjs
+    - tests/ef-review-render-smoke.test.mjs
+    - tests/fixtures/ef-review-render/**
+  - id: P3
+    depends_on:
+    - P1
+    isolation: shared
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - tools/release-sign/**
+    - releases/registry.json
+    - scripts/validate-kb.mjs
+    - docs/governance/signing-ceremony-runbook.md
+    - tests/ef-release-sign-verify.test.mjs
+    - tests/ef-release-registry.test.mjs
+    - tests/ef-release-no-keys.test.mjs
+    - tests/fixtures/ef-release/**
+  - id: P4
+    depends_on:
+    - P1
+    isolation: shared
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - tools/retro-validate/**
+    - tests/ef-retro-boundary.test.mjs
+    - tests/ef-retro-determinism.test.mjs
+    - tests/ef-retro-corpus.test.mjs
+    - tests/fixtures/ef-retro/**
+    - docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md
+  - id: P5
+    depends_on:
+    - P2
+    - P3
+    - P4
+    isolation: shared
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - tests/ef-e2e-dryrun.test.mjs
+    - docs/architecture.md
+    - CHANGELOG.md
+    - docs/project_plans/design-specs/*.md
+    - .claude/progress/evidence-foundry-e1/**
   waves:
-    - [P1]
-    - [P2, P3, P4]
-    - [P5]
+  - - P1
+  - - P2
+    - P3
+    - P4
+  - - P5
 ---
 
 # Implementation Plan: Evidence Foundry E1 (Review Workflow · Signed Release · Retrospective Validation)

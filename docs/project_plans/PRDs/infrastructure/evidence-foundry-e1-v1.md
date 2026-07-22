@@ -1,74 +1,84 @@
 ---
-title: "PRD: Evidence Foundry E1 — clinical review workflow, signed preclinical release, retrospective validation"
+title: "PRD: Evidence Foundry E1 \u2014 clinical review workflow, signed preclinical\
+  \ release, retrospective validation"
 schema_version: 2
 doc_type: prd
 status: draft
-created: 2026-07-21
-updated: 2026-07-21
-feature_slug: "evidence-foundry-e1"
-feature_version: "v1"
+created: '2026-07-21'
+updated: '2026-07-21'
+feature_slug: evidence-foundry-e1
+feature_version: v1
 prd_ref: null
 plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1.md
 related_documents:
-  - docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
-  - docs/adr/0004-clinical-approval-identity-adjudication.md
-  - docs/adr/0005-kb-serialization-signing-key-custody.md
-  - docs/adr/0006-validation-data-boundary-deidentification.md
-  - docs/project_plans/design-specs/clinical-review-portal-workflow.md
-  - docs/project_plans/design-specs/review-portal-design.md
-  - docs/project_plans/design-specs/signed-kb-manifest.md
-  - docs/project_plans/design-specs/signed-release-key-custody.md
-  - docs/project_plans/design-specs/retrospective-validation-harness.md
-  - docs/project_plans/design-specs/withdraw-rollback-machinery.md
-  - docs/project_plans/SPIKEs/spike-006-kb-signing-key-custody-verification.md
-  - docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md
-  - .claude/worknotes/evidence-foundry-e1-v1/planning-brief.md
+- docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
+- docs/adr/0004-clinical-approval-identity-adjudication.md
+- docs/adr/0005-kb-serialization-signing-key-custody.md
+- docs/adr/0006-validation-data-boundary-deidentification.md
+- docs/project_plans/design-specs/clinical-review-portal-workflow.md
+- docs/project_plans/design-specs/review-portal-design.md
+- docs/project_plans/design-specs/signed-kb-manifest.md
+- docs/project_plans/design-specs/signed-release-key-custody.md
+- docs/project_plans/design-specs/retrospective-validation-harness.md
+- docs/project_plans/design-specs/withdraw-rollback-machinery.md
+- docs/project_plans/SPIKEs/spike-006-kb-signing-key-custody-verification.md
+- docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md
+- .claude/worknotes/evidence-foundry-e1-v1/planning-brief.md
 references:
   user_docs: []
   context: []
   specs:
-    - schemas/review-record.schema.json
-    - schemas/module-manifest.schema.json
-    - schemas/release-manifest.schema.json
-    - schemas/rule.schema.json
+  - schemas/review-record.schema.json
+  - schemas/module-manifest.schema.json
+  - schemas/release-manifest.schema.json
+  - schemas/rule.schema.json
   related_prds:
-    - docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
+  - docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
 spike_ref: docs/project_plans/SPIKEs/spike-006-kb-signing-key-custody-verification.md
 adr_refs:
-  - docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
-  - docs/adr/0004-clinical-approval-identity-adjudication.md
-  - docs/adr/0005-kb-serialization-signing-key-custody.md
-  - docs/adr/0006-validation-data-boundary-deidentification.md
+- docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
+- docs/adr/0004-clinical-approval-identity-adjudication.md
+- docs/adr/0005-kb-serialization-signing-key-custody.md
+- docs/adr/0006-validation-data-boundary-deidentification.md
 charter_ref: null
 changelog_ref: null
 test_plan_ref: null
 owner: nick
-contributors: [Opus orchestrator, prd-writer]
+contributors:
+- Opus orchestrator
+- prd-writer
 priority: P1
 risk_level: high
 category: infrastructure
-tags: [prd, evidence-foundry, clinical-review, signed-release, retrospective-validation, infrastructure]
+tags:
+- prd
+- evidence-foundry
+- clinical-review
+- signed-release
+- retrospective-validation
+- infrastructure
 milestone: null
 commit_refs: []
-pr_refs: []
+pr_refs:
+- '#19'
 files_affected:
-  - modules/cbc_suite_v1/reviews/**
-  - tools/review-record/**
-  - tools/release-sign/**
-  - tools/retro-validate/**
-  - releases/registry.json
-  - schemas/review-record.schema.json
-  - schemas/release-manifest.schema.json
-  - scripts/validate-kb.mjs
-  - tests/*.test.mjs
-  - docs/architecture.md
-  - docs/project_plans/SPIKEs/**
-  - CHANGELOG.md
+- modules/cbc_suite_v1/reviews/**
+- tools/review-record/**
+- tools/release-sign/**
+- tools/retro-validate/**
+- releases/registry.json
+- schemas/review-record.schema.json
+- schemas/release-manifest.schema.json
+- scripts/validate-kb.mjs
+- tests/*.test.mjs
+- docs/architecture.md
+- docs/project_plans/SPIKEs/**
+- CHANGELOG.md
 changelog_required: true
 deferred_items_spec_refs:
-  - docs/project_plans/design-specs/clinical-review-portal-workflow.md
-  - docs/project_plans/design-specs/retrospective-validation-harness.md
-  - docs/project_plans/design-specs/withdraw-rollback-machinery.md
+- docs/project_plans/design-specs/clinical-review-portal-workflow.md
+- docs/project_plans/design-specs/retrospective-validation-harness.md
+- docs/project_plans/design-specs/withdraw-rollback-machinery.md
 findings_doc_ref: null
 tier: 3
 estimated_points: null
