@@ -6,7 +6,7 @@ description: "Opus planning scaffold: phase boundaries, agent routing, risks, es
 created: 2026-07-22
 updated: 2026-07-22
 feature_slug: module-switcher
-estimated_points: 12
+estimated_points: 13
 tier: 2
 related_feature_prd: docs/project_plans/PRDs/features/module-switcher-v1.md
 ---
