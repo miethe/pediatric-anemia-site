@@ -1,0 +1,71 @@
+id: ext_20260718_66f15f0b_001
+source_card_id: src_20260718_rfcbc002_09
+created_at: '2026-07-18T15:42:52-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: Mean mitomycin C (MMC)-induced chromosome breaks per cell were far higher in FA patients (6.67
+    ±3.92) than in non-FA patients (0.23 ±0.18).
+  locator: Abstract (Results summary)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: Of 100 children with suspected FA, 13 (13%) had a true FA cellular phenotype, 27 had possible
+    mosaic FA, and the remainder were classified non-FA.
+  locator: Results section + Patients section
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: Lymphocyte cultures were incubated for 72 h with MMC at 0, 50, 150, or 300 nM to induce clastogenic
+    breakage.
+  locator: Materials and methods section
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The percentage of cells with spontaneous (baseline, non-MMC) chromosome aberrations was more than
+    9 times higher in FA than in non-FA patients.
+  locator: Abstract (Results summary)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: The MMC sensitivity test discriminates FA, possible somatic mosaicism, and non-FA marrow failure
+    at the first diagnostic step, but definitive diagnosis still requires follow-up mutation testing and
+    fibroblast chromosome breakage analysis.
+  locator: Abstract / Conclusions
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: Abstract (Results summary)
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Results section + Patients section
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Materials and methods section
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Abstract (Results summary)
+contradictions_or_cautions:
+- text: No explicit numeric break/cell cutoff for FA vs mosaic vs non-FA in the passages retrieved
+  locator: card/trust
+- text: Cohort spans age at diagnosis 1 month to 32 years — not purely pediatric
+  locator: card/trust
+- text: Single-center/national cohort, Polish population
+  locator: card/trust

@@ -1,0 +1,109 @@
+id: ext_20260718_057388f2_001
+source_card_id: src_20260718_rfcbc002_02
+created_at: '2026-07-18T15:42:52-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: In this observed RCC cohort, 84% (84/100) presented with a hypocellular diagnostic bone marrow,
+    consistent with the typical RCC presentation.
+  locator: 'Results — Patient characteristics at diagnosis (also Introduction: ''~80% of RCC cases'')'
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: EWOG-MDS assigned early HSCT (scope-exit from observation) for RCC patients with transfusion dependency,
+    ANC <1×10^9/L, monosomy 7, del(7q), or >=2 chromosomal aberrations; others were observed.
+  locator: Introduction — risk-adapted therapy approach (EWOG-MDS stratification)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: The authors categorized 'significant' blood-count abnormalities during follow-up as Hb <10 g/dL,
+    ANC <1×10^9/L, and/or platelets <100×10^9/L.
+  locator: Results — Hematological course (severity categorization of follow-up blood counts, n=74)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The authors categorized 'mild' blood-count abnormalities during follow-up as Hb 10-12 g/dL, ANC
+    1.0-1.5×10^9/L, platelets 100-150×10^9/L, and/or persistently high MCV.
+  locator: Results — Hematological course (mild-abnormality band, n=74)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: For observed normal-karyotype RCC without predisposition, 5- and 10-year transplant(HSCT)-free
+    survival were 94% and 88%, with all patients alive at median 7.2-year follow-up.
+  locator: Results — Clinical outcome (Kaplan-Meier transplant-free survival)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: Given low rates of clonal evolution/PNH, the authors state yearly bone-marrow exams can be omitted;
+    peripheral blood counts every 3-6 months, with marrow study only if counts deviate from baseline.
+  locator: Discussion — surveillance recommendation
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_007
+  text: Patients who later underwent HSCT had lower median diagnosis-time Hb (8.7 vs 10.6 g/dL) and platelets
+    (30 vs 64 ×10^9/L) than those never transplanted.
+  locator: Results — Clinical outcome (baseline predictors of later HSCT)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_008
+  text: Cohort median age at diagnosis was 10.9 years (range 1.4-17.3), slight male predominance (M/F
+    1.2); age-adjusted MCV was increased in ~half of patients.
+  locator: Results — Patient characteristics at diagnosis (age/sex/MCV)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_001
+  unit: null
+  date_context: null
+  locator: 'Results — Patient characteristics at diagnosis (also Introduction: ''~80% of RCC cases'')'
+- metric_name: evidence_point
+  value: ev_002
+  unit: null
+  date_context: null
+  locator: Introduction — risk-adapted therapy approach (EWOG-MDS stratification)
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Results — Hematological course (severity categorization of follow-up blood counts, n=74)
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Results — Hematological course (mild-abnormality band, n=74)
+- metric_name: evidence_point
+  value: ev_005
+  unit: null
+  date_context: null
+  locator: Results — Clinical outcome (Kaplan-Meier transplant-free survival)
+- metric_name: evidence_point
+  value: ev_006
+  unit: null
+  date_context: null
+  locator: Discussion — surveillance recommendation
+- metric_name: evidence_point
+  value: ev_007
+  unit: null
+  date_context: null
+  locator: Results — Clinical outcome (baseline predictors of later HSCT)
+- metric_name: evidence_point
+  value: ev_008
+  unit: null
+  date_context: null
+  locator: Results — Patient characteristics at diagnosis (age/sex/MCV)
+contradictions_or_cautions:
+- text: Single observational cohort, normal-karyotype RCC only
+  locator: card/trust
+- text: PMC full-text extraction had dropped superscript '9' on the published ×10^9/L units; affected count-unit quotes re-verified against publisher JATS full text (Europe PMC PMC12395045) and corrected to the intact '× 10⁹/L' form
+  locator: card/trust

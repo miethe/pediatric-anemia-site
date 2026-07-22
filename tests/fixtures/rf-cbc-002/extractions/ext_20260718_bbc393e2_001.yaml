@@ -1,0 +1,71 @@
+id: ext_20260718_bbc393e2_001
+source_card_id: src_20260718_rfcbc002_06
+created_at: '2026-07-18T15:42:52-04:00'
+extractor_agent: rf_extractor
+model_profile: rf_extract_cheap
+extracted_facts:
+- evidence_id: ev_001
+  text: The ASTCT panel preferentially recommends bone marrow (not peripheral blood) as the graft source
+    for allogeneic HCT in severe aplastic anemia.
+  locator: Abstract (PubMed PMID 39307421); Recommendation — stem cell source (S, M)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_002
+  text: The panel recommends rabbit ATG over horse ATG as part of the HCT conditioning regimen for severe
+    aplastic anemia.
+  locator: Abstract (PubMed PMID 39307421); Recommendation — ATG selection (S, L)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_003
+  text: The panel does not endorse the historical 40-year age cutoff for upfront HCT in adults with SAA,
+    holding that fit older patients may also benefit.
+  locator: Abstract (PubMed PMID 39307421) — age-eligibility statement
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_004
+  text: The panel positively frames upfront HCT / MRD-HCT eligibility as extending up to 50 years of age
+    or beyond for suitable patients, replacing the historical 40-year threshold.
+  locator: Recommendation — age for upfront HCT (C, M) / MRD-HCT first-line (S, M) [Guideline Central
+    digest of the primary guideline]
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_005
+  text: Fludarabine-containing conditioning regimens are preferred for patients at high risk of graft
+    failure and for matched-unrelated or haploidentical donor transplants.
+  locator: Abstract (PubMed PMID 39307421); Recommendation — conditioning (S, L)
+  confidence: medium
+  quote_available: true
+  notes: ''
+- evidence_id: ev_006
+  text: For children and adults lacking a matched related donor, the panel prioritizes matched-unrelated
+    or haploidentical donor HCT over immunosuppressive therapy.
+  locator: Abstract (PubMed PMID 39307421); Recommendation — donor selection vs IST (C, L)
+  confidence: medium
+  quote_available: true
+  notes: ''
+extracted_definitions: []
+extracted_metrics:
+- metric_name: evidence_point
+  value: ev_003
+  unit: null
+  date_context: null
+  locator: Abstract (PubMed PMID 39307421) — age-eligibility statement
+- metric_name: evidence_point
+  value: ev_004
+  unit: null
+  date_context: null
+  locator: Recommendation — age for upfront HCT (C, M) / MRD-HCT first-line (S, M) [Guideline Central
+    digest of the primary guideline]
+contradictions_or_cautions:
+- text: Full-text PDF paywalled; graded statement wording verified via Guideline Central digest of the
+    primary guideline, not the primary PDF.
+  locator: card/trust
+- text: HCT-specific scope only; does not cover non-transplant SAA diagnosis/monitoring thresholds.
+  locator: card/trust
+- text: Age thresholds are adult-facing eligibility criteria; guideline provides no numeric ATG dose or
+    graft cell-dose cutoffs.
+  locator: card/trust
