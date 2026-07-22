@@ -10,7 +10,7 @@ feature_version: v1
 prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-e1-v1.md
 plan_ref: null
 scope: "Build the E1 clinical-governance triad as offline fail-closed machinery: append-only five-role review-record workflow (ADR-0004), Ed25519 sign/verify + flat release registry (ADR-0005), and a fixtures-only retrospective validation harness behind the ADR-0006 boundary — every human act modeled as an external gate, never a task."
-effort_estimate: 34 pts
+effort_estimate: 35 pts
 architecture_summary: "Three new offline Node ESM CLIs following E0's tools/<name>/cli.mjs verb-dispatch convention — tools/review-record/, tools/release-sign/, tools/retro-validate/ — built on P1's unified schema contracts (canonical review-record model, reviewer roster, release-manifest signature slot, releases/registry.json). All signature/approver slots ship schema-forced empty; the anemia browser path's SPIKE-006 posture is untouched."
 related_documents:
   - docs/project_plans/PRDs/infrastructure/evidence-foundry-e1-v1.md
@@ -180,7 +180,7 @@ ledger)
 - **ADRs**: ADR-0004 / ADR-0005 / ADR-0006 — all `proposed`, none accepted (gate G0)
 
 **Complexity**: Large (three parallel workstreams over one contract phase; zero clinical release)
-**Total Estimated Effort**: 34 pts
+**Total Estimated Effort**: 35 pts (task-level sum; decisions block H4 floor = 34)
 **Provider**: `claude` for every task — offline deterministic governance tooling, no UI beyond a
 static render, no web research, no image generation (decisions block §6).
 
@@ -231,8 +231,8 @@ block the others' review.
 
 ### Critical Path
 
-**P1 → max(P2, P3, P4) → P5** = 5 + 8 + 5 = **18 pts of serialized depth** against 34 total. P2, P3,
-and P4 are each 8 pts, so all three lanes are co-critical; any one slipping delays P5.
+**P1 → max(P2, P3, P4) → P5** = 5 + 9 + 5 = **19 pts of serialized depth** against 35 total. P2 and P3
+are 8 pts and P4 is 9 pts, so all three lanes are co-critical; any one slipping delays P5.
 
 ### Phase Summary
 
@@ -241,9 +241,9 @@ and P4 are each 8 pts, so all three lanes are co-critical; any one slipping dela
 | 1 | Contracts & Gates | 5 pts | backend-architect (design, integration owner), general-purpose (build); task-completion-validator gate; **karen milestone review (P1 exit)** | sonnet | claude | — | R5 model unification lands here, before any machinery; seam task P1-T7 |
 | 2 | Review workflow machinery | 8 pts | general-purpose (Node CLI), documentation-writer (banner copy); task-completion-validator gate | sonnet | claude | — | Parallel wave 2; includes FR-8 static render + R-P4 smoke (P2-T7) |
 | 3 | Signed release machinery | 8 pts | general-purpose (Node crypto); task-completion-validator gate | sonnet | claude | — | Parallel wave 2; `extended` effort on crypto/determinism tasks; owns the sole post-P1 validate-kb.mjs change (P3-T6 seam) |
-| 4 | Retrospective validation harness | 8 pts | general-purpose (harness), spike-writer (charter); task-completion-validator gate | sonnet | claude | — | Parallel wave 2; fixtures-only, boundary schema-enforced; SPIKE-007 charter authored here |
+| 4 | Retrospective validation harness | 9 pts | general-purpose (harness), spike-writer (charter); task-completion-validator gate | sonnet | claude | — | Parallel wave 2; fixtures-only, boundary schema-enforced; SPIKE-007 charter authored here |
 | 5 | Integration, honesty audit, docs | 5 pts | general-purpose (integration), documentation-writer (docs/specs); task-completion-validator gate; **karen feature-end review** | sonnet (haiku for CHANGELOG/pointer tasks) | claude | — | Cross-workstream dry-run is the R-P3 join seam; deferred-items table sealed here |
-| **Total** | — | **34 pts** | — | — | — | — | Matches decisions block §4 exactly; treat 34 as the floor (H4) |
+| **Total** | — | **35 pts** | — | — | — | — | Task-level sum (P4 table sums to 9); decisions block §4 estimated 34 — treat 34 as the floor (H4) |
 
 **Model column conventions**: Claude-only throughout; Phase 5 lists both models because CHANGELOG/
 frontmatter mechanics route to haiku and design-spec/audit work to sonnet (per-task `Model` column in
@@ -505,7 +505,7 @@ Vocabulary). Claude only; Effort values are `adaptive` | `extended` exclusively.
 - **Effort**: `adaptive` default; `extended` on the risk-hotspot tasks — P1-T1 (contract
   unification design, the R5 call), P2-T3 (append-only enforcement), P3-T1/T2/T3 (crypto +
   determinism, correctness over speed per decisions block §6), P4-T3 (pinned deterministic replay).
-- **Provider**: `claude` for all 34 pts — offline deterministic tooling, no external routing.
+- **Provider**: `claude` for all 35 pts — offline deterministic tooling, no external routing.
 - **Reviewers**: `task-completion-validator` (sonnet) per phase; `karen` (sonnet) at the P1-exit
   milestone and feature end (Tier 3 cadence, decisions block §2). Phase quality gate everywhere =
   `npm run check` green + task-completion-validator pass.
