@@ -250,12 +250,16 @@ test('manifest verb fails closed (UsageError) when --pack has no release-manifes
 });
 
 // =================================================================================================
-// register / sign / verify are scaffolded (dispatchable) but not yet implemented — P3-T2..T4
+// register/verify remain scaffolded (dispatchable) but not yet implemented — P3-T3/T4. `sign` was
+// implemented in P3-T2: calling it with no options now fails closed with its own UsageError
+// (missing --candidate) rather than the P3-T1-era NotImplementedError stub — updated here because
+// P3-T2 depends on, and supersedes, this scaffold-only assertion. See
+// tests/ef-release-sign-verify.test.mjs for `sign`'s own full P3-T2 acceptance-criteria coverage.
 // =================================================================================================
 
-test('register/sign/verify verbs are dispatchable but currently fail closed with NotImplementedError (P3-T2/T3/T4 scaffold)', async () => {
+test('register/verify verbs are dispatchable but currently fail closed with NotImplementedError (P3-T3/T4 scaffold); sign is implemented (P3-T2) and fails closed with its own UsageError on missing args', async () => {
   await assert.rejects(() => runRegister({}), NotImplementedError);
-  await assert.rejects(() => runSign({}), NotImplementedError);
+  await assert.rejects(() => runSign({}), UsageError);
   await assert.rejects(() => runVerify({}), NotImplementedError);
 });
 

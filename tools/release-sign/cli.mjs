@@ -14,8 +14,8 @@
 //   register  — append a release candidate to the append-only releases/registry.json. (P3-T4, not
 //               yet implemented — this verb currently fails closed with a NotImplementedError)
 //   sign      — detached Ed25519 signature over the manifest digest, human-offline by design; a
-//               --dry-run mode is the only path any automated check may exercise (OQ-6). (P3-T2,
-//               not yet implemented — this verb currently fails closed with a NotImplementedError)
+//               --dry-run mode is the only path any automated check may exercise (OQ-6).
+//               (Implemented P3-T2.)
 //   verify    — fail-closed structural + cryptographic verification of a signed/dry-run candidate
 //               against the registry (FR-13). (P3-T3, not yet implemented — this verb currently
 //               fails closed with a NotImplementedError)
@@ -54,10 +54,13 @@ Verbs:
   register --candidate <manifest digest output> --registry releases/registry.json
       Append a release candidate to the append-only registry. (P3-T4, not yet implemented)
 
-  sign --candidate <manifest digest output> [--dry-run] [--key <path>]
-      Detached Ed25519 signature over the manifest digest. Designed for human offline execution;
-      --dry-run is the only mode any automated check may invoke (OQ-6). (P3-T2, not yet
-      implemented)
+  sign --candidate <pack dir with release-manifest.unsigned.json> --dry-run \
+       [--key-id <label>] [--out <path>] [--out-public-key <path>]
+  sign --candidate <pack dir with release-manifest.unsigned.json> \
+       --key <path outside repo> --key-id <id> [--out <path>] [--out-public-key <path>]
+      Detached Ed25519 signature over the manifest digest. Designed for human offline execution
+      (real mode, gate G2, never exercised by any automated check); --dry-run (ephemeral in-memory
+      keypair, TESTKEY-forced keyId) is the only mode any automated check may invoke (OQ-6).
 
   verify --candidate <manifest> --registry releases/registry.json
       Fail-closed verification against a documented exit-code taxonomy (FR-13). (P3-T3, not yet
