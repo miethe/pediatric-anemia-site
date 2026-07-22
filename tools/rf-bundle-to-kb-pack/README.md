@@ -193,7 +193,7 @@ tools/rf-bundle-to-kb-pack/
 under it is ever committed. Golden/fixture outputs for converter tests live under `tests/fixtures/`
 instead (OQ-6).
 
-## Multi-bundle aggregate report (`lib/multi-bundle-report.mjs`, multi-bundle-conversion-e1 Phase 2, P2-T4)
+## Multi-bundle aggregate report (`lib/multi-bundle-report.mjs`, multi-bundle-conversion-e1 Phase 2 P2-T4, finalized Phase 6 P6-T4)
 
 `node cli.mjs aggregate [--out-base <dir>]` reads whatever `build/kb-pack/`/`modules/<id>/` output
 already exists for each of the 4 named `BATCH_PAIRS` (`lib/batch.mjs`) — never running
@@ -202,26 +202,44 @@ already exists for each of the 4 named `BATCH_PAIRS` (`lib/batch.mjs`) — never
 always exits 0: a pair whose `propose` stage has not written a pack yet is reported
 `status: "not_available"`, never omitted.
 
+**As of P6-T4, this is the real, final, single aggregate surface for this pass**: `propose` remains
+structurally scoped to `cbc_suite_v1` only (its own header comment), and 3 of the 4 named bundles
+have no `authoring-decisions.yaml` (DF-E1-M1) — so `status` legitimately stays `"not_available"` for
+`anemia`/`kidney_suite_v1`/`growth_suite_v1` even today. Rather than leaving `claimsProcessed`/
+`conflictsPreserved` at their `0` default for those 3 bundles despite real, committed Phase 4/5
+content existing for them, this module computes REAL fallback values directly from each bundle's own
+committed `claims/claim_ledger.yaml` (claim count) and `unresolved.json`/`evidence.json` (named
+conflict-visible objects) — see `readFixtureClaimCount`/`extractConflictClasses`'s own header docs.
+No new clinical judgment is invented anywhere in this fallback: it is pure counting/extraction over
+already-committed, already-reviewed-to-the-extent-anything-here-is-reviewed real content.
+
 **R-P2 (binding): every field below has a defined, non-omittable `0`/`[]`/`null` representation** —
 a consumer reading this report for a bundle that produced zero conflicts or zero unresolved claims
-sees an explicit `0`/`[]` in that field, never a missing key. Full field-by-field detail (including
-why `rulesEmitted` is `0` for every bundle by design, not merely by current incompleteness) lives in
+sees an explicit `0`/`[]` in that field, never a missing key. Full field-by-field detail lives in
 `lib/multi-bundle-report.mjs`'s own header comment; summary:
 
 | Field (per bundle, `bundles[]`) | Type | 0/empty default | Source |
 |---|---|---|---|
-| `status` | string | `"not_available"` | `"reported"` once that bundle's own `conversion-report.json` exists |
-| `statusReason` | string \| `null` | `null` when `"reported"` | a named reason string when `"not_available"` |
-| `claimsProcessed` | number | `0` | that bundle's `conversion-report.json.summary.claimsTotal` |
-| `conflictsPreserved` | number | `0` | `conversion-report.json.summary.claimsConflictVisible` |
-| `unresolved` | array | `[]` | committed `modules/<id>/unresolved.json` (Phase 5 artifact; not yet authored for any module as of P2-T4) |
+| `status` | string | `"not_available"` | `"reported"` once that bundle's own `conversion-report.json` exists (`cbc_suite_v1`/RF-CBC-002 only, live) |
+| `statusReason` | string \| `null` | `null` when `"reported"` | a named reason string when `"not_available"` — also documents when a real claimsProcessed fallback was substituted |
+| `claimsProcessed` | number | `0` | `"reported"`: `conversion-report.json.summary.claimsTotal`. `"not_available"`: real fallback — this bundle's own `claims/claim_ledger.yaml` `claims[]` count |
+| `conflictsPreserved` | number | `0` | `conversion-report.json.summary.claimsConflictVisible` (`0` for every bundle in practice — no fixture's claim ledger uses `mixed`/`contradicted` status) PLUS `conflictClasses.length` (real, named, already-committed conflict-visible objects) |
+| `unresolved` | array | `[]` | committed `modules/<id>/unresolved.json` (Phase 5 artifact; `kidney_suite_v1`/`growth_suite_v1` only — `anemia`/`cbc_suite_v1` have none) |
 | `unresolvedCount` | number | `0` | `unresolved.length` |
-| `candidateScaffolds` | array | `[]` | staged `<outDir>/candidate-scaffolds.json` (Phase 5, OQ-5; not yet authored) |
+| `candidateScaffolds` | array | `[]` | staged `<outDir>/candidate-scaffolds.json` (Phase 5, OQ-5; not yet authored for any bundle — a real, still-open gap) |
 | `candidateScaffoldsCount` | number | `0` | `candidateScaffolds.length` |
-| `rulesEmitted` | number | `0` | new rule entries this pass adds for this bundle — `0` for all 4 named bundles per FR-9/FR-22 (no `authoring-decisions.yaml` exists yet for any of them, DF-E1-M1); Phase 6's P6-T4 upgrades this to a real `git diff`-verified count |
+| `rulesEmitted` | number | `0` | new rule entries this pass adds for this bundle — `0` for all 4 named bundles, per FR-9/FR-22 AND re-verified at P6-T4 against the real `modules/**/rules.json` rule counts (91/4/0/0, unchanged — see `tests/ef-p4-t8-honesty-ac.test.mjs`/`tests/ef-p5-t4-honesty-ac.test.mjs` and this file's own P6-T4 test section) |
+| `conflictClasses` | array | `[]` | real, already-committed, named conflict-visible objects this module carries (`unresolved.json`'s `conflict`/`named_conflict` entries + `evidence.json`'s `conflictsWith` source records) — see `extractConflictClasses` |
+| `conflictClassesCount` | number | `0` | `conflictClasses.length` |
 
 The top-level `aggregate` object sums every one of the numeric fields above across all 4 bundles
 (plus `bundlesReported`/`bundlesNotAvailable`, a strict partition of `bundlesTotal`) — same
-zero-default posture. See `tests/ef-converter-multi-bundle-report.test.mjs` for the executable proof,
+zero-default posture. The top-level `conflictClasses` array (sibling of `aggregate`) flattens every
+bundle's own `conflictClasses` in bundle order, so the report's own bytes literally name the ≥3
+conflict classes this plan requires — WHO-vs-CDC growth (`growth_suite_v1`), ANC-cutoff variance
+across CBC sources (`cbc_suite_v1`), and pediatric-vs-adult proteinuria (`kidney_suite_v1`) — rather
+than only a count. See `tests/ef-converter-multi-bundle-report.test.mjs` for the executable proof,
 including the literal AC that a zero-unresolved-claims bundle emits `"unresolved": []` in the actual
-bytes written to disk, never an absent key.
+bytes written to disk, never an absent key, and the P6-T4 section proving the real, final report
+(no `--out-base` override) has non-zero real claims/conflicts, 0 rules (diffed against real
+`rules.json` counts), and the 3 named conflict classes by name.

@@ -28,7 +28,10 @@ import {
   buildBundleReportSection,
   buildMultiBundleConversionReport,
   collectBundleReportSections,
+  extractConflictClasses,
   readBundleConversionReport,
+  readEvidenceSources,
+  readFixtureClaimCount,
   readOptionalJsonArray,
   run as runAggregate,
 } from '../tools/rf-bundle-to-kb-pack/lib/multi-bundle-report.mjs';
@@ -70,9 +73,9 @@ test('P2-T4: buildBundleReportSection emits exactly the documented per-bundle ke
     moduleId: 'anemia',
   });
   assert.deepEqual(Object.keys(section).sort(), [
-    'candidateScaffolds', 'candidateScaffoldsCount', 'claimsProcessed', 'conflictsPreserved',
-    'fixture', 'module', 'moduleId', 'pairIndex', 'rulesEmitted', 'status', 'statusReason',
-    'unresolved', 'unresolvedCount',
+    'candidateScaffolds', 'candidateScaffoldsCount', 'claimsProcessed', 'conflictClasses',
+    'conflictClassesCount', 'conflictsPreserved', 'fixture', 'module', 'moduleId', 'pairIndex',
+    'rulesEmitted', 'status', 'statusReason', 'unresolved', 'unresolvedCount',
   ]);
 });
 
@@ -152,12 +155,15 @@ test('P2-T4: buildMultiBundleConversionReport emits exactly the documented top-l
       buildBundleReportSection({ pairIndex: 0, fixture: 'f0', module: 'm0', moduleId: 'm0' }),
     ],
   });
-  assert.deepEqual(Object.keys(report).sort(), ['aggregate', 'bundles', 'bundlesTotal', 'reportKind', 'schemaVersion']);
+  assert.deepEqual(
+    Object.keys(report).sort(),
+    ['aggregate', 'bundles', 'bundlesTotal', 'conflictClasses', 'reportKind', 'schemaVersion'],
+  );
   assert.equal(report.schemaVersion, '1.0');
   assert.equal(report.reportKind, 'multi-bundle-conversion-report');
   assert.deepEqual(Object.keys(report.aggregate).sort(), [
     'bundlesNotAvailable', 'bundlesReported', 'candidateScaffoldsCount', 'claimsProcessed',
-    'conflictsPreserved', 'rulesEmitted', 'unresolvedCount',
+    'conflictClassesCount', 'conflictsPreserved', 'rulesEmitted', 'unresolvedCount',
   ]);
 });
 
@@ -189,6 +195,8 @@ test('P2-T4: buildMultiBundleConversionReport aggregate is a strict partition (r
   assert.equal(report.aggregate.unresolvedCount, 1);
   assert.equal(report.aggregate.candidateScaffoldsCount, 2);
   assert.equal(report.aggregate.rulesEmitted, 0);
+  assert.equal(report.aggregate.conflictClassesCount, 0);
+  assert.deepEqual(report.conflictClasses, []);
 });
 
 test('P2-T4: buildMultiBundleConversionReport over zero bundles still emits explicit 0 aggregate counts and an empty bundles array, never absent keys', () => {
@@ -203,7 +211,9 @@ test('P2-T4: buildMultiBundleConversionReport over zero bundles still emits expl
     unresolvedCount: 0,
     candidateScaffoldsCount: 0,
     rulesEmitted: 0,
+    conflictClassesCount: 0,
   });
+  assert.deepEqual(report.conflictClasses, []);
 });
 
 test('P2-T4: buildMultiBundleConversionReport is a pure function (no I/O, deterministic given identical inputs)', () => {
@@ -292,7 +302,7 @@ test('P2-T4: readOptionalJsonArray returns [] (fails soft) for malformed JSON or
 // 4. collectBundleReportSections — read-only rollup over the real, named BATCH_PAIRS
 // =================================================================================================
 
-test('P2-T4: collectBundleReportSections against a fresh outBaseDir returns exactly 4 sections, all not_available, every conversion-report-derived count at its 0/[] default', async () => {
+test('P6-T4: collectBundleReportSections against a fresh outBaseDir returns exactly 4 sections, all not_available (propose never ran against THIS scratch outBaseDir), but claimsProcessed/conflictsPreserved reflect REAL, committed Phase 4/5 module/fixture data via the P6-T4 fallback', async () => {
   const scratch = await makeScratchDir('fresh-collect');
   try {
     const sections = await collectBundleReportSections({ outBaseDir: scratch });
@@ -301,24 +311,67 @@ test('P2-T4: collectBundleReportSections against a fresh outBaseDir returns exac
       sections.map((s) => ({ fixture: s.fixture, module: s.module })),
       BATCH_PAIRS.map(({ fixture, module }) => ({ fixture, module })),
     );
+
+    // Real, independently-verified claim-ledger counts for each of the 4 named fixtures (each
+    // bundle's own `claims/claim_ledger.yaml` -- a literal count of that YAML file's `claims[]`
+    // array, re-confirmed against the real, committed fixtures at authoring time; see this test's
+    // own cross-check against `readFixtureClaimCount` immediately below, which is the SAME
+    // function `collectBundleReportSections` itself calls, so this is a real integration proof,
+    // not merely a re-assertion of the module's own internal computation).
+    const EXPECTED_CLAIMS_PROCESSED = Object.freeze({
+      anemia: 48,
+      cbc_suite_v1: 88,
+      kidney_suite_v1: 87,
+      growth_suite_v1: 92,
+    });
+    // Real, committed named-conflict-class counts per module (P6-T4; see
+    // `extractConflictClasses`'s own header doc): `unresolved.json` conflict-object entries PLUS
+    // `evidence.json` `conflictsWith` source records. `anemia` carries neither (0, real and
+    // honest -- RF-EV-001's backfill introduced no conflict-visible content).
+    const EXPECTED_CONFLICT_CLASSES_COUNT = Object.freeze({
+      anemia: 0,
+      cbc_suite_v1: 3,
+      kidney_suite_v1: 4,
+      growth_suite_v1: 4,
+    });
+
     for (const section of sections) {
       // `outBaseDir` is a fresh scratch directory, so `propose` has never written a
-      // conversion-report.json for ANY pair here -- every section is "not_available" with every
-      // conversion-report-derived count at its 0 default, regardless of what each module's own
-      // COMMITTED `unresolved.json`/`candidate-scaffolds.json` state is (those are read from the
-      // real repo module dir, not from `outBaseDir` -- see multi-bundle-report.mjs's own
-      // `collectBundleReportSections`).
+      // conversion-report.json for ANY pair here -- `status` stays "not_available" for all 4 (this
+      // is unchanged by P6-T4 -- `propose.mjs` remains structurally scoped to `cbc_suite_v1` only,
+      // and `status` continues to reflect whether a LIVE propose pack exists for THIS outBaseDir).
       assert.equal(section.status, 'not_available');
-      assert.equal(section.claimsProcessed, 0);
-      assert.equal(section.conflictsPreserved, 0);
+
+      // P6-T4: claimsProcessed/conflictsPreserved are NOW real, non-zero, Phase 4/5-derived values
+      // -- computed directly from this bundle's own committed fixture/module content, independent
+      // of `outBaseDir` (which is why a completely fresh scratch dir still yields real counts).
+      assert.equal(
+        section.claimsProcessed,
+        EXPECTED_CLAIMS_PROCESSED[section.moduleId],
+        `${section.moduleId}: claimsProcessed must equal the real, committed claim_ledger.yaml count`,
+      );
+      const fixtureDir = path.join(REPO_ROOT, section.fixture);
+      const liveClaimCount = await readFixtureClaimCount(fixtureDir);
+      assert.equal(section.claimsProcessed, liveClaimCount, `${section.moduleId}: claimsProcessed must match a fresh readFixtureClaimCount() call over the same real fixture`);
+
+      assert.equal(
+        section.conflictClassesCount,
+        EXPECTED_CONFLICT_CLASSES_COUNT[section.moduleId],
+        `${section.moduleId}: conflictClassesCount must equal the real, committed conflict-object count`,
+      );
+      // conflictsPreserved === conflictClassesCount here specifically because no fixture's own
+      // claim_ledger.yaml carries a mixed/contradicted-status claim (confirmed at authoring time)
+      // -- the conversion-report.json-derived component of conflictsPreserved is always 0 for a
+      // "not_available" bundle, so the two fields coincide for all 4 bundles today.
+      assert.equal(section.conflictsPreserved, section.conflictClassesCount);
+
       // `unresolved`/`unresolvedCount` reflect whichever real, committed
       // `modules/<id>/unresolved.json` this pair's module actually carries today (R-P2: `[]` is
       // itself a legitimate value here, not a stand-in for "not yet implemented" -- Phase 5,
-      // P5-T1/P5-T2, may commit real, non-empty `unresolved.json` content for a bundle's module
-      // while that same bundle's own `propose` conversion-report.json still legitimately does not
-      // exist). Mirror whatever `readOptionalJsonArray` itself reads from that same real path,
-      // rather than hardcoding a blanket `[]` this task's own Phase 5 sibling rows are expected to
-      // outgrow.
+      // P5-T1/P5-T2, committed real, non-empty `unresolved.json` content for kidney_suite_v1/
+      // growth_suite_v1 while those bundles' own `propose` conversion-report.json still
+      // legitimately does not exist). Mirror whatever `readOptionalJsonArray` itself reads from
+      // that same real path, rather than hardcoding a blanket `[]`.
       const moduleDir = path.join(REPO_ROOT, section.module);
       const expectedUnresolved = await readOptionalJsonArray(path.join(moduleDir, 'unresolved.json'));
       assert.deepEqual(section.unresolved, expectedUnresolved);
@@ -328,8 +381,29 @@ test('P2-T4: collectBundleReportSections against a fresh outBaseDir returns exac
       // Phase 5 state.
       assert.deepEqual(section.candidateScaffolds, []);
       assert.equal(section.candidateScaffoldsCount, 0);
+      // rulesEmitted stays 0 -- this plan's own load-bearing honesty AC (P4-T8/P5-T4), re-verified
+      // separately below against modules/**/rules.json's real rule counts.
       assert.equal(section.rulesEmitted, 0);
     }
+
+    // R-P2/FR-11 binding AC (this task, P6-T4): at least 3 named conflict classes appear in the
+    // report, spanning the 3 conflict topics this plan names by name -- WHO-vs-CDC growth,
+    // ANC-cutoff variance (across CBC sources), pediatric-vs-adult proteinuria. Asserted against
+    // the actual conflictClasses content, not merely a count.
+    const allConflictClassNames = sections.flatMap((s) => s.conflictClasses.map((c) => c.name));
+    assert.ok(allConflictClassNames.length >= 3, `expected >=3 named conflict classes, got ${allConflictClassNames.length}`);
+    assert.ok(
+      allConflictClassNames.some((n) => typeof n === 'string' && /WHO.*CDC|CDC.*WHO/i.test(n)),
+      'expected a named WHO-vs-CDC growth-standard conflict class among growth_suite_v1\'s conflictClasses',
+    );
+    assert.ok(
+      allConflictClassNames.some((n) => typeof n === 'string' && /ANC breakpoint|neutropenia severity/i.test(n)),
+      'expected a named ANC-cutoff-variance conflict class among cbc_suite_v1\'s conflictClasses',
+    );
+    assert.ok(
+      allConflictClassNames.some((n) => typeof n === 'string' && /proteinuria/i.test(n)),
+      'expected a named pediatric-vs-adult proteinuria conflict class among kidney_suite_v1\'s conflictClasses',
+    );
   } finally {
     await rm(scratch, { recursive: true, force: true });
   }
@@ -405,4 +479,55 @@ test('P2-T4: aggregate verb run twice with no source changes is idempotent (byte
   } finally {
     await rm(scratch, { recursive: true, force: true });
   }
+});
+
+// =================================================================================================
+// 6. P6-T4 (FR-5 / Observability NFR): the FINAL aggregate report, produced by the real `aggregate`
+// CLI verb against the canonical `DEFAULT_OUT_BASE_DIR`, reflects real post-Phase-4/5 data -- the
+// rules-emitted field is demonstrated by diff against the real modules/**/rules.json rule counts,
+// not merely asserted; >=3 named conflict classes appear, by name.
+// =================================================================================================
+
+test('P6-T4: the real aggregate report (DEFAULT_OUT_BASE_DIR, no --out-base override) reflects real Phase 4/5 data -- non-zero claims/conflicts, 0 rules, >=3 named conflict classes', async () => {
+  const { result: exitCode } = await withCapturedStdout(() => runAggregate({}));
+  assert.equal(exitCode, EXIT_OK);
+
+  const reportPath = path.join(REPO_ROOT, 'build', 'kb-pack', MULTI_BUNDLE_REPORT_FILENAME);
+  const report = JSON.parse(await readFile(reportPath, 'utf8'));
+
+  assert.equal(report.bundlesTotal, 4);
+  assert.ok(report.aggregate.claimsProcessed > 0, 'aggregate claimsProcessed must be real and non-zero across the 4 bundles');
+  assert.ok(report.aggregate.conflictsPreserved >= 3, 'aggregate conflictsPreserved must be real, non-zero, and >= the 3 named conflict classes this plan requires');
+  assert.ok(report.conflictClasses.length >= 3);
+
+  // R-P2/FR-11 (this task's own binding AC, phase-5-6-7-projection-determinism-docs.md row P6-T4):
+  // >=3 named conflict classes across the 4 bundles -- WHO-vs-CDC growth, ANC-cutoff variance,
+  // pediatric-vs-adult proteinuria -- demonstrated by name, in the report's own bytes.
+  const names = report.conflictClasses.map((c) => c.name).filter((n) => typeof n === 'string');
+  assert.ok(names.some((n) => /WHO.*CDC|CDC.*WHO/i.test(n)), 'expected a named WHO-vs-CDC growth conflict class');
+  assert.ok(names.some((n) => /ANC breakpoint|neutropenia severity/i.test(n)), 'expected a named ANC-cutoff-variance conflict class');
+  assert.ok(names.some((n) => /proteinuria/i.test(n)), 'expected a named pediatric-vs-adult proteinuria conflict class');
+
+  // rulesEmitted MUST read 0 for every bundle and in aggregate -- demonstrated here by a REAL diff
+  // against each of the 4 modules' own committed rules.json rule counts (this is the single
+  // aggregate surface where the "zero new rules" claim is demonstrated by diff, matching this
+  // task's own binding text; the per-module diff/byte-identity proof itself is P4-T8's/P5-T4's own
+  // load-bearing test, `tests/ef-p4-t8-honesty-ac.test.mjs`/`tests/ef-p5-t4-honesty-ac.test.mjs`,
+  // re-confirmed green as part of this same `npm run check` run).
+  const EXPECTED_RULES_JSON_COUNT = Object.freeze({
+    anemia: 91,
+    cbc_suite_v1: 4,
+    kidney_suite_v1: 0,
+    growth_suite_v1: 0,
+  });
+  for (const bundle of report.bundles) {
+    assert.equal(bundle.rulesEmitted, 0, `${bundle.moduleId}: rulesEmitted must be 0`);
+    const rulesJson = JSON.parse(await readFile(path.join(REPO_ROOT, bundle.module, 'rules.json'), 'utf8'));
+    assert.equal(
+      rulesJson.length,
+      EXPECTED_RULES_JSON_COUNT[bundle.moduleId],
+      `${bundle.moduleId}: modules/${bundle.moduleId}/rules.json's real rule count must match its known, unchanged baseline (the actual diff evidence rulesEmitted: 0 stands for)`,
+    );
+  }
+  assert.equal(report.aggregate.rulesEmitted, 0);
 });
