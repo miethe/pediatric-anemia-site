@@ -847,12 +847,20 @@ async function walkJsFiles(dir) {
 // review-record store) -- that invariant is unchanged. P2-T6 adds a second, legitimate, and
 // entirely disjoint `writeFile` caller: `lib/verbs/render.mjs`, whose only write target is
 // `build/review-render/` (OQ-3, git-ignored) -- never `modules/`, never anything this tool's other
-// write-path guarantees are about (see `lib/verbs/render.mjs`'s own header). Any FUTURE writeFile
-// caller beyond these two named, narrow-purpose files is still exactly the kind of drift this test
-// exists to catch.
+// write-path guarantees are about (see `lib/verbs/render.mjs`'s own header). Clinical Review
+// Workflow v1 P2-T3 (FR-8/R9/F3) adds a THIRD, equally disjoint caller: `lib/validate-cache.mjs`,
+// whose only write target is its own persistent `validate` cache file, resolved via
+// `resolveCacheRootDir()` -- an OS temp/XDG cache directory that is, by construction, ALWAYS
+// OUTSIDE the repo working tree entirely (never `modules/`, never `build/`, never any path
+// `rootDir` names) and carries nothing but composite-key metadata plus already-derived violation
+// strings for four narrow per-record checks -- structurally incapable of setting `release-ready`,
+// or populating `approvedBy[]`/`clinicalApprovers[]`, exactly like the other two callers. Any
+// FUTURE writeFile caller beyond these three named, narrow-purpose files is still exactly the kind
+// of drift this test exists to catch.
 const ALLOWED_WRITE_FILE_CALLERS = Object.freeze([
   path.join('lib', 'store.mjs'),
   path.join('lib', 'verbs', 'render.mjs'),
+  path.join('lib', 'validate-cache.mjs'),
 ]);
 
 test('writeFile is called only from lib/store.mjs (modules/<id>/reviews/) and lib/verbs/render.mjs (build/review-render/) across the whole tool — no other write path (structural)', async () => {

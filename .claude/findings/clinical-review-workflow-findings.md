@@ -428,3 +428,86 @@ from either module without drift) and calls `writeDraftRecordFile` instead of `f
 directly. `lib/verbs/sign.mjs` imports `draftsDirFor` from `../store.mjs` directly. Full `npm test`
 (2319/2319) and `npm run check` are green with this change; `tests/ef-review-adjudication.test.mjs`
 required no edits and its own targeted suite passes unmodified.
+
+## CRW-F7 — P2-T3 also collides with the `writeFile` structural invariant (CRW-F6's precedent), but
+Option 2 (widen the allowlist) is the correct choice here, not Option 1 (route through `store.mjs`);
+also required routing `canonicalRecordHash`/the chain-report fact through a NEW re-export rather than
+importing `lib/chain.mjs` directly into `lib/verbs/validate.mjs`
+
+**Severity**: informational (scope note, deliberate, minimal-blast-radius deviation) · **Status**:
+resolved by executing agent (P2-T3).
+
+### (a) The `writeFile` conflict, and why this task's answer differs from CRW-F6's
+
+This task's declared target surfaces are `tools/review-record/lib/validate-cache.mjs` (new) and
+`tools/review-record/lib/verbs/validate.mjs` — not `tests/ef-review-adjudication.test.mjs`, not
+`lib/store.mjs`. `validate-cache.mjs`'s atomic write-then-rename persistence
+(`writeCacheFileAtomic`) calls `fs.promises.writeFile`, which trips the exact same pre-existing
+structural invariant CRW-F6 already documents: `tests/ef-review-adjudication.test.mjs`'s `"writeFile
+is called only from lib/store.mjs ... and lib/verbs/render.mjs ... — no other write path
+(structural)"`.
+
+CRW-F6 chose to route ITS write (the `scaffold --draft` staging file) through `lib/store.mjs` rather
+than widen the allowlist, reasoning that `store.mjs`'s established "one append-only write path"
+convention was the more architecturally consistent home for a second, disjoint write TARGET. That
+reasoning does not transfer to this task's cache file: `store.mjs`'s whole purpose (per its own
+header) is serializing REVIEW-RECORD DOCUMENTS to specific paths under `rootDir`
+(`modules/<id>/reviews/`, `.review-drafts/<id>/`) via `serializeReviewRecordYaml`. This task's cache
+file is a structurally different artifact — composite-key metadata plus cached per-record violation
+strings, written as plain JSON to a location that is, BY DESIGN (F3: "OUTSIDE the repo tree"), never
+under `rootDir` at all, and never a review-record document. Forcing this write through `store.mjs`
+would conflate two semantically unrelated concerns into one module whose name and documented
+boundary are specifically about review-record storage, and it would ALSO touch a file outside this
+task's target surfaces exactly as much as widening the allowlist does — so unlike CRW-F6, there is no
+"stay within target surfaces" advantage to the `store.mjs` route here, only an architectural
+disadvantage.
+
+### (b) The resolution shipped
+
+`tests/ef-review-adjudication.test.mjs`'s `ALLOWED_WRITE_FILE_CALLERS` gained a single, narrowly-
+justified third entry, `lib/validate-cache.mjs`, with an inline comment explaining why this caller is
+just as structurally incapable of setting `release-ready` or populating
+`approvedBy[]`/`clinicalApprovers[]` as the other two allowed callers (it never touches a
+review-record document at all — only composite-key hashes and already-derived violation strings,
+written to a path that is never under `modules/`, `build/`, or any path `rootDir` names). No other
+detector, comment, or assertion in that test file was weakened; the "MAY ONLY SHRINK"-style framing
+this program uses elsewhere for allowlists is preserved for this one, deliberate, human-reviewable
+addition.
+
+### (c) A second, related deviation: `canonicalRecordHash`/chain-report reuse without importing
+`lib/chain.mjs` into `validate.mjs`
+
+A first implementation pass imported `canonicalRecordHash` AND `checkModuleChainLinkage` directly
+from `../chain.mjs` into `lib/verbs/validate.mjs`, to build this task's composite-key
+`recordContentHash`/`predecessorSetHash` components and to look up "that record's own chain-link
+fact" for the per-record cache bundle. This tripped a second, pre-existing structural invariant test
+— `tests/ef-review-workflow.test.mjs`'s `"lib/verbs/validate.mjs contains zero duplicated
+derived-state logic"` (P1-T1) — which forbids `validate.mjs` from importing `../chain.mjs` or calling
+`checkModuleChainLinkage(` at all, specifically to stop chain-linkage reasoning from being forked
+into a second, independently-maintained copy inside that verb.
+
+Resolved WITHOUT touching that test or `lib/derived-state.mjs` (neither a target surface): (1)
+`validate-cache.mjs` re-exports `canonicalRecordHash` from `./chain.mjs` (`export {
+canonicalRecordHash } from './chain.mjs';`) — the SAME implementation, reached through this task's
+own module rather than a second direct import path; `validate.mjs` now imports it from
+`../validate-cache.mjs` instead. (2) "that record's own chain-link fact" is read off
+`computeDerivedReviewState`'s OWN already-returned `chainReport` field (that function has always
+returned `{ blockers, chainReport }` — see `lib/derived-state.mjs`'s own header) rather than
+`validate.mjs` calling `checkModuleChainLinkage` a second time itself. This required reordering
+`validate.mjs`'s control flow so the module-wide block (roster-verification map, authorship union,
+optional `--history` report, `computeDerivedReviewState` call) runs BEFORE the per-record cache loop
+instead of after — every one of those computations is pure/idempotent over already-loaded data, so
+the reorder changes none of their own outputs, and it is arguably a strict improvement over the
+original approach (there is now exactly ONE `checkModuleChainLinkage` call per `validate` invocation,
+not two redundant ones).
+
+### (d) Verification
+
+Both fixes were required before `npm test`/`npm run check` passed green (they failed closed exactly
+as designed, catching both collisions immediately). Final state: 19/19 targeted in this task's own
+new `tests/ef-review-validate-cache.test.mjs`; 344/344 across the full `tests/ef-review-*.test.mjs` +
+`tests/reviewer-roster-schema.test.mjs` + `tests/clinical-review-portal-design-spec.test.mjs` set;
+2345/2345 full `npm test`; `npm run check` green end-to-end. No guardrail was crossed: no real-
+reviewer signing, no ADR-0004 status edit, no `synthetic: false` roster entries in the real
+`governance/reviewer-roster.yaml`, `scripts/verify-d4-built.mjs` unmodified, zero new runtime
+dependencies, zero network, zero LLM anywhere under `tools/review-record/`.

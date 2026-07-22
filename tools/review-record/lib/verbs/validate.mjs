@@ -8,8 +8,9 @@
 //   - P2-T3 (this task): the two-layer FR-9/OQ-2 append-only enforcement —
 //     (a) `previousRecordHash` chain recomputation, ALWAYS run (reuses `lib/chain.mjs`'s
 //     `checkModuleChainLinkage`, the exact same structured, deterministic report `list` already
-//     prints informationally — this task turns that same report into a fail-closed enforcement
-//     input rather than reimplementing chain recomputation a second way); and
+//     prints informationally, via `computeDerivedReviewState`'s own returned `chainReport` — see
+//     this file's P2-T3 addendum below for why this verb never imports `lib/chain.mjs` directly);
+//     and
 //     (b) `validate --history`, an OPT-IN git-history append-only check (`lib/history.mjs`) that
 //     rejects any commit-visible mutation/deletion of an existing `modules/<id>/reviews/*.yaml`
 //     path. Both layers report every violation they find (not just the first) into the same
@@ -45,6 +46,61 @@
 // tooling (layer (a) alone already gives the primary fail-closed guarantee for a module's own
 // internal consistency). Collects every violation found (does not stop at the first) and fails
 // closed with `ValidationFailedError` if the collected list is non-empty.
+//
+// --- P2-T3 addendum (Clinical Review Workflow v1, Phase 2, FR-8/R9/F3): incremental per-record
+// caching. This verb's four PER-RECORD checks -- schema shape, D-4 roster resolution, Ed25519
+// signature verification, and this record's own `previousRecordHash` chain-link fact -- are now
+// consulted against a PERSISTENT, composite-keyed cache (`../validate-cache.mjs`) before being
+// recomputed. `computePerRecordResult` below is the ONE place all four are actually computed; a
+// cache HIT (every one of the six composite-key components matches a prior invocation's stored
+// entry -- see `validate-cache.mjs`'s own header for what those six are) skips calling it entirely
+// and reuses the stored `RecordCacheResult` verbatim. A cache MISS (any component differs, no
+// entry exists, or the persistent store is absent/corrupt/foreign-shaped) always recomputes fresh
+// and writes the new result back.
+//
+// This verb NEVER imports `lib/chain.mjs` directly (an existing structural invariant,
+// `tests/ef-review-workflow.test.mjs`'s "validate.mjs contains zero duplicated derived-state
+// logic," P1-T1 — chain-linkage/independence/authorship-union reasoning must live SOLELY in
+// `lib/derived-state.mjs`, never forked into a second, independently-maintained copy here).
+// Concretely, that means:
+//   - `canonicalRecordHash` (needed for this task's own `recordContentHash`/`predecessorSetHash`
+//     composite-key components) is imported from `../validate-cache.mjs`, which re-exports it from
+//     `../chain.mjs` — the SAME implementation, reached through an indirection that keeps this
+//     file's own source free of a direct `../chain.mjs` import.
+//   - "that record's own chain-link fact" (the fourth per-record cache field) is read off
+//     `computeDerivedReviewState`'s OWN already-returned `chainReport` (that function has always
+//     returned it, alongside `blockers` — see `lib/derived-state.mjs`'s own header) rather than
+//     this verb calling `checkModuleChainLinkage` a second time itself. This means
+//     `computeDerivedReviewState` is now called ONCE, BEFORE the per-record loop below (its inputs
+//     — the module-wide roster-verification map, authorship union, and optional history report —
+//     are therefore also computed earlier than in prior revisions of this file; none of that
+//     reordering changes any of their own outputs, since every one of them is a pure/idempotent
+//     computation over already-loaded data).
+//
+// The record's own chain-link fact is STORED in the per-record cache (`result.chainViolation`) for
+// fidelity with this task's own per-record-cache-eligible list, but is deliberately NEVER pushed
+// into `violations` from the per-record loop below -- chain-linkage ENFORCEMENT stays exactly
+// where P1-T1 put it: unconditional, module-wide, via `derived.blockers` (computed once, over the
+// FULL `allRecords` set), regardless of `--record` narrowing or any per-record cache state. This is
+// not an oversight; it is required to avoid regressing an existing, still-binding behavior:
+// `tests/ef-review-appendonly.test.mjs`'s "validate --record on ONE record of a broken chain still
+// fails on the chain break (module-wide, not record-scoped)" already fixes that chain-linkage is
+// checked over the WHOLE module regardless of `--record`, and this task must not narrow that.
+//
+// Module-wide checks -- FR-4 reviewer-2 independence, PRD OQ-5 authorship-union / FR-5 adjudicator-
+// authorship, FR-6 release-authorization validity, and (per the above) chain-linkage itself -- are
+// NEVER cache-eligible (R9): none of them are a fact about any ONE record in isolation (a pairwise
+// comparison, a git-authorship union, an aggregate completeness policy, a whole-sequence linkage
+// walk), so `computeDerivedReviewState` is always recomputed, every invocation, regardless of the
+// per-record cache state above.
+//
+// The cache is a PERSISTENT store OUTSIDE the repo tree (OS temp/XDG cache dir,
+// `../validate-cache.mjs`'s `resolveCacheRootDir`), keyed by `{root, moduleId}`, so warmth survives
+// across separate `node` CLI processes -- not merely within one process's lifetime. A cache WRITE
+// failure (e.g. an unavailable or read-only cache directory) is caught and ignored: it degrades this
+// run's warmth for a FUTURE process, never turns an otherwise-successful/otherwise-correctly-failing
+// `validate` invocation into something else. A cache READ failure/absence already degrades safely to
+// "recompute everything" inside `validate-cache.mjs` itself (fail-closed by construction there).
 
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -52,11 +108,21 @@ import { fileURLToPath } from 'node:url';
 
 import { validate as validateAgainstSchema } from '../../../../scripts/lib/json-schema-lite.mjs';
 import { listModuleReviewRecords } from '../store.mjs';
-import { loadRosterIndex, resolveReviewer } from '../roster.mjs';
+import { loadRosterIndex, resolveReviewer, rosterFilePathFor } from '../roster.mjs';
 import { checkAppendOnlyHistory } from '../history.mjs';
 import { computeAuthorshipUnion } from '../adjudication.mjs';
 import { verifyRecordSignature } from '../signature.mjs';
 import { computeDerivedReviewState } from '../derived-state.mjs';
+import {
+  VALIDATOR_POLICY_VERSION,
+  canonicalRecordHash,
+  getCachedRecordResult,
+  hashFileIfExists,
+  hashPredecessorSet,
+  readCacheFile,
+  setCachedRecordResult,
+  writeCacheFileAtomic,
+} from '../validate-cache.mjs';
 import { EXIT_OK, UsageError, ValidationFailedError } from '../errors.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -68,7 +134,53 @@ async function loadSchema() {
 }
 
 /**
- * @param {{ module?: string, root?: string, record?: string }} options
+ * Computes the four PER-RECORD facts this verb's cache tracks -- schema shape, D-4 roster
+ * resolution, Ed25519 signature verification, and this record's own chain-link fact (read off
+ * `computeDerivedReviewState`'s already-computed `chainReport`, never recomputed here) -- for
+ * exactly ONE record. The ONLY place any of these four checks is actually performed; every caller
+ * (a cache MISS in `run` below) routes through here rather than re-deriving any of these checks a
+ * second way.
+ *
+ * @param {{ reviewId: string, record: object }} entry
+ * @param {object} schema the parsed `schemas/review-record.schema.json` document
+ * @param {Map<string, object>} rosterIndex
+ * @param {string} moduleId
+ * @param {Map<string, { reviewId: string, ok: boolean, reason?: string }>} chainReportByReviewId
+ *   built from `computeDerivedReviewState(...).chainReport` — see this file's P2-T3 addendum.
+ * @returns {{ schemaViolations: string[], rosterViolation: string|null, signatureViolation: string|null, chainViolation: string|null }}
+ */
+function computePerRecordResult(entry, schema, rosterIndex, moduleId, chainReportByReviewId) {
+  const schemaViolations = [];
+  for (const schemaError of validateAgainstSchema(schema, entry.record)) {
+    schemaViolations.push(`${entry.reviewId}: schema ${schemaError.path}: ${schemaError.message}`);
+  }
+
+  let rosterViolation = null;
+  const reviewerId = entry.record?.reviewerId;
+  if (typeof reviewerId === 'string') {
+    try {
+      resolveReviewer(rosterIndex, reviewerId, moduleId);
+    } catch (err) {
+      rosterViolation = `${entry.reviewId}: ${err.message}`;
+    }
+  }
+
+  let signatureViolation = null;
+  const sigResult = verifyRecordSignature(entry.record);
+  if (!sigResult.ok) {
+    signatureViolation = `${entry.reviewId}: signature: ${sigResult.reason}`;
+  }
+
+  const chainLinkResult = chainReportByReviewId.get(entry.reviewId);
+  const chainViolation = chainLinkResult && !chainLinkResult.ok
+    ? `chain: ${entry.reviewId}: ${chainLinkResult.reason}`
+    : null;
+
+  return { schemaViolations, rosterViolation, signatureViolation, chainViolation };
+}
+
+/**
+ * @param {{ module?: string, root?: string, record?: string, history?: boolean }} options
  * @returns {Promise<number>}
  */
 export async function run(options = {}) {
@@ -95,44 +207,25 @@ export async function run(options = {}) {
   const violations = [];
   const schema = await loadSchema();
   const rosterIndex = await loadRosterIndex(rootDir);
-
-  for (const entry of scoped) {
-    for (const schemaError of validateAgainstSchema(schema, entry.record)) {
-      violations.push(`${entry.reviewId}: schema ${schemaError.path}: ${schemaError.message}`);
-    }
-
-    const reviewerId = entry.record?.reviewerId;
-    if (typeof reviewerId === 'string') {
-      try {
-        resolveReviewer(rosterIndex, reviewerId, moduleId);
-      } catch (err) {
-        violations.push(`${entry.reviewId}: ${err.message}`);
-      }
-    }
-
-    // P2-T5 — FR-10/OQ-2 Ed25519 signature verification, per-record (respects --record narrowing,
-    // unlike the module-wide chain/independence/authorship checks below). See lib/signature.mjs's
-    // own header for the full verification-order contract.
-    const sigResult = verifyRecordSignature(entry.record);
-    if (!sigResult.ok) {
-      violations.push(`${entry.reviewId}: signature: ${sigResult.reason}`);
-    }
-  }
+  const historyMode = options.history === true;
 
   // P1-T1 (Clinical Review Workflow v1, FR-2/R2): every module-wide check below — FR-4 reviewer-2
   // independence, FR-9/OQ-2 chain linkage (always) + optional git-history layer, PRD OQ-5
-  // authorship-union / FR-5 adjudicator-authorship, and FR-6 release-authorization validity — used
-  // to be computed inline, here, in this verb. That reasoning now lives in the ONE shared
-  // `computeDerivedReviewState` (`lib/derived-state.mjs`), so `validate` and any future consumer
-  // (the `status` verb, P1-T2) share a single derived-state implementation rather than forking it.
-  // This verb still owns every I/O-dependent input that function needs (roster resolution,
-  // authorship-union git computation, the opt-in git-history walk) — `computeDerivedReviewState`
-  // itself is a pure function over already-loaded data, exactly as its own header documents.
-
-  // Roster resolution is recomputed once here, module-wide, deliberately independent of the
-  // per-scoped-record loop above (which is narrowed by --record and does not retain resolved
-  // entries) — mirrors this tool's existing "small, independently-reasoned-about functions" posture
-  // (lib/roster.mjs's own header) rather than threading extra state through the scoped loop.
+  // authorship-union / FR-5 adjudicator-authorship, and FR-6 release-authorization validity — is
+  // computed via the ONE shared `computeDerivedReviewState` (`lib/derived-state.mjs`), so `validate`
+  // and any future consumer (the `status` verb, P1-T2) share a single derived-state implementation
+  // rather than forking it. This verb still owns every I/O-dependent input that function needs
+  // (roster resolution, authorship-union git computation, the opt-in git-history walk) —
+  // `computeDerivedReviewState` itself is a pure function over already-loaded data, exactly as its
+  // own header documents.
+  //
+  // P2-T3: this block is now computed BEFORE the per-record cache loop (not after, as in prior
+  // revisions of this file) purely so `derived.chainReport` is available to feed this task's own
+  // per-record cache entries (see this file's P2-T3 addendum, and `computePerRecordResult` above) —
+  // every one of these computations is pure/idempotent over already-loaded data, so this reordering
+  // changes none of their own outputs. NONE of this section is cache-eligible (R9) — every check
+  // here is a fact about the module's WHOLE record set, not any one record in isolation, and is
+  // recomputed unconditionally on every invocation regardless of the per-record cache state below.
   const rosterVerifiedByReviewId = new Map();
   const resolvedRosterEntryByReviewId = new Map();
   for (const entry of allRecords) {
@@ -158,8 +251,8 @@ export async function run(options = {}) {
   // being folded into `violations` — those two error classes are already UsageError subclasses
   // (lib/history.mjs), so cli.mjs's dispatcher maps them to the same fail-closed exit code a
   // collected-violations rejection would use, without this verb pretending a tooling failure was a
-  // content finding.
-  const historyReport = options.history === true ? checkAppendOnlyHistory(rootDir, moduleId) : null;
+  // content finding. This git-log walk is NEVER cached (OQ-6, P2-T4) — always fresh.
+  const historyReport = historyMode ? checkAppendOnlyHistory(rootDir, moduleId) : null;
 
   const derived = computeDerivedReviewState(allRecords, rosterVerifiedByReviewId, {
     resolvedRosterEntryByReviewId,
@@ -167,6 +260,78 @@ export async function run(options = {}) {
     historyReport,
     moduleId,
   });
+  const chainReportByReviewId = new Map(derived.chainReport.map((linkResult) => [linkResult.reviewId, linkResult]));
+
+  // P2-T3 (FR-8/R9/F3): composite-key components shared by every record this call scopes over.
+  // `rosterFileHash`/`schemaFileHash` are computed ONCE here (not per record) -- the same file
+  // backs every record's key within a single `validate` invocation.
+  const rosterFileHash = await hashFileIfExists(rosterFilePathFor(rootDir));
+  const schemaFileHash = await hashFileIfExists(SCHEMA_PATH);
+
+  // Ascending-seq-order canonical hashes for EVERY committed record (not just `scoped`) -- needed
+  // to build each scoped record's "complete predecessor-set" key component (F3), which by
+  // definition may reach back through records outside `--record`'s own narrowing.
+  const canonicalHashByIndex = allRecords.map((entry) => canonicalRecordHash(entry.record));
+  const indexByReviewId = new Map(allRecords.map((entry, index) => [entry.reviewId, index]));
+
+  const existingCache = await readCacheFile(rootDir, moduleId);
+  let cacheRecords = existingCache?.records ?? {};
+  let cacheHitCount = 0;
+  let cacheMissCount = 0;
+
+  for (const entry of scoped) {
+    const index = indexByReviewId.get(entry.reviewId);
+    const key = {
+      recordContentHash: canonicalHashByIndex[index],
+      predecessorSetHash: hashPredecessorSet(canonicalHashByIndex.slice(0, index)),
+      rosterFileHash,
+      schemaFileHash,
+      validatorPolicyVersion: VALIDATOR_POLICY_VERSION,
+      historyMode,
+    };
+
+    const cachedResult = getCachedRecordResult(cacheRecords, entry.reviewId, key);
+    let result;
+    if (cachedResult) {
+      cacheHitCount += 1;
+      result = cachedResult;
+    } else {
+      cacheMissCount += 1;
+      result = computePerRecordResult(entry, schema, rosterIndex, moduleId, chainReportByReviewId);
+      cacheRecords = setCachedRecordResult(cacheRecords, entry.reviewId, key, result);
+    }
+
+    violations.push(...result.schemaViolations);
+    if (result.rosterViolation) violations.push(result.rosterViolation);
+    if (result.signatureViolation) violations.push(result.signatureViolation);
+    // result.chainViolation is intentionally NOT pushed here -- see this file's P2-T3 header
+    // addendum for why chain-linkage enforcement stays unconditional/module-wide, via
+    // derived.blockers below, instead.
+  }
+
+  // Best-effort persistence -- see this file's P2-T3 header addendum for why a cache WRITE failure
+  // must never turn an otherwise-correct validate outcome into something else.
+  try {
+    await writeCacheFileAtomic(rootDir, moduleId, cacheRecords);
+  } catch {
+    // non-fatal
+  }
+
+  // Cache telemetry is printed UNCONDITIONALLY, here -- regardless of whether this invocation
+  // ultimately passes or fails (the possible `ValidationFailedError` throw below comes AFTER this
+  // point). This lets a caller (or a test) observe per-record cache hit/miss counts on a FAILING
+  // validate call too, not only a passing one — ordinary CLI practice (diagnostic stdout output
+  // alongside an eventual non-zero exit + stderr error), and the only way this composite-keyed
+  // cache's fail-closed invalidation behavior can be observed end-to-end without depending on
+  // wall-clock timing (this task's own acceptance criterion: "a call-count/marker hook, not
+  // wall-clock alone").
+  process.stdout.write(
+    `validate-cache: hits=${cacheHitCount} misses=${cacheMissCount} of ${scoped.length} scoped ` +
+      'record(s) (schema/roster/signature/chain-link per-record bundle, FR-8/R9/F3); module-wide ' +
+      'checks (independence, authorship-union, release-authorization, previousRecordHash chain) ' +
+      'always re-run this invocation, never cache-eligible (R9).\n',
+  );
+
   violations.push(...derived.blockers);
 
   if (violations.length > 0) throw new ValidationFailedError(violations);
@@ -174,7 +339,7 @@ export async function run(options = {}) {
   process.stdout.write(
     `OK — ${scoped.length} record(s) validated for module "${moduleId}" (schema shape + D-4 roster ` +
       'resolution + FR-4 reviewer-2 independence heuristic + FR-9 previousRecordHash chain' +
-      `${options.history === true ? ' + FR-9 git-history append-only check' : ''} + PRD OQ-5 ` +
+      `${historyMode ? ' + FR-9 git-history append-only check' : ''} + PRD OQ-5 ` +
       'authorship-union / FR-5 adjudicator-authorship check + FR-6 release-authorization validity + ' +
       'FR-10 Ed25519 signature verification, TESTKEY- dry-run only).\n' +
       'Structural review-record state only -- not a clinical-validity, safety, or approval claim.\n',
