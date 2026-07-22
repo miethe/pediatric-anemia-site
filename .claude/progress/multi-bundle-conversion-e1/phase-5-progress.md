@@ -29,7 +29,7 @@ tasks:
     model_effort: "adaptive"
     estimated_effort: "1.0 pts"
     dependencies: ["P2-GATE", "P3-GATE2"]
-    description: "RF-KID-001 -> modules/kidney_suite_v1/ projection (FR-9/FR-11/FR-12/FR-13, OQ-3 resolved: committed, not staging-only): run propose for RF-KID-001, emitting evidence.json source records, evidence-assertions.json exact-passage projections (cbc_suite_v1 schema shape, FR-21), and unresolved.json for every eligible-but-unrouted claim. The pediatric-vs-adult proteinuria cutoff conflict MUST land as an explicit, named conflict-visible object listing every contributing source — never averaged or resolved to one source. Zero entries emitted to rules.json or strict candidates.json. candidate-scaffolds.json (if emitted) stays staged under build/kb-pack/kidney_suite_v1/<version>/ only — never committed, never merged."
+    description: "RF-KID-001 -> modules/kidney_suite_v1/ projection (FR-9/FR-11/FR-12/FR-13, OQ-3 resolved: committed, not staging-only). AC CORRECTED POST-REVIEW: propose.mjs is hardwired by design to cbc_suite_v1's own drafting content (FR-14 module scoping, tools/rf-bundle-to-kb-pack/lib/batch.mjs:26-40) and halts at inspect with DecisionsNotFoundError for any module lacking an authoring-decisions.yaml, including this one (DF-E1-M1); this task's actual producer was a bespoke, standalone projection step, never a propose CLI run. Emitting evidence.json source records, evidence-assertions.json exact-passage projections (cbc_suite_v1 schema shape, FR-21), and unresolved.json for every eligible-but-unrouted claim. The pediatric-vs-adult proteinuria cutoff conflict MUST land as an explicit, named conflict-visible object listing every contributing source — never averaged or resolved to one source. Zero entries emitted to rules.json or strict candidates.json. candidate-scaffolds.json (if emitted) stays staged under build/kb-pack/kidney_suite_v1/<version>/ only — never committed, never merged."
   - id: "P5-T2"
     status: "completed"
     assigned_to: ["general-purpose"]
@@ -37,7 +37,7 @@ tasks:
     model_effort: "adaptive"
     estimated_effort: "1.0 pts"
     dependencies: ["P2-GATE", "P3-GATE2"]
-    description: "RF-GRO-002 -> modules/growth_suite_v1/ projection (FR-9/FR-11/FR-12/FR-13, OQ-3): identical structure to P5-T1, for RF-GRO-002. The WHO-vs-CDC growth-standard conflict MUST land as an explicit, named conflict-visible object listing every contributing source. Zero entries emitted to rules.json/candidates.json."
+    description: "RF-GRO-002 -> modules/growth_suite_v1/ projection (FR-9/FR-11/FR-12/FR-13, OQ-3): identical structure to P5-T1 -- including the same AC correction (bespoke, standalone projection step, never a propose CLI run; modules/growth_suite_v1/ also lacks an authoring-decisions.yaml, DF-E1-M1) -- for RF-GRO-002. The WHO-vs-CDC growth-standard conflict MUST land as an explicit, named conflict-visible object listing every contributing source. Zero entries emitted to rules.json/candidates.json."
   - id: "P5-T3"
     status: "completed"
     assigned_to: ["general-purpose"]

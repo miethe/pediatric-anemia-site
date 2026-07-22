@@ -40,7 +40,7 @@ tasks:
     model_effort: "extended"
     estimated_effort: "0.75 pts"
     dependencies: ["P4-T1"]
-    description: "RF-EV-001 -> modules/anemia/evidence-assertions.json additive backfill (FR-6 / OQ-1): run propose for RF-EV-001 against modules/anemia/, producing a NEW evidence-assertions.json matching cbc_suite_v1's established schema shape. MUST NOT write to, regenerate, or modify modules/anemia/evidence.json or rules.json in any way."
+    description: "RF-EV-001 -> modules/anemia/evidence-assertions.json additive backfill (FR-6 / OQ-1): project RF-EV-001 into modules/anemia/, producing a NEW evidence-assertions.json matching cbc_suite_v1's established schema shape. AC CORRECTED POST-REVIEW: propose.mjs is hardwired by design to cbc_suite_v1's own drafting content (FR-14 module scoping, tools/rf-bundle-to-kb-pack/lib/batch.mjs:26-40) and halts every other module at inspect with DecisionsNotFoundError since no authoring-decisions.yaml exists for modules/anemia/ (DF-E1-M1); this task's actual producer was a bespoke, uncommitted one-off script (.scratch/gen-anemia-evidence-assertions.py), never a propose CLI run. MUST NOT write to, regenerate, or modify modules/anemia/evidence.json or rules.json in any way."
   - id: "P4-T3"
     status: "completed"
     assigned_to: ["general-purpose"]

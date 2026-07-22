@@ -56,12 +56,58 @@ related_plan: /docs/project_plans/implementation_plans/infrastructure/multi-bund
   report SHA-256-identical. No design-spec is warranted — this is an AC-wording correction against
   an already-documented, already-scoped constraint, not new design work.
 
+- **Unreproducible-provenance gap: 3 of 4 modules' committed evidence-layer artifacts have no
+  producing script anywhere in this repository.** `scripts/evidence/` holds exactly one committed
+  projection generator, `backfill-cbc-002-evidence.mjs` (P4-T5, `cbc_suite_v1`). No sibling script
+  exists for the other three modules whose evidence-layer files were nonetheless committed to the
+  repo:
+  - `modules/anemia/evidence-assertions.json` (commit `6f28cd2`, P4-T2)
+  - `modules/kidney_suite_v1/evidence.json` + `evidence-assertions.json` + `unresolved.json`
+    (commit `5ef190c`, P5-T1)
+  - `modules/growth_suite_v1/evidence-assertions.json` + `evidence.json` + `unresolved.json`
+    (commit `5f8e753`, P5-T2)
+
+  All three commit messages self-report the same pattern: `propose.mjs` is hardwired (by design,
+  P3-T7/FR-14) to `cbc_suite_v1`'s own hand-authored drafting content and cannot run generically
+  against another module without also writing `rules.json`/`candidates.json`/`evidence.json` for
+  it — exactly what each of these tasks' own ACs forbade — so each was produced instead by a
+  bespoke, **uncommitted** one-off generator. Only one of those generators is still present on disk
+  at all, and only in this worktree's untracked scratch space: `.scratch/gen-anemia-evidence-
+  assertions.py` (the `modules/anemia/` producer). It is not tracked by git (confirmed via `git
+  status`: it lists as untracked; it has never been committed to any branch). The kidney/growth-suite
+  generators are not present anywhere in the repo or its history at all — their commit messages
+  describe the pattern but no script file accompanies either commit.
+
+  **Plainly stated**: the evidence-layer artifacts for `modules/anemia/`, `modules/kidney_suite_v1/`,
+  and `modules/growth_suite_v1/` are **not regenerable from committed code today**. If any upstream
+  fixture (`tests/fixtures/rf-ev-001/`, `rf-kid-001/`, `rf-gro-002/`) changed and someone needed to
+  re-derive the corresponding committed JSON, there is no checked-in tool that reproduces it —
+  only `cbc_suite_v1`'s evidence layer has that property, via `backfill-cbc-002-evidence.mjs` +
+  `npm run check`'s coverage of it. This is a real provenance/reproducibility gap in the delivered
+  artifacts, distinct from (and in addition to) the already-documented DF-E1-M1 rule-authoring gap
+  the parent plan and `batch.mjs` already track.
+
+  **Recommended remediation** (either is sufficient; not decided here — this finding only surfaces
+  the gap, per the in-flight-findings lifecycle's Step 3 boundary against prescribing new design
+  work): (1) commit the three projection scripts (recover `.scratch/gen-anemia-evidence-
+  assertions.py` into `scripts/evidence/`; author and commit equivalent scripts for
+  `kidney_suite_v1`/`growth_suite_v1`, following `backfill-cbc-002-evidence.mjs`'s structure), so
+  each module's evidence layer is regenerable the same way `cbc_suite_v1`'s is; or (2) close
+  DF-E1-M1 (per-module `authoring-decisions.yaml`) for these three modules so the committed
+  `propose` verb can actually produce their evidence-layer output going forward, retiring the
+  bespoke generators entirely. Either remediation should be scoped as its own follow-up task, not
+  retrofitted into this phase's already-closed rows.
+
 ## Resolution Status (Phase 6)
 
 The P6-T3 AC/reality mismatch is resolved in place (plan-detail doc amended). The shared-
 mutable-state test hazard is explicitly NOT resolved here — it predates this phase, is out of its
 authorship scope, and is recorded above as a tracked follow-up for whichever future pass touches
 `tests/ef-converter-rule-candidate-drafting.test.mjs` / `tests/ef-converter-rule-provenance-projection.test.mjs`
-next. Neither item is load-bearing enough to warrant a new Deferred Items Triage Table row or design
-spec (Step 3 of the in-flight-findings lifecycle) — both are scoped, mechanical fixes with an
-already-proven fix pattern in this same codebase, not new architecture/design decisions.
+next. The unreproducible-provenance gap is also NOT resolved here — recording committed generator
+scripts or authoring-decisions files is out of P6's own scope and belongs to whichever future pass
+picks up the recommended remediation above. Neither item is load-bearing enough to warrant a new
+Deferred Items Triage Table row or design spec (Step 3 of the in-flight-findings lifecycle) — all
+three are scoped, mechanical fixes (the unreproducible-provenance gap has two named, already-
+understood remediation paths; the shared-mutable-state hazard has an already-proven fix pattern in
+this same codebase), not new architecture/design decisions.
