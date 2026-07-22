@@ -117,7 +117,10 @@ today or after this feature ships; `clinicalApprovers[]`/`approvedBy[]` remain s
   and `scaffold` writes a record file for the real-identity kind (still `signature: null`, per the
   schema's own `allOf`, until G1/G2 clear).
 - A gate-aware `sign` verb makes the synthetic (TESTKEY) path usable directly (not only inside
-  `dry-run`) while refusing `synthetic: false` records fail-closed until G1/G2 clear.
+  `dry-run`) while refusing `synthetic: false` records fail-closed until G1/G2 clear. `sign`
+  operates on a **staged draft file kept outside `reviews/`** (FR-25) — it never opens or rewrites
+  an already-committed record; the record's first and only disk write happens through the
+  existing single append-only write path (`lib/store.mjs`'s `writeNewReviewRecordFile`).
 - Non-engineer clinician reviewers have a written runbook covering the five-role sequence, corrections
   via `supersedes`, and what the structurally-non-qualifying terminal state means.
 - OQ-8 (portal-promotion decision) has a written framework: named decision owner, measurable
@@ -216,6 +219,14 @@ that carries a defensible, human-owned promotion criterion."
   across incremental invocations.
 - No `status`/turn-state verb exists.
 - No portal-promotion decision framework exists.
+- **Corrected by adversarial review, 2026-07-22**: `evaluateReleaseAuthorization`
+  (`lib/adjudication.mjs`) requires all five roles — including `adjudication` — present
+  unconditionally; it does not yet implement ADR-0004 decision item 5's "adjudication only when
+  reviewer-1 and reviewer-2 disagree" rule (FR-26 below reconciles this).
+- **Corrected by adversarial review, 2026-07-22**: `writeNewReviewRecordFile` (`lib/store.mjs`) is
+  append-only and refuses to write to an existing path — there is no in-place "sign an existing
+  record" composition available on the current substrate (FR-25 below defines the staged-draft
+  contract that makes `sign` possible without violating append-only).
 
 **Files involved (v1 scope):** `tools/review-record/lib/verbs/*`, `tools/review-record/lib/*` (new
 shared derived-state module), `tools/review-record/lib/render.mjs`, `tools/review-record/README.md`,
@@ -229,11 +240,18 @@ shared derived-state module), `tools/review-record/lib/render.mjs`, `tools/revie
 
 ### Primary Goals
 
-**Goal 1: Turn-state legibility.** A reviewer or coordinator can read, from one CLI call and from the
-existing static HTML render, which role acts have been committed for a module, which role is
-next-expected, and whether the derived state is `not-started`, `in-progress`, `disputed`,
-`structurally-non-qualifying`, or `release-ready-candidate`. Measured by presence of the `status`
-verb with a stable JSON schema and a queue/turn-state section in `render`'s output.
+**Goal 1: Turn-state legibility — redacted by default, fail-closed, never authorization-shaped.**
+A reviewer or coordinator can read, from one CLI call and from the existing static HTML render,
+which role acts have been committed for a module, which role is next-expected, and whether the
+derived state is `not-started`, `in-progress`, `disputed`, `structurally-non-qualifying`,
+`acts-complete-unauthorized` (FR-29; renamed from an earlier `release-ready-candidate` draft —
+this label is explicitly **not** an authorization signal), or `invalid` (FR-28, whenever `validate`
+would reject the same input). Sibling reviewer identity/decision/rationale are redacted by default
+in every projection while independence still matters (FR-27); an explicit `--unredacted` flag
+exists for an adjudicator/release-authorizer, with a printed warning banner. Measured by presence
+of the `status` verb with a stable JSON schema, a queue/turn-state section in `render`'s output,
+and negative tests proving no independence leak and no premature authorization-like label are
+possible.
 
 **Goal 2: Scaffold ergonomics without weakening independence.** `subjectContentHash` derives
 automatically from the module's committed content (`lib/subject.mjs`); `scaffold` writes a record
@@ -243,15 +261,23 @@ with a default derivation, (b) a scaffold write path that fires for `synthetic: 
 entries (which cannot legitimately exist pre-G1 — the write path is correct-in-shape but inert),
 and (c) FR-4 structural independence (`nextChainLink` single-file touch) unchanged.
 
-**Goal 3: Gate-aware `sign` verb.** A general-purpose `sign` verb exists on the CLI, exercised on
-the TESTKEY dry-run path and fail-closed against any `synthetic: false` record. Measured by verb
-presence, `--help` text naming it, and a negative test that confirms a `synthetic: false` record
-input refuses with a G1/G2 gate message.
+**Goal 3: Gate-aware `sign` verb operating on a staged draft, never on a committed record.** A
+general-purpose `sign` verb exists on the CLI, consuming ONLY a staged draft file `scaffold --draft`
+produced outside `reviews/` (FR-25), exercised on the TESTKEY dry-run path and fail-closed against
+any `synthetic: false` draft. Measured by verb presence, `--help` text naming it, a negative test
+that confirms a `synthetic: false` draft refuses with a G1/G2 gate message, and a positive test that
+no existing `modules/<id>/reviews/*.yaml` path is ever opened for writing by `sign`.
 
-**Goal 4: Incremental `validate` with fail-closed caching.** `validate --record` (and `--module`)
-paths reuse a canonical-content-hash-keyed cache so repeated invocations do not recompute unchanged
-inputs; any miss or uncertainty falls back to full recomputation (no fail-open). Measured by a
-wall-time comparison on the committed `cbc_suite_v1` set and by a stale-cache adversarial test.
+**Goal 4: Incremental `validate` with a fail-closed, composite-keyed, persistent cache.**
+`validate --record` (and `--module`) paths reuse a cache keyed on the FULL composite of record
+content hash, complete predecessor-set hashes, roster file hash, review-record schema hash,
+validator-policy version, and history-mode flag (FR-8/FR-9) — not record-plus-immediate-predecessor
+hash alone — so repeated invocations, including across separate CLI processes, do not recompute
+unchanged inputs; any single-component miss or uncertainty falls back to full recomputation (no
+fail-open). The cache lives outside the repository tree (OS temp/XDG cache dir). Measured by a
+wall-time comparison on the committed `cbc_suite_v1` set across two separate process invocations,
+and by five independent fresh-process invalidation tests (roster, schema, record, predecessor,
+history-mode).
 
 **Goal 5: Reviewer runbook for non-engineer clinicians.** A written, guided git-workflow document
 covering all five roles end-to-end against the dry-run fixture, including corrections via
@@ -269,8 +295,9 @@ inform, not commit, the future call.
 |--------|----------|--------|--------------------|
 | Verbs exposed on `tools/review-record/cli.mjs` | 5 (`list`, `scaffold`, `validate`, `render`, `dry-run`) | 7 (`+ status`, `+ sign`) | `--help` output, verb-registry test |
 | Friction observations answered by shipped mechanics | 0 of 5 | 5 of 5 (#1 scaffold writes, #2 auto-derived subject, #3 incremental validate, #4 explicit terminal-state messaging + runbook framing, #5 turn-state in `status` + render) | Explicit AC-per-observation traceability in §11 |
-| `validate` wall-time on `modules/cbc_suite_v1` five-record set, cache-warm | Full recompute every call | Measurably less than the cache-cold baseline (recorded via a repeatable microbenchmark script; strict fraction not fixed by this PRD, target chosen in the plan) | Microbenchmark test committed under `tests/` |
-| Stale-cache fail-open incidents | 0 | 0 (mandatory) | Dedicated adversarial test (bit-flip in cached input triggers full recompute) |
+| `validate` wall-time on `modules/cbc_suite_v1` five-record set, cache-warm, cross-process | Full recompute every call | Measurably less than the cache-cold baseline across two separate `node` invocations sharing the persistent cache dir (recorded via a repeatable microbenchmark script; strict fraction not fixed by this PRD, target chosen in the plan) | Microbenchmark test committed under `tests/` |
+| Stale-cache fail-open incidents (composite key: record, predecessor-set, roster, schema, validator-policy version, history-mode) | 0 | 0 (mandatory) | 5 dedicated fresh-process adversarial tests, one per key component (FR-9) |
+| Derived-state labels that read as release authorization pre-G0/G1/G2/G4 | 0 (must stay 0) | 0 (invariant) | `acts-complete-unauthorized` naming grep test (FR-29) + real-roster-fixture negative test |
 | Portal-promotion framework artifacts | 0 | 4 (metric-log format, threshold, owner-role, decision-record template) | File presence + framework-checklist test |
 | Real `synthetic: false` roster entries added | 0 | 0 (invariant) | `verify-d4-built.mjs` untouched; roster-diff test |
 | `clinicalApprovers[]`/`approvedBy[]` non-empty occurrences | 0 | 0 (invariant) | Existing gates + `tests/ef-contract-forced-empty.test.mjs` remain green |
@@ -281,10 +308,12 @@ inform, not commit, the future call.
 
 ### Personas
 
-**Primary: Program owner exercising the workflow with synthetic personas (today).** Runs `scaffold`
-→ `sign` (TESTKEY) → `validate` → `status` → `render` against `cbc_suite_v1`. Reads the runbook to
-confirm it matches the mechanics. Uses the friction observation log format to capture any new pain
-points that arise beyond the five already recorded.
+**Primary: Program owner exercising the workflow with synthetic personas (today).** Runs
+`scaffold --draft` → `sign --draft <path>` (TESTKEY) → `validate` → `status` → `render` against
+`cbc_suite_v1` — `sign` consumes only the staged draft `scaffold --draft` produced outside
+`reviews/`, never an already-committed record (FR-25). Reads the runbook to confirm it matches the
+mechanics. Uses the friction observation log format to capture any new pain points that arise
+beyond the five already recorded.
 
 **Primary (future, gated): Non-engineer clinical reviewer post-G1.** Has a real roster entry
 (`synthetic: false`, `verificationRef` populated by the owner as a G1 human act — **not** by this
@@ -305,45 +334,59 @@ Named by role in the framework (this PRD does not name a person).
 The diagram encodes ADR-0004 decision items 1–6 plus the derived state machine `status` and `render`
 compute over the append-only file chain. `clinicalApprovers[]`/`approvedBy[]` do not appear because
 they are not populated by any state on this diagram (schema-forced-empty; see §7 Out of Scope).
+**Corrected by adversarial review, 2026-07-22** (findings F1/F2/F4): `sign` never touches an
+existing `reviews/` path (it consumes a staged draft — FR-25); the "adjudication skipped on
+agreement" transition below requires a named `lib/adjudication.mjs` policy change (FR-26,
+P1-T5) that does not exist in the substrate today; and the terminal all-real state is renamed
+`acts_complete_unauthorized` (FR-29) and no longer claims a signature-verification gate the actual
+evaluator never checks.
 
 ```mermaid
 stateDiagram-v2
     [*] --> not_started : no reviews/*.yaml present
-    not_started --> in_progress_clinical_1 : scaffold+sign rr-XXXX-clinical-1
-    in_progress_clinical_1 --> in_progress_clinical_2 : scaffold+sign rr-XXXX-clinical-2 (independent, nextChainLink single-file touch)
-    in_progress_clinical_2 --> in_progress_lab : scaffold+sign rr-XXXX-lab
+    not_started --> in_progress_clinical_1 : scaffold --draft; sign --draft <path> (FR-25 — first & only write)
+    in_progress_clinical_1 --> in_progress_clinical_2 : scaffold --draft; sign --draft <path> (independent, nextChainLink single-file touch; FR-27 redacts clinical-1 from this view)
+    in_progress_clinical_2 --> in_progress_lab : scaffold --draft; sign --draft <path>
     in_progress_lab --> disputed : clinical-1.decision != clinical-2.decision
-    in_progress_lab --> awaiting_release : clinical-1.decision == clinical-2.decision (adjudication skipped)
-    disputed --> in_progress_adjudication : scaffold+sign rr-XXXX-adjudication (adjudicator not in authorship-union, FR-5)
+    in_progress_lab --> awaiting_release : clinical-1.decision == clinical-2.decision (adjudication role NOT required — FR-26, governance-sensitive lib/adjudication.mjs change, P1-T5)
+    disputed --> in_progress_adjudication : scaffold --draft; sign --draft <path> (adjudicator not in authorship-union, FR-5)
     in_progress_adjudication --> awaiting_release : adjudication.decision recorded
     awaiting_release --> structurally_non_qualifying : any record.synthetic == true anywhere in the set (FR-6)
-    awaiting_release --> release_ready_candidate : scaffold+sign rr-XXXX-release-auth AND all records synthetic:false AND roster resolves AND chain valid AND signature verifies
-    release_ready_candidate --> [*] : release authority (G4) is the ONLY transition that flips module status; not performed here
-    structurally_non_qualifying --> [*] : terminal (by design); no path to release-ready exists for a synthetic set
-    in_progress_clinical_1 --> corrected : scaffold+sign rr-YYYY-clinical-1 with supersedes: rr-XXXX-clinical-1
+    awaiting_release --> acts_complete_unauthorized : scaffold --draft; sign --draft <path> for release-auth AND all records synthetic:false AND roster resolves AND chain valid AND FR-26's completeness rule satisfied (evaluateReleaseAuthorization violations == []) — FR-29: NOT an authorization signal
+    acts_complete_unauthorized --> [*] : terminal short of authorization; a real cryptographic reviewer signature (schema-forced null pre-G2) and release authority (G4) both remain absent; no surface in this feature may relabel this state "release-ready"
+    structurally_non_qualifying --> [*] : terminal (by design); no path to acts_complete_unauthorized exists for a synthetic set
+    in_progress_clinical_1 --> corrected : scaffold --draft; sign --draft <path> for rr-YYYY-clinical-1 with supersedes: rr-XXXX-clinical-1
     corrected --> in_progress_clinical_1 : superseding record joins the chain (append-only; original never mutated)
 ```
 
-Sequence view of one full pass (turn-state signals `status` surfaces at each step):
+Not shown above (an orthogonal fail-closed overlay, FR-28, F8): at ANY point in this diagram, if the
+underlying record set is malformed, roster-invalid, signature-tampered, or (with `--history` active)
+append-only-history-violated, both `status` and `validate` report an explicit `invalid` state
+instead of the happy-path label above — never a false-positive next-role or terminal disposition.
+
+Sequence view of one full pass (turn-state signals `status` surfaces at each step). Every command
+below is the exact, frozen CLI invocation (FR-9, F9) — `--module`/`--root` are never implied:
 
 ```mermaid
 sequenceDiagram
     autonumber
     participant Coord as Coordinator
     participant CLI as review-record CLI
+    participant Draft as staged draft (outside reviews/)
     participant Store as reviews/*.yaml (append-only)
     participant Roster as reviewer-roster.yaml
 
     Coord->>CLI: status --module cbc_suite_v1 --json
-    CLI-->>Coord: nextExpectedRole=clinical-1, derived=not_started
-    Coord->>CLI: scaffold --module cbc_suite_v1 --role clinical-1 --reviewer <id>
+    CLI-->>Coord: nextExpectedRole=clinical-1, derivedState=not-started
+    Coord->>CLI: scaffold --module cbc_suite_v1 --role clinical-1 --subject <hash> --reviewer-id <id> --decision <d> --rationale <text> --draft --root <dir>
     CLI->>Roster: resolve reviewerId (D-4)
-    CLI->>Store: write rr-0001-clinical-1.yaml (unsigned draft OR TESTKEY-signed if synthetic)
-    Coord->>CLI: sign --record rr-0001-clinical-1 (synthetic path only; refuses synthetic:false)
-    Coord->>CLI: validate --record rr-0001-clinical-1 (incremental, cache-keyed)
-    Note over CLI,Store: repeat for clinical-2, lab, [adjudication if disputed], release-auth
+    CLI->>Draft: write staged draft file (never inside reviews/; FR-25)
+    Coord->>CLI: sign --draft <path> --module cbc_suite_v1 --root <dir> (synthetic path only; refuses synthetic:false with a G1/G2 message)
+    CLI->>Store: write rr-0001-clinical-1.yaml — the record's FIRST and ONLY write
+    Coord->>CLI: validate --module cbc_suite_v1 --record rr-0001-clinical-1 (incremental, composite-cache-keyed, FR-8/FR-9)
+    Note over CLI,Store: repeat for clinical-2 (status redacts clinical-1's identity/decision/rationale from this view, FR-27), lab, [adjudication only if disputed, FR-26], release-auth
     Coord->>CLI: status --module cbc_suite_v1
-    CLI-->>Coord: derived=structurally_non_qualifying (synthetic set) OR release_ready_candidate (all real, all signed)
+    CLI-->>Coord: derivedState=structurally-non-qualifying (synthetic set) OR acts-complete-unauthorized (all real, complete, chain-valid — NOT an authorization signal, FR-29) OR invalid (fail-closed, FR-28)
 ```
 
 ---
@@ -357,17 +400,17 @@ rationale; **Could** = nice-to-have.
 
 | ID | Requirement | Priority | Notes |
 |:--:|-------------|:--------:|-------|
-| FR-1 | Add a `status` verb to `tools/review-record/cli.mjs` that computes derived review state and next-expected role from committed `reviews/*.yaml` files, without reading past records' `decision`/`rationale`/`reviewerId` except through the same read paths `validate`/`list` already use. Human default output; `--json` output validated by a stable JSON shape (see OQ-2). | Must | target_surfaces: `tools/review-record/cli.mjs`, `tools/review-record/lib/verbs/status.mjs` (new), `tools/review-record/lib/derived-state.mjs` (new shared lib). |
-| FR-2 | Extract a single derived-state library function that both `status` and the existing `validate` release-authorization evaluator consume, so the two verbs cannot drift. | Must | Risk R2 mitigation. target_surfaces: `tools/review-record/lib/derived-state.mjs`, `tools/review-record/lib/verbs/validate.mjs`, `tools/review-record/lib/verbs/status.mjs`. |
-| FR-3 | `scaffold`'s `--subject` flag becomes optional; when omitted, `subjectContentHash` is derived by `lib/subject.mjs`'s `computeModuleContentHash` (the same function `dry-run` already uses). A transposed hand-supplied `--subject` still fails loudly at parse time (existing pattern check unchanged). | Must | Answers friction #2. target_surfaces: `tools/review-record/lib/verbs/scaffold.mjs`, `tools/review-record/README.md`. |
+| FR-1 | Add a `status` verb to `tools/review-record/cli.mjs` that computes derived review state and next-expected role from committed `reviews/*.yaml` files. `status` reads records the same way `validate`/`list` already do (needed to compute chain linkage and completeness), but per **FR-27** its DEFAULT human and `--json` output redacts a sibling record's `reviewerId`/`decision`/`rationale` while independence still matters, and per **FR-28** it exits non-zero with an explicit `invalid` state whenever `validate` would reject the same input. `--json` output validated by a stable, frozen JSON shape (see OQ-2) whose `derivedState` enum is `not-started` \| `in-progress` \| `disputed` \| `structurally-non-qualifying` \| `acts-complete-unauthorized` (**FR-29**) \| `invalid` (**FR-28**). | Must | target_surfaces: `tools/review-record/cli.mjs`, `tools/review-record/lib/verbs/status.mjs` (new), `tools/review-record/lib/derived-state.mjs` (new shared lib). |
+| FR-2 | Define ONE structured, pure assessment function in a new `tools/review-record/lib/derived-state.mjs` — `computeDerivedReviewState(allModuleRecords, rosterVerifiedByReviewId, ...) -> { state, nextExpectedRole, eligibility, blockers: string[] }` (machine-readable `blockers`, not free-text-only) — that both `status` and `validate`'s release-authorization path consume. `validate` maps this function's `blockers`/`eligibility` onto its existing violation-string output; it does not compute a second, independently-shaped result. `evaluateReleaseAuthorization` (`lib/adjudication.mjs`) becomes this function's release-authorization-specific sub-check — its `violations[]` return maps 1:1 onto `blockers[]` entries — not a second, drift-prone code path `status` merely "agrees with" after the fact. | Must | Risk R2 mitigation. Supersedes the earlier draft's "extract... both consume" wording, which was not grounded in a structured-result shape (F6). target_surfaces: `tools/review-record/lib/derived-state.mjs`, `tools/review-record/lib/adjudication.mjs`, `tools/review-record/lib/verbs/validate.mjs`, `tools/review-record/lib/verbs/status.mjs`. |
+| FR-3 | `scaffold`'s `--subject` flag becomes optional; when omitted, `subjectContentHash` is derived by `lib/subject.mjs`'s `computeModuleContentHash` (the same function `dry-run` already uses). When `--subject` IS supplied, `scaffold` (by default) additionally recomputes `computeModuleContentHash` for the target module and hard-fails (`UsageError`) on any mismatch — the existing `sha256:<64 hex>` pattern check alone cannot catch a transposed-but-pattern-valid hash pointing at the wrong content (F5). A deliberately named, separately tested `--allow-historical-subject` flag suppresses ONLY this comparison (never the pattern check) for the legitimate case of reviewing historical content that no longer matches the module's current on-disk bytes. | Must | Answers friction #2. Supersedes the earlier draft's "fails loudly at parse time" claim, which described only the unchanged pattern check, not a content-hash comparison (F5). target_surfaces: `tools/review-record/lib/verbs/scaffold.mjs`, `tools/review-record/README.md`. |
 | FR-4 | `scaffold` writes a record file to disk for the real-identity (`synthetic: false`) case, producing a schema-valid record whose `signature` is `null` (per the schema's own `allOf`, non-negotiable pre-G2). Preview-only behavior remains for `synthetic: true` roster entries (which require a `TESTKEY-` signature that `scaffold` does not own). | Must | Answers friction #1 without introducing any pre-G2 signing capability. target_surfaces: `tools/review-record/lib/verbs/scaffold.mjs`, `tools/review-record/lib/store.mjs` (write path already exists). |
 | FR-5 | FR-4's real-identity write path MUST be structurally inert today: `governance/reviewer-roster.yaml` ships zero `synthetic: false` entries and no task in this plan adds any (G1 is out of scope). The verb's disk write is exercised in tests against a fixture roster only, never the real roster. | Must | Risk R1/R7 mitigation. target_surfaces: `tests/fixtures/clinical-review-workflow/`, `tests/ef-review-workflow.test.mjs` (or a new sibling file). |
-| FR-6 | Add a general-purpose `sign` verb to the CLI. On a `synthetic: true` record with `signature: null`, it uses `lib/signature.mjs`'s `signRecordDryRun` (ephemeral in-memory Ed25519 keypair, `TESTKEY-` prefix, no key persisted). | Must | target_surfaces: `tools/review-record/cli.mjs`, `tools/review-record/lib/verbs/sign.mjs` (new). |
-| FR-7 | The `sign` verb MUST fail-closed on a `synthetic: false` record with an explicit gate message naming G1 (roster verification) and G2 (offline key custody + ceremony per ADR-0005), and MUST refuse to accept any `--keyfile`/`--key`/`--test-keys` flag path for the real case (there is no real-signing path in this feature). | Must | Risk R1 mitigation. target_surfaces: `tools/review-record/lib/verbs/sign.mjs`, `tests/ef-review-workflow.test.mjs`. |
-| FR-8 | `validate` gains an incremental path: given `--record <review_id>` or an unchanged module set, previously computed per-record results (schema shape, roster resolution, signature verification, chain link check for that record) may be reused when the record's canonical content hash and its immediate predecessor's canonical hash are both unchanged. Module-wide checks (authorship-union, independence heuristic, release-authorization evaluation) still run over the full set on any change to any record. | Must | target_surfaces: `tools/review-record/lib/verbs/validate.mjs`, `tools/review-record/lib/validate-cache.mjs` (new). |
-| FR-9 | The `validate` cache MUST be fail-closed: any cache-key mismatch, any file-mtime skew that cannot be explained by an unchanged canonical hash, and any parse failure cause a full recompute rather than a pass. A dedicated adversarial test seeds a stale cache with a tampered input and asserts the tampering is caught. | Must | Risk R5 mitigation. target_surfaces: `tools/review-record/lib/validate-cache.mjs`, `tests/ef-review-workflow.test.mjs`. |
-| FR-10 | The `validate --history` git-history append-only check (P2-T3) interacts with the incremental path as a fail-closed union: `--history` results are never cached across invocations (git history is not the record's canonical hash and can change without any record file changing). | Must | Answers OQ-6. target_surfaces: `tools/review-record/lib/verbs/validate.mjs`, `tools/review-record/lib/history.mjs`. |
-| FR-11 | Add a queue/turn-state section to the read-only static HTML render (`lib/render.mjs`), listing the five roles in order with each role's committed record link (existing behavior) plus a `NEXT` or `TERMINAL` marker per the derived-state library's output. No `<script>`, no `<a href>` (existing render constraint), no server. | Must | Answers friction #5. target_surfaces: `tools/review-record/lib/render.mjs`, `tools/review-record/lib/verbs/render.mjs`, render golden under `tests/fixtures/ef-review-render/`. |
+| FR-6 | Add a general-purpose `sign` verb per **FR-25**'s staged-draft lifecycle contract: `sign --draft <path> --module <id> --root <dir>` reads ONLY a staged draft file `scaffold --draft` produced (never an already-committed `reviews/` path); on a `synthetic: true` draft with `signature: null` it uses `lib/signature.mjs`'s `signRecordDryRun` (ephemeral in-memory Ed25519 keypair, `TESTKEY-` prefix, no key persisted) before performing the record's first and only committed write. | Must | Supersedes the earlier draft's `sign --record <review_id>` shape, which had no safe composition on the append-only substrate (F1). target_surfaces: `tools/review-record/cli.mjs`, `tools/review-record/lib/verbs/sign.mjs` (new). |
+| FR-7 | The `sign` verb MUST fail-closed on a `synthetic: false` draft with an explicit gate message naming G1 (roster verification) and G2 (offline key custody + ceremony per ADR-0005), and MUST refuse to accept any `--keyfile`/`--key`/`--test-keys` flag path for the real case (there is no real-signing path in this feature). `sign` MUST NOT accept a `--record <review_id>` referring to an already-committed file — there is no code path in this feature that opens or rewrites an existing `reviews/*.yaml` path (**FR-25**). | Must | Risk R1 mitigation. target_surfaces: `tools/review-record/lib/verbs/sign.mjs`, `tests/ef-review-workflow.test.mjs`. |
+| FR-8 | `validate` gains an incremental path keyed on a COMPOSITE cache key — `{record content hash, complete predecessor-set content hashes (not just the immediate predecessor), roster file hash, review-record schema hash, validator-policy version, history-mode flag}` — not the record-plus-immediate-predecessor-hash pair alone (F3). Previously computed per-record results (schema shape, roster resolution, signature verification, chain link check for that record) may be reused only when EVERY component of that composite key matches the cache entry; module-wide checks (authorship-union, independence heuristic, release-authorization evaluation) still run over the full set on any change to any component. | Must | Supersedes the earlier draft's two-hash key, which could not detect a roster/schema/policy change (F3). target_surfaces: `tools/review-record/lib/verbs/validate.mjs`, `tools/review-record/lib/validate-cache.mjs` (new). |
+| FR-9 | The `validate` cache MUST be fail-closed on ANY key-component miss or read uncertainty (roster changed, schema changed, validator-policy version changed, history-mode flag changed, any record or predecessor hash changed, or the cache file itself is unreadable/corrupt) — full recompute, never a stale pass. The cache is a PERSISTENT, non-repo-tree store (OS temp/XDG cache dir, atomic write-then-rename) keyed by `{root, moduleId}` so cache-warmth survives across separate CLI invocations/processes — an in-memory-only cache cannot deliver FR-8's performance claim across process boundaries (F3). Five dedicated adversarial tests seed a stale cache and assert fresh-process invalidation independently for: a roster change, a schema change, a record-content change, a predecessor-content change, and a history-mode-flag change. | Must | Risk R5 mitigation. Supersedes the earlier draft's unspecified/in-memory cache lifecycle (F3). target_surfaces: `tools/review-record/lib/validate-cache.mjs`, `tests/ef-review-workflow.test.mjs`. |
+| FR-10 | The `validate --history` git-history append-only check (P2-T3) interacts with the incremental path as a fail-closed union: `--history` results are never cached across invocations (git history is not part of FR-8's composite key and can change without any key component changing) — every `--history` call re-runs the git-log check regardless of the persistent cache's state for the record's other components. | Must | Answers OQ-6. target_surfaces: `tools/review-record/lib/verbs/validate.mjs`, `tools/review-record/lib/history.mjs`. |
+| FR-11 | Add a queue/turn-state section to the read-only static HTML render (`lib/render.mjs`), listing the five roles in order with each role's committed record link (existing behavior) plus a `NEXT` or `TERMINAL` marker per the derived-state library's output. Per **FR-27**, this section redacts sibling reviewer identity/decision/rationale by default (a build-time `--unredacted` flag on the `render` verb lifts it, since render has no viewer-identity concept). No `<script>`, no `<a href>` (existing render constraint), no server. | Must | Answers friction #5. target_surfaces: `tools/review-record/lib/render.mjs`, `tools/review-record/lib/verbs/render.mjs`, render golden under `tests/fixtures/ef-review-render/`. |
 | FR-12 | Terminal-state messaging: on the `structurally_non_qualifying` end state, both `validate` and `status` (and the render output) MUST include an explicit sentence naming that this is the correct, by-design terminus for any `synthetic: true` set and is not a defect (FR-6 from the substrate). | Must | Answers friction #4. target_surfaces: `tools/review-record/lib/verbs/validate.mjs`, `tools/review-record/lib/verbs/status.mjs`, `tools/review-record/lib/render.mjs`. |
 | FR-13 | Author `docs/governance/reviewer-runbook.md` — a non-engineer clinician's guided walkthrough of the five-role sequence against the committed `cbc_suite_v1` dry-run fixture, corrections via `supersedes` (never in-place edits), what "structurally non-qualifying" means, and the honest boundary that this is an unvalidated research prototype (roster synthetic-only, no clinical sign-off exists). | Must | Answers OQ-3 (location); linked from `tools/review-record/README.md` and `docs/architecture.md` §11. target_surfaces: `docs/governance/reviewer-runbook.md`, `tools/review-record/README.md`, `docs/architecture.md`. |
 | FR-14 | Runbook language MUST NOT imply clinical validity, real sign-off having occurred, or the roster containing real reviewers. Runbook is reviewed for honesty language before merge. | Must | Risk R4 mitigation. |
@@ -376,19 +419,26 @@ rationale; **Could** = nice-to-have.
 | FR-17 | Ship portal **concept-only mockup images** under `docs/project_plans/design-specs/assets/` — each mockup file MUST carry a visible `CONCEPT ONLY — NOT A COMMITMENT` watermark or overlay, and the design-spec section that references them MUST stay `maturity: shaping`. | Should | Risk R6 mitigation. target_surfaces: `docs/project_plans/design-specs/assets/`, `docs/project_plans/design-specs/clinical-review-portal-workflow.md`. |
 | FR-18 | Update `docs/architecture.md` with a new §11 (or updated existing §11) documenting the review-workflow layer: verbs, derived-state model, the runbook link, and the honesty boundary. | Must | target_surfaces: `docs/architecture.md`. |
 | FR-19 | Update `tools/review-record/README.md` to name the new verbs (`status`, `sign`), the incremental `validate` path, the derived-state library, and to point at the runbook and portal-promotion framework. | Must | target_surfaces: `tools/review-record/README.md`. |
-| FR-20 | Wire this feature's tests into `npm run check` (`scripts.check` in `package.json`); every added test file must run under `npm test`, and coverage-relevant paths must not degrade existing coverage floors. | Must | target_surfaces: `package.json`, `tests/**`. |
+| FR-20 | Wire this feature's tests into `npm run check`. `npm test` is `node --test tests/*.test.mjs tests/witness/*.test.mjs` — two flat, NON-recursive globs (F10). Every new test file this feature adds MUST live directly under one of those two exact directories (no new nested test subdirectory); this feature does NOT change `package.json`'s `scripts.test` glob. Coverage-relevant paths must not degrade existing coverage floors. | Must | Supersedes the earlier draft's implied `tests/**` recursive-discovery assumption (F10). target_surfaces: `package.json`, `tests/*.test.mjs`, `tests/witness/*.test.mjs`. |
 | FR-21 | `status --json` and `sign` are deterministic across invocations over identical committed inputs (no wall-clock timestamps in `status --json` bytes; `sign` remains ephemeral-key-per-invocation, so its `signature.value` differs by design — but its non-signature output fields are stable). | Should | target_surfaces: determinism tests under `tests/`. |
 | FR-22 | The feature ships zero new runtime dependencies (Node-builtin `node:crypto`, `node:child_process` only, matching the substrate's zero-dep posture). | Must | target_surfaces: `package.json` (no additions), lint-style grep test similar to the existing `tests/ef-review-record-cli.test.mjs` pattern. |
 | FR-23 | The `sign` verb MUST NOT accept or read any file that could be a real signing key (no `--keyfile`, no environment-variable key path, no reading from `~/.config/**`). Enforced by a static grep test analogous to the existing "no network" grep pattern. | Must | Risk R1 mitigation. target_surfaces: `tools/review-record/lib/verbs/sign.mjs`, `tests/ef-review-record-cli.test.mjs` (or sibling). |
 | FR-24 | Reviewer-2 structural independence semantics (`nextChainLink` single-file touch) MUST remain unchanged. Existing independence tests (including the `chain_isolation_v1` fixture) stay green; no new code path in this feature reads a sibling record's parsed content during scaffold. | Must | Risk R3 mitigation. target_surfaces: existing `tests/ef-review-workflow.test.mjs` fixtures. |
+| FR-25 | **(New, F1) Sign staged-draft lifecycle.** `scaffold --draft` writes a schema-shaped draft record (whatever its `synthetic` flag) to a staging location entirely outside `modules/<id>/reviews/` — `<root>/.review-drafts/<moduleId>/<review_id>.draft.yaml` (gitignored, transient) — and prints that path. `sign --draft <path> --module <id> --root <dir>` reads ONLY that staged draft file, attaches a signature (TESTKEY- for `synthetic:true`; fail-closed refusal per FR-7 for `synthetic:false`), and performs the record's FIRST and ONLY committed write via the existing `lib/store.mjs` `writeNewReviewRecordFile` append-only path. `sign` never opens, reads the parsed content of, or rewrites any path already inside `reviews/`; a bare `sign --record <review_id>` naming an already-committed file is not a supported invocation (no composition legitimately reopens a committed record). | Must | Risk R1/R12 mitigation. target_surfaces: `tools/review-record/lib/verbs/scaffold.mjs`, `tools/review-record/lib/verbs/sign.mjs`, `tests/ef-review-workflow.test.mjs`. |
+| FR-26 | **(New, F2) Adjudication conditional-completeness (ADR-0004 reconciliation).** The shared derived-state assessment (FR-2) and `evaluateReleaseAuthorization` (`lib/adjudication.mjs`) are updated so a `release-auth` record's completeness check requires the `adjudication` role ONLY WHEN the resolved `clinical-1` and `clinical-2` records' `decision` fields disagree; on documented agreement, the four remaining roles (`clinical-1`, `clinical-2`, `lab`, `release-auth`) are sufficient for completeness. This is a **governance-sensitive behavior change** to `lib/adjudication.mjs`, implemented as its own named task (P1-T5), fixture-tested on BOTH the agree and the disagree paths, flagged for the validator gate and a codex per-wave review. It encodes ADR-0004 decision item 5 into code — it does NOT ratify ADR-0004 (`status` stays `proposed`, G0). | Must | Risk R2/R7 mitigation. target_surfaces: `tools/review-record/lib/adjudication.mjs`, `tools/review-record/lib/derived-state.mjs`, `tests/ef-review-adjudication.test.mjs`. |
+| FR-27 | **(New, F7) Independence-preserving redaction.** `status`'s human and `--json` output, and `render`'s queue/turn-state section, REDACT any already-committed sibling record's `reviewerId`, `decision`, and `rationale` whenever that sibling's role could still bias a pending, not-yet-committed independent act for the same `subjectContentHash` (concretely: `clinical-2`'s record is redacted from any projection consulted before `clinical-2`'s own act is committed for that subject; the same logic extends to `lab`/`adjudication`). Redaction lifts automatically once the viewing role's own act is already committed for that subject, or once the record set reaches a terminal state (`structurally-non-qualifying` or `acts-complete-unauthorized`). Because the tool has no notion of who is running it, the DEFAULT output is always the redacted view; an explicit `--unredacted` flag exists for an adjudicator or release-authorizer who legitimately needs the full picture, and its use prints a visible warning banner naming the independence risk. | Must | Risk R3/R10 mitigation. Directly answers the ADR-0004 "reviewer 2 must review independently before seeing reviewer 1's vote" rule as it applies to tooling output, not only to the act of reviewing. target_surfaces: `tools/review-record/lib/verbs/status.mjs`, `tools/review-record/lib/render.mjs`. |
+| FR-28 | **(New, F8) `status` fail-closed contract.** `status` MUST exit non-zero and emit an explicit, non-actionable `invalid` derived state whenever the same input would cause `validate` to reject it — malformed YAML, roster resolution failure, chain-link failure, signature tamper, or (when `--history` is passed to `status`) an append-only git-history failure. `status` documents explicitly that it does NOT run history validation by default (matching `validate`'s own opt-in default) and exposes an equivalent `--history` flag for parity. | Must | Risk R13 mitigation. target_surfaces: `tools/review-record/lib/verbs/status.mjs`, `tests/ef-review-workflow.test.mjs`. |
+| FR-29 | **(New, F4) Non-authorizing derived-state naming.** The derived state previously drafted as `release-ready-candidate` is renamed `acts-complete-unauthorized` everywhere in this feature's user-visible surfaces (CLI human/`--json` output, render, docs). No derived-state label this feature emits may read as `release-ready`, `approved`, or `authorized` (or any synonym) pre-G0/G1/G2/G4 — `acts-complete-unauthorized` communicates only that the five-role act set (per FR-26's completeness rule) is structurally complete, chain-valid, and roster-verified; it makes NO claim about a real cryptographic reviewer signature (the schema still forces `signature: null` on every `synthetic:false` record pre-G2, and `evaluateReleaseAuthorization` never checks signature validity) or about G4 release authorization. | Must | Risk R11 mitigation. target_surfaces: `tools/review-record/lib/derived-state.mjs`, `tools/review-record/lib/verbs/status.mjs`, `tools/review-record/lib/render.mjs`, negative test against a real (`synthetic:false`) fixture roster. |
 
 ### 6.2 Non-Functional Requirements
 
 **Performance:**
 - Incremental `validate --record` invocation SHOULD be measurably faster than the current
   module-wide recompute on the committed `cbc_suite_v1` five-record set, per a repeatable
-  microbenchmark committed under `tests/`. Absolute wall-time targets are not fixed by this PRD;
-  the implementation plan picks a number and defends it against the microbenchmark.
+  microbenchmark committed under `tests/`, measured **across two separate process invocations**
+  sharing the FR-9 persistent cache (a same-process microbenchmark alone cannot demonstrate the
+  cross-invocation claim, F3). Absolute wall-time targets are not fixed by this PRD; the
+  implementation plan picks a number and defends it against the microbenchmark.
 - `status` returns in under 200 ms on the committed `cbc_suite_v1` set on a standard developer
   workstation. (Guideline; not a hard failure condition.)
 
@@ -404,8 +454,14 @@ rationale; **Could** = nice-to-have.
   navigate the five roles.
 
 **Reliability:**
-- Every fail-closed path (roster resolution, chain, history, signature, cache mismatch, gate
-  refusal) has at least one dedicated negative test.
+- Every fail-closed path (roster resolution, chain, history, signature, cache mismatch — per
+  key component, FR-9 — gate refusal) has at least one dedicated negative test.
+- `status` has an explicit, non-actionable `invalid` result for every input class `validate`
+  rejects (FR-28) — it never silently reports a next-role or terminal disposition over an invalid
+  record set.
+- `sign` never opens or rewrites a path already inside `modules/<id>/reviews/` (FR-25) — a
+  dedicated test proves no existing review-record path's mtime/bytes change across a `sign`
+  invocation.
 - Existing green tests stay green: `tests/ef-review-workflow.test.mjs`,
   `tests/ef-review-record-cli.test.mjs`, `tests/ef-contract-forced-empty.test.mjs`, and
   `verify-d4-built.mjs`.
@@ -615,10 +671,14 @@ software behavior only.
 - [ ] **AC-history-uncached**: `validate --history` results are never cached across invocations;
   test asserts that a git-history mutation between two calls is caught on the second call.
   target_surfaces: `tools/review-record/lib/verbs/validate.mjs`, dedicated test.
-- [ ] **AC-status-drift-guard**: `status --json`'s derived disposition equals the
-  `evaluateReleaseAuthorization` result over the same committed set on the committed fixture and
-  on at least two adversarial fixtures (chain-broken; disputed). target_surfaces:
-  `tests/ef-review-workflow.test.mjs`.
+- [ ] **AC-status-drift-guard**: `status --json` and `validate` both consume the SAME structured
+  `computeDerivedReviewState` result (FR-2/FR-6); a test drives that one function over a matrix of
+  every `derivedState` value × representative `blockers[]` combination (at minimum: not-started,
+  in-progress, disputed, structurally-non-qualifying, acts-complete-unauthorized, invalid; plus
+  chain-broken, roster-invalid, and signature-tamper blockers) and asserts `status`'s `--json`
+  `derivedState`/`blockers` and `validate`'s violation-string mapping are both derived from it — not
+  two independently-shaped outputs compared for coincidental equality (F6). target_surfaces:
+  `tools/review-record/lib/derived-state.mjs`, `tests/ef-review-workflow.test.mjs`.
 - [ ] **AC-zero-deps**: `package.json` has no new runtime dependencies; grep-test enforces.
   target_surfaces: `package.json`, `tests/ef-review-record-cli.test.mjs`.
 - [ ] **AC-zero-network**: The existing "no network" grep pattern in
@@ -682,11 +742,14 @@ OQ-8) are surfaced by this PRD's authoring pass over the substrate.
   - **A (planner intent, per decisions block)**: Default TESTKEY-only, ephemeral in memory, no
     `--keyfile` accepted. Real-signing seam remains a future-feature note, not code.
 - [ ] **OQ-2**: `status --json` output schema — the minimal stable shape.
-  - **A (planner intent)**: `{ moduleId, subjectContentHash, records: [{ role, review_id,
-    reviewerId, decision, synthetic, supersedes, chainLinkage }], derivedState:
+  - **A (planner intent, revised per F4/F6/F7)**: `{ moduleId, subjectContentHash, records: [{ role,
+    review_id, reviewerId, decision, synthetic, supersedes, chainLinkage }] (reviewerId/decision on
+    an independence-sensitive sibling REDACTED by default — FR-27), derivedState:
     "not-started" | "in-progress" | "disputed" | "structurally-non-qualifying" |
-    "release-ready-candidate", nextExpectedRole: "clinical-1" | ... | null }`. Implementation
-    plan freezes the exact shape.
+    "acts-complete-unauthorized" | "invalid", nextExpectedRole: "clinical-1" | ... | null,
+    blockers: string[] (machine-readable, from computeDerivedReviewState — FR-2) }`. The
+    `acts-complete-unauthorized` value replaces the earlier `release-ready-candidate` draft (FR-29);
+    `invalid` is the FR-28 fail-closed state. Implementation plan freezes the exact shape.
 - [ ] **OQ-3**: Runbook location — `docs/governance/reviewer-runbook.md` (preferred) vs.
   `tools/review-record/docs/reviewer-runbook.md`.
   - **A (this PRD)**: `docs/governance/reviewer-runbook.md`, per FR-13; linked from README and
@@ -767,6 +830,22 @@ any agent output is structurally ineligible to populate any reviewer or approver
 feature does not weaken that structural rejection. The `sign` verb signs `synthetic: true` records
 only, with an ephemeral, in-memory `TESTKEY-`-prefixed key that is discarded the instant the call
 returns. Nothing in this feature clears any of gates G0–G4.
+
+---
+
+## 15. Revision History
+
+- **Revision 1 (2026-07-22): applied 10 adversarial-review findings.** Respecified the `sign`
+  lifecycle onto a staged-draft contract (FR-25, F1); reconciled ADR-0004's conditional-adjudication
+  rule against `lib/adjudication.mjs` as a governance-sensitive change (FR-26, F2); widened the
+  `validate` cache to a persistent, composite-keyed, fail-closed store (FR-8/FR-9, F3); renamed the
+  terminal all-real state to the non-authorizing `acts-complete-unauthorized` (FR-29, F4); added a
+  default `--subject`↔content-hash comparison with an `--allow-historical-subject` escape (FR-3, F5);
+  grounded the shared derived-state extraction in one structured `{state, nextExpectedRole,
+  eligibility, blockers[]}` result (FR-2, F6); added independence-preserving redaction to
+  status/queue/render projections (FR-27, F7); gave `status` an explicit fail-closed `invalid` state
+  (FR-28, F8); froze exact CLI command signatures across the flow (F9); and constrained new tests to
+  the existing non-recursive discovery globs (FR-20, F10).
 
 ---
 
