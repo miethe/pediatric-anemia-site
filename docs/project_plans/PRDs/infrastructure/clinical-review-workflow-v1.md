@@ -1,7 +1,7 @@
 ---
 schema_version: 2
 doc_type: prd
-title: "Clinical Review Workflow v1 (DF-E1-01) — PRD"
+title: "Clinical Review Workflow v1 (DF-E1-01) \u2014 PRD"
 status: draft
 created: '2026-07-22'
 updated: '2026-07-22'
@@ -51,7 +51,8 @@ tags:
 - workflow
 milestone: null
 commit_refs: []
-pr_refs: []
+pr_refs:
+- https://github.com/miethe/pediatric-anemia-site/pull/23
 files_affected:
 - tools/review-record/cli.mjs
 - tools/review-record/lib/**

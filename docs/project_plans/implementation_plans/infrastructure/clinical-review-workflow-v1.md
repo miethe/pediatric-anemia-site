@@ -1,5 +1,5 @@
 ---
-title: "Clinical Review Workflow v1 (DF-E1-01) — Implementation Plan"
+title: "Clinical Review Workflow v1 (DF-E1-01) \u2014 Implementation Plan"
 schema_version: 2
 doc_type: implementation_plan
 status: draft
@@ -9,38 +9,39 @@ feature_slug: clinical-review-workflow
 feature_version: v1
 prd_ref: docs/project_plans/PRDs/infrastructure/clinical-review-workflow-v1.md
 plan_ref: null
-scope: >
-  Ship the v1 reviewer workflow layer (status/sign verbs, scaffold ergonomics, incremental
-  validate, render queue view, runbook, OQ-8 portal-promotion framework) on top of the
-  already-shipped tools/review-record/ file substrate — no portal, no real signing, no roster
-  or gate changes.
-effort_estimate: '19 pts'
-architecture_summary: >
-  Two new CLI verbs (status, sign) + one shared derived-state library + one incremental-validate
-  cache, layered on tools/review-record/'s existing store/chain/roster/signature/subject/render
-  libs. No new schemas, no new module packages, no new services.
+scope: "Ship the v1 reviewer workflow layer (status/sign verbs, scaffold ergonomics,\
+  \ incremental validate, render queue view, runbook, OQ-8 portal-promotion framework)\
+  \ on top of the already-shipped tools/review-record/ file substrate \u2014 no portal,\
+  \ no real signing, no roster or gate changes.\n"
+effort_estimate: 19 pts
+architecture_summary: 'Two new CLI verbs (status, sign) + one shared derived-state
+  library + one incremental-validate cache, layered on tools/review-record/''s existing
+  store/chain/roster/signature/subject/render libs. No new schemas, no new module
+  packages, no new services.
+
+  '
 related_documents:
-  - docs/project_plans/PRDs/infrastructure/clinical-review-workflow-v1.md
-  - docs/adr/0004-clinical-approval-identity-adjudication.md
-  - docs/adr/0005-kb-serialization-signing-key-custody.md
-  - docs/project_plans/design-specs/clinical-review-portal-workflow.md
-  - docs/governance/gates-registry.md
-  - tools/review-record/README.md
-  - .claude/worknotes/clinical-review-workflow/decisions-block.md
-  - .claude/worknotes/evidence-foundry-e1-v1/dryrun-friction.md
+- docs/project_plans/PRDs/infrastructure/clinical-review-workflow-v1.md
+- docs/adr/0004-clinical-approval-identity-adjudication.md
+- docs/adr/0005-kb-serialization-signing-key-custody.md
+- docs/project_plans/design-specs/clinical-review-portal-workflow.md
+- docs/governance/gates-registry.md
+- tools/review-record/README.md
+- .claude/worknotes/clinical-review-workflow/decisions-block.md
+- .claude/worknotes/evidence-foundry-e1-v1/dryrun-friction.md
 references:
   user_docs:
-    - docs/governance/reviewer-runbook.md
+  - docs/governance/reviewer-runbook.md
   context: []
   specs:
-    - schemas/review-record.schema.json
-    - schemas/reviewer-roster.schema.json
+  - schemas/review-record.schema.json
+  - schemas/reviewer-roster.schema.json
   related_prds:
-    - docs/project_plans/PRDs/infrastructure/evidence-foundry-e1-v1.md
+  - docs/project_plans/PRDs/infrastructure/evidence-foundry-e1-v1.md
 spike_ref: null
 adr_refs:
-  - docs/adr/0004-clinical-approval-identity-adjudication.md
-  - docs/adr/0005-kb-serialization-signing-key-custody.md
+- docs/adr/0004-clinical-approval-identity-adjudication.md
+- docs/adr/0005-kb-serialization-signing-key-custody.md
 deferred_items_spec_refs: []
 findings_doc_ref: null
 charter_ref: null
@@ -50,90 +51,103 @@ plan_structure: unified
 progress_init: auto
 owner: nick
 contributors:
-  - Opus orchestrator
-  - implementation-planner
+- Opus orchestrator
+- implementation-planner
 priority: high
 risk_level: high
 category: infrastructure
-tags: [implementation-plan, clinical-review, evidence-foundry, df-e1-01, workflow]
+tags:
+- implementation-plan
+- clinical-review
+- evidence-foundry
+- df-e1-01
+- workflow
 milestone: null
 commit_refs: []
-pr_refs: []
+pr_refs:
+- https://github.com/miethe/pediatric-anemia-site/pull/23
 files_affected:
-  - tools/review-record/cli.mjs
-  - tools/review-record/lib/derived-state.mjs
-  - tools/review-record/lib/adjudication.mjs
-  - tools/review-record/lib/validate-cache.mjs
-  - tools/review-record/lib/verbs/status.mjs
-  - tools/review-record/lib/verbs/sign.mjs
-  - tools/review-record/lib/verbs/scaffold.mjs
-  - tools/review-record/lib/verbs/validate.mjs
-  - tools/review-record/lib/render.mjs
-  - tools/review-record/README.md
-  - docs/governance/reviewer-runbook.md
-  - docs/architecture.md
-  - docs/project_plans/design-specs/clinical-review-portal-workflow.md
-  - docs/project_plans/design-specs/assets/**
-  - tests/**
-  - package.json
+- tools/review-record/cli.mjs
+- tools/review-record/lib/derived-state.mjs
+- tools/review-record/lib/adjudication.mjs
+- tools/review-record/lib/validate-cache.mjs
+- tools/review-record/lib/verbs/status.mjs
+- tools/review-record/lib/verbs/sign.mjs
+- tools/review-record/lib/verbs/scaffold.mjs
+- tools/review-record/lib/verbs/validate.mjs
+- tools/review-record/lib/render.mjs
+- tools/review-record/README.md
+- docs/governance/reviewer-runbook.md
+- docs/architecture.md
+- docs/project_plans/design-specs/clinical-review-portal-workflow.md
+- docs/project_plans/design-specs/assets/**
+- tests/**
+- package.json
 wave_plan:
   serialization_barriers: []
   phases:
-    - id: P1
-      depends_on: []
-      isolation: shared
-      parallelizable: true
-      model: sonnet
-      effort: adaptive
-      files_affected:
-        - tools/review-record/lib/derived-state.mjs
-        - tools/review-record/lib/adjudication.mjs
-        - tools/review-record/lib/verbs/status.mjs
-        - tools/review-record/lib/verbs/scaffold.mjs
-        - tools/review-record/lib/verbs/validate.mjs
-        - tools/review-record/cli.mjs
-    - id: P2
-      depends_on: [P1]
-      isolation: shared
-      model: sonnet
-      effort: extended
-      files_affected:
-        - tools/review-record/lib/verbs/sign.mjs
-        - tools/review-record/lib/validate-cache.mjs
-        - tools/review-record/lib/verbs/validate.mjs
-        - tools/review-record/lib/history.mjs
-        - tools/review-record/cli.mjs
-    - id: P3
-      depends_on: [P1]
-      isolation: shared
-      files_affected:
-        - tools/review-record/lib/render.mjs
-        - tools/review-record/lib/verbs/render.mjs
-        - tools/review-record/lib/verbs/validate.mjs
-        - tools/review-record/lib/verbs/status.mjs
-        - docs/governance/reviewer-runbook.md
-        - tools/review-record/README.md
-    - id: P4
-      depends_on: [P1]
-      isolation: shared
-      files_affected:
-        - docs/project_plans/design-specs/clinical-review-portal-workflow.md
-        - docs/project_plans/design-specs/assets/**
-        - .claude/worknotes/clinical-review-workflow/friction-observations.md
-    - id: P5
-      depends_on: [P2, P3, P4]
-      isolation: shared
-      files_affected:
-        - tests/**
-        - docs/architecture.md
-        - tools/review-record/README.md
-        - package.json
-        - docs/project_plans/design-specs/*.md
+  - id: P1
+    depends_on: []
+    isolation: shared
+    parallelizable: true
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - tools/review-record/lib/derived-state.mjs
+    - tools/review-record/lib/adjudication.mjs
+    - tools/review-record/lib/verbs/status.mjs
+    - tools/review-record/lib/verbs/scaffold.mjs
+    - tools/review-record/lib/verbs/validate.mjs
+    - tools/review-record/cli.mjs
+  - id: P2
+    depends_on:
+    - P1
+    isolation: shared
+    model: sonnet
+    effort: extended
+    files_affected:
+    - tools/review-record/lib/verbs/sign.mjs
+    - tools/review-record/lib/validate-cache.mjs
+    - tools/review-record/lib/verbs/validate.mjs
+    - tools/review-record/lib/history.mjs
+    - tools/review-record/cli.mjs
+  - id: P3
+    depends_on:
+    - P1
+    isolation: shared
+    files_affected:
+    - tools/review-record/lib/render.mjs
+    - tools/review-record/lib/verbs/render.mjs
+    - tools/review-record/lib/verbs/validate.mjs
+    - tools/review-record/lib/verbs/status.mjs
+    - docs/governance/reviewer-runbook.md
+    - tools/review-record/README.md
+  - id: P4
+    depends_on:
+    - P1
+    isolation: shared
+    files_affected:
+    - docs/project_plans/design-specs/clinical-review-portal-workflow.md
+    - docs/project_plans/design-specs/assets/**
+    - .claude/worknotes/clinical-review-workflow/friction-observations.md
+  - id: P5
+    depends_on:
+    - P2
+    - P3
+    - P4
+    isolation: shared
+    files_affected:
+    - tests/**
+    - docs/architecture.md
+    - tools/review-record/README.md
+    - package.json
+    - docs/project_plans/design-specs/*.md
   waves:
-    - [P1]
-    - [P2, P4]
-    - [P3]
-    - [P5]
+  - - P1
+  - - P2
+    - P4
+  - - P3
+  - - P5
 ---
 
 # Implementation Plan: Clinical Review Workflow v1 (DF-E1-01)
