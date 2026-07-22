@@ -47,7 +47,7 @@ tasks:
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P2-03]
-  estimated_effort: "1.25 pts"
+  estimated_effort: "1.5 pts"
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
@@ -69,7 +69,7 @@ tasks:
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P3-01]
-  estimated_effort: "0.75 pts"
+  estimated_effort: "1.0 pts"
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
@@ -94,7 +94,7 @@ tasks:
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P3-01, P2-03]
-  estimated_effort: "1.25 pts"
+  estimated_effort: "1.5 pts"
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
@@ -121,7 +121,7 @@ tasks:
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P3-01, P1-02]
-  estimated_effort: "1.0 pts"
+  estimated_effort: "1.25 pts"
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
@@ -179,27 +179,33 @@ tasks:
     behaviour unchanged); P6-006 asserts the round-trip.
 - id: P3-07
   description: >
-    Accessibility — role="alert", keyboard navigation, programmatic disabling. Per the PRD
-    Accessibility NFR: the status banner uses the existing role="alert" pattern (.safety-banner,
-    index.html:41-43); the module list is fully keyboard-navigable; ineligible rows are
-    programmatically disabled (not merely dimmed) so assistive technology reports them as
-    unavailable; each ineligible row's reason is in its accessible name, not conveyed by colour or
-    hatching alone. Focus must not be trappable inside an inert row.
+    FR-37 — programmatic inertness + reason-in-accessible-name (a11y, role="alert", keyboard nav).
+    THIS IS NOW FR-37, not NFR prose: the karen gate found the inertness mechanism had no
+    requirement and no AC pointing at it. Status banner uses the existing role="alert" pattern
+    (.safety-banner, index.html:41-43); the module list is fully keyboard-navigable and focus is
+    not trappable inside an inert row; ineligible rows are programmatically disabled (a real
+    disabled/aria-disabled + non-activatable state, not merely dimmed) so assistive technology
+    reports them unavailable; each ineligible row's reason text is part of its accessible name,
+    never colour/opacity/hatching alone. Add a code comment recording that `disabled` is a
+    PRESENTATION guarantee, NOT the security boundary — a devtools user can delete it; the gate
+    that survives that is the FR-6 predicate inside the handlers (AC-11 / P6-012).
   status: pending
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P3-01, P3-03, P3-04]
-  estimated_effort: "0.5 pts"
-  priority: medium
+  estimated_effort: "1.5 pts"
+  priority: high
   assigned_model: sonnet
   model_effort: adaptive
   target_surfaces:
   - index.html
   - src/app.js
+  verifies_ac: [AC-1]
   acceptance_criteria: >
-    Banner carries role="alert"; every row is reachable and operable by keyboard, and ineligible
-    rows are announced as disabled; each ineligible row's accessible name includes its reason
-    text; no colour-only state conveyance; focus order is linear through the rail.
+    Banner carries role="alert"; every row is keyboard-reachable and ineligible rows are announced
+    as disabled; each ineligible row's accessible name includes its reason text; no colour-only
+    state conveyance; focus order is linear through the rail; a code comment records that
+    `disabled` is not the gate and names AC-11.
 - id: P3-GATE
   description: >
     task-completion-validator gate. Verify the Phase 3 exit gate: banner renders all 4 statuses;
@@ -222,7 +228,7 @@ parallelization:
   batch_4: [P3-06, P3-07]
   batch_5: [P3-GATE]
   critical_path: [P3-01, P3-03, P3-04, P3-05, P3-06, P3-GATE]
-  estimated_total_time: "~2–2.5 engineer-days"
+  estimated_total_time: "~2.5–3 engineer-days (8 pts)"
 blockers:
 - id: BLOCKER-PHASE-DEP
   title: "Phase 3 cannot open until Phase 2 exit gates (P2-GATE, P2-KAREN) both pass"
@@ -258,10 +264,10 @@ success_criteria:
   description: "No localStorage/sessionStorage/cookie read or written"
   status: pending
 - id: SC-9
-  description: "role=\"alert\", keyboard-navigable, ineligible rows programmatically disabled with reason in the accessible name"
+  description: "FR-37: role=\"alert\", keyboard-navigable, ineligible rows programmatically disabled with the reason in the accessible name, plus a comment recording that disabled is presentation and not the gate (AC-11)"
   status: pending
 - id: SC-10
-  description: "Screenshots captured at ≥1440px and 375px showing both groups and all four rows (AC-1)"
+  description: "AC-1 screenshots (≥1440px AND 375px, both groups, all four rows) captured and reviewed BY A PERSON at P6-011 — no task here automates capture (D-6 / PRD §11a)"
   status: pending
 files_modified:
 - index.html
@@ -399,8 +405,8 @@ switchTab still drops the query string.")
 - [ ] Zero hash / "integrity verified" / approval-badge / green-state surfaces (FR-31, FR-32, FR-11)
 - [ ] `?module=` round-trips and survives a tab switch (`src/app.js:457` fixed)
 - [ ] No `localStorage`/`sessionStorage`/cookie read or written
-- [ ] `role="alert"`, keyboard-navigable, ineligible rows programmatically disabled with reason in the accessible name
-- [ ] Screenshots captured at ≥1440px and 375px showing both groups and all four rows (AC-1)
+- [ ] **FR-37**: `role="alert"`, keyboard-navigable, ineligible rows programmatically disabled with the reason in the accessible name, plus a code comment recording that `disabled` is presentation and not the gate (AC-11)
+- [ ] AC-1 screenshots (≥1440px **and** 375px, both groups, all four rows) captured and reviewed **by a person** at **P6-011** — no task here automates capture (D-6 / PRD §11a)
 
 ---
 

@@ -103,15 +103,17 @@ tasks:
   target_surfaces:
   - src/app.js
   acceptance_criteria: >
-    A module whose hooks return the not-implemented shape triggers refusal with
-    renderClassification never invoked (spy/call-count or absence of its output nodes); no
-    "undefined" string and no Indeterminate classification appears anywhere in the DOM; detection
-    happens at selection time, before assess().
+    SOURCE-ASSERTED (D-6 — no spy is writable; src/app.js is DOM-dependent and node cannot
+    execute it). functionBody() over the selection path shows not-implemented detection ahead of
+    every renderClassification reference, and no renderClassification call site exists outside a
+    branch guarded by it; refusal copy referenced by identifier. DOES NOT PROVE that
+    renderClassification never runs at runtime, nor that no "undefined"/Indeterminate string
+    reaches the DOM — that is P6-011's human pass. Record it as such, not as a behavioral test.
 - id: P4-04
   description: >
     Refusal Case 3 — manifest status is not READY_STATUS (FR-17 / SQ-3 §4.3). Refuse to load the
     module and state the actual status verbatim from the closed enum plus its canonical
-    vocabulary sentence. Must not downgrade to a warning: build-static.mjs:76-79 already
+    vocabulary sentence. Must not downgrade to a warning: build-static.mjs:73-77 already
     warns-instead-of-exits for non-default modules, so the browser is the ONLY enforcement point.
     Normally unreachable through the UI (P2-03's predicate makes ineligible rows inert) and is
     reached only via a hand-edited ?module= — defence in depth.
@@ -126,8 +128,11 @@ tasks:
   target_surfaces:
   - src/app.js
   acceptance_criteria: >
-    An ineligible ?module= value produces the refusal with the verbatim enum status shown; no
-    warning-level or dismissible treatment; assess() is never called (spy).
+    SOURCE-ASSERTED (D-6). The ?module= handling path contains the FR-17 refusal branch ahead of
+    any MODULE_KB_LOADERS/assessModule/assess reference; the verbatim enum status renders from the
+    vocabulary constant; no warning-level or dismissible treatment. NOT PROVEN: that assess() is
+    never called at runtime — no spy is available. Runtime confirmation is P6-011 (hand-edit the
+    URL and observe).
 - id: P4-05
   description: >
     Refusal Case 4 — module KB fetch fails / 404 (FR-18 / SQ-3 §4.4). Mirror src/app.js:558-560's
@@ -258,7 +263,7 @@ success_criteria:
   description: "renderClassification provably never runs for a not-implemented module (no 'undefined g/dL', no false Indeterminate)"
   status: pending
 - id: SC-4
-  description: "assess() unreachable for any module failing the READY_STATUS predicate"
+  description: "In source, no assess()/assessModule()/MODULE_KB_LOADERS call site outside a predicate-guarded body (AC-11 / P6-012) — guarded in the handlers, not by the disabled attribute"
   status: pending
 - id: SC-5
   description: "Every refusal enforces the FR-19 invariants; audit never downloadable post-refusal; no silent fallback to anemia"
@@ -276,7 +281,7 @@ success_criteria:
   description: "karen Milestone 2 review recorded"
   status: pending
 - id: SC-10
-  description: "Screenshot of the refusal state at ≥1440px showing no results panel, no downloadable audit, no 'Check the entered units' heading (AC-4)"
+  description: "AC-4 screenshot (refusal state ≥1440px: no results panel, no downloadable audit, no 'Check the entered units') captured and reviewed BY A PERSON at P6-011 — nothing here automates capture (D-6)"
   status: pending
 files_modified:
 - src/app.js
@@ -417,14 +422,14 @@ downloadable and no prior result survives after refusal; (5) zero maturity-ladde
 
 - [ ] Refusal is a distinct third state; `showInputRejection` untouched and never reused for module-level failures
 - [ ] All 4 SQ-3 §4 refusal cases implemented **and** individually tested
-- [ ] `renderClassification` provably never runs for a not-implemented module (no `"undefined g/dL"`, no false `Indeterminate`)
-- [ ] `assess()` unreachable for any module failing the `READY_STATUS` predicate
+- [ ] **In source**, no `renderClassification` call site exists outside a not-implemented-guarded branch (D-6: this does not prove it never runs — P6-011 confirms no `"undefined g/dL"` / false `Indeterminate` reaches the screen)
+- [ ] **In source**, no `assess()`/`assessModule()`/`MODULE_KB_LOADERS` call site exists outside a body guarded by the eligibility predicate (**AC-11 / P6-012**) — the guard is inside the handlers, not the `disabled` attribute
 - [ ] Every refusal enforces the FR-19 invariants; audit never downloadable post-refusal; no silent fallback to `anemia`
 - [ ] Seam task P4-06 proves banner ↔ refusal atomicity with no observable interleaving
 - [ ] Unregistered `?module=` names the requested id explicitly
 - [ ] Zero maturity-ladder vocabulary ("preview", "beta", "coming soon", "temporarily unavailable") in any refusal copy
 - [ ] `karen` Milestone 2 review recorded
-- [ ] Screenshot of the refusal state at ≥1440px showing no results panel, no downloadable audit, no "Check the entered units" heading (AC-4)
+- [ ] AC-4 screenshot (refusal state ≥1440px: no results panel, no downloadable audit, no "Check the entered units") captured and reviewed **by a person** at **P6-011**
 
 ---
 

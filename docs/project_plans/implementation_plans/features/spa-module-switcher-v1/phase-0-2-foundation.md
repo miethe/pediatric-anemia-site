@@ -34,10 +34,24 @@ E1's `multi-bundle-conversion-e1.md` **FR-14 / R-8** prohibit a client-selectabl
 scope-bounded to E1 and conditioned on the words *"ahead of any UI/API decision to support it"*.
 This feature **is** that decision. P0 is where that is written down — in an ADR that governs every
 future module, not only today's four. Shipping the selector before the paperwork inverts the
-governance order this repository exists to protect (PRD §9, "Governance ordering (binding)"), and
-leaves the `tests/module-registry.test.mjs:24` `DEFAULT_MODULE_ID` tripwire (whose stated trigger is
-*"the day a client-selectable moduleId surface actually ships"*, `src/modules/registry.js:38-50`)
-being flipped in P6 with no recorded authority behind it.
+governance order this repository exists to protect (PRD §9, "Governance ordering (binding)").
+
+**Two separate tripwires — do not merge them.** P6-010 actions both, and the ADR is the authority for
+the second:
+
+1. **`tests/module-registry.test.mjs:20-24`.** Its own comment says the assertion "must be
+   updated/deleted **the day a second module registers**", and the comment still reads "today there
+   is exactly one registered module". **Four modules are registered.** That trigger fired at commit
+   `263120b` and was never actioned — **the comment is stale today**, independently of this feature,
+   and would still be stale if this feature were cancelled. It is a pre-existing debt this plan
+   inherits and closes, not something this feature causes.
+2. **`src/modules/registry.js:39-50`.** A *different* trigger, with a different condition: *"the day a
+   client-selectable moduleId surface actually ships (a UI control, an API parameter, a CDS Hooks card
+   selector, etc.) — that is the real trigger … not merely the count of registered modules."* **This
+   feature fires that one**, and ADR-0009 (P0-02) is the recorded authority for how it is decided.
+
+Conflating them would let the already-overdue #1 be closed as a side effect of #2 with no separate
+acknowledgement that it sat unactioned for a release.
 
 | Task ID | Task Name | Description | Acceptance Criteria | Estimate | Subagent(s) | Model | Effort | Provider | Dependencies |
 |---------|-----------|-------------|---------------------|---------:|-------------|-------|--------|----------|--------------|

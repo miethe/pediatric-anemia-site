@@ -629,3 +629,31 @@ Open at the close of this SPIKE. None blocks planning; each needs an answer duri
 - `.claude/worknotes/spa-module-switcher/spike-leg-sq3-failure-surface.md`
 - `.claude/worknotes/spa-module-switcher/spike-leg-sq4-prior-art-reconciliation.md`
 - `.claude/worknotes/spa-module-switcher/decisions-block.md` — **canonical for D-1…D-5**
+
+---
+
+## Errata (added 2026-07-22, post-`karen` planning gate)
+
+This SPIKE is a recorded research result and is preserved as written. Three citation errors were
+found during the `karen` gate on the downstream planning bundle. They are corrected in the PRD,
+implementation plan and progress artifacts; they are listed here rather than silently edited above,
+so the record stays honest about what the research pass actually produced.
+
+| Cited here as | Correct | Subject |
+|---|---|---|
+| `src/modules/registry.js:74` | `:75` | `isRegisteredModule` |
+| `src/modules/registry.js:38-50` | `:39-50` | client-selectable-moduleId tripwire comment |
+| `scripts/build-static.mjs:76-79` | `:73-77` | warn-instead-of-exit for non-default modules |
+
+Two substantive corrections were also made downstream, neither of which invalidates a finding above:
+
+1. **Two distinct tripwires were conflated.** `tests/module-registry.test.mjs:20-24` says it must be
+   updated "the day a **second module registers**" — four are registered, so **that trigger already
+   fired at commit `263120b` and was never actioned; that test comment is stale today.** The
+   "client-selectable moduleId surface ships" trigger is a separate comment at
+   `src/modules/registry.js:39-50`. Only the second is fired by this feature.
+2. **The verification ceiling was not established by this SPIKE.** No leg checked whether the repo can
+   execute DOM tests. It cannot — `package.json` declares no `dependencies` and no `devDependencies`,
+   and `scripts/smoke-browser-unit-rejection.mjs:4-15` states the no-browser-automation posture
+   explicitly. See decisions-block **D-6**. Any reading of this SPIKE that assumes behavioral browser
+   tests are available is wrong.

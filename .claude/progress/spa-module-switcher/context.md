@@ -16,7 +16,7 @@ updated: '2026-07-22'
 
 ## Pointer Index
 
-- **PRD** (FR-1..FR-36, AC-1..AC-10, R-1..R-8, OQ-1..OQ-4): `docs/project_plans/PRDs/features/spa-module-switcher-v1.md`
+- **PRD** (FR-1..FR-37, AC-1..AC-11, R-1..R-9, OQ-1..OQ-4): `docs/project_plans/PRDs/features/spa-module-switcher-v1.md` — **read §11a, "What automation does not verify", before executing any phase**
 - **Implementation Plan** (parent, >800 lines → 3 phase-detail files): `docs/project_plans/implementation_plans/features/spa-module-switcher-v1.md`
   - **Phase 0-2** (Governance, Truth Sources & Seams): `docs/project_plans/implementation_plans/features/spa-module-switcher-v1/phase-0-2-foundation.md`
   - **Phase 3-5** (Selector UI, Fail-Closed Refusal & Degradation): `docs/project_plans/implementation_plans/features/spa-module-switcher-v1/phase-3-5-ui.md`
@@ -25,8 +25,9 @@ updated: '2026-07-22'
   eligibility), SQ-2 (banner truth source), SQ-3 (failure surface, F1–F12), SQ-4 (prior-art
   reconciliation) — the evidence base every task cites; worknotes at
   `.claude/worknotes/spa-module-switcher/spike-leg-sq{1,2,3,4}-*.md`.
-- **Decisions Block** (authoritative; D-1..D-5 settled, not reopened): `.claude/worknotes/spa-module-switcher/decisions-block.md`
+- **Decisions Block** (authoritative; **D-1..D-6** settled, not reopened): `.claude/worknotes/spa-module-switcher/decisions-block.md`. **D-6 is the verification ceiling** — no browser automation and no test dependencies exist here; that is accepted rather than worked around, and every P6 AC is written to what a source assertion or an executed non-DOM unit can prove.
 - **ADR-0009** (authored in Phase 0, `status: proposed`): `docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md`
+- **ADR-0010** (authored in Phase 7 as a deferred-item spec, `status: proposed`, D-6 / DF-SMS-06): `docs/adr/0010-browser-test-capability-for-the-spa.md`
 - **Design spec reconciled in Phase 0** (server-side, stays deferred): `docs/project_plans/design-specs/public-moduleid-api-surface.md`
 - **Related PRD** (source of the FR-14/R-8 prohibition this feature lifts): `docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1.md`
 - **Findings doc** (lazy-created at P7-DOC-007): `.claude/findings/spa-module-switcher-findings.md`
@@ -58,11 +59,14 @@ P1 ─┘               │    │
                      └────┴─→ P5 ─┘  (P5 hangs off P2 and P4; merges before P6)
 ```
 
-- **Critical path**: `P0 → P1 → P2 → P3 → P4 → P6 → P7` = 3 + (absorbed) + 5 + 6 + 5 + 5 + 3 =
-  **27 of 34 pts** (P0's 3 pts absorbed by P1's concurrent 3 pts in wave 1, but P0 remains a hard
-  predecessor of P2).
+- **Total: 41 pts** (revised from 34 at the `karen` planning gate — P3 6→8, P5 4→5, P6 5→9; the
+  original 34 was a top-down anchor the rows had been fitted to. See the human brief §2.)
+- **Critical path**: `P0 → P1 → P2 → P3 → P4 → P6 → P7` = 3 + (absorbed) + 5 + 8 + 5 + 9 + 3 =
+  **33 of 41 pts** (P0's 3 pts absorbed by P1's concurrent 3 pts in wave 1, but P0 remains a hard
+  predecessor of P2). **P6 now contains a human step (P6-011) that cannot be parallelised with
+  agent work** — schedule a review session; it does not absorb into the phase.
 - **P5 hangs off P2 (loading seam) and P4 (settled state machine)**, and merges before P6 opens —
-  it carries 4 pts of scheduling float against the P4→P6 critical path (not concurrent execution;
+  it carries 5 pts of scheduling float against the P4→P6 critical path (not concurrent execution;
   P3/P4/P5 share `src/app.js`/`index.html` serialization barriers, so P5 runs in its own wave after
   P4, never in parallel with P3/P4 despite being dependency-legal in isolation).
 - **Wave plan**: `[[P0, P1], [P2], [P3], [P4], [P5], [P6], [P7]]`.
@@ -74,7 +78,7 @@ P1 ─┘               │    │
 | `P0-GATE` .. `P7-GATE` | every phase exit | `task-completion-validator` | Phase exit gate criteria met and recorded in the phase progress note |
 | `P2-KAREN` | end of P2 | `karen` | **Milestone 1** — the seams (literal specifiers, `assessModule`, eligibility predicate) are the load-bearing foundation of every later phase |
 | `P4-KAREN` | end of P4 | `karen` | **Milestone 2** — the fail-closed refusal state is the safety-critical slice; verifies no path reaches `assess()` for an ineligible module and no refusal reuses `showInputRejection` |
-| `P6-KAREN` | end of P6 | `karen` | **Milestone 3** — verification phase; verifies the smoke gate was extended, not rewritten, and that the `DEFAULT_MODULE_ID` tripwire was flipped deliberately |
+| `P6-KAREN` | end of P6 | `karen` | **Milestone 3** — verification phase; verifies the smoke gate was extended not rewritten, that **both** tripwire comments were actioned separately (`tests/module-registry.test.mjs:20-24` is already overdue; `src/modules/registry.js:39-50` is the one this feature fires), and that **P6-011's human review actually happened and is signed** |
 | `FEATURE-KAREN` | end of P7 | `karen` | **End of feature** — verifies no artifact in the delivered feature is described as validated, verified, reviewed, approved or released |
 
 `task-completion-validator` gates are per-phase exit criteria (`P0-GATE`..`P7-GATE`). `karen` runs
@@ -157,6 +161,33 @@ reopen without a new decisions-block entry**:
     documentation` otherwise resolves to free-tier Haiku regardless of the requested model
     (decisions block §6 routing finding), even though both phases require architectural/governance
     judgment, not mechanical edits.
+11. **The verification ceiling is source assertion plus one human pass — never claim more** (D-6, PRD
+    §11a). This repository has **no browser automation and no test dependencies**: `package.json`
+    declares no `dependencies` and no `devDependencies` at all, and
+    `scripts/smoke-browser-unit-rejection.mjs:4-15` states the posture deliberately. Behavioral
+    fail-closure, banner rendering, disclosure placement (panel vs. tooltip) and refusal-state
+    transitions are established by **source inspection plus P6-011's human review**, not by executed
+    tests. **Forbidden in any AC, test name, progress note, commit message, CHANGELOG line or PR
+    body**: "spy", "call count", "renders", "executes", "the smoke run exercises…", "tested",
+    "verified in the browser", "end-to-end" — for anything DOM-dependent. A green `npm run check`
+    means the source says the right things and the non-DOM units do the right things; nothing more.
+12. **Do not add jsdom, a headless browser, or any test runner** (D-6). The zero-dependency posture is
+    load-bearing for a prototype that promises no third-party code, and changing it is its own
+    decision — held as **ADR-0010 (`proposed`, DF-SMS-06)**, not a line item in this feature.
+13. **`P6-011` is a human task.** It captures and reviews every `visual_evidence_required` screenshot
+    and performs the devtools forced-activation and live-DOM `sha256:` checks. It must **not** be
+    dispatched to an agent, and must **not** be marked complete on an agent's assertion — the record
+    must name a person. Without it, `P6-GATE` is unpassable: no other task provisions any capture
+    mechanism.
+14. **`disabled` is presentation, not the gate** (FR-37 vs. FR-6 / AC-11). A devtools user can delete
+    the attribute. Eligibility must be evaluated **inside** the selection, KB-load and submit
+    handlers, and never read from DOM state (`.disabled`, `aria-disabled`, `dataset.*`, a CSS class).
+15. **AC-8 is an allow-list, not a token scan** (D-2 corollary in D-6). The renderer may emit only
+    `id`, `title`, `status`, `knowledgeBaseVersion`, `evidenceReviewedThrough`, `approvedBy.length`.
+    `modules/anemia/module.json` carries a real `clinicalContentHash` and D-2 imports it into the
+    browser graph by design, so `JSON.stringify(manifest)` into a row would leak it while passing a
+    token scan. Likewise, the no-green-state check (FR-11) asserts **resolved colour values**, not
+    token names — `--stub-warn: #2e7d32` must fail.
 
 ## Agent-Name Substitutions (footnote 1, preserve verbatim — do not "fix")
 
@@ -174,9 +205,10 @@ tasks — this substitution is deliberate, documented, and load-bearing for corr
 ## Model, Provider & Profile Assignment
 
 - **Model**: `sonnet` for P0–P6; `haiku` for P7 (mechanical doc edits — but see Hard Rule #10).
+  **`P6-011` has no model and no agent** — it is a human task and must not be dispatched.
 - **Effort**: `adaptive` by default; **`extended`** on P4 (fail-closed logic is the safety-critical
   slice) and P6 (gate surgery on a source-grepping smoke test).
-- **Provider**: `claude` for **all 34 pts** — no external-model tasks. The design mockups
+- **Provider**: `claude` for **all 41 pts** — no external-model tasks. The design mockups
   (`docs/dev/designs/mockups/spa-module-switcher/`) were generated out-of-band via Codex's native
   image tool (`gpt-5.6-terra`, operator override) and are **non-binding** (PRD §14) — no phase
   re-generates them.
@@ -192,14 +224,19 @@ tasks — this substitution is deliberate, documented, and load-bearing for corr
 | DF-SMS-03 | design | `docs/project_plans/design-specs/algorithm-explorer-module-generalization.md` |
 | DF-SMS-04 | policy | `docs/project_plans/design-specs/public-moduleid-api-surface.md` (update existing) |
 | DF-SMS-05 | tech-debt | Finding, not a spec — `.claude/findings/spa-module-switcher-findings.md` |
+| DF-SMS-06 | prereq | `docs/adr/0010-browser-test-capability-for-the-spa.md` (**ADR**, `proposed`, D-6) |
 
-`DF-SMS-01` and `DF-SMS-05` are **already known findings**, recorded regardless of any
-execution-time discovery, at `DOC-007`.
+**Three findings are already known** and are recorded at `DOC-007` regardless of any execution-time
+discovery: `DF-SMS-01` (sign-kb anemia hardcode), `DF-SMS-05` (cbc evidence-ID gap), and **the stale
+`tests/module-registry.test.mjs:20-24` comment** — its "second module registers" trigger fired at
+commit `263120b` and went unactioned for a release. That last one is pre-existing debt this feature
+closes; it must not be described as something this feature caused.
 
 ## Wrap-Up (after `FEATURE-KAREN` passes)
 
 Delegate to a documentation writer (`general-purpose`, sonnet) to create
 `.claude/worknotes/spa-module-switcher/feature-guide.md` (standard template, ≤200 lines). Its
-**Known Limitations** section must state plainly that one module is selectable, three are inert,
-and the browser verifies nothing. Commit it before opening the PR; the PR title should name the
-honesty outcome, not just the control.
+**Known Limitations** section must state plainly that one module is selectable, three are inert, the
+browser verifies nothing, **and that the UI's behavior was established by source inspection plus one
+human review pass (P6-011), not by executed browser tests** (PRD §11a). Commit it before opening the
+PR; the PR title should name the honesty outcome, not just the control.

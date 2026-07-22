@@ -44,7 +44,7 @@ tasks:
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P4-01]
-  estimated_effort: "0.75 pts"
+  estimated_effort: "1.0 pts"
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
@@ -131,7 +131,7 @@ tasks:
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P4-01]
-  estimated_effort: "0.5 pts"
+  estimated_effort: "0.75 pts"
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
@@ -154,7 +154,7 @@ tasks:
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P4-01, P3-03]
-  estimated_effort: "1.0 pts"
+  estimated_effort: "1.5 pts"
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
@@ -186,7 +186,7 @@ parallelization:
   batch_2: [P5-06]
   batch_3: [P5-GATE]
   critical_path: [P5-06, P5-GATE]
-  estimated_total_time: "~1.5 engineer-days"
+  estimated_total_time: "~1.5–2 engineer-days (5 pts)"
 blockers:
 - id: BLOCKER-PHASE-DEP
   title: "Phase 5 cannot open until Phase 4 exit gates (P4-GATE, P4-KAREN) both pass"
@@ -230,7 +230,7 @@ notes: >
   P3/P4 but runs after P4 rather than in parallel. **Hard boundary (R-8)**: this phase degrades; it
   does NOT generalize. Any change to anemiaWalkthrough or the facts.anemia.*/facts.cbc.*/
   facts.retic.* accessors is out of scope and is held as Deferred Item DF-SMS-03. Per the critical
-  path (P0→P1→P2→P3→P4→P6→P7), P5 carries float (4 pts) against the P4→P6 critical path and merges
+  path (P0→P1→P2→P3→P4→P6→P7), P5 carries float (5 pts) against the P4→P6 critical path and merges
   before Phase 6 opens.
 ---
 
@@ -356,7 +356,7 @@ still carries 91/26.")
   is Phase 3's (`P3-04`) job.
 - `git diff src/algorithmExplorer.js` must show **zero** changes — P5-01 touches only the tab
   visibility/copy in `index.html`/`src/app.js`, never the explorer file itself.
-- P5-06 is the largest task in this phase (1.0 pts) because it touches 8 distinct `index.html`
+- P5-06 is the largest task in this phase (1.5 pts) because it touches 8 distinct `index.html`
   sites — verify each individually, not just the `<h1>`.
 
 ### Development Setup

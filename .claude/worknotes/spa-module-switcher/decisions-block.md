@@ -99,6 +99,48 @@ Shared invariants for every refusal: `currentAudit = null`; `#results` hidden; `
 shown; `refreshAuditView()`; submit disabled; module selector stays usable. **Must not happen**:
 prior module's result left on screen, audit JSON still downloadable, or any silent fallback to `anemia`.
 
+### D-6 — Verification ceiling: source-assertion only. State the gap; do not paper over it.
+
+Added 2026-07-22 after the `karen` planning gate. **This repo has no browser automation and no test
+dependencies** — `package.json` carries `dependencies: {}` and `devDependencies: {}`, and
+`scripts/smoke-browser-unit-rejection.mjs:4-15` states the posture verbatim: *"This repository
+deliberately has no browser automation dependency… It does not claim to paint or inspect a real
+browser DOM."* Every P6 acceptance criterion phrased as *spy*, *call count*, *renders*, *executes*
+was therefore unwritable as specified.
+
+**Decision: (a) accept the source-assertion ceiling.** Do **not** add jsdom as a side effect of a UI
+feature. The zero-dependency posture is load-bearing for a clinical prototype that promises no
+third-party code (CLAUDE.md), and changing it is its own decision, not a line item in this plan.
+
+Consequences the plan must carry, all three mandatory:
+
+1. **Rewrite every behavioral P6 AC into what a text assertion can actually prove.** `functionBody()`
+   + regex over source can prove a handler *contains* the right guard; it cannot prove the state
+   machine *behaves*. Say which is which, per AC.
+2. **Add an explicit PRD section — "What automation does not verify."** It must state plainly that
+   behavioral fail-closure, banner rendering, and refusal-state transitions are verified by source
+   inspection and human review, **not** by executed browser tests. For a product whose entire value
+   proposition is honest self-description, silently over-claiming test coverage would be the exact
+   failure the feature exists to prevent.
+3. **`visual_evidence_required` is a human step, not an automated one.** Screenshots are captured and
+   reviewed by a person; P6-GATE must say so. As written the gate was unpassable — no task provisioned
+   any capture mechanism.
+
+Escalation path, deferred not dropped: author **ADR-0010 — browser test capability for the SPA**
+(`status: proposed`) as a P7 deferred-item spec. If the SPA keeps growing safety-critical UI, the
+zero-dependency posture will need revisiting deliberately, with evidence, on its own merits.
+
+**Corollary — D-2 hardening.** `karen` found AC-8 (no hash surfacing) bypassable: `modules/anemia/module.json`
+carries a real `clinicalContentHash: sha256:97e65556a42dbd7a…`, D-2 imports it into the browser graph
+by design, and a renderer doing `JSON.stringify(manifest)` into a row or `data-*` attribute would emit
+it while passing a prohibited-*token* scan of source text. **Replace the prohibition with an
+allow-list**: the row/banner renderer may emit only an explicitly enumerated set of manifest fields
+(`id`, `title`, `status`, `knowledgeBaseVersion`, `evidenceReviewedThrough`, `approvedBy.length`).
+Everything else is structurally unreachable rather than merely forbidden.
+
+Same class of defect: FR-11's "no green state" was checked by token *name*, not value — a
+`--stub-warn: #2e7d32` would pass. Assert on resolved colour values.
+
 ---
 
 ## 1. Phase Boundaries

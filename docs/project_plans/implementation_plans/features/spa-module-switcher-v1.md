@@ -11,7 +11,7 @@ prd_ref: docs/project_plans/PRDs/features/spa-module-switcher-v1.md
 plan_ref: null
 scope: "Wire the browser SPA to the already-module-agnostic runtime: list all four registered modules with their verbatim manifest status, gate selectability on READY_STATUS before assess() is ever called, and replace the misattributed 'Check the entered units' failure with a distinct fail-closed refusal state — changing no module's status and signing nothing."
 tier: 3
-effort_estimate: 34
+effort_estimate: "41 pts"
 architecture_summary: "New src/moduleManifests.js (four literal `import … with { type: 'json' }` statements → frozen moduleId-keyed map; browser verifies nothing) and src/moduleStatusVocabulary.js (single source for every clinician-facing status string) are registered in APP_SURFACE_FILES. A literal-specifier MODULE_KB_LOADERS map drives per-module KB fetches so build-static.mjs `?v=` stamping and check-app-imports per-file verification both still apply. Eligibility is a single READY_STATUS (src/kbVerify.js:43) comparison in the UI layer, decided before any assess() call; assessModule() is added alongside the retained assessPediatricAnemia export so the source-grepping smoke gate keeps passing. A distinct showModuleRefusal path — never showInputRejection — covers the four SQ-3 §4 refusal cases."
 related_documents: [docs/project_plans/PRDs/features/spa-module-switcher-v1.md, .claude/worknotes/spa-module-switcher/decisions-block.md, .claude/worknotes/spa-module-switcher/exploration-findings.md, .claude/worknotes/spa-module-switcher/spike-leg-sq1-module-eligibility.md, .claude/worknotes/spa-module-switcher/spike-leg-sq2-banner-truth-source.md, .claude/worknotes/spa-module-switcher/spike-leg-sq3-failure-surface.md, .claude/worknotes/spa-module-switcher/spike-leg-sq4-prior-art-reconciliation.md, .claude/worknotes/spa-module-switcher/routing-records.md, docs/project_plans/human-briefs/spa-module-switcher.md, docs/project_plans/design-specs/public-moduleid-api-surface.md, docs/architecture.md, docs/governance/gates-registry.md]
 references:
@@ -20,7 +20,7 @@ references:
   specs: [schemas/module-manifest.schema.json, docs/governance/gates-registry.md, docs/project_plans/design-specs/public-moduleid-api-surface.md]
   related_prds: [docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1.md]
 spike_ref: docs/project_plans/SPIKEs/spike-008-spa-module-switcher.md
-adr_refs: [docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md]
+adr_refs: [docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md, docs/adr/0010-browser-test-capability-for-the-spa.md]
 deferred_items_spec_refs: []
 findings_doc_ref: null
 charter_ref: null
@@ -55,80 +55,69 @@ wave_plan:
 
 # Implementation Plan: SPA Module Switcher
 
-**Plan ID**: `IMPL-2026-07-22-spa-module-switcher`
-**Date**: 2026-07-22
-**Author**: `implementation-planner`, expanding the Opus-authored decisions block
-**Human Brief**: `docs/project_plans/human-briefs/spa-module-switcher.md` (Tier 3, required — **not yet authored**; this pointer is load-bearing. Its §2 Estimation Sanity Check content is pre-staged in `.claude/worknotes/spa-module-switcher/decisions-block.md` §4 (H1–H6 + anchors) — migrate that content verbatim when the brief is created. **H1–H6 are deliberately not inlined here.**)
+**Plan ID**: `IMPL-2026-07-22-spa-module-switcher` · **Date**: 2026-07-22 · **Author**: `implementation-planner`, expanding the Opus-authored decisions block
+**Human Brief**: `docs/project_plans/human-briefs/spa-module-switcher.md` — **authored**; it carries the H1–H6 Estimation Sanity Check (deliberately not inlined here) and the revised estimate.
+**Verification ceiling (D-6)**: read PRD §11a before executing any phase. This repo has no browser automation and no test dependencies; behavioral fail-closure, banner rendering and refusal-state transitions are established by **source inspection plus one human review pass (P6-011)**, not by executed browser tests.
 **Related Documents**:
-- **PRD** (FR-1..FR-36, AC-1..AC-10, R-1..R-8, OQ-1..OQ-4): `docs/project_plans/PRDs/features/spa-module-switcher-v1.md`
-- **Decisions Block** (binding; D-1..D-5 settled, not reopened below): `.claude/worknotes/spa-module-switcher/decisions-block.md`
-- **SPIKE legs** (the file:line evidence base every task cites): `spike-leg-sq{1,2,3,4}-*.md`
-- **ADR**: `docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md` (authored in P0, `status: proposed`)
+- **PRD** (FR-1..FR-37, AC-1..AC-11, **§11a verification ceiling**, R-1..R-9, OQ-1..OQ-4): `docs/project_plans/PRDs/features/spa-module-switcher-v1.md`
+- **Decisions Block** (binding; D-1..D-6 settled, not reopened below): `.claude/worknotes/spa-module-switcher/decisions-block.md`; **SPIKE legs** `spike-leg-sq{1,2,3,4}-*.md`
+- **ADRs**: `0009-module-eligibility-policy-for-clinician-facing-surfaces.md` (P0, `proposed`); `0010-browser-test-capability-for-the-spa.md` (P7 deferred spec, `proposed`, per D-6)
 
-**Complexity**: Large (first new SPA panel since v0.1; a safety-critical third UI state; gate surgery on a source-grepping smoke test)
-**Total Estimated Effort**: 34 pts
+**Complexity**: Large (first new SPA panel since v0.1; a safety-critical third UI state; gate surgery on a source-grepping smoke test) · **Total Estimated Effort**: 41 pts (revised from 34 at the `karen` planning gate — see Phase Summary)
 **Provider**: `claude` for every task — browser-local static SPA, no external-model tasks. The design mockups were already generated out-of-band (`gpt-5.6-terra`, operator override) and are **non-binding** (PRD §14); no phase re-generates them.
 
 ## Executive Summary
 
 The rule engine has been module-agnostic since P0 — `assess(input, moduleId, rules, candidates)`
-(`src/engine.js:19`) over moduleId-keyed registries — and the browser has never used any of it.
-This plan wires `src/app.js` to that registry and, in doing so, makes the platform's module
-inventory **and its non-parity** perceivable to a clinician for the first time: four modules listed,
-each carrying its verbatim `module.json.status`, exactly one of them runnable.
+(`src/engine.js:19`) over moduleId-keyed registries — and the browser has never used any of it. This
+plan wires `src/app.js` to that registry, making the module inventory **and its non-parity**
+perceivable for the first time: four modules listed with verbatim `module.json.status`, one runnable.
 
 The load-bearing outcome is not "a switcher exists" — it is that **the switcher cannot lie**. Three
-properties carry that weight and are proven, not asserted: (1) eligibility is a single `READY_STATUS`
-comparison decided from the manifest *before* `assess()` is reachable, so a scaffold can never throw
-`UnitRejectionError` and render **"Check the entered units"** (SQ-3 F1/F2 — the current, live
-`docs/architecture.md:391` violation); (2) the browser surfaces no hash, no "integrity verified", no
-approval badge and **no green state**, because `scripts/sign-kb.mjs:58-73` computes every module's
-`clinicalContentHash` over anemia's files and surfacing it would be a false attestation (R-5, out of
-scope, recorded as a finding); (3) every clinician-facing status string lives in one constant module
-pinned by a doc-truth test. Eight phases run P0∥P1 → P2 → P3 → P4 → P5 → P6 → P7; **P0 lands first
-and is not negotiable** — it records the authority lifting E1's FR-14/R-8 prohibition.
+properties carry that weight: (1) eligibility is a single `READY_STATUS` comparison decided from the
+manifest *before* `assess()` is reachable, so a scaffold can never throw `UnitRejectionError` and
+render **"Check the entered units"** (SQ-3 F1/F2 — the live `docs/architecture.md:391` violation);
+(2) the browser surfaces no hash, no "integrity verified", no approval badge and **no green state**,
+because `scripts/sign-kb.mjs:58-73` computes every module's `clinicalContentHash` over anemia's files
+(R-5, out of scope, recorded as a finding); (3) every clinician-facing status string lives in one
+constant pinned by a doc-truth test. **How far those are proven is bounded by D-6**: source assertion
+plus one human pass, never an executed browser test — PRD §11a, and this plan must not soften it.
+Eight phases run P0∥P1 → P2 → P3 → P4 → P5 → P6 → P7; **P0 lands first and is not negotiable** — it
+records the authority lifting E1's FR-14/R-8 prohibition.
 
 ## Implementation Strategy
 
 ### Architecture Sequence
 
-This is a browser-local static SPA with no bundler, no backend call and no telemetry. The template's
-MeatyPrompts layered checklist (repositories / routers / cursor pagination / OpenTelemetry) **does not
-apply** (PRD §2 "Architectural Context"). The sequence follows the decisions block's boundary rationale:
-**governance** (P0 — the paperwork that authorizes the UI, before the UI) → **truth sources** (P1 —
-manifests in, vocabulary out; no behavior yet) → **seams** (P2 — literal-specifier KB loading,
-`assessModule`, the eligibility predicate) → **presentation** (P3) → **refusal** (P4, built on P3's
-selection surface) → **degradation** (P5 — the four tabs and page copy that still assume anemia) →
-**verification** (P6, owns every `verified_by` ID in PRD §11) → **docs** (P7, closes only once
-behavior is frozen).
+A browser-local static SPA — no bundler, no backend call, no telemetry — so the MeatyPrompts layered
+checklist does not apply (PRD §2). Sequence: **governance** (P0 — the paperwork authorizing the UI,
+before the UI) → **truth sources** (P1) → **seams** (P2 — literal-specifier KB loading, `assessModule`,
+the eligibility predicate) → **presentation** (P3) → **refusal** (P4) → **degradation** (P5) →
+**verification** (P6, owning every `verified_by` ID in PRD §11 incl. the human step P6-011) → **docs**
+(P7).
 
 ### Parallel Work Opportunities
 
-- **P0 ∥ P1** (wave 1) — disjoint file sets: P0 writes only `docs/adr/**` and
-  `docs/project_plans/design-specs/public-moduleid-api-surface.md`; P1 writes only `src/module*.js`,
-  `scripts/check-app-imports.mjs` and one new test. Confirmed disjoint against both `files_affected`.
-- **P3 ∥ P5** is **dependency-legal** per decisions block §5 but **not schedulable as one wave**: both
-  write `src/app.js` and `index.html`, declared serialization barriers, so the two-pass wave algorithm
-  splits P5 later. §5's parallel slice survives as **scheduling slack** (P5 carries 4 pts of float
-  against the P4→P6 critical path), not concurrent execution — an expansion of §5, not a contradiction.
+- **P0 ∥ P1** (wave 1) — disjoint file sets (P0: `docs/adr/**` + the design spec; P1: `src/module*.js`,
+  `scripts/check-app-imports.mjs`, one test), confirmed against both `files_affected`.
+- **P3 ∥ P5** is **dependency-legal** (decisions block §5) but **not one wave**: both write
+  `src/app.js` and `index.html`, declared serialization barriers, so P5 splits later. §5's parallel
+  slice survives as **scheduling slack** (5 pts of float against the P4→P6 critical path).
 
 ### Critical Path
 
-**P0∥P1 → P2 → P3 → P4 → P6 → P7** = 3 + 5 + 6 + 5 + 5 + 3 = **27 of 34 pts**. P5 (4 pts) carries
-float; P0 (3 pts) is absorbed by P1's concurrent 3 pts, adding zero duration while remaining a hard
-predecessor of P2.
+**P0∥P1 → P2 → P3 → P4 → P6 → P7** = 3 + 5 + 8 + 5 + 9 + 3 = **33 of 41 pts**. P5 (5 pts) carries
+float; P0's 3 pts are absorbed by P1's concurrent 3 — zero added duration, still a hard predecessor.
 
 ```mermaid
 graph LR
-  P0["P0: Governance (3)"] --> P2
-  P1["P1: Manifests + Vocabulary (3)"] --> P2["P2: KB loading + seams (5)"]
-  P2 --> P3["P3: Selector UI + banner (6)"]
-  P2 --> P5["P5: Tab degradation (4)"]
-  P3 --> P4["P4: Fail-closed refusal (5)"]
+  P0["P0: Governance (3)"] --> P2["P2: KB loading + seams (5)"]
+  P1["P1: Manifests + Vocabulary (3)"] --> P2
+  P2 --> P3["P3: Selector UI + banner (8)"] --> P4["P4: Fail-closed refusal (5)"]
+  P2 --> P5["P5: Tab degradation (5)"]
   P4 --> P5
-  P4 --> P6["P6: Gates + tests (5)"]
-  P5 --> P6
-  P6 --> P7["P7: Docs (3)"]
+  P4 --> P6["P6: Gates + tests + human review (9)"]
+  P5 --> P6 --> P7["P7: Docs (3)"]
 ```
 
 ### Phase Summary
@@ -138,38 +127,43 @@ graph LR
 | P0 | Governance & paperwork prerequisites | 3 pts | documentation writer (general-purpose)¹; `task-completion-validator` gate | sonnet | claude | adaptive | **Must land first.** Records the FR-14/R-8 lifting authority. No status flipped anywhere. |
 | P1 | Manifest surface + status vocabulary | 3 pts | frontend engineer (general-purpose)¹; `task-completion-validator` gate | sonnet | claude | adaptive | Two new app-surface files; both must be registered in `APP_SURFACE_FILES` |
 | P2 | Generic KB loading + engine seam | 5 pts | frontend engineer + registry/seam engineer (general-purpose)¹; `task-completion-validator` gate; **`karen` milestone review** | sonnet | claude | adaptive | Seam correctness matters — do not downgrade. Literal-specifier map is the whole ballgame (R-4). |
-| P3 | Selector UI + status banner + `?module=` | 6 pts | UI engineer + UI designer (general-purpose)¹; `task-completion-validator` gate | sonnet | claude | adaptive | `integration_owner: phase-owner`¹ (shared with P4). Seam task: **P4-06**. |
+| P3 | Selector UI + status banner + `?module=` | **8 pts** | UI engineer + UI designer (general-purpose)¹; `task-completion-validator` gate | sonnet | claude | adaptive | `integration_owner: phase-owner`¹ (shared with P4). Seam task: **P4-06**. Was 6; +2 for FR-37 (programmatic inertness + reason-in-accessible-name), previously NFR prose with no AC. |
 | P4 | Fail-closed refusal state + capability gating | 5 pts | frontend engineer (general-purpose)¹; `task-completion-validator` gate; **`karen` milestone review** | sonnet | claude | **extended** | Safety-critical slice. `integration_owner: phase-owner`¹ (shared with P3). Seam task **P4-06**. |
-| P5 | Module-scoped tab degradation & copy | 4 pts | frontend engineer (general-purpose)¹; `task-completion-validator` gate | sonnet | claude | adaptive | Degrade only — **no** `algorithmExplorer` generalization (R-8) |
-| P6 | Gates & test harness | 5 pts | frontend engineer (general-purpose)¹ implements, `task-completion-validator` drives; **`karen` milestone review** | sonnet | claude | **extended** | Gate surgery on a source-grepping smoke test (R-3): **extend, never rewrite** |
-| P7 | Docs finalization | 3 pts | documentation writer (general-purpose)¹; `task-completion-validator` gate; **`karen` end-of-feature review** | haiku | claude | adaptive | **Pin `provider: claude` explicitly** — see Model Routing note below |
-| **Total** | — | **34 pts** | — | — | — | — | Matches decisions block §4 bottom-up total exactly (±0%) |
+| P5 | Module-scoped tab degradation & copy | **5 pts** | frontend engineer (general-purpose)¹; `task-completion-validator` gate | sonnet | claude | adaptive | Degrade only — **no** `algorithmExplorer` generalization (R-8). Was 4; +1 (6 surfaces across 8 `index.html` sites was under-counted). |
+| P6 | Gates & test harness **+ human verification** | **9 pts** | frontend engineer (general-purpose)¹ implements, `task-completion-validator` drives; **`karen` milestone review**; **a named human for P6-011** | sonnet | claude | **extended** | Gate surgery on a source-grepping smoke test (R-3): **extend, never rewrite**. Was 5; +4 for two new tasks (**P6-011** human visual evidence, **P6-012** forced-activation source assertion) and for rewriting every behavioral AC to the D-6 ceiling. |
+| P7 | Docs finalization | 3 pts | documentation writer (general-purpose)¹; `task-completion-validator` gate; **`karen` end-of-feature review** | haiku | claude | adaptive | **Pin `provider: claude` explicitly** — see Model Routing note below. Now also authors ADR-0010 (DF-SMS-06). |
+| **Total** | — | **41 pts** | — | — | — | — | 3+3+5+8+5+5+9+3 = 41. **Arithmetic sum of the rows above** — see the re-estimation note. |
+
+**Re-estimation note (2026-07-22, `karen` planning gate).** The prior 34 pts was a **top-down anchor**
+(E1's 30 + ~13%) that every phase was then fitted to — each phase summed to exactly its pre-set anchor,
+zero residual across 52 tasks. That is back-fitting; the human brief's H4 "per-area sum = 34, matches"
+was circular and has been deleted, not restated. **41 is the corrected figure**: the three under-scoped
+phases re-estimated on their own task content (P3 6→8, P5 4→5, P6 5→9), the other five unchanged
+(P0 3, P1 3, P2 5, P4 5, P7 3). 34 + 2 + 1 + 4 = **41**. On any later revision, re-add the column —
+the total must be the sum of the rows, never a target the rows are made to hit.
 
 ¹ **Agent-name substitutions.** The decisions block §2 names `documentation-writer`,
-`frontend-developer`, `backend-architect`, `ui-engineer-enhanced` and `ui-designer`. **None of these
-is registered in this project** — the registered roster is `.claude/agents/dev/`
-(`artifact-tracker`, `artifact-validator`, `phase-owner`) plus the user-level `karen`,
-`task-completion-validator`, `pr-workflow`, `gemini-orchestrator`. Per the house convention already
-used in `multi-bundle-conversion-e1`, every implementer role is dispatched as **`general-purpose`**
-with the role descriptor retained for routing intent, phase orchestration is **`phase-owner`**, and
-`integration_owner` is **`phase-owner`** (the decisions block said `frontend-developer`). Reviewer
-gates use the two genuinely registered reviewer agents, `task-completion-validator` and `karen`.
+`frontend-developer`, `backend-architect`, `ui-engineer-enhanced`, `ui-designer` — **none registered
+here** (roster: `.claude/agents/dev/` `artifact-tracker`, `artifact-validator`, `phase-owner`, plus
+user-level `karen`, `task-completion-validator`, `pr-workflow`, `gemini-orchestrator`). Per the
+`multi-bundle-conversion-e1` convention, implementer roles dispatch as **`general-purpose`** with the
+descriptor kept for routing intent; orchestration and `integration_owner` are **`phase-owner`**.
+**P6-011 has no agent at all** — it is a human task and must not be dispatched.
 
 ### Estimation Sanity Check (pointer)
 
-Full H1–H6 application lives in `docs/project_plans/human-briefs/spa-module-switcher.md` §2 (to be
-authored; content pre-staged in decisions block §4). Summary only: **bottom-up total 34 pts**, Tier 3
-confirmed; H4 per-area sum matches at 34 with no compression; H2 is **N/A** (browser-only, no server
-change — D-5). Do not re-derive the anchors here. This plan retains per-task point estimates only.
+Full H1–H6 lives in the human brief §2 (**authored**). Summary: **41 pts**, Tier 3; H2 **N/A**
+(browser-only, no server change — D-5); **H4 no longer claims a matching per-area sum**.
 
 ### Phase Detail Files
 
-Full task tables, acceptance criteria and per-task Model/Effort assignments live in the phase files
-(this parent stays under the 300-line guideline):
+Full task tables, per-task Model/Effort assignments, and the AC-1..AC-11 propagation/resilience
+contracts live in the phase files (this parent stays under the 300-line guideline):
 
 - **[Phase 0-2: Governance, Truth Sources & Seams](./spa-module-switcher-v1/phase-0-2-foundation.md)**
 - **[Phase 3-5: Selector UI, Fail-Closed Refusal & Degradation](./spa-module-switcher-v1/phase-3-5-ui.md)**
-- **[Phase 6-7: Gates, Test Harness & Docs](./spa-module-switcher-v1/phase-6-7-gates-docs.md)**
+- **[Phase 6-7: Gates, Test Harness & Docs](./spa-module-switcher-v1/phase-6-7-gates-docs.md)** — also
+  hosts the AC contracts and the P6-011 human-verification record
 
 ## Reviewer Gate Schedule (Tier 3)
 
@@ -178,41 +172,43 @@ Full task tables, acceptance criteria and per-task Model/Effort assignments live
 | P0-GATE .. P7-GATE | every phase exit | `task-completion-validator` | Phase exit gate criteria met and recorded in the phase progress note |
 | P2-KAREN | end of P2 | `karen` | Milestone 1 — the seams (literal specifiers, `assessModule`, eligibility predicate) are the load-bearing foundation of every later phase |
 | P4-KAREN | end of P4 | `karen` | Milestone 2 — the fail-closed refusal state is the safety-critical slice; verifies no path reaches `assess()` for an ineligible module and no refusal reuses `showInputRejection` |
-| P6-KAREN | end of P6 | `karen` | Milestone 3 — verification phase; verifies the smoke gate was **extended, not rewritten**, and that the `DEFAULT_MODULE_ID` tripwire was flipped deliberately |
+| P6-KAREN | end of P6 | `karen` | Milestone 3 — verification phase; verifies the smoke gate was **extended, not rewritten**, that **both** tripwire comments (`tests/module-registry.test.mjs:20-24` — already overdue — and `src/modules/registry.js:39-50`) were actioned deliberately and separately, and that **P6-011's human review actually happened and is signed** rather than assumed |
 | FEATURE-KAREN | end of P7 | `karen` | End of feature — verifies no artifact in the delivered feature is described as validated, verified, reviewed, approved or released |
 
 ## Decisions & OQ Resolutions
 
 Binding. Phase executors must not reopen these without a new decisions-block entry.
 
-**OQ-1 — Selector form factor.** Resolved: **persistent sidebar rail** (mockup variant A). A
-one-time interstitial gate (variant C) leaves no in-session reminder of which module is active, and
-the active module's identity is exactly what FR-30 and AC-7 exist to keep visible. Both mockups render
-CBC Suite as *selectable*; that is **superseded by D-1 / FR-4** — CBC Suite is `unsigned-stub` and
-ships inert. The mockups are non-binding for behavior (PRD §14).
+**OQ-1 — Selector form factor.** **Persistent sidebar rail** (mockup A). A one-time interstitial gate
+(C) leaves no in-session reminder of which module is active, and that identity is exactly what FR-30
+and AC-7 keep visible. Both mockups render CBC Suite *selectable* — **superseded by D-1 / FR-4**; it
+is `unsigned-stub` and ships inert. Mockups are non-binding for behavior (PRD §14).
 
-**OQ-2 — `#evidence` tab.** Resolved: **degrade** (FR-26). `src/evidence/registry.js:39-50` holds
-loaders for `anemia` and `cbc_suite_v1` only; growth/kidney have an `evidence.json` but no loader. A
-per-module evidence view is Deferred Item **DF-SMS-02**.
+**OQ-2 — `#evidence` tab.** **Degrade** (FR-26). `src/evidence/registry.js:39-50` holds loaders for
+`anemia` and `cbc_suite_v1` only; growth/kidney have an `evidence.json` but no loader. A per-module
+evidence view is **DF-SMS-02**.
 
-**OQ-3 — `#rules` empty-state copy.** Resolved here so P5 does not author prose ad hoc. The string
-lands in `src/moduleStatusVocabulary.js` (P1-02) and is pinned by P6-004:
-`This module contains no rules. No assessment can be produced from it.` It must state that the module
-**contains** no rules — never that rules "are not yet loaded", which implies a loading failure, and
-never "not yet available", which implies a pipeline toward release that `gates-registry.md:130-132`
-makes schema-impossible.
+**OQ-3 — `#rules` empty-state copy.** Resolved here so P5 authors no prose ad hoc. The string lands in
+`src/moduleStatusVocabulary.js` (P1-02), pinned by P6-004: `This module contains no rules. No
+assessment can be produced from it.` It must say the module **contains** no rules — never "not yet
+loaded" (implies a load failure) or "not yet available" (implies a pipeline toward release that
+`gates-registry.md:130-132` makes schema-impossible).
 
-**OQ-4 — ADR-0009 ratification.** Resolved: **`status: proposed` suffices to merge**, matching
-ADR-0004/0005/0006 (SQ-4 §4). No G0–G4 gate blocks shipping the switcher: it flips no status, signs
-nothing, and touches no reviewer roster. G0 ratification follows later and is not on this plan's path.
+**OQ-4 — ADR-0009 ratification.** **`status: proposed` suffices to merge**, matching ADR-0004/0005/0006
+(SQ-4 §4). No G0–G4 gate blocks the switcher: it flips no status, signs nothing, touches no roster.
+
+**D-6 — verification ceiling (added at the `karen` planning gate; binding on P6).** No jsdom, no
+headless browser, no new test dependency. Every P6 acceptance criterion is written to what a source
+assertion or an executed non-DOM unit can actually prove, and each states what it does *not* prove.
+The remainder is **P6-011, a human task**. PRD §11a is the disclosure; do not weaken it, and do not
+let a green `npm run check` be reported as behavioral coverage.
 
 ## Deferred Items & In-Flight Findings Policy
 
 ### Deferred Items Triage Table
 
-The 5 rows below are decisions block §9 verbatim in substance. Every row gets exactly one **DOC-006**
-task in P7 authoring its `Target Spec Path` (full task table in the Phase 6-7 file). Categories per
-this repo's `deferred-items-and-findings.md` set: `research` | `prereq` | `design` | `tech-debt` | `policy`.
+Decisions block §9 in substance plus DF-SMS-06 (from D-6). Every row gets one **DOC-006** task in P7
+authoring its `Target Spec Path`.
 
 | Item ID | Category | Reason Deferred | Trigger for Promotion | Target Spec Path |
 |---------|----------|-----------------|-----------------------|-----------------|
@@ -221,44 +217,49 @@ this repo's `deferred-items-and-findings.md` set: `research` | `prereq` | `desig
 | DF-SMS-03 | design | `src/algorithmExplorer.js` is anemia-shaped end to end (`anemiaWalkthrough` `:290-303`, `facts.cbc.hb`/`facts.retic.*` `:257-366`); generalizing it is large and is an explicit non-goal (R-8). P5 degrades the tab only. | A second module becomes selectable and needs a walkthrough | `docs/project_plans/design-specs/algorithm-explorer-module-generalization.md` |
 | DF-SMS-04 | policy | Server `moduleId` API param stays deferred for a **corrected** reason: the promotion trigger's "second module registered" clause fired (commit `263120b`), but its "a client needs to choose via the HTTP API" clause has **not** — this switcher makes zero `/api/` calls (SQ-4 §1-2). | An HTTP client, not the browser SPA, needs to select a module | `docs/project_plans/design-specs/public-moduleid-api-surface.md` (**update the existing spec**; the dated re-confirmation section lands in P0-02, DOC-006 verifies it) |
 | DF-SMS-05 | tech-debt | `cbc_suite_v1`'s 7 rule evidence IDs all resolve to nothing against `src/evidence.js:9,22` (anemia's 6 only) — citations silently vanish (SQ-3 F9). Unreachable while CBC is inert under D-1; a live guardrail breach the moment it becomes selectable. | `cbc_suite_v1` is proposed for `integrity-recorded` / selectability | **Finding**, not a spec — `.claude/findings/spa-module-switcher-findings.md` (created by P7-DOC-007) |
+| DF-SMS-06 | prereq | **Browser test capability for the SPA (D-6).** This repo has no browser automation and no test dependencies, so behavioral fail-closure, banner rendering and refusal transitions are source-asserted plus human-reviewed, never executed (PRD §11a). Adding jsdom or a headless browser as a side effect of a UI feature is refused; the zero-dependency posture is load-bearing for a prototype that promises no third-party code. | The SPA gains further safety-critical UI, or a second module becomes selectable — i.e. when the cost of an unexecuted behavioral assertion exceeds the cost of the dependency | `docs/adr/0010-browser-test-capability-for-the-spa.md` (**ADR, `status: proposed`**, authored at P7-DOC-006) |
 
 ### In-Flight Findings
 
-Not pre-created. `findings_doc_ref` stays `null` until the first execution-time finding. **Two are
+Not pre-created; `findings_doc_ref` stays `null` until the first execution-time finding. **Three are
 already known and must be recorded at P7-DOC-007 regardless**: DF-SMS-01 (`sign-kb.mjs` anemia
-hardcode, R-5) and DF-SMS-05 (SQ-3 F9 evidence-ID resolution gap). On creation the executing agent
-sets `findings_doc_ref`, appends the path to `related_documents`, and — if any new finding is
-load-bearing — adds a further DOC-006 row and appends its spec path to `deferred_items_spec_refs`.
+hardcode, R-5); DF-SMS-05 (SQ-3 F9 evidence-ID gap); and **the stale tripwire comment** at
+`tests/module-registry.test.mjs:20-24` — its trigger ("the day a second module registers") fired at
+commit `263120b`, was never actioned, and the comment still asserts "today there is exactly one
+registered module" while four are registered.
 
 ### Quality Gate
 
-P7 cannot close until: DF-SMS-01..04 each have their `Target Spec Path` authored (or updated, for
-DF-SMS-04); `deferred_items_spec_refs` lists all four paths; `findings_doc_ref` is populated and its
-doc finalized at `status: accepted` with DF-SMS-05 recorded.
+P7 cannot close until DF-SMS-01..04 and DF-SMS-06 each have their `Target Spec Path` authored (or
+updated, for DF-SMS-04), `deferred_items_spec_refs` lists all five, and `findings_doc_ref` is populated
+with its doc at `status: accepted` recording DF-SMS-05 and the stale-tripwire finding.
 
 ## Plan Generator Rule Compliance (R-P1..R-P4)
 
 - **R-P1** (no vague "all/across"): every task table enumerates concrete file paths and line anchors,
-  bounded lists (4 modules, 8 fetch specifiers, 4 refusal cases, 4 status enum values, 5 deferred
-  items). No unbounded "across the UI" phrasing appears.
-- **R-P2** (new artifact field ⇒ "consumer handles missing/empty X" AC): applied to every new surface —
-  a manifest missing an optional envelope field (P3-03), a `status` absent or outside the closed enum
-  (P2-03), a status with no vocabulary entry (P1-02), a module in `MODULE_IDS` absent from the manifest
-  map (P3-03), zero rules (P5-03). Each fails to the refusal path, never to friendlier text.
+  bounded lists (4 modules, 8 fetch specifiers, 4 refusal cases, 4 enum values, 6 deferred items).
+- **R-P2** (new field ⇒ "consumer handles missing/empty X" AC): applied to a manifest missing an
+  optional envelope field (P3-03), an absent/out-of-enum `status` (P2-03), a status with no vocabulary
+  entry (P1-02), a `MODULE_IDS` entry absent from the manifest map (P3-03), zero rules (P5-03). Each
+  fails to the refusal path, never to friendlier text.
 - **R-P3** (≥2 owner specialties + overlapping `files_affected` ⇒ `integration_owner` + seam task):
   applied to **P3 + P4**, which share `src/app.js` and `index.html`. `integration_owner: phase-owner`
-  is declared on both phases; the seam task is **P4-06** — selecting an ineligible module must swap
-  the banner **and** clear results atomically, with no interleaving in which the previous module's
-  result is visible beneath the new module's banner.
-- **R-P4** (UI-touching phases need a runtime-smoke task): **applicable and satisfied**. This repo has
-  no `*.tsx`; R-P4's trigger is read as "any UI-touching file" — `index.html`, `styles.css`,
-  `src/app.js` — which P3, P4 and P5 all write. The runtime-smoke task is **P6-009-smoke**
-  (`scripts/smoke-browser-unit-rejection.mjs`, extended not rewritten), which exercises default load,
-  switch to an ineligible module, refusal render, and tab switch with `?module=` present.
+  on both; seam task **P4-06** — selecting an ineligible module must swap the banner **and** clear
+  results atomically. Its assertion is a source-order one (D-6), not an observed interleaving.
+- **R-P4** (UI-touching phases need a runtime-smoke task): **satisfied within the D-6 ceiling**. No
+  `*.tsx` here, so R-P4's trigger reads as "any UI-touching file" (`index.html`, `styles.css`,
+  `src/app.js`), which P3–P5 all write. The task is **P6-009-smoke** (extend, never rewrite). **What
+  it actually does**: source assertions over the app surfaces plus *executed* checks against the built
+  non-DOM graph (`assessModule`, `isModuleSelectable`). It does **not** load a page, dispatch an event,
+  switch a tab or render a refusal — nothing here can. The behavioral half is discharged by **P6-011,
+  a human task**; PRD §11a says so in the product's own words.
 
 ## Risk Mitigation
 
 Expanded from decisions block §3; per-phase mitigations also appear in each phase's Quality Gates.
+**R-9 (new, from the `karen` gate)** — §11a's ceiling is forgotten and a green `npm run check` is later
+reported as behavioral fail-closure coverage. Mitigation: every P6 AC states what it does not prove;
+P6-011 is a human task with a named signer; P6-KAREN checks that it was actually done.
 
 | Risk | Impact | Likelihood | Mitigation Strategy |
 |------|:------:|:----------:|---------------------|
@@ -273,28 +274,27 @@ Expanded from decisions block §3; per-phase mitigations also appear in each pha
 
 ## Model, Provider & Profile Assignment
 
-Per decisions block §6 and `.claude/worknotes/spa-module-switcher/routing-records.md`. All tasks
-carry Model / Effort / Provider columns in the phase files. Effort vocabulary is claude-only here:
-`adaptive` | `extended` — **story points never appear in Effort**.
+Per decisions block §6 and `routing-records.md`. All tasks carry Model / Effort / Provider columns in
+the phase files. Effort vocabulary is claude-only: `adaptive` | `extended` — **story points never
+appear in Effort**.
 
-- **Model**: `sonnet` for P0–P6; `haiku` for P7 (mechanical doc edits). **Effort**: `adaptive` by
-  default; **`extended` on P4** (fail-closed logic is the safety-critical slice) and **P6** (gate
-  surgery on a source-grepping smoke test). **Provider**: `claude` for all 34 pts — no external-model
-  tasks; the mockups were generated out-of-band before planning and are non-binding.
-- **Routing finding, carried forward from decisions block §6 — load-bearing for P0 and P7**:
-  `task_class: documentation` resolves to **free-tier Haiku regardless of the requested model**. Both
-  phases must pin `provider: claude` explicitly on every task or they silently land on a free-tier
-  route. P0 is additionally pinned `sonnet` — its tasks are documentation-shaped but are governance
-  artifacts, not mechanical edits.
+- **Model**: `sonnet` P0–P6; `haiku` P7. **Effort**: `adaptive` by default; **`extended` on P4**
+  (safety-critical slice) and **P6** (gate surgery on a source-grepping smoke test). **Provider**:
+  `claude` for all 41 pts. **P6-011 has no model** — it is a human task and must not be dispatched.
+- **Routing finding (decisions block §6) — load-bearing for P0 and P7**: `task_class: documentation`
+  resolves to **free-tier Haiku regardless of requested model**. Both phases must pin
+  `provider: claude` on every task. P0 is additionally pinned `sonnet` — governance artifacts, not
+  mechanical edits.
 
 ## Wrap-Up: Feature Guide & PR
 
-Triggered once P7 is sealed and FEATURE-KAREN passes. Delegate to a documentation writer
-(`general-purpose`, sonnet) to create `.claude/worknotes/spa-module-switcher/feature-guide.md` per the
-standard template (≤200 lines). Its **Known Limitations** section must state plainly that one module
-is selectable, three are inert, and the browser verifies nothing. Commit it before opening the PR; the
-PR title should name the honesty outcome, not just the control.
+Once P7 is sealed and FEATURE-KAREN passes, delegate to a documentation writer (`general-purpose`,
+sonnet) to create `.claude/worknotes/spa-module-switcher/feature-guide.md` (≤200 lines). Its **Known
+Limitations** must state plainly that one module is selectable, three are inert, the browser verifies
+nothing, **and that the UI's behavior was verified by source inspection plus one human review pass,
+not by executed browser tests** (PRD §11a). Commit before the PR; the PR title should name the honesty
+outcome, not just the control.
 
-**Progress Tracking**: `.claude/progress/spa-module-switcher/` (one file per phase, created via the
-`artifact-tracking` skill during execution — `progress_init: auto`). **Plan Version**: 1.0 ·
+**Progress Tracking**: `.claude/progress/spa-module-switcher/` — `context.md` + one file per phase
+(`phase-0-progress.md` .. `phase-7-progress.md`). **Plan Version**: 1.1 (karen-gate revision) ·
 **Last Updated**: 2026-07-22

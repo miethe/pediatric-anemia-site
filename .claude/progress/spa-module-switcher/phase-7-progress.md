@@ -119,8 +119,8 @@ tasks:
 - id: DOC-005
   description: >
     Plan frontmatter finalization. Set status: completed, populate commit_refs, files_affected
-    and updated; set changelog_ref; populate deferred_items_spec_refs from DOC-006 and
-    findings_doc_ref from DOC-007.
+    and updated; set changelog_ref; populate deferred_items_spec_refs from DOC-006 (FIVE paths now,
+    including ADR-0010) and findings_doc_ref from DOC-007.
   status: pending
   assigned_to: [general-purpose]
   provider: claude
@@ -132,7 +132,7 @@ tasks:
   target_surfaces:
   - docs/project_plans/implementation_plans/features/spa-module-switcher-v1.md
   acceptance_criteria: >
-    Frontmatter complete per the lifecycle spec; deferred_items_spec_refs lists all four DOC-006
+    Frontmatter complete per the lifecycle spec; deferred_items_spec_refs lists all five DOC-006
     paths; findings_doc_ref populated.
 - id: DOC-006
   description: >
@@ -142,7 +142,16 @@ tasks:
     DF-SMS-02 → per-module-evidence-view.md; DF-SMS-03 →
     algorithm-explorer-module-generalization.md; DF-SMS-04 → UPDATE the existing
     public-moduleid-api-surface.md (verify P0-03's dated re-confirmation section is present and
-    accurate, append the switcher's shipped state as evidence).
+    accurate, append the switcher's shipped state as evidence). DF-SMS-06 → author
+    docs/adr/0010-browser-test-capability-for-the-spa.md, status: proposed — an ADR, not a design
+    spec, because it proposes changing a posture rather than a design. It must record: that
+    package.json declares no dependencies and no devDependencies; that
+    scripts/smoke-browser-unit-rejection.mjs:4-15 states the no-browser-automation posture
+    deliberately; the concrete cost this feature measured — behavioral fail-closure, banner
+    placement and refusal transitions are source-asserted plus human-reviewed, never executed (PRD
+    §11a); and that D-6 REFUSED to add jsdom as a side effect of a UI feature. It must NOT claim
+    the capability exists and must NOT be written as a plan to adopt one. Trigger: further
+    safety-critical SPA UI, or a second selectable module.
   status: pending
   assigned_to: [general-purpose]
   provider: claude
@@ -156,21 +165,28 @@ tasks:
   - docs/project_plans/design-specs/per-module-evidence-view.md
   - docs/project_plans/design-specs/algorithm-explorer-module-generalization.md
   - docs/project_plans/design-specs/public-moduleid-api-surface.md
+  - docs/adr/0010-browser-test-capability-for-the-spa.md
   acceptance_criteria: >
-    Three new design specs exist with correct frontmatter; the fourth (DF-SMS-04) existing spec
-    verified/updated; all four paths appended to deferred_items_spec_refs; each spec names its
-    promotion trigger from the triage table.
+    Three new design specs plus ADR-0010 exist with correct frontmatter; the fifth (DF-SMS-04)
+    existing spec verified/updated; all five paths appended to deferred_items_spec_refs; ADR-0010 is
+    status: proposed and claims no capability that does not exist; each artefact names its promotion
+    trigger from the triage table.
 - id: DOC-007
   description: >
-    Create & finalize the findings doc — two findings are already known. Create
+    Create & finalize the findings doc — THREE findings are already known. Create
     .claude/findings/spa-module-switcher-findings.md (lazy-creation rule; not pre-created, but two
     findings are known at planning time and MUST be recorded regardless). Finding 1 (R-5/DF-SMS-01):
     scripts/sign-kb.mjs's anemia hardcode makes every module's clinicalContentHash a false
     attestation if surfaced; kept off-screen by FR-31. Finding 2 (SQ-3 F9/DF-SMS-05): all 7
     cbc_suite_v1 rule evidence IDs resolve to nothing against src/evidence.js (anemia's 6 only) —
     citations silently vanish, breaching the CLAUDE.md guardrail "every clinical statement ties to
-    a source". Advance status: draft → accepted, set promoted_to to this plan's path, set
-    findings_doc_ref in the plan frontmatter.
+    a source". Finding 3 (the stale tripwire comment): tests/module-registry.test.mjs:20-24 says
+    the assertion "must be updated/deleted the day a second module registers" and still asserts
+    "today there is exactly one registered module"; four have been registered since commit 263120b,
+    so the trigger fired and went unactioned for a release. Record it as PRE-EXISTING DEBT this
+    feature closed at P6-010 — not as something this feature caused, and not merged with the
+    separate src/modules/registry.js:39-50 trigger. Advance status: draft → accepted, set
+    promoted_to to this plan's path, set findings_doc_ref in the plan frontmatter.
   status: pending
   assigned_to: [general-purpose]
   provider: claude
@@ -182,7 +198,7 @@ tasks:
   target_surfaces:
   - .claude/findings/spa-module-switcher-findings.md
   acceptance_criteria: >
-    Findings doc exists with both known findings recorded and any execution-time findings
+    Findings doc exists with all three known findings recorded (R-5 sign-kb; SQ-3 F9 cbc evidence IDs; the stale tests/module-registry.test.mjs:20-24 comment, overdue since 263120b) and any execution-time findings
     appended; status: accepted; promoted_to set; findings_doc_ref populated in the plan
     frontmatter and appended to related_documents.
 - id: DOC-008
@@ -207,7 +223,7 @@ tasks:
 - id: P7-GATE
   description: >
     task-completion-validator gate. Verify the Phase 7 exit gate: doc-truth tests green;
-    tests/claudemd-check-gate.test.mjs green; all four deferred-item spec paths in
+    tests/claudemd-check-gate.test.mjs green; all five deferred-item spec paths (incl. ADR-0010) in
     deferred_items_spec_refs; findings_doc_ref populated and the doc at status: accepted. Reject
     if CLAUDE.md restates anemia-only counts instead of cross-referencing §2a, or if the npm run
     check string drifted.
@@ -267,10 +283,10 @@ success_criteria:
   description: "CLAUDE.md generalized, cross-referencing §2a rather than restating counts; tests/claudemd-check-gate.test.mjs green"
   status: pending
 - id: SC-4
-  description: "Three new deferred-item design specs authored + public-moduleid-api-surface.md verified; all four paths in deferred_items_spec_refs"
+  description: "Three new deferred-item design specs + ADR-0010 (proposed, DF-SMS-06) authored, public-moduleid-api-surface.md verified; all five paths in deferred_items_spec_refs; ADR-0010 claims no capability that does not exist"
   status: pending
 - id: SC-5
-  description: ".claude/findings/spa-module-switcher-findings.md created with both known findings, status: accepted, findings_doc_ref set"
+  description: ".claude/findings/spa-module-switcher-findings.md created with all three known findings (R-5 sign-kb; SQ-3 F9 cbc evidence IDs; the stale tests/module-registry.test.mjs:20-24 comment overdue since 263120b), status: accepted, findings_doc_ref set"
   status: pending
 - id: SC-6
   description: "README and project-skill checks completed or explicitly recorded N/A with what was checked"
@@ -319,7 +335,7 @@ python .claude/skills/artifact-tracking/scripts/update-status.py \
 ## Objective
 
 Close the loop on documentation truth: CHANGELOG, `docs/architecture.md` §2a/§6/§10, `CLAUDE.md`'s
-orientation diagram, four deferred-item design specs (three new, one updated), the findings doc
+orientation diagram, five deferred-item artefacts (three new design specs, one updated spec, and ADR-0010), the findings doc
 (two known findings), and the plan's own frontmatter finalization — followed by the feature's final
 `karen` end-of-feature review.
 
@@ -370,7 +386,7 @@ fail-closed refusal entry. §7 explicitly untouched. See plan §Phase 7, DOC-003
 
 Task("general-purpose", "DOC-006: Author design specs for deferred items DF-SMS-01..04. Three
 new specs (sign-kb hashing, per-module evidence view, algorithm-explorer generalization) plus one
-UPDATE (public-moduleid-api-surface.md). Append all four paths to deferred_items_spec_refs. See
+UPDATE (public-moduleid-api-surface.md), plus ADR-0010 browser-test-capability (proposed, DF-SMS-06 — records the D-6 ceiling honestly and claims no capability). Append all five paths to deferred_items_spec_refs. See
 plan §Phase 7, DOC-006.")
 
 Task("general-purpose", "DOC-008: Project-level skill updates. Check
@@ -403,7 +419,7 @@ DOC-006; findings_doc_ref from DOC-007. See plan §Phase 7, DOC-005.")
 
 ```
 Task("task-completion-validator", "P7-GATE: Verify Phase 7 exit gate for spa-module-switcher —
-doc-truth tests green; tests/claudemd-check-gate.test.mjs green; all four deferred-item spec
+doc-truth tests green; tests/claudemd-check-gate.test.mjs green; all five deferred-item spec
 paths present; findings_doc_ref populated at status: accepted. Reject if CLAUDE.md restates
 anemia-only counts or if the npm run check string drifted.")
 
@@ -419,12 +435,12 @@ item has a spec or recorded finding.")
 
 ## Quality Gates
 
-- [ ] CHANGELOG `[Unreleased]` entry present, with no approval/release/validation claim
+- [ ] CHANGELOG `[Unreleased]` entry present, with no approval/release/validation claim and no implication of executed browser testing (PRD §11a)
 - [ ] `docs/architecture.md` §2a (read-only selection control, no new registry), §6 (browser surfaces `manifest.status`, verifies nothing), §10 (fail-closed refusal entry) updated; §7 untouched
 - [ ] `CLAUDE.md` generalized to `deriveFacts(input, moduleId)` / `modules/<moduleId>/rules.json`, cross-referencing §2a rather than restating counts
 - [ ] `tests/claudemd-check-gate.test.mjs` green; the `npm run check` string byte-unchanged
-- [ ] Three new deferred-item design specs authored + `public-moduleid-api-surface.md` verified; all four paths in `deferred_items_spec_refs`
-- [ ] `.claude/findings/spa-module-switcher-findings.md` created with **both** known findings (R-5 sign-kb; SQ-3 F9 cbc evidence IDs), `status: accepted`, `findings_doc_ref` set
+- [ ] Three new deferred-item design specs **+ ADR-0010 (`proposed`, DF-SMS-06)** authored, `public-moduleid-api-surface.md` verified; all five paths in `deferred_items_spec_refs`; ADR-0010 records the ceiling and claims no capability that does not exist
+- [ ] `.claude/findings/spa-module-switcher-findings.md` created with **all three** known findings (R-5 sign-kb; SQ-3 F9 cbc evidence IDs; the stale `tests/module-registry.test.mjs:20-24` comment, overdue since `263120b`), `status: accepted`, `findings_doc_ref` set
 - [ ] README and project-skill checks completed or explicitly recorded N/A with what was checked
 - [ ] Plan frontmatter finalized (`status: completed`, `commit_refs`, `files_affected`, `updated`)
 - [ ] `karen` end-of-feature review recorded and blocking findings resolved
