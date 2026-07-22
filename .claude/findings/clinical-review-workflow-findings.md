@@ -255,3 +255,56 @@ by a sibling task's prior work, FR-4/P2-T2), so this task did not change it. Fla
 related, latent, pre-existing gap for whoever next touches `computeDerivedReviewState`'s
 independence-check wiring or `lib/independence.mjs` itself to consider — not a defect this task's
 own FR-26 scope introduced or is responsible for closing.
+
+## CRW-F4 — Derived-state independence check not supersedes-aware
+
+**Severity**: MAJOR (governance defect) · **Status**: fixed in this commit.
+
+### (a) What was wrong
+
+`tools/review-record/lib/derived-state.mjs`'s `computeDerivedReviewState` resolved its
+`clinical1`/`clinical2` inputs to the FR-4 reviewer-independence heuristic
+(`checkReviewerIndependence`) via a plain `allModuleRecords.find((r) => r.role === 'clinical-1' |
+'clinical-2')` — the FIRST record of that role by `seq` order, never the FR-26 supersedes-aware
+EFFECTIVE (latest non-superseded) act `resolveEffectiveRoleRecord` (`lib/adjudication.mjs`, P1-T5)
+already resolves for the release-authorization completeness check a few lines below it in the same
+function. This mismatch cuts both ways once a `clinical-1` or `clinical-2` record is later corrected
+via `supersedes`:
+
+- **False negative**: a superseding correction's rationale can verbatim-overlap the sibling
+  reviewer's rationale (a real FR-4 independence violation), while the stale, superseded original
+  is independence-clean — the old code compared only the clean original and never flagged it.
+- **False `invalid`/wrong derived state**: a stale, superseded original's rationale can
+  verbatim-overlap the sibling reviewer's rationale, while the EFFECTIVE correction is
+  independence-clean — the old code kept comparing the stale original and produced a spurious
+  independence blocker on an otherwise-valid, already-corrected chain, forever.
+
+This exact gap was flagged twice before this fix landed: by the P1-T5 executing agent itself (see
+this file's own **CRW-F3, section (c)**, "Related, explicitly out-of-scope observation for a future
+task" — logged as latent and out of that task's target surfaces), and independently confirmed by
+`codex gpt-5.6-terra`'s P1-GATE2 adversarial review (finding 3, MAJOR).
+
+### (b) The fix
+
+`computeDerivedReviewState` now resolves both inputs via `resolveEffectiveRoleRecord(allModuleRecords,
+'clinical-1' | 'clinical-2')` (`lib/adjudication.mjs`) instead of forking a second copy of the
+supersedes-resolution logic — the same function the FR-26 release-authorization completeness check
+already uses, so the independence heuristic and that check can never drift apart on which act is
+"the" clinical-1/clinical-2 record for a role. `evaluateReleaseAuthorization`/`isAdjudicationRequired`
+semantics, `nextChainLink`, and the `chain_isolation_v1` independence fixture are untouched.
+Fail-closed posture is preserved: `resolveEffectiveRoleRecord` falls back to the latest record by
+`seq` (never silently drops the role) if every record of a role were somehow marked superseded, and
+returns `undefined` (no comparison performed, same as before) when a role is entirely absent.
+
+### (c) Tests
+
+`tests/ef-review-adjudication.test.mjs` adds two adversarial, both-direction fixtures under a new
+"CRW-F4" section: (a) a clean superseded `clinical-1` original whose EFFECTIVE correction verbatim-
+overlaps `clinical-2`'s rationale — asserts the stale original is independence-clean in isolation
+(`checkReviewerIndependence` returns `[]`) while `computeDerivedReviewState` now flags it; (b) a
+violating superseded `clinical-1` original whose EFFECTIVE correction is clean — asserts the stale
+original violates in isolation while `computeDerivedReviewState` now reports no independence
+blocker. All pre-existing suites (FR-26 conditional-completeness, the committed `cbc_suite_v1`
+terminal-behavior fixture, ADR-0004 status-untouched guard, `chain_isolation_v1` structural
+independence) stay green: 36/36 targeted in `tests/ef-review-adjudication.test.mjs`, 104/104 across
+that file plus `tests/ef-review-workflow.test.mjs` together, 2292/2292 full `npm test`.

@@ -50,7 +50,11 @@
 
 import { checkReviewerIndependence } from './independence.mjs';
 import { checkModuleChainLinkage } from './chain.mjs';
-import { evaluateReleaseAuthorization, rosterEntryInAuthorshipUnion } from './adjudication.mjs';
+import {
+  evaluateReleaseAuthorization,
+  resolveEffectiveRoleRecord,
+  rosterEntryInAuthorshipUnion,
+} from './adjudication.mjs';
 
 /**
  * Computes every module-wide derived-state finding `validate` enforces fail-closed, as a flat list
@@ -103,9 +107,23 @@ export function computeDerivedReviewState(allModuleRecords, rosterVerifiedByRevi
   const blockers = [];
 
   // FR-4 reviewer-2 independence heuristic -- pairwise and module-scoped, not per-record: always
-  // computed over the module's full clinical-1/clinical-2 pair (if both exist).
-  const clinical1 = allModuleRecords.find((r) => r.role === 'clinical-1');
-  const clinical2 = allModuleRecords.find((r) => r.role === 'clinical-2');
+  // computed over the module's EFFECTIVE clinical-1/clinical-2 pair (if both exist). CRW-F4 (fixed
+  // here): this used to resolve the pair via a plain `allModuleRecords.find((r) => r.role ===
+  // 'clinical-1' | 'clinical-2')` -- the FIRST record of that role by seq order, NOT the FR-26
+  // supersedes-aware EFFECTIVE (latest non-superseded) act `resolveEffectiveRoleRecord` (P1-T5,
+  // `lib/adjudication.mjs`) already resolves for the release-authorization completeness check
+  // below. That mismatch cut both ways: a superseding correction could hide a real independence
+  // violation living only in the stale (superseded) original, OR a stale original's violation could
+  // keep surfacing as a blocker even after a clean correction had already superseded it. Both are
+  // wrong per OQ-2's append-only model ("once a correction supersedes a record, that corrected
+  // record's own `decision` must never re-enter policy reasoning again" -- `resolveEffectiveRoleRecord`'s
+  // own header). Reusing `resolveEffectiveRoleRecord` here (rather than forking a second copy of its
+  // supersedes logic) means the independence heuristic and the FR-26 completeness check always agree
+  // on which act is "the" clinical-1/clinical-2 record for a role -- one supersedes-resolution
+  // implementation, not two that can drift. See this feature's findings doc (CRW-F4) for the
+  // both-direction fixtures this closes.
+  const clinical1 = resolveEffectiveRoleRecord(allModuleRecords, 'clinical-1');
+  const clinical2 = resolveEffectiveRoleRecord(allModuleRecords, 'clinical-2');
   blockers.push(...checkReviewerIndependence(clinical1?.record, clinical2?.record));
 
   // FR-9/OQ-2 layer (a) -- previousRecordHash chain, ALWAYS enforced (fail-closed), module-scoped.

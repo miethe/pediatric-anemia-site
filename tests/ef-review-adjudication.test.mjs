@@ -34,6 +34,7 @@ import {
 } from '../tools/review-record/lib/adjudication.mjs';
 import { canonicalRecordHash } from '../tools/review-record/lib/chain.mjs';
 import { computeDerivedReviewState } from '../tools/review-record/lib/derived-state.mjs';
+import { checkReviewerIndependence } from '../tools/review-record/lib/independence.mjs';
 import { signRecordDryRun } from '../tools/review-record/lib/signature.mjs';
 import { run as runValidate } from '../tools/review-record/lib/verbs/validate.mjs';
 import { isExpectedTerminalNonQualifyingViolations } from '../tools/review-record/lib/verbs/dry-run.mjs';
@@ -348,7 +349,10 @@ const FR26_SUBJECT_HASH = `sha256:${'11'.repeat(32)}`;
  * built directly rather than by post-hoc splicing a five-role chain (which would break the hash
  * chain linking every record to its immediate predecessor).
  *
- * @param {{ role: string, decision: string, supersedes?: string }[]} specs
+ * @param {{ role: string, decision: string, supersedes?: string, rationale?: string }[]} specs
+ *   `rationale` is optional -- defaults to an auto-generated, deliberately non-overlapping fixture
+ *   string; CRW-F4's independence fixtures below override it per-record so they can seed a
+ *   controlled verbatim-substring overlap (or its absence) between specific records.
  * @returns {{ reviewId: string, seq: number, role: string, record: object }[]}
  */
 function buildRecordSequence(specs) {
@@ -367,7 +371,7 @@ function buildRecordSequence(specs) {
       supersedes: spec.supersedes ?? null,
       reviewerId: `fixture-${spec.role}-${seq}`,
       decision: spec.decision,
-      rationale: `Fixture rationale for role ${spec.role}, seq ${seq}.`,
+      rationale: spec.rationale ?? `Fixture rationale for role ${spec.role}, seq ${seq}.`,
       reviewedAt: '2026-02-01T00:00:00Z',
       synthetic: false,
       signature: null,
@@ -515,6 +519,120 @@ test('computeDerivedReviewState: disagree-path set MINUS adjudication reports th
   assert.ok(
     blockers.some((b) => b.includes('incomplete record set') && b.includes('adjudication')),
     `expected an adjudication-missing blocker, got: ${JSON.stringify(blockers)}`,
+  );
+});
+
+// -------------------------------------------------------------------------------------------
+// CRW-F4 (P1-GATE2 finding 3, MAJOR): `computeDerivedReviewState`'s FR-4 independence check used
+// to resolve its clinical-1/clinical-2 pair via a plain `allModuleRecords.find(...)` -- the FIRST
+// record of that role, never the FR-26 supersedes-aware EFFECTIVE (latest non-superseded) act
+// `resolveEffectiveRoleRecord` already resolves for the release-authorization completeness check
+// above. Fixed by reusing `resolveEffectiveRoleRecord` for the independence check too (see
+// `lib/derived-state.mjs`'s updated comment). Both failure directions, adversarially:
+//   (a) a superseded clinical-1 ORIGINAL is independence-clean, but its EFFECTIVE correction
+//       verbatim-overlaps clinical-2's rationale -- must now be FLAGGED (previously a false
+//       negative: the violation lived only in the correction, which the old `.find()` never saw).
+//   (b) a superseded clinical-1 ORIGINAL verbatim-overlaps clinical-2's rationale, but its
+//       EFFECTIVE correction is independence-clean -- must now be CLEAN (previously a false
+//       `invalid`/wrong derived state: the old `.find()` kept flagging the stale, already-corrected
+//       violation forever).
+// -------------------------------------------------------------------------------------------
+
+const CRW_F4_OVERLAP_TEXT =
+  'abnormal reticulocyte response was overlooked during the initial pass through the labs';
+
+test('computeDerivedReviewState (CRW-F4, direction a): a clean superseded clinical-1 ORIGINAL passes independence in isolation, but the EFFECTIVE clinical-1 correction verbatim-overlaps clinical-2 -- must now be flagged', () => {
+  const records = buildRecordSequence([
+    {
+      role: 'clinical-1',
+      decision: 'reject',
+      rationale:
+        'Initial independent impression: findings are most consistent with a microcytic anemia given the ferritin and iron panel drawn at intake.',
+    },
+    {
+      role: 'clinical-1',
+      decision: 'approve',
+      supersedes: 'rr-0001-clinical-1',
+      rationale: `Correcting my initial read after further thought: ${CRW_F4_OVERLAP_TEXT}; revising to approve.`,
+    },
+    {
+      role: 'clinical-2',
+      decision: 'approve',
+      rationale: `Reviewer 2 independently found that ${CRW_F4_OVERLAP_TEXT}; recommend proceeding.`,
+    },
+  ]);
+
+  const originalClinical1 = records.find((r) => r.reviewId === 'rr-0001-clinical-1');
+  const correctionClinical1 = records.find((r) => r.reviewId === 'rr-0002-clinical-1');
+  const clinical2 = records.find((r) => r.role === 'clinical-2');
+
+  // Sanity check on the bug itself: the stale (superseded) original, taken in isolation, is
+  // independence-clean -- confirming any violation below can only come from resolving the
+  // EFFECTIVE act, not from accidentally still comparing the original.
+  assert.deepEqual(
+    checkReviewerIndependence(originalClinical1.record, clinical2.record),
+    [],
+    'expected the superseded clinical-1 ORIGINAL to be independence-clean in isolation',
+  );
+  // And the EFFECTIVE correction, compared directly, DOES violate -- this is the fixture's seeded
+  // violation; the assertion below on computeDerivedReviewState proves the shared library actually
+  // finds it once resolved via resolveEffectiveRoleRecord, not just that checkReviewerIndependence
+  // itself can detect verbatim overlap.
+  assert.ok(
+    checkReviewerIndependence(correctionClinical1.record, clinical2.record).length > 0,
+    'expected the EFFECTIVE clinical-1 correction to violate independence against clinical-2',
+  );
+
+  const { blockers } = computeDerivedReviewState(records, allRosterVerified(records), {});
+  assert.ok(
+    blockers.some((b) => b.includes('reviewer-2 independence')),
+    `expected an independence blocker sourced from the EFFECTIVE clinical-1 correction, got: ${JSON.stringify(blockers)}`,
+  );
+});
+
+test('computeDerivedReviewState (CRW-F4, direction b): a superseded clinical-1 ORIGINAL violates independence in isolation, but the EFFECTIVE clinical-1 correction is clean -- must now be clean (no stale-violation blocker)', () => {
+  const records = buildRecordSequence([
+    {
+      role: 'clinical-1',
+      decision: 'reject',
+      rationale: `Initial impression: ${CRW_F4_OVERLAP_TEXT}; recommend rejecting pending further workup.`,
+    },
+    {
+      role: 'clinical-1',
+      decision: 'approve',
+      supersedes: 'rr-0001-clinical-1',
+      rationale:
+        'Correction after independent re-review of the primary labs: findings support a normocytic anemia; approving without reference to any other reviewer\'s notes.',
+    },
+    {
+      role: 'clinical-2',
+      decision: 'approve',
+      rationale: `Reviewer 2 independently found that ${CRW_F4_OVERLAP_TEXT}; recommend approval.`,
+    },
+  ]);
+
+  const originalClinical1 = records.find((r) => r.reviewId === 'rr-0001-clinical-1');
+  const correctionClinical1 = records.find((r) => r.reviewId === 'rr-0002-clinical-1');
+  const clinical2 = records.find((r) => r.role === 'clinical-2');
+
+  // Sanity check: the stale (superseded) original DOES violate independence in isolation -- this is
+  // the exact shape that used to produce a false blocker/`invalid` derived state forever, since the
+  // old `.find()` always picked this original (seq 1) over the later correction (seq 2).
+  assert.ok(
+    checkReviewerIndependence(originalClinical1.record, clinical2.record).length > 0,
+    'expected the superseded clinical-1 ORIGINAL to violate independence against clinical-2',
+  );
+  // And the EFFECTIVE correction, compared directly, is clean.
+  assert.deepEqual(
+    checkReviewerIndependence(correctionClinical1.record, clinical2.record),
+    [],
+    'expected the EFFECTIVE clinical-1 correction to be independence-clean against clinical-2',
+  );
+
+  const { blockers } = computeDerivedReviewState(records, allRosterVerified(records), {});
+  assert.ok(
+    !blockers.some((b) => b.includes('reviewer-2 independence')),
+    `expected no independence blocker once the EFFECTIVE (corrected) clinical-1 record is clean, got: ${JSON.stringify(blockers)}`,
   );
 });
 
