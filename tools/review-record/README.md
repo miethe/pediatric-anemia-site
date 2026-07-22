@@ -5,16 +5,68 @@ E1's review-workflow machinery. Design/scaffold task **P2-T1** (OQ-1/OQ-2/FR-1/F
 `docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1.md` and its
 `evidence-foundry-e1-v1/phase-2-4-workstreams.md` phase file (row `P2-T1`).
 
-**Status (as of P2-T2)**: `list` (P2-T1) and `scaffold`/`validate` (P2-T2, this task's own
-increment) are real. `render`/`dry-run` remain dispatch stubs (`NotImplementedError`, exit 1) until
-P2-T6/P2-T8. `validate`'s P2-T2 increment covers per-record schema shape, D-4 roster resolution, and
-the FR-4 reviewer-2 textual-independence heuristic only — chain (P2-T3), authorship-union/adjudicator
-(P2-T4), and signature (P2-T5) checks land on the same verb incrementally. Nothing in this tool
-signs, releases, or clinically approves anything; nothing in this tool clears, advances, or partially
-satisfies any of the G0–G4 human gates (`docs/governance/gates-registry.md`). Structural validity
-proven by any verb here never implies clinical validity, safety, or that a named human clinician
-reviewed anything — see `schemas/review-record.schema.json`'s own top-level description for that
-standing caveat.
+**Status (as of P2-T4)**: `list` (P2-T1) and `scaffold`/`validate` (P2-T2 first increment, extended
+P2-T3/T4) are real. `render`/`dry-run` remain dispatch stubs (`NotImplementedError`, exit 1) until
+P2-T6/P2-T8. `validate` now covers per-record schema shape, D-4 roster resolution, the FR-4
+reviewer-2 textual-independence heuristic (P2-T2), the FR-9/OQ-2 two-layer append-only enforcement
+(P2-T3, see "Append-only enforcement" below), and PRD OQ-5's authorship-union computation +
+FR-5 (adjudicator/release-authorizer not-in-authorship-union) + FR-6 (release-authorization chain
+validity) checks (P2-T4, see "Adjudication + release-authorization" below) — signature (P2-T5)
+checks land on the same verb next. Nothing in this tool signs, releases, or clinically approves
+anything; nothing in this tool clears, advances, or partially satisfies any of the G0–G4 human gates
+(`docs/governance/gates-registry.md`). Structural validity proven by any verb here never implies
+clinical validity, safety, or that a named human clinician reviewed anything — see
+`schemas/review-record.schema.json`'s own top-level description for that standing caveat.
+
+### Adjudication + release-authorization (P2-T4, PRD OQ-5/FR-5/FR-6)
+
+`lib/adjudication.mjs` computes the PRD OQ-5 authorship-union — the union of (a) every human
+identity git-recorded against a module's `authoring-decisions.yaml` and (b) the git author of the
+commit that introduced `modules/<id>/module.json` (the proposal-introducing commit); the converter
+tool is never an identity (a defensive name-based denylist excludes bot/automation-shaped git
+authors). `schemas/authoring-decisions.schema.json` carries no in-band identity field today, so
+source (a) is git-history-derived rather than an invented schema field — see
+`lib/adjudication.mjs`'s own header for the full honest note. `validate` rejects any
+`adjudication`/`release-auth` record whose resolved roster identity is in this union (FR-5), and
+fails closed (rather than silently passing) whenever the union cannot be fully computed. Separately,
+`evaluateReleaseAuthorization` enforces FR-6: a `release-auth` record is valid only over a complete
+(all five roles present), chain-valid, roster-verified, non-synthetic record set — since
+`governance/reviewer-roster.yaml` ships synthetic-only pre-G1 (FR-3), this is structurally
+non-qualifying for any record this tool can currently produce, re-asserting (not weakening) P1-T7's
+`unsigned-stub → release-ready` schema-impossible ceiling.
+
+### Append-only enforcement (P2-T3, FR-9/OQ-2)
+
+`validate --module <id> [--history]` enforces append-only two ways, both fail-closed:
+
+- **Layer (a) — `previousRecordHash` chain, ALWAYS run.** Reuses `lib/chain.mjs`'s
+  `checkModuleChainLinkage` (the exact same structured, deterministic report `list` already prints
+  informationally, P2-T1) as `validate`'s fail-closed enforcement input — one chain-recomputation
+  implementation, not two. Any record whose declared `previousRecordHash` does not recompute cleanly
+  from its immediately preceding module record (or, for a module's first record, is not `null`)
+  fails closed with a `chain:`-prefixed violation.
+- **Layer (b) — `validate --history`, OPT-IN git-history check.** `lib/history.mjs`'s
+  `checkAppendOnlyHistory` runs `git log --reverse --name-status` (local, offline, `node:child_process`
+  invoking the locally-installed `git` binary — never a network fetch/clone/pull) scoped to
+  `modules/<moduleId>/reviews/` inside `--root`, and asks: has any record path EVER been touched by
+  more than one commit? A path whose full git history is not exactly one `A` (added) entry — a
+  second commit with status `M`/`D`/anything else — fails closed with a `git-history:`-prefixed
+  violation. Requires `--root` to be inside a real git working tree
+  (`NotAGitRepositoryError` otherwise, itself fail-closed rather than silently skipped) — most
+  fixture trees under `tests/fixtures/` are NOT their own git repository, so `--history` is
+  exercised in this tool's tests against scratch `git init` repos built in a temp directory, never
+  against the real fixture tree.
+
+Both layers report EVERY violation found (not just the first) into the same `ValidationFailedError`
+alongside the P2-T2 schema/roster/independence findings — every violation string is prefixed by its
+originating layer (`chain:`/`git-history:`, vs. the unprefixed schema/roster lines and the
+independence heuristic's own message text) so the layers are always distinguishable in output.
+Corrections are new superseding records (`supersedes: <review_id>`) — layer (a) accepts a
+correction because it is a brand-new chain-linked record, while layer (b) accepts it because it is a
+brand-new git path with its own single `A` history; an in-place edit of an EXISTING path fails
+BOTH layers independently (layer (a) only if some later record's hash still points at the old
+bytes; layer (b) unconditionally, since it inspects git history directly rather than inferring
+mutation from a hash mismatch).
 
 **`scaffold`'s write path is signature-gated, and is correctly inert today** (P2-T2): `reviewerId`
 must resolve against `governance/reviewer-roster.yaml` (fail closed on unknown identity or an
@@ -83,14 +135,15 @@ responsibility plus a `lib/verbs/` directory of thin verb handlers:
 | CLI dispatch | `cli.mjs` | Arg parsing, `--help`, verb routing, top-level exit-code handling | **P2-T1** (this task) | — |
 | Error taxonomy | `lib/errors.mjs` | `CliError` base + `EXIT_OK`/`EXIT_USAGE` + `NotImplementedError` + (P2-T2) `UnknownReviewerError`/`ReviewerNotInScopeError`/`RecordAlreadyExistsError`/`ValidationFailedError` | **P2-T1**, extended **P2-T2** | — |
 | **Store** | `lib/store.mjs` | OQ-2 path layout (`modules/<id>/reviews/rr-<seq4>-<role>.yaml`), `review_id` <-> `{seq, role}`, read-only listing of a module's committed records, next-sequence lookup; (P2-T2) `serializeReviewRecordYaml` + `writeNewReviewRecordFile` — the ONE append-only write path in this tool | **P2-T1**, write path **P2-T2** | errors, `../rf-bundle-to-kb-pack/lib/yaml-lite.mjs` |
-| **Chain** | `lib/chain.mjs` | The one canonical `previousRecordHash` hashing convention (`canonicalRecordHash`/`stableStringify`) + a read-only, informational chain-linkage report `list` uses; (P2-T2) `nextChainLink` — the one channel `scaffold` uses to link a new draft into a module's chain, returning only a seq + hash string, never sibling record content (the FR-4 structural-independence mechanism). **Fail-closed chain enforcement** (recompute + reject on break, plus the git-history mutation/deletion check) is a separate, later concern | **P2-T1 primitive; P2-T2 `nextChainLink`; P2-T3 enforcement** | store |
+| **Chain** | `lib/chain.mjs` | The one canonical `previousRecordHash` hashing convention (`canonicalRecordHash`/`stableStringify`) + a read-only, informational chain-linkage report `list` uses; (P2-T2) `nextChainLink` — the one channel `scaffold` uses to link a new draft into a module's chain, returning only a seq + hash string, never sibling record content (the FR-4 structural-independence mechanism). `checkModuleChainLinkage`'s report is ALSO (P2-T3) `validate`'s fail-closed chain-enforcement input — one implementation, two consumers (informational `list`, fail-closed `validate`) | **P2-T1 primitive; P2-T2 `nextChainLink`; P2-T3 consumed as enforcement input by `validate`** | store |
+| **History** | `lib/history.mjs` | Layer (b) of FR-9/OQ-2 append-only enforcement — `checkAppendOnlyHistory` runs a local, offline `git log --name-status` scoped to a module's `reviews/` path and reports (structured, deterministic) whether any record path was ever touched by more than one commit. Opt-in (`validate --history`), fail-closed on a genuine tool-usage failure (not a git repo), never throws for a detected mutation itself (that is `validate`'s call) | **P2-T3** | errors |
 | **Roster** | `lib/roster.mjs` | Resolve `reviewerId` against `governance/reviewer-roster.yaml` (unknown identity / out-of-scope module both fail closed, FR-3) | **P2-T2** | errors, `../rf-bundle-to-kb-pack/lib/yaml-lite.mjs` |
 | **Independence** | `lib/independence.mjs` | Supplementary, heuristic FR-4 reviewer-2-independence check (`checkReviewerIndependence`) — verbatim textual overlap / direct sibling-identity reference between a module's `clinical-1`/`clinical-2` records. NOT the primary enforcement (see Roster/Chain above and this file's own header) | **P2-T2** | — |
-| **Adjudication** | *(new in P2-T4)* | Authorship-union computation (PRD OQ-5) + adjudicator-not-in-authorship-union enforcement | **P2-T4** | store, chain |
+| **Adjudication** | `lib/adjudication.mjs` | `computeAuthorshipUnion` (PRD OQ-5, git-history-derived — see "Adjudication + release-authorization" above) + `rosterEntryInAuthorshipUnion` (FR-5) + `evaluateReleaseAuthorization` (FR-6) | **P2-T4** | store, chain |
 | **Signature** | *(new in P2-T5)* | Ed25519 sign/verify over canonicalized record bytes minus `signature` (`node:crypto` only, `TESTKEY-` dry-run only) | **P2-T5** | chain |
 | **Render** | *(new in P2-T6)* | Read-only static HTML render to `build/review-render/` | **P2-T6** | store, chain |
 | Verb handler | `lib/verbs/scaffold.mjs` | `scaffold` verb — builds + (signature-gated) writes a draft; see this file's "Status" section above | stub P2-T1, real **P2-T2** | store, chain, roster |
-| Verb handler | `lib/verbs/validate.mjs` | `validate` verb — P2-T2 increment: schema shape + roster resolution + independence heuristic | stub P2-T1, first increment **P2-T2**, extended **P2-T3/T4/T5** | store, roster, independence, `../../../scripts/lib/json-schema-lite.mjs` |
+| Verb handler | `lib/verbs/validate.mjs` | `validate` verb — schema shape + roster resolution + independence heuristic (P2-T2); FR-9/OQ-2 two-layer append-only enforcement, chain (always) + `--history` git-history check (P2-T3); PRD OQ-5 authorship-union / FR-5 adjudicator-authorship + FR-6 release-authorization validity (P2-T4) | stub P2-T1, first increment **P2-T2**, extended **P2-T3/T4**, further **P2-T5** | store, roster, independence, chain, history, adjudication, `../../../scripts/lib/json-schema-lite.mjs` |
 | Verb handler | `lib/verbs/list.mjs` | `list` verb — per-module review-record state summary | **P2-T1** (real) | store, chain |
 | Verb handler | `lib/verbs/render.mjs` | `render` verb | stub P2-T1, real **P2-T6** | render |
 | Verb handler | `lib/verbs/dry-run.mjs` | `dry-run` verb | stub P2-T1, real **P2-T8** | scaffold, signature, validate |
@@ -162,6 +215,11 @@ No file in this tool imports `node:http`, `node:https`, `node:dgram`, `fetch`, o
 `tests/ef-review-record-cli.test.mjs` statically greps every file under `tools/review-record/` for
 those patterns and additionally invokes each verb with `globalThis.fetch` patched to throw, so an
 accidentally-introduced network call fails the test suite rather than silently succeeding.
+`lib/history.mjs` (P2-T3) is a deliberate, narrow exception to "no other process spawning": it uses
+`node:child_process` to invoke the LOCALLY installed `git` binary against the working tree already
+on disk (`git log`/`git rev-parse`, read-only, no `fetch`/`clone`/`pull`/`push`) — this is VCS
+introspection over local state, not a network call, and stays outside every pattern the grep above
+forbids.
 
 ## Directory layout
 
@@ -172,14 +230,16 @@ tools/review-record/
   lib/
     errors.mjs                 CliError taxonomy (P2-T1, extended P2-T2)
     store.mjs                   OQ-2 store layout: paths, review_id parsing, listing (P2-T1); write path (P2-T2)
-    chain.mjs                    canonical hashing + informational linkage report (P2-T1 primitive); nextChainLink (P2-T2)
+    chain.mjs                    canonical hashing + informational linkage report (P2-T1 primitive); nextChainLink (P2-T2); consumed as validate's chain-enforcement input (P2-T3)
+    history.mjs                   FR-9/OQ-2 append-only layer (b): git-history append-only check (P2-T3)
+    adjudication.mjs               PRD OQ-5 authorship-union + FR-5/FR-6 adjudication/release-authorization validators (P2-T4)
     roster.mjs                    reviewerId resolution against governance/reviewer-roster.yaml (P2-T2)
     independence.mjs               heuristic FR-4 reviewer-2-independence check (P2-T2)
     wave0-migration.mjs             wave0 -> canonical migration helper (P1-T3, unrelated to CLI dispatch)
     verbs/
       list.mjs                       `list` verb — real (P2-T1)
       scaffold.mjs                    `scaffold` verb — real (P2-T2)
-      validate.mjs                     `validate` verb — first increment real (P2-T2); extended P2-T3/T4/T5
+      validate.mjs                     `validate` verb — first increment real (P2-T2); FR-9/OQ-2 append-only enforcement (P2-T3); PRD OQ-5/FR-5/FR-6 adjudication + release-authorization (P2-T4); extended P2-T5
       render.mjs                        `render` verb — stub (real: P2-T6)
       dry-run.mjs                        `dry-run` verb — stub (real: P2-T8)
 ```

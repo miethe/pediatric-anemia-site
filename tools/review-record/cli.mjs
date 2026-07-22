@@ -10,9 +10,11 @@
 //   scaffold  — create a schema-valid draft record for a module+role. IMPLEMENTED (P2-T2) — see
 //               lib/verbs/scaffold.mjs for the signature-gated write posture (why a synthetic
 //               persona's draft prints a preview rather than being written to disk today).
-//   validate  — validate one record / a module's full chain. First increment IMPLEMENTED (P2-T2):
-//               schema shape + D-4 roster resolution + FR-4 reviewer-2 independence heuristic.
-//               Chain / adjudication / signature checks land in P2-T3/T4/T5 on this same verb.
+//   validate  — validate one record / a module's full chain. IMPLEMENTED: schema shape + D-4
+//               roster resolution + FR-4 reviewer-2 independence heuristic (P2-T2); FR-9/OQ-2
+//               two-layer append-only enforcement -- previousRecordHash chain (always) + opt-in
+//               --history git-history check (P2-T3). Adjudication / signature checks land in
+//               P2-T4/T5 on this same verb.
 //   list      — print per-module review state (records by role, chain linkage, synthetic flags).
 //               IMPLEMENTED (P2-T1) — see lib/verbs/list.mjs.
 //   render    — read-only static HTML render of a review chain. NOT YET IMPLEMENTED (P2-T6).
@@ -53,11 +55,14 @@ Verbs:
       exist pre-G1), the draft is PRINTED as a preview and NOT written — it needs a TESTKEY-
       signature (P2-T5/P2-T8) first. IMPLEMENTED (P2-T2).
 
-  validate --module <id> [--root <dir>] [--record <review_id>]
-      Validate a module's committed records. IMPLEMENTED (P2-T2, first increment): per-record
-      schema shape, D-4 roster resolution, and the FR-4 reviewer-2 independence heuristic. Chain
-      recomputation (P2-T3), adjudicator/authorship checking (P2-T4), and signature verification
-      (P2-T5) extend this same verb in later tasks.
+  validate --module <id> [--root <dir>] [--record <review_id>] [--history]
+      Validate a module's committed records. IMPLEMENTED: per-record schema shape, D-4 roster
+      resolution, the FR-4 reviewer-2 independence heuristic (P2-T2), and the FR-9/OQ-2 two-layer
+      append-only check (P2-T3) -- (a) previousRecordHash chain recomputation, ALWAYS run, and
+      (b) an opt-in git-history append-only check (--history) that rejects any commit-visible
+      mutation or deletion of an existing modules/<id>/reviews/*.yaml path (requires --root to be
+      inside a real git working tree). Adjudicator/authorship checking (P2-T4) and signature
+      verification (P2-T5) extend this same verb in later tasks.
 
   list --module <id> [--root <dir>]
       Print a structured per-module review-record state summary: records by role, informational
