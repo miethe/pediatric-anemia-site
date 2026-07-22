@@ -9,7 +9,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundr
 execution_model: batch-parallel
 phase: 4
 title: 'Evidence Foundry E1 — Phase 4: Retrospective Validation Harness'
-status: in_progress
+status: pending
 started: null
 completed: null
 commit_refs: []
@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 10
-completed_tasks: 2
+completed_tasks: 4
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -90,7 +90,7 @@ tasks:
     negation + FR-24 non-qualifying protocol banner. Provenance sidecar run-provenance.json
     (corpus id, harness version, candidate registry digest, run timestamp) — sole
     timestamp location, outside determinism-compared bytes.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -99,6 +99,28 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  note: 'Software-agreement metrics report (FR-21, OQ-5): lib/metrics.mjs computes
+    the exactly-5 OQ-5 measures (case-level exact-agreement rate; per-candidate-pattern
+    agreement/disagreement; dangerous-miss discordance count; safety-flag agreement
+    coverage; missing-data-prompt agreement rate), every measure labeled "software
+    agreement". report verb reads an already-written replay-output.json (never re-runs
+    the engine), writes agreement-report.json (canonical, timestamp-free, determinism-compared)
+    + run-provenance.json sidecar (corpus id, harness version, candidate registry
+    digest, run timestamp -- sole timestamp location). Report header carries the unvalidated-prototype
+    banner, the explicit software-agreement negation (grep-proven: sensitivity/specificity/clinical
+    performance appear nowhere else), and the FR-24 non-qualifying-protocol banner
+    -- evaluateProtocolQualification is structurally incapable of returning qualifying:true,
+    even against a populated protocol document. New metrics-corpus fixture (8 cases)
+    exercises every measure branch with hand-derived expected values. Updated tests/ef-retro-boundary.test.mjs
+    + tests/ef-retro-corpus.test.mjs stale report-scaffold expectations (NotImplementedError
+    -> UsageError requiring --run) to match landed behavior.'
+  started: 2026-07-22T05:00Z
+  completed: 2026-07-22T06:15Z
+  evidence:
+  - test: tests/ef-retro-metrics.test.mjs
+  - test: tests/ef-retro-boundary.test.mjs (updated)
+  - test: tests/ef-retro-corpus.test.mjs (updated)
+  - commit: ef-e1(P4-T4)
 - id: P4-T5
   description: 'Discordance / adjudication record model (FR-23): each harness-vs-reference-label
     disagreement emits an adjudication-ready discordance record (tool-local schema:
@@ -287,7 +309,7 @@ files_modified:
 - tests/ef-retro-corpus.test.mjs
 - tests/fixtures/ef-retro/**
 - docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md
-progress: 20
+progress: 40
 updated: '2026-07-22'
 ---
 

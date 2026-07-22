@@ -183,15 +183,14 @@ for (const { name, dir } of IDENTIFIER_FIXTURE_CLASSES) {
 }
 
 // -------------------------------------------------------------------------------------------
-// `report` (still scaffold-only, lands in P4-T4): given a corpus that PASSES the FR-20 boundary
-// check, it still throws NotImplementedError, not a silent no-op. `run` landed its real
-// post-boundary logic in P4-T3 (candidate resolution + replay) -- it no longer reaches this
-// scaffold placeholder once the boundary clears; see tests/ef-retro-determinism.test.mjs for its
-// own ACs, and tests/ef-retro-boundary.test.mjs for the updated (P4-T3) `run`-vs-`report`
-// post-boundary expectation split. Their shared P4-T2 boundary-first hardening (call-order proof,
-// refusal on a missing/failing corpus, all 3 rejection classes) is exercised in full by
-// tests/ef-retro-boundary.test.mjs; this file only proves the CORPUS + BOUNDARY modules in
-// isolation (this task's own scope, P4-T1).
+// `run`/`report` both land their real post-boundary logic in P4-T3/P4-T4 respectively (candidate
+// resolution + replay; software-agreement metrics) -- neither falls through to the scaffold
+// `NotImplementedError` placeholder once its own boundary check clears; see
+// tests/ef-retro-determinism.test.mjs and tests/ef-retro-metrics.test.mjs for their own ACs, and
+// tests/ef-retro-boundary.test.mjs for the shared post-boundary expectation split. Their shared
+// P4-T2 boundary-first hardening (call-order proof, refusal on a missing/failing corpus, all 3
+// rejection classes) is exercised in full by tests/ef-retro-boundary.test.mjs; this file only
+// proves the CORPUS + BOUNDARY modules in isolation (this task's own scope, P4-T1).
 // -------------------------------------------------------------------------------------------
 
 test('`run` verb: given a corpus that passes the boundary check, requires --candidate-digest/--registry (P4-T3 landed; UsageError, not NotImplementedError)', async () => {
@@ -206,11 +205,12 @@ test('`run` verb: given a corpus that passes the boundary check, requires --cand
   );
 });
 
-test('`report` verb: given a corpus that passes the boundary check, still throws NotImplementedError (exit 1)', async () => {
+test('`report` verb: given a corpus that passes the boundary check, requires --run (P4-T4 landed; UsageError, not NotImplementedError)', async () => {
   await assert.rejects(
     () => runReportVerb({ corpus: fixtureDir('valid-synthetic'), accessLogPath: ACCESS_LOG_PATH }),
     (err) => {
-      assert.ok(err instanceof NotImplementedError);
+      assert.ok(err instanceof UsageError);
+      assert.ok(!(err instanceof NotImplementedError), '`report` has real post-boundary logic since P4-T4');
       assert.equal(err.exitCode, EXIT_USAGE);
       return true;
     },

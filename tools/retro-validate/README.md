@@ -7,19 +7,22 @@ replaying a version-pinned candidate build against a **fixtures-only** corpus (s
 de-identified content ONLY, structurally enforced) and emitting **software-agreement** metrics --
 never sensitivity, specificity, clinical performance, or any other clinical-validity claim.
 
-**Status (as of P4-T3)**: `check-fixtures` is real -- it validates a corpus against
+**Status (as of P4-T4)**: `check-fixtures` is real -- it validates a corpus against
 `schemas/fixture-corpus.schema.json`. `run` and `report` both call that same boundary check FIRST,
-unconditionally, and refuse to proceed on an unchecked (no `--corpus`) or failing corpus. `run`
-itself is now real (FR-19, version-pinned deterministic replay, landed this task): it resolves a
-candidate build exclusively via a registry-entry digest match (never "current tree"), replays every
-corpus case through `src/engine.js#assess()` using that pinned candidate's `rules`/`candidates`,
-and writes a canonical, sorted, timestamp-free `replay-output.json` -- two runs over an identical
-`(corpus, candidate-digest, registry)` triple are byte-identical. `report` remains scaffold-only
-(`NotImplementedError`) until P4-T4 (FR-21, software-agreement metrics) lands. All three verbs also
-access-log every invocation, success or not (FR-22, `lib/access-log.mjs`, see below) -- this is a
-side audit channel, not a change to any verb's own primary output/error contract. Nothing in this
-tool is, or may be read as, a clinical-validity, safety, diagnostic-performance, or IRB/DUA-
-compliance claim.
+unconditionally, and refuse to proceed on an unchecked (no `--corpus`) or failing corpus. `run` is
+real (FR-19, version-pinned deterministic replay, landed P4-T3): it resolves a candidate build
+exclusively via a registry-entry digest match (never "current tree"), replays every corpus case
+through `src/engine.js#assess()` using that pinned candidate's `rules`/`candidates`, and writes a
+canonical, sorted, timestamp-free `replay-output.json` -- two runs over an identical `(corpus,
+candidate-digest, registry)` triple are byte-identical. `report` is now real too (FR-21/OQ-5,
+software-agreement metrics, landed this task): it reads an already-written `replay-output.json`
+(never re-runs the engine), computes exactly the 5 OQ-5 software-agreement measures, and writes
+`agreement-report.json` (canonical, timestamp-free, determinism-compared bytes) plus its
+`run-provenance.json` sidecar (the sole sanctioned timestamp location) into the same `--run`
+directory. All three verbs also access-log every invocation, success or not (FR-22,
+`lib/access-log.mjs`, see below) -- this is a side audit channel, not a change to any verb's own
+primary output/error contract. Nothing in this tool is, or may be read as, a clinical-validity,
+safety, diagnostic-performance, or IRB/DUA-compliance claim.
 
 ## Ruling R6 -- what this tool is not
 
@@ -63,8 +66,19 @@ node tools/retro-validate/cli.mjs run \
 #    missing pinned-content directory, or drifted pinned content each fail closed (RegistryError,
 #    exit 1, zero output written) instead.
 
-# `report` remains scaffold-only until P4-T4 lands (exit 1, NotImplementedError):
-node tools/retro-validate/cli.mjs report --corpus <valid-dir> --run <dir> --protocol <doc>
+# `report` is real (P4-T4, FR-21/OQ-5): once the boundary passes, it requires --run <replay
+# output dir> (the directory `run` wrote replay-output.json into), reads that document (never
+# re-runs the engine), and writes agreement-report.json + run-provenance.json into that same
+# directory. --protocol is optional and never flips a report to "qualifying" (FR-24 -- see below):
+node tools/retro-validate/cli.mjs report \
+  --corpus tests/fixtures/ef-retro/replay-corpus \
+  --run build/retro-runs/ef-retro-replay-fixture/sha256-ef1adfb4d4e2640812f9d1de363c68c979c9c159b60ede121376e1befbe7212c
+# -> exit 0; writes agreement-report.json (5 OQ-5 software-agreement measures, each labeled
+#    "software agreement", plus the unvalidated-prototype / software-agreement-negation / FR-24
+#    non-qualifying-protocol banners) and run-provenance.json (corpus id, harness version,
+#    candidate registry digest, run timestamp -- the sole timestamp location) alongside
+#    replay-output.json; a missing --run, a --run dir with no replay-output.json, or a
+#    replay-output.json naming a different corpus than --corpus all fail closed (UsageError).
 
 # Every invocation above -- success, boundary rejection, or usage rejection -- also appends one
 # entry to the access log (FR-22, P4-T7). --actor/--purpose are optional (never required); an
@@ -85,7 +99,7 @@ same pattern `tools/rf-bundle-to-kb-pack/` already established for this repo's E
 | **Corpus** | `lib/corpus.mjs` | Reads/parses `<dir>/corpus.json`; loads (and caches) the fixture-corpus schema. Pure I/O + parse, no validation, no writes. | **P4-T1** (this task) | errors |
 | **Boundary** | `lib/boundary.mjs` | `checkFixtures(corpusDir)` -- the schema-enforced (not procedural) de-identification gate (FR-20). Real schema-validation as of P4-T1; **P4-T2** hardened `run`/`report` (`lib/verbs/run.mjs`, `lib/verbs/report.mjs`) to call it FIRST, unconditionally, and refuse to proceed past an unchecked/failing corpus. | P4-T1 (initial), **P4-T2** (enforcement + hardening, landed) | corpus, errors |
 | **Replay** | `lib/replay.mjs` | Version-pinned deterministic engine replay (FR-19) -- `resolveCandidate()` resolves the candidate build exclusively via a registry-entry `packDigest` match (never "current tree"); `replayCorpus()`/`writeReplayOutput()` sort cases, strip `assess()`'s one non-deterministic field (`meta.generatedAt`), and write canonical (sorted-key) bytes; byte-identical double-run output, test-proven. Landed, **P4-T3**. | **P4-T3** (landed) | boundary, corpus, errors |
-| **Metrics** | `lib/metrics.mjs` (P4-T4), plus the discordance/adjudication model (P4-T5, FR-23) and the human-only protocol schema (P4-T6, FR-24) | Software-agreement `agreement-report.json` (5 OQ-5 measures) + `run-provenance.json` sidecar; discordance records; protocol-threshold gating. | **P4-T4** / **P4-T5** / **P4-T6** | replay, errors |
+| **Metrics** | `lib/metrics.mjs`, plus the discordance/adjudication model (P4-T5, FR-23) and the human-only protocol schema (P4-T6, FR-24) | Software-agreement `agreement-report.json` (5 OQ-5 measures) + `run-provenance.json` sidecar; FR-24 protocol-qualification banner (structurally always non-qualifying). Landed, **P4-T4**. Discordance records (P4-T5) and the `protocol.schema.json` structural gate (P4-T6) still to come. | **P4-T4** (landed) / **P4-T5** / **P4-T6** | replay, errors |
 | **Access log** | `lib/access-log.mjs`, `access-log.jsonl` (generated, not committed) | Append-only, structured audit trail of every `check-fixtures`/`run`/`report` invocation (FR-22) -- distinct from the review-record chain (no shared files, no shared schema, no cross-import; test-asserted). Landed, P4-T7. | **P4-T7** (landed) | errors |
 
 **Access-log call sites**: every file under `lib/verbs/` calls `access-log.mjs#logAccessAttempt` as
@@ -104,14 +118,14 @@ verbatim -- it never remaps it. A non-`RetroValidateError` throw (a genuine bug)
 ```
 lib/verbs/check-fixtures.mjs  -- real (P4-T1): runs boundary.checkFixtures, prints a JSON summary
 lib/verbs/run.mjs              -- boundary-gated (P4-T2) -> real (P4-T3, landed): resolveCandidate() -> replayCorpus() -> writeReplayOutput()
-lib/verbs/report.mjs            -- boundary-gated (P4-T2: calls checkFixtures first) -> scaffold (P4-T1) -> real (P4-T4)
+lib/verbs/report.mjs            -- boundary-gated (P4-T2: calls checkFixtures first) -> real (P4-T4, landed): reads replay-output.json -> computeAgreementMeasures() -> writeAgreementReport() + writeRunProvenance()
 ```
 
-**Data flow** (once every module lands):
+**Data flow** (P4-T5/T6 still to come):
 
 ```
-corpus.loadCorpusDocument()  ->  boundary.checkFixtures()  ->  replay.resolveCandidate() + replayCorpus()  ->  metrics (P4-T4/T5/T6)
-        (P4-T1)                        (P4-T1/P4-T2)                          (P4-T3, landed)                       (P4-T4..T6)
+corpus.loadCorpusDocument()  ->  boundary.checkFixtures()  ->  replay.resolveCandidate() + replayCorpus()  ->  metrics.computeAgreementMeasures() + evaluateProtocolQualification()
+        (P4-T1)                        (P4-T1/P4-T2)                          (P4-T3, landed)                       (P4-T4, landed; P4-T5/T6 extend)
 ```
 
 `run` and `report` each call `boundary.checkFixtures()` first and refuse to proceed on an
@@ -197,6 +211,51 @@ with a real >1s wall-clock gap between the two runs). `writeReplayOutput` is the
 `run`'s success path -- any failure (boundary, usage, or candidate resolution) leaves **zero**
 output on disk.
 
+## Software-agreement metrics (`lib/metrics.mjs`, P4-T4, FR-21/OQ-5)
+
+`report --corpus <dir> --run <replay output dir> [--protocol <path>]` reads the ALREADY-WRITTEN
+`replay-output.json` `run` produced (it never re-runs the engine itself), confirms it names the
+same corpus `--corpus` resolved (a mismatched pairing fails closed), and computes exactly the 5
+OQ-5 measures, every one carrying `label: "software agreement"`:
+
+1. **Case-level exact-agreement rate** -- fraction of *labeled* corpus cases (those with a
+   `referenceLabels` block at all -- unlabeled cases are excluded from every measure, never
+   coerced into a false agreement) where the engine's `rankedDifferential`/`alerts`/`nextQuestions`
+   ids exactly match (as sets) the case's own `candidatePatternIds`/`safetyFlagIds`/
+   `missingDataPromptIds`.
+2. **Per-candidate-pattern agreement/disagreement counts** -- for every pattern id that ever
+   appears (in either the reference or the engine output) across labeled cases, how many cases
+   agree vs. disagree on that id's presence/absence.
+3. **Dangerous-miss discordance count** -- of the labeled cases marking
+   `dangerousMissExpected: true`, how many the engine's own alert output does not corroborate (see
+   `isDangerousMissDiscordant`'s doc comment for the named-flag vs. no-named-flag fallback rule).
+4. **Safety-flag agreement coverage** -- of every reference `safetyFlagId` named across the
+   corpus, the fraction also present among the engine's own alert ids for that same case.
+5. **Missing-data-prompt agreement rate** -- the same coverage-style ratio for
+   `missingDataPromptId`s against the engine's `nextQuestions` ids.
+
+Every measure is a **software-agreement** measure against this corpus's own fixture reference
+labels -- **never** a clinical dangerous-miss rate, sensitivity, specificity, or performance claim
+(`report`'s header carries the explicit negation banner; a grep-test proves those three forbidden
+terms appear nowhere else in `agreement-report.json`).
+
+**FR-24 protocol qualification.** `evaluateProtocolQualification(protocolDoc)` is structurally
+incapable of ever returning `qualifying: true` -- not merely "false by default", there is no
+branch in the function that assigns `true`. An optional `--protocol <path>` is read (if given)
+only so its content can be recorded in the banner's `populatedFields`/`reason` detail; even a
+document with real, non-null threshold values is *detected* (via `findPopulatedProtocolFields`, a
+generic recursive walk with no dependency on P4-T6's not-yet-authored `protocol.schema.json` field
+names) but never honored. Every `agreement-report.json` therefore carries the FR-24
+"non-qualifying — protocol not prespecified by humans" banner unconditionally.
+
+**Determinism + provenance split (FR-19/FR-21).** `agreement-report.json` carries NO timestamp
+anywhere in its shape -- `buildAgreementReportDocument` + `canonicalStringify` (reused from
+`lib/replay.mjs`) produce byte-identical bytes across two `report` invocations over an identical
+`replay-output.json`. `run-provenance.json` (corpus id, harness version -- read off the replay
+document itself, never re-derived -- candidate registry digest, run timestamp) is the ONE
+sanctioned timestamp location in this tool's entire output surface, written as a sibling file that
+is never part of any determinism byte-comparison.
+
 ## The access-log-entry schema (`schemas/access-log-entry.schema.json`, FR-22)
 
 Also tool-local, same rationale as the fixture-corpus schema above. Validates ONE line of
@@ -262,12 +321,12 @@ tools/retro-validate/
     corpus.mjs                         CORPUS module: load/parse (P4-T1)
     boundary.mjs                        BOUNDARY module: schema-enforced gate (P4-T1 / P4-T2)
     replay.mjs                           REPLAY module: resolveCandidate/replayCorpus/writeReplayOutput (P4-T3, landed)
-    metrics.mjs                           METRICS module (P4-T4/T5/T6; does not exist until then)
+    metrics.mjs                           METRICS module: computeAgreementMeasures/evaluateProtocolQualification/report+provenance builders+writers (P4-T4, landed; P4-T5/T6 extend)
     access-log.mjs                         ACCESS-LOG module: append/verify hash chain (P4-T7, landed)
     verbs/
       check-fixtures.mjs                    `check-fixtures` verb (P4-T1, real; access-logged P4-T7)
       run.mjs                                 `run` verb: boundary-gated (P4-T2) -> real replay (P4-T3, landed); access-logged P4-T7
-      report.mjs                               `report` verb (P4-T2: boundary-gated) -> scaffold (P4-T1) -> real (P4-T4); access-logged P4-T7
+      report.mjs                               `report` verb: boundary-gated (P4-T2) -> real metrics (P4-T4, landed); access-logged P4-T7
 ```
 
 Corpus fixtures for tests live under `tests/fixtures/ef-retro/<corpus-name>/corpus.json` (never
@@ -288,6 +347,12 @@ pinned content), `registries/unregistered-module/` (a `moduleId` not in
 `src/modules/registry.js`), `registries/missing-candidate-content/` (a registry entry with no
 matching pinned-content directory on disk at all).
 
+**Metrics fixture (P4-T4)**: `tests/fixtures/ef-retro/metrics-corpus/` (8 synthetic cases, same
+pinned `registries/valid/` candidate as the replay fixture above) is deliberately engineered by
+`referenceLabels` choice -- not input variety -- to exercise every agree/disagree/discordance
+branch of all 5 OQ-5 measures at once; each case's own `tags` name the branch it covers, and
+`tests/ef-retro-metrics.test.mjs` asserts the hand-derived expected value for every measure.
+
 ## Test coverage index
 
 - `tests/ef-retro-corpus.test.mjs` (P4-T1) -- CORPUS + BOUNDARY module correctness in isolation.
@@ -302,3 +367,14 @@ matching pinned-content directory on disk at all).
   usage paths), hash-chain append-only enforcement (clean chain + seeded mutation/deletion
   rejection), actor/purpose/path resolution order, and the 4-dimension distinctness proof against
   `tools/review-record/`.
+- `tests/ef-retro-metrics.test.mjs` (P4-T4) -- `isDangerousMissDiscordant`/`computeAgreementMeasures`
+  edge-case unit coverage (zero-denominator `null` rates, all-unlabeled/empty corpora); the
+  metrics-corpus fixture's full hand-derived expected values for all 5 measures;
+  `evaluateProtocolQualification`/`findPopulatedProtocolFields` (always `qualifying: false`, even
+  against a populated protocol); banner presence + exact FR-24 phrase; the grep-proof that
+  `sensitivity`/`specificity`/`clinical performance` appear nowhere outside the one negation
+  banner; `run-provenance.json` completeness and its sole-timestamp-location proof against
+  `agreement-report.json`; double-build and double-invocation (direct + CLI subprocess) byte-
+  identity; usage-error paths (missing `--run`, missing/mismatched `replay-output.json`, unreadable/
+  unparsable `--protocol`); and the de-identified-aggregates-only proof (no per-case `input`/
+  `output`/`caseId` content in the report).

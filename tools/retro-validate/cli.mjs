@@ -12,8 +12,7 @@
 // Verbs:
 //   check-fixtures  -- structural de-identification boundary gate (FR-20). Real as of P4-T1.
 //   run             -- version-pinned deterministic replay (FR-19). Real as of P4-T3.
-//   report          -- software-agreement metrics + provenance sidecar (FR-21). Scaffold-only
-//                       until P4-T4.
+//   report          -- software-agreement metrics + provenance sidecar (FR-21). Real as of P4-T4.
 //
 // Zero network calls, zero LLM/generative-model invocations, ever -- this tool's only imports are
 // Node built-ins, `../../scripts/lib/json-schema-lite.mjs`, and its own `lib/` modules.
@@ -50,9 +49,24 @@ Verbs:
       build/retro-runs/<corpusId>/<digestSlug>/replay-output.json -- byte-identical across two runs
       over identical inputs. See tools/retro-validate/README.md's "Version-pinned replay" section.
 
-  report --corpus <dir> --run <replay output dir> --protocol <protocol doc>
-      Scaffold only in this task (P4-T1) -- lands in P4-T4. Will emit agreement-report.json (5
-      OQ-5 software-agreement measures) + run-provenance.json.
+  report --corpus <dir> --run <replay output dir> [--protocol <protocol doc>]
+      Real as of P4-T4. Boundary-gated (checkFixtures first, unconditional, same as run). Reads
+      the already-written <run dir>/replay-output.json (never re-runs the engine itself) and
+      writes two artifacts into that same directory:
+        agreement-report.json  -- the 5 OQ-5 software-agreement measures (case-level exact-
+                                   agreement rate; per-candidate-pattern agreement/disagreement;
+                                   dangerous-miss discordance count; safety-flag agreement
+                                   coverage; missing-data-prompt agreement rate), each explicitly
+                                   labeled "software agreement" -- NEVER clinical performance,
+                                   sensitivity, or specificity. Canonical, timestamp-free bytes;
+                                   byte-identical across two runs over identical inputs.
+        run-provenance.json    -- FR-21's provenance sidecar (corpus id, harness version,
+                                   candidate registry digest, run timestamp) -- the ONE sanctioned
+                                   timestamp location in this tool's entire output surface.
+      An optional --protocol <path> is read for record only: every report in Evidence Foundry E1
+      carries the FR-24 "non-qualifying -- protocol not prespecified by humans" banner
+      unconditionally -- no protocol content, populated or not, can ever make a report
+      software-qualifying (see tools/retro-validate/lib/metrics.mjs#evaluateProtocolQualification).
 
 Access log (FR-22, ADR-0006 audit clause -- P4-T7): every check-fixtures/run/report invocation,
 successful or not, appends one structured entry to tools/retro-validate/access-log.jsonl. Optional
