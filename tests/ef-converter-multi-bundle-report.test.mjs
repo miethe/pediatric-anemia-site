@@ -292,7 +292,7 @@ test('P2-T4: readOptionalJsonArray returns [] (fails soft) for malformed JSON or
 // 4. collectBundleReportSections — read-only rollup over the real, named BATCH_PAIRS
 // =================================================================================================
 
-test('P2-T4: collectBundleReportSections against a fresh outBaseDir returns exactly 4 sections, all not_available, every count at its 0/[] default', async () => {
+test('P2-T4: collectBundleReportSections against a fresh outBaseDir returns exactly 4 sections, all not_available, every conversion-report-derived count at its 0/[] default', async () => {
   const scratch = await makeScratchDir('fresh-collect');
   try {
     const sections = await collectBundleReportSections({ outBaseDir: scratch });
@@ -302,11 +302,30 @@ test('P2-T4: collectBundleReportSections against a fresh outBaseDir returns exac
       BATCH_PAIRS.map(({ fixture, module }) => ({ fixture, module })),
     );
     for (const section of sections) {
+      // `outBaseDir` is a fresh scratch directory, so `propose` has never written a
+      // conversion-report.json for ANY pair here -- every section is "not_available" with every
+      // conversion-report-derived count at its 0 default, regardless of what each module's own
+      // COMMITTED `unresolved.json`/`candidate-scaffolds.json` state is (those are read from the
+      // real repo module dir, not from `outBaseDir` -- see multi-bundle-report.mjs's own
+      // `collectBundleReportSections`).
       assert.equal(section.status, 'not_available');
       assert.equal(section.claimsProcessed, 0);
       assert.equal(section.conflictsPreserved, 0);
-      assert.deepEqual(section.unresolved, []);
-      assert.equal(section.unresolvedCount, 0);
+      // `unresolved`/`unresolvedCount` reflect whichever real, committed
+      // `modules/<id>/unresolved.json` this pair's module actually carries today (R-P2: `[]` is
+      // itself a legitimate value here, not a stand-in for "not yet implemented" -- Phase 5,
+      // P5-T1/P5-T2, may commit real, non-empty `unresolved.json` content for a bundle's module
+      // while that same bundle's own `propose` conversion-report.json still legitimately does not
+      // exist). Mirror whatever `readOptionalJsonArray` itself reads from that same real path,
+      // rather than hardcoding a blanket `[]` this task's own Phase 5 sibling rows are expected to
+      // outgrow.
+      const moduleDir = path.join(REPO_ROOT, section.module);
+      const expectedUnresolved = await readOptionalJsonArray(path.join(moduleDir, 'unresolved.json'));
+      assert.deepEqual(section.unresolved, expectedUnresolved);
+      assert.equal(section.unresolvedCount, expectedUnresolved.length);
+      // `candidate-scaffolds.json` (OQ-5) is staged only under `build/kb-pack/<moduleId>/<pack
+      // version>/` -- this test's scratch `outBaseDir` never has one, for any pair, regardless of
+      // Phase 5 state.
       assert.deepEqual(section.candidateScaffolds, []);
       assert.equal(section.candidateScaffoldsCount, 0);
       assert.equal(section.rulesEmitted, 0);
