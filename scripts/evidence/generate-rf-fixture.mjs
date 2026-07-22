@@ -67,8 +67,13 @@ export class FixtureGenerationError extends Error {
 // ADR-0002's fixed placeholder wording (matches `tests/fixtures/rf-cbc-001`'s already-committed
 // redactions exactly, byte-for-byte, so this generator reproduces that fixture's known-good
 // output when pointed at RF-CBC-001's own run directory).
-const REDACTION_PREFIX = '[redacted — content-rights: restricted (usage.allowed_for_public_output=false); sha256:';
-const REDACTION_SUFFIX = ']';
+//
+// Exported (along with `matchLabelAt`/`parseQuotedSpan` below) so `scripts/evidence/check-fixture-
+// rights-leakage.mjs` (P1-T7, R-4 mitigation) can recognize this exact placeholder shape and parse
+// arbitrary quoted spans using the identical decode rules this generator used to produce them,
+// rather than re-implementing (and risking drifting from) this parsing logic a second time.
+export const REDACTION_PREFIX = '[redacted — content-rights: restricted (usage.allowed_for_public_output=false); sha256:';
+export const REDACTION_SUFFIX = ']';
 
 function buildPlaceholder(decodedText) {
   const hash = createHash('sha256').update(decodedText, 'utf8').digest('hex');
@@ -115,7 +120,7 @@ function isIdentChar(ch) {
  * start-of-line) immediately before it, so `quote_limit_notes:`/`source_quote:`-style keys never
  * false-match (defense in depth — those names don't contain the literal substring `quote:`
  * anyway, since `quote:` requires the colon to immediately follow "quote"). */
-function matchLabelAt(line, i) {
+export function matchLabelAt(line, i) {
   for (const label of LABELS) {
     if (line.startsWith(`${label}:`, i) && !isIdentChar(line[i - 1])) {
       return { label, afterColon: i + label.length + 1 };
@@ -128,7 +133,7 @@ function matchLabelAt(line, i) {
  * subset `tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs` (and the legacy vendor script) support:
  * `\"`, `\\`, `\n`, `\t`, `\/`. Never folds across physical lines — an unterminated quote on this
  * line is a fail-closed error, not a guess that it continues on the next line. */
-function parseQuotedSpan(line, start, context) {
+export function parseQuotedSpan(line, start, context) {
   let i = start + 1;
   let decoded = '';
   const escapeMap = { '"': '"', '\\': '\\', n: '\n', t: '\t', '/': '/' };
