@@ -2,28 +2,30 @@
 title: 'Implementation Plan: E1 Multi-Bundle Conversion Pass'
 schema_version: 2
 doc_type: implementation_plan
-status: draft
+status: in_progress
 created: '2026-07-21'
-updated: '2026-07-21'
+updated: '2026-07-22'
 feature_slug: multi-bundle-conversion-e1
 feature_version: v1
 prd_ref: docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1.md
 plan_ref: null
-scope: "Run tools/rf-bundle-to-kb-pack over the 6 remaining verified rf evidence bundles: generalize\
-  \ the vendoring script into a reusable fixture generator, batch-convert 4 clinical bundles into\
-  \ evidence-layer projections (additive anemia backfill, cbc_suite_v1 extension, 2 greenfield module\
-  \ scaffolds), and hold REG-001/REG-004 as legal-review-only — producing essentially zero new\
-  \ clinical rules, every module staying status:unsigned-stub / approvedBy:[] / clinicalContentHash:null."
-effort_estimate: "30 pts"
-architecture_summary: tools/rf-bundle-to-kb-pack/ (E0-delivered, reused unchanged in its core) gains
-  an EF-WP1 eligibility pre-flight and a named-list batch runner; scripts/evidence/generate-rf-fixture.mjs
-  (new, generalized from vendor-rf-bundle.mjs) produces 4 EF-shaped fixtures under tests/fixtures/rf-*/;
-  modules/anemia/ gains an additive evidence-assertions.json (evidence.json/rules.json byte-unchanged);
-  modules/cbc_suite_v1/ is extended (not replaced) with RF-CBC-002 evidence, collision-checked against
-  RF-CBC-001-derived content; modules/kidney_suite_v1/ and modules/growth_suite_v1/ are new,
-  registered, unsigned-stub packages with evidence/assertions/unresolved committed and zero rules;
-  REG-001/REG-004 get a standalone rights-posture HOLD record and touch no fixture, module, or
-  converter artifact.
+scope: "Run tools/rf-bundle-to-kb-pack over the 6 remaining verified rf evidence bundles:\
+  \ generalize the vendoring script into a reusable fixture generator, batch-convert\
+  \ 4 clinical bundles into evidence-layer projections (additive anemia backfill,\
+  \ cbc_suite_v1 extension, 2 greenfield module scaffolds), and hold REG-001/REG-004\
+  \ as legal-review-only \u2014 producing essentially zero new clinical rules, every\
+  \ module staying status:unsigned-stub / approvedBy:[] / clinicalContentHash:null."
+effort_estimate: 30 pts
+architecture_summary: tools/rf-bundle-to-kb-pack/ (E0-delivered, reused unchanged
+  in its core) gains an EF-WP1 eligibility pre-flight and a named-list batch runner;
+  scripts/evidence/generate-rf-fixture.mjs (new, generalized from vendor-rf-bundle.mjs)
+  produces 4 EF-shaped fixtures under tests/fixtures/rf-*/; modules/anemia/ gains
+  an additive evidence-assertions.json (evidence.json/rules.json byte-unchanged);
+  modules/cbc_suite_v1/ is extended (not replaced) with RF-CBC-002 evidence, collision-checked
+  against RF-CBC-001-derived content; modules/kidney_suite_v1/ and modules/growth_suite_v1/
+  are new, registered, unsigned-stub packages with evidence/assertions/unresolved
+  committed and zero rules; REG-001/REG-004 get a standalone rights-posture HOLD record
+  and touch no fixture, module, or converter artifact.
 related_documents:
 - docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md
 - docs/project_plans/expansion/rf-handoff/RESULTS.md
@@ -116,7 +118,8 @@ wave_plan:
     - tests/fixtures/rf-gro-002/**
     - tests/ef-generate-rf-fixture.test.mjs
   - id: P2
-    depends_on: [P1]
+    depends_on:
+    - P1
     isolation: shared
     provider: claude
     model: sonnet
@@ -141,7 +144,8 @@ wave_plan:
     - src/facts/registry.js
     - scripts/validate-kb.mjs
   - id: P4
-    depends_on: [P2]
+    depends_on:
+    - P2
     isolation: shared
     provider: claude
     model: sonnet
@@ -153,7 +157,9 @@ wave_plan:
     - tests/ef-anemia-backfill-integrity.test.mjs
     - tests/ef-cbc-suite-v1-merge-safety.test.mjs
   - id: P5
-    depends_on: [P2, P3]
+    depends_on:
+    - P2
+    - P3
     isolation: shared
     provider: claude
     model: sonnet
@@ -167,7 +173,9 @@ wave_plan:
     - modules/growth_suite_v1/unresolved.json
     - tests/ef-conflict-objects.test.mjs
   - id: P6
-    depends_on: [P4, P5]
+    depends_on:
+    - P4
+    - P5
     isolation: shared
     provider: claude
     model: sonnet
@@ -177,7 +185,8 @@ wave_plan:
     - tests/ef-reg-exclusion.test.mjs
     - tests/ef-multi-bundle-determinism.test.mjs
   - id: P7
-    depends_on: [P6]
+    depends_on:
+    - P6
     isolation: shared
     provider: claude
     model: sonnet
@@ -189,11 +198,13 @@ wave_plan:
     - docs/project_plans/expansion/rf-handoff/RESULTS.md
     - docs/project_plans/human-briefs/multi-bundle-conversion-e1.md
   waves:
-  - [P1, P3]
-  - [P2]
-  - [P4, P5]
-  - [P6]
-  - [P7]
+  - - P1
+    - P3
+  - - P2
+  - - P4
+    - P5
+  - - P6
+  - - P7
 ---
 
 # Implementation Plan: E1 Multi-Bundle Conversion Pass
