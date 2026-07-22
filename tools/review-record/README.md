@@ -12,7 +12,7 @@ validity, safety, diagnostic performance, or regulatory status. The reviewer ros
 exists for any module in this repository today. See `docs/governance/reviewer-runbook.md`'s
 "Honesty boundary" section for the full statement this line summarizes.
 
-**Status**: `list` (P2-T1), `scaffold`/`validate` (P2-T2 first increment, extended P2-T3/T4/T5), `status` (Phase 1), `sign` (Phase 2), `render` (P2-T6), and `dry-run` (P2-T8) are all real — every verb this tool's `--help` lists is now implemented. `validate` covers per-record schema shape, D-4 roster resolution, the FR-4 reviewer-2 textual-independence heuristic (P2-T2), the FR-9/OQ-2 two-layer append-only enforcement (P2-T3, see "Append-only enforcement" below), PRD OQ-5's authorship-union computation + FR-5 (adjudicator/release-authorizer not-in-authorship-union) + FR-6 (release-authorization chain validity) checks (P2-T4, see "Adjudication + release-authorization" below), and FR-10/OQ-2 Ed25519 signature verification, TESTKEY- dry-run only, fail-closed on tamper (P2-T5, see "Signature binding" below). `validate` also supports an incremental, persistent composite-keyed cache for per-record checks (wall-time reduction across separate processes) while re-running module-wide checks on every invocation. `status` (see "Derived-state model" below) reports the current per-module queue/turn state derived from a shared `lib/derived-state.mjs` library also consumed by `validate`, ensuring both verbs compute derived state identically. `sign` (see "Sign verb" below) applies signatures to staged drafts on the TESTKEY-only synthetic path, fail-closed pre-gates G1/G2 on real records. `render` (P2-T6, see "Read-only static render" below) emits a self-contained, read-only static HTML render of a module's committed review chain — explicitly NOT a portal. `dry-run` (P2-T8, see "Five-role synthetic dry-run" below) composes `scaffold`'s draft-building, `sign`'s TESTKEY- signing, and `validate`'s chain-validation into one end-to-end pass over all five ADR-0004 roles — the only code path in this tool that ever writes a `synthetic: true` record to disk. Nothing in this tool signs, releases, or clinically approves anything; nothing in this tool clears, advances, or partially satisfies any of the G0–G4 human gates (`docs/governance/gates-registry.md`). Structural validity proven by any verb here never implies clinical validity, safety, or that a named human clinician reviewed anything — see `schemas/review-record.schema.json`'s own top-level description for that standing caveat.
+**Status**: `list` (P2-T1), `scaffold`/`validate` (P2-T2 first increment, extended P2-T3/T4/T5), `status` (Phase 1), `sign` (Phase 2), `render` (P2-T6), and `dry-run` (P2-T8) are all real — every verb this tool's `--help` lists is now implemented. `validate` covers per-record schema shape, D-4 roster resolution, the FR-4 reviewer-2 textual-independence heuristic (P2-T2), the FR-9/OQ-2 two-layer append-only enforcement (P2-T3, see "Append-only enforcement" below), PRD OQ-5's authorship-union computation + FR-5 (adjudicator/release-authorizer not-in-authorship-union) + FR-6 (release-authorization chain validity) checks (P2-T4, see "Adjudication + release-authorization" below), and FR-10/OQ-2 Ed25519 signature verification, TESTKEY- dry-run only, fail-closed on tamper (P2-T5, see "Signature binding" below). `validate` also supports an incremental, persistent composite-keyed cache for per-record checks (wall-time reduction across separate processes) while re-running module-wide checks on every invocation. `status` (see "Derived-state model" below) reports the current per-module queue/turn state derived from a shared `lib/derived-state.mjs` library also consumed by `validate`, ensuring both verbs compute derived state identically. `sign` (see "Sign verb" below) applies signatures to staged drafts on the TESTKEY-only synthetic path, fail-closed pre-gates G1/G2 on real records. `render` (P2-T6, see "Read-only static render" below) emits a self-contained, read-only static HTML render of a module's committed review chain — explicitly NOT a portal. `dry-run` (P2-T8, see "Five-role synthetic dry-run" below) composes `scaffold --draft`'s draft-staging, `sign`'s TESTKEY- signing, and `validate`'s chain-validation into one automated end-to-end pass over all five ADR-0004 roles — the same `scaffold --draft` → `sign` → `validate` round trip (F9, Clinical Review Workflow v1) a human driving the CLI by hand also exercises one role at a time (see "Append-only enforcement" below for that round trip's full write-path lifecycle). `dry-run` is the only path that runs this round trip five times, unattended, back-to-back — it is NOT the only code path that ever writes a `synthetic: true` record to disk: `scaffold --draft` stages one to `.review-drafts/` on every invocation (draft or dry-run), and `sign` performs this tool's one committed write into `reviews/` the same way regardless of which path staged the draft. Nothing in this tool signs, releases, or clinically approves anything; nothing in this tool clears, advances, or partially satisfies any of the G0–G4 human gates (`docs/governance/gates-registry.md`). Structural validity proven by any verb here never implies clinical validity, safety, or that a named human clinician reviewed anything — see `schemas/review-record.schema.json`'s own top-level description for that standing caveat.
 
 ### Five-role synthetic dry-run (P2-T8, FR-11, ruling R4)
 
@@ -50,18 +50,18 @@ dry-run feeds into PRD OQ-8's (human-owned) portal-trigger decision lives at
 
 ### Derived-state model
 
-`lib/derived-state.mjs#computeDerivedReviewState(allModuleRecords, rosterVerifiedByReviewId, opts)` produces a single, structured result `{ state, nextExpectedRole, eligibility, blockers: string[] }` that both `status` and `validate` verbs consume. This eliminates the risk of their derived-state logic diverging and ensures consistent diagnostics across both commands.
+`lib/derived-state.mjs#computeDerivedReviewState(allModuleRecords, rosterVerifiedByReviewId, opts)` produces a single, structured, module-wide, fail-closed result — `{ blockers: string[], chainReport: {...}[] }` — every FR-4 independence, FR-9 chain-linkage, optional git-history, PRD OQ-5/FR-5 authorship-union, and FR-6 release-authorization finding, as one flat list of violation strings, plus the raw chain-linkage report. Both `validate` (`lib/verbs/validate.mjs`) and `status` (`lib/verbs/status.mjs`) call this ONE function and layer their own per-record checks (schema shape, roster resolution, signature verification) on top of its `blockers` — this eliminates the risk of the two verbs' module-wide findings diverging.
 
-The state machine recognizes:
+`computeDerivedReviewState` deliberately does NOT itself compute a lifecycle state or next-expected-role label — see that file's own "SCOPE NOTE" header (P1-T1): the `state`/`nextExpectedRole`/`eligibility` fields an earlier design sketch described were left for the `status` verb (P1-T2) to own. `status` (`lib/verbs/status.mjs`) is what builds the turn-taking state machine on top of the shared `blockers`: `computeTurnState` walks the module's effective (non-superseded) per-role acts to decide `not-started`/`in-progress`/`disputed`, and `computeStatusResult` layers `blockers` on top to resolve the two terminal labels or collapse to `invalid`. The state machine `status --json`'s `derivedState` field exposes is therefore:
 
 - `not-started` — no review records exist yet for a module.
 - `in-progress` — one or more acts are recorded, but the chain is incomplete.
 - `disputed` — `clinical-1` and `clinical-2` decisions disagree on a substantive point.
 - `structurally-non-qualifying` — the record set (always `synthetic: true` today) cannot satisfy release authorization by design; this is the correct terminal state for synthetic fixtures, not a defect.
 - `acts-complete-unauthorized` — all acts are recorded and agree structurally, but cannot yet satisfy release authorization pre-gates; never emitted as `release-ready` or any label implying authorization.
-- `invalid` — the record set is malformed (schema failure, roster resolution failure, chain break, signature tamper, or append-only history failure with `--history`), fail-closed.
+- `invalid` — the record set is malformed (schema failure, roster resolution failure, chain break, signature tamper, or append-only history failure with `--history`), fail-closed — including any `computeDerivedReviewState` `blockers[]` entry other than the one expected synthetic FR-6 finding.
 
-The machine-readable `blockers[]` array maps 1:1 onto validation violations reported by `validate`, so the two verbs' diagnostics stay consistent and a single implementation point (this function's `blockers[]` computation) governs both.
+`computeDerivedReviewState`'s `blockers[]` array maps 1:1 onto the module-wide violations `validate` itself also reports, so the two verbs' diagnostics stay consistent even though only `status` renders them into a lifecycle label — one shared implementation point for the fail-closed findings, one owner (`status`) for the human-facing state name built on top of them.
 
 ### Status verb
 
@@ -221,19 +221,37 @@ BOTH layers independently (layer (a) only if some later record's hash still poin
 bytes; layer (b) unconditionally, since it inspects git history directly rather than inferring
 mutation from a hash mismatch).
 
-**`scaffold`'s write path is signature-gated, and is correctly inert today** (P2-T2): `reviewerId`
-must resolve against `governance/reviewer-roster.yaml` (fail closed on unknown identity or an
-out-of-scope module — `lib/roster.mjs`). The resulting draft's `synthetic` flag is always taken
-from the resolved roster entry, never asserted independently — and per FR-3 the real roster ships
-empty/synthetic-only pre-G1, so every `reviewerId` this verb can currently resolve is
+**`scaffold`'s DIRECT write path into `reviews/` is signature-gated, and is correctly inert today**
+(P2-T2): `reviewerId` must resolve against `governance/reviewer-roster.yaml` (fail closed on unknown
+identity or an out-of-scope module — `lib/roster.mjs`). The resulting draft's `synthetic` flag is
+always taken from the resolved roster entry, never asserted independently — and per FR-3 the real
+roster ships empty/synthetic-only pre-G1, so every `reviewerId` this verb can currently resolve is
 `synthetic: true`. `schemas/review-record.schema.json` requires a populated `TESTKEY-` signature on
-every `synthetic: true` record, and `scaffold` owns no signing capability (that is P2-T5, composed
-by the P2-T8 `dry-run` flow) — so `scaffold` never writes a `synthetic: true` draft to disk; it
-prints a clearly-labeled, fully-shaped preview instead. The disk-write path
+every `synthetic: true` record, and `scaffold` owns no signing capability of its own — so, absent
+`--draft`, `scaffold` never writes a `synthetic: true` record directly into `reviews/`; it prints a
+clearly-labeled, fully-shaped preview instead. That direct-write path
 (`lib/store.mjs`'s `writeNewReviewRecordFile`, an append-only guard) only fires for a
 `synthetic: false` roster entry, which cannot legitimately exist before gate G1 clears (a human act
 no task performs) — this mirrors this program's "signature slots const-null on real candidates,
 roster synthetic-only pre-G1" guardrail exactly, rather than working around it.
+
+**That is not the whole write lifecycle** (Clinical Review Workflow v1 Phase 1-T3(c)/Phase 2-T1,
+CRW-F2/CRW-F8 gap closure): `scaffold --draft` builds the SAME record `scaffold` otherwise would —
+regardless of the resolved roster entry's `synthetic` flag — and unconditionally writes it to
+`<root>/.review-drafts/<moduleId>/<review_id>.draft.yaml` (`lib/store.mjs`'s `writeDraftRecordFile`),
+OUTSIDE `reviews/`, gitignored (`.gitignore`), never committed by this tool. That staged draft is
+`sign`'s (`lib/verbs/sign.mjs`, Phase 2) one documented input: `sign --draft <path> --module <id>
+--root <dir>` reads ONLY from that staging path, calls `signRecordDryRun` on a `synthetic: true`
+draft (refusing fail-closed, naming gates G1/G2, on a `synthetic: false` one), and performs this
+tool's FIRST and ONLY committed write through the same append-only `writeNewReviewRecordFile`
+`scaffold`'s direct path above uses. The real, current round trip (F9, Clinical Review Workflow v1)
+is therefore: `scaffold --draft` stages a draft, written but uncommitted → `sign` signs it and
+performs this tool's one committed write into `reviews/` → a human then runs `git add` + `git
+commit` themselves — neither `scaffold` nor `sign` ever runs `git` (see
+`docs/governance/reviewer-runbook.md`'s "Honesty boundary" section, corrected in commit `f1f92f4`,
+for the full non-engineer walkthrough of this exact sequence). `dry-run` (P2-T8) composes precisely
+this same three-step flow, five times, over all five roles, in one unattended pass — see "Five-role
+synthetic dry-run" above.
 
 **FR-4 reviewer-2 independence is enforced two ways**: (1) STRUCTURALLY — every role's `scaffold`
 draft (including `clinical-2`) links into the module's hash chain via `lib/chain.mjs`'s
@@ -318,14 +336,14 @@ responsibility plus a `lib/verbs/` directory of thin verb handlers:
 | **Adjudication** | `lib/adjudication.mjs` | `computeAuthorshipUnion` (PRD OQ-5, git-history-derived — see "Adjudication + release-authorization" above) + `rosterEntryInAuthorshipUnion` (FR-5) + `evaluateReleaseAuthorization` (FR-6); conditional `adjudication`-role completeness check (required IFF clinical-1 and clinical-2 decisions disagree, Phase 1-T5) | **P2-T4**, extended **Phase 1-T5** | store, chain |
 | **Signature** | `lib/signature.mjs` | `signRecordDryRun` (ephemeral in-memory Ed25519 keypair, `TESTKEY-` self-certifying `keyId`, writable only onto `synthetic:true` records) + `verifyRecordSignature` (fail-closed verification, tamper detection) — see "Signature binding" above | **P2-T5** | chain |
 | **Validate cache** | `lib/validate-cache.mjs` | Persistent, composite-keyed cache for per-record validation checks (schema shape, roster resolution, signature verification) to reduce wall-time across separate CLI processes; recomputes on any key-component miss; module-wide checks always re-run; never caches `--history` results (Phase 2) | **Phase 2-T3/T4** | errors |
-| **Render** | `lib/render.mjs` | Loads a module's committed review chain + (existence-gated) `traceability-index.json`/`evidence-assertions.json` and builds ONE self-contained, deterministic HTML string (`renderModuleHtml`) — see "Read-only static render" above | **P2-T6** | store, chain |
+| **Render** | `lib/render.mjs` | Loads a module's committed review chain + (existence-gated) `traceability-index.json`/`evidence-assertions.json` and builds ONE self-contained, deterministic HTML string (`renderModuleHtml`) — see "Read-only static render" above; also builds the "Review queue & turn state" section (Phase 3-T1, FR-11) via `lib/adjudication.mjs`'s `resolveEffectiveRoleRecord`/`isAdjudicationRequired` — the same primitives `lib/derived-state.mjs` itself treats as authoritative, reused directly rather than routed through that file (see this file's "Five-role synthetic dry-run" and `lib/render.mjs`'s own header) | **P2-T6**, queue/turn-state **Phase 3-T1** | store, chain, adjudication |
 | **Subject** | `lib/subject.mjs` | `computeModuleContentHash` — real SHA-256 over a module's own committed content (excludes `reviews/`), sorted relative-path + bytes, mirroring `tools/release-sign/lib/pack-digest.mjs`'s convention without importing that sibling tool — `dry-run`'s default `subjectContentHash` source | **P2-T8** | errors |
 | Verb handler | `lib/verbs/scaffold.mjs` | `scaffold` verb — builds + (signature-gated) writes a draft; see this file's "Status" section above; auto-derives `subjectContentHash` (Phase 1), compares it to supplied `--subject` (Phase 1), writes drafts to `.review-drafts/` for `sign` consumption (Phase 2) | stub P2-T1, real **P2-T2**, extended **Phase 1-T3/Phase 2-T1** | store, chain, roster, subject |
 | Verb handler | `lib/verbs/status.mjs` | `status` verb — reports derived review-chain state (per-module queue/turn state, next-expected role, blockers) from the shared `lib/derived-state.mjs` library; frozen `--json` output shape; redacts independence-sensitive sibling data by default; fail-closed `invalid` state on malformed input (Phase 1) | **Phase 1-T2** | store, derived-state |
 | Verb handler | `lib/verbs/sign.mjs` | `sign` verb — applies signatures to staged drafts (TESTKEY-only synthetic path, fail-closed pre-gates G1/G2 on real records); reads from `.review-drafts/` (never touching committed `reviews/` files), writes exactly once via append-only path (Phase 2) | **Phase 2-T1/T2** | store, signature, scaffold |
 | Verb handler | `lib/verbs/validate.mjs` | `validate` verb — schema shape + roster resolution + independence heuristic (P2-T2); FR-9/OQ-2 two-layer append-only enforcement, chain (always) + `--history` git-history check (P2-T3); PRD OQ-5 authorship-union / FR-5 adjudicator-authorship + FR-6 release-authorization validity (P2-T4); FR-10/OQ-2 Ed25519 signature verification (P2-T5); incremental per-record caching + terminal-state messaging (Phase 2/3) | stub P2-T1, first increment **P2-T2**, extended **P2-T3/T4/T5**, cache **Phase 2-T3/T4**, messaging **Phase 3-T2** | store, roster, independence, chain, history, adjudication, signature, validate-cache, derived-state, `../../../scripts/lib/json-schema-lite.mjs` |
 | Verb handler | `lib/verbs/list.mjs` | `list` verb — per-module review-record state summary | **P2-T1** (real) | store, chain |
-| Verb handler | `lib/verbs/render.mjs` | `render` verb — writes `lib/render.mjs`'s output to `<out>/<module_id>/{index,<review_id>}.html`, the only writer under `build/`; adds queue/turn-state section with `NEXT`/`TERMINAL` markers sourced from `lib/derived-state.mjs` (Phase 3) | stub P2-T1, real **P2-T6**, extended **Phase 3-T1** | render, derived-state |
+| Verb handler | `lib/verbs/render.mjs` | `render` verb — thin wrapper that writes `lib/render.mjs`'s output to `<out>/<module_id>/{index,<review_id>}.html`, the only writer under `build/`; the queue/turn-state section with `NEXT`/`TERMINAL` markers (Phase 3) is built inside `lib/render.mjs` itself, not this handler — see the **Render** row above | stub P2-T1, real **P2-T6**, extended **Phase 3-T1** | render |
 | Verb handler | `lib/verbs/dry-run.mjs` | `dry-run` verb — composes scaffold's draft-building + signature's TESTKEY- signing + validate's chain-validation into one five-role end-to-end pass; see "Five-role synthetic dry-run" above | stub P2-T1, real **P2-T8** | store, chain, roster, scaffold, signature, subject, validate |
 
 **Verb-handler contract**: every file under `lib/verbs/` exports `async function run(options)` that
@@ -411,12 +429,12 @@ tools/review-record/
     errors.mjs                 CliError taxonomy (P2-T1, extended P2-T2)
     store.mjs                   OQ-2 store layout: paths, review_id parsing, listing (P2-T1); write path (P2-T2)
     chain.mjs                    canonical hashing + informational linkage report (P2-T1 primitive); nextChainLink (P2-T2); consumed as validate's chain-enforcement input (P2-T3)
-    derived-state.mjs             single source of truth for review-chain derived state; consumed by status and validate (Phase 1-T1)
+    derived-state.mjs             single source of truth for module-wide, fail-closed review-chain findings (blockers[] + chainReport); consumed by status and validate — status alone builds the state/nextExpectedRole lifecycle label on top (Phase 1-T1)
     history.mjs                   FR-9/OQ-2 append-only layer (b): git-history append-only check (P2-T3)
     adjudication.mjs               PRD OQ-5 authorship-union + FR-5/FR-6 adjudication/release-authorization validators (P2-T4); conditional adjudication role check (Phase 1-T5)
     signature.mjs                   FR-10/OQ-2 Ed25519 signature binding: signRecordDryRun + verifyRecordSignature (P2-T5)
     validate-cache.mjs             persistent composite-keyed cache for per-record validation checks (Phase 2-T3/T4)
-    render.mjs                      FR-8/FR-31/OQ-3 read-only static-HTML render core: renderModuleHtml (P2-T6)
+    render.mjs                      FR-8/FR-31/OQ-3 read-only static-HTML render core: renderModuleHtml (P2-T6); queue/turn-state section via lib/adjudication.mjs (Phase 3-T1)
     roster.mjs                    reviewerId resolution against governance/reviewer-roster.yaml (P2-T2)
     independence.mjs               heuristic FR-4 reviewer-2-independence check (P2-T2)
     subject.mjs                     computeModuleContentHash — real subjectContentHash source for dry-run (P2-T8)
