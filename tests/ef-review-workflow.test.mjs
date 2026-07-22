@@ -53,7 +53,13 @@ import {
 } from '../tools/review-record/lib/store.mjs';
 import { canonicalRecordHash, nextChainLink } from '../tools/review-record/lib/chain.mjs';
 import { parseYamlDocument } from '../tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs';
-import { loadRosterIndex, resolveReviewer, buildRosterIndex } from '../tools/review-record/lib/roster.mjs';
+import { loadRosterIndex, resolveReviewer, buildRosterIndex, rosterFilePathFor } from '../tools/review-record/lib/roster.mjs';
+import {
+  VALIDATOR_POLICY_VERSION,
+  hashFileIfExists,
+  hashPredecessorSet,
+  writeCacheFileAtomic,
+} from '../tools/review-record/lib/validate-cache.mjs';
 import { checkReviewerIndependence, longestCommonSubstringLength } from '../tools/review-record/lib/independence.mjs';
 import { computeModuleContentHash } from '../tools/review-record/lib/subject.mjs';
 import { signRecordDryRun } from '../tools/review-record/lib/signature.mjs';
@@ -87,8 +93,18 @@ const SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'review-record.schema.json')
 const SUBJECT_HASH = 'sha256:537d2dcf29f8e2871a4b91129ec3da3d0012d48ee90af0784ea8c93db7398c6d';
 const SENTINEL = 'SENTINEL-REVIEWER-ONE-TOKEN-7f2c9a3d';
 
-function runCli(args) {
-  const result = spawnSync(process.execPath, [CLI_PATH, ...args], { encoding: 'utf8' });
+/**
+ * @param {string[]} args
+ * @param {object} [env] optional extra environment variables merged over `process.env` for THIS
+ *   spawned child process only (e.g. `REVIEW_RECORD_CACHE_DIR` -- P2-T4's fresh-process cache
+ *   tests). Omitted entirely (not even an empty object passed to `spawnSync`) when `env` is
+ *   undefined, preserving every pre-existing caller's exact prior behavior byte-for-byte.
+ */
+function runCli(args, env) {
+  const result = spawnSync(process.execPath, [CLI_PATH, ...args], {
+    encoding: 'utf8',
+    ...(env ? { env: { ...process.env, ...env } } : {}),
+  });
   assert.equal(result.error, undefined, `spawnSync itself failed: ${result.error}`);
   return { status: result.status, stdout: result.stdout, stderr: result.stderr };
 }
@@ -1881,5 +1897,495 @@ test('P1-T4: governance/reviewer-roster.yaml shows zero diff against HEAD after 
     '',
     'governance/reviewer-roster.yaml must show zero diff against HEAD after any P1-T4 drift/' +
       'independence test',
+  );
+});
+
+// -------------------------------------------------------------------------------------------
+// P2-T4 (Clinical Review Workflow v1, Phase 2, FR-9/10, R5, OQ-6, F3) -- fail-closed composite-key
+// invalidation. P2-T3 already proved the composite key EXISTS and that cross-process warmth works
+// (tests/ef-review-validate-cache.test.mjs); this task proves the FAIL-CLOSED half named by its own
+// acceptance criteria:
+//   (1)-(5): FIVE DEDICATED FRESH-PROCESS ADVERSARIAL TESTS, one per named key component (roster,
+//       schema, record-content, predecessor-content, history-mode-flag) -- NOT the sixth component,
+//       `validatorPolicyVersion` (a pure code constant, already unit-proven by P2-T3's own
+//       `keysMatch` test; not independently "seedable content" the way these five are).
+//   (6): a git-history mutation committed BETWEEN two `--history` calls is caught on the SECOND
+//       call (OQ-6 -- the module-wide git-log walk is NEVER itself cached, no matter how warm the
+//       per-record cache is).
+//
+// METHODOLOGY for (1)-(5), consistently: build a small, genuinely VALID, signed fixture (so its
+// TRUE recompute is clean); compute that fixture's own CURRENT, correct composite key using the
+// exact same primitives `validate.mjs` itself uses (`canonicalRecordHash`, `hashPredecessorSet`,
+// `hashFileIfExists`, `VALIDATOR_POLICY_VERSION`); then DIRECTLY SEED the persistent cache file
+// (`writeCacheFileAtomic`, never via a prior `validate` run) with an entry whose key is that TRUE
+// key with EXACTLY ONE component swapped for an obviously-wrong value, paired with a FAKE, easily
+// grep-able "result" (an invented violation string a genuinely clean record would never produce).
+// A fresh, separate `node` child process (`runCli`, matching this whole file's established
+// subprocess convention) then runs `validate` against the SAME fixture and cache dir. Fail-closed
+// correctness requires BOTH: (a) the printed `validate-cache: hits=... misses=...` marker shows a
+// MISS for the seeded record (the mismatched component was correctly rejected, not reused), AND
+// (b) the fake, seeded violation text NEVER appears in the process's stdout/stderr (if the stale
+// entry had been wrongly reused, this fake text -- which no genuine recompute could ever produce --
+// would leak straight into the real validate output). This directly proves F3's own language: "any
+// single key-component miss ... triggers full recompute -- never a stale pass," for a REAL fresh
+// process, not merely a `keysMatch(...)` unit assertion.
+//
+// Every fixture below is a throwaway `mkdtemp` root PLUS an isolated `REVIEW_RECORD_CACHE_DIR`
+// (never this machine's real OS-temp/XDG default, never the real repo's own tree) -- see
+// `withCacheDirEnv` below.
+// -------------------------------------------------------------------------------------------
+
+/** Parses this tool's own `validate-cache: hits=<N> misses=<M> of <K> scoped ...` marker line out
+ * of a `validate` CLI invocation's stdout (matches `tests/ef-review-validate-cache.test.mjs`'s own
+ * identically-named helper -- both files independently need this small parser, per this repo's
+ * established per-file-self-contained-helpers convention). */
+function parseCacheMarker(stdout) {
+  const match = stdout.match(/validate-cache: hits=(\d+) misses=(\d+) of (\d+) scoped/);
+  assert.ok(match, `expected a validate-cache marker line in stdout, got:\n${stdout}`);
+  return { hits: Number(match[1]), misses: Number(match[2]), scoped: Number(match[3]) };
+}
+
+/**
+ * Temporarily overrides `process.env.REVIEW_RECORD_CACHE_DIR` (the SAME test seam
+ * `validate-cache.mjs`'s own `resolveCacheRootDir` documents) for the duration of `fn`, restoring
+ * (or deleting) the prior value afterward -- so an in-process call to a `validate-cache.mjs`
+ * primitive (e.g. `writeCacheFileAtomic`, used below to SEED a stale entry directly, never via a
+ * prior `validate` run) resolves to a caller-chosen, isolated cache directory without leaking that
+ * override to any other test in this shared-process test file.
+ *
+ * @template T
+ * @param {string} cacheDir
+ * @param {() => T | Promise<T>} fn
+ * @returns {Promise<T>}
+ */
+async function withCacheDirEnv(cacheDir, fn) {
+  const saved = process.env.REVIEW_RECORD_CACHE_DIR;
+  process.env.REVIEW_RECORD_CACHE_DIR = cacheDir;
+  try {
+    return await fn();
+  } finally {
+    if (saved === undefined) delete process.env.REVIEW_RECORD_CACHE_DIR;
+    else process.env.REVIEW_RECORD_CACHE_DIR = saved;
+  }
+}
+
+/**
+ * Computes `record`'s CURRENT, correct composite cache key (the exact six components
+ * `validate.mjs` itself would compute right now for this exact fixture state) using the same
+ * exported primitives that file uses -- never a hand-rolled reimplementation that could silently
+ * drift from the real one.
+ *
+ * @param {string} tmp fixture root (must already contain `governance/reviewer-roster.yaml`)
+ * @param {object} record the already-loaded, already-signed record object
+ * @param {string[]} predecessorHashes ordered canonical hashes of every record preceding `record`
+ *   in its module's committed sequence (`[]` for a module's first record)
+ * @param {{ historyMode?: boolean }} [opts]
+ * @returns {Promise<import('../tools/review-record/lib/validate-cache.mjs').RecordCacheKey>}
+ */
+async function currentTrueKeyForRecord(tmp, record, predecessorHashes, { historyMode = false } = {}) {
+  const rosterFileHash = await hashFileIfExists(rosterFilePathFor(tmp));
+  const schemaFileHash = await hashFileIfExists(SCHEMA_PATH);
+  return {
+    recordContentHash: canonicalRecordHash(record),
+    predecessorSetHash: hashPredecessorSet(predecessorHashes),
+    rosterFileHash,
+    schemaFileHash,
+    validatorPolicyVersion: VALIDATOR_POLICY_VERSION,
+    historyMode,
+  };
+}
+
+test('P2-T4 fresh-process fail-closed invalidation (1/5, F3): a roster-content change forces recompute -- a cache entry seeded with a STALE rosterFileHash and a fake "clean" result is never reused', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p2t4-stale-roster-'));
+  const cacheDir = await mkdtemp(path.join(tmpdir(), 'ef-p2t4-cache-roster-'));
+  try {
+    const moduleId = 'p2t4_stale_roster_v1';
+    await writeSignFixtureRoster(tmp, [
+      { reviewerId: 'p2t4-roster-reviewer', moduleId, label: 'P2-T4 roster invalidation fixture' },
+    ]);
+    await writeTrivialModuleContent(tmp, moduleId);
+    assert.equal(await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'p2t4-roster-reviewer', decision: 'approve',
+      rationale: 'P2-T4 roster-invalidation fixture, structural only, no clinical claim.',
+      reviewedAt: '2026-04-01T00:00:00Z', root: tmp, draft: true,
+    }), EXIT_OK);
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    assert.equal(await runSign({ draft: draftPath, module: moduleId, root: tmp }), EXIT_OK);
+
+    const [{ record }] = await listModuleReviewRecords(tmp, moduleId);
+    const trueKey = await currentTrueKeyForRecord(tmp, record, []);
+    const staleKey = { ...trueKey, rosterFileHash: `sha256:${'0'.repeat(64)}` };
+    const fakeMarker = 'STALE-FAKE-ROSTER-VIOLATION-MUST-NOT-SURFACE-P2T4-1';
+    await withCacheDirEnv(cacheDir, () => writeCacheFileAtomic(tmp, moduleId, {
+      'rr-0001-clinical-1': {
+        key: staleKey,
+        result: { schemaViolations: [], rosterViolation: fakeMarker, signatureViolation: null, chainViolation: null },
+      },
+    }));
+
+    const { status, stdout, stderr } = runCli(
+      ['validate', '--module', moduleId, '--root', tmp],
+      { REVIEW_RECORD_CACHE_DIR: cacheDir },
+    );
+    assert.equal(status, EXIT_OK, stderr);
+    assert.doesNotMatch(
+      `${stdout}${stderr}`,
+      new RegExp(fakeMarker),
+      'a roster-content mismatch must force full recompute -- the stale, wrongly-keyed fake ' +
+        '"roster violation" must never surface',
+    );
+    assert.deepEqual(
+      parseCacheMarker(stdout),
+      { hits: 0, misses: 1, scoped: 1 },
+      'the seeded entry\'s rosterFileHash mismatch must be a cache MISS, never a stale hit',
+    );
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+    await rm(cacheDir, { recursive: true, force: true });
+  }
+});
+
+test('P2-T4 fresh-process fail-closed invalidation (2/5, F3): a schema-file-hash change forces recompute -- a cache entry seeded with a STALE schemaFileHash and a fake "clean" result is never reused', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p2t4-stale-schema-'));
+  const cacheDir = await mkdtemp(path.join(tmpdir(), 'ef-p2t4-cache-schema-'));
+  try {
+    const moduleId = 'p2t4_stale_schema_v1';
+    await writeSignFixtureRoster(tmp, [
+      { reviewerId: 'p2t4-schema-reviewer', moduleId, label: 'P2-T4 schema invalidation fixture' },
+    ]);
+    await writeTrivialModuleContent(tmp, moduleId);
+    assert.equal(await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'p2t4-schema-reviewer', decision: 'approve',
+      rationale: 'P2-T4 schema-invalidation fixture, structural only, no clinical claim.',
+      reviewedAt: '2026-04-01T00:10:00Z', root: tmp, draft: true,
+    }), EXIT_OK);
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    assert.equal(await runSign({ draft: draftPath, module: moduleId, root: tmp }), EXIT_OK);
+
+    const [{ record }] = await listModuleReviewRecords(tmp, moduleId);
+    const trueKey = await currentTrueKeyForRecord(tmp, record, []);
+    const staleKey = { ...trueKey, schemaFileHash: `sha256:${'1'.repeat(64)}` };
+    const fakeMarker = 'STALE-FAKE-SCHEMA-VIOLATION-MUST-NOT-SURFACE-P2T4-2';
+    await withCacheDirEnv(cacheDir, () => writeCacheFileAtomic(tmp, moduleId, {
+      'rr-0001-clinical-1': {
+        key: staleKey,
+        result: { schemaViolations: [fakeMarker], rosterViolation: null, signatureViolation: null, chainViolation: null },
+      },
+    }));
+
+    const { status, stdout, stderr } = runCli(
+      ['validate', '--module', moduleId, '--root', tmp],
+      { REVIEW_RECORD_CACHE_DIR: cacheDir },
+    );
+    assert.equal(status, EXIT_OK, stderr);
+    assert.doesNotMatch(
+      `${stdout}${stderr}`,
+      new RegExp(fakeMarker),
+      'a schema-file-hash mismatch must force full recompute -- the stale, wrongly-keyed fake ' +
+        '"schema violation" must never surface',
+    );
+    assert.deepEqual(
+      parseCacheMarker(stdout),
+      { hits: 0, misses: 1, scoped: 1 },
+      'the seeded entry\'s schemaFileHash mismatch must be a cache MISS, never a stale hit',
+    );
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+    await rm(cacheDir, { recursive: true, force: true });
+  }
+});
+
+test('P2-T4 fresh-process fail-closed invalidation (3/5, F3): a record-content change forces recompute -- a cache entry seeded with a STALE recordContentHash and a fake "clean" result is never reused', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p2t4-stale-record-'));
+  const cacheDir = await mkdtemp(path.join(tmpdir(), 'ef-p2t4-cache-record-'));
+  try {
+    const moduleId = 'p2t4_stale_record_v1';
+    await writeSignFixtureRoster(tmp, [
+      { reviewerId: 'p2t4-record-reviewer', moduleId, label: 'P2-T4 record-content invalidation fixture' },
+    ]);
+    await writeTrivialModuleContent(tmp, moduleId);
+    assert.equal(await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'p2t4-record-reviewer', decision: 'approve',
+      rationale: 'P2-T4 record-content-invalidation fixture, structural only, no clinical claim.',
+      reviewedAt: '2026-04-01T00:20:00Z', root: tmp, draft: true,
+    }), EXIT_OK);
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    assert.equal(await runSign({ draft: draftPath, module: moduleId, root: tmp }), EXIT_OK);
+
+    const [{ record }] = await listModuleReviewRecords(tmp, moduleId);
+    const trueKey = await currentTrueKeyForRecord(tmp, record, []);
+    const staleKey = { ...trueKey, recordContentHash: `sha256:${'2'.repeat(64)}` };
+    const fakeMarker = 'STALE-FAKE-SIGNATURE-VIOLATION-MUST-NOT-SURFACE-P2T4-3';
+    await withCacheDirEnv(cacheDir, () => writeCacheFileAtomic(tmp, moduleId, {
+      'rr-0001-clinical-1': {
+        key: staleKey,
+        result: { schemaViolations: [], rosterViolation: null, signatureViolation: fakeMarker, chainViolation: null },
+      },
+    }));
+
+    const { status, stdout, stderr } = runCli(
+      ['validate', '--module', moduleId, '--root', tmp],
+      { REVIEW_RECORD_CACHE_DIR: cacheDir },
+    );
+    assert.equal(status, EXIT_OK, stderr);
+    assert.doesNotMatch(
+      `${stdout}${stderr}`,
+      new RegExp(fakeMarker),
+      'a record-content-hash mismatch must force full recompute -- the stale, wrongly-keyed fake ' +
+        '"signature violation" must never surface',
+    );
+    assert.deepEqual(
+      parseCacheMarker(stdout),
+      { hits: 0, misses: 1, scoped: 1 },
+      'the seeded entry\'s recordContentHash mismatch must be a cache MISS, never a stale hit',
+    );
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+    await rm(cacheDir, { recursive: true, force: true });
+  }
+});
+
+test('P2-T4 fresh-process fail-closed invalidation (4/5, F3): a predecessor-set-content change forces recompute of a LATER record whose own bytes are untouched -- a cache entry seeded with a STALE predecessorSetHash and a fake "clean" result is never reused, even while a SIBLING record legitimately stays warm', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p2t4-stale-predecessor-'));
+  const cacheDir = await mkdtemp(path.join(tmpdir(), 'ef-p2t4-cache-predecessor-'));
+  try {
+    const moduleId = 'p2t4_stale_predecessor_v1';
+    // clinical-1 + lab (never clinical-1 + clinical-2) -- avoids the FR-4 reviewer-2 independence
+    // heuristic entirely, isolating this test to the per-record cache mechanism alone.
+    await writeSignFixtureRoster(tmp, [
+      { reviewerId: 'p2t4-pred-clinical-1', moduleId, label: 'P2-T4 predecessor fixture, clinical-1' },
+      { reviewerId: 'p2t4-pred-lab', moduleId, label: 'P2-T4 predecessor fixture, lab' },
+    ]);
+    await writeTrivialModuleContent(tmp, moduleId);
+
+    assert.equal(await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'p2t4-pred-clinical-1', decision: 'approve',
+      rationale: 'P2-T4 predecessor fixture record 1, structural only, no clinical claim.',
+      reviewedAt: '2026-04-01T00:30:00Z', root: tmp, draft: true,
+    }), EXIT_OK);
+    assert.equal(
+      await runSign({ draft: draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1'), module: moduleId, root: tmp }),
+      EXIT_OK,
+    );
+
+    assert.equal(await runScaffold({
+      module: moduleId, role: 'lab', reviewerId: 'p2t4-pred-lab', decision: 'approve',
+      rationale: 'P2-T4 predecessor fixture record 2 (lab role), unrelated wording from record 1.',
+      reviewedAt: '2026-04-01T00:35:00Z', root: tmp, draft: true,
+    }), EXIT_OK);
+    assert.equal(
+      await runSign({ draft: draftFilePathFor(tmp, moduleId, 'rr-0002-lab'), module: moduleId, root: tmp }),
+      EXIT_OK,
+    );
+
+    const [{ record: r1 }, { record: r2 }] = await listModuleReviewRecords(tmp, moduleId);
+    const r1TrueKey = await currentTrueKeyForRecord(tmp, r1, []);
+    const r2TrueKey = await currentTrueKeyForRecord(tmp, r2, [canonicalRecordHash(r1)]);
+    const r2StaleKey = { ...r2TrueKey, predecessorSetHash: hashPredecessorSet([`sha256:${'3'.repeat(64)}`]) };
+    const fakeMarker = 'STALE-FAKE-ROSTER-VIOLATION-MUST-NOT-SURFACE-P2T4-4';
+
+    await withCacheDirEnv(cacheDir, () => writeCacheFileAtomic(tmp, moduleId, {
+      // r1 is seeded with its OWN correct, true key/result -- it must legitimately HIT below,
+      // isolating this test's claim to r2's predecessor-set mismatch alone.
+      'rr-0001-clinical-1': {
+        key: r1TrueKey,
+        result: { schemaViolations: [], rosterViolation: null, signatureViolation: null, chainViolation: null },
+      },
+      'rr-0002-lab': {
+        key: r2StaleKey,
+        result: { schemaViolations: [], rosterViolation: fakeMarker, signatureViolation: null, chainViolation: null },
+      },
+    }));
+
+    const { status, stdout, stderr } = runCli(
+      ['validate', '--module', moduleId, '--root', tmp],
+      { REVIEW_RECORD_CACHE_DIR: cacheDir },
+    );
+    assert.equal(status, EXIT_OK, stderr);
+    assert.doesNotMatch(
+      `${stdout}${stderr}`,
+      new RegExp(fakeMarker),
+      'a predecessor-set-content mismatch must force recompute of the LATER record, even though ' +
+        'its own bytes AND its immediate-predecessor relationship are both untouched (F3: complete ' +
+        'predecessor set, not the record+immediate-predecessor pair alone)',
+    );
+    assert.deepEqual(
+      parseCacheMarker(stdout),
+      { hits: 1, misses: 1, scoped: 2 },
+      'rr-0001-clinical-1 (seeded with its OWN true key/result) legitimately hits; rr-0002-lab ' +
+        '(seeded with a stale predecessorSetHash) must miss',
+    );
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+    await rm(cacheDir, { recursive: true, force: true });
+  }
+});
+
+test('P2-T4 fresh-process fail-closed invalidation (5/5, F3): a history-mode-flag change forces recompute -- a cache entry seeded under the OPPOSITE historyMode boolean and a fake "clean" result is never reused', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p2t4-stale-historymode-'));
+  const cacheDir = await mkdtemp(path.join(tmpdir(), 'ef-p2t4-cache-historymode-'));
+  try {
+    const moduleId = 'p2t4_stale_historymode_v1';
+    await writeSignFixtureRoster(tmp, [
+      { reviewerId: 'p2t4-historymode-reviewer', moduleId, label: 'P2-T4 history-mode-flag fixture' },
+    ]);
+    await writeTrivialModuleContent(tmp, moduleId);
+    assert.equal(await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'p2t4-historymode-reviewer', decision: 'approve',
+      rationale: 'P2-T4 history-mode-flag fixture, structural only, no clinical claim.',
+      reviewedAt: '2026-04-01T00:40:00Z', root: tmp, draft: true,
+    }), EXIT_OK);
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    assert.equal(await runSign({ draft: draftPath, module: moduleId, root: tmp }), EXIT_OK);
+
+    const [{ record }] = await listModuleReviewRecords(tmp, moduleId);
+    // The real call under test below is a PLAIN validate (historyMode: false -- no --history flag;
+    // this fixture is not even a git working tree, so --history itself would throw
+    // NotAGitRepositoryError, irrelevant to this test's own claim). Seed the stale entry under the
+    // OPPOSITE historyMode (true) -- every OTHER component matches truth exactly, isolating this
+    // test to the historyMode component alone.
+    const trueKeyForPlainCall = await currentTrueKeyForRecord(tmp, record, [], { historyMode: false });
+    const staleKey = { ...trueKeyForPlainCall, historyMode: true };
+    const fakeMarker = 'STALE-FAKE-SIGNATURE-VIOLATION-MUST-NOT-SURFACE-P2T4-5';
+    await withCacheDirEnv(cacheDir, () => writeCacheFileAtomic(tmp, moduleId, {
+      'rr-0001-clinical-1': {
+        key: staleKey,
+        result: { schemaViolations: [], rosterViolation: null, signatureViolation: fakeMarker, chainViolation: null },
+      },
+    }));
+
+    const { status, stdout, stderr } = runCli(
+      ['validate', '--module', moduleId, '--root', tmp],
+      { REVIEW_RECORD_CACHE_DIR: cacheDir },
+    );
+    assert.equal(status, EXIT_OK, stderr);
+    assert.doesNotMatch(
+      `${stdout}${stderr}`,
+      new RegExp(fakeMarker),
+      'a per-record cache entry computed under a DIFFERENT history-mode setting must never be ' +
+        'reused by a lookup made under the other',
+    );
+    assert.deepEqual(
+      parseCacheMarker(stdout),
+      { hits: 0, misses: 1, scoped: 1 },
+      'the seeded entry\'s historyMode mismatch must be a cache MISS, never a stale hit',
+    );
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+    await rm(cacheDir, { recursive: true, force: true });
+  }
+});
+
+test('P2-T4 (OQ-6): validate --history results are never cached across invocations -- a git-history mutation committed between two --history calls is caught on the SECOND call, even when the per-record cache is fully WARM (byte-identical restored content)', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p2t4-history-crosscall-'));
+  const cacheDir = await mkdtemp(path.join(tmpdir(), 'ef-p2t4-cache-history-crosscall-'));
+  try {
+    const moduleId = 'p2t4_history_crosscall_v1';
+    execFileSync('git', ['init', '-q'], { cwd: tmp });
+    execFileSync('git', ['config', 'user.email', 'crw-p2t4-test@example.invalid'], { cwd: tmp });
+    execFileSync('git', ['config', 'user.name', 'CRW P2-T4 Test'], { cwd: tmp });
+
+    await writeSignFixtureRoster(tmp, [
+      { reviewerId: 'p2t4-history-reviewer', moduleId, label: 'P2-T4 history cross-call fixture' },
+    ]);
+    await writeTrivialModuleContent(tmp, moduleId);
+    assert.equal(await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'p2t4-history-reviewer', decision: 'approve',
+      rationale: 'P2-T4 history cross-call fixture, structural only, no clinical claim.',
+      reviewedAt: '2026-04-01T00:50:00Z', root: tmp, draft: true,
+    }), EXIT_OK);
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    assert.equal(await runSign({ draft: draftPath, module: moduleId, root: tmp }), EXIT_OK);
+
+    const recordPath = recordFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    const originalBytes = await readFile(recordPath, 'utf8');
+
+    execFileSync('git', ['add', '-A'], { cwd: tmp });
+    execFileSync('git', ['commit', '-q', '-m', 'add rr-0001-clinical-1 (P2-T4 fixture)'], { cwd: tmp });
+
+    // First --history call, a fresh process: clean append-only history (exactly one commit, status
+    // A). Also populates the persistent per-record cache.
+    const first = runCli(
+      ['validate', '--module', moduleId, '--root', tmp, '--history'],
+      { REVIEW_RECORD_CACHE_DIR: cacheDir },
+    );
+    assert.equal(first.status, EXIT_OK, first.stderr);
+    assert.deepEqual(parseCacheMarker(first.stdout), { hits: 0, misses: 1, scoped: 1 });
+
+    // Delete the committed record, then restore the EXACT SAME bytes and commit again -- a real
+    // append-only violation (this path's git history now shows THREE entries: A, D, A) that leaves
+    // the record's own on-disk content byte-IDENTICAL to what the first call already cached -- so
+    // the per-record cache entry stays a legitimate, genuine HIT on the second call below,
+    // isolating this test's claim to the module-wide git-log walk itself (never re-derivable from
+    // content/roster/schema hashes alone, since none of those changed).
+    execFileSync('git', ['rm', '-q', recordPath], { cwd: tmp });
+    execFileSync('git', ['commit', '-q', '-m', 'delete rr-0001-clinical-1 (P2-T4 simulated rewrite, step 1)'], { cwd: tmp });
+    // `git rm` removes the now-empty modules/<id>/reviews/ (and, if also emptied, modules/<id>/)
+    // directory tree along with the file -- recreate it before restoring the byte-identical file.
+    await mkdir(path.dirname(recordPath), { recursive: true });
+    await writeFile(recordPath, originalBytes, 'utf8');
+    execFileSync('git', ['add', '-A'], { cwd: tmp });
+    execFileSync(
+      'git',
+      ['commit', '-q', '-m', 'restore rr-0001-clinical-1 with IDENTICAL bytes (P2-T4 step 2 -- BAD, append-only violation)'],
+      { cwd: tmp },
+    );
+
+    const restoredBytes = await readFile(recordPath, 'utf8');
+    assert.equal(
+      restoredBytes, originalBytes,
+      'the restored file must be byte-IDENTICAL to what the first --history call already cached',
+    );
+
+    // Second --history call, a SEPARATE fresh process, reusing the SAME warm persistent cache dir.
+    // If validate's own module-wide git-log walk were ever itself cached (rather than ALWAYS
+    // freshly re-run per OQ-6), this call could stale-pass on the by-now-familiar "clean" verdict.
+    const second = runCli(
+      ['validate', '--module', moduleId, '--root', tmp, '--history'],
+      { REVIEW_RECORD_CACHE_DIR: cacheDir },
+    );
+    assert.equal(
+      second.status, EXIT_USAGE,
+      'the SECOND --history call must fail closed on the newly committed append-only violation',
+    );
+    assert.match(second.stderr, /git-history:/);
+    assert.match(second.stderr, /rr-0001-clinical-1/);
+    assert.deepEqual(
+      parseCacheMarker(second.stdout),
+      { hits: 1, misses: 0, scoped: 1 },
+      'the per-record schema/roster/signature/chain-link cache entry is genuinely WARM on the ' +
+        'second call (byte-identical restored content) -- yet the git-history layer still caught ' +
+        'the violation, proving that layer is never itself cached across invocations (OQ-6)',
+    );
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+    await rm(cacheDir, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// P2-T4: microbenchmark script existence + discovery-glob-safety regression guard. The actual
+// cross-process cache-cold vs. cache-warm wall-time measurement lives in a STANDALONE script
+// (tests/ef-review-validate-cache-benchmark.mjs, run manually -- see that file's own header),
+// deliberately NOT a node:test file, so it is never picked up by `npm test`'s
+// `tests/*.test.mjs`/`tests/witness/*.test.mjs` discovery globs (F10) and never runs as part of the
+// automated `npm run check` gate (process-spawn wall-clock timing is inherently environment-
+// sensitive and does not belong in a deterministic CI gate). These two checks are lightweight
+// regression guards for that design choice, not a re-run of the benchmark itself.
+// -------------------------------------------------------------------------------------------
+
+test('P2-T4: the cross-process cache microbenchmark script exists at tests/ef-review-validate-cache-benchmark.mjs', async () => {
+  const benchmarkPath = path.join(REPO_ROOT, 'tests', 'ef-review-validate-cache-benchmark.mjs');
+  const content = await readFile(benchmarkPath, 'utf8');
+  assert.match(content, /cbc_suite_v1/, 'the benchmark must target the committed cbc_suite_v1 set');
+  assert.match(content, /REVIEW_RECORD_CACHE_DIR/, 'the benchmark must share the persistent cache dir across invocations');
+});
+
+test('P2-T4: the microbenchmark script\'s filename does NOT match either npm-test discovery glob (tests/*.test.mjs, tests/witness/*.test.mjs) -- it must never run inside npm run check (F10)', () => {
+  const benchmarkBasename = 'ef-review-validate-cache-benchmark.mjs';
+  assert.ok(
+    !benchmarkBasename.endsWith('.test.mjs'),
+    'the benchmark script\'s own filename must not end in .test.mjs, or npm test would pick it up ' +
+      'and run it as part of every gated npm run check invocation',
   );
 });

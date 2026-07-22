@@ -511,3 +511,63 @@ new `tests/ef-review-validate-cache.test.mjs`; 344/344 across the full `tests/ef
 reviewer signing, no ADR-0004 status edit, no `synthetic: false` roster entries in the real
 `governance/reviewer-roster.yaml`, `scripts/verify-d4-built.mjs` unmodified, zero new runtime
 dependencies, zero network, zero LLM anywhere under `tools/review-record/`.
+
+## CRW-F8 — P2-T4: the three lib files named as target surfaces required zero source edits
+(P2-T3 already implemented F3/OQ-6 correctly); the microbenchmark script is a new file not itself
+enumerated in the target-surfaces list, mirroring CRW-F7's own explicit precedent
+
+**Severity**: informational (scope note, not a defect) · **Status**: resolved by executing agent
+(P2-T4).
+
+### (a) No changes were needed to `validate-cache.mjs` / `validate.mjs` / `history.mjs`
+
+This task's plan row (and the dispatched task text) name `tools/review-record/lib/validate-cache.mjs`,
+`tools/review-record/lib/verbs/validate.mjs`, and `tools/review-record/lib/history.mjs` as target
+surfaces alongside `tests/ef-review-workflow.test.mjs`. On inspection, P2-T3 (the prior, already-
+shipped task in this same phase) had already implemented every fail-closed guarantee this task's own
+acceptance criteria require: `keysMatch` is a strict, all-six-component equality check with no
+partial-match path (`validate-cache.mjs`); the module-wide `checkAppendOnlyHistory` git-log walk
+(`history.mjs`) is called fresh, unconditionally, on every `--history` invocation and is never itself
+written into or read from the per-record cache (`validate.mjs`'s `historyMode`-gated call site).
+Five newly-written fresh-process adversarial tests (one per named key component: roster, schema,
+record-content, predecessor-content, history-mode-flag — each seeding a manufactured stale cache
+entry via `writeCacheFileAtomic` directly, paired with a fake, distinguishable "clean" result, then
+asserting a SEPARATE `node` child process both (i) reports a cache MISS and (ii) never surfaces the
+fake result) and one cross-call `--history` test (a git-history mutation committed between two
+`--history` calls sharing a warm cache, with the record's own bytes restored byte-identical so the
+per-record cache is a genuine HIT, isolating the claim to the module-wide walk) all passed on the
+FIRST run, with zero source changes required to any of the three lib files. This task's actual diff
+is therefore test-only (plus the new benchmark script below) — "target surfaces" bounds what an agent
+is PERMITTED to edit, not a requirement that every named file be edited when the pre-existing
+implementation already satisfies the task's contract.
+
+### (b) A new file, `tests/ef-review-validate-cache-benchmark.mjs`, was created
+
+This task's own acceptance criteria require "a repeatable microbenchmark script... committed" —
+a standalone script, not a `node:test` suite (process-spawn wall-clock timing is not a fit for a
+deterministic CI gate). No such file existed, and none of the four listed target surfaces is a
+sensible home for it (`tests/ef-review-workflow.test.mjs` is a `node:test` suite gated by
+`npm test`; the benchmark must NOT be). A new file,
+`tests/ef-review-validate-cache-benchmark.mjs` (no `.test.mjs` suffix, so `npm test`'s
+`tests/*.test.mjs`/`tests/witness/*.test.mjs` discovery globs never pick it up — F10), was created to
+hold it. This mirrors CRW-F7's own header, which explicitly anticipated and named this exact split:
+"P2-T3's target-surfaces list did not itself name a test file — P2-T4, a sibling task, owns further
+additions to `tests/ef-review-workflow.test.mjs`, e.g. its own five dedicated fresh-process
+adversarial invalidation tests **and the cross-process microbenchmark script**." Two lightweight
+regression-guard tests were added to `tests/ef-review-workflow.test.mjs` (this task's own declared
+surface) confirming the benchmark script exists, targets `cbc_suite_v1`, shares
+`REVIEW_RECORD_CACHE_DIR` across invocations, and is not `.test.mjs`-suffixed.
+
+### (c) Verification
+
+The benchmark script was run manually multiple times during development (statistics: 8 paired
+cold/warm trials per repeated run, 3 repeated runs, comparing the paired-difference MEDIAN per run —
+chosen over a raw single-sample or mean comparison because Node process-spawn/startup cost, ~200 ms
+on the development machine, dwarfs the actual per-record cache savings for a 5-record set, making a
+naive single-sample comparison measurably flaky; the paired-median design was empirically confirmed
+stable across repeated manual runs before being finalized) and consistently showed cache-warm faster
+than cache-cold on 3/3 repeated runs. 89/89 targeted in `tests/ef-review-workflow.test.mjs`;
+2353/2353 full `npm test`; `npm run check` green end-to-end. No guardrail was crossed: no real-
+reviewer signing, no ADR-0004 status edit, no `synthetic: false` roster entries in the real
+`governance/reviewer-roster.yaml`, `scripts/verify-d4-built.mjs` unmodified, zero new runtime
+dependencies, zero network, zero LLM anywhere under `tools/review-record/`.
