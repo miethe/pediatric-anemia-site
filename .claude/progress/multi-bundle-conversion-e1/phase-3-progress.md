@@ -57,7 +57,7 @@ tasks:
     dependencies: ["P3-T3"]
     description: "scripts/validate-kb.mjs empty-rules.json regression check (FR-15): confirm/harden that a module whose rules.json is a valid empty array [] validates as valid, not an error — an expected, legitimate E1 state, not a validator regression. Add a dedicated test."
   - id: "P3-T5"
-    status: "not_started"
+    status: "completed"
     assigned_to: ["general-purpose"]
     model: "sonnet"
     model_effort: "adaptive"
@@ -152,4 +152,46 @@ not only test — that neither module carries any real clinical logic yet.
 
 ## Completion Notes
 
-_Not started. Fill in when phase work begins._
+### P3-T5 — "Not yet implemented" honesty spot-check (R-4 mitigation): PASS, no index.js fix required
+
+**Named line for `karen`'s P3-GATE2 review — re-check this against the actual diff, not this
+description:** reading *only* `modules/kidney_suite_v1/index.js` + `modules/kidney_suite_v1/module.json`,
+and separately *only* `modules/growth_suite_v1/index.js` + `modules/growth_suite_v1/module.json`,
+with no other repo context, makes the "no real clinical logic here" posture obvious without
+inference for both modules. Verified 2026-07-22 against the committed content (`9c803dc` kidney,
+`b9741c9` growth):
+
+- **`module.json.status`**: both files read `"status": "unsigned-stub"` (also `approvedBy: []`,
+  `clinicalContentHash: null`) — present verbatim in both, top-level, unmissable.
+- **`limitations()`**: both modules' `limitations(_facts)` return an array containing a single
+  explicit string that plainly states no clinical fact derivation has been performed — kidney:
+  `"kidney_suite_v1: fact derivation is not yet implemented for this module. No clinical facts,
+  thresholds, reference ranges, or interpretations are computed or inferred here..."`; growth:
+  `"growth_suite_v1 fact derivation is not yet implemented for this module. This is a package-shape
+  scaffold only... it performs no growth-specific clinical fact derivation, threshold lookup, or
+  pattern matching, and it does not delegate to any other module's fact derivation."` Neither string
+  requires cross-referencing another file to parse; both name the module, state "not yet
+  implemented", and rule out delegation to a sibling module's fact derivation.
+- **`deriveFacts()`/`summarize()`**: both mirror the same "not yet implemented" posture
+  (`notYetImplemented: true` + the same message/notice string) rather than returning silence or a
+  plausible-looking stub value that could be mistaken for real output.
+- **Top-of-file comments**: both `index.js` files open with an explanatory block stating explicitly
+  that the module has no sibling fact-derivation module to delegate to (unlike `cbc_suite_v1`'s OQ-1
+  delegation to `anemia`) and that this is a deliberate, out-of-scope-for-this-task absence of
+  clinical logic — not an oversight.
+- **Conclusion**: both modules PASS the R-4 honesty check as literally scoped (status +
+  `limitations()` legibility) on a read of only the named `index.js`/`module.json` pair. **No
+  labeling fix to either `index.js` was needed or made.**
+
+**Non-blocking observation (informational only, outside this task's owned-files scope — flagged for
+`karen`'s discretion, not a P3-T5 fix)**: `modules/kidney_suite_v1/module.json`'s envelope fields
+(`module_topic`, `patient_population.settings`, `intended_output`, `explicit_exclusions`) are all
+explicitly stub-flagged (e.g. `"not_yet_implemented_no_clinical_scope_defined"`,
+`["not_yet_implemented"]`), while the equivalent fields in `modules/growth_suite_v1/module.json`
+read as real intended-future-scope content (e.g. `module_topic: "Pediatric Growth Suite"` with no
+stub annotation; `intended_output` lists concrete categories like `"safety_caution"`,
+`"referral_readiness"`). This asymmetry does not fail the P3-T5 criteria as scoped (status +
+`limitations()` both still read unambiguously "not yet implemented" for growth), and P3-T5's owned
+scope is limited to progress-note text and `index.js` labeling only (module.json is out of this
+task's file ownership) — noted here so `karen`'s P3-GATE2 review can decide whether to request a
+follow-up envelope-wording pass on `growth_suite_v1/module.json` for consistency with kidney's.
