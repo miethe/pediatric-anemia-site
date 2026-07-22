@@ -8,7 +8,7 @@ updated: 2026-07-21
 feature_slug: "multi-bundle-conversion-e1"
 feature_version: "v1"
 prd_ref: null
-plan_ref: null
+plan_ref: docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1.md
 related_documents:
   - docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md
   - docs/project_plans/expansion/rf-handoff/RESULTS.md

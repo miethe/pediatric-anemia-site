@@ -1,0 +1,87 @@
+# Phase 3-4: Greenfield Scaffolds & Existing-Module Projections
+
+[Return to Parent Plan](../multi-bundle-conversion-e1.md)
+
+**Column conventions**: `Estimate` is story points, never Effort. `Model`: `sonnet` throughout.
+`Effort`: `adaptive` \| `extended`. Gate rows carry `Estimate: —`.
+
+---
+
+## Phase 3: Greenfield Module Scaffolds (kidney, growth)
+
+**Duration**: ~2-3 engineer-days
+**Dependencies**: None — runs in wave 1, parallel to Phase 1→2 (disjoint files, confirmed against both
+phases' `files_affected`)
+**Assigned Subagent(s)**: module engineer (general-purpose, sonnet); Explore (read
+`modules/cbc_suite_v1/` as the scaffold exemplar before building); task-completion-validator gate;
+**karen mid-milestone review** (decisions block Tier-3 reviewer gate — first of 2 named milestones)
+**Integration Owner** (R-P3): module engineer — owns both scaffolds and the single seam task (P3-T3)
+that wires them into the shared registries without colliding.
+**Seam Task** (R-P3): P3-T3 — dual registry wiring is the explicit join point between the
+independently-scaffolded `kidney_suite_v1` and `growth_suite_v1` packages.
+**Exit gate** (decisions block §1): both modules load, validate (`npm run validate`), and register
+without a clinical claim; `approvedBy: []`, null hashes.
+**Module IDs** (OQ-4, resolved in parent plan): `kidney_suite_v1` (RF-KID-001), `growth_suite_v1`
+(RF-GRO-002).
+
+| Task ID | Task Name | Description | Acceptance Criteria | Estimate | Subagent(s) | Model | Effort | Dependencies |
+|---------|-----------|--------------|----------------------|---------:|--------------|-------|--------|---------------|
+| P3-T1 | `modules/kidney_suite_v1/` package scaffold | Per FR-13: create `modules/kidney_suite_v1/module.json` mirroring `modules/cbc_suite_v1/module.json`'s unsigned-stub shape (`id: "kidney_suite_v1"`, `status: "unsigned-stub"`, `knowledgeBaseVersion`, `approvedBy: []`, `clinicalContentHash: null`, `validationRunId: null`, `supersedes: null`, `releasedAt: null`, plus the `02 §3.2` envelope fields: `module_topic`, `intended_hcp_users`, `patient_population`, `intended_output`, `explicit_exclusions`, `jurisdictions`, `integration_targets`); `index.js` exporting `deriveFacts`/`summarize`/`limitations` that return a clearly-labeled **"not yet implemented for this module"** posture — no invented clinical fact derivation, no delegation to `anemia`'s fact derivation (unlike `cbc_suite_v1`'s OQ-1 delegation — kidney has no sibling fact-derivation module to delegate to, per PRD §2's explicit note); schema-valid empty `rules.json` (`[]`); schema-valid empty `candidates.json` (`[]` or `{}`, matching `scripts/validate-kb.mjs`'s existing expected shape); an empty-but-valid `evidence.json` (`{"sources": []}`); a `reference-ranges.json` scaffold. | `modules/kidney_suite_v1/module.json` parses with all required + envelope fields present; `index.js`'s `limitations()` output contains an explicit "not yet implemented" string, not silence; `rules.json`/`candidates.json` are schema-valid empty structures | 1.5 | module engineer | sonnet | adaptive | None |
+| P3-T2 | `modules/growth_suite_v1/` package scaffold | Per FR-13: identical structure to P3-T1, for `id: "growth_suite_v1"` (RF-GRO-002). Same "not yet implemented" labeling requirement in `index.js`'s hook descriptor and `limitations()` output; same empty-but-valid `rules.json`/`candidates.json`/`evidence.json`/`reference-ranges.json`. | Same criteria as P3-T1, scoped to `growth_suite_v1` | 1.5 | module engineer | sonnet | adaptive | None |
+| P3-T3 | Dual registry wiring (seam task) | Per FR-14: register both new modules in `src/modules/registry.js` (literal `REGISTRY` map entries, `MODULE_IDS` stays derived from the map — never hand-duplicated, matching the existing `cbc_suite_v1` pattern's own derived-not-restated fix) and `src/facts/registry.js` (literal, enumerated `MODULE_CODE_LOADERS` entries pointing at each module's own placeholder fact-derivation export — **never** a template-string specifier, and **never** delegating to `anemia`'s or `cbc_suite_v1`'s fact module, since kidney/growth have no sibling to delegate to). `DEFAULT_MODULE_ID` stays `'anemia'`; this pass adds no client-selectable `moduleId` surface (no UI/API change) — update the existing tripwire comment in `src/modules/registry.js` to note a 3rd/4th module is now registered and why `'anemia'` still remains correct (R-8 mitigation). | `getModule('kidney_suite_v1')` and `getModule('growth_suite_v1')` both resolve; `MODULE_IDS` includes all 4 ids, still derived from the registry map, not hand-listed; `DEFAULT_MODULE_ID === 'anemia'` still passes the existing tripwire assertion in `tests/module-registry.test.mjs`, with the comment updated to reflect 4 registered modules; `MODULE_CODE_LOADERS` uses literal `import()` specifiers for both new modules, never a variable/template-string specifier | 1.0 | module engineer | sonnet | extended | P3-T1, P3-T2 |
+| P3-T4 | `scripts/validate-kb.mjs` empty-`rules.json` regression check (FR-15) | Confirm and, if needed, harden: a module whose `rules.json` is a valid empty array `[]` MUST validate as valid, not an error. This is an expected, legitimate E1 state for both new modules, not a validator regression. Add an explicit test asserting this (the E0 PRD's own FR-3 non-regression boundary). | `npm run validate` passes for both `kidney_suite_v1` and `growth_suite_v1` with `rules.json: []`; a dedicated test seeds an empty-rules module and asserts zero validation errors are raised for that specific condition | 0.5 | module engineer | sonnet | adaptive | P3-T3 |
+| P3-T5 | "Not yet implemented" honesty spot-check (R-4 mitigation) | Per decisions block Risk 4 / R-4: a human-verifiable check (documented, not only test-enforced) that reading `kidney_suite_v1/index.js` and `growth_suite_v1/index.js` directly makes the "no real clinical logic here" posture obvious without inference — `module.json.status` is `unsigned-stub`, `limitations()` states plainly the module performs no clinical fact derivation yet. Record this as an explicit line in the phase progress note for `karen`'s milestone review to re-check against the diff, not the plan's description. | A reviewer reading only `index.js` and `module.json` for either module (no other context) correctly concludes "not yet clinically functional" within one read-through; phase progress note names this explicitly for P3-GATE2 | 0.5 | module engineer | sonnet | adaptive | P3-T1, P3-T2 |
+| P3-GATE1 | `task-completion-validator` gate | Verify Phase 3 exit gate: both modules load/validate/register; `npm run check` green with 4 modules registered; no rule/candidate implies diagnosis; empty-rules regression test passes. | All exit-gate criteria pass | — | task-completion-validator | sonnet | adaptive | P3-T1..T5 |
+| P3-GATE2 | `karen` mid-milestone review — greenfield scaffolds | Independently re-check, against the actual diff (not the plan's description): both new modules genuinely carry zero clinical logic; `approvedBy: []` and null `clinicalContentHash` on both; the "not yet implemented" labeling is unambiguous on direct read; `DEFAULT_MODULE_ID` tripwire comment update is present and accurate. Runs after P3-GATE1 passes, before Phase 5 (which projects real evidence into these scaffolds) opens. | `karen` sign-off recorded; any gap becomes a new task before Phase 5 opens | — | karen | sonnet | adaptive | P3-GATE1 |
+
+**Phase 3 Quality Gates:**
+
+*Validated at P3-GATE1 (task-completion-validator):*
+- [ ] `npm run check` green with 4 modules registered (`anemia`, `cbc_suite_v1`, `kidney_suite_v1`, `growth_suite_v1`)
+- [ ] Both new modules validate with empty `rules.json`/`candidates.json` — confirmed non-error state
+- [ ] `DEFAULT_MODULE_ID` stays `'anemia'`; tripwire comment updated with 4-module rationale
+
+*Validated at P3-GATE2 (`karen` mid-milestone review):*
+- [ ] Zero clinical logic in either new module, confirmed by direct read, not assumption
+- [ ] `karen` sign-off recorded
+
+---
+
+## Phase 4: Existing-Module Projections (anemia backfill, cbc extension)
+
+**Duration**: ~4-5 engineer-days
+**Dependencies**: Phase 2 complete (needs the batch runner + `EF-WP1` gate)
+**Assigned Subagent(s)**: module engineer (general-purpose, sonnet); task-completion-validator gate
+**Integration Owner** (R-P3): module engineer — owns both concerns in this phase (RF-EV-001 →
+`modules/anemia/`, RF-CBC-002 → `modules/cbc_suite_v1/`) and the two seam tasks proving neither
+mutation corrupted its target.
+**Seam Tasks** (R-P3): P4-T4 (anemia rule→evidence reference integrity survives the backfill), P4-T7
+(`cbc_suite_v1`'s E0-era content proven byte-identical post-merge).
+**Exit gate** (decisions block §1): `npm run check` green; anemia's 91 rules + existing tests unchanged
+in behavior; determinism holds.
+**This is the plan's single highest-risk phase** (decisions block Risk 1 + Risk 2) — extended effort
+throughout.
+
+| Task ID | Task Name | Description | Acceptance Criteria | Estimate | Subagent(s) | Model | Effort | Dependencies |
+|---------|-----------|--------------|----------------------|---------:|--------------|-------|--------|---------------|
+| P4-T1 | Pre-merge snapshot hash (baseline for byte-identity proof) | Before any `propose` run in this phase: record a SHA-256 hash of every file in `modules/anemia/{evidence.json,rules.json,candidates.json}` and every file in `modules/cbc_suite_v1/**` (the full E0-era package: `rules.json`, `candidates.json`, `authoring-decisions.yaml`, `evidence.json`, `evidence-assertions.json`, `rule-provenance.json`). Write the snapshot to a worknote or test fixture P4-T4/P4-T7 can compare against. | Snapshot recorded for all listed files, committed or stored as a test fixture, before P4-T2/P4-T5 run | 0.5 | module engineer | sonnet | extended | Phase 2 complete, Phase 3 complete (P3-T3, so `modules/cbc_suite_v1` registry state is stable) |
+| P4-T2 | RF-EV-001 → `modules/anemia/evidence-assertions.json` (additive backfill) | Per FR-6 / OQ-1 (resolved in parent plan §"Decisions & OQ Resolutions"): run `propose` for `RF-EV-001` against `modules/anemia/`, producing a **new** `modules/anemia/evidence-assertions.json` matching `modules/cbc_suite_v1/evidence-assertions.json`'s established schema shape (`schemaVersion`, `moduleId`, `rfProvenance{rfRunId,rfBundleId,fixturePath}`, `assertions[]`). This run MUST NOT write to, regenerate, or modify `modules/anemia/evidence.json` or `modules/anemia/rules.json` in any way — the converter's `--out` target for this run is scoped to only emit the new assertions file, never touch the existing files. | `modules/anemia/evidence-assertions.json` exists, new, schema-valid, matching `cbc_suite_v1`'s shape (FR-21); `modules/anemia/evidence.json` and `modules/anemia/rules.json` are byte-identical to their P4-T1 snapshot hash after this task | 0.75 | module engineer | sonnet | extended | P4-T1 |
+| P4-T3 | Anemia dual-pipeline reconciliation note (OQ-1) | Write a short, in-repo note (e.g., `modules/anemia/README.md` addendum or a dedicated `modules/anemia/EVIDENCE-PROVENANCE-NOTE.md`) documenting the seam OQ-1 resolves: `evidence.json` (EP-3/EP-4 pipeline, prior) and `evidence-assertions.json` (this pass, EF pipeline, new) are **parallel provenance views of the same upstream bundle (`RF-EV-001`)**, neither superseding the other, neither field overwritten by the other. Cross-reference `rf-handoff/RESULTS.md` and this plan's OQ-1 resolution. This is documentation of the seam at the point of creation — not the reconciliation *procedure* itself (that is Deferred Item DF-E1-M3, P7-T4). | Note exists, discoverable from `modules/anemia/`, states explicitly that both files are read-only-independent (no field cross-references or overwrites), and links to the Deferred Item spec path (populated once P7-T4 lands) | 0.5 | module engineer | sonnet | adaptive | P4-T2 |
+| P4-T4 | Anemia rule→evidence reference integrity seam task | **Seam task (R-P3).** Run the full existing `modules/anemia/` test suite (all tests exercising the 91 rules) plus a dedicated reference-integrity check: every `evidenceId`/`evidenceRef` cited by any of the 91 rules in `rules.json` still resolves inside `evidence.json` after P4-T2's backfill lands. This is the explicit join point proving the additive backfill did not silently break the pre-existing rule↔evidence graph. | 100% of pre-existing anemia tests pass unchanged; a reference-integrity script confirms every rule-cited `evidenceId` resolves in `evidence.json`, with zero unresolved references introduced by this phase | 0.75 | module engineer | sonnet | extended | P4-T2, P4-T3 |
+| P4-T5 | RF-CBC-002 → extend `modules/cbc_suite_v1/` (collision-safe merge) | Per FR-7/FR-8 / decisions block Risk 2 (the plan's single riskiest cell): run `propose` for `RF-CBC-002` against `modules/cbc_suite_v1/`, **appending** to (never recreating) the existing `evidence.json` and `evidence-assertions.json` — including the pancytopenia-branch claims. Every new ID (`sourceId`, `assertionId`, `rfSourceCardId`, `rfClaimId`) MUST be collision-checked against the RF-CBC-001-derived content already present; a collision fails the batch closed for this bundle, never silently overwrites. Merge/sort deterministically keyed on stable IDs (`02 §4.7`), never array position. `modules/cbc_suite_v1/rules.json` and `authoring-decisions.yaml` are NOT touched by this task (no approved decision exists for any `RF-CBC-002`-specific claim). | `modules/cbc_suite_v1/evidence.json` and `evidence-assertions.json` carry `RF-CBC-002` content appended to the existing `RF-CBC-001` content, provenance separable by `rfRunId`; `rules.json` and `authoring-decisions.yaml` byte-identical to their P4-T1 snapshot; a seeded ID collision (duplicate `assertionId` between the two runs) fails the merge closed with a named collision, no partial write | 1.0 | module engineer | sonnet | extended | P4-T1, Phase 2 complete |
+| P4-T6 | `cbc_suite_v1` merge idempotency test | Per FR-8: re-run `propose` for `RF-CBC-002` a second time against the now-merged `cbc_suite_v1` and assert zero duplicate records are created — the merge step is idempotent, not merely additive-once. | Second `propose` run for `RF-CBC-002` produces zero new/duplicate assertion or source records; file byte-identical before and after the second run | 0.5 | module engineer | sonnet | adaptive | P4-T5 |
+| P4-T7 | `cbc_suite_v1` post-merge byte-identity seam task | **Seam task (R-P3).** Compare `modules/cbc_suite_v1/{rules.json,authoring-decisions.yaml}` and every `RF-CBC-001`-derived record inside `evidence.json`/`evidence-assertions.json` against P4-T1's pre-merge snapshot hash. This is the hard test gate the decisions block requires before Risk 2 is considered closed. | 100% byte-identity confirmed for `rules.json` and `authoring-decisions.yaml`; every `RF-CBC-001`-tagged (`rfRunId: rf_run_20260717_rf_cbc_001_pediatric_cds_establish`) record in `evidence.json`/`evidence-assertions.json` is unchanged from the P4-T1 snapshot, field-for-field | 0.5 | module engineer | sonnet | extended | P4-T5, P4-T6 |
+| P4-T8 | LOAD-BEARING honesty AC: zero new rules, unsigned-stub posture | **Load-bearing AC (decisions block Notes for implementation-planner).** Explicitly assert and test: zero entries were added to `modules/anemia/rules.json` or `modules/cbc_suite_v1/rules.json` as a result of this phase; `modules/anemia/module.json.approvedBy` stays `[]` (was already `[]`; confirm unchanged); `modules/cbc_suite_v1/module.json.status` stays `"unsigned-stub"`, `approvedBy: []`, `clinicalContentHash: null` — unchanged by the merge (OQ-2: `knowledgeBaseVersion` also stays unchanged, per the parent plan's OQ-2 resolution). "Module complete" or "backfill succeeded" is never described anywhere in this phase's output as implying clinical readiness. | `git diff` of `modules/anemia/rules.json` and `modules/cbc_suite_v1/rules.json` shows zero lines changed; `module.json.status`/`approvedBy`/`clinicalContentHash`/`knowledgeBaseVersion` fields for both modules are byte-identical before/after this phase, test-enforced, not merely asserted in prose | 0.5 | module engineer | sonnet | adaptive | P4-T4, P4-T7 |
+| P4-GATE | `task-completion-validator` gate | Verify Phase 4 exit gate: `npm run check` green; anemia's 91 rules + existing tests unchanged in behavior; `cbc_suite_v1`'s E0-era content byte-identical post-merge; determinism holds (re-verify via a local double-run of P4-T2 and P4-T5, full determinism suite deferred to Phase 6); zero-new-rules AC (P4-T8) passes. | All exit-gate criteria pass | — | task-completion-validator | sonnet | adaptive | P4-T1..T8 |
+
+**Phase 4 Quality Gates:**
+- [ ] `npm run check` green
+- [ ] Anemia's 91 rules and their full existing test suite pass unchanged
+- [ ] `modules/anemia/evidence.json` and `rules.json` byte-identical to pre-phase snapshot (P4-T1)
+- [ ] `modules/cbc_suite_v1/rules.json` and `authoring-decisions.yaml` byte-identical to pre-phase snapshot
+- [ ] `cbc_suite_v1`'s `RF-CBC-001`-derived evidence/assertion records unchanged, field-for-field
+- [ ] A seeded ID collision between `RF-CBC-001`/`RF-CBC-002` fails the merge closed, no partial write
+- [ ] **Zero new rules in `modules/anemia/rules.json` or `modules/cbc_suite_v1/rules.json`, test-enforced (P4-T8)**
+- [ ] Both modules' `status`/`approvedBy`/`clinicalContentHash` unchanged (P4-T8)
+
+[Return to Parent Plan](../multi-bundle-conversion-e1.md)
