@@ -47,7 +47,11 @@ adr_refs:
 - docs/adr/0004-clinical-approval-identity-adjudication.md
 - docs/adr/0005-kb-serialization-signing-key-custody.md
 - docs/adr/0006-validation-data-boundary-deidentification.md
-deferred_items_spec_refs: []
+deferred_items_spec_refs:
+- docs/project_plans/design-specs/retrospective-validation-harness.md
+- docs/project_plans/design-specs/surveillance-update-registry-engine.md
+- docs/project_plans/design-specs/production-monitoring-telemetry.md
+- docs/project_plans/design-specs/clinical-review-portal-workflow.md
 findings_doc_ref: null
 charter_ref: null
 changelog_ref: CHANGELOG.md
