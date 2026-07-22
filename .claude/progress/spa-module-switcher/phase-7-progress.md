@@ -336,7 +336,7 @@ python .claude/skills/artifact-tracking/scripts/update-status.py \
 
 Close the loop on documentation truth: CHANGELOG, `docs/architecture.md` §2a/§6/§10, `CLAUDE.md`'s
 orientation diagram, five deferred-item artefacts (three new design specs, one updated spec, and ADR-0010), the findings doc
-(two known findings), and the plan's own frontmatter finalization — followed by the feature's final
+(three known findings — see DOC-007), and the plan's own frontmatter finalization — followed by the feature's final
 `karen` end-of-feature review.
 
 **Duration**: ~0.5–1 engineer-day · **Dependencies**: Phase 6 complete (wave 7) ·
@@ -403,8 +403,11 @@ docs/architecture.md §2a instead of restating anemia-only counts. Do NOT touch 
 string. See plan §Phase 7, DOC-004.")
 
 Task("general-purpose", "DOC-007: Create .claude/findings/spa-module-switcher-findings.md with
-BOTH known findings — R-5/DF-SMS-01 (sign-kb anemia hardcode) and SQ-3 F9/DF-SMS-05 (cbc evidence
-ID resolution gap). status: accepted, promoted_to set. See plan §Phase 7, DOC-007.")
+ALL THREE known findings — (1) R-5/DF-SMS-01 sign-kb anemia hardcode; (2) SQ-3 F9/DF-SMS-05 cbc
+evidence-ID resolution gap; (3) the stale tests/module-registry.test.mjs:20-24 tripwire comment,
+overdue since commit 263120b — record it as PRE-EXISTING DEBT this feature closed at P6-010, NOT
+as something this feature caused, and do NOT merge it with the separate src/modules/registry.js:39-50
+trigger. status: accepted, promoted_to set. See plan §Phase 7, DOC-007.")
 ```
 
 ### Batch 3 (after all doc tasks)

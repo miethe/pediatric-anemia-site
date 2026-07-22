@@ -7,7 +7,7 @@ feature_slug: spa-module-switcher
 prd_ref: docs/project_plans/PRDs/features/spa-module-switcher-v1.md
 plan_ref: docs/project_plans/implementation_plans/features/spa-module-switcher-v1.md
 phase_detail_ref: docs/project_plans/implementation_plans/features/spa-module-switcher-v1/phase-3-5-ui.md
-execution_model: batch-parallel
+execution_model: sequential
 phase: 4
 title: "SPA Module Switcher — Phase 4: Fail-Closed Refusal State + Capability Gating"
 status: pending
@@ -238,12 +238,25 @@ tasks:
     .claude/findings/spa-module-switcher-findings.md.
 parallelization:
   batch_1: [P4-01]
-  batch_2: [P4-02, P4-03, P4-04, P4-05]
-  batch_3: [P4-06, P4-07]
-  batch_4: [P4-GATE]
-  batch_5: [P4-KAREN]
+  batch_2: [P4-02]
+  batch_3: [P4-03]
+  batch_4: [P4-04]
+  batch_5: [P4-05]
+  batch_6: [P4-06]
+  batch_7: [P4-07]
+  batch_8: [P4-GATE]
+  batch_9: [P4-KAREN]
   critical_path: [P4-01, P4-03, P4-06, P4-GATE, P4-KAREN]
   estimated_total_time: "~2 engineer-days"
+  serialization_constraint: >
+    THIS PHASE IS SEQUENTIAL — execution_model: sequential, not batch-parallel. SHARED-FILE
+    OWNERSHIP: all seven implementer tasks (P4-01..P4-07) declare src/app.js as their only
+    target_surface, and the dev-execution rule is one agent per file, no parallel edits to the
+    same file. No disjoint batching exists for this phase, so every batch carries exactly one
+    task by construction. The earlier grouping (batch_2: P4-02..P4-05, batch_3: P4-06/P4-07) put
+    four and then two agents on src/app.js concurrently. It is a safety-critical file building
+    one state machine incrementally on P4-01's skeleton; concurrent edits would interleave
+    refusal branches. Do not re-parallelize.
 blockers:
 - id: BLOCKER-PHASE-DEP
   title: "Phase 4 cannot open until Phase 3 exit gate (P3-GATE) passes"
@@ -286,8 +299,10 @@ success_criteria:
 files_modified:
 - src/app.js
 notes: >
-  Wave 4 — depends on Phase 3 complete. **Safety-critical slice** — effort is `extended` on every
-  implementer task, not `adaptive`. **`integration_owner: phase-owner`** shared with Phase 3; **seam
+  Wave 4 — depends on Phase 3 complete. **Runs SEQUENTIALLY** (`execution_model: sequential`): all
+  seven implementer tasks target only `src/app.js`, so no disjoint batch exists and each batch
+  dispatches one task — see `parallelization.serialization_constraint`. **Safety-critical slice** —
+  effort is `extended` on every implementer task, not `adaptive`. **`integration_owner: phase-owner`** shared with Phase 3; **seam
   task P4-06** lives in this phase's tracking file. SQ-3 proved the current failure mode is actively
   dangerous: growth/kidney fail at src/units.js:167, throw UnitRejectionError, which is in
   INPUT_REJECTION_CODES, so src/app.js:693 renders "Check the entered units" — an unimplemented
@@ -366,36 +381,59 @@ via INPUT_REJECTION_CODES. Enforce invariants in order: clear currentAudit → h
 interactive. See plan §Phase 4, P4-01.")
 ```
 
-### Batch 2 (after P4-01)
+> **Serialization constraint — this phase is `sequential`, not `batch-parallel`.** All seven
+> implementer tasks declare **`src/app.js` as their only `target_surface`**, and the dev-execution
+> rule is **one agent per file, no parallel edits to the same file**. There is no disjoint batching
+> for this phase, so each batch below emits **exactly one `Task()` call**. This is deliberate: the
+> tasks build one state machine incrementally on `P4-01`'s skeleton in a safety-critical file, and
+> concurrent edits would interleave refusal branches. **Do not re-parallelize** batches 2–7.
+
+### Batch 2 (after P4-01) — single task, `src/app.js`
 
 ```
 Task("general-purpose", "P4-02: Refusal Case 1 — evidence registry has no entry for the module
 (FR-15/SQ-3 §4.1). src/evidence/registry.js throws unknown module for growth/kidney. Route to
 showModuleRefusal: 'No assessment produced — evidence not available for module X'. See plan
 §Phase 4, P4-02.")
+```
 
+### Batch 3 (after P4-02) — single task, `src/app.js`
+
+```
 Task("general-purpose", "P4-03: Refusal Case 2 — hooks not-implemented, detected BEFORE render
 (FR-16/SQ-3 §4.2, F5-F7). Detect at selection time from module descriptor / summarize()
 notYetImplemented. renderClassification must NEVER run — prevents 'undefined g/dL' and false
 Indeterminate. See plan §Phase 4, P4-03.")
+```
 
+### Batch 4 (after P4-03) — single task, `src/app.js`
+
+```
 Task("general-purpose", "P4-04: Refusal Case 3 — manifest status ≠ READY_STATUS (FR-17/SQ-3
 §4.3). State the actual status verbatim. Never downgrade to a warning — browser is the only
 enforcement point. Defence-in-depth for a hand-edited ?module=. See plan §Phase 4, P4-04.")
+```
 
+### Batch 5 (after P4-04) — single task, `src/app.js`
+
+```
 Task("general-purpose", "P4-05: Refusal Case 4 — module KB fetch fails/404 (FR-18/SQ-3 §4.4).
 Module-scoped 'Unable to load module X's knowledge base.' rules/candidates reset to []/{} BEFORE
 the fetch (P2-04 ordering). See plan §Phase 4, P4-05.")
 ```
 
-### Batch 3 (after P4-01 + P3/case dependencies)
+### Batch 6 (after P4-05) — single task, `src/app.js`
 
 ```
 Task("general-purpose", "P4-06: SEAM TASK (R-P3) — banner ↔ refusal atomicity across the P3/P4
 boundary. Prove no observable interleaving where a prior result is visible beneath the new
 banner, and no tick where the audit stays downloadable after the banner changes. Order the state
 transition explicitly, comment it as load-bearing. See plan §Phase 4, P4-06.")
+```
 
+### Batch 7 (after P4-06) — single task, `src/app.js`
+
+```
 Task("general-purpose", "P4-07: Unregistered ?module= id — explicit refusal naming the requested
 id (FR-21). Distinct from Case 3. Never fall back to anemia silently. See plan §Phase 4, P4-07.")
 ```

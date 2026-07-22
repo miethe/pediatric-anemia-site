@@ -182,11 +182,22 @@ tasks:
   model_effort: adaptive
   acceptance_criteria: "All exit-gate criteria pass; recorded in phase progress note."
 parallelization:
-  batch_1: [P5-01, P5-02, P5-03, P5-04, P5-05]
-  batch_2: [P5-06]
-  batch_3: [P5-GATE]
-  critical_path: [P5-06, P5-GATE]
+  batch_1: [P5-01]
+  batch_2: [P5-02]
+  batch_3: [P5-04]
+  batch_4: [P5-03, P5-05]
+  batch_5: [P5-06]
+  batch_6: [P5-GATE]
+  critical_path: [P5-01, P5-02, P5-04, P5-05, P5-06, P5-GATE]
   estimated_total_time: "~1.5–2 engineer-days (5 pts)"
+  serialization_constraint: >
+    SHARED-FILE OWNERSHIP — do not re-merge these batches. Six of this phase's seven tasks write
+    index.html and/or src/app.js: P5-01, P5-02 and P5-04 write BOTH; P5-03 writes src/app.js only;
+    P5-05 and P5-06 write index.html only. The dev-execution rule is one agent per file, no
+    parallel edits to the same file, so batches 1, 2, 3 and 5 are single-task by construction. The
+    ONLY disjoint pair in this phase is batch_4 — P5-03 (src/app.js) alongside P5-05 (index.html).
+    The earlier batch_1 grouping (P5-01..P5-05) put five agents on the same two files at once. Do
+    not restore it.
 blockers:
 - id: BLOCKER-PHASE-DEP
   title: "Phase 5 cannot open until Phase 4 exit gates (P4-GATE, P4-KAREN) both pass"
@@ -278,33 +289,52 @@ as `general-purpose` with the role descriptor retained.
 
 ## Orchestration Quick Reference
 
-### Batch 1 (after Phase 4 gates)
+> **Serialization constraint — shared-file ownership.** Six of this phase's seven tasks write
+> `index.html` and/or `src/app.js`: `P5-01`, `P5-02`, `P5-04` write **both**; `P5-03` writes
+> `src/app.js` only; `P5-05` and `P5-06` write `index.html` only. The dev-execution rule is **one
+> agent per file, no parallel edits to the same file**, so batches 1, 2, 3 and 5 each emit exactly
+> one `Task()` call **by construction, not by oversight**. The **only** disjoint pair is `batch_4`
+> (`P5-03` → `src/app.js`, `P5-05` → `index.html`). Do not merge the other batches back together.
+
+### Batch 1 (after Phase 4 gates) — single task, `index.html` + `src/app.js`
 
 ```
 Task("general-purpose", "P5-01: #algorithm tab degrades explicitly for non-anemia modules
 (FR-25/R-8). src/algorithmExplorer.js is anemia-shaped and will throw on stub facts. Hide/disable
 the tab with explicit 'not available for this module' copy from the vocabulary constant. Do NOT
 touch anemiaWalkthrough or facts.* accessors. See plan §Phase 5, P5-01.")
+```
 
+### Batch 2 (after P5-01) — single task, `index.html` + `src/app.js`
+
+```
 Task("general-purpose", "P5-02: #evidence tab degrades for modules without a registered loader
 (FR-26/OQ-2). growth/kidney have evidence.json but no loader in
 src/evidence/registry.js:39-50. Show explicit 'no evidence view for this module' — never an
 empty-but-present source list. See plan §Phase 5, P5-02.")
+```
 
-Task("general-purpose", "P5-03: #rules explicit empty state (FR-27/OQ-3). Render the exact
-vocabulary string 'This module contains no rules. No assessment can be produced from it.' by
-identifier, no alternative phrasing. See plan §Phase 5, P5-03.")
+### Batch 3 (after P5-02) — single task, `index.html` + `src/app.js`
 
+```
 Task("general-purpose", "P5-04: examples picker emptied/disabled for non-anemia modules
 (FR-28). Zero options, disabled; clear any loaded anemia example on module switch. See plan
 §Phase 5, P5-04.")
+```
+
+### Batch 4 (after P5-04) — the one disjoint pair: `src/app.js` ∥ `index.html`
+
+```
+Task("general-purpose", "P5-03: #rules explicit empty state (FR-27/OQ-3). Render the exact
+vocabulary string 'This module contains no rules. No assessment can be produced from it.' by
+identifier, no alternative phrasing. See plan §Phase 5, P5-03.")
 
 Task("general-purpose", "P5-05: Nav counts module-derived; neutralize static 91/26 fallback
 (FR-29). index.html:66's hardcoded fallback must go; counts already dynamic at :563-564. See
 plan §Phase 5, P5-05.")
 ```
 
-### Batch 2 (after P5-01..P5-05, and P3-03)
+### Batch 5 (after P5-03/P5-05, and P3-03) — single task, `index.html`
 
 ```
 Task("general-purpose", "P5-06: Module-derived page copy (FR-30/SQ-3 F10/F11). Derive

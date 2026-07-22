@@ -50,6 +50,12 @@ One progress file per phase under `.claude/progress/spa-module-switcher/`:
 | `phase-6-progress.md` | P6 | Gates & Test Harness (Verification Phase) |
 | `phase-7-progress.md` | P7 | Documentation Finalization |
 
+**Tooling caveat — `ac-coverage-report.py` is NOT a valid coverage gate for this bundle.** Its
+`AC_HEADING_RE` expects `AC <space> <id>` while the PRD uses `#### AC-1:`, so it parses **0 ACs** and
+then reports a vacuous pass ("✓ No vague ACs detected"). Do not cite its output as evidence of AC
+coverage or of its absence. Coverage is established by PRD §11's `verified_by` IDs resolving to
+Phase 6 tasks. Do not reshape the PRD's AC headings to suit the script.
+
 ## Phase Dependency Graph & Critical Path
 
 ```

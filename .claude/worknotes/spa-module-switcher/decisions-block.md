@@ -102,7 +102,7 @@ prior module's result left on screen, audit JSON still downloadable, or any sile
 ### D-6 — Verification ceiling: source-assertion only. State the gap; do not paper over it.
 
 Added 2026-07-22 after the `karen` planning gate. **This repo has no browser automation and no test
-dependencies** — `package.json` carries `dependencies: {}` and `devDependencies: {}`, and
+dependencies** — `package.json` declares no `dependencies` and no `devDependencies` at all, and
 `scripts/smoke-browser-unit-rejection.mjs:4-15` states the posture verbatim: *"This repository
 deliberately has no browser automation dependency… It does not claim to paint or inspect a real
 browser DOM."* Every P6 acceptance criterion phrased as *spy*, *call count*, *renders*, *executes*

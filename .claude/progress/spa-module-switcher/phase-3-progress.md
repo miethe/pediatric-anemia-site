@@ -224,11 +224,21 @@ tasks:
 parallelization:
   batch_1: [P3-01]
   batch_2: [P3-02, P3-03]
-  batch_3: [P3-04, P3-05]
-  batch_4: [P3-06, P3-07]
-  batch_5: [P3-GATE]
+  batch_3: [P3-04]
+  batch_4: [P3-05]
+  batch_5: [P3-06]
+  batch_6: [P3-07]
+  batch_7: [P3-GATE]
   critical_path: [P3-01, P3-03, P3-04, P3-05, P3-06, P3-GATE]
   estimated_total_time: "~2.5–3 engineer-days (8 pts)"
+  serialization_constraint: >
+    SHARED-FILE OWNERSHIP — do not re-merge these batches. P3-03..P3-07 all write src/app.js
+    (P3-04 and P3-07 also write index.html), and the dev-execution rule is one agent per file,
+    no parallel edits to the same file. Batches 3–6 are therefore single-task by construction,
+    not by oversight. The only genuinely parallel pair in this phase is batch_2 (P3-02 →
+    styles.css, P3-03 → src/app.js), whose target_surfaces are disjoint. A future orchestrator
+    that "optimizes" batches 3–6 back into parallel Task() calls reintroduces concurrent writes
+    to src/app.js.
 blockers:
 - id: BLOCKER-PHASE-DEP
   title: "Phase 3 cannot open until Phase 2 exit gates (P2-GATE, P2-KAREN) both pass"
@@ -264,7 +274,7 @@ success_criteria:
   description: "No localStorage/sessionStorage/cookie read or written"
   status: pending
 - id: SC-9
-  description: "FR-37: role=\"alert\", keyboard-navigable, ineligible rows programmatically disabled with the reason in the accessible name, plus a comment recording that disabled is presentation and not the gate (AC-11)"
+  description: "FR-37: role=\"alert\", keyboard-navigable, ineligible rows programmatically disabled with the reason in the accessible name, plus a comment recording that disabled is presentation and not the gate (AC-11). VERIFIED BY P6-011 item (9) — the human keyboard/accessible-name pass — and by nothing else; AC-11/P6-012 cover FR-6 and explicitly disclaim FR-37"
   status: pending
 - id: SC-10
   description: "AC-1 screenshots (≥1440px AND 375px, both groups, all four rows) captured and reviewed BY A PERSON at P6-011 — no task here automates capture (D-6 / PRD §11a)"
@@ -356,7 +366,13 @@ missing optional field renders required-only, no undefined; MODULE_IDS entry abs
 manifest map renders not-selectable with FR-17 reason. See plan §Phase 3, P3-03.")
 ```
 
-### Batch 3 (after P3-01/P3-03)
+> **Serialization constraint — shared-file ownership.** `P3-03`..`P3-07` all write `src/app.js`
+> (`P3-04`/`P3-07` also write `index.html`). The dev-execution rule is **one agent per file, no
+> parallel edits to the same file**, so batches 3–6 each carry exactly one `Task()` call **by
+> construction, not by oversight**. Only `batch_2` is genuinely parallel (`styles.css` vs.
+> `src/app.js` — disjoint `target_surfaces`). Do not merge batches 3–6 back into parallel dispatch.
+
+### Batch 3 (after P3-01/P3-03) — single task, `src/app.js`
 
 ```
 Task("general-purpose", "P3-04: Status banner render (FR-7/FR-9/FR-13/FR-34). Every string by
@@ -364,20 +380,28 @@ identifier from src/moduleStatusVocabulary.js. FR-9 clause on EVERY module inclu
 Honesty-boundary sentence in the panel, not a tooltip. Staleness disclosure adjacent to the
 date. FR-10 subtitle only under unsigned-stub. Zero hash/approval/release wording. See plan
 §Phase 3, P3-04.")
+```
 
+### Batch 4 (after P3-04) — single task, `src/app.js`
+
+```
 Task("general-purpose", "P3-05: ?module=<id> URL state — read/validate/write (FR-20/21/22). Read
 on load, validate with isRegisteredModule(); absent → DEFAULT_MODULE_ID. Write via
 history.replaceState preserving #tab hash. Unregistered/ineligible → explicit refusal (P4-07
 implements the render). No localStorage/sessionStorage/cookie. See plan §Phase 3, P3-05.")
 ```
 
-### Batch 4 (after P3-05/P3-01/P3-03/P3-04)
+### Batch 5 (after P3-05) — single task, `src/app.js`
 
 ```
 Task("general-purpose", "P3-06: Fix switchTab's history.replaceState to preserve the query
 string (FR-23/R-7). src/app.js:457 currently drops ?module= on tab switch. Rewrite to preserve
 window.location.search while updating only the hash. See plan §Phase 3, P3-06.")
+```
 
+### Batch 6 (after P3-06) — single task, `src/app.js` + `index.html`
+
+```
 Task("general-purpose", "P3-07: Accessibility — role=\"alert\", keyboard nav, programmatic
 disabling. Banner carries role=\"alert\"; module list fully keyboard-navigable; ineligible rows
 programmatically disabled with reason in the accessible name, not colour-only. No focus traps.
@@ -405,7 +429,7 @@ switchTab still drops the query string.")
 - [ ] Zero hash / "integrity verified" / approval-badge / green-state surfaces (FR-31, FR-32, FR-11)
 - [ ] `?module=` round-trips and survives a tab switch (`src/app.js:457` fixed)
 - [ ] No `localStorage`/`sessionStorage`/cookie read or written
-- [ ] **FR-37**: `role="alert"`, keyboard-navigable, ineligible rows programmatically disabled with the reason in the accessible name, plus a code comment recording that `disabled` is presentation and not the gate (AC-11)
+- [ ] **FR-37**: `role="alert"`, keyboard-navigable, ineligible rows programmatically disabled with the reason in the accessible name, plus a code comment recording that `disabled` is presentation and not the gate (AC-11) — **verified by `P6-011` item (9)** (human keyboard/accessible-name pass) and by nothing else; `AC-11`/`P6-012` cover FR-6 and disclaim FR-37
 - [ ] AC-1 screenshots (≥1440px **and** 375px, both groups, all four rows) captured and reviewed **by a person** at **P6-011** — no task here automates capture (D-6 / PRD §11a)
 
 ---
