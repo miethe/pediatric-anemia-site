@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 13
-completed_tasks: 1
+completed_tasks: 2
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -111,7 +111,7 @@ tasks:
     harness (boundary, pinning, software-agreement metrics, G3 boundary). Each section
     restates the unvalidated-research-prototype status and that every human act is
     an external gate. Existing §1–§10 content otherwise unchanged in substance.'
-  status: pending
+  status: completed
   assigned_to:
   - documentation-writer
   dependencies:
@@ -120,6 +120,18 @@ tasks:
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
+  note: 'docs/architecture.md gained three new sections (§11 review workflow, §12
+    release signing/registry, §13 retrospective validation harness), each restating
+    unvalidated-research-prototype status and the external-human-gate boundary. Each
+    section points to its owning ADR (0004/0005/0006), docs/governance/gates-registry.md,
+    and the owning tool README (tools/review-record, tools/release-sign, tools/retro-validate)
+    rather than restating their mechanism detail. Existing §1-10 unchanged in substance
+    (verified: sole diff is 3 new headers/bodies appended after §10; tests/arch-s10-failclosed.test.mjs
+    16/16 still green, its §10 comment references unaffected).'
+  started: 2026-07-22T04:00Z
+  completed: 2026-07-22T04:20Z
+  evidence:
+  - docs: docs/architecture.md
 - id: P5-T4
   description: 'CHANGELOG [Unreleased] entry (FR-29): add an [Unreleased] entry describing
     the three new tools, the canonical review-record schema unification, the registry
@@ -373,7 +385,7 @@ files_modified:
 - CHANGELOG.md
 - docs/project_plans/design-specs/*.md
 - .claude/progress/evidence-foundry-e1/**
-progress: 7
+progress: 15
 updated: '2026-07-22'
 ---
 
