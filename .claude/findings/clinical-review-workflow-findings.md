@@ -2,7 +2,7 @@
 schema_version: 2
 doc_type: findings
 title: "Findings: Clinical Review Workflow v1 (DF-E1-01)"
-status: draft
+status: accepted
 source: agent
 created: '2026-07-22'
 updated: '2026-07-22'
@@ -86,8 +86,11 @@ and docs-truth work.
 
 ## CRW-F2 — P1-T3 dispatched scope is the plan's PRE-Revision-1 definition, not the current one
 
-**Severity**: informational (scope note, not a defect in the work delivered) · **Status**: open,
-for P1-GATE1/P1-GATE2 and Phase 2 planning awareness.
+**Severity**: informational (scope note, not a defect in the work delivered) · **Status**: resolved
+— the gap this finding flagged (no `--draft` flag, no F5 comparison) was closed by Phase 2's P2-T1
+(commit `c06544a`, "Gap closure (CRW-F2, prerequisite for sign)"), further hardened by the P2-T1 fix
+cycle's BLOCKER 2 revision (commit `05ae17a`, see CRW-F6(e) below). Kept for the historical
+plan-vs-dispatch record; no residual action.
 
 ### (a) What happened
 
@@ -209,10 +212,13 @@ plan (mirrors CRW-F2's same recommendation for P1-T3, still open). No guardrail 
 real-reviewer signing, no ADR-0004 status edit, no `synthetic: false` roster entries in the real
 `governance/reviewer-roster.yaml`, zero new runtime dependencies.
 
-## CRW-F3 — P1-T5: dispatched AC list narrower than the plan's row; implemented the fuller plan version; one related out-of-scope observation
+## CRW-F4 — P1-T5: dispatched AC list narrower than the plan's row; implemented the fuller plan version; one related out-of-scope observation
 
-**Severity**: informational (scope note, not a defect in the work delivered) · **Status**: open,
-for P1-GATE1/P1-GATE2 awareness.
+**Severity**: informational (scope note, not a defect in the work delivered) · **Status**: resolved
+— sections (a)/(b)'s scope-tracking note was closed at P1-GATE1/P1-GATE2 (Phase 1 sealed, all five
+ACs passing, as recorded in (b)); section (c)'s flagged latent gap (the independence heuristic not
+being supersedes-aware) was independently confirmed and fixed by CRW-F5 below (P1-GATE2 codex
+finding 3, MAJOR). No residual action.
 
 ### (a) Dispatched AC vs. plan AC
 
@@ -256,7 +262,7 @@ related, latent, pre-existing gap for whoever next touches `computeDerivedReview
 independence-check wiring or `lib/independence.mjs` itself to consider — not a defect this task's
 own FR-26 scope introduced or is responsible for closing.
 
-## CRW-F4 — Derived-state independence check not supersedes-aware
+## CRW-F5 — Derived-state independence check not supersedes-aware
 
 **Severity**: MAJOR (governance defect) · **Status**: fixed in this commit.
 
@@ -280,7 +286,7 @@ via `supersedes`:
   independence blocker on an otherwise-valid, already-corrected chain, forever.
 
 This exact gap was flagged twice before this fix landed: by the P1-T5 executing agent itself (see
-this file's own **CRW-F3, section (c)**, "Related, explicitly out-of-scope observation for a future
+this file's own **CRW-F4, section (c)**, "Related, explicitly out-of-scope observation for a future
 task" — logged as latent and out of that task's target surfaces), and independently confirmed by
 `codex gpt-5.6-terra`'s P1-GATE2 adversarial review (finding 3, MAJOR).
 
@@ -299,7 +305,7 @@ returns `undefined` (no comparison performed, same as before) when a role is ent
 ### (c) Tests
 
 `tests/ef-review-adjudication.test.mjs` adds two adversarial, both-direction fixtures under a new
-"CRW-F4" section: (a) a clean superseded `clinical-1` original whose EFFECTIVE correction verbatim-
+"CRW-F5" section: (a) a clean superseded `clinical-1` original whose EFFECTIVE correction verbatim-
 overlaps `clinical-2`'s rationale — asserts the stale original is independence-clean in isolation
 (`checkReviewerIndependence` returns `[]`) while `computeDerivedReviewState` now flags it; (b) a
 violating superseded `clinical-1` original whose EFFECTIVE correction is clean — asserts the stale
@@ -309,7 +315,7 @@ terminal-behavior fixture, ADR-0004 status-untouched guard, `chain_isolation_v1`
 independence) stay green: 36/36 targeted in `tests/ef-review-adjudication.test.mjs`, 104/104 across
 that file plus `tests/ef-review-workflow.test.mjs` together, 2292/2292 full `npm test`.
 
-## CRW-F5 — F5's literal "recompute and compare" text would break the already-shipped
+## CRW-F6 — F5's literal "recompute and compare" text would break the already-shipped
 `--role adjudication` scaffold bridge; scoped to "computed mismatch," not "cannot compute"
 
 **Severity**: informational (scope note, deliberate narrowing), **REVISED to MAJOR/exploitable by
@@ -411,7 +417,7 @@ behavior:
   header comment explaining why (its `subject` is a discordance record's own `candidateDigest`, a
   structurally different hash concept than a module-content hash, by design — not touched by this
   task's declared target-surfaces list, but not concurrently owned by anyone else either; a minimal,
-  documented, out-of-scope touch in the same spirit as CRW-F6/CRW-F7's own precedent, required to
+  documented, out-of-scope touch in the same spirit as CRW-F8/CRW-F9's own precedent, required to
   keep `tests/ef-retro-discordance.test.mjs` and `tests/ef-e2e-dryrun.test.mjs` green).
 - Every pre-existing `tests/ef-review-workflow.test.mjs` fixture invocation that legitimately
   scaffolds an explicit `--subject`/`subject:` against a `FIXTURES_ROOT` module or a throwaway tmp
@@ -425,7 +431,11 @@ behavior:
   the F5 REVISION test — now proves the OPPOSITE: cannot-compute now hard-fails by default, and
   succeeds with a loud NOTICE only when `--allow-historical-subject` is passed).
 
-**Known residual gap, NOT resolved by this task** (outside this task's declared file ownership —
+**Known residual gap, RESOLVED by a follow-up commit (`a0675ea`, "allowHistoricalSubject at 3
+scaffold call sites + append CRW-F7 to findings") shortly after this fix cycle** — the three call
+sites named below now pass `allowHistoricalSubject: true`, exactly as this section anticipated. Kept
+verbatim below as the historical record of the gap at the moment it was flagged (outside this task's
+declared file ownership —
 `tools/review-record/lib/verbs/scaffold.mjs`/`sign.mjs`/`store.mjs`,
 `tests/ef-review-workflow.test.mjs`/`ef-review-record-cli.test.mjs`, and this findings doc only; a
 sibling agent was concurrently, actively editing `tools/review-record/lib/validate-cache.mjs` and
@@ -448,13 +458,13 @@ expected, and correctly-attributed consequence of BLOCKER 2's security fix landi
 COMMITTED-symlink vector on `modules/<moduleId>/reviews/`. A subsequent codex narrow re-verification
 accepted that closure but flagged the check is `lstat`-then-mkdir/write, not race-free against an
 *active* same-user process swapping a real directory for a symlink mid-call; orchestrator adjudication
-placed that active race OUTSIDE this tool's threat model (the same same-user trust boundary CRW-F9
+placed that active race OUTSIDE this tool's threat model (the same same-user trust boundary CRW-F7
 documents below for the validate cache — a same-user attacker with write access could already replace
 the CLI/`node` binary itself), since a race-free fix would need openat-style dirfd writes unavailable
 in Node without a new dependency (guardrail-forbidden). Documented in `store.mjs`'s own
 `assertNoSymlinkedAncestor` header, not hedged.
 
-## CRW-F9 — Validate-cache entry trust hardening
+## CRW-F7 — Validate-cache entry trust hardening
 
 **Severity**: informational (fix-cycle gate finding, adjudicated BLOCKER 3) · **Status**: resolved
 by executing agent (P2-T3 fix cycle, Wave-2 codex gate).
@@ -478,7 +488,7 @@ corruption, truncation, format drift, and accidental-or-hostile malformed conten
 cheaper-to-trigger failure mode. Per-record cached results remain integrity-bounded by the same
 trust boundary as the working tree itself.
 
-## CRW-F6 — `writeFile` structural invariant (owned by a non-target-surface test file) required a
+## CRW-F8 — `writeFile` structural invariant (owned by a non-target-surface test file) required a
 small, additive `lib/store.mjs` change outside this task's declared target surfaces
 
 **Severity**: informational (scope note, deliberate, minimal-blast-radius deviation) · **Status**:
@@ -533,25 +543,27 @@ directly. `lib/verbs/sign.mjs` imports `draftsDirFor` from `../store.mjs` direct
 (2319/2319) and `npm run check` are green with this change; `tests/ef-review-adjudication.test.mjs`
 required no edits and its own targeted suite passes unmodified.
 
-## CRW-F7 — P2-T3 also collides with the `writeFile` structural invariant (CRW-F6's precedent), but
+## CRW-F9 — P2-T3 also collides with the `writeFile` structural invariant (CRW-F8's precedent), but
 Option 2 (widen the allowlist) is the correct choice here, not Option 1 (route through `store.mjs`);
 also required routing `canonicalRecordHash`/the chain-report fact through a NEW re-export rather than
 importing `lib/chain.mjs` directly into `lib/verbs/validate.mjs`
 
 **Severity**: informational (scope note, deliberate, minimal-blast-radius deviation) · **Status**:
-resolved by executing agent (P2-T3).
+resolved by executing agent (P2-T3) — **flagged for owner review in the feature PR** (this is one of
+the two allowlist relaxations this findings doc carries, alongside CRW-F1; see (b) below for the
+`ALLOWED_WRITE_FILE_CALLERS` widening this entry adds).
 
-### (a) The `writeFile` conflict, and why this task's answer differs from CRW-F6's
+### (a) The `writeFile` conflict, and why this task's answer differs from CRW-F8's
 
 This task's declared target surfaces are `tools/review-record/lib/validate-cache.mjs` (new) and
 `tools/review-record/lib/verbs/validate.mjs` — not `tests/ef-review-adjudication.test.mjs`, not
 `lib/store.mjs`. `validate-cache.mjs`'s atomic write-then-rename persistence
 (`writeCacheFileAtomic`) calls `fs.promises.writeFile`, which trips the exact same pre-existing
-structural invariant CRW-F6 already documents: `tests/ef-review-adjudication.test.mjs`'s `"writeFile
+structural invariant CRW-F8 already documents: `tests/ef-review-adjudication.test.mjs`'s `"writeFile
 is called only from lib/store.mjs ... and lib/verbs/render.mjs ... — no other write path
 (structural)"`.
 
-CRW-F6 chose to route ITS write (the `scaffold --draft` staging file) through `lib/store.mjs` rather
+CRW-F8 chose to route ITS write (the `scaffold --draft` staging file) through `lib/store.mjs` rather
 than widen the allowlist, reasoning that `store.mjs`'s established "one append-only write path"
 convention was the more architecturally consistent home for a second, disjoint write TARGET. That
 reasoning does not transfer to this task's cache file: `store.mjs`'s whole purpose (per its own
@@ -562,7 +574,7 @@ strings, written as plain JSON to a location that is, BY DESIGN (F3: "OUTSIDE th
 under `rootDir` at all, and never a review-record document. Forcing this write through `store.mjs`
 would conflate two semantically unrelated concerns into one module whose name and documented
 boundary are specifically about review-record storage, and it would ALSO touch a file outside this
-task's target surfaces exactly as much as widening the allowlist does — so unlike CRW-F6, there is no
+task's target surfaces exactly as much as widening the allowlist does — so unlike CRW-F8, there is no
 "stay within target surfaces" advantage to the `store.mjs` route here, only an architectural
 disadvantage.
 
@@ -616,9 +628,9 @@ reviewer signing, no ADR-0004 status edit, no `synthetic: false` roster entries 
 `governance/reviewer-roster.yaml`, `scripts/verify-d4-built.mjs` unmodified, zero new runtime
 dependencies, zero network, zero LLM anywhere under `tools/review-record/`.
 
-## CRW-F8 — P2-T4: the three lib files named as target surfaces required zero source edits
+## CRW-F10 — P2-T4: the three lib files named as target surfaces required zero source edits
 (P2-T3 already implemented F3/OQ-6 correctly); the microbenchmark script is a new file not itself
-enumerated in the target-surfaces list, mirroring CRW-F7's own explicit precedent
+enumerated in the target-surfaces list, mirroring CRW-F9's own explicit precedent
 
 **Severity**: informational (scope note, not a defect) · **Status**: resolved by executing agent
 (P2-T4).
@@ -654,7 +666,7 @@ sensible home for it (`tests/ef-review-workflow.test.mjs` is a `node:test` suite
 `npm test`; the benchmark must NOT be). A new file,
 `tests/ef-review-validate-cache-benchmark.mjs` (no `.test.mjs` suffix, so `npm test`'s
 `tests/*.test.mjs`/`tests/witness/*.test.mjs` discovery globs never pick it up — F10), was created to
-hold it. This mirrors CRW-F7's own header, which explicitly anticipated and named this exact split:
+hold it. This mirrors CRW-F9's own header, which explicitly anticipated and named this exact split:
 "P2-T3's target-surfaces list did not itself name a test file — P2-T4, a sibling task, owns further
 additions to `tests/ef-review-workflow.test.mjs`, e.g. its own five dedicated fresh-process
 adversarial invalidation tests **and the cross-process microbenchmark script**." Two lightweight
@@ -676,14 +688,17 @@ reviewer signing, no ADR-0004 status edit, no `synthetic: false` roster entries 
 `governance/reviewer-roster.yaml`, `scripts/verify-d4-built.mjs` unmodified, zero new runtime
 dependencies, zero network, zero LLM anywhere under `tools/review-record/`.
 
-## CRW-F10 — P3 batch_2 parallelization put P3-T2 and P3-T4 on the same file (`lib/render.mjs`)
+## CRW-F11 — P3 batch_2 parallelization put P3-T2 and P3-T4 on the same file (`lib/render.mjs`)
 concurrently; the plan's own P2/P3-vs-`validate.mjs` wave-barrier precedent was not applied a
 second time within Phase 3 itself; P3-T4's target-surfaces list also omitted the test file its own
 AC requires
 
 **Severity**: informational (process/scheduling note, not a defect in either task's delivered
-content) · **Status**: resolved by executing agent (P3-T4) via index-level hunk isolation; flagged
-for P3-GATE1/P3-GATE2 awareness and for a phase-progress-file correction before Phase 5 opens.
+content) · **Status**: resolved by executing agent (P3-T4) via index-level hunk isolation; P3-GATE1/
+P3-GATE2 have since passed with this recorded. Phase 5's own `batch_1` (P5-T1/P5-T3/P5-T4) has no
+analogous same-file collision, so the recommendation below was not needed again in practice; no
+retroactive correction to `phase-3-progress.md` was made (the recommendation was forward-looking, not
+a claim that Phase 3's own record was wrong).
 
 ### (a) What happened
 
@@ -732,5 +747,46 @@ Separately: the plan's P3-T4 row lists target surfaces of `reviewer-runbook.md`,
 and `README.md` only, with no test file — yet its own AC is explicitly "Docs-truth test asserts...".
 This agent added `tests/ef-review-honesty-boundary.test.mjs` (a new, unowned file, not touching any
 sibling task's declared surface) to make the AC machine-verified, consistent with this task's own
-CRW-F6/CRW-F7/CRW-F8 precedent for minimal, additive, out-of-declared-surface changes required to
+CRW-F8/CRW-F9/CRW-F10 precedent for minimal, additive, out-of-declared-surface changes required to
 prove an AC or keep `npm test` green.
+
+## CRW-F12 — DF-CRW-03's triage-table trigger text ("DF-E1-04 harness lands") is stale; the harness
+already landed before this task ran
+
+**Severity**: informational (docs-truth correction, not a defect) · **Status**: resolved — corrected
+in the newly-authored spec itself; the plan's own triage-table row is left as the historical record
+of what was known when Revision 1 was drafted, per this findings doc's own convention of not
+silently editing prior text.
+
+### (a) What happened
+
+P5-T4 (DOC-006) authored
+`docs/project_plans/design-specs/df-e1-04-retrospective-validation-linkage.md` for `DF-CRW-03`. The
+plan's own Deferred Items Triage Table names this item's promotion trigger as "G1/G2/G3/G4 all clear
++ DF-E1-04 harness lands." Reading `docs/project_plans/design-specs/retrospective-validation-harness.md`
+(the seed spec for `DF-E1-04`) while authoring the new spec showed that `DF-E1-04` — the harness
+itself — already landed, in Phase 4 of `evidence-foundry-e1-v1` (`tools/retro-validate`, verbs
+`check-fixtures`/`run`/`report`, confirmed by that tool's own README as "landed"). That spec update
+and this plan's own decisions block both carry the same 2026-07-22 date, so the most likely
+explanation is ordinary drafting-order lag (the harness landing occurred, and its own seed spec was
+updated, at some point after `clinical-review-workflow-v1`'s Deferred Items Triage Table was first
+drafted) rather than any deeper inconsistency.
+
+### (b) What this does and does not change
+
+The trigger's *other* half — G1, G2, G3, and G4 all clearing — is unaffected: none of the four gates
+have cleared, and this plan's own Hard Guardrails keep G1/G2 unmet throughout its lifetime, so
+`DF-CRW-03` is not promotable regardless of the harness's build status. No task, tool, or agent
+performed any gate-clearing act. This finding does not reopen or re-scope `DF-E1-04` (complete) or
+`DF-E1-09` (real-data run, separately tracked and still G3-gated per
+`retrospective-validation-harness.md`'s own "E1 State" section) — it only corrects which half of
+`DF-CRW-03`'s own trigger text is still live.
+
+### (c) Resolution
+
+`df-e1-04-retrospective-validation-linkage.md`'s own "Current State" section states this correction
+directly (harness landed; G1-G4 remain the real blocker) rather than silently treating the harness as
+unbuilt, and its `explored_alternatives` frontmatter names and rejects "reopen DF-E1-04 itself" as the
+wrong response. The plan's Deferred Items Triage Table row is left unedited, consistent with this
+findings doc's existing convention (e.g. CRW-F2/CRW-F4 above) of recording a stale-scope discovery as
+a finding rather than rewriting the plan's own historical text after the fact.
