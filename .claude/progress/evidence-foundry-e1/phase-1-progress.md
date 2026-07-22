@@ -9,7 +9,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundr
 execution_model: batch-parallel
 phase: 1
 title: 'Evidence Foundry E1 — Phase 1: Contracts & Gates'
-status: not_started
+status: pending
 started: null
 completed: null
 commit_refs: []
@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 0
+completed_tasks: 1
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -51,14 +51,14 @@ tasks:
   assigned_model: sonnet
   model_effort: extended
 - id: P1-T2
-  description: 'Canonical review-record schema v1, FR-1/FR-2/FR-3: replace wave0
-    contents of schemas/review-record.schema.json with the canonical five-role model
-    (clinical-1, clinical-2, lab, adjudication, release-auth) from P1-T1 — same
-    file path, ONE canonical schema. Preserve D-4: reviewerType "human" const, attestedHuman
-    true const, approver arrays byte-compatible with module-manifest/rule schemas.
-    Fields per OQ-2: review_id (rr-<seq4>-<role>), moduleId, subjectContentHash,
-    previousRecordHash, supersedes (nullable), reviewerId, synthetic (required bool),
-    signature object forced null unless synthetic true (then keyId must match TESTKEY-).'
+  description: 'Canonical review-record schema v1, FR-1/FR-2/FR-3: replace wave0 contents
+    of schemas/review-record.schema.json with the canonical five-role model (clinical-1,
+    clinical-2, lab, adjudication, release-auth) from P1-T1 — same file path, ONE
+    canonical schema. Preserve D-4: reviewerType "human" const, attestedHuman true
+    const, approver arrays byte-compatible with module-manifest/rule schemas. Fields
+    per OQ-2: review_id (rr-<seq4>-<role>), moduleId, subjectContentHash, previousRecordHash,
+    supersedes (nullable), reviewerId, synthetic (required bool), signature object
+    forced null unless synthetic true (then keyId must match TESTKEY-).'
   status: pending
   assigned_to:
   - general-purpose
@@ -71,8 +71,8 @@ tasks:
 - id: P1-T3
   description: 'Wave0 → canonical mapping migration test, FR-2: implement tests/ef-review-record-migration.test.mjs
     proving P1-T1''s mapping — a pure mapping function (tools/review-record/lib/,
-    import-safe standalone) maps a representative wave0-shaped fixture for each
-    of the 5 wave0 states onto the P1-T2 canonical schema with D-4 guarantees intact.
+    import-safe standalone) maps a representative wave0-shaped fixture for each of
+    the 5 wave0 states onto the P1-T2 canonical schema with D-4 guarantees intact.
     Update every wave0-schema consumer identified in P1-T1(e) so npm run check stays
     green. AC: migration test green for all 5 wave0 states; unmappable fixture fails
     closed; zero remaining wave0 5-state references outside the migration helper/fixtures.'
@@ -90,8 +90,8 @@ tasks:
     and empty governance/reviewer-roster.yaml. Entry shape: reviewerId, name, credentialRef,
     moduleScopes[], synthetic (required bool); real entries (synthetic false) additionally
     require verificationRef (out-of-band credential verification, a G1 human act,
-    never performed by this plan). Roster ships with zero entries; header states
-    real entries require gate G1 and synthetic entries can never satisfy release-authorization.'
+    never performed by this plan). Roster ships with zero entries; header states real
+    entries require gate G1 and synthetic entries can never satisfy release-authorization.'
   status: pending
   assigned_to:
   - general-purpose
@@ -103,15 +103,15 @@ tasks:
   model_effort: adaptive
 - id: P1-T5
   description: 'Release-manifest signature slot + registry schema, OQ-4/FR-14/FR-16:
-    (a) extend schemas/release-manifest.schema.json with the ADR-0005 signature
-    slot ({algorithm, keyId, value}) schema-forced empty on any real candidate (const
-    null unless dry-run marker present, then keyId must match TESTKEY-); mirror
-    clinicalApprovers[] maxItems:0 pattern. (b) author schemas/release-registry.schema.json
-    for releases/registry.json with exactly the OQ-4 entry shape (version, moduleId,
-    packDigest, manifestDigest, signature null pre-G2, signedAt null, supersedes
-    null, withdrawalState const "none", withdrawnAt/withdrawalReason const null);
-    top-level schemaVersion; no surveillance/cadence fields. Registry seed file
-    itself ships in P3-T4 — this task ships schemas + fixtures only.'
+    (a) extend schemas/release-manifest.schema.json with the ADR-0005 signature slot
+    ({algorithm, keyId, value}) schema-forced empty on any real candidate (const null
+    unless dry-run marker present, then keyId must match TESTKEY-); mirror clinicalApprovers[]
+    maxItems:0 pattern. (b) author schemas/release-registry.schema.json for releases/registry.json
+    with exactly the OQ-4 entry shape (version, moduleId, packDigest, manifestDigest,
+    signature null pre-G2, signedAt null, supersedes null, withdrawalState const "none",
+    withdrawnAt/withdrawalReason const null); top-level schemaVersion; no surveillance/cadence
+    fields. Registry seed file itself ships in P3-T4 — this task ships schemas + fixtures
+    only.'
   status: pending
   assigned_to:
   - general-purpose
@@ -124,16 +124,15 @@ tasks:
 - id: P1-T6
   description: 'Gates registry — G0–G4 (A1 + A2 encodings), FR-27: author docs/governance/gates-registry.md
     enumerating all five external human gates — G0 ADR ratification, G1 named credentialed
-    reviewer roster, G2 signing custodian + offline key ceremony, G3 data-source
-    SPIKE verdict + data-partner DUA, G4 release authorizer — each with owner-role
-    (human), entry criteria, blocked artifacts/behaviors, and the schema-forced-inert
-    mechanism holding pre-gate. A2 (binding): G0''s ADR-0005 entry must record the
-    SPIKE-006 reconciliation condition — signing custodian distinct authority from
-    release author, CI/agents never hold keys. A1 (binding): record design-spec
-    §7.3 item 5 (methodologist/skeptic evidence council) as an external upstream
-    rf/ARC dependency (RFUP routing), zero in-repo council tasks. State no gate
-    is clearable by any task, agent, or plan.'
-  status: pending
+    reviewer roster, G2 signing custodian + offline key ceremony, G3 data-source SPIKE
+    verdict + data-partner DUA, G4 release authorizer — each with owner-role (human),
+    entry criteria, blocked artifacts/behaviors, and the schema-forced-inert mechanism
+    holding pre-gate. A2 (binding): G0''s ADR-0005 entry must record the SPIKE-006
+    reconciliation condition — signing custodian distinct authority from release author,
+    CI/agents never hold keys. A1 (binding): record design-spec §7.3 item 5 (methodologist/skeptic
+    evidence council) as an external upstream rf/ARC dependency (RFUP routing), zero
+    in-repo council tasks. State no gate is clearable by any task, agent, or plan.'
+  status: completed
   assigned_to:
   - general-purpose
   - documentation-writer
@@ -143,15 +142,19 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  started: 2026-07-22T00:00Z
+  completed: 2026-07-22T00:30Z
+  evidence:
+  - commit: 31a7bf5
+  - doc: docs/governance/gates-registry.md
 - id: P1-T7
   description: 'Validator wiring + seeded forced-empty violations (seam task), FR-6/FR-16/R-P3:
     wire the P1-T2/T4/T5 schemas into scripts/validate-kb.mjs — validate modules/<id>/reviews/*.yaml
-    against the canonical review-record schema, governance/reviewer-roster.yaml
-    against the roster schema, and (once it exists) releases/registry.json against
-    the registry schema (absent file = pass with explicit note, never a crash).
-    Preserve approvedBy[]/clinicalApprovers[] maxItems:0 enforcement and the anemia
-    browser path''s SPIKE-006 posture byte-untouched (assert via existing tests).
-    Commit seeded-violation fixtures under tests/fixtures/ef-contract-violations/
+    against the canonical review-record schema, governance/reviewer-roster.yaml against
+    the roster schema, and (once it exists) releases/registry.json against the registry
+    schema (absent file = pass with explicit note, never a crash). Preserve approvedBy[]/clinicalApprovers[]
+    maxItems:0 enforcement and the anemia browser path''s SPIKE-006 posture byte-untouched
+    (assert via existing tests). Commit seeded-violation fixtures under tests/fixtures/ef-contract-violations/
     (populated approvedBy[], populated real-candidate signature, non-synthetic roster
     entry sans verificationRef, unsigned-stub → release-ready manifest transition)
     and tests/ef-contract-forced-empty.test.mjs asserting each fails npm run validate
@@ -192,14 +195,14 @@ tasks:
   model_effort: adaptive
 - id: P1-GATE2
   description: 'karen milestone review — contract sanity (P1 exit), decisions block
-    §2''s first named milestone: independently re-check against the actual diff
-    — (1) exactly ONE canonical review-record schema exists, wave0 mapped not parallel
+    §2''s first named milestone: independently re-check against the actual diff —
+    (1) exactly ONE canonical review-record schema exists, wave0 mapped not parallel
     (R5); (2) every forced-empty ceiling (approvedBy[], clinicalApprovers[], signature
     slots) intact, no ceiling raised; (3) gates registry models G0–G4 as human-only
     external gates with the A2 SPIKE-006 reconciliation recorded and zero council
     tasks anywhere in this plan (A1); (4) no schema description or doc implies clinical
-    validity. Runs only after P1-GATE1 passes; any gap becomes a new task before
-    wave 2 (P2/P3/P4) opens.'
+    validity. Runs only after P1-GATE1 passes; any gap becomes a new task before wave
+    2 (P2/P3/P4) opens.'
   status: pending
   assigned_to:
   - karen
@@ -239,8 +242,8 @@ success_criteria:
   description: npm run check green (quality gate; task-completion-validator)
   status: pending
 - id: SC-2
-  description: One canonical review-record schema; migration test green for all
-    5 wave0 states
+  description: One canonical review-record schema; migration test green for all 5
+    wave0 states
   status: pending
 - id: SC-3
   description: Roster, registry, and manifest-signature schemas reject all seeded
@@ -273,8 +276,8 @@ files_modified:
 - tests/ef-contract-forced-empty.test.mjs
 - tests/fixtures/**
 - .claude/worknotes/evidence-foundry-e1-v1/contracts-design.md
-progress: 0
-updated: '2026-07-21'
+progress: 11
+updated: '2026-07-22'
 ---
 
 # evidence-foundry-e1 - Phase 1: Contracts & Gates
