@@ -9,15 +9,15 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundr
 execution_model: batch-parallel
 phase: 1
 title: "Evidence Foundry E1 \u2014 Phase 1: Contracts & Gates"
-status: pending
+status: completed
 started: null
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 80
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 8
+completed_tasks: 9
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -268,7 +268,7 @@ tasks:
     \ and zero council tasks anywhere in this plan (A1); (4) no schema description\
     \ or doc implies clinical validity. Runs only after P1-GATE1 passes; any gap becomes\
     \ a new task before wave 2 (P2/P3/P4) opens."
-  status: pending
+  status: completed
   assigned_to:
   - karen
   dependencies:
@@ -277,6 +277,12 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: adaptive
+  started: '2026-07-22T05:20:00Z'
+  completed: '2026-07-22T05:30:00Z'
+  evidence:
+  - karen APPROVED (agent ac5e909cf7c957e66): all 4 criteria + D-4 re-home + 544aa0c
+      exclusion verified
+  - codex gpt-5.6-terra second-opinion: 1 MAJOR found, fixed in commit:50f2e51
 parallelization:
   batch_1:
   - P1-T1
@@ -341,7 +347,7 @@ files_modified:
 - tests/ef-contract-forced-empty.test.mjs
 - tests/fixtures/**
 - .claude/worknotes/evidence-foundry-e1-v1/contracts-design.md
-progress: 88
+progress: 100
 updated: '2026-07-22'
 ---
 
