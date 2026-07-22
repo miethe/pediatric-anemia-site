@@ -83,3 +83,61 @@ out of scope — the plan states this explicitly), and (3) attach/reference the 
 `docs/project_plans/design-specs/clinical-review-portal-workflow.md`. This finding only unblocks
 the D1 gate for the file's presence in the tree; it does not substitute for P4-T2's own manifest
 and docs-truth work.
+
+## CRW-F2 — P1-T3 dispatched scope is the plan's PRE-Revision-1 definition, not the current one
+
+**Severity**: informational (scope note, not a defect in the work delivered) · **Status**: open,
+for P1-GATE1/P1-GATE2 and Phase 2 planning awareness.
+
+### (a) What happened
+
+The task actually dispatched for "P1-T3" (task text, target surfaces, and acceptance criteria)
+verbatim matches `.claude/progress/clinical-review-workflow/phase-1-progress.md`'s **original**
+P1-T3 entry — (a) `--subject` becomes optional, auto-derived via `lib/subject.mjs`'s
+`computeModuleContentHash`; (b) `scaffold` writes a schema-valid `signature: null` record for a
+`synthetic: false` fixture-roster entry — and was implemented and committed exactly to that scope
+(commit `30a61597`, this feature's P1-T3).
+
+It does **not** cover the CURRENT (Revision 1) plan's P1-T3 row in
+`docs/project_plans/implementation_plans/infrastructure/clinical-review-workflow-v1.md`, which
+additionally specifies:
+
+- **F5** — when `--subject` IS supplied, recompute `computeModuleContentHash` and hard-fail
+  (`UsageError`) on a mismatch by default, with `--allow-historical-subject` to suppress only that
+  comparison (never the pattern check).
+- **(c) `--draft` staging write** — with `--draft`, write the draft to
+  `<root>/.review-drafts/<moduleId>/<review_id>.draft.yaml` (outside `reviews/`, gitignored) instead
+  of printing a preview / writing under `reviews/`; add the `.review-drafts/` entry to `.gitignore`.
+  Phase 2's `sign` verb (`P2-T1`, per the current plan) depends on this exact staging path as its
+  ONLY input — `sign --draft <path>` reads a file `scaffold --draft` produced.
+
+### (b) Why this matters
+
+Phase 2's `P2-T1` (`sign` verb) as currently planned literally cannot be implemented against
+today's `scaffold.mjs`: there is no `--draft` flag, and nothing writes to
+`<root>/.review-drafts/<moduleId>/<review_id>.draft.yaml`. Whoever picks up `P2-T1` needs either
+(i) a follow-on task that adds `--draft` + `--allow-historical-subject`/F5 to `scaffold.mjs` before
+`sign` can be written, or (ii) an explicit plan amendment narrowing `sign`'s input contract. This
+finding does not itself resolve that — it flags the gap so `P1-GATE1`/`P1-GATE2` (which re-check
+against "PRD FR-1..5/FR-24/FR-26.." per the progress file, i.e. the same pre-Revision-1 scope this
+task actually used) do not silently wave through a Phase 2 blocker, and so whichever agent scopes
+the next P1/P2 task is aware `scaffold.mjs`'s current committed state has neither `--draft` nor the
+F5 comparison.
+
+### (c) What was NOT done under this task (by design, matching the dispatched scope)
+
+- No `--allow-historical-subject` flag; no `computeModuleContentHash` cross-check against an
+  explicitly-supplied `--subject` (F5).
+- No `--draft` flag; no `.review-drafts/` staging path; no `.gitignore` entry.
+- `cli.mjs`'s `scaffold` help text still documents `--subject <content-hash>` as required (it is a
+  sibling task's owned surface — P1-T2 lists `cli.mjs` as a target surface — so this task did not
+  edit it); it is now stale relative to `scaffold.mjs`'s actual (optional-subject) behavior until
+  whichever task owns `cli.mjs` next updates it.
+
+### (d) Recommendation
+
+Before Phase 2's `P2-T1` opens, confirm whether a task will add `--draft`/F5 to `scaffold.mjs`
+(recommended: a small follow-on, e.g. "P1-T3b" or folded into `P2-T1` itself) or the plan is
+amended to change `sign`'s input contract. No guardrail was crossed by leaving this out — the
+dispatched task's own acceptance criteria are fully met and independently tested (38/38 targeted,
+2246/2246 full `npm test`) — this is a plan-vs-dispatch scope-tracking note only.
