@@ -16,13 +16,20 @@
 //     `ValidationFailedError`, each violation string prefixed `chain:`/`git-history:` respectively
 //     so the two layers' findings are always distinguishable from each other and from the
 //     schema/roster/independence findings above them.
-//   - P2-T4 (this task): authorship-union computation (`lib/adjudication.mjs`, PRD OQ-5) +
+//   - P2-T4: authorship-union computation (`lib/adjudication.mjs`, PRD OQ-5) +
 //     adjudicator/release-authorizer-not-in-authorship-union enforcement (FR-5), plus release-
 //     authorization chain validity (FR-6: a `release-auth` record is valid only over a complete,
 //     chain-valid, roster-verified, non-synthetic record set). Both checks are module-wide, like
 //     the independence and chain checks above, and always run over the module's full record set
 //     regardless of `--record`.
-//   - P2-T5: Ed25519 signature verification, fail closed on tamper.
+//   - P2-T5 (this task): Ed25519 signature verification (`lib/signature.mjs`'s
+//     `verifyRecordSignature`), fail closed on tamper. Per-record, like the schema/roster checks
+//     above -- respects `--record` narrowing, unlike the module-wide checks (a signature is a fact
+//     about one record, not a module-wide fact). A `synthetic: true` record with no signature, a
+//     malformed/non-TESTKEY- signature, or one that fails cryptographic verification against the
+//     record's own canonicalized bytes (any field mutated after signing invalidates it) fails
+//     closed with a `signature:`-prefixed violation. A `synthetic: false` record's forced-null
+//     signature slot verifies trivially -- nothing to check, by design.
 //
 // `validate --module <id> [--root <dir>] [--record <review_id>] [--history]`: loads every
 // committed record for `moduleId` (or a `--root` fixture tree standing in for it), schema- and
@@ -54,6 +61,7 @@ import {
   evaluateReleaseAuthorization,
   rosterEntryInAuthorshipUnion,
 } from '../adjudication.mjs';
+import { verifyRecordSignature } from '../signature.mjs';
 import { EXIT_OK, UsageError, ValidationFailedError } from '../errors.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -105,6 +113,14 @@ export async function run(options = {}) {
       } catch (err) {
         violations.push(`${entry.reviewId}: ${err.message}`);
       }
+    }
+
+    // P2-T5 — FR-10/OQ-2 Ed25519 signature verification, per-record (respects --record narrowing,
+    // unlike the module-wide chain/independence/authorship checks below). See lib/signature.mjs's
+    // own header for the full verification-order contract.
+    const sigResult = verifyRecordSignature(entry.record);
+    if (!sigResult.ok) {
+      violations.push(`${entry.reviewId}: signature: ${sigResult.reason}`);
     }
   }
 
@@ -200,8 +216,8 @@ export async function run(options = {}) {
     `OK — ${scoped.length} record(s) validated for module "${moduleId}" (schema shape + D-4 roster ` +
       'resolution + FR-4 reviewer-2 independence heuristic + FR-9 previousRecordHash chain' +
       `${options.history === true ? ' + FR-9 git-history append-only check' : ''} + PRD OQ-5 ` +
-      'authorship-union / FR-5 adjudicator-authorship check + FR-6 release-authorization validity; ' +
-      'signature checks land in P2-T5).\n' +
+      'authorship-union / FR-5 adjudicator-authorship check + FR-6 release-authorization validity + ' +
+      'FR-10 Ed25519 signature verification, TESTKEY- dry-run only).\n' +
       'Structural review-record state only -- not a clinical-validity, safety, or approval claim.\n',
   );
   return EXIT_OK;

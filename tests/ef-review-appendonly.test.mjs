@@ -47,6 +47,8 @@ import {
 } from '../tools/review-record/lib/history.mjs';
 import { serializeReviewRecordYaml, listModuleReviewRecords } from '../tools/review-record/lib/store.mjs';
 import { run as runValidate } from '../tools/review-record/lib/verbs/validate.mjs';
+import { signRecordDryRun } from '../tools/review-record/lib/signature.mjs';
+import { parseYamlDocument } from '../tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs';
 import { EXIT_OK, EXIT_USAGE, UsageError, ValidationFailedError } from '../tools/review-record/lib/errors.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -79,9 +81,14 @@ async function mkTmpDir(prefix) {
 
 /** A single well-formed, schema-shaped, synthetic review record (fields the CLI's own store/schema
  * expect) — used only to exercise the git-history mechanics below, never claimed as a real review
- * act (synthetic: true throughout). */
+ * act (synthetic: true throughout). `signature` is a REAL, cryptographically-verifiable Ed25519
+ * dry-run signature (P2-T5's `signRecordDryRun`), computed last, AFTER every override above is
+ * applied — `validate` now verifies every present signature and fails closed on a mismatch
+ * (FR-10/OQ-2), and several tests below assert a plain (unmutated) `buildRecord()`-derived fixture
+ * `validate`s cleanly, so a placeholder/stub signature value would break them. No caller of this
+ * function ever overrides `signature` itself. */
 function buildRecord(overrides = {}) {
-  return {
+  const draft = {
     schemaVersion: 1,
     review_id: 'rr-0001-clinical-1',
     role: 'clinical-1',
@@ -94,9 +101,10 @@ function buildRecord(overrides = {}) {
     rationale: 'P2-T3 git-history-layer fixture record -- not a real clinical review act.',
     reviewedAt: '2026-02-04T00:00:00Z',
     synthetic: true,
-    signature: { algorithm: 'ed25519', keyId: 'TESTKEY-ef-e1-p2t3-history-fixture', value: 'aGlzdG9yeS1maXh0dXJlLTE=' },
+    signature: null,
     ...overrides,
   };
+  return signRecordDryRun(draft);
 }
 
 const ROSTER_YAML = `schemaVersion: 1
@@ -367,13 +375,23 @@ test('VALID SUPERSEDING RECORD PASSES: a brand-new path (supersedes set) keeps b
 test('SEEDED MUTATION (b): a simulated history rewrite (in-place edit, second commit on the SAME path) fails the history validator', async () => {
   const dir = await buildScratchRepoWithOneCommittedRecord();
   try {
-    // This is the gap layer (a) alone cannot see: rr-0001 has no successor whose previousRecordHash
-    // depends on it, so mutating it in place leaves the chain (a single record, previousRecordHash:
-    // null) still trivially "valid." Only the git-history layer (b) catches this.
+    // This is the gap layer (a) [chain] and P2-T5's signature check TOGETHER still cannot see: an
+    // in-place edit followed by a fresh, otherwise-legitimate re-sign of the SAME path. rr-0001 has
+    // no successor whose previousRecordHash depends on it, so mutating it in place leaves the chain
+    // (a single record, previousRecordHash: null) still trivially "valid" -- and re-signing after
+    // the edit (P2-T5, FR-10/OQ-2: any TESTKEY- dry-run persona can freely re-sign) leaves the
+    // signature valid too. Only the git-history layer (b), which inspects git history directly
+    // rather than inferring mutation from a hash/signature mismatch, catches this.
     const rr1Path = path.join(dir, 'modules', 'history_target_v1', 'reviews', 'rr-0001-clinical-1.yaml');
     const before = await readFile(rr1Path, 'utf8');
-    const rewritten = before.replace('clinical review act."', 'clinical review act -- SILENTLY REWRITTEN."');
-    assert.notEqual(rewritten, before);
+    const rewrittenText = before.replace('clinical review act."', 'clinical review act -- SILENTLY REWRITTEN."');
+    assert.notEqual(rewrittenText, before);
+    // Re-sign over the mutated content (P2-T5 exists now -- a stale signature over the OLD content
+    // would itself fail validate's own new FR-10 tamper check, which is not what this seeded
+    // violation is about; this test isolates the git-history gap specifically).
+    const mutatedRecord = parseYamlDocument(rewrittenText);
+    const resigned = signRecordDryRun({ ...mutatedRecord, signature: null });
+    const rewritten = serializeReviewRecordYaml(resigned);
     await writeFile(rr1Path, rewritten, 'utf8');
     gitCommitAll(dir, 'mutate rr-0001-clinical-1 in place (simulated history rewrite -- BAD)');
 
@@ -388,8 +406,9 @@ test('SEEDED MUTATION (b): a simulated history rewrite (in-place edit, second co
     assert.deepEqual(historyReport.paths[0].statuses, ['A', 'M']);
     assert.match(historyReport.paths[0].reason, /must be added exactly once/);
 
-    // Plain `validate` (no --history) still passes -- proving --history is genuinely opt-in and
-    // layer (a) alone would have silently missed this mutation.
+    // Plain `validate` (no --history) still passes -- chain (a) and the P2-T5 signature check both
+    // accept a freshly-resigned mutation, proving --history is genuinely opt-in and closes a real
+    // gap those two layers together still leave open.
     assert.equal(await runValidate({ module: 'history_target_v1', root: dir }), EXIT_OK);
 
     // `validate --history` fails closed with a distinct, git-history-prefixed violation.

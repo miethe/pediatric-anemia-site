@@ -31,6 +31,7 @@ import {
   rosterEntryInAuthorshipUnion,
 } from '../tools/review-record/lib/adjudication.mjs';
 import { canonicalRecordHash } from '../tools/review-record/lib/chain.mjs';
+import { signRecordDryRun } from '../tools/review-record/lib/signature.mjs';
 import { run as runValidate } from '../tools/review-record/lib/verbs/validate.mjs';
 import { ValidationFailedError } from '../tools/review-record/lib/errors.mjs';
 
@@ -38,6 +39,23 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 const TOOL_ROOT = path.join(REPO_ROOT, 'tools', 'review-record');
 
 const SUBJECT_HASH = 'sha256:537d2dcf29f8e2871a4b91129ec3da3d0012d48ee90af0784ea8c93db7398c6d';
+
+/**
+ * P2-T5: `validate` now cryptographically verifies every present signature (FR-10/OQ-2) and fails
+ * closed on a mismatch (tamper detection) -- so any hand-authored YAML fixture below whose
+ * `validate` outcome this file asserts as a HAPPY path needs a REAL, verifiable Ed25519 dry-run
+ * signature, not an opaque stub value. Builds the exact record object the hand-authored YAML lines
+ * below represent, signs it via `lib/signature.mjs`'s `signRecordDryRun`, and returns the 4 YAML
+ * lines (`signature:` block) to splice into the fixture's hand-written line array -- so the fixture
+ * text and the signed bytes can never silently drift apart.
+ *
+ * @param {object} recordWithoutSignature every review-record field except `signature`
+ * @returns {string[]} `['signature:', '  algorithm: ed25519', '  keyId: TESTKEY-...', '  value: "..."']`
+ */
+function realSignatureYamlLines(recordWithoutSignature) {
+  const { signature: signed } = signRecordDryRun({ ...recordWithoutSignature, signature: null });
+  return ['signature:', '  algorithm: ed25519', `  keyId: ${signed.keyId}`, `  value: "${signed.value}"`];
+}
 
 // -------------------------------------------------------------------------------------------
 // Temp-git-repo test helper — full control over commit authorship, isolated from this repo.
@@ -361,10 +379,24 @@ test('validate rejects an adjudication record whose reviewerId resolves to a ros
         'rationale: "Fixture adjudication rationale for the seeded self-authorship violation test."',
         'reviewedAt: 2026-02-01T00:00:00Z',
         'synthetic: true',
-        'signature:',
-        '  algorithm: ed25519',
-        '  keyId: TESTKEY-conflict-seed',
-        '  value: "c3R1Yg=="',
+        // P2-T5: a REAL, verifiable signature -- this fixture is expected to fail validate anyway
+        // (the seeded authorship-union violation below), but there is no reason to also leave a
+        // stale, non-verifying stub signature that would add a SECOND, unrelated violation and
+        // obscure what this fixture is actually testing.
+        ...realSignatureYamlLines({
+          schemaVersion: 1,
+          review_id: 'rr-0001-adjudication',
+          role: 'adjudication',
+          moduleId: 'conflicted_v1',
+          subjectContentHash: SUBJECT_HASH,
+          previousRecordHash: null,
+          supersedes: null,
+          reviewerId: 'fixture-conflicted-adjudicator',
+          decision: 'approve',
+          rationale: 'Fixture adjudication rationale for the seeded self-authorship violation test.',
+          reviewedAt: '2026-02-01T00:00:00Z',
+          synthetic: true,
+        }),
       ].join('\n') + '\n',
     );
 
@@ -432,10 +464,24 @@ test('validate accepts an adjudication record whose reviewerId does NOT resolve 
         'rationale: "Fixture adjudication rationale, independent reviewer."',
         'reviewedAt: 2026-02-01T00:00:00Z',
         'synthetic: true',
-        'signature:',
-        '  algorithm: ed25519',
-        '  keyId: TESTKEY-indep-seed',
-        '  value: "c3R1Yg=="',
+        // P2-T5: this test asserts a HAPPY-PATH `validate` outcome (exit 0), so the signature below
+        // must be a REAL, cryptographically-verifiable Ed25519 dry-run signature -- a stub value
+        // would now be rejected by validate's FR-10/OQ-2 signature check (see realSignatureYamlLines
+        // above this file's test bodies).
+        ...realSignatureYamlLines({
+          schemaVersion: 1,
+          review_id: 'rr-0001-adjudication',
+          role: 'adjudication',
+          moduleId: 'independent_adjudicator_v1',
+          subjectContentHash: SUBJECT_HASH,
+          previousRecordHash: null,
+          supersedes: null,
+          reviewerId: 'fixture-independent-adjudicator',
+          decision: 'approve',
+          rationale: 'Fixture adjudication rationale, independent reviewer.',
+          reviewedAt: '2026-02-01T00:00:00Z',
+          synthetic: true,
+        }),
       ].join('\n') + '\n',
     );
 

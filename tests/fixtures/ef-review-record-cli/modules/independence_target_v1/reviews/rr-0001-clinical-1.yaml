@@ -7,6 +7,15 @@
 # prints, or embeds this record's content anywhere in its output (FR-4 structural independence,
 # ADR-0004 "no read dependency") -- the scaffolded clinical-2 draft only ever sees this record's
 # CANONICAL HASH via lib/chain.mjs's nextChainLink, never this parsed object.
+#
+# P2-T5 note: `signature` below is a REAL, cryptographically-verifiable Ed25519 dry-run signature
+# (generated via `lib/signature.mjs`'s `signRecordDryRun` over this exact record's canonicalized
+# bytes minus the signature object) -- not a placeholder stub -- because `validate` now verifies
+# every present signature and fails closed on a mismatch (FR-10/OQ-2), and this fixture is used by
+# `tests/ef-review-workflow.test.mjs`'s happy-path `validate` assertions. `keyId` is self-certifying
+# (see lib/signature.mjs's own header): the string after `TESTKEY-` IS the ephemeral signer's raw
+# Ed25519 public key (base64url), not an opaque label -- the corresponding private key was discarded
+# immediately after signing and was never written to disk.
 
 schemaVersion: 1
 review_id: rr-0001-clinical-1
@@ -22,5 +31,5 @@ reviewedAt: 2026-01-01T00:00:00Z
 synthetic: true
 signature:
   algorithm: ed25519
-  keyId: TESTKEY-ef-e1-p2t2-fixture-independence-target-clinical-1
-  value: ZmFrZS1zaWduYXR1cmUtaW5kZXBlbmRlbmNlLXRhcmdldC0x
+  keyId: TESTKEY-6w-Ddrx56zd-bVWcBGwBTfK-Jw1JGSNchx7HassN7n0
+  value: "mljMZqBhx60K+mIbu0jIWHbo259BQKkoqEsBVv60YwdfNeO1hqPrV8sSQ4TwPmlCC7e6bpVegI/I8XY4OSW6Bg=="

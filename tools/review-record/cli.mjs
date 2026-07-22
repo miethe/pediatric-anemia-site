@@ -13,8 +13,9 @@
 //   validate  — validate one record / a module's full chain. IMPLEMENTED: schema shape + D-4
 //               roster resolution + FR-4 reviewer-2 independence heuristic (P2-T2); FR-9/OQ-2
 //               two-layer append-only enforcement -- previousRecordHash chain (always) + opt-in
-//               --history git-history check (P2-T3). Adjudication / signature checks land in
-//               P2-T4/T5 on this same verb.
+//               --history git-history check (P2-T3); PRD OQ-5 authorship-union + FR-5/FR-6
+//               adjudication/release-authorization validity (P2-T4); FR-10/OQ-2 Ed25519 signature
+//               verification, TESTKEY- dry-run only, fail-closed on tamper (P2-T5).
 //   list      — print per-module review state (records by role, chain linkage, synthetic flags).
 //               IMPLEMENTED (P2-T1) — see lib/verbs/list.mjs.
 //   render    — read-only static HTML render of a review chain. IMPLEMENTED (P2-T6) — see
@@ -58,12 +59,13 @@ Verbs:
 
   validate --module <id> [--root <dir>] [--record <review_id>] [--history]
       Validate a module's committed records. IMPLEMENTED: per-record schema shape, D-4 roster
-      resolution, the FR-4 reviewer-2 independence heuristic (P2-T2), and the FR-9/OQ-2 two-layer
+      resolution, the FR-4 reviewer-2 independence heuristic (P2-T2), the FR-9/OQ-2 two-layer
       append-only check (P2-T3) -- (a) previousRecordHash chain recomputation, ALWAYS run, and
       (b) an opt-in git-history append-only check (--history) that rejects any commit-visible
       mutation or deletion of an existing modules/<id>/reviews/*.yaml path (requires --root to be
-      inside a real git working tree). Adjudicator/authorship checking (P2-T4) and signature
-      verification (P2-T5) extend this same verb in later tasks.
+      inside a real git working tree) -- PRD OQ-5 authorship-union + FR-5/FR-6 adjudication/
+      release-authorization validity (P2-T4), and FR-10/OQ-2 Ed25519 signature verification,
+      TESTKEY- dry-run only, fail-closed on tamper (P2-T5, IMPLEMENTED).
 
   list --module <id> [--root <dir>]
       Print a structured per-module review-record state summary: records by role, informational
