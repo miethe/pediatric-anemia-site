@@ -12,8 +12,84 @@ title: 'Evidence Foundry E1 — Phase 5: Integration, Honesty Audit & Docs'
 status: pending
 started: null
 completed: null
-commit_refs: []
+commit_refs:
+- 1e4c8a9
+- 31a7bf5
+- 5ef2cc6
+- 5404f65
+- 1edafa8
+- fb6cd55
+- 642c250
+- ab60423
+- 2028692
+- 544aa0c
+- 887e931
+- 50f2e51
+- 8d0134e
+- a171312
+- 8b107c5
+- 3b5c739
+- 2db2a12
+- 705870d
+- 536216a
+- 671cdbd
+- 3e1d926
+- 668d1a9
+- c681c74
+- 930c430
+- 300f703
+- 605cd40
+- 24963f7
+- c60c39f
+- 5990016
+- 48d3fd2
+- d38dfc8
+- 7dc9fcd
+- 9b303ab
+- ed32cec
+- 540b50d
+- b0fed6b
+- 0da0e9a
+- 827952f
+- 956850c
+- c172ddf
+- 9979c39
+- 969223e
+- 9c3e263
+- b33c366
+- e8c51e8
+- ce75b03
+- a4002d7
+- 193624b
+- c7fb63e
+- 5ab5a2b
+- ce670e8
+- 3696a89
+- 7b74944
+- 67d9b0d
+- 70e11d0
+- 6c613ed
+- 9424296
+- d2e0edd
+- 5f9f4be
+- 18d55cc
+- fa9b825
 pr_refs: []
+deferred_items_spec_refs:
+- docs/project_plans/design-specs/clinical-review-portal-workflow.md
+- docs/project_plans/design-specs/signed-release-key-custody.md
+- docs/project_plans/design-specs/withdraw-rollback-machinery.md
+- docs/project_plans/design-specs/retrospective-validation-harness.md
+- docs/project_plans/design-specs/surveillance-update-registry-engine.md
+- docs/project_plans/design-specs/production-monitoring-telemetry.md
+- docs/project_plans/design-specs/cbc-12-angle-research-operation.md
+- docs/project_plans/design-specs/upstream-rf-validators-pediatric.md
+- docs/project_plans/design-specs/fhir-terminology-emitters.md
+- docs/project_plans/design-specs/property-mutation-semantic-diff-ci.md
+- docs/project_plans/design-specs/cbc-suite-full-authoring.md
+findings_doc_ref: null
+deferred_items_triage_status:
+  DF-EXT-01: "N/A — external routing note (E0 consolidated, still current, no design spec per DF-EXT-01 charter)"
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 13
@@ -441,11 +517,41 @@ success_criteria:
   description: karen feature-end sign-off recorded — plan may not close without it
   status: pending
 files_modified:
-- tests/ef-e2e-dryrun.test.mjs
-- docs/architecture.md
-- CHANGELOG.md
-- docs/project_plans/design-specs/*.md
 - .claude/progress/evidence-foundry-e1/**
+- .claude/worknotes/evidence-foundry-e1-v1/**
+- .gitignore
+- CHANGELOG.md
+- docs/architecture.md
+- docs/governance/gates-registry.md
+- docs/governance/signing-ceremony-runbook.md
+- docs/project_plans/design-specs/clinical-review-portal-workflow.md
+- docs/project_plans/design-specs/cbc-12-angle-research-operation.md
+- docs/project_plans/design-specs/upstream-rf-validators-pediatric.md
+- docs/project_plans/design-specs/fhir-terminology-emitters.md
+- docs/project_plans/design-specs/property-mutation-semantic-diff-ci.md
+- docs/project_plans/design-specs/cbc-suite-full-authoring.md
+- docs/project_plans/design-specs/signed-release-key-custody.md
+- docs/project_plans/design-specs/withdraw-rollback-machinery.md
+- docs/project_plans/design-specs/retrospective-validation-harness.md
+- docs/project_plans/design-specs/surveillance-update-registry-engine.md
+- docs/project_plans/design-specs/production-monitoring-telemetry.md
+- docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md
+- docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1.md
+- governance/reviewer-roster.yaml
+- modules/cbc_suite_v1/reviews/**
+- releases/registry.json
+- schemas/**
+- scripts/evidence/backfill-rule-governance.mjs
+- scripts/rule-coverage.mjs
+- scripts/validate-kb.mjs
+- tests/ef-*.test.mjs
+- tests/fixtures/ef-*/**
+- tests/review-record-schema.test.mjs
+- tests/release-manifest-schema.test.mjs
+- tests/reviewer-roster-schema.test.mjs
+- tools/release-sign/**
+- tools/retro-validate/**
+- tools/review-record/**
 progress: 46
 updated: '2026-07-22'
 ---
@@ -512,6 +618,27 @@ complete diff, not a phase-local check.
 ---
 
 ## Completion Notes
+
+### DF-EXT-01 Closure (RFUP — External Routing)
+
+**Status**: N/A — external routing confirmed current, no design spec required per charter.
+
+Confirmed that the E0 consolidated routing note (`.claude/worknotes/evidence-foundry-buildout/rfup-external-routing-note.md`, dated 2026-07-21) remains current and authoritative:
+
+- 7 RFUP (Research Foundry upstream) enhancement items correctly identified as external dependencies, not Evidence Foundry E1 implementation tasks
+- Each item tracked exclusively via IntentTree `RFUP` work area (`node_01KXRTYKKW9ECTF9MCBQ8JV1EB`)
+- No design spec path appended to `deferred_items_spec_refs` (per DF-EXT-01 charter — 11 design-spec paths only, DF-E1-01..07 / DF-E2-01..03)
+- Recorded explicit N/A-with-rationale in frontmatter `deferred_items_triage_status`
+
+The routing note is a point-in-time record; no updates made in place. If any RFUP item lands upstream, the gap-register row in `docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md` §6.2 is the place to record closure.
+
+### Findings Status
+
+**Status**: N/A — no findings captured.
+
+No separate findings document was generated during Phase 5 evidence-foundry-e1 implementation. All identified issues were fixed in place during their respective tasks (per P5-T2 note: 3 documentation-staleness findings were fixed across tools/release-sign/README.md, docs/governance/signing-ceremony-runbook.md, and tools/retro-validate/README.md). The `findings_doc_ref` frontmatter field is `null` per protocol.
+
+### Phase 5 Completion (Pending P5-GATE2)
 
 Fill in when Phase 5 is complete: what was built, key learnings, unexpected challenges, and the final
 `karen` feature-end sign-off reference. This is the last phase — completion here closes the plan
