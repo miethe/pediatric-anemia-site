@@ -7,11 +7,14 @@
 // roster / signature / render) each verb builds on, and which phase-2 task owns which piece.
 //
 // Verbs (OQ-1):
-//   scaffold  — create a schema-valid draft record for a module+role. NOT YET IMPLEMENTED (P2-T2).
-//   validate  — validate one record / a module's full chain. NOT YET IMPLEMENTED (P2-T3..T5, added
-//               incrementally: chain / adjudication / signature).
+//   scaffold  — create a schema-valid draft record for a module+role. IMPLEMENTED (P2-T2) — see
+//               lib/verbs/scaffold.mjs for the signature-gated write posture (why a synthetic
+//               persona's draft prints a preview rather than being written to disk today).
+//   validate  — validate one record / a module's full chain. First increment IMPLEMENTED (P2-T2):
+//               schema shape + D-4 roster resolution + FR-4 reviewer-2 independence heuristic.
+//               Chain / adjudication / signature checks land in P2-T3/T4/T5 on this same verb.
 //   list      — print per-module review state (records by role, chain linkage, synthetic flags).
-//               IMPLEMENTED (P2-T1, this task) — see lib/verbs/list.mjs.
+//               IMPLEMENTED (P2-T1) — see lib/verbs/list.mjs.
 //   render    — read-only static HTML render of a review chain. NOT YET IMPLEMENTED (P2-T6).
 //   dry-run   — full five-role synthetic dry-run cycle. NOT YET IMPLEMENTED (P2-T8).
 //
@@ -41,13 +44,20 @@ Usage:
   node tools/review-record/cli.mjs <verb> [options]
 
 Verbs:
-  scaffold --module <id> --role <role> --subject <content-hash>
-      Create a schema-valid draft record for one of the five roles. NOT YET IMPLEMENTED — lands
-      in P2-T2 (roster resolution + reviewer-2 structural independence).
+  scaffold --module <id> --role <role> --subject <content-hash> --reviewer-id <id>
+           --decision <approve|reject|request-changes> --rationale <text>
+           [--reviewed-at <iso>] [--supersedes <review_id>] [--root <dir>]
+      Build a schema-shaped draft record for one of the five roles. reviewerId must resolve
+      against governance/reviewer-roster.yaml (unknown identity / out-of-scope module both fail
+      closed, FR-3). If the resolved roster entry is synthetic (the only case that can currently
+      exist pre-G1), the draft is PRINTED as a preview and NOT written — it needs a TESTKEY-
+      signature (P2-T5/P2-T8) first. IMPLEMENTED (P2-T2).
 
-  validate [--record <path>] [--module <id>] [--history]
-      Validate one record, or a module's full chain. NOT YET IMPLEMENTED — chain checking lands in
-      P2-T3, adjudicator/authorship checking in P2-T4, signature verification in P2-T5.
+  validate --module <id> [--root <dir>] [--record <review_id>]
+      Validate a module's committed records. IMPLEMENTED (P2-T2, first increment): per-record
+      schema shape, D-4 roster resolution, and the FR-4 reviewer-2 independence heuristic. Chain
+      recomputation (P2-T3), adjudicator/authorship checking (P2-T4), and signature verification
+      (P2-T5) extend this same verb in later tasks.
 
   list --module <id> [--root <dir>]
       Print a structured per-module review-record state summary: records by role, informational

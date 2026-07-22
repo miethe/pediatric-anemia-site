@@ -1,0 +1,26 @@
+# tests/fixtures/ef-review-record-cli/modules/independence_target_v1/reviews/rr-0001-clinical-1.yaml
+#
+# P2-T2 CLI-test fixture ONLY -- see fixture_module_v1's rr-0001-clinical-1.yaml (sibling directory)
+# for the full disclaimer. This module's clinical-1 record carries a DISTINCTIVE sentinel string in
+# `rationale` (SENTINEL-REVIEWER-ONE-TOKEN-7f2c9a3d) so that tests/ef-review-workflow.test.mjs can
+# prove, dynamically, that `scaffold --role clinical-2 --module independence_target_v1` never reads,
+# prints, or embeds this record's content anywhere in its output (FR-4 structural independence,
+# ADR-0004 "no read dependency") -- the scaffolded clinical-2 draft only ever sees this record's
+# CANONICAL HASH via lib/chain.mjs's nextChainLink, never this parsed object.
+
+schemaVersion: 1
+review_id: rr-0001-clinical-1
+role: clinical-1
+moduleId: independence_target_v1
+subjectContentHash: sha256:537d2dcf29f8e2871a4b91129ec3da3d0012d48ee90af0784ea8c93db7398c6d
+previousRecordHash: null
+supersedes: null
+reviewerId: synthetic-reviewer-1
+decision: approve
+rationale: "SENTINEL-REVIEWER-ONE-TOKEN-7f2c9a3d -- clinical-1 fixture rationale text used only to prove clinical-2 scaffold never reads this."
+reviewedAt: 2026-01-01T00:00:00Z
+synthetic: true
+signature:
+  algorithm: ed25519
+  keyId: TESTKEY-ef-e1-p2t2-fixture-independence-target-clinical-1
+  value: ZmFrZS1zaWduYXR1cmUtaW5kZXBlbmRlbmNlLXRhcmdldC0x

@@ -17,10 +17,10 @@
 // Every function here is pure w.r.t. its inputs plus (for the two `async` functions) read-only
 // filesystem access — nothing in this module ever writes, renames, or deletes a path.
 
-import { readFile, readdir } from 'node:fs/promises';
+import { access, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import { UsageError } from './errors.mjs';
+import { RecordAlreadyExistsError, UsageError } from './errors.mjs';
 import { parseYamlDocument } from '../../rf-bundle-to-kb-pack/lib/yaml-lite.mjs';
 
 /**
@@ -151,4 +151,103 @@ export async function nextSequenceFor(rootDir, moduleId) {
   const records = await listModuleReviewRecords(rootDir, moduleId);
   if (records.length === 0) return 1;
   return Math.max(...records.map((r) => r.seq)) + 1;
+}
+
+// ---------------------------------------------------------------------------------------------
+// Write path (P2-T2). Everything above this line is read-only, per this file's own header. This
+// is the ONLY place in the whole `review-record` tool that ever writes a `modules/<id>/reviews/`
+// file — `scaffold` (lib/verbs/scaffold.mjs) is its sole caller.
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * Double-quotes and escapes a string for a single-line YAML scalar, using exactly the escape set
+ * `tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs`'s double-quoted-scalar reader supports
+ * (`\\`, `\"`, `\n`, `\t`) — anything outside that set would round-trip incorrectly through this
+ * repo's own hand-rolled parser, so this serializer stays deliberately narrow rather than emitting
+ * YAML a wider spec would allow but this codebase's own reader cannot parse back.
+ *
+ * @param {string} value
+ * @returns {string}
+ */
+function yamlDoubleQuote(value) {
+  const escaped = value
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\n')
+    .replace(/\t/g, '\\t');
+  return `"${escaped}"`;
+}
+
+/**
+ * Deterministic YAML serialization of one review-record document, in the exact field order
+ * `schemas/review-record.schema.json`'s `required` array lists them — matching every hand-authored
+ * fixture under `tests/fixtures/ef-review-record-cli/` and `tests/fixtures/ef-review-records/`.
+ * Free-text fields (`rationale`, `reviewerId`, hash/id fields) are always double-quoted (safe
+ * regardless of content); enum-shaped fields (`role`, `decision`) and booleans/integers are left
+ * unquoted plain scalars, matching this repo's existing committed fixtures' style. Pure — does not
+ * touch disk; `writeNewReviewRecordFile` below is the only caller that does.
+ *
+ * @param {object} record a fully-built review-record document (see `lib/verbs/scaffold.mjs`'s
+ *   `buildDraftRecord`)
+ * @returns {string} YAML document text, newline-terminated
+ */
+export function serializeReviewRecordYaml(record) {
+  const lines = [
+    `schemaVersion: ${record.schemaVersion}`,
+    `review_id: ${record.review_id}`,
+    `role: ${record.role}`,
+    `moduleId: ${record.moduleId}`,
+    `subjectContentHash: ${record.subjectContentHash}`,
+    `previousRecordHash: ${record.previousRecordHash === null ? 'null' : record.previousRecordHash}`,
+    `supersedes: ${record.supersedes === null ? 'null' : record.supersedes}`,
+    `reviewerId: ${yamlDoubleQuote(record.reviewerId)}`,
+    `decision: ${record.decision}`,
+    `rationale: ${yamlDoubleQuote(record.rationale)}`,
+    `reviewedAt: ${record.reviewedAt}`,
+    `synthetic: ${record.synthetic}`,
+  ];
+  if (record.signature === null) {
+    lines.push('signature: null');
+  } else {
+    lines.push('signature:');
+    lines.push(`  algorithm: ${record.signature.algorithm}`);
+    lines.push(`  keyId: ${record.signature.keyId}`);
+    lines.push(`  value: ${yamlDoubleQuote(record.signature.value)}`);
+  }
+  return `${lines.join('\n')}\n`;
+}
+
+/**
+ * @param {string} filePath
+ * @returns {Promise<boolean>}
+ */
+async function fileExists(filePath) {
+  try {
+    await access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Writes one new review-record file — the OQ-2 append-only guard: fails closed
+ * (`RecordAlreadyExistsError`) if a file already sits at the target path rather than ever
+ * overwriting it. Creates `modules/<moduleId>/reviews/` if it does not yet exist (a module's very
+ * first review act legitimately has no `reviews/` directory yet, mirroring
+ * `listModuleReviewRecords`'s own existence-gate posture for reads). This is the only function in
+ * this whole tool that writes to `modules/<id>/reviews/` — see this section's header.
+ *
+ * @param {string} rootDir
+ * @param {string} moduleId
+ * @param {string} reviewId
+ * @param {object} record a fully-built review-record document
+ * @returns {Promise<string>} the absolute path written
+ */
+export async function writeNewReviewRecordFile(rootDir, moduleId, reviewId, record) {
+  const filePath = recordFilePathFor(rootDir, moduleId, reviewId);
+  if (await fileExists(filePath)) throw new RecordAlreadyExistsError(filePath);
+  await mkdir(reviewsDirFor(rootDir, moduleId), { recursive: true });
+  await writeFile(filePath, serializeReviewRecordYaml(record), 'utf8');
+  return filePath;
 }

@@ -30,6 +30,8 @@
 
 import { createHash } from 'node:crypto';
 
+import { listModuleReviewRecords } from './store.mjs';
+
 /**
  * Deterministic, sorted-key JSON serialization of any JSON-compatible value (the same recursive
  * shape `tools/review-record/lib/wave0-migration.mjs`'s own internal-only `stableStringify` uses,
@@ -105,4 +107,26 @@ export function checkModuleChainLinkage(records) {
     previous = entry;
   }
   return report;
+}
+
+/**
+ * P2-T2: the ONE channel `scaffold` (any role, including `clinical-2`) uses to link a new record
+ * into a module's chain. Deliberately returns ONLY a sequence number and a hash STRING — never the
+ * preceding record's parsed object — so nothing built on top of this function can ever access a
+ * sibling record's `decision`/`rationale`/`reviewerId` content through it. This is the concrete
+ * mechanism that makes reviewer-2 independence (FR-4, ADR-0004 "no read dependency") structural
+ * rather than a convention every role's scaffold code has to remember to respect: `clinical-2`'s
+ * draft-building code calls this exact same function every other role calls, and it is
+ * mechanically incapable of handing back clinical-1's content — see `lib/independence.mjs`'s header
+ * for the supplementary (non-structural) heuristic layer `validate` runs on top of this guarantee.
+ *
+ * @param {string} rootDir
+ * @param {string} moduleId
+ * @returns {Promise<{ seq: number, previousRecordHash: string|null }>}
+ */
+export async function nextChainLink(rootDir, moduleId) {
+  const records = await listModuleReviewRecords(rootDir, moduleId);
+  if (records.length === 0) return { seq: 1, previousRecordHash: null };
+  const last = records[records.length - 1];
+  return { seq: last.seq + 1, previousRecordHash: canonicalRecordHash(last.record) };
 }

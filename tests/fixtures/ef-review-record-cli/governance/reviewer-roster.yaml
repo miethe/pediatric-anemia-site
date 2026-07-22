@@ -1,0 +1,42 @@
+# tests/fixtures/ef-review-record-cli/governance/reviewer-roster.yaml
+#
+# P2-T2 CLI-test fixture ONLY -- exercises `tools/review-record/lib/roster.mjs`'s resolution logic
+# (scaffold/validate against `--root tests/fixtures/ef-review-record-cli`). This file is NOT
+# `governance/reviewer-roster.yaml` (the real, committed, empty-by-design roster) and is never read
+# by `scripts/validate-kb.mjs` or any real workflow -- it lives entirely under tests/fixtures/.
+#
+# Every entry below is `synthetic: true`, matching the repository-wide rule that no task or agent
+# ever creates a `synthetic: false` ("real," out-of-band-verified) roster entry -- not even in a
+# throwaway test fixture (see governance/reviewer-roster.yaml's own header). Names are deliberately,
+# unambiguously fictional test-persona labels, never a real person's name.
+
+schemaVersion: 1
+reviewers:
+  - reviewerId: synthetic-reviewer-1
+    name: "SYNTHETIC -- NOT A CREDENTIALED REVIEWER (fixture persona 1)"
+    credentialRef: fixture-placeholder-credential-1
+    moduleScopes:
+      - fixture_module_v1
+      - independence_target_v1
+      - independence_violation_v1
+    synthetic: true
+  - reviewerId: synthetic-reviewer-2
+    name: "SYNTHETIC -- NOT A CREDENTIALED REVIEWER (fixture persona 2)"
+    credentialRef: fixture-placeholder-credential-2
+    moduleScopes:
+      - fixture_module_v1
+      - independence_violation_v1
+    synthetic: true
+  - reviewerId: synthetic-multirole-reviewer
+    name: "SYNTHETIC -- NOT A CREDENTIALED REVIEWER (fixture multi-role persona)"
+    credentialRef: fixture-placeholder-credential-multirole
+    moduleScopes:
+      - scaffold_target_v1
+      - independence_target_v1
+    synthetic: true
+  - reviewerId: synthetic-out-of-scope
+    name: "SYNTHETIC -- NOT A CREDENTIALED REVIEWER (fixture out-of-scope persona)"
+    credentialRef: fixture-placeholder-credential-scope
+    moduleScopes:
+      - a_different_module_v1
+    synthetic: true

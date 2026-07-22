@@ -4,8 +4,10 @@
 // (docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1/phase-2-4-workstreams.md,
 // row P2-T1):
 //   - `cli.mjs --help` lists all 5 verbs.
-//   - `scaffold`/`validate`/`render`/`dry-run` fail closed with a distinct, named "not yet
-//     implemented" error (`NotImplementedError`, exit 1) rather than a silent no-op or a crash.
+//   - `render`/`dry-run` fail closed with a distinct, named "not yet implemented" error
+//     (`NotImplementedError`, exit 1) rather than a silent no-op or a crash. (`scaffold` and
+//     `validate` got their own real implementations in P2-T2 — see tests/ef-review-workflow.test.mjs
+//     for their coverage; this file no longer exercises them as stubs.)
 //   - `list` over a fixture module prints a structured, non-empty per-module review-record state
 //     summary (OQ-2 store layout).
 //   - Zero network calls / zero model-invocation hooks across all verbs, proven both statically
@@ -53,8 +55,6 @@ import {
 } from '../tools/review-record/lib/store.mjs';
 import { stableStringify, canonicalRecordHash, checkModuleChainLinkage } from '../tools/review-record/lib/chain.mjs';
 import { run as runList, formatModuleState } from '../tools/review-record/lib/verbs/list.mjs';
-import { run as runScaffold } from '../tools/review-record/lib/verbs/scaffold.mjs';
-import { run as runValidate } from '../tools/review-record/lib/verbs/validate.mjs';
 import { run as runRender } from '../tools/review-record/lib/verbs/render.mjs';
 import { run as runDryRun } from '../tools/review-record/lib/verbs/dry-run.mjs';
 
@@ -64,8 +64,6 @@ const CLI_PATH = path.join(TOOL_ROOT, 'cli.mjs');
 const FIXTURES_ROOT = path.join(REPO_ROOT, 'tests', 'fixtures', 'ef-review-record-cli');
 
 const STUB_VERBS = Object.freeze([
-  { verb: 'scaffold', run: runScaffold, owner: 'P2-T2' },
-  { verb: 'validate', run: runValidate, owner: 'P2-T3' },
   { verb: 'render', run: runRender, owner: 'P2-T6' },
   { verb: 'dry-run', run: runDryRun, owner: 'P2-T8' },
 ]);
@@ -414,7 +412,7 @@ test('the real list verb makes zero network calls at runtime (patched global fet
   }
 });
 
-test('the four stub verbs make zero network calls before throwing NotImplementedError', async () => {
+test('the remaining stub verbs (render, dry-run) make zero network calls before throwing NotImplementedError', async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () => {
     throw new Error('network call attempted during a review-record CLI verb invocation');

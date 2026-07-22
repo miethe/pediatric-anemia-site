@@ -5,13 +5,40 @@ E1's review-workflow machinery. Design/scaffold task **P2-T1** (OQ-1/OQ-2/FR-1/F
 `docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1.md` and its
 `evidence-foundry-e1-v1/phase-2-4-workstreams.md` phase file (row `P2-T1`).
 
-**Status (as of P2-T1)**: `list` is real. `scaffold`, `validate`, `render`, `dry-run` are dispatch
-stubs (`NotImplementedError`, exit 1) — each lands in the phase-2 task that owns it (see the verb
-table below). Nothing in this tool signs, releases, or clinically approves anything; nothing in
-this tool clears, advances, or partially satisfies any of the G0–G4 human gates
-(`docs/governance/gates-registry.md`). Structural validity proven by any verb here never implies
-clinical validity, safety, or that a named human clinician reviewed anything — see
-`schemas/review-record.schema.json`'s own top-level description for that standing caveat.
+**Status (as of P2-T2)**: `list` (P2-T1) and `scaffold`/`validate` (P2-T2, this task's own
+increment) are real. `render`/`dry-run` remain dispatch stubs (`NotImplementedError`, exit 1) until
+P2-T6/P2-T8. `validate`'s P2-T2 increment covers per-record schema shape, D-4 roster resolution, and
+the FR-4 reviewer-2 textual-independence heuristic only — chain (P2-T3), authorship-union/adjudicator
+(P2-T4), and signature (P2-T5) checks land on the same verb incrementally. Nothing in this tool
+signs, releases, or clinically approves anything; nothing in this tool clears, advances, or partially
+satisfies any of the G0–G4 human gates (`docs/governance/gates-registry.md`). Structural validity
+proven by any verb here never implies clinical validity, safety, or that a named human clinician
+reviewed anything — see `schemas/review-record.schema.json`'s own top-level description for that
+standing caveat.
+
+**`scaffold`'s write path is signature-gated, and is correctly inert today** (P2-T2): `reviewerId`
+must resolve against `governance/reviewer-roster.yaml` (fail closed on unknown identity or an
+out-of-scope module — `lib/roster.mjs`). The resulting draft's `synthetic` flag is always taken
+from the resolved roster entry, never asserted independently — and per FR-3 the real roster ships
+empty/synthetic-only pre-G1, so every `reviewerId` this verb can currently resolve is
+`synthetic: true`. `schemas/review-record.schema.json` requires a populated `TESTKEY-` signature on
+every `synthetic: true` record, and `scaffold` owns no signing capability (that is P2-T5, composed
+by the P2-T8 `dry-run` flow) — so `scaffold` never writes a `synthetic: true` draft to disk; it
+prints a clearly-labeled, fully-shaped preview instead. The disk-write path
+(`lib/store.mjs`'s `writeNewReviewRecordFile`, an append-only guard) only fires for a
+`synthetic: false` roster entry, which cannot legitimately exist before gate G1 clears (a human act
+no task performs) — this mirrors this program's "signature slots const-null on real candidates,
+roster synthetic-only pre-G1" guardrail exactly, rather than working around it.
+
+**FR-4 reviewer-2 independence is enforced two ways**: (1) STRUCTURALLY — every role's `scaffold`
+draft (including `clinical-2`) links into the module's hash chain via `lib/chain.mjs`'s
+`nextChainLink`, which returns only a sequence number and a hash string, never a sibling record's
+parsed content; there is no code path in `scaffold` that ever reads a `clinical-1` record's
+`decision`/`rationale`/`reviewerId`. (2) a SUPPLEMENTARY heuristic — `lib/independence.mjs`'s
+`checkReviewerIndependence`, which `validate` runs over a module's `clinical-1`/`clinical-2` pair,
+flags verbatim textual overlap or a direct reference to the sibling reviewer's identity. The
+heuristic catches copy-paste, not paraphrase — see that module's own header for the honest scope of
+what it can and cannot detect.
 
 ## Why this tool exists (and why it is not `scripts/validate-kb.mjs`)
 
@@ -54,15 +81,16 @@ responsibility plus a `lib/verbs/` directory of thin verb handlers:
 | Module | File | Responsibility | Owning task | Depends on |
 |---|---|---|---|---|
 | CLI dispatch | `cli.mjs` | Arg parsing, `--help`, verb routing, top-level exit-code handling | **P2-T1** (this task) | — |
-| Error taxonomy | `lib/errors.mjs` | `CliError` base + `EXIT_OK`/`EXIT_USAGE` + `NotImplementedError` | **P2-T1** | — |
-| **Store** | `lib/store.mjs` | OQ-2 path layout (`modules/<id>/reviews/rr-<seq4>-<role>.yaml`), `review_id` <-> `{seq, role}`, read-only listing of a module's committed records, next-sequence lookup | **P2-T1** | errors, `../rf-bundle-to-kb-pack/lib/yaml-lite.mjs` |
-| **Chain** | `lib/chain.mjs` | The one canonical `previousRecordHash` hashing convention (`canonicalRecordHash`/`stableStringify`) + a read-only, informational chain-linkage report `list` uses. **Fail-closed chain enforcement** (recompute + reject on break, plus the git-history mutation/deletion check) is a separate, later concern | **P2-T1 primitive; P2-T3 enforcement** | — |
-| **Roster** | *(new in P2-T2)* | Resolve `reviewerId` against `governance/reviewer-roster.yaml`; enforce reviewer-2 structural independence (FR-4) | **P2-T2** | store |
+| Error taxonomy | `lib/errors.mjs` | `CliError` base + `EXIT_OK`/`EXIT_USAGE` + `NotImplementedError` + (P2-T2) `UnknownReviewerError`/`ReviewerNotInScopeError`/`RecordAlreadyExistsError`/`ValidationFailedError` | **P2-T1**, extended **P2-T2** | — |
+| **Store** | `lib/store.mjs` | OQ-2 path layout (`modules/<id>/reviews/rr-<seq4>-<role>.yaml`), `review_id` <-> `{seq, role}`, read-only listing of a module's committed records, next-sequence lookup; (P2-T2) `serializeReviewRecordYaml` + `writeNewReviewRecordFile` — the ONE append-only write path in this tool | **P2-T1**, write path **P2-T2** | errors, `../rf-bundle-to-kb-pack/lib/yaml-lite.mjs` |
+| **Chain** | `lib/chain.mjs` | The one canonical `previousRecordHash` hashing convention (`canonicalRecordHash`/`stableStringify`) + a read-only, informational chain-linkage report `list` uses; (P2-T2) `nextChainLink` — the one channel `scaffold` uses to link a new draft into a module's chain, returning only a seq + hash string, never sibling record content (the FR-4 structural-independence mechanism). **Fail-closed chain enforcement** (recompute + reject on break, plus the git-history mutation/deletion check) is a separate, later concern | **P2-T1 primitive; P2-T2 `nextChainLink`; P2-T3 enforcement** | store |
+| **Roster** | `lib/roster.mjs` | Resolve `reviewerId` against `governance/reviewer-roster.yaml` (unknown identity / out-of-scope module both fail closed, FR-3) | **P2-T2** | errors, `../rf-bundle-to-kb-pack/lib/yaml-lite.mjs` |
+| **Independence** | `lib/independence.mjs` | Supplementary, heuristic FR-4 reviewer-2-independence check (`checkReviewerIndependence`) — verbatim textual overlap / direct sibling-identity reference between a module's `clinical-1`/`clinical-2` records. NOT the primary enforcement (see Roster/Chain above and this file's own header) | **P2-T2** | — |
 | **Adjudication** | *(new in P2-T4)* | Authorship-union computation (PRD OQ-5) + adjudicator-not-in-authorship-union enforcement | **P2-T4** | store, chain |
 | **Signature** | *(new in P2-T5)* | Ed25519 sign/verify over canonicalized record bytes minus `signature` (`node:crypto` only, `TESTKEY-` dry-run only) | **P2-T5** | chain |
 | **Render** | *(new in P2-T6)* | Read-only static HTML render to `build/review-render/` | **P2-T6** | store, chain |
-| Verb handler | `lib/verbs/scaffold.mjs` | `scaffold` verb | stub P2-T1, real **P2-T2** | store, roster |
-| Verb handler | `lib/verbs/validate.mjs` | `validate` verb | stub P2-T1, real **P2-T3/T4/T5** (added incrementally) | store, chain, roster, adjudication, signature |
+| Verb handler | `lib/verbs/scaffold.mjs` | `scaffold` verb — builds + (signature-gated) writes a draft; see this file's "Status" section above | stub P2-T1, real **P2-T2** | store, chain, roster |
+| Verb handler | `lib/verbs/validate.mjs` | `validate` verb — P2-T2 increment: schema shape + roster resolution + independence heuristic | stub P2-T1, first increment **P2-T2**, extended **P2-T3/T4/T5** | store, roster, independence, `../../../scripts/lib/json-schema-lite.mjs` |
 | Verb handler | `lib/verbs/list.mjs` | `list` verb — per-module review-record state summary | **P2-T1** (real) | store, chain |
 | Verb handler | `lib/verbs/render.mjs` | `render` verb | stub P2-T1, real **P2-T6** | render |
 | Verb handler | `lib/verbs/dry-run.mjs` | `dry-run` verb | stub P2-T1, real **P2-T8** | scaffold, signature, validate |
@@ -142,16 +170,18 @@ tools/review-record/
   cli.mjs                   verb dispatch, --help, top-level exit-code handling (P2-T1)
   README.md                  this file
   lib/
-    errors.mjs                 CliError taxonomy (P2-T1)
-    store.mjs                   OQ-2 store layout: paths, review_id parsing, listing (P2-T1)
-    chain.mjs                    canonical hashing + informational linkage report (P2-T1 primitive)
-    wave0-migration.mjs           wave0 -> canonical migration helper (P1-T3, unrelated to CLI dispatch)
+    errors.mjs                 CliError taxonomy (P2-T1, extended P2-T2)
+    store.mjs                   OQ-2 store layout: paths, review_id parsing, listing (P2-T1); write path (P2-T2)
+    chain.mjs                    canonical hashing + informational linkage report (P2-T1 primitive); nextChainLink (P2-T2)
+    roster.mjs                    reviewerId resolution against governance/reviewer-roster.yaml (P2-T2)
+    independence.mjs               heuristic FR-4 reviewer-2-independence check (P2-T2)
+    wave0-migration.mjs             wave0 -> canonical migration helper (P1-T3, unrelated to CLI dispatch)
     verbs/
-      list.mjs                     `list` verb — real (P2-T1)
-      scaffold.mjs                  `scaffold` verb — stub (real: P2-T2)
-      validate.mjs                   `validate` verb — stub (real: P2-T3/T4/T5, incremental)
-      render.mjs                      `render` verb — stub (real: P2-T6)
-      dry-run.mjs                      `dry-run` verb — stub (real: P2-T8)
+      list.mjs                       `list` verb — real (P2-T1)
+      scaffold.mjs                    `scaffold` verb — real (P2-T2)
+      validate.mjs                     `validate` verb — first increment real (P2-T2); extended P2-T3/T4/T5
+      render.mjs                        `render` verb — stub (real: P2-T6)
+      dry-run.mjs                        `dry-run` verb — stub (real: P2-T8)
 ```
 
 `build/review-render/` (P2-T6's eventual render output root) is git-ignored (`.gitignore`) —
