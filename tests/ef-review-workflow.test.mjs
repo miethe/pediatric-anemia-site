@@ -59,6 +59,7 @@ import { computeModuleContentHash } from '../tools/review-record/lib/subject.mjs
 import { signRecordDryRun } from '../tools/review-record/lib/signature.mjs';
 import { buildDraftRecord, run as runScaffold } from '../tools/review-record/lib/verbs/scaffold.mjs';
 import { run as runValidate } from '../tools/review-record/lib/verbs/validate.mjs';
+import { isExpectedTerminalNonQualifyingViolations } from '../tools/review-record/lib/verbs/dry-run.mjs';
 import {
   ACTS_COMPLETE_UNAUTHORIZED,
   REDACTED_MARKER,
@@ -1271,4 +1272,220 @@ test('status makes zero network calls at runtime (patched global fetch throws if
   } finally {
     globalThis.fetch = originalFetch;
   }
+});
+
+// -------------------------------------------------------------------------------------------
+// P1-T4 (clinical-review-workflow-v1, R2/R3/R7/R8, FR-24) — drift guard: `status --json`'s
+// `derivedState`/`blockers` and `validate`'s collected violations must never merely happen to
+// agree across two independently-reasoned-about code paths -- they are BOTH derived from the ONE
+// shared `computeDerivedReviewState` result (P1-T1, F6). The grep-based STRUCTURAL proof that both
+// verbs call that one function (rather than reimplementing it) already lives above (see "lib/
+// verbs/validate.mjs must actually call computeDerivedReviewState" and "lib/verbs/status.mjs
+// imports and calls computeDerivedReviewState"). This section adds the BEHAVIORAL half: actually
+// running both verbs over the SAME input and asserting their blocker/violation content is
+// identical -- not two independently-shaped outputs that were merely each checked separately
+// against an expected shape -- across the three fixture classes this task's own acceptance
+// criteria name:
+//   (a) the committed, real cbc_suite_v1 dry-run set (terminal, structurally-non-qualifying);
+//   (b) the pre-existing broken_chain_v1 adversarial fixture (fail-closed chain break --
+//       tests/fixtures/ef-review-record-cli/modules/broken_chain_v1/, reused read-only here rather
+//       than duplicated; this task adds no new committed chain-broken fixture file);
+//   (c) the disputed_pair_v1 adversarial fixture built by `makeDisputedFixture` above (accepted,
+//       non-terminal `disputed` state -- a missing adjudication role is not itself a `validate`
+//       violation, only a fact `status`'s turn-taking layer reports on top of the shared blockers).
+//
+// This section also re-affirms (R3/R7/R8) that reviewer-2 structural independence (`nextChainLink`'s
+// single-file-touch semantics, the `chain_isolation_v1` fixture) is untouched by anything this task
+// adds -- P1-T4's own target surfaces are exactly this test file and tests/fixtures/
+// clinical-review-workflow/, never lib/chain.mjs or lib/verbs/scaffold.mjs themselves -- and
+// grep-asserts zero diff to ADR-0004's `status` field and to the real
+// governance/reviewer-roster.yaml from every test P1-T4 adds (both grep checks are scoped AFTER
+// this task's own new tests below, not just the earlier P1-T3/P1-T5 checks elsewhere in this repo,
+// which run before these and so cannot catch a regression introduced by this task's own additions).
+// -------------------------------------------------------------------------------------------
+
+/**
+ * Runs `validate` (in-process library call -- pure-logic assertion per this file's own header) over
+ * `{moduleId, root}` and returns its full `violations[]` list -- `[]` when `validate` passes, or
+ * `err.violations` when it fails closed with `ValidationFailedError`. A non-`ValidationFailedError`
+ * throw (a genuine tool-usage failure, e.g. an unparseable record) propagates unchanged -- this
+ * helper only normalizes the "structured rejection" shape, never masks a raw crash.
+ *
+ * @param {string} moduleId
+ * @param {string} root
+ * @returns {Promise<string[]>}
+ */
+async function collectValidateViolations(moduleId, root) {
+  try {
+    await runValidate({ module: moduleId, root });
+    return [];
+  } catch (err) {
+    if (err instanceof ValidationFailedError) return err.violations;
+    throw err;
+  }
+}
+
+/**
+ * Runs `status --json` as a subprocess (matching this file's established stdout-capture convention
+ * for structured-JSON assertions -- see this file's own header on why process-level assertions
+ * spawn the real `cli.mjs`) over `{moduleId, root}` and returns the parsed body.
+ *
+ * @param {string} moduleId
+ * @param {string} root
+ * @returns {{ moduleId: string, subjectContentHash: string|null, records: object[], derivedState: string, nextExpectedRole: string|null, blockers: string[] }}
+ */
+function collectStatusResult(moduleId, root) {
+  const { stdout, stderr } = runStatusCli(['--module', moduleId, '--root', root, '--json']);
+  try {
+    return JSON.parse(stdout);
+  } catch {
+    throw new Error(`status --json did not emit parseable JSON for module "${moduleId}":\n${stdout}\n${stderr}`);
+  }
+}
+
+test('drift guard (F6): status --json blockers and validate\'s violations agree byte-for-byte on the committed cbc_suite_v1 fixture (terminal, structurally-non-qualifying)', async () => {
+  const validateViolations = await collectValidateViolations('cbc_suite_v1', REPO_ROOT);
+  const statusResult = collectStatusResult('cbc_suite_v1', REPO_ROOT);
+  assert.equal(statusResult.derivedState, 'structurally-non-qualifying');
+  assert.ok(
+    isExpectedTerminalNonQualifyingViolations(validateViolations),
+    `expected exactly the one FR-6 synthetic-set violation from validate, got: ${JSON.stringify(validateViolations)}`,
+  );
+  assert.deepEqual(
+    statusResult.blockers,
+    validateViolations,
+    'status and validate must report the IDENTICAL blocker/violation set over the same committed ' +
+      'input -- both derive from the one shared computeDerivedReviewState result (F6), not two ' +
+      'independently-shaped outputs that merely happen to agree',
+  );
+});
+
+test('drift guard (F6): status --json blockers and validate\'s violations agree byte-for-byte on the pre-existing broken_chain_v1 adversarial fixture (chain-broken, fail-closed)', async () => {
+  const validateViolations = await collectValidateViolations('broken_chain_v1', FIXTURES_ROOT);
+  const statusResult = collectStatusResult('broken_chain_v1', FIXTURES_ROOT);
+  assert.equal(statusResult.derivedState, 'invalid');
+  assert.ok(validateViolations.length > 0, 'validate must reject the deliberately chain-broken fixture');
+  assert.ok(
+    validateViolations.some((v) => v.startsWith('chain:')),
+    `expected at least one chain:-prefixed violation, got: ${JSON.stringify(validateViolations)}`,
+  );
+  assert.deepEqual(
+    statusResult.blockers,
+    validateViolations,
+    'status and validate must report the IDENTICAL blocker/violation set over the same chain-broken ' +
+      'input (F6)',
+  );
+});
+
+test('drift guard (F6): status --json blockers and validate\'s violations agree (both empty) on the disputed_pair_v1 adversarial fixture (accepted, non-terminal disputed state -- a missing adjudication role is not itself a validate violation, only a fact status\'s turn-taking layer reports)', async () => {
+  const dir = await makeDisputedFixture();
+  try {
+    const validateViolations = await collectValidateViolations('disputed_pair_v1', dir);
+    const statusResult = collectStatusResult('disputed_pair_v1', dir);
+    assert.equal(statusResult.derivedState, 'disputed');
+    assert.equal(statusResult.nextExpectedRole, 'adjudication');
+    assert.deepEqual(
+      validateViolations,
+      [],
+      'validate accepts a disputed (missing-adjudication) record set -- completeness is enforced ' +
+        'only at release-auth time, not for every intermediate state',
+    );
+    assert.deepEqual(
+      statusResult.blockers,
+      validateViolations,
+      'status and validate must report the IDENTICAL (empty) blocker/violation set over the same ' +
+        'disputed input (F6)',
+    );
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// Reviewer-2 structural independence (R3/R7/R8) — chain_isolation_v1 stays green, nextChainLink's
+// single-file-touch semantics untouched. P1-T4 does not modify lib/chain.mjs or
+// lib/verbs/scaffold.mjs (out of this task's target surfaces) -- these are regression guards
+// proving the guarantee those files already establish is not weakened by anything this task adds.
+// -------------------------------------------------------------------------------------------
+
+test('lib/verbs/scaffold.mjs still imports only nextChainLink from ../chain.mjs -- never checkModuleChainLinkage or listModuleReviewRecords (structural independence, R3/R7 regression guard)', async () => {
+  const scaffoldSource = await readFile(
+    path.join(REPO_ROOT, 'tools', 'review-record', 'lib', 'verbs', 'scaffold.mjs'),
+    'utf8',
+  );
+  assert.match(scaffoldSource, /import\s*\{\s*nextChainLink\s*\}\s*from\s*['"]\.\.\/chain\.mjs['"]/);
+  for (const pattern of [/checkModuleChainLinkage\(/, /listModuleReviewRecords\(/]) {
+    assert.doesNotMatch(
+      scaffoldSource,
+      pattern,
+      `lib/verbs/scaffold.mjs must not call ${pattern} -- doing so would reintroduce the ` +
+        'full-module-read gap nextChainLink\'s structural fix exists to prevent',
+    );
+  }
+});
+
+test('lib/chain.mjs\'s nextChainLink body still never calls listModuleReviewRecords (structural independence, R3 regression guard)', async () => {
+  const chainSource = await readFile(path.join(REPO_ROOT, 'tools', 'review-record', 'lib', 'chain.mjs'), 'utf8');
+  const start = chainSource.indexOf('export async function nextChainLink');
+  assert.ok(start >= 0, 'expected to find nextChainLink\'s export in lib/chain.mjs');
+  const nextChainLinkBody = chainSource.slice(start);
+  assert.doesNotMatch(
+    nextChainLinkBody,
+    /listModuleReviewRecords/,
+    'nextChainLink must never route through the full-module-read listModuleReviewRecords helper',
+  );
+});
+
+test('the chain_isolation_v1 independence fixture still stays green end to end: nextChainLink skips the unparseable sibling (seq 3) and scaffold --role clinical-2 still succeeds with no sentinel leak (P1-T4 regression guard, R3/R7)', async () => {
+  const link = await nextChainLink(FIXTURES_ROOT, 'chain_isolation_v1');
+  assert.equal(link.seq, 3);
+  const { status, stdout, stderr } = runCli([
+    'scaffold', '--module', 'chain_isolation_v1', '--role', 'clinical-2', '--subject', SUBJECT_HASH,
+    '--reviewer-id', 'synthetic-multirole-reviewer', '--decision', 'approve',
+    '--rationale', 'P1-T4 regression check: no new drift/independence test code path reads a sibling record.',
+    '--reviewed-at', '2026-02-08T00:00:00Z',
+    '--root', FIXTURES_ROOT,
+  ]);
+  assert.equal(status, EXIT_OK, stderr);
+  assert.doesNotMatch(stdout, /BOOBYTRAP/);
+  assert.doesNotMatch(stderr, /BOOBYTRAP/);
+});
+
+// -------------------------------------------------------------------------------------------
+// Grep-assert zero diff to ADR-0004's status field and to governance/reviewer-roster.yaml, scoped
+// to every test P1-T4 adds above (this task touches only tests/ef-review-workflow.test.mjs and
+// tests/fixtures/clinical-review-workflow/ -- never docs/adr/ or the real governance roster).
+// -------------------------------------------------------------------------------------------
+
+test('P1-T4: ADR-0004 status field is untouched -- stays "proposed" (G0 uncleared, hard guardrail)', async () => {
+  const adrPath = path.join(REPO_ROOT, 'docs', 'adr', '0004-clinical-approval-identity-adjudication.md');
+  const content = await readFile(adrPath, 'utf8');
+  assert.match(
+    content,
+    /^status: proposed$/m,
+    'ADR-0004 frontmatter `status` must remain exactly "proposed" -- no task in this feature ' +
+      'ratifies it, including this task\'s own drift/independence tests',
+  );
+  const diffResult = spawnSync('git', ['diff', '--name-only', '--', adrPath], { cwd: REPO_ROOT, encoding: 'utf8' });
+  assert.equal(diffResult.status, 0, diffResult.stderr);
+  assert.equal(
+    diffResult.stdout.trim(),
+    '',
+    'docs/adr/0004-clinical-approval-identity-adjudication.md must show zero diff against HEAD ' +
+      'after every P1-T4 test above',
+  );
+});
+
+test('P1-T4: governance/reviewer-roster.yaml shows zero diff against HEAD after every drift/independence test above (real roster never read or written by this task)', () => {
+  const result = spawnSync('git', ['diff', '--name-only', '--', 'governance/reviewer-roster.yaml'], {
+    cwd: REPO_ROOT,
+    encoding: 'utf8',
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(
+    result.stdout.trim(),
+    '',
+    'governance/reviewer-roster.yaml must show zero diff against HEAD after any P1-T4 drift/' +
+      'independence test',
+  );
 });
