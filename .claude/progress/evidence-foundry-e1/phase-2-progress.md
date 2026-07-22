@@ -8,16 +8,16 @@ prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-e1-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1.md
 execution_model: batch-parallel
 phase: 2
-title: 'Evidence Foundry E1 — Phase 2: Review Workflow Machinery'
-status: pending
+title: "Evidence Foundry E1 \u2014 Phase 2: Review Workflow Machinery"
+status: completed
 started: null
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 8
+completed_tasks: 9
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -31,13 +31,14 @@ model_usage:
   external: []
 tasks:
 - id: P2-T1
-  description: 'tools/review-record/ CLI scaffold + store layout, OQ-1/OQ-2/FR-1/FR-7:
-    scaffold tools/review-record/ as a Node ESM CLI (cli.mjs verb dispatch: scaffold
-    | validate | list | render | dry-run; pinned YAML parser + JSON Schema validator
-    deps matching E0''s converter choices; README documenting the internal module
-    boundary — store / chain / roster / signature / render). Implement OQ-2 store
-    layout: records at modules/<module_id>/reviews/rr-<seq4>-<role>.yaml; list prints
-    per-module review state. Offline, deterministic, no network, no generative model.'
+  description: "tools/review-record/ CLI scaffold + store layout, OQ-1/OQ-2/FR-1/FR-7:\
+    \ scaffold tools/review-record/ as a Node ESM CLI (cli.mjs verb dispatch: scaffold\
+    \ | validate | list | render | dry-run; pinned YAML parser + JSON Schema validator\
+    \ deps matching E0's converter choices; README documenting the internal module\
+    \ boundary \u2014 store / chain / roster / signature / render). Implement OQ-2\
+    \ store layout: records at modules/<module_id>/reviews/rr-<seq4>-<role>.yaml;\
+    \ list prints per-module review state. Offline, deterministic, no network, no\
+    \ generative model."
   status: completed
   assigned_to:
   - general-purpose
@@ -48,6 +49,11 @@ tasks:
   model_effort: adaptive
   evidence:
   - commit: 2db2a12
+  - commit: 2db2a12
+  started: '2026-07-22T05:33:00Z'
+  completed: '2026-07-22T07:49:00Z'
+  verified_by:
+  - P2-GATE
 - id: P2-T2
   description: 'Role scaffolding + roster checks + reviewer-2 independence, FR-3/FR-4/FR-7:
     scaffold --module <id> --role <role> --subject <content-hash> creates a schema-valid
@@ -68,16 +74,21 @@ tasks:
   model_effort: adaptive
   evidence:
   - commit: 605cd40
+  - commit: 605cd40
+  started: '2026-07-22T05:33:00Z'
+  completed: '2026-07-22T07:49:00Z'
+  verified_by:
+  - P2-GATE
 - id: P2-T3
-  description: 'Append-only enforcement (hash chain + git history), FR-9/OQ-2: two-layer
-    validator — (a) previousRecordHash chain: each record after the first for a module
-    carries the SHA-256 of the prior record''s canonical bytes; validate recomputes
-    and fails closed on any break; (b) git-history check (validate --history) rejects
-    any commit-visible mutation/deletion of an existing modules/<id>/reviews/*.yaml
-    path — corrections must be new superseding records (supersedes field). Seeded-mutation
-    tests: one-byte mutation of a committed fixture fails chain validation; a simulated
-    history rewrite fails the history validator. Chain state is a structured audit
-    artifact.'
+  description: "Append-only enforcement (hash chain + git history), FR-9/OQ-2: two-layer\
+    \ validator \u2014 (a) previousRecordHash chain: each record after the first for\
+    \ a module carries the SHA-256 of the prior record's canonical bytes; validate\
+    \ recomputes and fails closed on any break; (b) git-history check (validate --history)\
+    \ rejects any commit-visible mutation/deletion of an existing modules/<id>/reviews/*.yaml\
+    \ path \u2014 corrections must be new superseding records (supersedes field).\
+    \ Seeded-mutation tests: one-byte mutation of a committed fixture fails chain\
+    \ validation; a simulated history rewrite fails the history validator. Chain state\
+    \ is a structured audit artifact."
   status: completed
   assigned_to:
   - general-purpose
@@ -92,21 +103,24 @@ tasks:
     tests (tests/ef-review-appendonly.test.mjs): seeded one-byte chain mutation +
     simulated history rewrite both fail closed; valid superseding record passes; broken_chain_v1
     now rejected by validate itself (not just list); both layers deterministic.'
-  started: '2026-07-22T05:00:00Z'
-  completed: '2026-07-22T06:15:00Z'
+  started: '2026-07-22T05:33:00Z'
+  completed: '2026-07-22T07:49:00Z'
   evidence:
   - commit: 48d3fd2
+  - commit: 48d3fd2
+  verified_by:
+  - P2-GATE
 - id: P2-T4
-  description: 'Adjudication + release-authorization validators, PRD OQ-5/FR-5/FR-6:
-    implement the authorship-union computation (identities in authoring-decisions.yaml
-    decision records ∪ git author of the proposal-introducing commit; the converter
-    is never an identity) as a machine-readable authorship block, and enforce adjudicator
-    ∉ authorship-union in validate. Release-authorization chain validation: a release-auth
-    record is valid only over a complete, chain-valid, roster-verified, non-synthetic
-    record set — unsigned-stub → release-ready stays schema-impossible (P1-T7''s enforcement
-    re-asserted by test, not weakened). Seeded violations: adjudicator = authorship-union
-    identity rejected; release-auth over a chain containing any synthetic:true record
-    structurally non-qualifying.'
+  description: "Adjudication + release-authorization validators, PRD OQ-5/FR-5/FR-6:\
+    \ implement the authorship-union computation (identities in authoring-decisions.yaml\
+    \ decision records \u222A git author of the proposal-introducing commit; the converter\
+    \ is never an identity) as a machine-readable authorship block, and enforce adjudicator\
+    \ \u2209 authorship-union in validate. Release-authorization chain validation:\
+    \ a release-auth record is valid only over a complete, chain-valid, roster-verified,\
+    \ non-synthetic record set \u2014 unsigned-stub \u2192 release-ready stays schema-impossible\
+    \ (P1-T7's enforcement re-asserted by test, not weakened). Seeded violations:\
+    \ adjudicator = authorship-union identity rejected; release-auth over a chain\
+    \ containing any synthetic:true record structurally non-qualifying."
   status: completed
   assigned_to:
   - general-purpose
@@ -118,14 +132,19 @@ tasks:
   model_effort: adaptive
   evidence:
   - commit: 7dc9fcd
+  - commit: 7dc9fcd
+  started: '2026-07-22T05:33:00Z'
+  completed: '2026-07-22T07:49:00Z'
+  verified_by:
+  - P2-GATE
 - id: P2-T5
-  description: 'Record signature binding (test keys only), FR-10/OQ-2/OQ-6: implement
-    the record signature object — Ed25519 (node:crypto only) over the canonicalized
-    record bytes minus the signature object, binding reviewerId to subjectContentHash.
-    E1 signing exists only in synthetic dry-run mode: ephemeral in-memory keypair
-    per invocation (never written to disk, no --test-keys flag), keyId forced to TESTKEY-
-    prefix, writable only onto synthetic:true records. validate verifies present signatures
-    and fails closed on tamper.'
+  description: "Record signature binding (test keys only), FR-10/OQ-2/OQ-6: implement\
+    \ the record signature object \u2014 Ed25519 (node:crypto only) over the canonicalized\
+    \ record bytes minus the signature object, binding reviewerId to subjectContentHash.\
+    \ E1 signing exists only in synthetic dry-run mode: ephemeral in-memory keypair\
+    \ per invocation (never written to disk, no --test-keys flag), keyId forced to\
+    \ TESTKEY- prefix, writable only onto synthetic:true records. validate verifies\
+    \ present signatures and fails closed on tamper."
   status: completed
   assigned_to:
   - general-purpose
@@ -135,20 +154,24 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
-  started: '2026-07-22T06:00:00Z'
-  completed: '2026-07-22T07:00:00Z'
+  started: '2026-07-22T05:33:00Z'
+  completed: '2026-07-22T07:49:00Z'
   evidence:
   - commit: 969223e
   - test: tests/ef-review-signature.test.mjs
+  - commit: 969223e
+  verified_by:
+  - P2-GATE
 - id: P2-T6
-  description: 'Read-only static render, FR-8/FR-31/OQ-3: render --module <id> [--record
-    <review_id>] emits self-contained static HTML to build/review-render/ (gitignored)
-    showing the passage → decision → rule → test chain from committed artifacts only
-    — NOT a portal: no server, database, write path, auth, scripts, or third-party/remote
-    assets. Every page carries the unvalidated-research-prototype banner (documentation-writer
-    copy) and per-record non-qualifying labels for synthetic content. Rights posture
-    (FR-31): rights-restricted passages render as hash + selector reference blocks,
-    never inline text. Commit one golden render under tests/fixtures/ef-review-render/.'
+  description: "Read-only static render, FR-8/FR-31/OQ-3: render --module <id> [--record\
+    \ <review_id>] emits self-contained static HTML to build/review-render/ (gitignored)\
+    \ showing the passage \u2192 decision \u2192 rule \u2192 test chain from committed\
+    \ artifacts only \u2014 NOT a portal: no server, database, write path, auth, scripts,\
+    \ or third-party/remote assets. Every page carries the unvalidated-research-prototype\
+    \ banner (documentation-writer copy) and per-record non-qualifying labels for\
+    \ synthetic content. Rights posture (FR-31): rights-restricted passages render\
+    \ as hash + selector reference blocks, never inline text. Commit one golden render\
+    \ under tests/fixtures/ef-review-render/."
   status: completed
   assigned_to:
   - general-purpose
@@ -161,6 +184,11 @@ tasks:
   model_effort: adaptive
   evidence:
   - commit: c172ddf
+  - commit: c172ddf
+  started: '2026-07-22T05:33:00Z'
+  completed: '2026-07-22T07:49:00Z'
+  verified_by:
+  - P2-GATE
 - id: P2-T7
   description: 'Render runtime smoke (R-P4), the only UI-adjacent surface: tests/ef-review-render-smoke.test.mjs
     renders from committed fixture artifacts end to end and asserts: output file exists
@@ -176,21 +204,24 @@ tasks:
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
-  started: '2026-07-22T07:00:00Z'
-  completed: '2026-07-22T07:30:00Z'
+  started: '2026-07-22T05:33:00Z'
+  completed: '2026-07-22T07:49:00Z'
   evidence:
   - test: tests/ef-review-render-smoke.test.mjs
+  - commit: b33c366
+  verified_by:
+  - P2-GATE
 - id: P2-T8
-  description: 'Five-role synthetic dry-run, FR-11 (ruling R4): execute one full end-to-end
-    dry-run via cli.mjs dry-run — scaffold → sign (TESTKEY, P2-T5) → chain-validate
-    all five roles in sequence (clinical-1, clinical-2, lab, adjudication, release-auth)
-    over the cbc_suite_v1 proposal''s subjectContentHash, using labeled synthetic
-    personas (roster entries synthetic:true, names like "SYNTHETIC — NOT A CREDENTIALED
-    REVIEWER"). Commit the record set to modules/cbc_suite_v1/reviews/ with goldens
-    under tests/fixtures/. Dry-run populates zero approver/clinicalApprovers fields
-    (schema-proven). Emit a friction-observations note (.claude/worknotes/evidence-foundry-e1-v1/dryrun-friction.md)
-    — first evidence feed for PRD OQ-8''s portal trigger (a human decision, not this
-    plan''s).'
+  description: "Five-role synthetic dry-run, FR-11 (ruling R4): execute one full end-to-end\
+    \ dry-run via cli.mjs dry-run \u2014 scaffold \u2192 sign (TESTKEY, P2-T5) \u2192\
+    \ chain-validate all five roles in sequence (clinical-1, clinical-2, lab, adjudication,\
+    \ release-auth) over the cbc_suite_v1 proposal's subjectContentHash, using labeled\
+    \ synthetic personas (roster entries synthetic:true, names like \"SYNTHETIC \u2014\
+    \ NOT A CREDENTIALED REVIEWER\"). Commit the record set to modules/cbc_suite_v1/reviews/\
+    \ with goldens under tests/fixtures/. Dry-run populates zero approver/clinicalApprovers\
+    \ fields (schema-proven). Emit a friction-observations note (.claude/worknotes/evidence-foundry-e1-v1/dryrun-friction.md)\
+    \ \u2014 first evidence feed for PRD OQ-8's portal trigger (a human decision,\
+    \ not this plan's)."
   status: completed
   assigned_to:
   - general-purpose
@@ -204,13 +235,18 @@ tasks:
   model_effort: adaptive
   evidence:
   - commit: ce75b03
+  - commit: ce75b03
+  started: '2026-07-22T05:33:00Z'
+  completed: '2026-07-22T07:49:00Z'
+  verified_by:
+  - P2-GATE
 - id: P2-GATE
-  description: 'task-completion-validator gate: verify Phase 2 exit gate — five-role
-    dry-run committed and chain-valid; both append-only layers reject seeded mutations;
-    reviewer-2 independence and adjudicator≠author violations rejected; render smoke
-    green with banner; zero approver fields populated; npm run check green; ADR-delta
-    check (ADR-0004 unchanged, else escalate).'
-  status: pending
+  description: "task-completion-validator gate: verify Phase 2 exit gate \u2014 five-role\
+    \ dry-run committed and chain-valid; both append-only layers reject seeded mutations;\
+    \ reviewer-2 independence and adjudicator\u2260author violations rejected; render\
+    \ smoke green with banner; zero approver fields populated; npm run check green;\
+    \ ADR-delta check (ADR-0004 unchanged, else escalate)."
+  status: completed
   assigned_to:
   - task-completion-validator
   dependencies:
@@ -222,10 +258,17 @@ tasks:
   - P2-T6
   - P2-T7
   - P2-T8
-  estimated_effort: —
+  estimated_effort: "\u2014"
   priority: critical
   assigned_model: sonnet
   model_effort: adaptive
+  started: '2026-07-22T07:30:00Z'
+  completed: '2026-07-22T07:49:00Z'
+  evidence:
+  - workflow: wf_871d7542-1a0 validator approved (P3, P2 after 1 fix cycle each; fixes
+      e8c51e8..)
+  verified_by:
+  - opus-orchestrator
 parallelization:
   batch_1:
   - P2-T1
@@ -268,8 +311,8 @@ success_criteria:
     marked non-credentialed
   status: pending
 - id: SC-3
-  description: Seeded violations (mutation x2, reviewer-2 dependence, adjudicator=author,
-    non-roster identity) — 5/5 rejected fail-closed
+  description: "Seeded violations (mutation x2, reviewer-2 dependence, adjudicator=author,\
+    \ non-roster identity) \u2014 5/5 rejected fail-closed"
   status: pending
 - id: SC-4
   description: Render self-contained, banner-stamped, rights-respecting; smoke test
@@ -287,7 +330,7 @@ files_modified:
 - tests/ef-review-render-smoke.test.mjs
 - tests/fixtures/ef-review-render/**
 - .claude/worknotes/evidence-foundry-e1-v1/dryrun-friction.md
-progress: 89
+progress: 100
 updated: '2026-07-22'
 ---
 
