@@ -1,30 +1,37 @@
 ---
-title: "Implementation Plan: ARC Clinical Council Adoption v1"
+title: 'Implementation Plan: ARC Clinical Council Adoption v1'
 schema_version: 2
 doc_type: implementation_plan
-status: approved
-created: 2026-07-19
-updated: 2026-07-19
+status: blocked
+created: '2026-07-19'
+updated: '2026-07-21'
 feature_slug: arc-clinical-council-adoption-v1
 feature_version: v1
 prd_ref: docs/project_plans/expansion/00-expansion-plan.md
 plan_ref: null
-scope: "Adopt the completed pediatric ARC council as a repeatable, exact-candidate review capability; close portable-target, rights/authority, local-laboratory, executable-validation, qualifying-pilot, and governed-authoring gaps without confusing ARC review with clinical validation or release."
-effort_estimate: "41 pts"
-architecture_summary: "Reconcile program truth, bind immutable non-patient project targets, attach authenticated rights and human authority, validate signed local laboratory and terminology profiles, execute dangerous-miss and study-dependency contracts, run a qualifying ARC/AOS pilot, then productize Portal and metadata-only MeatyWiki access."
+scope: Adopt the completed pediatric ARC council as a repeatable, exact-candidate
+  review capability; close portable-target, rights/authority, local-laboratory, executable-validation,
+  qualifying-pilot, and governed-authoring gaps without confusing ARC review with
+  clinical validation or release.
+effort_estimate: 41 pts
+architecture_summary: Reconcile program truth, bind immutable non-patient project
+  targets, attach authenticated rights and human authority, validate signed local
+  laboratory and terminology profiles, execute dangerous-miss and study-dependency
+  contracts, run a qualifying ARC/AOS pilot, then productize Portal and metadata-only
+  MeatyWiki access.
 related_documents:
-  - docs/project_plans/expansion/01-platform-expansion-roadmap.md
-  - docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md
-  - docs/project_plans/expansion/03-arc-clinical-council-handoff.md
-  - docs/project_plans/expansion/rf-handoff/README.md
-  - .claude/worknotes/arc-clinical-council-adoption-v1/decisions-block.md
+- docs/project_plans/expansion/01-platform-expansion-roadmap.md
+- docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md
+- docs/project_plans/expansion/03-arc-clinical-council-handoff.md
+- docs/project_plans/expansion/rf-handoff/README.md
+- .claude/worknotes/arc-clinical-council-adoption-v1/decisions-block.md
 references:
   user_docs:
-    - CLAUDE.md
+  - CLAUDE.md
   context:
-    - docs/project_plans/expansion/00-expansion-plan.md
+  - docs/project_plans/expansion/00-expansion-plan.md
   specs:
-    - schemas/rule.schema.json
+  - schemas/rule.schema.json
   related_prds: []
 deferred_items_spec_refs: []
 findings_doc_ref: .claude/findings/arc-clinical-council-adoption-v1-findings.md
@@ -34,26 +41,39 @@ test_plan_ref: null
 plan_structure: unified
 progress_init: auto
 owner: pediatric-cds-program-owner
-contributors: [arc-platform-owner, clinical-governance-owner, local-laboratory-owner, clinical-informatics-owner]
+contributors:
+- arc-platform-owner
+- clinical-governance-owner
+- local-laboratory-owner
+- clinical-informatics-owner
 priority: P0
 risk_level: critical
 category: product-planning
-tags: [implementation, arc, clinical-review, evidence-governance, pediatric-cds, tier-3]
+tags:
+- implementation
+- arc
+- clinical-review
+- evidence-governance
+- pediatric-cds
+- tier-3
 milestone: null
-commit_refs: []
+commit_refs:
+- 9bf19b0
+- 00b7779
+- 0814684
 pr_refs: []
 files_affected:
-  - docs/project_plans/expansion/
-  - .claude/worknotes/arc-clinical-council-adoption-v1/
-  - .claude/progress/arc-clinical-council-adoption-v1/
-  - schemas/
-  - tests/
-  - repo:agentic-research/councils/pediatric-anemia-clinical-review-council.yaml
-  - repo:agentic-research/schemas/
-  - repo:agentic-research/arc_cli/
-  - repo:agentic-research/portal/
-  - repo:agentic-research/knowledge-packs/pediatric-anemia/
-  - repo:agentic_meta_dev/src/operator_core/adapters/arc.py
+- docs/project_plans/expansion/
+- .claude/worknotes/arc-clinical-council-adoption-v1/
+- .claude/progress/arc-clinical-council-adoption-v1/
+- schemas/
+- tests/
+- repo:agentic-research/councils/pediatric-anemia-clinical-review-council.yaml
+- repo:agentic-research/schemas/
+- repo:agentic-research/arc_cli/
+- repo:agentic-research/portal/
+- repo:agentic-research/knowledge-packs/pediatric-anemia/
+- repo:agentic_meta_dev/src/operator_core/adapters/arc.py
 tier: 3
 estimated_points: 41
 ---
