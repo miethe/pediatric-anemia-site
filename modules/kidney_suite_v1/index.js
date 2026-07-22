@@ -9,11 +9,14 @@
 // limitations), and every one of them returns an explicit, human-readable "not yet implemented
 // for this module" posture instead of silence or a guess.
 //
-// `module.json.status` is "unsigned-stub", `approvedBy: []`, `clinicalContentHash: null`,
-// `rules.json` is `[]`, `candidates.json` is `{}`, `evidence.json.sources` is `[]` — there is no
-// clinical logic anywhere in this module to read past this file. This module is NOT registered
-// in `src/modules/registry.js` or `src/facts/registry.js` yet (P3-T3, a separate seam task,
-// owns that wiring) and is not reachable through `assess()` until it is.
+// Updated post-Phase-5 (evidence backfill): `evidence.json.sources` now holds 12 source records
+// (plus `evidence-assertions.json` and `unresolved.json`), and this module IS registered in both
+// `src/modules/registry.js` and `src/facts/registry.js` — it is reachable through `assess()`.
+// That evidence is descriptive/citation-layer content only, not executable clinical logic:
+// `module.json.status` is still "unsigned-stub", `approvedBy: []`, `clinicalContentHash: null`,
+// `rules.json` is `[]`, `candidates.json` is `{}` — there is no clinical logic anywhere in this
+// module to read past this file, and every hook below still returns an explicit "not yet
+// implemented" posture rather than deriving, inferring, or invoking any fact or pattern.
 
 const NOT_YET_IMPLEMENTED_MESSAGE =
   'kidney_suite_v1: fact derivation is not yet implemented for this module. No clinical facts, ' +

@@ -438,7 +438,10 @@ async function main() {
   if (failed) {
     process.exitCode = 1;
   } else {
-    console.log('rights-leakage gate: PASS — no restricted-passage verbatim text found in any committed fixture byte');
+    console.log('rights-leakage gate: PASS — every quote:/passage_locator: construct inside each '
+      + 'fixture\'s sources/ directory is the ADR-0002 placeholder, and no known restricted-passage '
+      + 'hash was found in a decoded quoted span outside sources/ (locators and sources/ card files '
+      + 'are exempted by design, per the header comment above)');
   }
 }
 

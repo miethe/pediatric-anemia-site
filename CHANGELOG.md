@@ -64,7 +64,12 @@ open findings — see `.claude/findings/wave0-ep6-validation-corpus-findings.md`
 
 This is a bookkeeping/scaffolding pass over already-vendored, verified `rf` (Research Foundry)
 evidence bundles. **It produced zero new clinical rules and is not a content release or a step
-toward one.** No rule, candidate, or threshold was added, changed, or approved in any module.
+toward one.** No executable rule, candidate, or reference-range logic was added, changed, or
+approved in any module. Descriptive, source-attributed numeric thresholds do appear in the
+evidence layer (e.g. `modules/kidney_suite_v1/evidence.json` and
+`modules/growth_suite_v1/evidence.json` `supports[]` entries) as cited claims about what sources
+say, not as active clinical logic — none of them is wired into any rule, candidate, or decision
+path.
 
 - Added two new greenfield module scaffolds, `modules/kidney_suite_v1/` and
   `modules/growth_suite_v1/`, registered in `src/modules/registry.js` and `src/facts/registry.js`.
