@@ -9,7 +9,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundr
 execution_model: batch-parallel
 phase: 5
 title: 'Evidence Foundry E1 — Phase 5: Integration, Honesty Audit & Docs'
-status: not_started
+status: pending
 started: null
 completed: null
 commit_refs: []
@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 13
-completed_tasks: 0
+completed_tasks: 1
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -35,16 +35,15 @@ tasks:
 - id: P5-T1
   description: 'Cross-workstream integration dry-run (seam task), R-P3: implement
     tests/ef-e2e-dryrun.test.mjs executing the full synthetic chain — (1) the P2-T8
-    five-role review cycle validates chain-green over the cbc_suite_v1 proposal;
-    (2) tools/release-sign manifest + dry-run sign + register produce a TESTKEY-marked
+    five-role review cycle validates chain-green over the cbc_suite_v1 proposal; (2)
+    tools/release-sign manifest + dry-run sign + register produce a TESTKEY-marked
     dry-run registry entry whose preimage matches E0 canonical bytes; (3) tools/retro-validate
     run replays the promoted dangerous-miss corpus (P4-T8) pinned to that dry-run
-    registry digest and emits a deterministic software-agreement report. Assert
-    at each hop: every artifact synthetic/dry-run-marked; zero approver fields,
-    zero real signatures, zero release-ready transitions; discordance→adjudication
-    handoff round-trips. Integration owner signs off the seam in the phase progress
-    note.'
-  status: pending
+    registry digest and emits a deterministic software-agreement report. Assert at
+    each hop: every artifact synthetic/dry-run-marked; zero approver fields, zero
+    real signatures, zero release-ready transitions; discordance→adjudication handoff
+    round-trips. Integration owner signs off the seam in the phase progress note.'
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -55,18 +54,42 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: extended
+  note: 'Integration owner (general-purpose) sign-off: tests/ef-e2e-dryrun.test.mjs
+    proves the full synthetic chain green (9/9 subtests) -- hop1 P2 review chain-green
+    over cbc_suite_v1 (schema-valid, roster-resolved, chain-linked, TESTKEY-signature-verified,
+    independence-clean, terminal FR-6 non-qualifying state only); hop2 tools/release-sign
+    manifest+dry-run sign+register produce a TESTKEY dry-run candidate whose preimage
+    is byte-identical to an independent E0 rf-bundle-to-kb-pack propose run, registered
+    as an inert (signature:null, withdrawalState:none) cbc_suite_v1 entry, verify
+    green; hop3 tools/retro-validate run+report replays the P4-T8 promoted dangerous-miss
+    corpus pinned to the P4-T8 cbc_suite_v1 dry-run registry digest, emitting a deterministic
+    (byte-identical across 2 runs) software-agreement report with zero clinical-performance-term
+    leakage outside its own negation banner; hop4 the discordance-to-adjudication
+    handoff round-trips through the REAL tools/review-record scaffold --role adjudication
+    verb. Four inert-state assertions individually named and passing: (a) synthetic
+    marks present everywhere, (b) zero approver fields anywhere, (c) zero real signatures
+    anywhere, (d) zero release-ready transitions anywhere (real module.json status/approvedBy[]
+    unchanged). NOTE (documented in the test''s own header): release-sign''s registry
+    packDigest algorithm and retro-validate''s registry packDigest algorithm are two
+    independently-scoped, tool-owned hash constructions (per tools/retro-validate/README.md''s
+    own admission) -- this test never claims cross-tool digest byte-equality, only
+    that both are schema-valid, inert, pre-G2 dry-run entries for the SAME module.
+    npm test (full suite, 1837/1837) and npm run validate both green after this change.'
+  started: 2026-07-22T00:00Z
+  completed: 2026-07-22T01:30Z
+  evidence:
+  - test: tests/ef-e2e-dryrun.test.mjs
 - id: P5-T2
   description: 'Honesty-language audit (FR-28), review-blocker/R-P1 bounded target_surfaces:
-    audit exactly 9 surfaces introduced/changed by this feature — (1) new schema
-    description strings; (2) 3 tool READMEs + CLI help/output strings; (3) render
-    HTML template + banner copy; (4) gates-registry.md; (5) signing-ceremony-runbook.md;
-    (6) spike-007-retrospective-data-source.md; (7) agreement-report.json headers
-    + metric names; (8) committed dry-run artifacts under modules/cbc_suite_v1/reviews/;
-    (9) the P5-T3/T4 architecture + CHANGELOG additions. Flag any language stating
-    or implying clinical validity, safety, diagnostic performance, release-readiness,
-    or regulatory status; verify metrics say software-agreement; verify synthetic
-    artifacts carry non-qualifying labels. Fix findings in place; produce a one-line-per-surface
-    pass/fail checklist for karen (P5-GATE2 input).'
+    audit exactly 9 surfaces introduced/changed by this feature — (1) new schema description
+    strings; (2) 3 tool READMEs + CLI help/output strings; (3) render HTML template
+    + banner copy; (4) gates-registry.md; (5) signing-ceremony-runbook.md; (6) spike-007-retrospective-data-source.md;
+    (7) agreement-report.json headers + metric names; (8) committed dry-run artifacts
+    under modules/cbc_suite_v1/reviews/; (9) the P5-T3/T4 architecture + CHANGELOG
+    additions. Flag any language stating or implying clinical validity, safety, diagnostic
+    performance, release-readiness, or regulatory status; verify metrics say software-agreement;
+    verify synthetic artifacts carry non-qualifying labels. Fix findings in place;
+    produce a one-line-per-surface pass/fail checklist for karen (P5-GATE2 input).'
   status: pending
   assigned_to:
   - general-purpose
@@ -81,14 +104,13 @@ tasks:
   model_effort: adaptive
 - id: P5-T3
   description: 'docs/architecture.md — three new sections (FR-29): add concise sections
-    for (a) the review workflow (five-role record chain, roster, append-only +
-    independence enforcement, render surface — pointing to ADR-0004 and the gates
-    registry rather than restating); (b) release signing/registry (canonical-bytes
-    preimage, verify-only CI posture, registry seed, G2 custody boundary per A2);
-    (c) the retrospective harness (boundary, pinning, software-agreement metrics,
-    G3 boundary). Each section restates the unvalidated-research-prototype status
-    and that every human act is an external gate. Existing §1–§10 content otherwise
-    unchanged in substance.'
+    for (a) the review workflow (five-role record chain, roster, append-only + independence
+    enforcement, render surface — pointing to ADR-0004 and the gates registry rather
+    than restating); (b) release signing/registry (canonical-bytes preimage, verify-only
+    CI posture, registry seed, G2 custody boundary per A2); (c) the retrospective
+    harness (boundary, pinning, software-agreement metrics, G3 boundary). Each section
+    restates the unvalidated-research-prototype status and that every human act is
+    an external gate. Existing §1–§10 content otherwise unchanged in substance.'
   status: pending
   assigned_to:
   - documentation-writer
@@ -119,8 +141,7 @@ tasks:
     as externally-blocked owner-action states (status blocked-external, owner=human,
     entry criteria + blocked artifacts copied from the P1-T6 gates registry), mirroring
     the arc-adoption P5 "owner-blocked" precedent. Gates are never marked as tasks,
-    never completable by agents, and no phase-completion record may claim gate
-    progress.'
+    never completable by agents, and no phase-completion record may claim gate progress.'
   status: pending
   assigned_to:
   - general-purpose
@@ -135,8 +156,8 @@ tasks:
     (exists, E0 P7-T3) with E1 learnings: the shipped file+CLI workflow''s actual
     shape (store layout, roster, render), the P2-T8 dry-run friction observations
     as the first OQ-8 trigger evidence, and the boundary restated — portal promotion
-    is a human decision on demonstrated friction, never pre-emptive. Append path
-    to deferred_items_spec_refs.'
+    is a human decision on demonstrated friction, never pre-emptive. Append path to
+    deferred_items_spec_refs.'
   status: pending
   assigned_to:
   - documentation-writer
@@ -147,10 +168,9 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
 - id: P5-T7
-  description: 'Design-spec updates — DF-E1-06 + DF-E2-03 (release lane): update
-    docs/project_plans/design-specs/signed-release-key-custody.md with what E1
-    actually shipped (sign/verify machinery, exit-code taxonomy, runbook, dry-run
-    posture) vs what stays gated (G0 + G2 promotion, per the A2 reconciliation);
+  description: 'Design-spec updates — DF-E1-06 + DF-E2-03 (release lane): update docs/project_plans/design-specs/signed-release-key-custody.md
+    with what E1 actually shipped (sign/verify machinery, exit-code taxonomy, runbook,
+    dry-run posture) vs what stays gated (G0 + G2 promotion, per the A2 reconciliation);
     update docs/project_plans/design-specs/withdraw-rollback-machinery.md to record
     the OQ-4 registry seed it will extend (inert withdrawal consts, omitted surveillance
     hooks) and the E2 boundary. Append both paths to deferred_items_spec_refs.'
@@ -164,11 +184,11 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
 - id: P5-T8
-  description: 'Design-spec updates — DF-E1-09 + DF-E2-01/02 (validation lane):
-    update docs/project_plans/design-specs/retrospective-validation-harness.md for
-    DF-E1-09 (real-data run): harness machinery now exists; remaining scope = G3
-    (DUA + SPIKE-007 verdict) + human-set protocol thresholds; retention period
-    + deletion trigger named as must-fix per ADR-0006. Update surveillance-update-registry-engine.md
+  description: 'Design-spec updates — DF-E1-09 + DF-E2-01/02 (validation lane): update
+    docs/project_plans/design-specs/retrospective-validation-harness.md for DF-E1-09
+    (real-data run): harness machinery now exists; remaining scope = G3 (DUA + SPIKE-007
+    verdict) + human-set protocol thresholds; retention period + deletion trigger
+    named as must-fix per ADR-0006. Update surveillance-update-registry-engine.md
     and production-monitoring-telemetry.md with one-paragraph E1-state notes. Append
     all three paths to deferred_items_spec_refs.'
   status: pending
@@ -198,13 +218,12 @@ tasks:
   model_effort: adaptive
 - id: P5-T10
   description: 'Frontmatter, findings & DF-EXT-01 closure: set plan status per lifecycle
-    (advance only after P5-GATE2), populate commit_refs, confirm files_affected
-    matches the actual diff, set updated; confirm deferred_items_spec_refs lists
-    all 11 spec paths from P5-T6..T9. DF-EXT-01: confirm the E0 consolidated routing
-    note (.claude/worknotes/evidence-foundry-buildout/rfup-external-routing-note.md)
+    (advance only after P5-GATE2), populate commit_refs, confirm files_affected matches
+    the actual diff, set updated; confirm deferred_items_spec_refs lists all 11 spec
+    paths from P5-T6..T9. DF-EXT-01: confirm the E0 consolidated routing note (.claude/worknotes/evidence-foundry-buildout/rfup-external-routing-note.md)
     is still current and record the explicit N/A-with-rationale in the triage table.
-    Findings: if findings_doc_ref is null, record "N/A — no findings captured";
-    else finalize.'
+    Findings: if findings_doc_ref is null, record "N/A — no findings captured"; else
+    finalize.'
   status: pending
   assigned_to:
   - documentation-writer
@@ -222,14 +241,14 @@ tasks:
   assigned_model: haiku
   model_effort: adaptive
 - id: P5-T11
-  description: 'Full gate re-run + guardrail/non-goal cross-check (karen prep):
-    re-run npm run check end to end against the final diff; independently re-verify
-    every CLAUDE.md hard guardrail and every PRD §7 non-goal (incl. §6.4 verbatim
-    non-goals: no second crawler, no generative rule writer, no patient LLM path,
-    no guessed LOINC/UCUM, no rf-verify/council-as-clinical-validation, no blended
-    confidence score) against the committed state — one line per guardrail/non-goal,
-    pass/fail. Include the PRD §11 seeded-violation checklist status (all 8 classes)
-    and the FR coverage table spot-check.'
+  description: 'Full gate re-run + guardrail/non-goal cross-check (karen prep): re-run
+    npm run check end to end against the final diff; independently re-verify every
+    CLAUDE.md hard guardrail and every PRD §7 non-goal (incl. §6.4 verbatim non-goals:
+    no second crawler, no generative rule writer, no patient LLM path, no guessed
+    LOINC/UCUM, no rf-verify/council-as-clinical-validation, no blended confidence
+    score) against the committed state — one line per guardrail/non-goal, pass/fail.
+    Include the PRD §11 seeded-violation checklist status (all 8 classes) and the
+    FR coverage table spot-check.'
   status: pending
   assigned_to:
   - general-purpose
@@ -264,15 +283,15 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
 - id: P5-GATE2
-  description: 'karen feature-end review, decisions block §2''s final milestone:
-    independently verify against the real diff — (1) zero validity-implying language
-    anywhere (P5-T2 checklist re-spot-checked); (2) every forced-empty ceiling intact
-    — approvedBy[], clinicalApprovers[], signature slots, release-ready transition;
-    (3) gates G0–G4 modeled as external blocked states, zero gate-as-task rows,
-    no task exit criterion depending on a gate; (4) A1 honored — zero in-repo council
-    artifacts; (5) A2 recorded in the gates registry; (6) no key material, no PHI-capable
-    path, browser posture untouched; (7) deferred triage table fully closed. Plan
-    status may advance only after this passes.'
+  description: 'karen feature-end review, decisions block §2''s final milestone: independently
+    verify against the real diff — (1) zero validity-implying language anywhere (P5-T2
+    checklist re-spot-checked); (2) every forced-empty ceiling intact — approvedBy[],
+    clinicalApprovers[], signature slots, release-ready transition; (3) gates G0–G4
+    modeled as external blocked states, zero gate-as-task rows, no task exit criterion
+    depending on a gate; (4) A1 honored — zero in-repo council artifacts; (5) A2 recorded
+    in the gates registry; (6) no key material, no PHI-capable path, browser posture
+    untouched; (7) deferred triage table fully closed. Plan status may advance only
+    after this passes.'
   status: pending
   assigned_to:
   - karen
@@ -318,8 +337,8 @@ blockers:
   severity: high
   blocking:
   - P5-T1
-  resolution: Wait for phase-2-progress.md P2-GATE, phase-3-progress.md P3-GATE,
-    and phase-4-progress.md P4-GATE to all complete
+  resolution: Wait for phase-2-progress.md P2-GATE, phase-3-progress.md P3-GATE, and
+    phase-4-progress.md P4-GATE to all complete
   created: '2026-07-21'
 success_criteria:
 - id: SC-1
@@ -346,8 +365,7 @@ success_criteria:
   description: Findings doc finalized or explicitly N/A
   status: pending
 - id: SC-8
-  description: karen feature-end sign-off recorded — plan may not close without
-    it
+  description: karen feature-end sign-off recorded — plan may not close without it
   status: pending
 files_modified:
 - tests/ef-e2e-dryrun.test.mjs
@@ -355,8 +373,8 @@ files_modified:
 - CHANGELOG.md
 - docs/project_plans/design-specs/*.md
 - .claude/progress/evidence-foundry-e1/**
-progress: 0
-updated: '2026-07-21'
+progress: 7
+updated: '2026-07-22'
 ---
 
 # evidence-foundry-e1 - Phase 5: Integration, Honesty Audit & Docs
