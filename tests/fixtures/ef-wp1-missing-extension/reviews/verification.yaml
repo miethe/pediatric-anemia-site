@@ -1,0 +1,6 @@
+# Synthetic, test-only verification record (EF-WP1 fixture). Self-consistent with
+# evidence_bundle.yaml's status: verified (02 §2.3 invariants 3/4) so that, if the EF-WP1 gate
+# were ever bypassed by mistake, the failure this test asserts would still be attributable
+# specifically to the missing pediatric_cds extension, not to an unrelated bundle-status mismatch.
+exit_code: 0
+passed: true
