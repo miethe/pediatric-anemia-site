@@ -1,22 +1,23 @@
 ---
 doc_type: prd
 schema_version: 2
-title: "PRD: Module Switcher — Public moduleId API Surface + SPA Module Selector (DEF-6)"
+title: "PRD: Module Switcher \u2014 Public moduleId API Surface + SPA Module Selector\
+  \ (DEF-6)"
 status: draft
 created: 2026-07-22
-updated: 2026-07-22
+updated: '2026-07-22'
 feature_slug: module-switcher
-feature_version: "v1"
+feature_version: v1
 prd_ref: null
-plan_ref: null
+plan_ref: docs/project_plans/implementation_plans/features/module-switcher-v1.md
 related_documents:
-  - docs/project_plans/design-specs/public-moduleid-api-surface.md
+- docs/project_plans/design-specs/public-moduleid-api-surface.md
 references:
   user_docs: []
   context:
-    - .claude/worknotes/module-switcher/decisions-block.md
+  - .claude/worknotes/module-switcher/decisions-block.md
   specs:
-    - schemas/module-manifest.schema.json
+  - schemas/module-manifest.schema.json
   related_prds: []
 spike_ref: null
 adr_refs: []
@@ -27,25 +28,32 @@ owner: nick
 contributors: []
 priority: high
 risk_level: medium
-category: "product-planning"
-tags: [prd, planning, feature, api, spa, module-switcher, def-6]
+category: product-planning
+tags:
+- prd
+- planning
+- feature
+- api
+- spa
+- module-switcher
+- def-6
 milestone: null
 commit_refs: []
 pr_refs: []
 files_affected:
-  - server.mjs
-  - src/engine.js
-  - src/app.js
-  - src/serverErrors.js
-  - src/units.js
-  - src/evidence/registry.js
-  - modules/kidney_suite_v1/evidence.js
-  - modules/growth_suite_v1/evidence.js
-  - openapi.yaml
-  - schemas/patient-input.schema.json
-  - tests/module-registry.test.mjs
-  - tests/server-error-contract.test.mjs
-  - docs/project_plans/design-specs/public-moduleid-api-surface.md
+- server.mjs
+- src/engine.js
+- src/app.js
+- src/serverErrors.js
+- src/units.js
+- src/evidence/registry.js
+- modules/kidney_suite_v1/evidence.js
+- modules/growth_suite_v1/evidence.js
+- openapi.yaml
+- schemas/patient-input.schema.json
+- tests/module-registry.test.mjs
+- tests/server-error-contract.test.mjs
+- docs/project_plans/design-specs/public-moduleid-api-surface.md
 ---
 
 # Feature Brief & Metadata
