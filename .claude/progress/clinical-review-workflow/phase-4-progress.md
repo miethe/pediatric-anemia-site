@@ -10,17 +10,17 @@ execution_model: batch-parallel
 phase: 4
 title: "Clinical Review Workflow v1 \u2014 Phase 4: Portal-Promotion Framework & Concept\
   \ Assets"
-status: in_progress
+status: pending
 created: '2026-07-22'
 updated: '2026-07-22'
 started: 2026-07-22T13:20Z
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 65
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 0
+completed_tasks: 4
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -45,7 +45,7 @@ tasks:
     a proposal pending human ratification before it can trigger any action; (c) the
     authorized human decision-owner role name (never an agent, never rf/ARC output);
     (d) a decision-record template.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose (opus judgment)
   dependencies:
@@ -60,13 +60,19 @@ tasks:
     markdown file restating the zero-network/telemetry constraint verbatim; the decision-owner
     is a role name, not a person; the framework text explicitly states the threshold
     is a proposal pending human ratification.
+  started: 2026-07-22T13:21Z
+  completed: 2026-07-22T13:50Z
+  evidence:
+  - commit: a8303d4
+  verified_by:
+  - P4-GATE1
 - id: P4-T2
   description: "CONCEPT-ONLY watermarked portal mockups (FR-17, R6). Partially pre-delivered\
     \ during planning: docs/project_plans/design-specs/assets/clinical-review-portal-concept-v2.png\
     \ (gpt-5.6 native image tool, 'CONCEPT ONLY \u2014 NOT COMMITTED' banner) is already\
     \ committed. Task = verify/attach it to the design spec, add the manifest entry,\
     \ and generate additional views only if the framework text needs them."
-  status: pending
+  status: completed
   assigned_to:
   - codex gpt-5.6 image tool
   dependencies: []
@@ -80,12 +86,18 @@ tasks:
     \ produced by this task carries the watermark; a companion manifest entry per\
     \ asset records the watermark string (verified by a docs-truth grep test \u2014\
     \ pixel-OCR is out of scope)."
+  started: 2026-07-22T13:21Z
+  completed: 2026-07-22T13:48Z
+  evidence:
+  - commit: 3afcd76
+  verified_by:
+  - P4-GATE1
 - id: P4-T3
   description: "Integrate framework + mockups into design spec (FR-15/17). Update\
     \ docs/project_plans/design-specs/clinical-review-portal-workflow.md with P4-T1's\
     \ framework section and P4-T2's mockup references; confirm the portal section's\
     \ maturity field stays shaping \u2014 never promoted by this task."
-  status: pending
+  status: completed
   assigned_to:
   - documentation-writer
   dependencies:
@@ -100,11 +112,17 @@ tasks:
   acceptance_criteria: 'Design spec''s portal section contains the four framework
     elements and links each mockup asset; a docs-truth test confirms maturity: shaping
     unchanged.'
+  started: 2026-07-22T13:51Z
+  completed: 2026-07-22T14:10Z
+  evidence:
+  - commit: c0e6950
+  verified_by:
+  - P4-GATE1
 - id: P4-GATE1
   description: "task-completion-validator gate: verify Phase 4 exit gate \u2014 framework\
     \ names metric + threshold + owner + template; mockups labeled CONCEPT-ONLY; no\
     \ portal code; npm run check green."
-  status: pending
+  status: completed
   assigned_to:
   - task-completion-validator
   dependencies:
@@ -116,6 +134,12 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   acceptance_criteria: All exit-gate criteria pass; recorded in phase progress note.
+  started: 2026-07-22T14:10Z
+  completed: 2026-07-22T14:20Z
+  evidence:
+  - workflow: wf_14b7b3a0-d0d validator approved 0 fixes
+  verified_by:
+  - P4-GATE2
 - id: P4-GATE2
   description: "karen milestone review (Tier 3, per decisions block \xA72). Independently\
     \ re-check against the actual diff: (1) the framework names a metric format, threshold,\
@@ -198,6 +222,7 @@ notes: "Wave 2 (parallel to Phase 2, both gated on Phase 1 only). Tier 3 milesto
   \ P4-GATE1 as sufficient on its own. Hard guardrail: no task in this phase writes\
   \ a single line of portal code; the mockups are CONCEPT-ONLY informing artifacts,\
   \ not a build commitment."
+progress: 66
 ---
 
 # clinical-review-workflow — Phase 4: Portal-Promotion Framework & Concept Assets

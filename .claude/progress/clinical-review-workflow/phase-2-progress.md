@@ -9,17 +9,17 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/clinical-review
 execution_model: sequential
 phase: 2
 title: "Clinical Review Workflow v1 \u2014 Phase 2: Sign Verb & Validate Performance"
-status: in_progress
+status: pending
 created: '2026-07-22'
 updated: '2026-07-22'
 started: 2026-07-22T13:20Z
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 80
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 0
+completed_tasks: 5
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -45,7 +45,7 @@ tasks:
     NEVER opens or rewrites a path already inside reviews/. OQ-1 resolved: TESTKEY-only;
     no --keyfile seam; no sign --record over a committed file. Requires scaffold --draft
     (P1-T3''s signature) to emit the staging path.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -64,13 +64,20 @@ tasks:
     (chain-link + signature-verify pass); a dedicated test asserts NO pre-existing
     reviews/*.yaml path's bytes/mtime change across a sign call (F1); --help lists
     sign with the exact signature above.
+  started: 2026-07-22T13:21Z
+  completed: 2026-07-22T13:55Z
+  evidence:
+  - commit: c06544a
+  - finding: CRW-F5,CRW-F6
+  verified_by:
+  - P2-GATE1
 - id: P2-T2
   description: 'sign fail-closed refusal + no-keyfile grep (FR-7/23, R1). sign refuses
     a synthetic: false draft with a message naming both G1 (roster verification) and
     G2 (offline key custody + ceremony, ADR-0005); refuses --keyfile/--key/--test-keys/env-var
     key paths AND a --record pointing at a committed file (FR-25) for any input. Static
     grep test proves zero key-reading code under tools/review-record/.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -85,6 +92,12 @@ tasks:
   acceptance_criteria: 'sign --draft <path> on a synthetic: false draft exits non-zero
     with a message containing both G1 and G2; a sign --record <id> over a committed
     file is rejected; grep test finds zero fs.readFile/env-var key-path calls in lib/verbs/sign.mjs.'
+  started: 2026-07-22T13:56Z
+  completed: 2026-07-22T14:15Z
+  evidence:
+  - commit: 95722f2
+  verified_by:
+  - P2-GATE1
 - id: P2-T3
   description: "Incremental validate composite-keyed persistent cache (FR-8, R9, F3).\
     \ New tools/review-record/lib/validate-cache.mjs; validate --record <id>/--module\
@@ -99,7 +112,7 @@ tasks:
     \ heuristic, release-authorization evaluation) always re-run \u2014 never cache-eligible.\
     \ Frozen signature (unchanged): validate --module <id> [--root <dir>] [--record\
     \ <review_id>] [--history]."
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -117,6 +130,13 @@ tasks:
     not wall-clock alone); changing any ONE key component (roster, schema, validator-policy
     version, record, predecessor) forces recompute; module-wide checks re-run on every
     invocation.
+  started: 2026-07-22T13:56Z
+  completed: 2026-07-22T14:28Z
+  evidence:
+  - commit: 40b72c0
+  - finding: CRW-F7
+  verified_by:
+  - P2-GATE1
 - id: P2-T4
   description: "Fail-closed composite-key invalidation + --history union + cross-process\
     \ microbenchmark (FR-9/10, R5, OQ-6, F3). Any single key-component miss, read\
@@ -128,7 +148,7 @@ tasks:
     \ across invocations (OQ-6). Author a repeatable microbenchmark script comparing\
     \ cache-cold vs. cache-warm wall-time across two separate node invocations sharing\
     \ the persistent cache dir on the committed 5-record cbc_suite_v1 set."
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -146,6 +166,13 @@ tasks:
     stale-pass; a git-history mutation between two --history calls is caught on the
     second call; microbenchmark script committed, shows cross-process cache-warm measurably
     faster across 3 repeated runs.
+  started: 2026-07-22T14:29Z
+  completed: 2026-07-22T14:48Z
+  evidence:
+  - commit: 6fa6813
+  - finding: CRW-F8
+  verified_by:
+  - P2-GATE1
 - id: P2-GATE1
   description: "task-completion-validator gate: verify Phase 2 exit gate \u2014 sign\
     \ consumes a staged draft (never an existing reviews/ file, F1), round-trips against\
@@ -153,7 +180,7 @@ tasks:
     \ validate wall-time is measurably reduced across two separate processes sharing\
     \ the persistent cache; the 5 composite-key fresh-process invalidation tests pass\
     \ fail-closed; npm run check green."
-  status: pending
+  status: completed
   assigned_to:
   - task-completion-validator
   dependencies:
@@ -166,6 +193,12 @@ tasks:
   assigned_model: sonnet
   model_effort: adaptive
   acceptance_criteria: All exit-gate criteria pass; recorded in phase progress note.
+  started: 2026-07-22T14:48Z
+  completed: 2026-07-22T14:59Z
+  evidence:
+  - workflow: wf_14b7b3a0-d0d validator approved 0 fixes
+  verified_by:
+  - P2-GATE2
 - id: P2-GATE2
   description: "codex gpt-5.6-terra read-only second-opinion diff review of the full\
     \ P2 changeset against R1/R5/R9 and FR-6..10/23/FR-25 \u2014 specifically hunts\
@@ -241,6 +274,7 @@ notes: "Wave 2 (parallel to Phase 4, both gated on Phase 1 only). Stays in-sessi
   \ file (FR-25, F1), never an existing reviews/ record, and the validate cache is\
   \ a cross-process PERSISTENT composite-keyed store (F3), not an in-process content-hash-pair\
   \ cache."
+progress: 83
 ---
 
 # clinical-review-workflow — Phase 2: Sign Verb & Validate Performance
