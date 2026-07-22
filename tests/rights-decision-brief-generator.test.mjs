@@ -36,6 +36,7 @@ import {
   renderDecisionBriefMarkdown,
   parseArgs,
   resolveAsOfDate,
+  assertSynthesisAttestationIsCandidateOnly,
 } from '../scripts/rights/build-decision-brief.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -202,6 +203,106 @@ test('a synthesis brief never claims attested and never invents a rights_record 
   const md = renderDecisionBriefMarkdown(brief);
   assert.match(md, /Attributed inputs/);
   assert.match(md, /candidate/);
+});
+
+// --- EPR4-T6 (FR-WP4-07, D3/D6): authoritative derived_synthesis is unreachable -----------------
+//
+// AC-WP4-T6 negative criterion: "a fixture asking the generator to emit an authoritative
+// derived_synthesis fails; the generator's only reachable synthesis output is a candidate." The
+// committed evidence schema already makes a non-"candidate" `attestation.status` unreachable in
+// any file that passes `npm run validate` (schemas/evidence.schema.json's pairing rule), but that
+// is a gate over committed JSON, not a property of this generator — a hand-built in-memory fixture
+// (exactly what these tests construct) bypasses schema validation entirely. These tests exercise
+// the generator's OWN defense (`assertSynthesisAttestationIsCandidateOnly`), not the schema gate.
+
+function fixtureSynthesisWithStatus(status) {
+  const doc = fixtureEvidenceDocWithSynthesis();
+  doc.derived_syntheses[0].synthesis.attestation.status = status;
+  return doc;
+}
+
+test('assertSynthesisAttestationIsCandidateOnly accepts a candidate synthesis and rejects every other status', () => {
+  const candidate = fixtureEvidenceDocWithSynthesis().derived_syntheses[0];
+  assert.doesNotThrow(() => assertSynthesisAttestationIsCandidateOnly(candidate));
+
+  for (const status of ['attested', 'authoritative', 'approved', undefined, null, '']) {
+    const bad = fixtureSynthesisWithStatus(status).derived_syntheses[0];
+    assert.throws(
+      () => assertSynthesisAttestationIsCandidateOnly(bad),
+      /only reachable synthesis output is a candidate/,
+      `status ${JSON.stringify(status)} must be rejected, not passed through`,
+    );
+  }
+});
+
+test('a fixture asking the generator to emit an authoritative derived_synthesis fails (negative criterion, AC-WP4-T6)', () => {
+  const doc = fixtureSynthesisWithStatus('attested');
+  const found = findEvidenceItem(doc, 'SYNTH_TEST_001');
+  const rightsLedger = JSON.parse(readFileSync(path.join(REPO_ROOT, 'rights', 'rights-ledger.json'), 'utf8'));
+  const rightsRecords = JSON.parse(readFileSync(path.join(REPO_ROOT, 'rights', 'rights-records.json'), 'utf8'));
+  assert.throws(
+    () => buildItemBrief(found, { evidenceDoc: doc, rightsLedger, rightsRecords }),
+    /only reachable synthesis output is a candidate/,
+    'the generator must refuse to brief a synthesis it cannot label candidate, not silently copy the status through',
+  );
+});
+
+test('a nested attributed-input synthesis carrying a non-candidate status also fails the outer brief (recursive defense)', () => {
+  const doc = fixtureEvidenceDocWithSynthesis();
+  // A second, nested synthesis, attributed as an input of the first — with a bad status.
+  doc.derived_syntheses.push({
+    id: 'SYNTH_TEST_NESTED',
+    evidence_item_type: 'derived_synthesis',
+    synthesis: {
+      input_refs: [{ evidence_item_id: 'AAP2026_IDA#ev_002', rights_record_id: null, contribution: 'anchor' }],
+      method: 'A nested first-party synthesis.',
+      divergence_notes: [],
+      reproduces_source_arrangement: false,
+      first_party_rights_holder: null,
+      attestation: { status: 'attested', attestation_record: null },
+    },
+  });
+  doc.derived_syntheses[0].synthesis.input_refs.push(
+    { evidence_item_id: 'SYNTH_TEST_NESTED', rights_record_id: null, contribution: 'corroborating' },
+  );
+  const found = findEvidenceItem(doc, 'SYNTH_TEST_001');
+  const rightsLedger = JSON.parse(readFileSync(path.join(REPO_ROOT, 'rights', 'rights-ledger.json'), 'utf8'));
+  const rightsRecords = JSON.parse(readFileSync(path.join(REPO_ROOT, 'rights', 'rights-records.json'), 'utf8'));
+  assert.throws(
+    () => buildItemBrief(found, { evidenceDoc: doc, rightsLedger, rightsRecords }),
+    /only reachable synthesis output is a candidate/,
+    'a non-candidate status buried in an attributed input must also fail the whole brief, not be silently dropped',
+  );
+});
+
+// --- EPR4-T6 (FR-WP4-07, D5): one screen per decision, question stated first --------------------
+
+test('the rendered markdown states the decision question in the FIRST block, before every other section', async () => {
+  const itemOpts = parseArgs(['--item', 'AAP2026_IDA#ev_002'], {});
+  const itemBrief = await generateDecisionBrief(REPO_ROOT, itemOpts);
+  const itemMd = renderDecisionBriefMarkdown(itemBrief);
+  const questionIdx = itemMd.indexOf('**Decision question:**');
+  const itemSectionIdx = itemMd.indexOf('## Item');
+  assert.ok(questionIdx > -1, 'the decision-question block must be present');
+  assert.ok(itemSectionIdx > -1, 'the Item section must be present');
+  assert.ok(questionIdx < itemSectionIdx, 'the decision question must precede every other section, including ## Item');
+
+  const bindingOpts = parseArgs(['--binding', 'SCOPE-001', '--entity-type', 'rule'], {});
+  const bindingBrief = await generateDecisionBrief(REPO_ROOT, bindingOpts);
+  const bindingMd = renderDecisionBriefMarkdown(bindingBrief);
+  const bindingQuestionIdx = bindingMd.indexOf('**Decision question:**');
+  const bindingItemSectionIdx = bindingMd.indexOf('## Item');
+  assert.ok(bindingQuestionIdx > -1 && bindingQuestionIdx < bindingItemSectionIdx);
+});
+
+test('a generated brief covers exactly one decision: a single item_id and a single decision_question, never a list', async () => {
+  const opts = parseArgs(['--item', 'AAP2026_IDA#ev_002'], {});
+  const brief = await generateDecisionBrief(REPO_ROOT, opts);
+  assert.equal(typeof brief.item_id, 'string', 'item_id must be a single id, not a collection');
+  assert.equal(typeof brief.decision_question, 'string', 'decision_question must be a single question, not a collection');
+  // --item and --binding are mutually exclusive (asserted elsewhere in this file) and each
+  // invocation resolves exactly one entity id — there is no flag shape through which a single
+  // invocation could request more than one decision.
 });
 
 // --- binding resolution: rule and candidate -----------------------------------------------------

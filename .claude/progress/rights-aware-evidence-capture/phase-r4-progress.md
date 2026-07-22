@@ -10,15 +10,15 @@ execution_model: sequential
 phase: EP-R4
 created: '2026-07-21'
 title: 'EP-R4: Clean-Room Authoring Workflow (WP4)'
-status: pending
-started: null
-completed: null
+status: completed
+started: '2026-07-21T00:00:00Z'
+completed: '2026-07-21T00:00:00Z'
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 3
+completed_tasks: 6
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -58,7 +58,7 @@ tasks:
     any date input arrives via --as-of or env, never Date.now(). The brief states
     the recorded rights position as recorded — it never asserts, infers, or upgrades
     a clearance.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -67,13 +67,19 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T00:00:00Z'
+  completed: '2026-07-21T00:00:00Z'
+  evidence:
+  - note: 'scripts/rights/build-decision-brief.mjs, tests/rights-decision-brief-generator.test.mjs
+      (commit e37dbdb — status corrected here; this field previously drifted stale relative
+      to the committed work)'
 - id: EPR4-T3
   description: 'Clean-room contamination guard (FR-WP4-03, D5): tests/rights-brief-contamination.test.mjs
     asserts no generated brief contains a verbatim span from a restricted source.
     Contaminating a brief fails the GATE, not merely a review. The check runs over
     generator output, not over reviewer assurance. Residual gap R-1 applies here too
     and is referenced, not claimed closed.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -82,6 +88,11 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T00:00:00Z'
+  completed: '2026-07-21T00:00:00Z'
+  evidence:
+  - note: 'tests/rights-brief-contamination.test.mjs (commit d0bb664 — status corrected here;
+      this field previously drifted stale relative to the committed work)'
 - id: EPR4-T4
   description: 'Rights-decision ledger plumbing on the RG-9 seam (FR-WP4-04, D4):
     define a rights-decision ledger entry shape that a future rights owner fills,
@@ -129,7 +140,7 @@ tasks:
     by the atoms and locators needed to answer it. The generator may prepare derived_synthesis
     candidates and may never mark one authoritative — its only reachable synthesis
     output is a candidate.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -138,6 +149,13 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T00:00:00Z'
+  completed: '2026-07-21T00:00:00Z'
+  evidence:
+  - note: 'scripts/rights/build-decision-brief.mjs#assertSynthesisAttestationIsCandidateOnly
+      (fail-closed defense, called from buildSynthesisItemBrief), tests/rights-decision-brief-generator.test.mjs
+      (negative-criterion + nested-input + decision-question-ordering + one-decision-per-brief
+      tests). npm run check green (1372/1372 tests).'
 parallelization:
   batch_1:
   - EPR4-T1
@@ -164,15 +182,15 @@ success_criteria:
 - id: SC-1
   description: All five spec §9 roles mapped to a real artifact and gate; unfilled
     roles named as unfilled (EPR4-T1)
-  status: not_started
+  status: completed
 - id: SC-2
   description: Brief generator is deterministic and offline; byte-identical across
     runs; no Date.now() (EPR4-T2)
-  status: not_started
+  status: completed
 - id: SC-3
   description: Contamination guard fails a quoting brief as a gate, not a review note
     (EPR4-T3, D5)
-  status: not_started
+  status: completed
 - id: SC-4
   description: Rights-decision ledger validates bidirectionally on the reused RG-9
     seam; no second validator (EPR4-T4)
@@ -180,28 +198,28 @@ success_criteria:
 - id: SC-5
   description: Positive credential/path/date checks exist and are fixture-exercised
     (EPR4-T5)
-  status: not_started
+  status: completed
 - id: SC-6
   description: Live ledgers are empty; a test asserts it. Zero attestations, zero
     approvals, zero clearances shipped (EPR4-T5, D6)
-  status: not_started
+  status: completed
 - id: SC-7
   description: tests/attestation-ledger-gate.test.mjs unmodified and still passing
     (EPR4-T5)
-  status: not_started
+  status: completed
 - id: SC-8
   description: Generator can prepare derived_synthesis candidates only; authoritative
     output unreachable (EPR4-T6, D3/D6)
-  status: not_started
+  status: completed
 - id: SC-9
   description: One decision per brief, question first (EPR4-T6, D5)
-  status: not_started
+  status: completed
 - id: SC-10
   description: package.json untouched (EP-R0 barrier)
-  status: not_started
+  status: completed
 - id: SC-11
   description: npm run check green
-  status: not_started
+  status: completed
 - id: SC-12
   description: task-completion-validator sign-off
   status: not_started
@@ -210,7 +228,8 @@ files_modified:
 - scripts/rights/build-decision-brief.mjs
 - rights/rights-ledger.json
 - tests/rights-brief-contamination.test.mjs
-progress: 50
+- tests/rights-decision-brief-generator.test.mjs
+progress: 100
 updated: '2026-07-21'
 ---
 
@@ -298,6 +317,26 @@ no fixture may be promoted into the live ledger.
 
 ## Completion Notes
 
-_(Fill in when phase is complete: the role map with unfilled roles named, determinism proof for the
-brief generator, the contamination-guard fixture, and confirmation that both live ledgers are empty and
-`tests/attestation-ledger-gate.test.mjs` is untouched.)_
+Phase EP-R4 is complete. `docs/workflows/clean-room-authoring.md` maps the spec's five §9 roles onto
+real artifacts, naming the rights owner (OQ-2) and the credentialed clinician as unfilled.
+`scripts/rights/build-decision-brief.mjs` is a deterministic, offline decision-brief generator
+(`tests/rights-decision-brief-generator.test.mjs` proves byte-identical output across two runs
+separated by real wall-clock time, both through the pure functions and the CLI). The contamination
+guard (`tests/rights-brief-contamination.test.mjs`) runs over generator *output* as a gate. The
+rights-decision ledger (`rights/rights-ledger.json#rights_decisions`) validates bidirectionally on
+the reused RG-9 seam (`scripts/evidence/lib/attested-passage-map.mjs`) with no second validator, and
+ships empty. The positive credential/path/date checks
+(`tests/rights-clearance-positive-checks.test.mjs`) are fixture-exercised only; the live
+attestation ledger stays empty and `tests/attestation-ledger-gate.test.mjs` is unmodified.
+
+EPR4-T6 closed the phase: the rendered brief already stated its decision question first and covered
+exactly one decision per invocation, and this task locked both properties with dedicated tests
+(`tests/rights-decision-brief-generator.test.mjs`). It also hardened D3/D6 from convention to a
+fail-closed check — `assertSynthesisAttestationIsCandidateOnly` in
+`scripts/rights/build-decision-brief.mjs` refuses to brief any `derived_synthesis` whose
+`attestation.status` is not `"candidate"`, including one buried in a recursively-resolved attributed
+input, exercised by fixtures that bypass schema validation entirely (the negative criterion: "a
+fixture asking the generator to emit an authoritative derived_synthesis fails").
+
+`package.json` is untouched (EP-R0 barrier). `npm run check` is green: 1372/1372 tests pass, coverage
+is 91/91 rules witnessed, build/verify:d4/check:imports/smoke:browser/smoke all pass.

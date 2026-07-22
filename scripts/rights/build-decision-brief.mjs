@@ -44,7 +44,11 @@
 // modules/<id>/rules.json / candidates.json, and rights/rights-ledger.json + rights-records.json,
 // and emits a brief to stdout. It states the recorded rights position AS RECORDED; it never
 // asserts, infers, or upgrades a clearance, and it never authors a `CLEARED_*` status, an
-// attestation, or an authoritative `derived_synthesis`.
+// attestation, or an authoritative `derived_synthesis`. EPR4-T6 (FR-WP4-07) hardens the last of
+// those into a fail-closed CHECK rather than only a convention: `assertSynthesisAttestationIsCandidateOnly`
+// (below) refuses to brief any `derived_synthesis` whose `attestation.status` is not `"candidate"`
+// — the generator's only reachable synthesis output — even against a hand-built fixture that
+// bypasses `npm run validate`'s schema gate entirely.
 //
 // Invoked via the `rights:brief` npm script EP-R0 landed in package.json (EPR0-T6); this file
 // supplies that script's target and adds no new npm entry (package.json is EP-R0's barrier).
@@ -278,8 +282,31 @@ function buildPassageItemBrief({ source, passage }, { rightsLedger, rightsRecord
   };
 }
 
+// EPR4-T6 (FR-WP4-07, D3/D6): defense-in-depth so this generator's only REACHABLE synthesis
+// output is a `candidate` brief, not merely a convention. `schemas/evidence.schema.json` already
+// makes a non-"candidate" `attestation.status` structurally unreachable in any COMMITTED file (the
+// pairing rule requiring a non-null `attestation_record`, itself forced `const: null`) — but that
+// is a gate over `npm run validate`, not a property of this generator. A hand-built fixture that
+// bypasses schema validation entirely (exactly what a unit test constructs) could still carry
+// `attestation.status: "attested"`. Without this check, `buildSynthesisItemBrief` below would
+// happily copy that value straight into `synthesis.attestation_status` and hand a human a brief
+// that reads as already-authoritative. This function makes that path fail closed instead: the
+// generator refuses to produce a brief for a synthesis it cannot label `candidate`.
+export function assertSynthesisAttestationIsCandidateOnly(synthesis) {
+  const status = synthesis?.synthesis?.attestation?.status;
+  if (status !== 'candidate') {
+    throw new Error(
+      `derived_synthesis "${synthesis?.id}" carries attestation.status "${status}", not `
+      + '"candidate" — this generator\'s only reachable synthesis output is a candidate brief '
+      + '(FR-WP4-07, D3/D6); an authoritative derived_synthesis brief is not reachable through '
+      + 'this code path, and this input cannot be briefed.',
+    );
+  }
+}
+
 function buildSynthesisItemBrief(synthesis, context, ancestry = new Set()) {
   const { evidenceDoc, rightsLedger, rightsRecords } = context;
+  assertSynthesisAttestationIsCandidateOnly(synthesis);
   // Cycle guard: `ancestry` is the chain of synthesis ids currently being expanded on this call
   // stack. Real data ships zero derived_syntheses today (D3/D6), so this path is dead code
   // against the committed KB, but a malformed fixture with a self-referential input_refs graph
@@ -527,7 +554,21 @@ export async function generateDecisionBrief(rootDir, opts) {
   return brief;
 }
 
-// --- markdown rendering ("one screen per decision", D5 — refined further by EPR4-T6) ----------
+// --- markdown rendering ("one screen per decision", D5 — EPR4-T6, FR-WP4-07) -------------------
+//
+// FR-WP4-07 (Should, D5): the rendered brief is one screen per decision, the decision question
+// stated FIRST, followed by the atoms and locators needed to answer it. `renderDecisionBriefMarkdown`
+// below already satisfies both halves structurally, and EPR4-T6 locks that shape with tests rather
+// than changing it:
+//   - "one decision per brief": `generateDecisionBrief` resolves exactly ONE `--item` or ONE
+//     `--binding` per invocation (`parseArgs` makes the two mutually exclusive), so a brief object
+//     always carries a single `item_id` / `decision_question` — there is no code path that emits a
+//     brief covering more than one decision.
+//   - "question first": the `## Decision question` block below is emitted immediately after the
+//     H1 title and BEFORE every other section (`## Item`, `## Atoms`, etc.) — see the assembly
+//     order a few lines down. tests/rights-decision-brief-generator.test.mjs asserts this ordering
+//     directly so a future reorder fails a test, not only a reading of this comment.
+// ------------------------------------------------------------------------------------------------
 
 function fmtLocator(loc) {
   if (!loc) return '(no structured locator)';
