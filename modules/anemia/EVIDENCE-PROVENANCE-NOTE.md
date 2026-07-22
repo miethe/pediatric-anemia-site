@@ -66,13 +66,12 @@ Triage Table.
 
 ## Forward link (populated by P7-T4)
 
-> **Placeholder — not yet populated.** Deferred Item `DF-E1-M3` promotes to a full design-spec
-> stub in Phase 7 task **P7-T4**, which will author
-> `docs/project_plans/design-specs/anemia-backfill-reconciliation-procedure.md` (`maturity: idea`)
-> enumerating the three candidate reconciliation options named in PRD §12 OQ-1 (leave-parallel /
-> generate-citations-from-assertions / deprecate-EP-3-pipeline-role) without deciding among them.
-> When P7-T4 lands, this line is replaced with a live link to that spec. Until then, this
-> paragraph is the forward-link placeholder P7-T4 is expected to fill in.
+Deferred Item `DF-E1-M3`'s full design-spec stub has landed:
+[`docs/project_plans/design-specs/anemia-backfill-reconciliation-procedure.md`](../../docs/project_plans/design-specs/anemia-backfill-reconciliation-procedure.md)
+(`maturity: idea`). It enumerates the three candidate reconciliation options named in PRD §12 OQ-1
+— leave-parallel, generate-citations-from-assertions, deprecate-EP-3-pipeline-role — without
+deciding among them; that decision remains out of scope until a future pass explicitly prioritizes
+it (per the parent plan's Deferred Items Triage Table trigger condition for `DF-E1-M3`).
 
 ## References
 
@@ -80,3 +79,4 @@ Triage Table.
 - Plan OQ-1 resolution: [`docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1.md`](../../docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1.md) "Decisions & OQ Resolutions"
 - Upstream bundle verification record: [`docs/project_plans/expansion/rf-handoff/RESULTS.md`](../../docs/project_plans/expansion/rf-handoff/RESULTS.md) §1 (`RF-EV-001` row)
 - This pass's backfill task: `P4-T2` in [`docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1/phase-3-4-scaffolds-and-backfill.md`](../../docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1/phase-3-4-scaffolds-and-backfill.md)
+- Reconciliation design-spec stub (P7-T4, Deferred Item `DF-E1-M3`): [`docs/project_plans/design-specs/anemia-backfill-reconciliation-procedure.md`](../../docs/project_plans/design-specs/anemia-backfill-reconciliation-procedure.md)
