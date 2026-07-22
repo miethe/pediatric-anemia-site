@@ -36,7 +36,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, mkdtemp, rm } from 'node:fs/promises';
+import { readFile, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -55,6 +55,7 @@ import { canonicalRecordHash, nextChainLink } from '../tools/review-record/lib/c
 import { parseYamlDocument } from '../tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs';
 import { loadRosterIndex, resolveReviewer, buildRosterIndex } from '../tools/review-record/lib/roster.mjs';
 import { checkReviewerIndependence, longestCommonSubstringLength } from '../tools/review-record/lib/independence.mjs';
+import { computeModuleContentHash } from '../tools/review-record/lib/subject.mjs';
 import { buildDraftRecord, run as runScaffold } from '../tools/review-record/lib/verbs/scaffold.mjs';
 import { run as runValidate } from '../tools/review-record/lib/verbs/validate.mjs';
 import {
@@ -209,6 +210,7 @@ test('scaffold requires every required flag', async () => {
   };
   for (const key of Object.keys(base)) {
     if (key === 'root') continue; // --root is optional (defaults to cwd)
+    if (key === 'subject') continue; // P1-T3 (FR-3, R8): --subject is now optional/auto-derived
     const copy = { ...base };
     delete copy[key];
     await assert.rejects(() => runScaffold(copy), UsageError, `missing ${key} should fail closed`);
@@ -238,6 +240,99 @@ test('scaffold accepts a valid --supersedes review_id and rejects a malformed on
   // A validly-shaped (if fictitious) review_id is accepted at the flag-parsing level.
   const code = await runScaffold({ ...base, supersedes: 'rr-0001-clinical-1' });
   assert.equal(code, EXIT_OK);
+});
+
+// -------------------------------------------------------------------------------------------
+// P1-T3 (clinical-review-workflow-v1, FR-3/4/5, R7/R8) — scaffold ergonomics: auto-derived
+// subject + real-identity write path. This section runs against the REAL repo root/module
+// (read-only: `dryrun-cbc-suite-*` roster entries always resolve `synthetic: true`, so `scaffold`
+// only ever prints a DRAFT ONLY preview here — see lib/verbs/scaffold.mjs — it never writes to
+// modules/cbc_suite_v1/reviews/ or governance/reviewer-roster.yaml) plus one throwaway tmp root
+// that copies tests/fixtures/clinical-review-workflow/roster-with-real-entry.yaml into its own
+// governance/reviewer-roster.yaml — the real roster is never read or written by this section.
+// -------------------------------------------------------------------------------------------
+
+test('scaffold without --subject on cbc_suite_v1 auto-derives the same subjectContentHash dry-run would (R8)', async () => {
+  const expected = await computeModuleContentHash(REPO_ROOT, 'cbc_suite_v1');
+  assert.match(expected, /^sha256:[0-9a-f]{64}$/);
+
+  const { status, stdout, stderr } = runCli([
+    'scaffold', '--module', 'cbc_suite_v1', '--role', 'clinical-1',
+    '--reviewer-id', 'dryrun-cbc-suite-clinical-1', '--decision', 'approve',
+    '--rationale', 'P1-T3 R8 regression check: auto-derived subject only, no clinical claim.',
+    '--reviewed-at', '2026-02-04T00:00:00Z',
+    '--root', REPO_ROOT,
+  ]);
+  assert.equal(status, EXIT_OK, stderr);
+  assert.match(stdout, /DRAFT ONLY — NOT WRITTEN TO DISK/);
+  const match = stdout.match(/subjectContentHash: (sha256:[0-9a-f]{64})/);
+  assert.ok(match, `expected a subjectContentHash line in scaffold's preview output, got:\n${stdout}`);
+  assert.equal(match[1], expected, 'auto-derived subjectContentHash must byte-match computeModuleContentHash');
+});
+
+test('scaffold against the real governance/reviewer-roster.yaml is behaviorally unchanged when --subject is supplied explicitly', () => {
+  const { status, stdout, stderr } = runCli([
+    'scaffold', '--module', 'cbc_suite_v1', '--role', 'lab',
+    '--subject', SUBJECT_HASH,
+    '--reviewer-id', 'dryrun-cbc-suite-lab', '--decision', 'approve',
+    '--rationale', 'P1-T3 explicit-subject regression check against the real roster, no clinical claim.',
+    '--reviewed-at', '2026-02-04T00:05:00Z',
+    '--root', REPO_ROOT,
+  ]);
+  assert.equal(status, EXIT_OK, stderr);
+  assert.match(stdout, /DRAFT ONLY — NOT WRITTEN TO DISK/);
+  assert.match(stdout, new RegExp(`subjectContentHash: ${SUBJECT_HASH}`));
+});
+
+test('scaffold against the fixture roster\'s one synthetic:false entry writes a schema-valid file with signature: null (FR-3/4)', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-review-workflow-real-entry-'));
+  try {
+    const fixtureRosterPath = path.join(
+      REPO_ROOT, 'tests', 'fixtures', 'clinical-review-workflow', 'roster-with-real-entry.yaml',
+    );
+    const rosterYaml = await readFile(fixtureRosterPath, 'utf8');
+    await mkdir(path.join(tmp, 'governance'), { recursive: true });
+    await writeFile(path.join(tmp, 'governance', 'reviewer-roster.yaml'), rosterYaml, 'utf8');
+
+    const moduleId = 'real_entry_fixture_v1'; // matches the fixture roster entry's moduleScopes[]
+    const code = await runScaffold({
+      module: moduleId,
+      role: 'clinical-1',
+      subject: SUBJECT_HASH,
+      reviewerId: 'fixture-real-reviewer-1',
+      decision: 'approve',
+      rationale: 'Fixture-only real-identity write-path regression check — structural only, not a clinical review.',
+      reviewedAt: '2026-02-05T00:00:00Z',
+      root: tmp,
+    });
+    assert.equal(code, EXIT_OK);
+
+    const records = await listModuleReviewRecords(tmp, moduleId);
+    assert.equal(records.length, 1, 'expected exactly one written review record');
+    const [{ record }] = records;
+    assert.equal(record.synthetic, false);
+    assert.equal(record.signature, null);
+    assert.equal(record.reviewerId, 'fixture-real-reviewer-1');
+
+    const schema = await loadSchema();
+    const errors = validateAgainstSchema(schema, record);
+    assert.deepEqual(errors, [], `written record must be schema-valid: ${JSON.stringify(errors)}`);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('governance/reviewer-roster.yaml shows zero diff against HEAD after this task\'s scaffold tests (real roster never read/written by this section)', () => {
+  const result = spawnSync('git', ['diff', '--name-only', '--', 'governance/reviewer-roster.yaml'], {
+    cwd: REPO_ROOT,
+    encoding: 'utf8',
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(
+    result.stdout.trim(),
+    '',
+    'governance/reviewer-roster.yaml must show zero diff against HEAD after any P1-T3 scaffold test',
+  );
 });
 
 // -------------------------------------------------------------------------------------------
@@ -549,5 +644,55 @@ test('scaffold and validate make zero network calls at runtime (patched global f
     await assert.doesNotReject(() => runValidate({ module: 'independence_target_v1', root: FIXTURES_ROOT }));
   } finally {
     globalThis.fetch = originalFetch;
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// P1-T1 (clinical-review-workflow-v1, FR-2/R2) — validate.mjs must consume the ONE shared
+// derived-state library (tools/review-record/lib/derived-state.mjs's computeDerivedReviewState)
+// rather than reimplementing its own copy of the module-wide independence/chain/authorship/
+// release-authorization reasoning inline. A structural (source-text) check, not a behavioral one —
+// the behavioral proof is every other `validate`-exercising test in this file (and in
+// tests/ef-review-adjudication.test.mjs) continuing to pass unchanged against the refactored verb.
+// -------------------------------------------------------------------------------------------
+
+test('lib/verbs/validate.mjs contains zero duplicated derived-state logic -- it imports and calls computeDerivedReviewState rather than reimplementing the module-wide checks lib/derived-state.mjs now owns', async () => {
+  const validateSource = await readFile(
+    path.join(REPO_ROOT, 'tools', 'review-record', 'lib', 'verbs', 'validate.mjs'),
+    'utf8',
+  );
+
+  // validate.mjs must actually import and call the shared library, not merely happen to avoid the
+  // patterns below by coincidence.
+  assert.match(
+    validateSource,
+    /import\s*\{[^}]*computeDerivedReviewState[^}]*\}\s*from\s*['"]\.\.\/derived-state\.mjs['"]/,
+    'lib/verbs/validate.mjs must import computeDerivedReviewState from ../derived-state.mjs',
+  );
+  assert.match(
+    validateSource,
+    /computeDerivedReviewState\(/,
+    'lib/verbs/validate.mjs must actually call computeDerivedReviewState(...)',
+  );
+
+  // ...and must NOT reimplement any of the module-wide checks lib/derived-state.mjs now owns —
+  // these direct function calls (and the two now-obsolete direct imports) would only reappear here
+  // if a future edit forked this reasoning back into two independently-maintained copies, exactly
+  // what P1-T1's extraction (and this program's "single source of truth" note in the Phase 1
+  // progress file) exists to prevent.
+  for (const pattern of [
+    /checkReviewerIndependence\(/,
+    /checkModuleChainLinkage\(/,
+    /evaluateReleaseAuthorization\(/,
+    /rosterEntryInAuthorshipUnion\(/,
+    /from ['"]\.\.\/independence\.mjs['"]/,
+    /from ['"]\.\.\/chain\.mjs['"]/,
+  ]) {
+    assert.doesNotMatch(
+      validateSource,
+      pattern,
+      `lib/verbs/validate.mjs must not directly call/import ${pattern} -- that reasoning now lives ` +
+        'solely in lib/derived-state.mjs (computeDerivedReviewState), P1-T1',
+    );
   }
 });

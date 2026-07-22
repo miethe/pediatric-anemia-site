@@ -33,10 +33,25 @@
 // only for a `synthetic: false` roster entry — which cannot exist before gate G1 clears (a human
 // act, never performed by any task) — so it is correctly, structurally inert today; see
 // `lib/store.mjs`'s `writeNewReviewRecordFile` for the append-only guard once it does fire.
+//
+// P1-T3 addition (clinical-review-workflow-v1, FR-3/FR-4/FR-5, R7/R8): `--subject` is now OPTIONAL.
+// When omitted, this verb derives `subjectContentHash` via `lib/subject.mjs`'s
+// `computeModuleContentHash` — the exact same function `dry-run` (`lib/verbs/dry-run.mjs`) already
+// uses for its own default `--subject` — so a scaffolded draft's auto-derived subject can never
+// silently drift from what a full dry-run over the same module would have used (R8). When
+// `--subject` IS supplied, the existing pattern-shape validation runs unchanged; this task does not
+// add the `computeModuleContentHash` cross-check against a supplied `--subject` (that comparison,
+// plus `--allow-historical-subject`, is F5 — out of this task's narrower scope, see this feature's
+// findings doc if that gap needs tracking). This verb's real-identity (`synthetic: false`) write
+// path above is unchanged by this addition — it is exercised in this task's own tests only against
+// a throwaway fixture roster (`tests/fixtures/clinical-review-workflow/roster-with-real-entry.yaml`),
+// never `governance/reviewer-roster.yaml` itself, which ships (and stays) 5 `synthetic: true`
+// entries / 0 real entries.
 
 import { REVIEW_ROLES, buildReviewId, serializeReviewRecordYaml, writeNewReviewRecordFile } from '../store.mjs';
 import { nextChainLink } from '../chain.mjs';
 import { loadRosterIndex, resolveReviewer } from '../roster.mjs';
+import { computeModuleContentHash } from '../subject.mjs';
 import { EXIT_OK, UsageError } from '../errors.mjs';
 
 const DECISIONS = Object.freeze(['approve', 'reject', 'request-changes']);
@@ -98,22 +113,21 @@ function requireString(options, flag, key = flag) {
  * @param {{
  *   module?: string, role?: string, subject?: string, reviewerId?: string, decision?: string,
  *   rationale?: string, reviewedAt?: string, supersedes?: string, root?: string,
- * }} options
+ * }} options `subject` is OPTIONAL (P1-T3, FR-3/R8) — when omitted, it is auto-derived via
+ *   `lib/subject.mjs`'s `computeModuleContentHash(rootDir, moduleId)`, the same function `dry-run`
+ *   uses for its own default; when supplied, its `sha256:<64 hex>` shape is still validated exactly
+ *   as before.
  * @returns {Promise<number>}
  */
 export async function run(options = {}) {
   const moduleId = requireString(options, 'module');
   const role = requireString(options, 'role');
-  const subjectContentHash = requireString(options, 'subject');
   const reviewerId = requireString(options, 'reviewer-id', 'reviewerId');
   const decision = requireString(options, 'decision');
   const rationale = requireString(options, 'rationale');
 
   if (!REVIEW_ROLES.includes(role)) {
     throw new UsageError(`--role "${role}" must be one of ${REVIEW_ROLES.join(', ')}`);
-  }
-  if (!SUBJECT_HASH_RE.test(subjectContentHash)) {
-    throw new UsageError(`--subject "${subjectContentHash}" must match sha256:<64 hex>`);
   }
   if (!DECISIONS.includes(decision)) {
     throw new UsageError(`--decision "${decision}" must be one of ${DECISIONS.join(', ')}`);
@@ -135,6 +149,20 @@ export async function run(options = {}) {
   }
 
   const rootDir = typeof options.root === 'string' && options.root.length > 0 ? options.root : process.cwd();
+
+  // P1-T3 (FR-3, R8): `--subject` is optional. When supplied, its shape is validated exactly as
+  // before; when omitted, derive it via the SAME `computeModuleContentHash` function `dry-run`
+  // uses (lib/subject.mjs), over this module's already-committed content on disk under `rootDir` —
+  // so an auto-derived `subjectContentHash` here can never independently drift from what a fresh
+  // `dry-run` over the same module/root would compute.
+  let subjectContentHash = options.subject;
+  if (typeof subjectContentHash === 'string' && subjectContentHash.length > 0) {
+    if (!SUBJECT_HASH_RE.test(subjectContentHash)) {
+      throw new UsageError(`--subject "${subjectContentHash}" must match sha256:<64 hex>`);
+    }
+  } else {
+    subjectContentHash = await computeModuleContentHash(rootDir, moduleId);
+  }
 
   const rosterIndex = await loadRosterIndex(rootDir);
   const rosterEntry = resolveReviewer(rosterIndex, reviewerId, moduleId);
