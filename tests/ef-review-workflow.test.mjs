@@ -343,7 +343,7 @@ test('scaffold against the fixture roster\'s one synthetic:false entry writes a 
   }
 });
 
-test('governance/reviewer-roster.yaml shows zero diff against HEAD after this task\'s scaffold tests (proves no WRITE occurred; the file IS read read-only by the auto-derivation test above, by design -- see this section\'s header)', () => {
+test('governance/reviewer-roster.yaml shows zero diff against HEAD after this task\'s scaffold tests (proves no persisted content change; the file IS read read-only by the auto-derivation test above, by design -- see this section\'s header)', () => {
   const result = spawnSync('git', ['diff', '--name-only', '--', 'governance/reviewer-roster.yaml'], {
     cwd: REPO_ROOT,
     encoding: 'utf8',
