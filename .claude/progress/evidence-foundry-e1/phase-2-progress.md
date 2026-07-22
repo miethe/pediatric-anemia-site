@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 2
+completed_tasks: 3
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -122,7 +122,7 @@ tasks:
     per invocation (never written to disk, no --test-keys flag), keyId forced to TESTKEY-
     prefix, writable only onto synthetic:true records. validate verifies present signatures
     and fails closed on tamper.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -131,6 +131,11 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  started: '2026-07-22T06:00:00Z'
+  completed: '2026-07-22T07:00:00Z'
+  evidence:
+  - commit: 969223e
+  - test: tests/ef-review-signature.test.mjs
 - id: P2-T6
   description: 'Read-only static render, FR-8/FR-31/OQ-3: render --module <id> [--record
     <review_id>] emits self-contained static HTML to build/review-render/ (gitignored)
@@ -270,7 +275,7 @@ files_modified:
 - tests/ef-review-render-smoke.test.mjs
 - tests/fixtures/ef-review-render/**
 - .claude/worknotes/evidence-foundry-e1-v1/dryrun-friction.md
-progress: 22
+progress: 33
 updated: '2026-07-22'
 ---
 
