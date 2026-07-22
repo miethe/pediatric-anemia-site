@@ -146,7 +146,7 @@ tasks:
     the authoritative state is structurally unrepresentable. Per handoff §9.5, rights_record cannot
     describe first-party content, so a derived_synthesis item gets NO rights record in this feature
     — record the gap as DEF-R4 in the schema description and schemas/rights/VENDORING.md.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:

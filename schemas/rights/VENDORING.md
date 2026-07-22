@@ -132,6 +132,28 @@ a declared **copy** of `rights_record.schema.json`'s `component_decisions[].comp
 `tests/rights-evidence-item-axes.test.mjs` rather than by a runtime reference. Consequence: the
 taxonomy does not ride `extensions.rights` in any form, which is also what D4 independently requires.
 
+**EPR3-T7 (FR-WP3-07, handoff §9.5 / §4.3-§4.4, DEF-R4) — the item-level model shipped.** EPR0-T3's
+§9.5 amendment above anticipated this task; EPR3-T7 now delivers the promised item-level model, and
+this note records what it is so a reader of the vendored-schema provenance sees where first-party
+authorship actually lives. `derived_synthesis` ships as a first-class item type on
+`schemas/evidence.schema.json` — a top-level `derived_syntheses[]` container plus `$defs/derivedSynthesis`
+/ `$defs/synthesis` / `$defs/synthesisInputRef` / `$defs/synthesisAttestation` /
+`$defs/synthesisAttestationRecord`. It carries **no `rights_record`** (the §9.5 gap: `rights_record`
+requires `source_id` (minLength 3) and has no first-party `record_scope` / `overall_status`, so it
+structurally cannot describe first-party content). First-party authorship is modelled on the evidence
+item itself — `synthesis.first_party_rights_holder` (a fact, not a clearance) and a candidate-only
+`synthesis.attestation` whose authoritative (`attested`) state is **structurally unreachable** (D6):
+`attestation.status` may leave `candidate` only against an `attestation_record` matching
+`$defs/synthesisAttestationRecord`, and that field is `const: null` in this schema version — the same
+posture `rights_record.review.human_reviewer` / `judgment_basis_attestation` / `rule.schema.json`'s
+`clinicalApprovers[]` take. This is a **workaround at the item level, not a resolution of the
+underlying schema gap**: re-homing first-party content into `rights_record` (or an explicit sibling
+first-party model) remains **DEF-R4**, pending RF's answer to OQ-4 — tracked in
+`docs/project_plans/design-specs/first-party-rights-record.md`. No vendored `schemas/rights/` file was
+edited by this task; `derived_synthesis` deliberately does not ride `rights_extension` (handoff §9.1)
+or any vendored schema, which is also what FR-WP3-11 (no runtime `$ref`/import into an RF-owned schema
+while OQ-4 is open) requires.
+
 **Not amended, and not silently left as-is: `permission_record.schema.json`'s `review.approved_by`**
 (`required`, `minItems: 1`) carries the same class of reviewer-authority risk as the six D6 paths
 above, but this feature seeds zero `permission_record`s and the plan's EPR0-T3 acceptance criteria do

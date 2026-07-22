@@ -22,7 +22,7 @@
     "knowledgeBaseVersion": "0.1.0-2026-07-15",
     "rulesFileDigest": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
     "candidatesFileDigest": "sha256:361924b25c5b5162054eb8a90f7024d5990afb63c0f8eb2a0a18d22c0b56904c",
-    "moduleFileDigest": "sha256:b0012debddc0657dd2b6c6e201b8ac8fb5a262ce0d16dd85ae17907688bc7687"
+    "moduleFileDigest": "sha256:2785b9933409027da0300424655e2e13df5aba24020fb64b99ae90d520e71fe9"
   },
   "executionBinding": {
     "engine": "local-applicability-reference-interval",

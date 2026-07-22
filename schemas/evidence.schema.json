@@ -14,6 +14,11 @@
       "minItems": 1,
       "uniqueItems": false,
       "items": { "$ref": "#/$defs/source" }
+    },
+    "derived_syntheses": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/derivedSynthesis" },
+      "description": "EPR3-T7 (FR-WP3-07, decisions-block D3/D6). The first-party synthesis items — content this project AUTHORS over two or more input evidence items, not drawn from any single source. Shipped as a first-class item type from day one with attribution-to-inputs modelled (D3: retrofitting provenance onto a synthesis is impossible — you cannot reconstruct which inputs a claim came from once it is written), reachable ONLY in a `candidate` state (D6). Kept as its own top-level container rather than inside `sources[].passages[]` precisely because a first-party synthesis has no `sourceId`, no `passageFidelity`, and no third-party `structured_locator` — the source-drawn passage shape does not fit it. Per RF handoff §9.5 (DEF-R4) a `derived_synthesis` gets NO `rights_record`: `schemas/rights/rights_record.schema.json` requires a `source_id` (minLength 3) and has no first-party `record_scope` / `overall_status` member, so first-party authorship is modelled on the item itself (`$defs/synthesis.first_party_rights_holder` + `$defs/synthesis.attestation`) and re-homing into a rights-record (or a sibling first-party model) waits on OQ-4 — the gap is recorded here and in `schemas/rights/VENDORING.md` (DEF-R4), never papered over. OPTIONAL and today EMPTY: this feature ships the capability and its fails-closed constraints, and ZERO instances — a real `derived_synthesis` is an unattested clinical claim, which D6 forbids any agent from authoring."
     }
   },
   "$defs": {
@@ -764,6 +769,141 @@
           }
         }
       ]
+    },
+    "derivedSynthesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "evidence_item_type", "synthesis"],
+      "description": "EPR3-T7 (FR-WP3-07, D3/D6). ONE first-party derived-synthesis evidence item — a clinical claim this project authored over two or more input items. It carries no `rights_record` (RF handoff §9.5, DEF-R4): `rights_record` cannot describe first-party content, so authorship is modelled here on the item itself, not through a misfitting third-party record. `additionalProperties: false` — there is deliberately no `rights_record`, `rights_extension`, `overall_status`, or any clearance-bearing key on this object; first-party rights posture is `synthesis.first_party_rights_holder` (a fact, not a clearance) and human attestation is `synthesis.attestation` (candidate-only, D6).",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^SYNTH_[A-Z0-9_]+$",
+          "description": "First-party synthesis identifier, in a namespace disjoint from source passage ids (`<SOURCE>#ev_NNN` / `#implementation-proposal`) so a synthesis can never be confused with a source-drawn passage — it is first-party, and its id says so."
+        },
+        "evidence_item_type": {
+          "const": "derived_synthesis",
+          "description": "Always `derived_synthesis` — this container holds nothing else. `derived_synthesis` is a member of the shared `$defs/evidenceItemType` enum (an assertion in tests/rights-derived-synthesis.test.mjs keeps this `const` a member of that enum, so the vocabulary cannot silently drift); it is pinned by `const` rather than `$ref`'d so a synthesis item cannot be re-typed as a source-drawn kind."
+        },
+        "synthesis": {
+          "$ref": "#/$defs/synthesis",
+          "description": "The attribution-and-authorship record: the ordered contributing inputs, how they were combined, the substantial-similarity signal, the first-party rights holder, and the candidate-only human-attestation gate (handoff §4.3/§4.4)."
+        }
+      }
+    },
+    "synthesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_refs", "method", "divergence_notes", "reproduces_source_arrangement", "first_party_rights_holder", "attestation"],
+      "description": "EPR3-T7 (FR-WP3-07, handoff §4.3, D3/D6). The load-bearing attribution structure of a first-party synthesis, modelled from day one because attribution — unlike every other field — cannot be backfilled (D3). It records WHAT inputs the synthesis draws on and HOW, never a transcription of any input's third-party expression (D1). Carries no clearance authority (D7): `reproduces_source_arrangement` and `first_party_rights_holder` are recorded FACTS for a human to weigh, not determinations this schema makes.",
+      "properties": {
+        "input_refs": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/synthesisInputRef" },
+          "description": "The ORDERED list of contributing input items. `minItems: 2` — a 'synthesis' over a single input is not a synthesis (handoff §4.3). Order is itself meaningful attribution (the D3 provenance that can never be reconstructed after the claim is written). A synthesis with no input attribution — this array empty or the key absent — fails validation (acceptance criterion FR-WP3-07)."
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1,
+          "description": "This project's own account of HOW the inputs were combined — required and non-empty. It is a description of the method, never a transcription of any input's third-party text (D1); a pasted source paragraph is not a method statement."
+        },
+        "divergence_notes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Where the inputs disagreed and how that was resolved (handoff §4.3). Legitimately empty when they did not diverge (an empty array is a captured fact, not a missing one). Each entry is this project's own wording, never source text (D1)."
+        },
+        "reproduces_source_arrangement": {
+          "type": "boolean",
+          "description": "handoff §4.3 / spec §15 substantial-similarity question: whether this synthesis reproduces the selection or arrangement of any input source. A REQUIRED, explicit boolean — never left to inference. `true` is representable so the fact can be recorded honestly; it is a rights SIGNAL for a human to weigh, and nothing here clears it (D7)."
+        },
+        "first_party_rights_holder": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "The named first-party rights holder for this authored content, or null when unassessed (D2: null is an explicit 'not yet determined', never an omitted key). This is the item-level home for the first-party authorship fact that `rights_record` structurally cannot describe (handoff §9.5, DEF-R4) — it is a fact about who owns the authored claim, NOT a clearance and carrying no release authority (D7)."
+        },
+        "attestation": {
+          "$ref": "#/$defs/synthesisAttestation",
+          "description": "The candidate-only human-attestation gate (handoff §4.4, D6). A derived synthesis is a clinical claim and needs the same human attestation as any binding clinical assertion; no agent may author one as authoritative."
+        }
+      }
+    },
+    "synthesisInputRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_item_id", "contribution"],
+      "description": "EPR3-T7 (handoff §4.3). One attributed input to a synthesis: WHICH item it draws on and HOW that item contributed. The join to the input's own third-party rights record is via `rights/rights-ledger.json` (D4), not an inline rights record here — and it is the INPUT's rights record, never the synthesis's (the synthesis itself has none, §9.5).",
+      "properties": {
+        "evidence_item_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The contributing evidence item's id — e.g. a source passage id (`AAP2026_IDA#ev_002`) or another synthesis's id (`SYNTH_...`). Load-bearing: this is the attribution D3 says cannot be reconstructed once a synthesis is written."
+        },
+        "rights_record_id": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "OPTIONAL pointer to the INPUT's third-party rights record — the input is third-party even though the synthesis over it is first-party. Null or absent when the input carries no separate rights record or the join is left to `rights/rights-ledger.json` (D4). Never the synthesis's own rights record: a `derived_synthesis` has none (handoff §9.5)."
+        },
+        "contribution": {
+          "enum": ["anchor", "corroborating", "contradicting", "scope_limiting"],
+          "description": "How this input contributed (handoff §4.3). Deliberately coarse — the goal is reconstructability, not a full argument graph. Closed enum: an unrecognised value fails."
+        }
+      }
+    },
+    "synthesisAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "attestation_record"],
+      "description": "EPR3-T7 (FR-WP3-07, handoff §4.4, D6). The human-attestation gate on a first-party synthesis, modelled EXACTLY like `$defs/passage`'s `judgment_basis` D6 pattern. `status` may leave `candidate` ONLY against an `attestation_record` matching `$defs/synthesisAttestationRecord`, and `attestation_record` is `const: null` in this schema version — so the authoritative (`attested`) state is STRUCTURALLY UNREACHABLE, not merely unset: no enum value, flag, or field combination reaches it without a human attestation record this feature does not create, and a fixture attempting to mark one attested fails whether it leaves the record null (fails the pairing rule) or supplies a real record (fails the `const`). This is a coverage/consistency constraint on a candidate, never a clearance gate: a synthesis at `status: candidate` validates cleanly and always will (D7).",
+      "properties": {
+        "status": {
+          "enum": ["candidate", "attested"],
+          "default": "candidate",
+          "description": "Agents may only ever write `candidate`. `attested` exists so the answer is representable once a qualified human attests — its reachability is gated by the pairing rule below (written against the attestation SHAPE, so it stays operative the day a real attestation process relaxes the `const`), NOT by its absence from this enum. This is the same posture `$defs/judgmentBasis` takes toward its non-`unassessed` members. `default` is an inert annotation (`scripts/lib/json-schema-lite.mjs` ignores it); `status` is REQUIRED, so no record relies on a default being applied."
+        },
+        "attestation_record": {
+          "const": null,
+          "description": "REQUIRED key, forced `const: null` under this schema version (D6) — the same posture `$defs/passage.judgment_basis_attestation` and `schemas/rule.schema.json`'s `clinicalApprovers[]` take. The human attestation that would move a synthesis off `candidate` does not exist in this project and MUST NOT be agent-authored. Its shape for a future real process is specified at `$defs/synthesisAttestationRecord` and applied by the pairing rule below; relaxing this `const` is the deliberate, reviewable act by which a synthesis would first become authoritative — never done to make a build pass. Carries no clearance authority and is not a clearance surface (D7)."
+        }
+      },
+      "allOf": [
+        {
+          "description": "EPR3-T7 (handoff §4.4, D6): `status` may leave `candidate` ONLY against a human attestation record. Combined with `attestation_record`'s `const: null`, this makes `attested` structurally unreachable in this schema version. Written against the attestation SHAPE (`$defs/synthesisAttestationRecord`), not a bare `false`, so it remains the operative constraint the day a real process relaxes the const. Direction matters: this is a coverage/consistency constraint on a candidate record, not a clearance gate — a synthesis at `status: candidate` validates cleanly (D7).",
+          "if": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "not": { "const": "candidate" } } }
+          },
+          "then": {
+            "type": "object",
+            "required": ["attestation_record"],
+            "properties": { "attestation_record": { "$ref": "#/$defs/synthesisAttestationRecord" } }
+          }
+        }
+      ]
+    },
+    "synthesisAttestationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attested_by", "attestation_ref", "attested_on"],
+      "description": "EPR3-T7 (handoff §4.4, D6). The shape a human synthesis-attestation would take IF one existed. NOTHING IN THIS REPOSITORY VALIDATES AGAINST THIS DEFINITION TODAY and nothing may be authored against it by an agent: `$defs/synthesisAttestation.attestation_record` is `const: null`, so this shape is reachable only after a deliberate, reviewable schema change made alongside a real attestation process. Specified now so the pairing rule above constrains something real rather than a bare `false`, and so the element shape is already agreed when that process exists — the same posture `$defs/judgmentBasisAttestation` and `schemas/rule.schema.json`'s `clinicalApprovers[]`'s `items` take under `maxItems: 0`.",
+      "properties": {
+        "attested_by": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The named human who attested this synthesis as a clinical claim. Never an agent, an ARC/council run, a Research Foundry run id, or a role name standing in for a person."
+        },
+        "attestation_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Addressable reference to the attestation record itself (the record, not a summary). No attestation ledger with a resolvable id space exists for synthesis today; establishing one is out of scope for this feature (DEF-R4)."
+        },
+        "attested_on": {
+          "type": "string",
+          "format": "date",
+          "description": "The date the human attested — supplied by the attesting human, never by wall-clock time inside a generator (the feature's determinism rule)."
+        }
+      }
     },
     "applicability": {
       "type": "object",
