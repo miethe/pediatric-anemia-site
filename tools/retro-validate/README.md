@@ -260,9 +260,11 @@ path, CLI flag, or code path in this tool that admits real, identified patient d
 through the engine build identified by the pinned registry digest -- **never "current tree"**.
 
 **Candidate resolution.** `schemas/release-registry.schema.json` (P1-T5, shared, read-only) is the
-ONLY P1-T5 artifact this task consumes -- `releases/registry.json` itself does not exist yet
-(P3-T4), so `--registry <path>` always points at a **dry-run registry fixture**
-(`tests/fixtures/ef-retro/registries/<name>/registry.json`). `resolveCandidate()`:
+ONLY P1-T5 artifact this task consumes. `releases/registry.json` (seeded empty by P3-T4,
+`{ "schemaVersion": 1, "entries": [] }`) now exists at the repo root, but this tool's own tests
+still point `--registry <path>` at a **dry-run registry fixture**
+(`tests/fixtures/ef-retro/registries/<name>/registry.json`) rather than the real (still-empty)
+repo-root file, since no real candidate has been registered against it. `resolveCandidate()`:
 
 1. Validates the registry document against that schema.
 2. Finds the exactly-one entry whose `packDigest` equals `--candidate-digest` -- zero matches (an
@@ -504,9 +506,10 @@ branch of all 5 OQ-5 measures at once; each case's own `tags` name the branch it
   `lib/identifier-denylist.mjs` in isolation: key-normalization/exact-match behavior (not a
   substring match), one positive + one negative example per PHI-marker pattern, recursive
   walk/path-reporting correctness, and the standard zero-network/zero-LLM structural proof.
-- `tests/ef-retro-boundary.test.mjs` (P4-T2, updated P4-T3, updated P4 fix cycle) -- `run`/`report` call-order/refusal
-  contract; `run`'s post-boundary expectation is now "requires --candidate-digest/--registry"
-  (real, P4-T3) where `report`'s remains "scaffold NotImplementedError" (still P4-T4-pending).
+- `tests/ef-retro-boundary.test.mjs` (P4-T2, updated P4-T3, updated P4-T4, updated P4 fix cycle) --
+  `run`/`report` call-order/refusal contract; each verb's own post-boundary usage requirement is
+  real and neither ever falls through to the scaffold `NotImplementedError` placeholder once its
+  boundary check clears (`run`: `--candidate-digest`/`--registry`, P4-T3; `report`: `--run`, P4-T4).
 - `tests/ef-retro-determinism.test.mjs` (P4-T3) -- candidate resolution (success + every
   fail-closed class: digest-mismatch, drift, unregistered moduleId, missing pinned content, schema
   violation), sorted case order, `meta.generatedAt` stripping, double-run byte-identity (direct

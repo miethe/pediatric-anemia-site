@@ -233,26 +233,23 @@ The custodian transfers the signed manifest (and, for the record, the public key
 definition) back to the release author or program record via the same offline, out-of-band channel
 used in § 4.5. The private key itself never leaves the custody machine or its custody device.
 
-### 4.7 Registering (once P3-T4's `register` verb exists)
+### 4.7 Registering (`register` verb, P3-T4, implemented)
 
-Once `tools/release-sign`'s `register` verb (P3-T4) is implemented, the release author (not the
+`tools/release-sign`'s `register` verb (P3-T4) is implemented: the release author (not the
 custodian — registration is a distinct, later step from signing) appends the signed candidate's
-integrity record to `releases/registry.json` per that verb's documented usage. As of this runbook's
-authoring, `register` is not yet implemented (`tools/release-sign/README.md` marks it "Not yet
-implemented — P3-T4"); this runbook is written to describe the full intended flow rather than only
-the steps implemented as of P3-T7, and will need no revision once P3-T4 lands, since it already
-reflects `schemas/release-registry.schema.json`'s documented shape (append-only, `signature`/
-`signedAt` fields on the registry entry itself always `null` — the real signature lives on the
-manifest, never duplicated onto the registry row).
+integrity record to `releases/registry.json` per that verb's documented usage
+(`tools/release-sign/README.md`'s "register verb usage"). This step composes with everything above
+it in this section without modification — it already reflects `schemas/release-registry.schema.json`'s
+documented shape (append-only, `signature`/`signedAt` fields on the registry entry itself always
+`null` — the real signature lives on the manifest, never duplicated onto the registry row).
 
-### 4.8 Verification (once P3-T3's `verify` verb exists)
+### 4.8 Verification (`verify` verb, P3-T3, implemented)
 
 Anyone — including CI or an agent, since `verify` is the sole CI/agent-reachable surface of this tool
 (ruling R3) — can subsequently confirm the signed candidate's integrity via `tools/release-sign`'s
 `verify` verb against `releases/registry.json`, without ever touching, needing, or being able to
-reconstruct the private key. As of this runbook's authoring, `verify` is not yet implemented
-(P3-T3 is a sibling task in this same phase); this runbook does not depend on it being complete to be
-accurate about the intended procedure, and needs no revision once P3-T3 lands.
+reconstruct the private key. `verify` is implemented (P3-T3); this step composes with everything
+above it in this section without modification.
 
 ## 5. Rotation
 

@@ -7,7 +7,7 @@ surface wired into `npm run validate`" below.
 **Structural validity produced by this tool never implies clinical validity, safety, or release
 authorization.** No signature
 minted by this tool (dry-run or otherwise) confers clinical standing — see
-`docs/adr/0005-kb-serialization-signing-key-custody.md` and the forthcoming
+`docs/adr/0005-kb-serialization-signing-key-custody.md` and
 `docs/governance/signing-ceremony-runbook.md` (P3-T7).
 
 ## What this tool is, and is not
@@ -474,7 +474,7 @@ table (kept in sync by convention, not by generation) and each error class's exa
   registry decision this tool implements (Ed25519, `node:crypto`, flat append-only registry).
 - `docs/project_plans/design-specs/signed-release-key-custody.md` — the pre-E1 design-spec stub
   ADR-0005 seeded.
-- `docs/governance/signing-ceremony-runbook.md` (P3-T7, not yet authored) — the human-executed
-  offline key-generation/custody/signing/rotation runbook and gate G2 entry criteria.
+- `docs/governance/signing-ceremony-runbook.md` (P3-T7) — the human-executed offline
+  key-generation/custody/signing/rotation runbook and gate G2 entry criteria.
 - `schemas/release-manifest.schema.json` (P1-T5) — the schema `release-manifest.unsigned.json`
   (and, once signed, its `signature`-populated form) validates against.

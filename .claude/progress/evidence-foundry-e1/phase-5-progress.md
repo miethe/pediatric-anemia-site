@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 13
-completed_tasks: 5
+completed_tasks: 6
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -90,7 +90,7 @@ tasks:
     performance, release-readiness, or regulatory status; verify metrics say software-agreement;
     verify synthetic artifacts carry non-qualifying labels. Fix findings in place;
     produce a one-line-per-surface pass/fail checklist for karen (P5-GATE2 input).'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   - documentation-writer
@@ -102,6 +102,27 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: adaptive
+  note: 'Audited all 9 bounded surfaces (full read of every in-scope file + two keyword sweeps --
+    validity/safety/regulatory/release-readiness terms, and a softer proven/accurate/recommend/
+    certif/qualif/guarantee/validated sweep -- every hit manually reviewed for negation vs.
+    assertion). Result: 9/9 PASS on honesty language -- zero non-negated clinical-validity/safety/
+    diagnostic-performance/release-readiness/regulatory claims found anywhere in scope; every
+    agreement-report.json measure labeled "software agreement"; all 5 committed
+    modules/cbc_suite_v1/reviews/*.yaml records carry synthetic:true + a rationale stating
+    SYNTHETIC/NON-CREDENTIALED/non-qualifying explicitly. 3 documentation-staleness findings
+    (not honesty-language violations -- stale "not yet implemented"/"forthcoming" references to
+    tooling that has since landed: register/verify verbs, the signing-ceremony runbook itself,
+    releases/registry.json existing, and report''s real post-boundary logic) fixed in place across
+    tools/release-sign/README.md, docs/governance/signing-ceremony-runbook.md, and
+    tools/retro-validate/README.md. Full one-line-per-surface checklist:
+    .claude/worknotes/evidence-foundry-e1-v1/p5-t2-honesty-audit.md. Verification: the 6 test files
+    covering the 3 tools directly (ef-retro-boundary/determinism/metrics,
+    ef-release-sign-verify/ef-release-no-keys, ef-review-workflow) all green after the doc-only
+    edits; npm run validate green (unaffected, no schema/fixture touched).'
+  started: 2026-07-22T09:00:00Z
+  completed: 2026-07-22T09:45:00Z
+  evidence:
+  - doc: .claude/worknotes/evidence-foundry-e1-v1/p5-t2-honesty-audit.md
 - id: P5-T3
   description: 'docs/architecture.md — three new sections (FR-29): add concise sections
     for (a) the review workflow (five-role record chain, roster, append-only + independence
@@ -425,7 +446,7 @@ files_modified:
 - CHANGELOG.md
 - docs/project_plans/design-specs/*.md
 - .claude/progress/evidence-foundry-e1/**
-progress: 38
+progress: 46
 updated: '2026-07-22'
 ---
 
