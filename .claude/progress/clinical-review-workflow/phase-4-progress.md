@@ -8,11 +8,12 @@ prd_ref: docs/project_plans/PRDs/infrastructure/clinical-review-workflow-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/clinical-review-workflow-v1.md
 execution_model: batch-parallel
 phase: 4
-title: "Clinical Review Workflow v1 — Phase 4: Portal-Promotion Framework & Concept Assets"
-status: pending
+title: "Clinical Review Workflow v1 \u2014 Phase 4: Portal-Promotion Framework & Concept\
+  \ Assets"
+status: in_progress
 created: '2026-07-22'
 updated: '2026-07-22'
-started: null
+started: 2026-07-22T13:20Z
 completed: null
 commit_refs: []
 pr_refs: []
@@ -32,142 +33,171 @@ contributors:
 - codex-gpt-5.6-terra
 model_usage:
   primary: opus
-  external: [gpt-5.6-terra, sonnet]
+  external:
+  - gpt-5.6-terra
+  - sonnet
 tasks:
 - id: P4-T1
-  description: "OQ-8 portal-promotion framework text (FR-15/16, OQ-4). Draft the framework:\
-    \ (a) friction-metric categories + committed markdown observation-log format at\
-    \ .claude/worknotes/clinical-review-workflow/friction-observations.md (zero\
-    \ network/telemetry restated explicitly); (b) an explicit first-cut promotion threshold,\
-    \ stated as a proposal pending human ratification before it can trigger any action;\
-    \ (c) the authorized human decision-owner role name (never an agent, never rf/ARC\
-    \ output); (d) a decision-record template."
+  description: 'OQ-8 portal-promotion framework text (FR-15/16, OQ-4). Draft the framework:
+    (a) friction-metric categories + committed markdown observation-log format at
+    .claude/worknotes/clinical-review-workflow/friction-observations.md (zero network/telemetry
+    restated explicitly); (b) an explicit first-cut promotion threshold, stated as
+    a proposal pending human ratification before it can trigger any action; (c) the
+    authorized human decision-owner role name (never an agent, never rf/ARC output);
+    (d) a decision-record template.'
   status: pending
-  assigned_to: ["general-purpose (opus judgment)"]
-  dependencies: ["P1-GATE2 (Phase 1 complete)"]
-  estimated_effort: "1.0 pts"
+  assigned_to:
+  - general-purpose (opus judgment)
+  dependencies:
+  - P1-GATE2 (Phase 1 complete)
+  estimated_effort: 1.0 pts
   priority: high
   assigned_model: opus
   model_effort: adaptive
   target_surfaces:
   - .claude/worknotes/clinical-review-workflow/friction-observations.md
-  acceptance_criteria: "Framework names all four elements; the log format is a committed\
-    \ markdown file restating the zero-network/telemetry constraint verbatim; the\
-    \ decision-owner is a role name, not a person; the framework text explicitly states\
-    \ the threshold is a proposal pending human ratification."
+  acceptance_criteria: Framework names all four elements; the log format is a committed
+    markdown file restating the zero-network/telemetry constraint verbatim; the decision-owner
+    is a role name, not a person; the framework text explicitly states the threshold
+    is a proposal pending human ratification.
 - id: P4-T2
   description: "CONCEPT-ONLY watermarked portal mockups (FR-17, R6). Partially pre-delivered\
     \ during planning: docs/project_plans/design-specs/assets/clinical-review-portal-concept-v2.png\
-    \ (gpt-5.6 native image tool, 'CONCEPT ONLY — NOT COMMITTED' banner) is already\
-    \ committed. Task = verify/attach it to the design spec, add the manifest entry, and\
-    \ generate additional views only if the framework text needs them."
+    \ (gpt-5.6 native image tool, 'CONCEPT ONLY \u2014 NOT COMMITTED' banner) is already\
+    \ committed. Task = verify/attach it to the design spec, add the manifest entry,\
+    \ and generate additional views only if the framework text needs them."
   status: pending
-  assigned_to: ["codex gpt-5.6 image tool"]
+  assigned_to:
+  - codex gpt-5.6 image tool
   dependencies: []
-  estimated_effort: "1.0 pts"
+  estimated_effort: 1.0 pts
   priority: medium
   assigned_model: gpt-5.6-terra
   model_effort: medium
   target_surfaces:
   - docs/project_plans/design-specs/assets/
   acceptance_criteria: "Every image file under docs/project_plans/design-specs/assets/\
-    \ produced by this task carries the watermark; a companion manifest entry per asset\
-    \ records the watermark string (verified by a docs-truth grep test — pixel-OCR is out\
-    \ of scope)."
+    \ produced by this task carries the watermark; a companion manifest entry per\
+    \ asset records the watermark string (verified by a docs-truth grep test \u2014\
+    \ pixel-OCR is out of scope)."
 - id: P4-T3
   description: "Integrate framework + mockups into design spec (FR-15/17). Update\
     \ docs/project_plans/design-specs/clinical-review-portal-workflow.md with P4-T1's\
     \ framework section and P4-T2's mockup references; confirm the portal section's\
-    \ maturity field stays shaping — never promoted by this task."
+    \ maturity field stays shaping \u2014 never promoted by this task."
   status: pending
-  assigned_to: [documentation-writer]
-  dependencies: [P4-T1, P4-T2]
-  estimated_effort: "1.0 pts"
+  assigned_to:
+  - documentation-writer
+  dependencies:
+  - P4-T1
+  - P4-T2
+  estimated_effort: 1.0 pts
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
   target_surfaces:
   - docs/project_plans/design-specs/clinical-review-portal-workflow.md
-  acceptance_criteria: "Design spec's portal section contains the four framework elements\
-    \ and links each mockup asset; a docs-truth test confirms maturity: shaping unchanged."
+  acceptance_criteria: 'Design spec''s portal section contains the four framework
+    elements and links each mockup asset; a docs-truth test confirms maturity: shaping
+    unchanged.'
 - id: P4-GATE1
-  description: "task-completion-validator gate: verify Phase 4 exit gate — framework names\
-    \ metric + threshold + owner + template; mockups labeled CONCEPT-ONLY; no portal code;\
-    \ npm run check green."
+  description: "task-completion-validator gate: verify Phase 4 exit gate \u2014 framework\
+    \ names metric + threshold + owner + template; mockups labeled CONCEPT-ONLY; no\
+    \ portal code; npm run check green."
   status: pending
-  assigned_to: [task-completion-validator]
-  dependencies: [P4-T1, P4-T2, P4-T3]
-  estimated_effort: "—"
+  assigned_to:
+  - task-completion-validator
+  dependencies:
+  - P4-T1
+  - P4-T2
+  - P4-T3
+  estimated_effort: "\u2014"
   priority: critical
   assigned_model: sonnet
   model_effort: adaptive
-  acceptance_criteria: "All exit-gate criteria pass; recorded in phase progress note."
+  acceptance_criteria: All exit-gate criteria pass; recorded in phase progress note.
 - id: P4-GATE2
-  description: "karen milestone review (Tier 3, per decisions block §2). Independently\
+  description: "karen milestone review (Tier 3, per decisions block \xA72). Independently\
     \ re-check against the actual diff: (1) the framework names a metric format, threshold,\
-    \ owner-role, and decision-record template — not a vaguer restatement; (2) the\
-    \ owner-role is never a person and never an agent/rf/ARC role; (3) every mockup asset\
-    \ visibly carries the CONCEPT-ONLY watermark and the design spec's portal section is\
-    \ still maturity: shaping; (4) zero portal code exists anywhere in the diff."
+    \ owner-role, and decision-record template \u2014 not a vaguer restatement; (2)\
+    \ the owner-role is never a person and never an agent/rf/ARC role; (3) every mockup\
+    \ asset visibly carries the CONCEPT-ONLY watermark and the design spec's portal\
+    \ section is still maturity: shaping; (4) zero portal code exists anywhere in\
+    \ the diff."
   status: pending
-  assigned_to: [karen]
-  dependencies: [P4-GATE1]
-  estimated_effort: "—"
+  assigned_to:
+  - karen
+  dependencies:
+  - P4-GATE1
+  estimated_effort: "\u2014"
   priority: critical
   assigned_model: sonnet
   model_effort: adaptive
-  acceptance_criteria: "karen sign-off recorded; any gap becomes a task before this gate\
-    \ reopens."
+  acceptance_criteria: karen sign-off recorded; any gap becomes a task before this
+    gate reopens.
 - id: P4-GATE3
-  description: "codex gpt-5.6-terra read-only second-opinion diff review of the full P4\
-    \ changeset against R6 and FR-15..17 — checks for any language that reads as a portal\
-    \ commitment rather than an informing artifact."
+  description: "codex gpt-5.6-terra read-only second-opinion diff review of the full\
+    \ P4 changeset against R6 and FR-15..17 \u2014 checks for any language that reads\
+    \ as a portal commitment rather than an informing artifact."
   status: pending
-  assigned_to: ["codex (read-only)"]
-  dependencies: [P4-GATE2]
-  estimated_effort: "—"
+  assigned_to:
+  - codex (read-only)
+  dependencies:
+  - P4-GATE2
+  estimated_effort: "\u2014"
   priority: high
   assigned_model: gpt-5.6-terra
   model_effort: high
-  acceptance_criteria: "Review recorded; any flagged gap becomes a task before Phase 5 opens."
-
+  acceptance_criteria: Review recorded; any flagged gap becomes a task before Phase
+    5 opens.
 parallelization:
-  batch_1: [P4-T1, P4-T2]
-  batch_2: [P4-T3]
-  batch_3: [P4-GATE1]
-  batch_4: [P4-GATE2]
-  batch_5: [P4-GATE3]
-  critical_path: [P4-T1, P4-T3, P4-GATE1, P4-GATE2, P4-GATE3]
-  estimated_total_time: "~1.5 engineer-days"
-
+  batch_1:
+  - P4-T1
+  - P4-T2
+  batch_2:
+  - P4-T3
+  batch_3:
+  - P4-GATE1
+  batch_4:
+  - P4-GATE2
+  batch_5:
+  - P4-GATE3
+  critical_path:
+  - P4-T1
+  - P4-T3
+  - P4-GATE1
+  - P4-GATE2
+  - P4-GATE3
+  estimated_total_time: ~1.5 engineer-days
 blockers: []
-
 success_criteria:
 - id: SC-1
-  description: "Framework names metric format, threshold-as-proposal, owner-role, decision-record template"
+  description: Framework names metric format, threshold-as-proposal, owner-role, decision-record
+    template
   status: pending
 - id: SC-2
-  description: "Owner-role is a role name only — never a person, never an agent/rf/ARC role"
+  description: "Owner-role is a role name only \u2014 never a person, never an agent/rf/ARC\
+    \ role"
   status: pending
 - id: SC-3
-  description: "Every mockup asset carries the CONCEPT-ONLY watermark; design spec portal section stays maturity: shaping"
+  description: 'Every mockup asset carries the CONCEPT-ONLY watermark; design spec
+    portal section stays maturity: shaping'
   status: pending
 - id: SC-4
-  description: "Zero portal code anywhere in the diff"
+  description: Zero portal code anywhere in the diff
   status: pending
 - id: SC-5
-  description: "npm run check green"
+  description: npm run check green
   status: pending
-
 files_modified:
 - .claude/worknotes/clinical-review-workflow/friction-observations.md
 - docs/project_plans/design-specs/assets/
 - docs/project_plans/design-specs/clinical-review-portal-workflow.md
-
-notes: "Wave 2 (parallel to Phase 2, both gated on Phase 1 only). Tier 3 milestone: this\
-  \ phase carries the feature's only mid-feature karen gate — do not seal P4-GATE1 as\
-  \ sufficient on its own. Hard guardrail: no task in this phase writes a single line of\
-  \ portal code; the mockups are CONCEPT-ONLY informing artifacts, not a build commitment."
+notes: "Wave 2 (parallel to Phase 2, both gated on Phase 1 only). Tier 3 milestone:\
+  \ this phase carries the feature's only mid-feature karen gate \u2014 do not seal\
+  \ P4-GATE1 as sufficient on its own. Hard guardrail: no task in this phase writes\
+  \ a single line of portal code; the mockups are CONCEPT-ONLY informing artifacts,\
+  \ not a build commitment."
 ---
 
 # clinical-review-workflow — Phase 4: Portal-Promotion Framework & Concept Assets
