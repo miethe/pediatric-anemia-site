@@ -1,0 +1,15 @@
+# tests/fixtures/clinical-review-workflow/modules/malformed_yaml_content_v1/reviews/rr-0001-clinical-1.yaml
+#
+# P5-T1 (Clinical Review Workflow v1, Phase 5, F8 class iv) CLI-test fixture ONLY. Deliberately
+# well-formed FILENAME (rr-0001-clinical-1.yaml, satisfies lib/store.mjs's parseReviewId) but
+# genuinely UNPARSEABLE YAML CONTENT (the double-quoted string below is never closed) -- distinct
+# from tests/fixtures/ef-review-record-cli/modules/malformed_v1/, which is deliberately malformed
+# at the FILENAME level instead (a non-rr-<seq4>-<role> name). This fixture exercises
+# tools/rf-bundle-to-kb-pack/lib/yaml-lite.mjs's YamlParseError path via
+# lib/store.mjs#listModuleReviewRecords, driven through status/validate/sign in
+# tests/ef-review-workflow.test.mjs's P5-T1 section (F8 class iv, "malformed YAML"). Content below
+# is irrelevant beyond the unterminated string; the parse failure is the point.
+
+schemaVersion: 1
+rationale: "this quoted string is deliberately never closed, forcing a YAML parse failure
+reviewerId: p5t1-malformed-content-fixture

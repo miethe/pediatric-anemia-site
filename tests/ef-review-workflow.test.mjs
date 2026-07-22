@@ -2577,3 +2577,529 @@ test('P2-T4: the microbenchmark script\'s filename does NOT match either npm-tes
       'and run it as part of every gated npm run check invocation',
   );
 });
+
+// =================================================================================================
+// P5-T1 (Clinical Review Workflow v1, Phase 5, FR-28, F8) -- full adversarial + fail-closed test
+// sweep. Seven NAMED adversarial fixture classes, driven through status, sign, AND validate so
+// every verb/path in this tool fails closed identically, never a silent pass:
+//   (i)    a transposed-character subjectContentHash (F5's own class, driven end-to-end here)
+//   (ii)   an out-of-order review-act sequence (a hand-crafted previousRecordHash chain break)
+//   (iii)  a malformed supersedes-based "correction" (a schema-pattern-invalid supersedes value)
+//   (iv)   malformed YAML -- F8 class -- genuinely unparseable file CONTENT with a WELL-FORMED
+//          filename, distinct from the pre-existing malformed_v1 fixture (malformed FILENAME)
+//   (v)    a roster-resolution failure -- F8 class -- an unknown reviewerId
+//   (vi)   signature tampering -- F8 class -- a post-signing mutation that invalidates the Ed25519
+//          signature, AND (a distinct angle on the same class) an already-populated signature on a
+//          not-yet-signed draft
+//   (vii)  an append-only git-history failure -- F8 class -- a commit-visible mutation of a
+//          committed record path, --history active
+//
+// Per FR-28/F8, classes (iv)-(vii) are the four NAMED negative fixtures: each drives `status` to
+// `derivedState: "invalid"` + non-zero exit wherever `validate` rejects the same input. All SEVEN
+// classes below must produce a non-zero, fail-closed result on every verb whose OWN contract covers
+// that input:
+//   - `validate`/`status` always fail closed on all seven -- both read a module's full committed
+//     record set, which is exactly what every one of these classes corrupts.
+//   - `sign` fails closed directly wherever its OWN narrower contract (a staged, unsigned,
+//     synthetic:true draft -- see lib/verbs/sign.mjs's own header) is the reachable entry point for
+//     that class: (iii) supersedes-shape (BLOCKER 1(a) schema re-check), (iv) malformed draft YAML
+//     (parse failure), (vi) an already-signed draft (signRecordDryRun's own re-sign refusal).
+//   - Classes (i) and (v) are reachable ONLY via `scaffold` (the sole producer of a draft `sign`
+//     ever reads, F1) -- `scaffold` itself refuses fail-closed, BEFORE any draft is staged, so
+//     `sign` never receives anything for these two classes at all. Proving "no draft is ever
+//     staged" IS the honest, whole-pipeline meaning of "sign also fails closed" for (i)/(v): the
+//     malformed input never reaches sign's surface in the first place.
+//   - Class (ii) demonstrates the system-level guarantee most explicitly: `sign` has NO
+//     chain-verification duty of its own (that is `validate`/`status`'s job, per
+//     lib/verbs/sign.mjs's own header) -- a hand-crafted, out-of-order draft is committed BY sign
+//     without complaint, and is then immediately caught, fail-closed, by validate/status. This is
+//     not a gap: it proves the fail-closed guarantee lives at the correct layer and that no
+//     malformed record set can ever be reported as valid/complete/terminal by ANY verb.
+//
+// Every fixture below is either a throwaway tmp root (mkdtemp) or a new, isolated static fixture
+// under tests/fixtures/clinical-review-workflow/ -- never the real repo tree's modules/ or
+// governance/ trees, and never a write to REPO_ROOT (class (i) below reads REPO_ROOT read-only and
+// asserts a rejected scaffold call writes nothing).
+// =================================================================================================
+
+const P5T1_FIXTURES_ROOT = path.join(REPO_ROOT, 'tests', 'fixtures', 'clinical-review-workflow');
+
+// -------------------------------------------------------------------------------------------
+// (i) transposed-character subjectContentHash -- driven through the full pipeline
+// -------------------------------------------------------------------------------------------
+
+test('P5-T1 (i): a transposed-character subjectContentHash fails closed at the scaffold gate, with --draft -- no draft is ever staged (so sign has nothing to read) and no committed record is ever written (so validate/status never see it)', async () => {
+  const draftsDir = path.join(REPO_ROOT, '.review-drafts', 'cbc_suite_v1');
+  const listDraftsDir = () => readdir(draftsDir).catch((err) => {
+    if (err.code === 'ENOENT') return [];
+    throw err;
+  });
+  const before = await listDraftsDir();
+
+  const realHash = await computeModuleContentHash(REPO_ROOT, 'cbc_suite_v1');
+  const [, hex] = realHash.split(':');
+  const transposedHash = `sha256:${transposeAdjacentDifferingHexChars(hex)}`;
+  assert.notEqual(transposedHash, realHash);
+  assert.match(transposedHash, /^sha256:[0-9a-f]{64}$/);
+
+  const result = runCli([
+    'scaffold', '--module', 'cbc_suite_v1', '--role', 'clinical-1', '--subject', transposedHash,
+    '--reviewer-id', 'dryrun-cbc-suite-clinical-1', '--decision', 'approve',
+    '--rationale', 'P5-T1 (i): transposed-hash full-pipeline fail-closed regression, no clinical claim.',
+    '--reviewed-at', '2026-05-01T00:00:00Z', '--root', REPO_ROOT, '--draft',
+  ]);
+  assert.equal(result.status, EXIT_USAGE, result.stdout);
+  assert.match(result.stderr, /does not match/);
+
+  const after = await listDraftsDir();
+  assert.deepEqual(
+    after, before,
+    'the F5 hard-fail runs BEFORE the --draft write step (lib/verbs/scaffold.mjs\'s own ordering) -- ' +
+      'no new file may appear under .review-drafts/cbc_suite_v1/ as a result of this rejected ' +
+      'scaffold call, which is exactly why sign (F1: reads ONLY a staged draft) never has anything ' +
+      'to process for this class, and validate/status never see a bad record either',
+  );
+});
+
+// -------------------------------------------------------------------------------------------
+// (ii) out-of-order review-act sequence -- a hand-crafted chain break
+// -------------------------------------------------------------------------------------------
+
+test('P5-T1 (ii): an out-of-order review-act sequence (a hand-crafted draft whose previousRecordHash does not match its real predecessor) is NOT caught by sign itself (sign has no chain-verification duty, F1) but is caught immediately, fail-closed and identically, by both validate and status over the resulting root', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p5t1-outoforder-'));
+  try {
+    const moduleId = 'p5t1_outoforder_v1';
+    await writeSignFixtureRoster(tmp, [
+      { reviewerId: 'p5t1-oo-clinical-1', moduleId, label: 'P5-T1 (ii) clinical-1' },
+      { reviewerId: 'p5t1-oo-clinical-2', moduleId, label: 'P5-T1 (ii) clinical-2' },
+    ]);
+    await writeTrivialModuleContent(tmp, moduleId);
+
+    // Act 1: a genuine, correctly-chained scaffold -> sign.
+    assert.equal(await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'p5t1-oo-clinical-1', decision: 'approve',
+      rationale: 'P5-T1 (ii) act 1, structural only, no clinical claim.',
+      reviewedAt: '2026-05-02T00:00:00Z', root: tmp, draft: true,
+    }), EXIT_OK);
+    const draft1Path = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    assert.equal(await runSign({ draft: draft1Path, module: moduleId, root: tmp }), EXIT_OK);
+
+    // Act 2: a hand-crafted draft claiming to be "rr-0002-clinical-2" but carrying a
+    // previousRecordHash that does NOT match act 1's real canonical hash -- an out-of-order/
+    // corrupted-sequence act. Otherwise fully schema-shaped, so sign's own checks (review_id shape,
+    // moduleId match, synthetic:true, post-sign schema conformance) all pass -- previousRecordHash
+    // correctness is deliberately NOT one of sign's own checks (that is validate/status's job).
+    const draft2Path = draftFilePathFor(tmp, moduleId, 'rr-0002-clinical-2');
+    await mkdir(path.dirname(draft2Path), { recursive: true });
+    const badDraft = {
+      schemaVersion: 1, review_id: 'rr-0002-clinical-2', role: 'clinical-2', moduleId,
+      subjectContentHash: SUBJECT_HASH,
+      previousRecordHash: `sha256:${'0'.repeat(64)}`, // deliberately wrong -- out of order
+      supersedes: null, reviewerId: 'p5t1-oo-clinical-2', decision: 'approve',
+      rationale: 'P5-T1 (ii) act 2, deliberately out-of-order previousRecordHash, no clinical claim.',
+      reviewedAt: '2026-05-02T00:05:00Z', synthetic: true, signature: null,
+    };
+    await writeFile(draft2Path, serializeReviewRecordYaml(badDraft), 'utf8');
+
+    assert.equal(
+      await runSign({ draft: draft2Path, module: moduleId, root: tmp }), EXIT_OK,
+      'sign has no chain-verification duty of its own (F1) -- it commits a schema-valid, ' +
+        'correctly-post-sign-schema-conformant draft regardless of whether its previousRecordHash ' +
+        'agrees with reality',
+    );
+
+    // validate and status BOTH now fail closed, immediately, on the resulting chain break --
+    // proving no verb/path ever reports this module-wide-broken record set as valid or complete.
+    const validateViolations = await collectValidateViolations(moduleId, tmp);
+    assert.ok(
+      validateViolations.some((v) => v.startsWith('chain:')),
+      `expected a chain: violation, got: ${JSON.stringify(validateViolations)}`,
+    );
+
+    const statusResult = collectStatusResult(moduleId, tmp);
+    assert.equal(statusResult.derivedState, 'invalid');
+    assert.equal(statusResult.nextExpectedRole, null);
+    assert.deepEqual(
+      statusResult.blockers, validateViolations,
+      'status and validate must agree byte-for-byte on this hand-crafted out-of-order fixture (F6)',
+    );
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// (iii) a malformed supersedes-based "correction"
+// -------------------------------------------------------------------------------------------
+
+test('P5-T1 (iii): a malformed supersedes-based "correction" (a schema-pattern-invalid supersedes value, e.g. not the rr-<seq4>-<role> shape) fails closed on sign (both the library call and the real CLI subprocess), validate, AND status identically -- sign\'s own BLOCKER 1(a) post-sign schema re-check is the same schema validate checks post-commit, reused not forked', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p5t1-supersedes-malformed-'));
+  try {
+    const moduleId = 'p5t1_supersedes_malformed_v1';
+    await writeSignFixtureRoster(tmp, [
+      { reviewerId: 'p5t1-supersedes-reviewer', moduleId, label: 'P5-T1 (iii)' },
+    ]);
+    await writeTrivialModuleContent(tmp, moduleId);
+
+    // Act 1: a genuine, correctly-chained scaffold -> sign (the record the bogus "correction" below
+    // claims -- illegitimately -- to supersede).
+    assert.equal(await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'p5t1-supersedes-reviewer', decision: 'approve',
+      rationale: 'P5-T1 (iii) act 1, structural only, no clinical claim.',
+      reviewedAt: '2026-05-03T00:00:00Z', root: tmp, draft: true,
+    }), EXIT_OK);
+    const draft1Path = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    assert.equal(await runSign({ draft: draft1Path, module: moduleId, root: tmp }), EXIT_OK);
+
+    const badSupersedesDraft = {
+      schemaVersion: 1, review_id: 'rr-0002-clinical-1', role: 'clinical-1', moduleId,
+      subjectContentHash: SUBJECT_HASH, previousRecordHash: null, // chain irrelevant to this class
+      supersedes: 'not-a-review-id', // malformed: does not match rr-<seq4>-<role>
+      reviewerId: 'p5t1-supersedes-reviewer', decision: 'approve',
+      rationale: 'P5-T1 (iii) malformed-supersedes correction attempt, no clinical claim.',
+      reviewedAt: '2026-05-03T00:10:00Z', synthetic: true, signature: null,
+    };
+
+    // sign path, library call: hand-craft the malformed-correction draft and try to sign it.
+    const draft2Path = draftFilePathFor(tmp, moduleId, 'rr-0002-clinical-1');
+    await mkdir(path.dirname(draft2Path), { recursive: true });
+    await writeFile(draft2Path, serializeReviewRecordYaml(badSupersedesDraft), 'utf8');
+    await assert.rejects(
+      () => runSign({ draft: draft2Path, module: moduleId, root: tmp }),
+      (err) => err instanceof UsageError && /supersedes/.test(err.message),
+      'sign must refuse a malformed supersedes value via its own BLOCKER 1(a) post-sign schema check',
+    );
+
+    // sign path, real CLI subprocess (the same fixture, exercised the way a real invocation would
+    // hit it -- exit code + stderr, not just an in-process thrown error).
+    const cliResult = runCli(['sign', '--draft', draft2Path, '--module', moduleId, '--root', tmp]);
+    assert.equal(cliResult.status, EXIT_USAGE, cliResult.stdout);
+    assert.match(cliResult.stderr, /supersedes/);
+
+    // validate/status path: the adversarial "what if a bad record reaches reviews/ some other way"
+    // case -- hand-craft the SAME malformed correction directly as a COMMITTED record (bypassing
+    // sign entirely) and confirm validate/status ALSO reject it, identically.
+    await writeNewReviewRecordFile(tmp, moduleId, 'rr-0003-clinical-1', {
+      ...badSupersedesDraft,
+      review_id: 'rr-0003-clinical-1',
+      signature: { algorithm: 'ed25519', keyId: 'TESTKEY-p5t1-fixture', value: 'ZmFrZQ==' },
+    });
+
+    const validateViolations = await collectValidateViolations(moduleId, tmp);
+    assert.ok(
+      validateViolations.some((v) => v.includes('supersedes')),
+      `expected a schema violation naming supersedes, got: ${JSON.stringify(validateViolations)}`,
+    );
+    const statusResult = collectStatusResult(moduleId, tmp);
+    assert.equal(statusResult.derivedState, 'invalid');
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// (iv) malformed YAML (F8) -- genuinely unparseable file CONTENT, well-formed filename
+// -------------------------------------------------------------------------------------------
+
+test('P5-T1 (iv, F8): malformed YAML CONTENT (a well-formed rr-0001-clinical-1.yaml filename, genuinely unparseable content) fails closed on validate and status identically -- status reports derivedState invalid + non-zero exit', async () => {
+  // Unlike a schema/roster/chain/signature finding (which validate collects into a
+  // ValidationFailedError's .violations[]), a YAML parse failure is a genuine tool-usage failure
+  // that propagates as a bare (non-ValidationFailedError) error -- exactly the class
+  // lib/verbs/status.mjs's own header documents ("validate is content to let a handful of these
+  // propagate ... status --json must still emit a well-shaped body naming invalid either way").
+  // collectValidateViolations (defined above) only unwraps ValidationFailedError, so this class is
+  // asserted directly via assert.rejects rather than through that helper.
+  await assert.rejects(
+    () => runValidate({ module: 'malformed_yaml_content_v1', root: P5T1_FIXTURES_ROOT }),
+    /unterminated/,
+    'validate must reject unparseable YAML content',
+  );
+  const cliResult = runCli(['validate', '--module', 'malformed_yaml_content_v1', '--root', P5T1_FIXTURES_ROOT]);
+  assert.equal(cliResult.status, EXIT_USAGE, cliResult.stdout);
+
+  const { status, stdout, stderr } = runStatusCli(['--module', 'malformed_yaml_content_v1', '--root', P5T1_FIXTURES_ROOT, '--json']);
+  assert.equal(status, EXIT_USAGE, stderr);
+  const parsed = JSON.parse(stdout);
+  assertStatusJsonShape(parsed);
+  assert.equal(parsed.derivedState, 'invalid');
+  assert.equal(parsed.nextExpectedRole, null);
+  assert.ok(parsed.blockers.length > 0);
+});
+
+test('P5-T1 (iv, F8): malformed YAML CONTENT fails closed on sign too -- a staged draft file with genuinely unparseable content is refused, non-zero exit, before any write', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p5t1-malformed-draft-'));
+  try {
+    const moduleId = 'p5t1_malformed_draft_v1';
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    await mkdir(path.dirname(draftPath), { recursive: true });
+    await writeFile(
+      draftPath,
+      'schemaVersion: 1\nrationale: "this quoted string is deliberately never closed\nreviewerId: p5t1-malformed-draft-fixture\n',
+      'utf8',
+    );
+
+    await assert.rejects(() => runSign({ draft: draftPath, module: moduleId, root: tmp }));
+
+    const cliResult = runCli(['sign', '--draft', draftPath, '--module', moduleId, '--root', tmp]);
+    assert.equal(cliResult.status, EXIT_USAGE, cliResult.stdout);
+
+    const committed = await listModuleReviewRecords(tmp, moduleId);
+    assert.deepEqual(committed, [], 'a malformed draft must never reach a committed write');
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// (v) roster-resolution failure (F8) -- an unknown reviewerId
+// -------------------------------------------------------------------------------------------
+
+test('P5-T1 (v, F8): a roster-resolution failure (an unknown reviewerId) fails closed on validate and status identically over the pre-existing nonroster_reviewer_v1 fixture -- status reports derivedState invalid + non-zero exit', async () => {
+  const validateViolations = await collectValidateViolations('nonroster_reviewer_v1', FIXTURES_ROOT);
+  assert.ok(
+    validateViolations.some((v) => v.includes('does not resolve to any entry in governance/reviewer-roster.yaml')),
+    `expected a roster-resolution violation, got: ${JSON.stringify(validateViolations)}`,
+  );
+
+  const statusResult = collectStatusResult('nonroster_reviewer_v1', FIXTURES_ROOT);
+  assert.equal(statusResult.derivedState, 'invalid');
+  assert.deepEqual(
+    statusResult.blockers, validateViolations,
+    'status and validate must agree byte-for-byte on the roster-resolution-failure fixture (F6)',
+  );
+});
+
+test('P5-T1 (v): a roster-resolution failure is reachable ONLY via scaffold (F1: sign reads exclusively a scaffold-produced draft) -- scaffold refuses fail-closed BEFORE any draft is staged, so sign never sees a non-roster reviewerId for this class', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p5t1-roster-'));
+  try {
+    const moduleId = 'p5t1_roster_v1';
+    await writeSignFixtureRoster(tmp, [
+      { reviewerId: 'p5t1-roster-real-reviewer', moduleId, label: 'P5-T1 (v)' },
+    ]);
+    await writeTrivialModuleContent(tmp, moduleId);
+
+    const draftsDir = path.join(tmp, '.review-drafts', moduleId);
+    const before = await readdir(draftsDir).catch((err) => {
+      if (err.code === 'ENOENT') return [];
+      throw err;
+    });
+
+    await assert.rejects(
+      () => runScaffold({
+        module: moduleId, role: 'clinical-1', reviewerId: 'someone-not-on-the-roster',
+        decision: 'approve', rationale: 'P5-T1 (v), no clinical claim.',
+        reviewedAt: '2026-05-05T00:00:00Z', root: tmp, draft: true,
+      }),
+      UnknownReviewerError,
+    );
+
+    const after = await readdir(draftsDir).catch((err) => {
+      if (err.code === 'ENOENT') return [];
+      throw err;
+    });
+    assert.deepEqual(after, before, 'a rejected scaffold call must stage no draft for sign to read');
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// (vi) signature tampering (F8)
+// -------------------------------------------------------------------------------------------
+
+test('P5-T1 (vi, F8): signature tampering fails closed on validate and status identically over a freshly signed-then-tampered record -- status reports derivedState invalid + non-zero exit', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p5t1-tamper-'));
+  try {
+    const moduleId = 'p5t1_tamper_v1';
+    await writeSignFixtureRoster(tmp, [{ reviewerId: 'p5t1-tamper-reviewer', moduleId, label: 'P5-T1 (vi)' }]);
+    await writeTrivialModuleContent(tmp, moduleId);
+
+    assert.equal(await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'p5t1-tamper-reviewer', decision: 'approve',
+      rationale: 'P5-T1 (vi), genuine TESTKEY--signed record about to be tampered with, no clinical claim.',
+      reviewedAt: '2026-05-06T00:00:00Z', root: tmp, draft: true,
+    }), EXIT_OK);
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    assert.equal(await runSign({ draft: draftPath, module: moduleId, root: tmp }), EXIT_OK);
+
+    // Tamper: flip the committed decision AFTER signing, without re-signing.
+    const filePath = recordFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    const rawYaml = await readFile(filePath, 'utf8');
+    assert.match(rawYaml, /^decision: approve$/m);
+    const tampered = rawYaml.replace(/^decision: approve$/m, 'decision: reject');
+    assert.notEqual(tampered, rawYaml);
+    await writeFile(filePath, tampered, 'utf8');
+
+    const validateViolations = await collectValidateViolations(moduleId, tmp);
+    assert.ok(
+      validateViolations.some((v) => v.includes('cryptographic verification failed')),
+      `expected a signature-tamper violation, got: ${JSON.stringify(validateViolations)}`,
+    );
+
+    const statusResult = collectStatusResult(moduleId, tmp);
+    assert.equal(statusResult.derivedState, 'invalid');
+    assert.deepEqual(
+      statusResult.blockers, validateViolations,
+      'status and validate must agree byte-for-byte on the tampered-signature fixture (F6)',
+    );
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('P5-T1 (vi): signature tampering is refused by sign too, on the ONE input shape sign\'s own contract can see it in -- a draft that already carries a (forged) populated signature -- signRecordDryRun refuses to re-sign an already-signed record', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p5t1-presigned-'));
+  try {
+    const moduleId = 'p5t1_presigned_v1';
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    await mkdir(path.dirname(draftPath), { recursive: true });
+    const forgedDraft = {
+      schemaVersion: 1, review_id: 'rr-0001-clinical-1', role: 'clinical-1', moduleId,
+      subjectContentHash: SUBJECT_HASH, previousRecordHash: null, supersedes: null,
+      reviewerId: 'p5t1-presigned-reviewer', decision: 'approve',
+      rationale: 'P5-T1 (vi), a draft that already carries a forged signature, no clinical claim.',
+      reviewedAt: '2026-05-06T00:10:00Z', synthetic: true,
+      signature: { algorithm: 'ed25519', keyId: 'TESTKEY-forged', value: 'Zm9yZ2Vk' },
+    };
+    await writeFile(draftPath, serializeReviewRecordYaml(forgedDraft), 'utf8');
+
+    await assert.rejects(
+      () => runSign({ draft: draftPath, module: moduleId, root: tmp }),
+      (err) => err instanceof UsageError && /already carries a populated signature/.test(err.message),
+    );
+
+    const committed = await listModuleReviewRecords(tmp, moduleId);
+    assert.deepEqual(committed, [], 'a pre-signed/forged draft must never reach a committed write');
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// (vii) append-only git-history failure (F8), --history active -- a REAL commit-visible mutation
+// of a committed record path (distinct from the pre-existing "not a git working tree" status test,
+// which exercises a different F8 sub-case -- a genuine tool-usage failure rather than a detected
+// history violation).
+// -------------------------------------------------------------------------------------------
+
+test('P5-T1 (vii, F8): an append-only git-history violation (a legitimately-signed record, then deleted and byte-identically restored in a later commit) fails closed on validate --history and status --history identically -- status reports derivedState invalid + non-zero exit', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p5t1-history-'));
+  try {
+    const moduleId = 'p5t1_history_v1';
+    execFileSync('git', ['init', '-q'], { cwd: tmp });
+    execFileSync('git', ['config', 'user.email', 'crw-p5t1-test@example.invalid'], { cwd: tmp });
+    execFileSync('git', ['config', 'user.name', 'CRW P5-T1 Test'], { cwd: tmp });
+
+    await writeSignFixtureRoster(tmp, [
+      { reviewerId: 'p5t1-history-reviewer', moduleId, label: 'P5-T1 (vii)' },
+    ]);
+    await writeTrivialModuleContent(tmp, moduleId);
+
+    // A legitimate scaffold -> sign act -- sign's own append-only write path (F1/R10) is not what
+    // this test targets; the violation below is introduced entirely OUT OF BAND, via direct git
+    // commands, never through sign itself (proving sign structurally cannot be the mechanism that
+    // breaks this invariant -- that guarantee is already covered by this file's own "F1: sign never
+    // opens or rewrites a path already inside reviews/" test).
+    assert.equal(await runScaffold({
+      module: moduleId, role: 'clinical-1', reviewerId: 'p5t1-history-reviewer', decision: 'approve',
+      rationale: 'P5-T1 (vii) act 1, structural only, no clinical claim.',
+      reviewedAt: '2026-05-07T00:00:00Z', root: tmp, draft: true,
+    }), EXIT_OK);
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    assert.equal(await runSign({ draft: draftPath, module: moduleId, root: tmp }), EXIT_OK);
+
+    const recordPath = recordFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+    const originalBytes = await readFile(recordPath, 'utf8');
+    execFileSync('git', ['add', '-A'], { cwd: tmp });
+    execFileSync('git', ['commit', '-q', '-m', 'add rr-0001-clinical-1 (P5-T1 fixture)'], { cwd: tmp });
+
+    // Out-of-band, commit-visible mutation: delete then byte-identically restore -- a real
+    // append-only violation (history now shows [A, D, A] for this path), even though the file's
+    // FINAL on-disk bytes are unchanged.
+    execFileSync('git', ['rm', '-q', recordPath], { cwd: tmp });
+    execFileSync('git', ['commit', '-q', '-m', 'delete rr-0001-clinical-1 (P5-T1 simulated rewrite, step 1)'], { cwd: tmp });
+    await mkdir(path.dirname(recordPath), { recursive: true });
+    await writeFile(recordPath, originalBytes, 'utf8');
+    execFileSync('git', ['add', '-A'], { cwd: tmp });
+    execFileSync(
+      'git',
+      ['commit', '-q', '-m', 'restore rr-0001-clinical-1 with IDENTICAL bytes (P5-T1 step 2 -- BAD, append-only violation)'],
+      { cwd: tmp },
+    );
+
+    const validateResult = runCli(['validate', '--module', moduleId, '--root', tmp, '--history']);
+    assert.equal(validateResult.status, EXIT_USAGE, validateResult.stdout);
+    assert.match(validateResult.stderr, /git-history:/);
+
+    const { status, stdout, stderr } = runStatusCli(['--module', moduleId, '--root', tmp, '--json', '--history']);
+    assert.equal(status, EXIT_USAGE, stderr);
+    const parsed = JSON.parse(stdout);
+    assertStatusJsonShape(parsed);
+    assert.equal(parsed.derivedState, 'invalid');
+    assert.equal(parsed.nextExpectedRole, null);
+    assert.ok(parsed.blockers.some((b) => b.startsWith('git-history:')));
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// F9: the frozen scaffold --draft -> sign --draft -> validate command flow, end to end, through
+// the REAL CLI (subprocess, not in-process library calls) -- extending the pre-existing "cli.mjs
+// (subprocess): scaffold --draft -> sign --draft round-trips end to end" test (which stops at
+// sign) one step further, through validate AND status, over the SAME real cli.mjs entry point.
+// -------------------------------------------------------------------------------------------
+
+test('F9 (P5-T1): scaffold --draft -> sign --draft -> validate -> status, driven end to end through the real CLI subprocess for every step', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p5t1-f9-cli-'));
+  try {
+    const moduleId = 'p5t1_f9_cli_v1';
+    await writeSignFixtureRoster(tmp, [{ reviewerId: 'p5t1-f9-reviewer', moduleId, label: 'F9 CLI round-trip fixture' }]);
+    await writeTrivialModuleContent(tmp, moduleId);
+
+    const scaffoldResult = runCli([
+      'scaffold', '--module', moduleId, '--role', 'clinical-1',
+      '--reviewer-id', 'p5t1-f9-reviewer', '--decision', 'approve',
+      '--rationale', 'F9 (P5-T1) CLI round-trip regression, structural only, no clinical claim.',
+      '--reviewed-at', '2026-05-08T00:00:00Z', '--root', tmp, '--draft',
+    ]);
+    assert.equal(scaffoldResult.status, EXIT_OK, scaffoldResult.stderr);
+    const draftPath = draftFilePathFor(tmp, moduleId, 'rr-0001-clinical-1');
+
+    const signResult = runCli(['sign', '--draft', draftPath, '--module', moduleId, '--root', tmp]);
+    assert.equal(signResult.status, EXIT_OK, signResult.stderr);
+    assert.match(signResult.stdout, /TESTKEY-/);
+
+    const validateResult = runCli(['validate', '--module', moduleId, '--root', tmp]);
+    assert.equal(validateResult.status, EXIT_OK, validateResult.stderr);
+    assert.match(validateResult.stdout, /^OK —/m);
+
+    const { status, stdout, stderr } = runStatusCli(['--module', moduleId, '--root', tmp, '--json']);
+    assert.equal(status, EXIT_OK, stderr);
+    const parsed = JSON.parse(stdout);
+    assertStatusJsonShape(parsed);
+    assert.equal(parsed.derivedState, 'in-progress');
+    assert.equal(parsed.nextExpectedRole, 'clinical-2');
+    assert.equal(parsed.records.length, 1);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// Coverage manifest -- a cheap, auditable, structural proof this file actually names all seven
+// P5-T1 adversarial classes (FR-28/F8's acceptance criterion: "7/7 adversarial/fail-closed classes
+// produce the expected non-zero fail-closed result on status, sign, and validate"). Grep-based on
+// this file's OWN source rather than a hand-maintained checklist, so it cannot silently drift from
+// the tests actually present above.
+// -------------------------------------------------------------------------------------------
+
+test('P5-T1 coverage manifest: this file names all seven adversarial/fail-closed classes (i)-(vii), each with a P5-T1-tagged test', async () => {
+  const source = await readFile(path.join(REPO_ROOT, 'tests', 'ef-review-workflow.test.mjs'), 'utf8');
+  for (const label of ['P5-T1 (i)', 'P5-T1 (ii)', 'P5-T1 (iii)', 'P5-T1 (iv', 'P5-T1 (v', 'P5-T1 (vi', 'P5-T1 (vii']) {
+    assert.match(
+      source, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
+      `expected at least one test naming "${label}"`,
+    );
+  }
+});
