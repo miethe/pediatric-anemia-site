@@ -254,12 +254,23 @@ test('scaffold accepts a valid --supersedes review_id and rejects a malformed on
 
 // -------------------------------------------------------------------------------------------
 // P1-T3 (clinical-review-workflow-v1, FR-3/4/5, R7/R8) — scaffold ergonomics: auto-derived
-// subject + real-identity write path. This section runs against the REAL repo root/module
-// (read-only: `dryrun-cbc-suite-*` roster entries always resolve `synthetic: true`, so `scaffold`
-// only ever prints a DRAFT ONLY preview here — see lib/verbs/scaffold.mjs — it never writes to
-// modules/cbc_suite_v1/reviews/ or governance/reviewer-roster.yaml) plus one throwaway tmp root
-// that copies tests/fixtures/clinical-review-workflow/roster-with-real-entry.yaml into its own
-// governance/reviewer-roster.yaml — the real roster is never read or written by this section.
+// subject + real-identity write path.
+//
+// Only the FIRST test below ("auto-derives...") intentionally runs against the REAL repo
+// root/module: R8's own claim is that auto-derivation can never drift from what a fresh dry-run
+// over the SAME already-committed module would compute, which is only provable against real,
+// committed module content — so that one test reads (never writes) the real
+// governance/reviewer-roster.yaml (to resolve `dryrun-cbc-suite-clinical-1`, a `synthetic: true`
+// persona, so `scaffold` only ever prints a DRAFT ONLY preview — see lib/verbs/scaffold.mjs — it
+// never writes to modules/cbc_suite_v1/reviews/ or governance/reviewer-roster.yaml). The "zero
+// diff" test at the end of this section proves that read never became a write.
+//
+// The second test below (the explicit-`--subject` regression check) needs no real module or
+// roster content — it is retargeted to `FIXTURES_ROOT` (tests/fixtures/ef-review-record-cli/,
+// already used throughout this file) so it proves its regression without touching the real
+// roster at all. The third test uses its own throwaway tmp root that copies
+// tests/fixtures/clinical-review-workflow/roster-with-real-entry.yaml into its own
+// governance/reviewer-roster.yaml — never the real one.
 // -------------------------------------------------------------------------------------------
 
 test('scaffold without --subject on cbc_suite_v1 auto-derives the same subjectContentHash dry-run would (R8)', async () => {
@@ -280,14 +291,14 @@ test('scaffold without --subject on cbc_suite_v1 auto-derives the same subjectCo
   assert.equal(match[1], expected, 'auto-derived subjectContentHash must byte-match computeModuleContentHash');
 });
 
-test('scaffold against the real governance/reviewer-roster.yaml is behaviorally unchanged when --subject is supplied explicitly', () => {
+test('scaffold\'s explicit-subject code path is behaviorally unchanged by P1-T3\'s auto-derivation addition (fixture root, real roster untouched)', () => {
   const { status, stdout, stderr } = runCli([
-    'scaffold', '--module', 'cbc_suite_v1', '--role', 'lab',
+    'scaffold', '--module', 'scaffold_target_v1', '--role', 'lab',
     '--subject', SUBJECT_HASH,
-    '--reviewer-id', 'dryrun-cbc-suite-lab', '--decision', 'approve',
-    '--rationale', 'P1-T3 explicit-subject regression check against the real roster, no clinical claim.',
+    '--reviewer-id', 'synthetic-multirole-reviewer', '--decision', 'approve',
+    '--rationale', 'P1-T3 explicit-subject regression check against a fixture root, no clinical claim.',
     '--reviewed-at', '2026-02-04T00:05:00Z',
-    '--root', REPO_ROOT,
+    '--root', FIXTURES_ROOT,
   ]);
   assert.equal(status, EXIT_OK, stderr);
   assert.match(stdout, /DRAFT ONLY — NOT WRITTEN TO DISK/);
@@ -332,7 +343,7 @@ test('scaffold against the fixture roster\'s one synthetic:false entry writes a 
   }
 });
 
-test('governance/reviewer-roster.yaml shows zero diff against HEAD after this task\'s scaffold tests (real roster never read/written by this section)', () => {
+test('governance/reviewer-roster.yaml shows zero diff against HEAD after this task\'s scaffold tests (proves no WRITE occurred; the file IS read read-only by the auto-derivation test above, by design -- see this section\'s header)', () => {
   const result = spawnSync('git', ['diff', '--name-only', '--', 'governance/reviewer-roster.yaml'], {
     cwd: REPO_ROOT,
     encoding: 'utf8',
