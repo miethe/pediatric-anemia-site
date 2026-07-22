@@ -57,18 +57,22 @@
 //       suppresses ONLY this comparison (never the pattern check), for the legitimate case of
 //       reviewing historical content that no longer matches the module's current on-disk bytes.
 //
-//       SCOPE NOTE on this comparison (see CRW-F5 in the findings doc for the full reasoning): it
-//       only fires when `computeModuleContentHash` can actually produce a value for `moduleId`
-//       under `rootDir` — i.e. `modules/<moduleId>/` exists on disk with at least one non-`reviews/`
-//       file. When it CANNOT (module directory absent, or present but empty of non-`reviews/`
-//       content), there is no freshly-computed module-content hash for the supplied `--subject` to
-//       disagree with in the first place, so this is treated as "nothing to compare" rather than a
-//       hard-fail — distinct from an actual computed MISMATCH, which always hard-fails by default
-//       regardless of this exemption. This keeps the already-shipped `--role adjudication` scaffold
-//       bridge (`tools/retro-validate/lib/discordance.mjs`'s `toAdjudicationScaffoldInput`, Evidence
-//       Foundry E1 Phase 4) working unmodified: an adjudication act's `subjectContentHash` there is
-//       legitimately a discordance record's own `candidateDigest`, never a fresh module-content
-//       hash, and that bridge's own fixture root carries no `modules/` directory at all.
+//       REVISED by CRW-F5 (clinical-review-workflow-v1 Wave-2 codex gate, BLOCKER 2 -- see
+//       .claude/findings/clinical-review-workflow-findings.md's CRW-F5 entry for the full history):
+//       an UNCOMPUTABLE `computeModuleContentHash` (module directory absent, or present but empty
+//       of non-`reviews/` content) is now treated EXACTLY like a computed MISMATCH -- it hard-fails
+//       by default, naming the underlying failure, rather than being silently accepted as "nothing
+//       to compare." The earlier exemption let a root with a valid roster but a missing/empty
+//       module stage+sign a wrong, merely pattern-valid `--subject` that `validate` would never
+//       catch (validate has nothing to recompute against either). `--allow-historical-subject`
+//       remains the ONLY suppression for either condition (an actual mismatch, or an uncomputable
+//       hash) -- and using it is always LOUD in this verb's own stdout output (a `NOTICE (--allow-
+//       historical-subject): ...` line), never a silent skip. Every already-shipped caller that
+//       legitimately scaffolds against a non-module root WITH an explicit `--subject` (the
+//       `--role adjudication` bridge, `tools/retro-validate/lib/discordance.mjs`'s
+//       `toAdjudicationScaffoldInput`, and this tool's own narrow CLI-behavior fixtures) now passes
+//       `--allow-historical-subject`/`allowHistoricalSubject: true` explicitly rather than relying
+//       on the removed silent exemption.
 //
 //   (b) `--draft` staging write (F1 seam, feeds Phase 2's `sign` verb) — with `--draft`, this verb
 //       builds the record exactly as it otherwise would (regardless of the resolved roster entry's
@@ -159,10 +163,14 @@ function requireString(options, flag, key = flag) {
  *   allowHistoricalSubject?: boolean, draft?: boolean,
  * }} options `subject` is OPTIONAL (P1-T3, FR-3/R8) — when omitted, it is auto-derived via
  *   `lib/subject.mjs`'s `computeModuleContentHash(rootDir, moduleId)`, the same function `dry-run`
- *   uses for its own default; when supplied, its `sha256:<64 hex>` shape is validated AND (F5,
- *   default, unless `allowHistoricalSubject`) compared against a freshly recomputed
- *   `computeModuleContentHash` when one can be computed — see this file's header for the exact
- *   scope of that comparison. `draft: true` (F1 seam) writes the built record to
+ *   uses for its own default (and hard-fails, unconditionally, if that derivation itself fails —
+ *   unchanged by the CRW-F5 revision below); when supplied, its `sha256:<64 hex>` shape is
+ *   validated AND (F5, default, unless `allowHistoricalSubject`) compared against a freshly
+ *   recomputed `computeModuleContentHash` — an uncomputable module hash is now treated exactly like
+ *   a computed mismatch (CRW-F5 revision, see this file's header) rather than "nothing to compare."
+ *   `allowHistoricalSubject: true` is the ONLY suppression for either condition, and this verb
+ *   always prints a loud stdout NOTICE when it actually suppresses something. `draft: true` (F1
+ *   seam) writes the built record to
  *   `draftFilePathFor(rootDir, moduleId, reviewId)` instead of running the normal preview-or-write
  *   branch, and makes no write under `reviews/`.
  * @returns {Promise<number>}
@@ -204,23 +212,56 @@ export async function run(options = {}) {
   // so an auto-derived `subjectContentHash` here can never independently drift from what a fresh
   // `dry-run` over the same module/root would compute.
   const allowHistoricalSubject = options.allowHistoricalSubject === true;
+  // Set below, ONLY when --allow-historical-subject actually suppresses a would-be hard-fail (an
+  // uncomputable module hash, or an actual computed mismatch) -- prepended to whichever stdout
+  // branch below ultimately fires, so the suppression is always LOUD in this verb's own output,
+  // never a silent skip (CRW-F5 revision requirement).
+  let subjectOverrideNotice = '';
   let subjectContentHash = options.subject;
   if (typeof subjectContentHash === 'string' && subjectContentHash.length > 0) {
     if (!SUBJECT_HASH_RE.test(subjectContentHash)) {
       throw new UsageError(`--subject "${subjectContentHash}" must match sha256:<64 hex>`);
     }
 
-    // F5 (CRW-F2 gap closure): recompute and compare, hard-failing on an actual computed mismatch
-    // by default — see this file's header for the exact, deliberate scope of this comparison
-    // (skipped, not hard-failed, when computeModuleContentHash cannot produce a value at all).
-    if (!allowHistoricalSubject) {
-      let recomputed = null;
-      try {
-        recomputed = await computeModuleContentHash(rootDir, moduleId);
-      } catch {
-        recomputed = null; // nothing on disk to compare against — see this file's header (CRW-F5)
+    // F5 (CRW-F2 gap closure, REVISED by CRW-F5 -- clinical-review-workflow-v1 Wave-2 codex gate,
+    // BLOCKER 2; see .claude/findings/clinical-review-workflow-findings.md's CRW-F5 entry): the
+    // comparison ALWAYS attempts to recompute modules/<moduleId>/'s own content hash, whether or
+    // not --allow-historical-subject is set, so the outcome (match / mismatch / uncomputable) can
+    // always be reported -- an uncomputable module is now treated exactly like a computed MISMATCH,
+    // never "nothing to compare." --allow-historical-subject remains the ONLY suppression for
+    // either condition, and it is always loud (a NOTICE line) when it actually suppresses something.
+    let recomputed = null;
+    let recomputeError = null;
+    try {
+      recomputed = await computeModuleContentHash(rootDir, moduleId);
+    } catch (err) {
+      recomputeError = err;
+    }
+
+    if (recomputeError !== null) {
+      if (!allowHistoricalSubject) {
+        throw new UsageError(
+          `--subject "${subjectContentHash}" was supplied, but modules/${moduleId}/'s content hash ` +
+            `could not be recomputed to verify it against (${recomputeError.message}) -- F5 hard-` +
+            'fails by default whenever an explicitly-supplied --subject cannot be verified against ' +
+            'the target module\'s current on-disk content, the same as an actual computed mismatch ' +
+            '(CRW-F5 revision: "cannot verify" is no longer treated as "nothing to compare"). If ' +
+            'this --subject is intentionally NOT a module-content hash (e.g. an adjudication act\'s ' +
+            'subject is a discordance record\'s own candidateDigest -- tools/retro-validate/lib/' +
+            'discordance.mjs\'s toAdjudicationScaffoldInput bridge), or this is intentionally ' +
+            `reviewing historical content that predates modules/${moduleId}/'s current state, pass ` +
+            '--allow-historical-subject to proceed anyway -- this suppresses ONLY this comparison, ' +
+            'never the sha256:<64 hex> pattern check above, and this verb prints a loud NOTICE when ' +
+            'it does.',
+        );
       }
-      if (recomputed !== null && recomputed !== subjectContentHash) {
+      subjectOverrideNotice =
+        'NOTICE (--allow-historical-subject): the F5 content-hash comparison for --subject ' +
+        `"${subjectContentHash}" was SKIPPED -- modules/${moduleId}/'s content hash could not be ` +
+        `recomputed to compare against it (${recomputeError.message}). Proceeding WITHOUT ` +
+        'verifying this --subject against the module\'s current on-disk content.\n';
+    } else if (recomputed !== subjectContentHash) {
+      if (!allowHistoricalSubject) {
         throw new UsageError(
           `--subject "${subjectContentHash}" does not match modules/${moduleId}/'s current content ` +
             `hash (recomputed "${recomputed}") — the sha256:<64 hex> pattern check alone cannot ` +
@@ -230,7 +271,13 @@ export async function run(options = {}) {
             'suppress ONLY this comparison — the sha256:<64 hex> pattern check above still always runs.',
         );
       }
+      subjectOverrideNotice =
+        'NOTICE (--allow-historical-subject): the F5 content-hash comparison for --subject ' +
+        `"${subjectContentHash}" was SUPPRESSED -- it does not match modules/${moduleId}/'s current ` +
+        `recomputed content hash ("${recomputed}"). Proceeding with the supplied --subject as-is ` +
+        '(historical-content review).\n';
     }
+    // else: recomputed === subjectContentHash -- nothing was suppressed, no notice to print.
   } else {
     subjectContentHash = await computeModuleContentHash(rootDir, moduleId);
   }
@@ -262,7 +309,8 @@ export async function run(options = {}) {
   if (options.draft === true) {
     const draftPath = await writeDraftRecordFile(rootDir, moduleId, reviewId, record);
     process.stdout.write(
-      `Wrote draft ${draftPath}\n` +
+      subjectOverrideNotice +
+        `Wrote draft ${draftPath}\n` +
         'STAGED ONLY — NOT A COMMITTED REVIEW RECORD. Outside modules/<id>/reviews/, gitignored. ' +
         'Next: `sign --draft <path> --module <id> --root <dir>` (synthetic:true drafts only, ' +
         'pre-G1/G2).\n' +
@@ -274,7 +322,8 @@ export async function run(options = {}) {
   if (record.synthetic) {
     // Signature-gated: see this file's header. Preview only, never written.
     process.stdout.write(
-      'DRAFT ONLY — NOT WRITTEN TO DISK.\n' +
+      subjectOverrideNotice +
+        'DRAFT ONLY — NOT WRITTEN TO DISK.\n' +
         `reviewerId "${reviewerId}" resolves to a synthetic dry-run roster persona; ` +
         `schemas/review-record.schema.json requires a populated TESTKEY- signature on every ` +
         'synthetic:true record, and this verb (P2-T2) has no signing capability on this path (see ' +
@@ -287,7 +336,8 @@ export async function run(options = {}) {
 
   const filePath = await writeNewReviewRecordFile(rootDir, moduleId, reviewId, record);
   process.stdout.write(
-    `Wrote ${filePath}\n` +
+    subjectOverrideNotice +
+      `Wrote ${filePath}\n` +
       'Structural review-record content only -- not a clinical-validity, safety, or approval claim.\n',
   );
   return EXIT_OK;
