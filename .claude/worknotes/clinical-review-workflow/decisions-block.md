@@ -49,7 +49,7 @@ to `clinicalApprovers[]`/`approvedBy[]` schema-forced-empty posture; any weakeni
 | 1 | general-purpose (sonnet) node/CLI engineer | Explore (read-only substrate recon) | status verb ∥ scaffold fixes (distinct files) |
 | 2 | general-purpose (sonnet) — crypto/gate-sensitive, single owner | task-completion-validator | sign ∥ validate-perf only after shared-lib seams agreed |
 | 3 | general-purpose (sonnet) render; documentation-writer-style (haiku) runbook draft → sonnet clinical-honesty pass | — | render ∥ runbook fully parallel |
-| 4 | Opus/orchestrator judgment for threshold+owner framing; gemini-orchestrator (nano-banana-pro) mockups | design-spec edit: sonnet | mockups ∥ framework text |
+| 4 | Opus/orchestrator judgment for threshold+owner framing; codex gpt-5.6 native image tool (mockups) | design-spec edit: sonnet | mockups ∥ framework text |
 | 5 | general-purpose (sonnet) tests; haiku docs | karen (gate) | tests ∥ docs |
 
 ICA offload rule (per delegation-router): bounded, ≤2–3-file, non-taste waves MAY go to ICA
@@ -102,7 +102,7 @@ graph LR
 | 1 | sonnet (ICA `claude-sonnet-5[1m]` offload eligible) | adaptive | bounded CLI work; gates re-run in-session |
 | 2 | sonnet, **in-session only** | extended | fail-closed crypto-adjacent; no offload |
 | 3 | haiku (runbook draft, ICA free) + sonnet (honesty pass, render) | adaptive | documentation chain → ICA Haiku |
-| 4 | opus/orchestrator (framework) + `nano-banana-pro` via gemini-orchestrator (mockups) | adaptive / quality | image lane per registry; gpt-5.6 has no image lane |
+| 4 | opus/orchestrator (framework) + codex `gpt-5.6-terra` native image tool (mockups) | adaptive / medium | user directive: image gen on the gpt-5.6/codex lane (codex has a native image tool); concept asset v2 already committed during planning |
 | 5 | sonnet (tests) + haiku (docs) | adaptive | — |
 | Review gates | task-completion-validator per phase; karen at P4 milestone + end; **codex `gpt-5.6-terra` read-only second-opinion diff review per wave** (memory: catches fail-closed gaps) | high (codex) | second_opinion pinned to codex per user directive |
 
