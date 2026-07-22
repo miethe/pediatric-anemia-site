@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 13
-completed_tasks: 4
+completed_tasks: 5
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -166,16 +166,16 @@ tasks:
   note: 'Authored .claude/progress/evidence-foundry-e1/gates-status.md: all 5 gates
     (G0-G4) present as standalone status: blocked-external / owner: human entries,
     entry criteria + blocked artifacts/behaviors copied in substance from docs/governance/gates-registry.md
-    (P1-T6), which the file names as the authoritative source it mirrors -- not
-    the reverse. Mirrors the arc-clinical-council-adoption-v1 Phase 5 "owner-blocked"
+    (P1-T6), which the file names as the authoritative source it mirrors -- not the
+    reverse. Mirrors the arc-clinical-council-adoption-v1 Phase 5 "owner-blocked"
     precedent (.claude/progress/arc-clinical-council-adoption-v1/phase-5-completion.md),
     cited explicitly in the new file. Zero gate rows added as tasks: grepped every
-    phase-N-progress.md and phase-N-completion.md under this directory for `id:
-    G0`..`id: G4` task entries -- none exist, none added. No phase-completion record
-    in this plan claims gate progress. Cross-reference to the gates registry present
-    in both directions (this file cites the registry per-gate + in a summary table;
-    the registry''s own Cross-references section already points back at this task).
-    Tracking-doc only -- not part of npm run check/validate; no schema/fixture touched.'
+    phase-N-progress.md and phase-N-completion.md under this directory for `id: G0`..`id:
+    G4` task entries -- none exist, none added. No phase-completion record in this
+    plan claims gate progress. Cross-reference to the gates registry present in both
+    directions (this file cites the registry per-gate + in a summary table; the registry''s
+    own Cross-references section already points back at this task). Tracking-doc only
+    -- not part of npm run check/validate; no schema/fixture touched.'
   started: '2026-07-22T05:00:00Z'
   completed: '2026-07-22T05:15:00Z'
   evidence:
@@ -203,7 +203,7 @@ tasks:
     update docs/project_plans/design-specs/withdraw-rollback-machinery.md to record
     the OQ-4 registry seed it will extend (inert withdrawal consts, omitted surveillance
     hooks) and the E2 boundary. Append both paths to deferred_items_spec_refs.'
-  status: pending
+  status: completed
   assigned_to:
   - documentation-writer
   dependencies:
@@ -212,6 +212,10 @@ tasks:
   priority: low
   assigned_model: sonnet
   model_effort: adaptive
+  started: 2026-07-22T00:00Z
+  completed: 2026-07-22T00:45Z
+  evidence:
+  - note: docs/project_plans/design-specs/signed-release-key-custody.md,docs/project_plans/design-specs/withdraw-rollback-machinery.md
 - id: P5-T8
   description: 'Design-spec updates — DF-E1-09 + DF-E2-01/02 (validation lane): update
     docs/project_plans/design-specs/retrospective-validation-harness.md for DF-E1-09
@@ -251,10 +255,10 @@ tasks:
     DF-E1-07): each confirms this plan (E1) did not touch that workstream, restates
     the still-unmet promotion trigger (ADR-0008/RFUP-upstream/ADR-0003/OQ-7 respectively,
     all still proposed/unresolved), and bumped each frontmatter updated date. Authored
-    the new stub docs/project_plans/design-specs/cbc-suite-full-authoring.md for
-    DF-E1-08 (maturity: shaping, prd_ref: evidence-foundry-e1-v1 PRD, plan_ref: this
-    plan, open_questions[0] names OQ-7 unresolved verbatim). Appended all five paths
-    to the plan frontmatter deferred_items_spec_refs (now 9/11, alongside P5-T6/T8''s
+    the new stub docs/project_plans/design-specs/cbc-suite-full-authoring.md for DF-E1-08
+    (maturity: shaping, prd_ref: evidence-foundry-e1-v1 PRD, plan_ref: this plan,
+    open_questions[0] names OQ-7 unresolved verbatim). Appended all five paths to
+    the plan frontmatter deferred_items_spec_refs (now 9/11, alongside P5-T6/T8''s
     4 prior entries -- P5-T7''s remaining 2 close out the full 11-path list).'
   started: 2026-07-22T05:00Z
   completed: 2026-07-22T05:20Z
@@ -421,7 +425,7 @@ files_modified:
 - CHANGELOG.md
 - docs/project_plans/design-specs/*.md
 - .claude/progress/evidence-foundry-e1/**
-progress: 23
+progress: 38
 updated: '2026-07-22'
 ---
 
