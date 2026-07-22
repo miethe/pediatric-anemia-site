@@ -57,6 +57,8 @@ deferred_items_spec_refs:
 - docs/project_plans/design-specs/fhir-terminology-emitters.md
 - docs/project_plans/design-specs/property-mutation-semantic-diff-ci.md
 - docs/project_plans/design-specs/cbc-suite-full-authoring.md
+- docs/project_plans/design-specs/signed-release-key-custody.md
+- docs/project_plans/design-specs/withdraw-rollback-machinery.md
 findings_doc_ref: null
 charter_ref: null
 changelog_ref: CHANGELOG.md
