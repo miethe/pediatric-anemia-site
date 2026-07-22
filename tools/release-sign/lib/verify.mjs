@@ -1,9 +1,10 @@
 // tools/release-sign/lib/verify.mjs — `verify` verb (P3-T3, FR-13).
 //
 // Fail-closed verification of a signed (or dry-run-signed) release candidate against
-// `releases/registry.json`, with a documented 5-class exit-code taxonomy (see `./errors.mjs`'s own
-// header for the full table; `../README.md`'s "Exit codes" table is the human-readable mirror —
-// keep both in sync). `verify` is the SOLE CI/agent-reachable surface of this tool — CI can never
+// `releases/registry.json`, with a documented 5-class exit-code taxonomy (FR-13) plus 2 more classes
+// (6/7) added by a P3 laundering fix (see `./errors.mjs`'s own header for the full table;
+// `../README.md`'s "Exit codes" table is the human-readable mirror — keep both in sync). `verify` is
+// the SOLE CI/agent-reachable surface of this tool — CI can never
 // sign (ruling R3); this module never reads a private key, never imports `./sign.mjs`'s signing
 // primitives, and performs zero writes of its own.
 //
@@ -20,16 +21,32 @@
 // computes a manifest's canonical signing preimage — never re-deriving or re-serializing anything
 // itself (the same "never re-implement E0's canonicalization" contract `./manifest.mjs`/`./sign.mjs`
 // already hold). Checks run in the exact order FR-13/this task's own acceptance criteria lists the
-// 5 failure classes; each raises a DISTINCT `ReleaseSignError` subclass so a non-zero exit always
-// tells the caller exactly which of the 5 classes fired. No stdout is written until every check has
-// passed — a thrown error therefore always means zero partial output, by construction, not by a
-// try/catch discipline that could be gotten wrong.
+// 5 failure classes, PLUS two more (classes 6/7, below) added by a Codex second-opinion review fix;
+// each raises a DISTINCT `ReleaseSignError` subclass so a non-zero exit always tells the caller
+// exactly which class fired. No stdout is written until every check has passed — a thrown error
+// therefore always means zero partial output, by construction, not by a try/catch discipline that
+// could be gotten wrong.
+//
+// P3 laundering fix (Codex second-opinion review): classes (1)/(2)/(3)/(5) above all check the
+// WRAPPER's own top-level fields (packDir/manifestPath/preimageSha256/signature/signerPublicKey)
+// against fresh on-disk bytes — none of them ever independently inspected `candidate.manifest`, the
+// NESTED, embedded manifest document that same wrapper carries. A crafted, genuinely-valid dry-run
+// TESTKEY wrapper could therefore embed an arbitrary nested `manifest` — including a populated,
+// non-TESTKEY- `signature` slot nothing else in this verb ever checked — and still verify cleanly.
+// `checkWrapperManifestBinding` below closes that gap with two checks, both run BEFORE
+// `checkDigestMismatch` (the one cryptographic check this verb performs): (6) the nested manifest
+// must itself validate against `schemas/release-manifest.schema.json`, and (7) it must be
+// cryptographically BOUND — via a canonical digest, not mere field inspection — to the exact
+// document this wrapper's own already-verified top-level signature was produced alongside. See
+// `./errors.mjs`'s own header for the full rationale and `NestedManifestInvalidError`/
+// `WrapperManifestMismatchError`'s own docs for each check's precise scope.
 
 import { verify as cryptoVerify, createPublicKey } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 
-import { readCanonicalManifestBytes } from './canonical-bytes.mjs';
+import { readCanonicalManifestBytes, sha256Hex } from './canonical-bytes.mjs';
 import { TESTKEY_PREFIX } from './sign.mjs';
+import { stableStringify } from './registry.mjs';
 import { validate as validateSchema } from '../../../scripts/lib/json-schema-lite.mjs';
 import {
   UsageError,
@@ -38,10 +55,14 @@ import {
   UnknownKeyIdError,
   RegistryInconsistencyError,
   TestKeyOnRealCandidateError,
+  NestedManifestInvalidError,
+  WrapperManifestMismatchError,
 } from './errors.mjs';
 
 /** Cached at module load — this tool's own copy of the registry schema, resolved relative to this file. */
 const REGISTRY_SCHEMA_PATH = new URL('../../../schemas/release-registry.schema.json', import.meta.url);
+/** Cached at module load — this tool's own copy of the release-manifest schema (P3 laundering fix): the schema the NESTED `candidate.manifest` document must itself validate against, resolved relative to this file (mirrors `REGISTRY_SCHEMA_PATH` above). */
+const RELEASE_MANIFEST_SCHEMA_PATH = new URL('../../../schemas/release-manifest.schema.json', import.meta.url);
 
 /**
  * @param {string | boolean | undefined} rawPath
@@ -178,6 +199,52 @@ function checkDigestMismatch(candidate, freshBytes) {
 }
 
 /**
+ * FR-13 classes (6)/(7) [P3 laundering fix, Codex second-opinion review] — see this file's own
+ * module header and `./errors.mjs`'s header for the full rationale. Runs strictly BEFORE
+ * `checkDigestMismatch` (the one cryptographic check this verb ever performs), so a structurally
+ * invalid or unbound nested manifest is refused before any signature math runs.
+ *
+ * @param {object} candidate
+ * @param {Buffer} freshBytes the SAME fresh canonical bytes `checkByteDrift` already re-read off
+ *   disk and confirmed agree with `candidate.preimageSha256` — never re-read a second time here.
+ */
+async function checkWrapperManifestBinding(candidate, freshBytes) {
+  // (6) Structural: the nested manifest must itself validate against
+  // schemas/release-manifest.schema.json — the exact check this verb never performed before this
+  // fix. Closes the crafted case a Codex second-opinion review found: a genuinely valid, TESTKEY--
+  // marked WRAPPER (whose own top-level signature verifies cleanly against fresh bytes) can embed a
+  // `manifest` field carrying an arbitrary, never-independently-checked document — including a
+  // populated, non-TESTKEY- `signature` slot that nothing else in this verb ever inspects (that slot
+  // is schema-forced empty unless `dryRun: true` AND `keyId` carries the `TESTKEY-` marker — see
+  // schemas/release-manifest.schema.json's own `allOf`/`$defs/dryRunSignature`).
+  const manifestSchemaJson = await readFile(RELEASE_MANIFEST_SCHEMA_PATH, 'utf8');
+  const manifestSchema = JSON.parse(manifestSchemaJson);
+  const schemaErrors = validateSchema(manifestSchema, candidate.manifest);
+  if (schemaErrors.length > 0) {
+    throw new NestedManifestInvalidError(JSON.stringify(schemaErrors));
+  }
+
+  // (7) Cryptographic binding: a nested manifest that is individually schema-valid is still not
+  // enough on its own — it must be EXACTLY the document this wrapper's own already-verified
+  // top-level `signature` was produced alongside. Reconstruct it, byte-for-byte, from the SAME fresh
+  // bytes `checkByteDrift` just re-read off disk (never a second, independent read) merged with this
+  // wrapper's own `dryRun`/`signature` — exactly the shape `./sign.mjs#finalizeSignedCandidate`
+  // builds — then compare canonical (sorted-key) digests. Any disagreement — a swapped moduleId, a
+  // different testCorpusHash, a nested signature that does not match the wrapper's own top-level
+  // signature field-for-field, anything at all — means `candidate.manifest` was swapped, hand-
+  // edited, or never produced by this exact signing operation.
+  const freshUnsignedManifest = JSON.parse(freshBytes.toString('utf8'));
+  const expectedNestedManifest = candidate.dryRun === true
+    ? { ...freshUnsignedManifest, dryRun: true, signature: candidate.signature }
+    : { ...freshUnsignedManifest, signature: candidate.signature };
+  const expectedDigest = sha256Hex(Buffer.from(stableStringify(expectedNestedManifest), 'utf8'));
+  const actualDigest = sha256Hex(Buffer.from(stableStringify(candidate.manifest), 'utf8'));
+  if (expectedDigest !== actualDigest) {
+    throw new WrapperManifestMismatchError(expectedDigest, actualDigest);
+  }
+}
+
+/**
  * FR-13 classes (3) and (5): `keyId` identity classification. E1 has no signing-custodian key
  * roster (gate G2 has not happened), so the ONLY identity `verify` can ever recognize as "known" is
  * a dry-run candidate's structurally `TESTKEY-`-prefixed `keyId` (OQ-6). This is a deliberate,
@@ -269,7 +336,7 @@ async function checkRegistryConsistency(registry, registryPath, candidate) {
  * @returns {Promise<{schemaVersion: string, candidatePath: string, registryPath: string,
  *   moduleId: string, packVersion: string, preimageSha256: string, dryRun: boolean, keyId: string,
  *   verified: true}>} printed to stdout ONLY once every check below has passed — a thrown error
- *   (any of the 5 documented classes, or a plain UsageError) means zero stdout output, always.
+ *   (any of the 7 documented classes, or a plain UsageError) means zero stdout output, always.
  */
 export async function run(options = {}) {
   const candidatePath = requirePathOption(options.candidate, 'candidate', 'a signed candidate document');
@@ -280,10 +347,23 @@ export async function run(options = {}) {
 
   const { parsed: registry } = await readJsonFile(registryPath, 'registry');
 
-  // FR-13's 5 classes, checked in the exact order the task's own acceptance criteria lists them.
+  // FR-13's 5 classes, PLUS classes (6)/(7) [P3 laundering fix] — see this file's own module header.
+  // Execution order is NOT the numeric class order; it is chosen so that (a) classes (6)/(7) always
+  // run BEFORE `checkDigestMismatch`, the one cryptographic check this verb performs (this fix's
+  // own acceptance criteria), and (b) `checkKeyIdentity` — pure classification of the WRAPPER's own
+  // top-level `signature.keyId`/`dryRun`, never touching `candidate.manifest` — runs BEFORE (6)/(7).
+  // (b) matters structurally, not just cosmetically: classes (6)/(7) force `candidate.manifest` to
+  // be BOUND to the wrapper's own top-level `dryRun`/`signature` (byte-for-byte, by digest) before
+  // they ever pass — so once binding holds, the nested manifest's OWN schema (which independently
+  // requires the identical TESTKEY-when-dryRun-true invariant `checkKeyIdentity` also enforces)
+  // would ALWAYS have already rejected any wrapper whose top-level `keyId`/`dryRun` combination
+  // classes (3)/(5) exist to catch — running `checkKeyIdentity` first keeps that classification
+  // independently, distinctly reachable (its own documented exit code) rather than silently
+  // subsumed by class (6)'s schema check.
   const fresh = await checkByteDrift(candidate); // (1) byte drift vs canonical bytes
-  checkDigestMismatch(candidate, fresh.bytes); // (2) digest mismatch vs manifest
   checkKeyIdentity(candidate); // (3) unknown keyId / (5) TESTKEY- on non-dry-run
+  await checkWrapperManifestBinding(candidate, fresh.bytes); // (6)/(7) nested-manifest laundering guard
+  checkDigestMismatch(candidate, fresh.bytes); // (2) digest mismatch vs manifest
   await checkRegistryConsistency(registry, registryPath, candidate); // (4) registry inconsistency
 
   const result = {

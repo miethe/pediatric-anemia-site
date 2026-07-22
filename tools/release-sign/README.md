@@ -186,12 +186,26 @@ Output on success (printed to stdout ONLY after every check below has passed):
 }
 ```
 
-### What `verify` checks, in order (FR-13's own 5-class enumeration)
+### What `verify` checks, in order (FR-13's own 5-class enumeration, plus classes 6/7 below)
 
 1. **Byte drift vs canonical bytes** — the candidate's own recorded `preimageSha256` must agree
    with a FRESH re-read of its `packDir`'s current `release-manifest.unsigned.json` bytes (via
    `./lib/canonical-bytes.mjs#readCanonicalManifestBytes` — never re-derived). Catches a pack whose
    canonical manifest changed (or was hand-edited) since it was signed.
+6. **Nested-manifest schema validity** [P3 laundering fix] — `candidate.manifest`, the NESTED,
+   embedded manifest document the wrapper carries, must itself validate against
+   `schemas/release-manifest.schema.json`. Checked BEFORE any cryptographic check runs. Closes a
+   Codex second-opinion review finding: classes (1)-(5) all check the WRAPPER's own top-level
+   fields against fresh bytes, but nothing previously inspected `candidate.manifest` itself — a
+   genuinely valid, TESTKEY--marked wrapper could embed an arbitrary nested manifest, including a
+   populated, non-TESTKEY- `signature` slot nothing else in this verb ever checked.
+7. **Wrapper/manifest binding** [P3 laundering fix] — even a nested manifest that IS individually
+   schema-valid must still be EXACTLY the document this wrapper's own already-verified top-level
+   `signature` was produced alongside: `verify` reconstructs the expected nested manifest from a
+   FRESH re-read of the pack's own bytes merged with the wrapper's own `dryRun`/`signature`, and
+   compares canonical (sorted-key) digests. Any disagreement — a swapped `moduleId`, a different
+   `testCorpusHash`, anything — is refused as a laundering attempt: a well-formed-looking but
+   unrelated (or hand-edited) manifest riding along inside an otherwise-genuine wrapper.
 2. **Digest mismatch vs manifest** — the embedded detached Ed25519 signature must cryptographically
    verify (`node:crypto`'s `verify`) against those SAME fresh bytes, using the candidate's own
    embedded (non-secret) `signerPublicKey`.
@@ -210,6 +224,10 @@ Output on success (printed to stdout ONLY after every check below has passed):
    Checked as part of the same keyId-classification step as class (3) above, but raised as its own
    distinctly-coded, more specific error (a `TESTKEY-` leak is a different, more actionable failure
    than a merely-unrecognized identity).
+
+Execution order (fail-closed, first violation wins, zero stdout on any of them): (1) → (6) → (7) →
+(2) → (3)/(5) → (4) — classes (6)/(7) run strictly BEFORE (2), the one cryptographic check this verb
+performs, per this fix's own acceptance criteria ("before any cryptographic check").
 
 `keyId` is signature METADATA, not signed content — none of classes (3)/(5) ever require a fresh
 signature to construct a tamper fixture; only `dryRun`/`signature.keyId` need to change, and the
@@ -444,6 +462,8 @@ this per failure class, not just narratively).
 | 4 | UNKNOWN_KEYID | `verify` class (3): the signature's `keyId` is not an identity this tool recognizes in E1 — a dry-run `keyId` lacking the `TESTKEY-` marker, or ANY non-dry-run `keyId` (no signing-custodian roster exists pre-gate-G2). | `verify` |
 | 5 | REGISTRY_INCONSISTENCY | `verify` class (4): the registry document is schema-invalid, carries no entry (or more than one) for the candidate's moduleId/packVersion, or that entry's `manifestDigest` disagrees with the candidate's own digest. | `verify` |
 | 6 | TESTKEY_ON_REAL | `verify` class (5): a non-dry-run candidate's `keyId` carries the `TESTKEY-` marker — the release-path test-key leak. | `verify` |
+| 7 | NESTED_MANIFEST_INVALID | `verify` class (6) [P3 laundering fix]: `candidate.manifest` (the nested, embedded manifest document) does not itself validate against `schemas/release-manifest.schema.json` — checked before any cryptographic check runs. | `verify` |
+| 8 | WRAPPER_MANIFEST_MISMATCH | `verify` class (7) [P3 laundering fix]: a schema-valid nested manifest whose canonical digest disagrees with what the wrapper's own already-verified top-level signature/preimageSha256 implies it should carry. | `verify` |
 
 See `tools/release-sign/lib/errors.mjs`'s own header for the machine-readable mirror of this same
 table (kept in sync by convention, not by generation) and each error class's exact throw sites.

@@ -475,6 +475,24 @@ export function validateReleaseManifest(manifestData, manifestSchema, { expected
  * schema- and cross-record-validated (never silently skipped just because it postdates a clean
  * checkout).
  *
+ * P3 laundering-fix reachability note (Codex second-opinion review): this function only ever globs
+ * for a file literally named `release-manifest.unsigned.json` and schema-validates it against
+ * `schemas/release-manifest.schema.json` — the NESTED manifest shape (`tools/release-sign lib/
+ * verify.mjs`'s own `checkWrapperManifestBinding` now also enforces this same schema on
+ * `candidate.manifest`, wherever `verify` runs). `tools/release-sign sign --out-candidate`'s full
+ * WRAPPER document (`packDir`/`manifestPath`/`preimageSha256`/`signature`/`signerPublicKey`/
+ * `manifest`) is a structurally distinct shape (`additionalProperties: false` on this schema would
+ * reject those extra top-level fields outright) and is never written under `build/kb-pack/` by any
+ * code path in this tool — `sign`'s own guard refuses `--out`/`--out-candidate` pointed at the
+ * unsigned source path, and every other output path is caller-chosen, off-tree by convention (see
+ * `tools/release-sign/README.md`'s own "Verifier surface wired into `npm run validate`" section:
+ * full cryptographic `verify` — and therefore this wrapper-binding check — is deliberately never
+ * wired into `npm run validate`). Signed-candidate wrapper artifacts are therefore NOT reachable
+ * from `npm run validate` today; their absence is not itself an error (same existence-gated posture
+ * this whole function already holds), and this note exists so a future task that DOES make them
+ * reachable (e.g. a committed `release-candidate.*.json` convention) knows to wire
+ * `checkWrapperManifestBinding`-equivalent checks in here rather than re-deriving them.
+ *
  * @param {string} rootDir
  * @returns {Promise<Array<{ manifestPath: string, errors: string[] }>>}
  */

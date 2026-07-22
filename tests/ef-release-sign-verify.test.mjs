@@ -550,7 +550,15 @@ test('P3-T3 AC8 class (2): digest mismatch vs manifest — a tampered signature 
   try {
     const candidateRaw = JSON.parse(await readFile(fixture.candidatePath, 'utf8'));
     const original = candidateRaw.signature.value;
-    candidateRaw.signature.value = original[0] === 'A' ? `B${original.slice(1)}` : `A${original.slice(1)}`;
+    const tampered = original[0] === 'A' ? `B${original.slice(1)}` : `A${original.slice(1)}`;
+    // P3 laundering fix: mirror the SAME tamper onto the nested manifest.signature.value too — this
+    // isolates the digest-mismatch dimension specifically. Since `verify` now also binds
+    // candidate.manifest to the wrapper's own top-level signature (classes 6/7, checked BEFORE this
+    // cryptographic check), tampering ONLY the top-level value would trip a wrapper/manifest
+    // binding mismatch instead; keeping both copies identical (still self-consistent, still
+    // schema-valid — value has no pattern constraint) reaches the intended cryptographic check.
+    candidateRaw.signature.value = tampered;
+    candidateRaw.manifest.signature.value = tampered;
     await writeFile(fixture.candidatePath, `${JSON.stringify(candidateRaw, null, 2)}\n`, 'utf8');
 
     await assert.rejects(

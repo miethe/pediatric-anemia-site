@@ -75,10 +75,12 @@ Verbs:
 
   verify --candidate <sign's reporting-object JSON, e.g. a sign --out-candidate output file> \
          --registry <releases/registry.json-shaped file>
-      Fail-closed verification against a documented 5-class exit-code taxonomy (FR-13): byte drift,
-      digest mismatch, unknown keyId, registry inconsistency, TESTKEY- identity on a non-dry-run
-      candidate. Non-zero exit produces no partial output. This is the sole CI/agent-reachable
-      surface of this tool (ruling R3 — CI can never sign). See README.md's "Exit codes" table.
+      Fail-closed verification against a documented 5-class exit-code taxonomy (FR-13) plus 2 more
+      classes added by a P3 laundering fix: byte drift, digest mismatch, unknown keyId, registry
+      inconsistency, TESTKEY- identity on a non-dry-run candidate, nested-manifest schema
+      invalidity, wrapper/manifest binding mismatch. Non-zero exit produces no partial output. This
+      is the sole CI/agent-reachable surface of this tool (ruling R3 — CI can never sign). See
+      README.md's "Exit codes" table.
 
 Global:
   -h, --help    Show this help and exit 0.

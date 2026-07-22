@@ -15,6 +15,19 @@
 // classes. See `tools/release-sign/README.md`'s "Exit codes" table for the full, human-readable
 // version of this same taxonomy — keep both in sync.
 //
+// P3 laundering fix (Codex second-opinion review, ef-e1 P3): the original 5 classes above all
+// check the WRAPPER's own top-level fields (packDir/manifestPath/preimageSha256/signature/
+// signerPublicKey) against fresh on-disk bytes — none of them ever independently inspected
+// `candidate.manifest`, the NESTED, embedded manifest document that same wrapper carries. A
+// crafted, genuinely-valid dry-run TESTKEY wrapper could therefore embed an arbitrary nested
+// `manifest` — including a populated, non-TESTKEY- `signature` slot nothing else in this verb ever
+// checked — and still verify cleanly. Codes 7-8 below close that gap: a two-part check
+// (`checkWrapperManifestBinding`, `./verify.mjs`) that (6) schema-validates the nested manifest and
+// (7) cryptographically binds it — via a canonical digest, not mere field inspection — to the exact
+// document this wrapper's own already-verified top-level signature was produced alongside. Both run
+// BEFORE the one cryptographic check this verb performs (`checkDigestMismatch`), so a structurally
+// invalid or unbound nested manifest is refused before any signature math ever runs.
+//
 // P3-T4 scope: `register` (FR-14/OQ-4) gets no NEW numeric exit code — every one of its own
 // failure modes (malformed candidate, byte drift against a fresh packDir read, a real
 // (non-dry-run) candidate carrying a populated signature, a registry document that is already
@@ -46,6 +59,15 @@
 //                              `TESTKEY-` marker — the release-path test-key leak P3-T5's no-keys
 //                              sweep also guards against, caught here a second time, structurally,
 //                              at verification time.
+//   7 NESTED_MANIFEST_INVALID — verify class (6) [P3 laundering fix]: `candidate.manifest` (the
+//                              nested, embedded manifest document the wrapper carries) does not
+//                              itself validate against schemas/release-manifest.schema.json.
+//                              Checked BEFORE any cryptographic check runs.
+//   8 WRAPPER_MANIFEST_MISMATCH — verify class (7) [P3 laundering fix]: a nested manifest that IS
+//                              individually schema-valid still disagrees, by canonical digest, with
+//                              what this wrapper's own already-verified top-level signature/
+//                              preimageSha256 implies it should carry — swapped, hand-edited, or
+//                              never produced by this exact signing operation.
 //
 // Every thrown error a verb handler wants the CLI to surface distinctly MUST be (or extend) a
 // `ReleaseSignError` subclass below, carrying its own fixed `exitCode`. `cli.mjs`'s top-level
@@ -58,6 +80,8 @@ export const EXIT_DIGEST_MISMATCH = 3;
 export const EXIT_UNKNOWN_KEYID = 4;
 export const EXIT_REGISTRY_INCONSISTENCY = 5;
 export const EXIT_TESTKEY_ON_REAL = 6;
+export const EXIT_NESTED_MANIFEST_INVALID = 7;
+export const EXIT_WRAPPER_MANIFEST_MISMATCH = 8;
 
 /** Frozen lookup table (name -> numeric code). */
 export const EXIT_CODES = Object.freeze({
@@ -68,6 +92,8 @@ export const EXIT_CODES = Object.freeze({
   UNKNOWN_KEYID: EXIT_UNKNOWN_KEYID,
   REGISTRY_INCONSISTENCY: EXIT_REGISTRY_INCONSISTENCY,
   TESTKEY_ON_REAL: EXIT_TESTKEY_ON_REAL,
+  NESTED_MANIFEST_INVALID: EXIT_NESTED_MANIFEST_INVALID,
+  WRAPPER_MANIFEST_MISMATCH: EXIT_WRAPPER_MANIFEST_MISMATCH,
 });
 
 /**
@@ -210,6 +236,62 @@ export class TestKeyOnRealCandidateError extends ReleaseSignError {
       EXIT_TESTKEY_ON_REAL,
     );
     this.keyId = keyId;
+  }
+}
+
+/**
+ * `verify` class (6) [P3 laundering fix, Codex second-opinion review]: the WRAPPER's own top-level
+ * fields (packDir/manifestPath/preimageSha256/signature/signerPublicKey) can cryptographically
+ * verify cleanly against fresh on-disk bytes while `candidate.manifest` — the NESTED, embedded
+ * manifest document this same wrapper carries — was never independently checked by anything else in
+ * this verb. This class closes that gap: `candidate.manifest` must itself validate against
+ * `schemas/release-manifest.schema.json`, checked BEFORE any cryptographic check runs (a
+ * structurally invalid nested manifest — most concretely, a populated, non-TESTKEY- `signature`
+ * slot that `checkDigestMismatch` never inspects, because it only ever checks the WRAPPER's own
+ * top-level signature — can never be laundered through a genuinely valid wrapper signature).
+ */
+export class NestedManifestInvalidError extends ReleaseSignError {
+  constructor(schemaErrorsJson) {
+    super(
+      `verify: nested-manifest laundering guard — candidate.manifest (the embedded, nested manifest ` +
+        'document this wrapper carries) does not itself validate against ' +
+        `schemas/release-manifest.schema.json: ${schemaErrorsJson}. A wrapper's own top-level ` +
+        'signature/signerPublicKey verifying cleanly against fresh on-disk bytes never implies the ' +
+        'NESTED manifest embedded alongside it is trustworthy — that document is independently ' +
+        'checked here, before any cryptographic check runs.',
+      EXIT_NESTED_MANIFEST_INVALID,
+    );
+    this.schemaErrorsJson = schemaErrorsJson;
+  }
+}
+
+/**
+ * `verify` class (7) [P3 laundering fix, same review]: the cryptographic-binding companion to class
+ * (6). Even a nested manifest that IS individually schema-valid (a genuinely well-formed, TESTKEY--
+ * marked dry-run shape) must still be EXACTLY the document this wrapper's own already-verified
+ * top-level `signature` was produced alongside — reconstructed, byte-for-byte (via a canonical,
+ * sorted-key digest, `./registry.mjs#stableStringify`), from a FRESH re-read of the pack's own
+ * `release-manifest.unsigned.json` merged with this wrapper's own `dryRun`/`signature`, exactly the
+ * shape `./sign.mjs#finalizeSignedCandidate` builds. Any disagreement — a swapped `moduleId`, a
+ * different `testCorpusHash`, a nested signature that does not match the wrapper's own top-level
+ * signature object field-for-field, anything at all — means `candidate.manifest` was never produced
+ * by the exact signing operation this wrapper's top-level fields describe: refused outright as a
+ * laundering attempt, a well-formed-looking but unrelated (or hand-edited) manifest riding along
+ * inside an otherwise-genuine wrapper.
+ */
+export class WrapperManifestMismatchError extends ReleaseSignError {
+  constructor(expectedDigestHex, actualDigestHex) {
+    super(
+      `verify: wrapper/manifest binding mismatch — candidate.manifest's canonical digest ` +
+        `(sha256:${actualDigestHex}) disagrees with the digest this wrapper's own already-verified ` +
+        `top-level signature/preimageSha256 implies it should carry (sha256:${expectedDigestHex}, ` +
+        'recomputed from a FRESH re-read of the pack\'s own release-manifest.unsigned.json merged ' +
+        'with this wrapper\'s own dryRun/signature). The nested manifest was swapped, hand-edited, ' +
+        'or never produced by this exact signing operation — refused as a laundering attempt.',
+      EXIT_WRAPPER_MANIFEST_MISMATCH,
+    );
+    this.expectedDigestHex = expectedDigestHex;
+    this.actualDigestHex = actualDigestHex;
   }
 }
 
