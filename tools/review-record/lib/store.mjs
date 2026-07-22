@@ -17,7 +17,7 @@
 // Every function here is pure w.r.t. its inputs plus (for the two `async` functions) read-only
 // filesystem access — nothing in this module ever writes, renames, or deletes a path.
 
-import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { RecordAlreadyExistsError, UsageError } from './errors.mjs';
@@ -302,6 +302,57 @@ function resolvesStrictlyInside(candidatePath, dirPath) {
 }
 
 /**
+ * Refuses (fail-closed) if any of `modules/`, `modules/<moduleId>/`, or `modules/<moduleId>/reviews/`
+ * (whichever of these already exist under `rootDir`) is a SYMBOLIC LINK rather than a real directory
+ * (clinical-review-workflow-v1 Wave-2 codex RE-PASS, still-open vector on BLOCKER 1(c)).
+ *
+ * This is LAYER ONE of `writeNewReviewRecordFile`'s path-traversal defense, checked BEFORE the
+ * lexical containment check (`resolvesStrictlyInside`) below -- that check (and `path.resolve`/
+ * `path.relative` generally) operates on the path STRING alone and never touches the filesystem, so
+ * a symlinked `modules/<moduleId>/reviews/` -- lexically "inside" the module's own tree, but
+ * pointing anywhere on disk -- would pass it, and `writeFile` would silently follow the link. This
+ * is not merely a same-user-trust concern: git CAN carry a committed symlink into any clone, so a
+ * malicious or corrupted `modules/<moduleId>/reviews/` symlink can arrive via an ordinary checkout,
+ * not just a local attacker.
+ *
+ * The FINAL path component (the `<reviewId>.yaml` file itself) is deliberately NOT checked here --
+ * `writeNewReviewRecordFile`'s exclusive-create write (`writeFile(..., { flag: 'wx' })`, MAJOR 4)
+ * already refuses (`EEXIST`) if ANYTHING -- including a symlink -- already sits at that exact path,
+ * so a symlinked terminal path is refused by that layer regardless of this one; only the ANCESTOR
+ * directory components need an explicit check.
+ *
+ * @param {string} rootDir
+ * @param {string} moduleId
+ * @returns {Promise<void>}
+ */
+async function assertNoSymlinkedAncestor(rootDir, moduleId) {
+  const candidates = [
+    path.join(rootDir, 'modules'),
+    path.join(rootDir, 'modules', moduleId),
+    path.join(rootDir, 'modules', moduleId, 'reviews'),
+  ];
+  for (const candidatePath of candidates) {
+    let stats;
+    try {
+      stats = await lstat(candidatePath);
+    } catch (err) {
+      if (err.code === 'ENOENT') continue; // does not exist yet -- mkdir below creates a REAL directory
+      throw err;
+    }
+    if (stats.isSymbolicLink()) {
+      throw new UsageError(
+        `writeNewReviewRecordFile refuses to write into moduleId "${moduleId}" -- "${candidatePath}" ` +
+          'is a SYMBOLIC LINK, not a real directory. A symlinked path component here would let the ' +
+          'lexical containment check below pass while the actual write followed the link outside ' +
+          'modules/<moduleId>/reviews/ -- including outside this repository entirely, since git can ' +
+          'carry a committed symlink into any clone. This store never writes through a symlinked ' +
+          'directory component, regardless of caller.',
+      );
+    }
+  }
+}
+
+/**
  * Writes one new review-record file — the OQ-2 append-only guard: fails closed
  * (`RecordAlreadyExistsError`) if a file already sits at the target path rather than ever
  * overwriting it. Creates `modules/<moduleId>/reviews/` if it does not yet exist (a module's very
@@ -309,11 +360,16 @@ function resolvesStrictlyInside(candidatePath, dirPath) {
  * `listModuleReviewRecords`'s own existence-gate posture for reads). This is the only function in
  * this whole tool that writes to `modules/<id>/reviews/` — see this section's header.
  *
- * Two additive, fail-closed hardenings from the clinical-review-workflow-v1 Wave-2 codex gate, both
- * defense-in-depth on top of whatever an upstream caller (e.g. `lib/verbs/sign.mjs`'s own
- * `parseReviewId`/schema-conformance checks) already validated -- neither changes behavior for any
- * well-formed `reviewId`/first-time write:
- *   - BLOCKER 1(c): `filePath` is resolved and checked to sit STRICTLY inside
+ * Three additive, fail-closed hardenings from the clinical-review-workflow-v1 Wave-2 codex gate (the
+ * first two from the initial gate, the third from a codex RE-PASS), all defense-in-depth on top of
+ * whatever an upstream caller (e.g. `lib/verbs/sign.mjs`'s own `parseReviewId`/schema-conformance
+ * checks) already validated -- neither changes behavior for any well-formed `reviewId`/first-time
+ * write against real (non-symlinked) directories:
+ *   - BLOCKER 1(c) symlink vector (RE-PASS): `assertNoSymlinkedAncestor` refuses if `modules/`,
+ *     `modules/<moduleId>/`, or `modules/<moduleId>/reviews/` is a SYMBOLIC LINK, BEFORE the lexical
+ *     containment check below -- a symlinked ancestor directory passes that check trivially (it
+ *     never touches the filesystem) while the actual write would follow the link anywhere on disk.
+ *   - BLOCKER 1(c) lexical containment: `filePath` is resolved and checked to sit STRICTLY inside
  *     `modules/<moduleId>/reviews/` before any I/O happens. A `reviewId` containing path-traversal
  *     segments (e.g. `"../../escape"`) is refused here even if it somehow reached this function
  *     without having been pattern-validated first.
@@ -323,7 +379,10 @@ function resolvesStrictlyInside(candidatePath, dirPath) {
  *     concurrent `sign` processes could both observe "does not exist yet" and both proceed to write,
  *     the second silently clobbering the first's already-committed record. `EEXIST` from the
  *     exclusive-create attempt maps to the exact same `RecordAlreadyExistsError` this store has
- *     always thrown on a path collision; every other error propagates unchanged.
+ *     always thrown on a path collision; every other error propagates unchanged. This same `'wx'`
+ *     behavior is ALSO the reason the symlink check above never needs to inspect the FINAL path
+ *     component itself: `EEXIST` fires on anything -- including a symlink -- already sitting at that
+ *     exact terminal path, so a symlinked terminal path is refused by this layer regardless.
  *
  * @param {string} rootDir
  * @param {string} moduleId
@@ -334,6 +393,8 @@ function resolvesStrictlyInside(candidatePath, dirPath) {
 export async function writeNewReviewRecordFile(rootDir, moduleId, reviewId, record) {
   const reviewsDir = reviewsDirFor(rootDir, moduleId);
   const filePath = recordFilePathFor(rootDir, moduleId, reviewId);
+
+  await assertNoSymlinkedAncestor(rootDir, moduleId);
 
   if (!resolvesStrictlyInside(filePath, reviewsDir)) {
     throw new UsageError(

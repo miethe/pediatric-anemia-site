@@ -36,7 +36,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, mkdir, mkdtemp, rm, stat, writeFile } from 'node:fs/promises';
+import { readFile, mkdir, mkdtemp, readdir, rm, stat, symlink, writeFile } from 'node:fs/promises';
 import { spawnSync, execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -1089,6 +1089,37 @@ test('writeNewReviewRecordFile refuses (fail-closed) a reviewId whose computed p
     assert.deepEqual(await listModuleReviewRecords(tmp, 'writepath_target_v1'), []);
   } finally {
     await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('writeNewReviewRecordFile refuses (fail-closed) when modules/<id>/reviews is a SYMBOLIC LINK to an outside directory -- lexical containment alone cannot catch this (path.resolve/path.relative never touch the filesystem); nothing is written at the link target; happy path (real, non-symlinked directories, exercised by every other writeNewReviewRecordFile test in this file) is unchanged (BLOCKER 1(c) symlink vector, clinical-review-workflow-v1 Wave-2 codex RE-PASS)', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-review-record-write-symlink-'));
+  const outside = await mkdtemp(path.join(tmpdir(), 'ef-review-record-write-symlink-outside-'));
+  try {
+    const moduleId = 'writepath_symlink_target_v1';
+    await mkdir(path.join(tmp, 'modules', moduleId), { recursive: true });
+    // modules/<id>/reviews is a symlink pointing OUTSIDE `tmp` entirely -- lexically it still
+    // resolves "inside" modules/<id>/reviews/ (resolvesStrictlyInside/path.resolve/path.relative
+    // never touch the filesystem), so only an lstat-based ancestor check (assertNoSymlinkedAncestor)
+    // catches this. git CAN carry a committed symlink exactly like this one into any clone (see
+    // store.mjs's own header) -- this is not merely a same-user-trust concern.
+    await symlink(outside, path.join(tmp, 'modules', moduleId, 'reviews'));
+
+    const record = sampleRecord({ moduleId });
+    await assert.rejects(
+      () => writeNewReviewRecordFile(tmp, moduleId, record.review_id, record),
+      (err) => {
+        assert.ok(err instanceof UsageError);
+        assert.match(err.message, /SYMBOLIC LINK/);
+        return true;
+      },
+    );
+
+    // Nothing was written at the symlink's TARGET (outside tmp entirely).
+    assert.deepEqual(await readdir(outside), [], 'nothing may be written at the symlink target');
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+    await rm(outside, { recursive: true, force: true });
   }
 });
 
