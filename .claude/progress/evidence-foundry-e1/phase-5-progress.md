@@ -89,11 +89,12 @@ deferred_items_spec_refs:
 - docs/project_plans/design-specs/cbc-suite-full-authoring.md
 findings_doc_ref: null
 deferred_items_triage_status:
-  DF-EXT-01: "N/A — external routing note (E0 consolidated, still current, no design spec per DF-EXT-01 charter)"
-overall_progress: 0
+  DF-EXT-01: N/A — external routing note (E0 consolidated, still current, no design
+    spec per DF-EXT-01 charter)
+overall_progress: 84
 completion_estimate: on-track
 total_tasks: 13
-completed_tasks: 7
+completed_tasks: 11
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -178,25 +179,24 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: adaptive
-  note: 'Audited all 9 bounded surfaces (full read of every in-scope file + two keyword sweeps --
-    validity/safety/regulatory/release-readiness terms, and a softer proven/accurate/recommend/
-    certif/qualif/guarantee/validated sweep -- every hit manually reviewed for negation vs.
-    assertion). Result: 9/9 PASS on honesty language -- zero non-negated clinical-validity/safety/
-    diagnostic-performance/release-readiness/regulatory claims found anywhere in scope; every
-    agreement-report.json measure labeled "software agreement"; all 5 committed
-    modules/cbc_suite_v1/reviews/*.yaml records carry synthetic:true + a rationale stating
-    SYNTHETIC/NON-CREDENTIALED/non-qualifying explicitly. 3 documentation-staleness findings
-    (not honesty-language violations -- stale "not yet implemented"/"forthcoming" references to
-    tooling that has since landed: register/verify verbs, the signing-ceremony runbook itself,
-    releases/registry.json existing, and report''s real post-boundary logic) fixed in place across
-    tools/release-sign/README.md, docs/governance/signing-ceremony-runbook.md, and
-    tools/retro-validate/README.md. Full one-line-per-surface checklist:
-    .claude/worknotes/evidence-foundry-e1-v1/p5-t2-honesty-audit.md. Verification: the 6 test files
-    covering the 3 tools directly (ef-retro-boundary/determinism/metrics,
-    ef-release-sign-verify/ef-release-no-keys, ef-review-workflow) all green after the doc-only
-    edits; npm run validate green (unaffected, no schema/fixture touched).'
-  started: 2026-07-22T09:00:00Z
-  completed: 2026-07-22T09:45:00Z
+  note: 'Audited all 9 bounded surfaces (full read of every in-scope file + two keyword
+    sweeps -- validity/safety/regulatory/release-readiness terms, and a softer proven/accurate/recommend/
+    certif/qualif/guarantee/validated sweep -- every hit manually reviewed for negation
+    vs. assertion). Result: 9/9 PASS on honesty language -- zero non-negated clinical-validity/safety/
+    diagnostic-performance/release-readiness/regulatory claims found anywhere in scope;
+    every agreement-report.json measure labeled "software agreement"; all 5 committed
+    modules/cbc_suite_v1/reviews/*.yaml records carry synthetic:true + a rationale
+    stating SYNTHETIC/NON-CREDENTIALED/non-qualifying explicitly. 3 documentation-staleness
+    findings (not honesty-language violations -- stale "not yet implemented"/"forthcoming"
+    references to tooling that has since landed: register/verify verbs, the signing-ceremony
+    runbook itself, releases/registry.json existing, and report''s real post-boundary
+    logic) fixed in place across tools/release-sign/README.md, docs/governance/signing-ceremony-runbook.md,
+    and tools/retro-validate/README.md. Full one-line-per-surface checklist: .claude/worknotes/evidence-foundry-e1-v1/p5-t2-honesty-audit.md.
+    Verification: the 6 test files covering the 3 tools directly (ef-retro-boundary/determinism/metrics,
+    ef-release-sign-verify/ef-release-no-keys, ef-review-workflow) all green after
+    the doc-only edits; npm run validate green (unaffected, no schema/fixture touched).'
+  started: 2026-07-22 09:00:00+00:00
+  completed: 2026-07-22 09:45:00+00:00
   evidence:
   - doc: .claude/worknotes/evidence-foundry-e1-v1/p5-t2-honesty-audit.md
 - id: P5-T3
@@ -235,7 +235,7 @@ tasks:
     seed, and the SPIKE-007 charter — worded as software machinery ("human-gated",
     "schema-forced inert", "synthetic dry-run only"), never as clinical capability.
     Set plan frontmatter changelog_ref: CHANGELOG.md.'
-  status: pending
+  status: completed
   assigned_to:
   - changelog-generator
   dependencies:
@@ -244,6 +244,16 @@ tasks:
   priority: low
   assigned_model: haiku
   model_effort: adaptive
+  note: Task status was left pending after landing (tracking-doc bug flagged by P5-T11
+    note and reviewer fix-required item); backfilled per reviewer instruction. Deliverable
+    independently verified present and content-correct at commit 67d9b0d.
+  started: '2026-07-22T04:10:00-04:00'
+  completed: '2026-07-22T04:18:44-04:00'
+  evidence:
+  - commit: 67d9b0d
+  - note: CHANGELOG.md [Unreleased] entry — three new tools, canonical review-record
+      schema, registry seed, SPIKE-007 charter; worded as software machinery, never
+      clinical capability. Landed alongside P5-T5/T8 in the batch_2 commit sequence.
 - id: P5-T5
   description: 'Gates G0–G4 as external blocked states in progress tracking (FR-27),
     rulings R2/R4: encode all five gates in .claude/progress/evidence-foundry-e1/
@@ -284,7 +294,7 @@ tasks:
     as the first OQ-8 trigger evidence, and the boundary restated — portal promotion
     is a human decision on demonstrated friction, never pre-emptive. Append path to
     deferred_items_spec_refs.'
-  status: pending
+  status: completed
   assigned_to:
   - documentation-writer
   dependencies:
@@ -293,6 +303,17 @@ tasks:
   priority: low
   assigned_model: sonnet
   model_effort: adaptive
+  note: 'Task status was left pending after landing (tracking-doc bug flagged by P5-T11
+    note and reviewer fix-required item); backfilled per reviewer instruction. Deliverable
+    independently verified present at commit 6c613ed: clinical-review-portal-workflow.md
+    updated with E1 learnings (shipped file+CLI workflow shape, P2-T8 dry-run friction
+    as first OQ-8 trigger evidence, portal-promotion boundary restated), path appended
+    to deferred_items_spec_refs (DF-E1-01).'
+  started: '2026-07-22T04:15:00-04:00'
+  completed: '2026-07-22T04:19:53-04:00'
+  evidence:
+  - commit: 6c613ed
+  - docs: docs/project_plans/design-specs/clinical-review-portal-workflow.md
 - id: P5-T7
   description: 'Design-spec updates — DF-E1-06 + DF-E2-03 (release lane): update docs/project_plans/design-specs/signed-release-key-custody.md
     with what E1 actually shipped (sign/verify machinery, exit-code taxonomy, runbook,
@@ -321,7 +342,7 @@ tasks:
     named as must-fix per ADR-0006. Update surveillance-update-registry-engine.md
     and production-monitoring-telemetry.md with one-paragraph E1-state notes. Append
     all three paths to deferred_items_spec_refs.'
-  status: pending
+  status: completed
   assigned_to:
   - documentation-writer
   dependencies:
@@ -330,6 +351,21 @@ tasks:
   priority: low
   assigned_model: sonnet
   model_effort: adaptive
+  note: 'Task status was left pending after landing (tracking-doc bug flagged by P5-T11
+    note and reviewer fix-required item); backfilled per reviewer instruction. Deliverable
+    independently verified present at commit 9424296 (landed in the same commit as
+    P5-T5''s gates-status.md; commit subject names P5-T5 but the diff also carries
+    this task''s three design-spec updates): retrospective-validation-harness.md gained
+    a DF-E1-04/DF-E1-09 E1-state section (harness machinery built, real-data run remains
+    gated on G3); surveillance-update-registry-engine.md and production-monitoring-telemetry.md
+    each gained a one-paragraph E1-state note. All three paths appended to deferred_items_spec_refs.'
+  started: '2026-07-22T04:16:00-04:00'
+  completed: '2026-07-22T04:20:33-04:00'
+  evidence:
+  - commit: '9424296'
+  - docs: docs/project_plans/design-specs/retrospective-validation-harness.md
+  - docs: docs/project_plans/design-specs/surveillance-update-registry-engine.md
+  - docs: docs/project_plans/design-specs/production-monitoring-telemetry.md
 - id: P5-T9
   description: 'Design-spec updates — DF-E1-02/03/05/07 + new DF-E1-08 stub: pointer-refresh
     updates to cbc-12-angle-research-operation.md, upstream-rf-validators-pediatric.md,
@@ -373,7 +409,7 @@ tasks:
     is still current and record the explicit N/A-with-rationale in the triage table.
     Findings: if findings_doc_ref is null, record "N/A — no findings captured"; else
     finalize.'
-  status: pending
+  status: completed
   assigned_to:
   - documentation-writer
   dependencies:
@@ -389,6 +425,16 @@ tasks:
   priority: medium
   assigned_model: haiku
   model_effort: adaptive
+  note: Task status was left pending after landing (tracking-doc bug flagged by P5-T11
+    note and reviewer fix-required item); backfilled per reviewer instruction. Deliverable
+    independently verified present and content-correct at commit acd6444.
+  started: '2026-07-22T04:30:00-04:00'
+  completed: '2026-07-22T04:36:11-04:00'
+  evidence:
+  - commit: acd6444
+  - note: Frontmatter, findings, and DF-EXT-01 closure finalized in phase-5-progress.md
+      — all 11 deferred_items_spec_refs present, findings_doc_ref:null with rationale
+      recorded in Completion Notes, DF-EXT-01 N/A-with-rationale recorded in deferred_items_triage_status.
 - id: P5-T11
   description: 'Full gate re-run + guardrail/non-goal cross-check (karen prep): re-run
     npm run check end to end against the final diff; independently re-verify every
@@ -407,27 +453,28 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
-  note: 'Re-ran npm run check end to end against the committed diff (main...HEAD, 62 commits, 225
-    files): GREEN — 1837/1837 tests, npm run validate green (anemia + cbc_suite_v1 + roster +
-    registry all schema-valid), coverage:rules 91/91, build + verify:d4 (clinicalApprovers[] empty
-    on all 95 built rules) + check:imports + smoke:browser + smoke all green. Independently
-    re-verified (by reading committed schemas/tools/fixtures/docs directly, not by trusting prior
-    task notes) 11/11 guardrails (6 CLAUDE.md hard guardrails + 5 task-specific guardrails from
-    this task''s own prompt) PASS, 13/13 PRD §7 non-goals (incl. the 6-item §6.4 verbatim list)
-    PASS, 8/8 PRD §11 seeded-violation classes PASS with fail-closed-asserting test coverage
-    confirmed per class, and an 18-FR spot-check across all four workstreams found zero coverage
-    gaps. Independent full-diff sweep (94 non-test changed files) for risky clinical-validity/
-    safety/regulatory assertion patterns found zero non-negated hits, corroborating P5-T2''s 9/9
-    honesty-audit result from outside its 9-surface scope. One non-blocking finding recorded (not
-    a guardrail/non-goal violation): P5-T4/T6/T8/T10 each have real, committed, functioning
-    deliverables (verified via git log/diff) but their own `status:` rows in this file were left
-    `pending` after landing — a tracking-document bug, not a missing artifact; flagged for
-    P5-GATE1/karen attention rather than silently corrected here (out of this task''s AC scope,
-    and this file is shared with other in-flight Phase 5 agents per the git-discipline
-    instructions). Full one-line-per-item tables + the staleness finding:
-    .claude/worknotes/evidence-foundry-e1-v1/p5-t11-gate-guardrail-crosscheck.md.'
-  started: 2026-07-22T06:00:00Z
-  completed: 2026-07-22T06:45:00Z
+  note: 'Re-ran npm run check end to end against the committed diff (main...HEAD,
+    62 commits, 225 files): GREEN — 1837/1837 tests, npm run validate green (anemia
+    + cbc_suite_v1 + roster + registry all schema-valid), coverage:rules 91/91, build
+    + verify:d4 (clinicalApprovers[] empty on all 95 built rules) + check:imports
+    + smoke:browser + smoke all green. Independently re-verified (by reading committed
+    schemas/tools/fixtures/docs directly, not by trusting prior task notes) 11/11
+    guardrails (6 CLAUDE.md hard guardrails + 5 task-specific guardrails from this
+    task''s own prompt) PASS, 13/13 PRD §7 non-goals (incl. the 6-item §6.4 verbatim
+    list) PASS, 8/8 PRD §11 seeded-violation classes PASS with fail-closed-asserting
+    test coverage confirmed per class, and an 18-FR spot-check across all four workstreams
+    found zero coverage gaps. Independent full-diff sweep (94 non-test changed files)
+    for risky clinical-validity/ safety/regulatory assertion patterns found zero non-negated
+    hits, corroborating P5-T2''s 9/9 honesty-audit result from outside its 9-surface
+    scope. One non-blocking finding recorded (not a guardrail/non-goal violation):
+    P5-T4/T6/T8/T10 each have real, committed, functioning deliverables (verified
+    via git log/diff) but their own `status:` rows in this file were left `pending`
+    after landing — a tracking-document bug, not a missing artifact; flagged for P5-GATE1/karen
+    attention rather than silently corrected here (out of this task''s AC scope, and
+    this file is shared with other in-flight Phase 5 agents per the git-discipline
+    instructions). Full one-line-per-item tables + the staleness finding: .claude/worknotes/evidence-foundry-e1-v1/p5-t11-gate-guardrail-crosscheck.md.'
+  started: 2026-07-22 06:00:00+00:00
+  completed: 2026-07-22 06:45:00+00:00
   evidence:
   - doc: .claude/worknotes/evidence-foundry-e1-v1/p5-t11-gate-guardrail-crosscheck.md
 - id: P5-GATE1
@@ -575,7 +622,7 @@ files_modified:
 - tools/release-sign/**
 - tools/retro-validate/**
 - tools/review-record/**
-progress: 54
+progress: 84
 updated: '2026-07-22'
 ---
 
