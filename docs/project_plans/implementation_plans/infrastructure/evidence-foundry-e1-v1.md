@@ -3,9 +3,9 @@ title: "Implementation Plan: Evidence Foundry E1 \u2014 Review Workflow, Signed 
   \ Release, Retrospective Validation"
 schema_version: 2
 doc_type: implementation_plan
-status: in_progress
+status: completed
 created: '2026-07-21'
-updated: '2026-07-21'
+updated: '2026-07-22'
 feature_slug: evidence-foundry-e1
 feature_version: v1
 prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-e1-v1.md
@@ -96,6 +96,8 @@ files_affected:
 - schemas/release-manifest.schema.json
 - schemas/release-registry.schema.json
 - scripts/validate-kb.mjs
+- scripts/rule-coverage.mjs
+- scripts/evidence/backfill-rule-governance.mjs
 - docs/governance/gates-registry.md
 - docs/governance/signing-ceremony-runbook.md
 - docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md

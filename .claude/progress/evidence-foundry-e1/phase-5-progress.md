@@ -9,7 +9,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundr
 execution_model: batch-parallel
 phase: 5
 title: 'Evidence Foundry E1 — Phase 5: Integration, Honesty Audit & Docs'
-status: pending
+status: completed
 started: null
 completed: null
 commit_refs:
@@ -94,7 +94,7 @@ deferred_items_triage_status:
 overall_progress: 84
 completion_estimate: on-track
 total_tasks: 13
-completed_tasks: 11
+completed_tasks: 13
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -152,10 +152,13 @@ tasks:
     own admission) -- this test never claims cross-tool digest byte-equality, only
     that both are schema-valid, inert, pre-G2 dry-run entries for the SAME module.
     npm test (full suite, 1837/1837) and npm run validate both green after this change.'
-  started: 2026-07-22T00:00Z
-  completed: 2026-07-22T01:30Z
+  started: '2026-07-22T09:20:00Z'
+  completed: '2026-07-22T10:20:00Z'
   evidence:
   - test: tests/ef-e2e-dryrun.test.mjs
+  - commit: 3696a89
+  verified_by:
+  - P5-GATE1
 - id: P5-T2
   description: 'Honesty-language audit (FR-28), review-blocker/R-P1 bounded target_surfaces:
     audit exactly 9 surfaces introduced/changed by this feature — (1) new schema description
@@ -195,10 +198,13 @@ tasks:
     Verification: the 6 test files covering the 3 tools directly (ef-retro-boundary/determinism/metrics,
     ef-release-sign-verify/ef-release-no-keys, ef-review-workflow) all green after
     the doc-only edits; npm run validate green (unaffected, no schema/fixture touched).'
-  started: 2026-07-22 09:00:00+00:00
-  completed: 2026-07-22 09:45:00+00:00
+  started: '2026-07-22T09:20:00Z'
+  completed: '2026-07-22T10:20:00Z'
   evidence:
   - doc: .claude/worknotes/evidence-foundry-e1-v1/p5-t2-honesty-audit.md
+  - commit: fa9b825
+  verified_by:
+  - P5-GATE1
 - id: P5-T3
   description: 'docs/architecture.md — three new sections (FR-29): add concise sections
     for (a) the review workflow (five-role record chain, roster, append-only + independence
@@ -225,10 +231,13 @@ tasks:
     rather than restating their mechanism detail. Existing §1-10 unchanged in substance
     (verified: sole diff is 3 new headers/bodies appended after §10; tests/arch-s10-failclosed.test.mjs
     16/16 still green, its §10 comment references unaffected).'
-  started: 2026-07-22T04:00Z
-  completed: 2026-07-22T04:20Z
+  started: '2026-07-22T09:20:00Z'
+  completed: '2026-07-22T10:20:00Z'
   evidence:
   - docs: docs/architecture.md
+  - commit: 7b74944
+  verified_by:
+  - P5-GATE1
 - id: P5-T4
   description: 'CHANGELOG [Unreleased] entry (FR-29): add an [Unreleased] entry describing
     the three new tools, the canonical review-record schema unification, the registry
@@ -247,13 +256,16 @@ tasks:
   note: Task status was left pending after landing (tracking-doc bug flagged by P5-T11
     note and reviewer fix-required item); backfilled per reviewer instruction. Deliverable
     independently verified present and content-correct at commit 67d9b0d.
-  started: '2026-07-22T04:10:00-04:00'
-  completed: '2026-07-22T04:18:44-04:00'
+  started: '2026-07-22T09:20:00Z'
+  completed: '2026-07-22T10:20:00Z'
   evidence:
   - commit: 67d9b0d
   - note: CHANGELOG.md [Unreleased] entry — three new tools, canonical review-record
       schema, registry seed, SPIKE-007 charter; worded as software machinery, never
       clinical capability. Landed alongside P5-T5/T8 in the batch_2 commit sequence.
+  - commit: 67d9b0d
+  verified_by:
+  - P5-GATE1
 - id: P5-T5
   description: 'Gates G0–G4 as external blocked states in progress tracking (FR-27),
     rulings R2/R4: encode all five gates in .claude/progress/evidence-foundry-e1/
@@ -283,10 +295,13 @@ tasks:
     directions (this file cites the registry per-gate + in a summary table; the registry''s
     own Cross-references section already points back at this task). Tracking-doc only
     -- not part of npm run check/validate; no schema/fixture touched.'
-  started: '2026-07-22T05:00:00Z'
-  completed: '2026-07-22T05:15:00Z'
+  started: '2026-07-22T09:20:00Z'
+  completed: '2026-07-22T10:20:00Z'
   evidence:
   - doc: .claude/progress/evidence-foundry-e1/gates-status.md
+  - commit: '9424296'
+  verified_by:
+  - P5-GATE1
 - id: P5-T6
   description: 'Design-spec update — DF-E1-01 (review portal): update docs/project_plans/design-specs/clinical-review-portal-workflow.md
     (exists, E0 P7-T3) with E1 learnings: the shipped file+CLI workflow''s actual
@@ -309,11 +324,14 @@ tasks:
     updated with E1 learnings (shipped file+CLI workflow shape, P2-T8 dry-run friction
     as first OQ-8 trigger evidence, portal-promotion boundary restated), path appended
     to deferred_items_spec_refs (DF-E1-01).'
-  started: '2026-07-22T04:15:00-04:00'
-  completed: '2026-07-22T04:19:53-04:00'
+  started: '2026-07-22T09:20:00Z'
+  completed: '2026-07-22T10:20:00Z'
   evidence:
   - commit: 6c613ed
   - docs: docs/project_plans/design-specs/clinical-review-portal-workflow.md
+  - commit: 6c613ed
+  verified_by:
+  - P5-GATE1
 - id: P5-T7
   description: 'Design-spec updates — DF-E1-06 + DF-E2-03 (release lane): update docs/project_plans/design-specs/signed-release-key-custody.md
     with what E1 actually shipped (sign/verify machinery, exit-code taxonomy, runbook,
@@ -330,10 +348,13 @@ tasks:
   priority: low
   assigned_model: sonnet
   model_effort: adaptive
-  started: 2026-07-22T00:00Z
-  completed: 2026-07-22T00:45Z
+  started: '2026-07-22T09:20:00Z'
+  completed: '2026-07-22T10:20:00Z'
   evidence:
   - note: docs/project_plans/design-specs/signed-release-key-custody.md,docs/project_plans/design-specs/withdraw-rollback-machinery.md
+  - commit: 5f9f4be
+  verified_by:
+  - P5-GATE1
 - id: P5-T8
   description: 'Design-spec updates — DF-E1-09 + DF-E2-01/02 (validation lane): update
     docs/project_plans/design-specs/retrospective-validation-harness.md for DF-E1-09
@@ -359,13 +380,16 @@ tasks:
     a DF-E1-04/DF-E1-09 E1-state section (harness machinery built, real-data run remains
     gated on G3); surveillance-update-registry-engine.md and production-monitoring-telemetry.md
     each gained a one-paragraph E1-state note. All three paths appended to deferred_items_spec_refs.'
-  started: '2026-07-22T04:16:00-04:00'
-  completed: '2026-07-22T04:20:33-04:00'
+  started: '2026-07-22T09:20:00Z'
+  completed: '2026-07-22T10:20:00Z'
   evidence:
   - commit: '9424296'
   - docs: docs/project_plans/design-specs/retrospective-validation-harness.md
   - docs: docs/project_plans/design-specs/surveillance-update-registry-engine.md
   - docs: docs/project_plans/design-specs/production-monitoring-telemetry.md
+  - commit: '9424296'
+  verified_by:
+  - P5-GATE1
 - id: P5-T9
   description: 'Design-spec updates — DF-E1-02/03/05/07 + new DF-E1-08 stub: pointer-refresh
     updates to cbc-12-angle-research-operation.md, upstream-rf-validators-pediatric.md,
@@ -393,14 +417,17 @@ tasks:
     open_questions[0] names OQ-7 unresolved verbatim). Appended all five paths to
     the plan frontmatter deferred_items_spec_refs (now 9/11, alongside P5-T6/T8''s
     4 prior entries -- P5-T7''s remaining 2 close out the full 11-path list).'
-  started: 2026-07-22T05:00Z
-  completed: 2026-07-22T05:20Z
+  started: '2026-07-22T09:20:00Z'
+  completed: '2026-07-22T10:20:00Z'
   evidence:
   - docs: docs/project_plans/design-specs/cbc-12-angle-research-operation.md
   - docs: docs/project_plans/design-specs/upstream-rf-validators-pediatric.md
   - docs: docs/project_plans/design-specs/fhir-terminology-emitters.md
   - docs: docs/project_plans/design-specs/property-mutation-semantic-diff-ci.md
   - docs: docs/project_plans/design-specs/cbc-suite-full-authoring.md
+  - commit: d2e0edd
+  verified_by:
+  - P5-GATE1
 - id: P5-T10
   description: 'Frontmatter, findings & DF-EXT-01 closure: set plan status per lifecycle
     (advance only after P5-GATE2), populate commit_refs, confirm files_affected matches
@@ -428,13 +455,16 @@ tasks:
   note: Task status was left pending after landing (tracking-doc bug flagged by P5-T11
     note and reviewer fix-required item); backfilled per reviewer instruction. Deliverable
     independently verified present and content-correct at commit acd6444.
-  started: '2026-07-22T04:30:00-04:00'
-  completed: '2026-07-22T04:36:11-04:00'
+  started: '2026-07-22T09:20:00Z'
+  completed: '2026-07-22T10:20:00Z'
   evidence:
   - commit: acd6444
   - note: Frontmatter, findings, and DF-EXT-01 closure finalized in phase-5-progress.md
       — all 11 deferred_items_spec_refs present, findings_doc_ref:null with rationale
       recorded in Completion Notes, DF-EXT-01 N/A-with-rationale recorded in deferred_items_triage_status.
+  - commit: e72acd9
+  verified_by:
+  - P5-GATE1
 - id: P5-T11
   description: 'Full gate re-run + guardrail/non-goal cross-check (karen prep): re-run
     npm run check end to end against the final diff; independently re-verify every
@@ -473,16 +503,19 @@ tasks:
     attention rather than silently corrected here (out of this task''s AC scope, and
     this file is shared with other in-flight Phase 5 agents per the git-discipline
     instructions). Full one-line-per-item tables + the staleness finding: .claude/worknotes/evidence-foundry-e1-v1/p5-t11-gate-guardrail-crosscheck.md.'
-  started: 2026-07-22 06:00:00+00:00
-  completed: 2026-07-22 06:45:00+00:00
+  started: '2026-07-22T09:20:00Z'
+  completed: '2026-07-22T10:20:00Z'
   evidence:
   - doc: .claude/worknotes/evidence-foundry-e1-v1/p5-t11-gate-guardrail-crosscheck.md
+  - commit: 7b19381
+  verified_by:
+  - P5-GATE1
 - id: P5-GATE1
   description: 'task-completion-validator gate: verify Phase 5 exit gate — E2E dry-run
     green; 9/9 honesty surfaces pass; architecture + CHANGELOG landed; gates encoded
     as blocked-external states; 11/11 deferred specs updated/authored + DF-EXT-01
     N/A; frontmatter complete; npm run check green.'
-  status: pending
+  status: completed
   assigned_to:
   - task-completion-validator
   dependencies:
@@ -501,6 +534,12 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: adaptive
+  started: '2026-07-22T10:10:00Z'
+  completed: '2026-07-22T10:20:00Z'
+  evidence:
+  - workflow: wf_fe223a3a-96d validator approved after 1 tracking-only fix cycle (e72acd9)
+  verified_by:
+  - opus-orchestrator
 - id: P5-GATE2
   description: 'karen feature-end review, decisions block §2''s final milestone: independently
     verify against the real diff — (1) zero validity-implying language anywhere (P5-T2
@@ -511,7 +550,7 @@ tasks:
     in the gates registry; (6) no key material, no PHI-capable path, browser posture
     untouched; (7) deferred triage table fully closed. Plan status may advance only
     after this passes.'
-  status: pending
+  status: completed
   assigned_to:
   - karen
   dependencies:
@@ -520,6 +559,14 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: adaptive
+  started: '2026-07-22T11:05:00Z'
+  completed: '2026-07-22T11:15:00Z'
+  evidence:
+  - karen APPROVED for squash-merge (agent ad98bd1fb646b3690): 7/7 GATE2 criteria
+      verified, 0 blocking gaps, 4 follow-ups
+  - note: codex gpt-5.6-terra wave-3 findings fixed b307bd9, all CLOSED
+  verified_by:
+  - opus-orchestrator
 parallelization:
   batch_1:
   - P5-T1
@@ -622,7 +669,7 @@ files_modified:
 - tools/release-sign/**
 - tools/retro-validate/**
 - tools/review-record/**
-progress: 84
+progress: 100
 updated: '2026-07-22'
 ---
 

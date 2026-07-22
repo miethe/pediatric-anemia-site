@@ -22,3 +22,4 @@ __pycache__/
 
 # git worktrees created by EnterWorktree / dev-execution protocol
 .claude/worktrees/
+.claude/agent-memory/
