@@ -55,6 +55,15 @@
 // queue reading is a structural role-presence summary only, never a substitute for `validate`/
 // `status`'s fail-closed judgment, and never a release-authorization, approval, or clinical-validity
 // claim.
+//
+// HONESTY-LANGUAGE PASS (Clinical Review Workflow v1, Phase 3, P3-T4, FR-14/R4): the queue section
+// carries its own copy of this program's canonical "unvalidated research prototype" / "no clinical
+// sign-off exists" boundary sentence (`renderQueueSection`'s honesty paragraph, below) in addition to
+// the page-wide `UNVALIDATED_PROTOTYPE_BANNER` already stamped in the header/footer — so the boundary
+// statement is never more than the queue section's own paragraph away, even for a caller that reads
+// only that one `<section class="queue">` fragment in isolation (e.g. an embedded/narrowed view).
+// Wording deliberately reuses `docs/governance/reviewer-runbook.md`'s own "Honesty boundary" section
+// phrasing rather than drafting a fourth independent voice for the same fact.
 
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -489,6 +498,10 @@ function renderQueueSection(allRecords) {
     '<p class="subtitle">Structural role-by-role act presence only, reusing the P1-T1/P1-T5 ' +
       'derived-state primitives (FR-11) &mdash; informational, not a substitute for `validate`/' +
       '`status`\'s fail-closed checks.</p>',
+    '<p class="subtitle">This program remains an unvalidated research prototype: no clinical ' +
+      'sign-off exists for any module rendered here, and the reviewer roster stays ' +
+      'synthetic-only until gate G1 clears (see the banner above for the full boundary ' +
+      'statement).</p>',
     summary,
     '<ol class="queue-roles">',
     roleItems,

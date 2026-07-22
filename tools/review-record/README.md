@@ -5,6 +5,13 @@ E1's review-workflow machinery. Design/scaffold task **P2-T1** (OQ-1/OQ-2/FR-1/F
 `docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1.md` and its
 `evidence-foundry-e1-v1/phase-2-4-workstreams.md` phase file (row `P2-T1`).
 
+**Status: unvalidated research prototype.** Every verb this tool ships proves *software behavior*
+only — record shape, chain linkage, roster resolution, signature verification — never clinical
+validity, safety, diagnostic performance, or regulatory status. The reviewer roster
+(`governance/reviewer-roster.yaml`) stays synthetic-only pre-gate-G1, and no clinical sign-off
+exists for any module in this repository today. See `docs/governance/reviewer-runbook.md`'s
+"Honesty boundary" section for the full statement this line summarizes.
+
 **Status (as of P2-T8)**: `list` (P2-T1), `scaffold`/`validate` (P2-T2 first increment, extended
 P2-T3/T4/T5), `render` (P2-T6), and `dry-run` (P2-T8) are all real — every verb this tool's `--help`
 lists is now implemented. `validate` covers per-record schema shape, D-4 roster resolution, the FR-4
