@@ -1875,25 +1875,56 @@ async function collectValidateViolations(moduleId, root) {
 /**
  * Runs `status --json` as a subprocess (matching this file's established stdout-capture convention
  * for structured-JSON assertions -- see this file's own header on why process-level assertions
- * spawn the real `cli.mjs`) over `{moduleId, root}` and returns the parsed body.
+ * spawn the real `cli.mjs`) over `{moduleId, root}` and returns the parsed body PLUS the subprocess
+ * exit code (`statusExitCode`) -- the previous version of this helper discarded `result.status`
+ * entirely, which meant every drift-guard/adversarial test built on top of it proved only the
+ * "derivedState: invalid" half of FR-28/F8's fail-closed contract, never the "non-zero exit" half
+ * (clinical-review-workflow-v1 Wave-5 codex gate MAJOR finding).
+ *
+ * `lib/verbs/status.mjs`'s own `run` has exactly ONE exit-code rule, read directly from that file's
+ * source (not assumed): `return projected.derivedState === 'invalid' ? EXIT_USAGE : EXIT_OK;` --
+ * non-zero EXACTLY when `derivedState` is the string `'invalid'`, zero for every other derivedState
+ * (including the two OTHER terminal-but-non-`invalid` states, `structurally-non-qualifying` and
+ * `acts-complete-unauthorized`, which are reportable successes, not failures). This helper
+ * RE-ASSERTS that exact invariant on every single call, so every collectStatusResult-driven test in
+ * this file automatically proves the non-zero-exit half of FR-28, not just the label half -- a
+ * status --json call that emitted the correct `derivedState` body but exited 0 anyway would be a
+ * real product bug in status.mjs's exit contract (not a test gap), and this assertion is what would
+ * catch it.
  *
  * @param {string} moduleId
  * @param {string} root
- * @returns {{ moduleId: string, subjectContentHash: string|null, records: object[], derivedState: string, nextExpectedRole: string|null, blockers: string[] }}
+ * @returns {{ moduleId: string, subjectContentHash: string|null, records: object[], derivedState: string, nextExpectedRole: string|null, blockers: string[], statusExitCode: number }}
  */
 function collectStatusResult(moduleId, root) {
-  const { stdout, stderr } = runStatusCli(['--module', moduleId, '--root', root, '--json']);
+  const { status: statusExitCode, stdout, stderr } = runStatusCli(['--module', moduleId, '--root', root, '--json']);
+  let parsed;
   try {
-    return JSON.parse(stdout);
+    parsed = JSON.parse(stdout);
   } catch {
     throw new Error(`status --json did not emit parseable JSON for module "${moduleId}":\n${stdout}\n${stderr}`);
   }
+  const expectedExitCode = parsed.derivedState === 'invalid' ? EXIT_USAGE : EXIT_OK;
+  assert.equal(
+    statusExitCode, expectedExitCode,
+    `status --json's own exit contract (lib/verbs/status.mjs's \`run\`) is non-zero (EXIT_USAGE) ` +
+      `EXACTLY when derivedState is "invalid" -- got derivedState "${parsed.derivedState}" with exit ` +
+      `code ${statusExitCode} (expected ${expectedExitCode}) for module "${moduleId}" at root "${root}". ` +
+      'A mismatch here means status.mjs itself violates its own documented FR-28/F8 fail-closed exit ' +
+      'contract -- a REAL product bug, not a test issue.',
+  );
+  return { ...parsed, statusExitCode };
 }
 
 test('drift guard (F6): status --json blockers and validate\'s violations agree byte-for-byte on the committed cbc_suite_v1 fixture (terminal, structurally-non-qualifying)', async () => {
   const validateViolations = await collectValidateViolations('cbc_suite_v1', REPO_ROOT);
   const statusResult = collectStatusResult('cbc_suite_v1', REPO_ROOT);
   assert.equal(statusResult.derivedState, 'structurally-non-qualifying');
+  assert.equal(
+    statusResult.statusExitCode, EXIT_OK,
+    'structurally-non-qualifying is a reportable terminal SUCCESS (FR-12), never itself an `invalid` ' +
+      'result -- status must exit 0 here, not non-zero',
+  );
   assert.ok(
     isExpectedTerminalNonQualifyingViolations(validateViolations),
     `expected exactly the one FR-6 synthetic-set violation from validate, got: ${JSON.stringify(validateViolations)}`,
@@ -1911,6 +1942,11 @@ test('drift guard (F6): status --json blockers and validate\'s violations agree 
   const validateViolations = await collectValidateViolations('broken_chain_v1', FIXTURES_ROOT);
   const statusResult = collectStatusResult('broken_chain_v1', FIXTURES_ROOT);
   assert.equal(statusResult.derivedState, 'invalid');
+  assert.equal(
+    statusResult.statusExitCode, EXIT_USAGE,
+    'FR-28: status must exit non-zero (not just report derivedState: invalid) over the deliberately ' +
+      'chain-broken fixture',
+  );
   assert.ok(validateViolations.length > 0, 'validate must reject the deliberately chain-broken fixture');
   assert.ok(
     validateViolations.some((v) => v.startsWith('chain:')),
@@ -1931,6 +1967,10 @@ test('drift guard (F6): status --json blockers and validate\'s violations agree 
     const statusResult = collectStatusResult('disputed_pair_v1', dir);
     assert.equal(statusResult.derivedState, 'disputed');
     assert.equal(statusResult.nextExpectedRole, 'adjudication');
+    assert.equal(
+      statusResult.statusExitCode, EXIT_OK,
+      'disputed is a legitimate, non-terminal, non-invalid state -- status must exit 0, not non-zero',
+    );
     assert.deepEqual(
       validateViolations,
       [],
@@ -2661,6 +2701,41 @@ test('P5-T1 (i): a transposed-character subjectContentHash fails closed at the s
   );
 });
 
+test('P5-T1 (i): sign path -- structurally unreachable for the transposed-hash class -- named, asserted refusal: sign fails closed (UsageError, "was not found") when pointed at the EXACT draft path scaffold would have staged had it not refused, because scaffold\'s F5 hard-fail runs before nextChainLink/reviewId are ever computed and no such file was ever written', async () => {
+  // Compute the EXACT reviewId/draft path scaffold would have produced for this class's own
+  // `--role clinical-1` invocation, had F5 not hard-failed first -- nextChainLink is a pure,
+  // read-only function of cbc_suite_v1's already-committed reviews/ directory (unaffected by the
+  // rejected scaffold call above), so this is not a guess, it is the real would-be path.
+  const { seq } = await nextChainLink(REPO_ROOT, 'cbc_suite_v1');
+  const wouldBeReviewId = buildReviewId(seq, 'clinical-1');
+  const wouldBeDraftPath = draftFilePathFor(REPO_ROOT, 'cbc_suite_v1', wouldBeReviewId);
+
+  await assert.rejects(
+    () => runSign({ draft: wouldBeDraftPath, module: 'cbc_suite_v1', root: REPO_ROOT }),
+    (err) => err instanceof UsageError && /was not found/.test(err.message),
+    'sign must refuse (fail closed, UsageError) when asked to sign the exact path scaffold would ' +
+      'have staged for this class -- proving sign never receives anything to process for a ' +
+      'transposed-hash rejection: the malformed input never reaches sign\'s surface at all',
+  );
+});
+
+test('P5-T1 (i): validate/status path -- the rejected transposed-hash scaffold call leaves no residue that reaches either verb -- cbc_suite_v1\'s validate/status results are unaffected, still the known-good structurally-non-qualifying terminus', async () => {
+  const validateViolations = await collectValidateViolations('cbc_suite_v1', REPO_ROOT);
+  assert.ok(
+    isExpectedTerminalNonQualifyingViolations(validateViolations),
+    `expected cbc_suite_v1's validate result to be unaffected by the rejected transposed-hash ` +
+      `scaffold call above (still exactly the one FR-6 synthetic-set violation), got: ` +
+      `${JSON.stringify(validateViolations)}`,
+  );
+  const statusResult = collectStatusResult('cbc_suite_v1', REPO_ROOT);
+  assert.equal(
+    statusResult.derivedState, 'structurally-non-qualifying',
+    'cbc_suite_v1\'s status result must be unaffected by the rejected transposed-hash scaffold call ' +
+      '-- no bad record was ever written, so status still reports the known-good terminus',
+  );
+  assert.equal(statusResult.statusExitCode, EXIT_OK);
+});
+
 // -------------------------------------------------------------------------------------------
 // (ii) out-of-order review-act sequence -- a hand-crafted chain break
 // -------------------------------------------------------------------------------------------
@@ -2719,10 +2794,23 @@ test('P5-T1 (ii): an out-of-order review-act sequence (a hand-crafted draft whos
     const statusResult = collectStatusResult(moduleId, tmp);
     assert.equal(statusResult.derivedState, 'invalid');
     assert.equal(statusResult.nextExpectedRole, null);
+    assert.equal(
+      statusResult.statusExitCode, EXIT_USAGE,
+      'FR-28: status must exit non-zero over the out-of-order/chain-broken result -- this is the ' +
+        'layer where class (ii) actually fails closed (sign legitimately succeeds by design; sign ' +
+        'has no chain-verification duty of its own, only validate/status do)',
+    );
     assert.deepEqual(
       statusResult.blockers, validateViolations,
       'status and validate must agree byte-for-byte on this hand-crafted out-of-order fixture (F6)',
     );
+
+    // Prove the downstream rejection through the real CLI too (not just the in-process runValidate/
+    // collectStatusResult library calls above) -- validate --module <id> --root <tmp> as a
+    // subprocess must ALSO exit EXIT_USAGE on this chain break.
+    const validateCli = runCli(['validate', '--module', moduleId, '--root', tmp]);
+    assert.equal(validateCli.status, EXIT_USAGE, validateCli.stdout);
+    assert.match(validateCli.stderr, /chain:/);
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }
@@ -2792,6 +2880,7 @@ test('P5-T1 (iii): a malformed supersedes-based "correction" (a schema-pattern-i
     );
     const statusResult = collectStatusResult(moduleId, tmp);
     assert.equal(statusResult.derivedState, 'invalid');
+    assert.equal(statusResult.statusExitCode, EXIT_USAGE, 'FR-28: status must exit non-zero over the malformed-supersedes committed record');
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }
@@ -2863,6 +2952,7 @@ test('P5-T1 (v, F8): a roster-resolution failure (an unknown reviewerId) fails c
 
   const statusResult = collectStatusResult('nonroster_reviewer_v1', FIXTURES_ROOT);
   assert.equal(statusResult.derivedState, 'invalid');
+  assert.equal(statusResult.statusExitCode, EXIT_USAGE, 'FR-28: status must exit non-zero over the roster-resolution-failure fixture');
   assert.deepEqual(
     statusResult.blockers, validateViolations,
     'status and validate must agree byte-for-byte on the roster-resolution-failure fixture (F6)',
@@ -2898,6 +2988,34 @@ test('P5-T1 (v): a roster-resolution failure is reachable ONLY via scaffold (F1:
       throw err;
     });
     assert.deepEqual(after, before, 'a rejected scaffold call must stage no draft for sign to read');
+
+    // sign path -- structurally unreachable for this class, named and proven exactly as class (i)
+    // above: compute the EXACT reviewId/draft path scaffold would have staged (nextChainLink is a
+    // pure, read-only function of this fresh module's reviews/ dir -- unaffected by the rejected
+    // scaffold call), and prove sign refuses (fail closed) because that path was never written.
+    const { seq } = await nextChainLink(tmp, moduleId);
+    const wouldBeReviewId = buildReviewId(seq, 'clinical-1');
+    const wouldBeDraftPath = draftFilePathFor(tmp, moduleId, wouldBeReviewId);
+    await assert.rejects(
+      () => runSign({ draft: wouldBeDraftPath, module: moduleId, root: tmp }),
+      (err) => err instanceof UsageError && /was not found/.test(err.message),
+      'sign must refuse (fail closed, UsageError) when asked to sign the exact path scaffold would ' +
+        'have staged for this class -- proving sign never receives anything to process for a ' +
+        'roster-resolution-failure rejection: the malformed input never reaches sign\'s surface',
+    );
+
+    // validate/status path -- this module has zero committed records (the rejected scaffold call
+    // never wrote one), so validate/status must report the clean, unaffected not-started state, not
+    // any kind of corruption -- proving nothing bad ever reaches either verb for this class either.
+    const validateViolations = await collectValidateViolations(moduleId, tmp);
+    assert.deepEqual(
+      validateViolations, [],
+      'validate must find zero violations over a module with zero committed records',
+    );
+    const statusResult = collectStatusResult(moduleId, tmp);
+    assert.equal(statusResult.derivedState, 'not-started');
+    assert.equal(statusResult.nextExpectedRole, 'clinical-1');
+    assert.equal(statusResult.statusExitCode, EXIT_OK, 'not-started is not invalid -- status must exit 0');
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }
@@ -2938,6 +3056,7 @@ test('P5-T1 (vi, F8): signature tampering fails closed on validate and status id
 
     const statusResult = collectStatusResult(moduleId, tmp);
     assert.equal(statusResult.derivedState, 'invalid');
+    assert.equal(statusResult.statusExitCode, EXIT_USAGE, 'FR-28: status must exit non-zero over the tampered-signature record');
     assert.deepEqual(
       statusResult.blockers, validateViolations,
       'status and validate must agree byte-for-byte on the tampered-signature fixture (F6)',
@@ -2982,7 +3101,7 @@ test('P5-T1 (vi): signature tampering is refused by sign too, on the ONE input s
 // history violation).
 // -------------------------------------------------------------------------------------------
 
-test('P5-T1 (vii, F8): an append-only git-history violation (a legitimately-signed record, then deleted and byte-identically restored in a later commit) fails closed on validate --history and status --history identically -- status reports derivedState invalid + non-zero exit', async () => {
+test('P5-T1 (vii, F8): an append-only git-history violation (a legitimately-signed record, then deleted and byte-identically restored in a later commit) fails closed on validate --history and status --history identically -- status reports derivedState invalid + non-zero exit -- AND sign, driven on this same history-violated root, is reachable and succeeds (sign has no history-verification duty of its own; --history is validate/status-exclusive), yet the append-only violation still fails closed afterward exactly as before', async () => {
   const tmp = await mkdtemp(path.join(tmpdir(), 'ef-p5t1-history-'));
   try {
     const moduleId = 'p5t1_history_v1';
@@ -2991,7 +3110,8 @@ test('P5-T1 (vii, F8): an append-only git-history violation (a legitimately-sign
     execFileSync('git', ['config', 'user.name', 'CRW P5-T1 Test'], { cwd: tmp });
 
     await writeSignFixtureRoster(tmp, [
-      { reviewerId: 'p5t1-history-reviewer', moduleId, label: 'P5-T1 (vii)' },
+      { reviewerId: 'p5t1-history-reviewer', moduleId, label: 'P5-T1 (vii) clinical-1' },
+      { reviewerId: 'p5t1-history-reviewer-2', moduleId, label: 'P5-T1 (vii) clinical-2' },
     ]);
     await writeTrivialModuleContent(tmp, moduleId);
 
@@ -3038,6 +3158,48 @@ test('P5-T1 (vii, F8): an append-only git-history violation (a legitimately-sign
     assert.equal(parsed.derivedState, 'invalid');
     assert.equal(parsed.nextExpectedRole, null);
     assert.ok(parsed.blockers.some((b) => b.startsWith('git-history:')));
+
+    // sign path -- UNLIKE classes (i)/(v), sign IS reachable here: lib/verbs/sign.mjs's own header
+    // documents it has no history-verification duty of its own (that lives exclusively in
+    // validate/status --history, an opt-in flag sign does not even accept). Driving a further,
+    // otherwise-legitimate scaffold -> sign act (clinical-2) on this SAME history-violated root
+    // proves that layering directly: sign succeeds, because nextChainLink only ever reads the
+    // immediate predecessor's ON-DISK bytes (unaffected by the out-of-band git rewrite above -- the
+    // restored bytes are byte-identical to the original), never git history.
+    assert.equal(await runScaffold({
+      module: moduleId, role: 'clinical-2', reviewerId: 'p5t1-history-reviewer-2', decision: 'approve',
+      // Deliberately NOT a shared-boilerplate ending with act 1's rationale (this file's usual "...,
+      // no clinical claim." suffix would trip the FR-4 heuristic textual-overlap check at exactly
+      // its 20-char MIN_SHARED_SUBSTRING_LENGTH threshold, lib/independence.mjs -- an incidental
+      // self-inflicted independence violation, not the git-history class this test targets).
+      rationale: 'P5-T1 (vii) act 2, scaffolded/signed on a history-violated root to prove sign is ' +
+        'reachable and has no history-verification duty of its own; not a clinical determination.',
+      reviewedAt: '2026-05-07T00:20:00Z', root: tmp, draft: true,
+    }), EXIT_OK, 'scaffold must succeed on this history-violated root -- it has no --history duty either');
+    const draft2Path = draftFilePathFor(tmp, moduleId, 'rr-0002-clinical-2');
+    assert.equal(
+      await runSign({ draft: draft2Path, module: moduleId, root: tmp }), EXIT_OK,
+      'sign must succeed on this history-violated root -- it has no history-verification duty of ' +
+        'its own (--history is validate/status-exclusive); this is the expected, by-design layering ' +
+        'this class exists to prove, not a gap',
+    );
+
+    // Belt-and-suspenders: sign's success above did not "fix" or hide the append-only violation --
+    // validate --history / status --history must STILL fail closed, identically, on this now-two-
+    // record root, for the exact same rr-0001-clinical-1 git-history reason as before.
+    const validateResultAfterSign = runCli(['validate', '--module', moduleId, '--root', tmp, '--history']);
+    assert.equal(validateResultAfterSign.status, EXIT_USAGE, validateResultAfterSign.stdout);
+    assert.match(validateResultAfterSign.stderr, /git-history:/);
+
+    const statusResultAfterSign = collectStatusResult(moduleId, tmp);
+    assert.equal(
+      statusResultAfterSign.derivedState, 'in-progress',
+      'status --json WITHOUT --history is unaffected by the git-history layer (opt-in only) -- with ' +
+        'two structurally-valid, roster-verified, agreeing records and no adjudication-triggering ' +
+        'disagreement, it correctly reports the ordinary in-progress next-role position, never invalid',
+    );
+    assert.equal(statusResultAfterSign.nextExpectedRole, 'lab');
+    assert.equal(statusResultAfterSign.statusExitCode, EXIT_OK);
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }
@@ -3089,17 +3251,64 @@ test('F9 (P5-T1): scaffold --draft -> sign --draft -> validate -> status, driven
 // -------------------------------------------------------------------------------------------
 // Coverage manifest -- a cheap, auditable, structural proof this file actually names all seven
 // P5-T1 adversarial classes (FR-28/F8's acceptance criterion: "7/7 adversarial/fail-closed classes
-// produce the expected non-zero fail-closed result on status, sign, and validate"). Grep-based on
-// this file's OWN source rather than a hand-maintained checklist, so it cannot silently drift from
-// the tests actually present above.
+// produce the expected non-zero fail-closed result on status, sign, and validate").
+//
+// clinical-review-workflow-v1 Wave-5 codex gate MINOR finding fixed: the earlier version of this
+// test ran `assert.match(source, new RegExp(label))` against this file's ENTIRE raw source --
+// including the very array literal of labels a few lines below, which trivially contains every one
+// of the seven label strings verbatim. That made the check UNFALSIFIABLE: it would keep passing
+// even if every single P5-T1 (i)-(vii) behavioral test above were deleted outright, because the
+// label text it was searching for always exists somewhere in this file regardless (in its own
+// array), so it would "survive fixture removal" exactly as that finding named.
+//
+// The fix: extract the actual REGISTERED `test(...)` title strings from this file's own source (a
+// small parse, not a hand-maintained checklist -- so it still cannot silently drift from the tests
+// actually present above), and check each class label against THAT extracted set, never against
+// the raw file text. Removing or renaming a class's own test() call now breaks this manifest test
+// too, exactly as intended.
 // -------------------------------------------------------------------------------------------
 
-test('P5-T1 coverage manifest: this file names all seven adversarial/fail-closed classes (i)-(vii), each with a P5-T1-tagged test', async () => {
+/**
+ * Extracts every top-level `test('...', ...)` / `test("...", ...)` title string literal from
+ * `source`, in file order -- the real `node:test` test names this file registers, not merely any
+ * substring anywhere in the file. Deliberately excludes method-call sites like `/re/.test(...)`
+ * (RegExp.prototype.test) via a negative lookbehind requiring the preceding character be neither a
+ * word character nor a `.` -- this file uses that exact pattern in a handful of places (e.g.
+ * `assert.rejects` predicates calling `/pattern/.test(err.message)`), and those must never be
+ * mistaken for a registered test title.
+ *
+ * @param {string} source
+ * @returns {string[]}
+ */
+function extractTestTitles(source) {
+  const titles = [];
+  const testCallRe = /(?<![\w.])test\(\s*(['"])((?:\\.|(?!\1).)*)\1/g;
+  let match;
+  while ((match = testCallRe.exec(source)) !== null) {
+    titles.push(match[2]);
+  }
+  return titles;
+}
+
+test('P5-T1 coverage manifest: this file names all seven adversarial/fail-closed classes (i)-(vii), each mapped to at least one REGISTERED test() title in this file -- not a raw source grep (which would trivially pass even with every behavioral test deleted, since this manifest\'s own label array always contains the label text -- see this section\'s header)', async () => {
   const source = await readFile(path.join(REPO_ROOT, 'tests', 'ef-review-workflow.test.mjs'), 'utf8');
+  const testTitles = extractTestTitles(source);
+  assert.ok(
+    testTitles.length > 100,
+    `expected well over 100 registered test() titles extracted from this file's own source, got ` +
+      `${testTitles.length} -- the extraction itself may be broken (e.g. the regex no longer ` +
+      'matches this file\'s test() call shape)',
+  );
+
   for (const label of ['P5-T1 (i)', 'P5-T1 (ii)', 'P5-T1 (iii)', 'P5-T1 (iv', 'P5-T1 (v', 'P5-T1 (vi', 'P5-T1 (vii']) {
-    assert.match(
-      source, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
-      `expected at least one test naming "${label}"`,
+    const matchingTitles = testTitles.filter((title) => title.includes(label));
+    assert.ok(
+      matchingTitles.length > 0,
+      `expected at least one REGISTERED test() title containing "${label}" among the ` +
+        `${testTitles.length} extracted titles, found none -- a raw source grep would trivially ` +
+        'pass here (this manifest test\'s own label array contains the same string), so this check ' +
+        'is deliberately scoped to extracted test() titles only, which a deleted or renamed ' +
+        'behavioral test would actually break',
     );
   }
 });
