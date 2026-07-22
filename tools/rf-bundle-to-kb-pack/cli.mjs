@@ -20,6 +20,14 @@
 //              runs/" pattern (multi-bundle-conversion-e1 Phase 2, row P2-T3, FR-5, R-7 mitigation).
 //              Halts on the first pair that fails, naming it explicitly. See lib/batch.mjs.
 //
+//   aggregate — read-only rollup of the 4 named pairs' own per-bundle conversion-report.json (plus
+//              each pair's committed unresolved.json / staged candidate-scaffolds.json, when
+//              present) into one top-level multi-bundle-conversion-report.json under --out-base
+//              (multi-bundle-conversion-e1 Phase 2, row P2-T4, FR-5). Never drives inspect/verify/
+//              propose itself; every one of the 4 named pairs always gets a section, with explicit
+//              0/[] defaults for whatever has not been produced yet (R-P2). See
+//              lib/multi-bundle-report.mjs.
+//
 // Zero network calls, zero LLM/generative-model invocations, ever (FR-10, 02 §2.3 items 13-15).
 // Never mutates the `rf` run directory (seam invariant 6).
 
@@ -27,6 +35,7 @@ import { run as runInspect } from './lib/verbs/inspect.mjs';
 import { run as runVerify } from './lib/verbs/verify.mjs';
 import { run as runPropose } from './lib/verbs/propose.mjs';
 import { run as runBatch } from './lib/batch.mjs';
+import { run as runAggregate } from './lib/multi-bundle-report.mjs';
 import { ConverterError, EXIT_OK, EXIT_USAGE } from './lib/errors.mjs';
 
 const VERB_HANDLERS = Object.freeze({
@@ -34,6 +43,7 @@ const VERB_HANDLERS = Object.freeze({
   verify: runVerify,
   propose: runPropose,
   batch: runBatch,
+  aggregate: runAggregate,
 });
 
 const HELP_TEXT = `rf-bundle-to-kb-pack — deterministic converter from a verified rf evidence bundle
@@ -60,6 +70,13 @@ Verbs:
       {fixture, module} pairs hand-enumerated in lib/batch.mjs's BATCH_PAIRS (never a glob or a
       "process everything under runs/" pattern -- R-7 mitigation). Halts on the first pair whose
       any stage fails, naming the pair explicitly; already-succeeded pairs' output is untouched.
+
+  aggregate [--out-base <dir>]
+      Read-only rollup of the 4 named pairs' own conversion-report.json (plus unresolved.json /
+      candidate-scaffolds.json, when present) into multi-bundle-conversion-report.json under
+      --out-base. Every named pair always gets a section; a pair with no propose output yet is
+      reported "not_available" with every count at its defined 0/[] default (R-P2). Never runs
+      inspect/verify/propose itself -- always exits 0.
 
 Global:
   -h, --help    Show this help and exit 0.

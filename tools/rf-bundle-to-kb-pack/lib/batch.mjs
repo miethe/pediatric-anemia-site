@@ -67,8 +67,12 @@ const REPO_ROOT = path.resolve(CONVERTER_ROOT, '..', '..');
 /** Default `--rule-schema` this batch's `verify` stage validates any staged `rules.json` against. */
 const DEFAULT_RULE_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'rule.schema.json');
 
-/** Default `build/kb-pack/` root (gitignored, `.gitignore` P1-T7) every pair's `outDir` nests under. */
-const DEFAULT_OUT_BASE_DIR = path.join(REPO_ROOT, 'build', 'kb-pack');
+/** Default `build/kb-pack/` root (gitignored, `.gitignore` P1-T7) every pair's `outDir` nests under.
+ * Exported (multi-bundle-conversion-e1 Phase 2, row P2-T4) so `../multi-bundle-report.mjs`'s
+ * read-only aggregator resolves each named pair's `outDir` identically to this file's own `runBatch`
+ * -- one canonical `outDir` convention, never two independently-maintained copies of the same path
+ * math. */
+export const DEFAULT_OUT_BASE_DIR = path.join(REPO_ROOT, 'build', 'kb-pack');
 
 /**
  * The batch's ONLY bundle enumeration (R-7 mitigation, decisions block Risk 7): an explicit,
@@ -128,8 +132,12 @@ export class BatchBundleFailedError extends ConverterError {
  *
  * @param {string} moduleDir
  * @returns {Promise<string>}
+ *
+ * Exported (multi-bundle-conversion-e1 Phase 2, row P2-T4) so `../multi-bundle-report.mjs`'s
+ * read-only aggregator resolves each named pair's `moduleId` identically to this file's own
+ * `runBatch` — one canonical resolution, never a second, drifting copy.
  */
-async function resolveModuleId(moduleDir) {
+export async function resolveModuleId(moduleDir) {
   const fallback = path.basename(moduleDir);
   try {
     const raw = await readFile(path.join(moduleDir, 'module.json'), 'utf8');

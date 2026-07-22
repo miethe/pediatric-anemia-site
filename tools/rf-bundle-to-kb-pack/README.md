@@ -177,6 +177,12 @@ tools/rf-bundle-to-kb-pack/
     loader.mjs               bundle loader (P2-T2)
     hashing.mjs               hash pinning (P2-T3)
     eligibility.mjs            eligibility + status reconciliation (P2-T4)
+    batch.mjs                  `batch` verb: named 4-pair inspect->verify->propose runner
+                                (multi-bundle-conversion-e1 Phase 2, P2-T3)
+    multi-bundle-report.mjs     `aggregate` verb: read-only rollup of the 4 named pairs' own
+                                conversion-report.json into multi-bundle-conversion-report.json
+                                (multi-bundle-conversion-e1 Phase 2, P2-T4) — see "Multi-bundle
+                                aggregate report" below
     verbs/
       inspect.mjs              `inspect` verb (P2-T6)
       verify.mjs                `verify` verb (P2-T7)
@@ -186,3 +192,36 @@ tools/rf-bundle-to-kb-pack/
 `build/kb-pack/` (this tool's eventual output root) is git-ignored (`.gitignore`, P1-T7) — nothing
 under it is ever committed. Golden/fixture outputs for converter tests live under `tests/fixtures/`
 instead (OQ-6).
+
+## Multi-bundle aggregate report (`lib/multi-bundle-report.mjs`, multi-bundle-conversion-e1 Phase 2, P2-T4)
+
+`node cli.mjs aggregate [--out-base <dir>]` reads whatever `build/kb-pack/`/`modules/<id>/` output
+already exists for each of the 4 named `BATCH_PAIRS` (`lib/batch.mjs`) — never running
+`inspect`/`verify`/`propose` itself — and writes one top-level, read-only
+`<out-base>/multi-bundle-conversion-report.json`. It always emits exactly 4 bundle sections and
+always exits 0: a pair whose `propose` stage has not written a pack yet is reported
+`status: "not_available"`, never omitted.
+
+**R-P2 (binding): every field below has a defined, non-omittable `0`/`[]`/`null` representation** —
+a consumer reading this report for a bundle that produced zero conflicts or zero unresolved claims
+sees an explicit `0`/`[]` in that field, never a missing key. Full field-by-field detail (including
+why `rulesEmitted` is `0` for every bundle by design, not merely by current incompleteness) lives in
+`lib/multi-bundle-report.mjs`'s own header comment; summary:
+
+| Field (per bundle, `bundles[]`) | Type | 0/empty default | Source |
+|---|---|---|---|
+| `status` | string | `"not_available"` | `"reported"` once that bundle's own `conversion-report.json` exists |
+| `statusReason` | string \| `null` | `null` when `"reported"` | a named reason string when `"not_available"` |
+| `claimsProcessed` | number | `0` | that bundle's `conversion-report.json.summary.claimsTotal` |
+| `conflictsPreserved` | number | `0` | `conversion-report.json.summary.claimsConflictVisible` |
+| `unresolved` | array | `[]` | committed `modules/<id>/unresolved.json` (Phase 5 artifact; not yet authored for any module as of P2-T4) |
+| `unresolvedCount` | number | `0` | `unresolved.length` |
+| `candidateScaffolds` | array | `[]` | staged `<outDir>/candidate-scaffolds.json` (Phase 5, OQ-5; not yet authored) |
+| `candidateScaffoldsCount` | number | `0` | `candidateScaffolds.length` |
+| `rulesEmitted` | number | `0` | new rule entries this pass adds for this bundle — `0` for all 4 named bundles per FR-9/FR-22 (no `authoring-decisions.yaml` exists yet for any of them, DF-E1-M1); Phase 6's P6-T4 upgrades this to a real `git diff`-verified count |
+
+The top-level `aggregate` object sums every one of the numeric fields above across all 4 bundles
+(plus `bundlesReported`/`bundlesNotAvailable`, a strict partition of `bundlesTotal`) — same
+zero-default posture. See `tests/ef-converter-multi-bundle-report.test.mjs` for the executable proof,
+including the literal AC that a zero-unresolved-claims bundle emits `"unresolved": []` in the actual
+bytes written to disk, never an absent key.
