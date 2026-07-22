@@ -16,8 +16,15 @@ pointed build work.
 **Dependencies**: None — first phase in the plan; runs in wave 1 alongside Phase 3
 **Assigned Subagent(s)**: node-tooling engineer (general-purpose, sonnet); Explore (read
 `scripts/evidence/vendor-rf-bundle.mjs` + `tests/fixtures/rf-cbc-001/` before building); task-completion-validator gate
-**Exit gate** (decisions block §1): `node tools/rf-bundle-to-kb-pack/cli.mjs inspect` exits 0 for all
-4 fixtures; vendor generator unit-tested.
+**Exit gate** (decisions block §1, **scoped per Decisions Block Addendum A1**): `node
+tools/rf-bundle-to-kb-pack/cli.mjs inspect` exits 0 for `tests/fixtures/rf-cbc-002` — the only one
+of the 4 fixtures whose target module (`modules/cbc_suite_v1/`) currently carries an
+`authoring-decisions.yaml`. For `rf-ev-001` (→ `modules/anemia`), `rf-kid-001` (→
+`modules/kidney_suite_v1`), and `rf-gro-002` (→ `modules/growth_suite_v1`), `inspect` exits 1 with
+`DecisionsNotFoundError` — pre-existing E0-era converter behavior (`lib/loader.mjs`), not a P1
+regression, and NOT to be closed by authoring an `authoring-decisions.yaml` in this feature (see
+line 190 below / Notes for implementation-planner). That gap is tracked as **Deferred Item
+DF-E1-M1** (rule-authoring workflow per module). Vendor generator unit-tested.
 
 | Task ID | Task Name | Description | Acceptance Criteria | Estimate | Subagent(s) | Model | Effort | Dependencies |
 |---------|-----------|--------------|----------------------|---------:|--------------|-------|--------|---------------|
@@ -28,14 +35,24 @@ pointed build work.
 | P1-T5 | Generate + commit `tests/fixtures/rf-kid-001/` | Per FR-2/FR-3: run the generator against `rf_run_20260717_rf_kid_001_pediatric_cds_evidence` (RF-KID-001, 12 source cards, 87 claims). Commit fixture tree + `HASH-PROVENANCE.md`. | `tests/fixtures/rf-kid-001/` committed with `HASH-PROVENANCE.md`; `inspect` exits 0 against it | 0.5 | node-tooling engineer | sonnet | adaptive | P1-T1, P1-T2 |
 | P1-T6 | Generate + commit `tests/fixtures/rf-gro-002/` | Per FR-2/FR-3: run the generator against `rf_run_20260717_rf_gro_002_pediatric_cds_evidence` (RF-GRO-002, 12 source cards, 92 claims). Commit fixture tree + `HASH-PROVENANCE.md`. | `tests/fixtures/rf-gro-002/` committed with `HASH-PROVENANCE.md`; `inspect` exits 0 against it | 0.5 | node-tooling engineer | sonnet | adaptive | P1-T1, P1-T2 |
 | P1-T7 | Rights-leakage grep gate across all 4 fixtures (R-4 mitigation) | Per FR-3 / decisions block Risk 4: add a CI-runnable check (`npm run check` step or a dedicated script invoked by it) that greps every committed byte under `tests/fixtures/rf-{ev-001,cbc-002,kid-001,gro-002}/` for any string matching a source card's withheld/restricted verbatim passage (cross-referenced against each fixture's `HASH-PROVENANCE.md` restricted-passage list). This closes decisions block Risk 4 structurally, not only by convention. | The grep gate runs as part of `npm run validate` (or an equivalent check task) and fails non-zero if a restricted passage's verbatim text is found in any committed fixture byte; a seeded mutation (temporarily inserting one restricted passage's text into a fixture file) is caught by the gate in a local dry run before being reverted | 0.75 | node-tooling engineer | sonnet | adaptive | P1-T3, P1-T4, P1-T5, P1-T6 |
-| P1-GATE | `task-completion-validator` gate | Verify Phase 1 exit gate: `inspect` exits 0 for all 4 fixtures; fixture generator is unit-tested; grep gate active and passing; no rights-restricted verbatim text in any committed fixture byte. | All exit-gate criteria pass; recorded in phase progress note | — | task-completion-validator | sonnet | adaptive | P1-T1..T7 |
+| P1-GATE | `task-completion-validator` gate | Verify Phase 1 exit gate (scoped per Decisions Block Addendum A1): `inspect` exits 0 for `rf-cbc-002`; the other 3 fixtures' `DecisionsNotFoundError` exit is expected (DF-E1-M1), not a blocker; fixture generator is unit-tested; grep gate active and passing; no rights-restricted verbatim text in any committed fixture byte. | All exit-gate criteria pass (as scoped); recorded in phase progress note | — | task-completion-validator | sonnet | adaptive | P1-T1..T7 |
 
 **Phase 1 Quality Gates:**
-- [ ] `node tools/rf-bundle-to-kb-pack/cli.mjs inspect` exits 0 against all 4 new fixtures
+- [ ] `node tools/rf-bundle-to-kb-pack/cli.mjs inspect` exits 0 against `tests/fixtures/rf-cbc-002`
+  (the only new fixture whose target module carries `authoring-decisions.yaml`); the other 3
+  fixtures' `DecisionsNotFoundError` exit is expected and out of scope for P1 (Decisions Block
+  Addendum A1 / Deferred Item DF-E1-M1), not a regression to fix here
 - [ ] Fixture generator (`scripts/evidence/generate-rf-fixture.mjs`) is unit-tested and deterministic
 - [ ] All 4 `HASH-PROVENANCE.md` files exist and mirror `rf-cbc-001`'s structure
 - [ ] Rights-leakage grep gate is active in `npm run check`/`npm run validate` and passes
 - [ ] Zero network calls during fixture generation (test-enforced)
+
+> **Note on per-task ACs above**: P1-T3/P1-T5/P1-T6's Acceptance Criteria columns say `inspect`
+> "exits 0 against it" for their respective fixtures. Per Addendum A1, this holds for `rf-cbc-002`
+> (P1-T4) only; `rf-ev-001` (P1-T3), `rf-kid-001` (P1-T5), and `rf-gro-002` (P1-T6) exit 1 with
+> `DecisionsNotFoundError` (no `authoring-decisions.yaml` on their target modules — DF-E1-M1),
+> which does not block those tasks' completion — their ACs are otherwise fully met (fixture
+> committed, `HASH-PROVENANCE.md` present).
 
 ---
 

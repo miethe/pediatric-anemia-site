@@ -181,6 +181,41 @@ This decisions block expands into a full **Implementation Plan** using:
 
 ---
 
+## Addendum A1 — P1 Exit-Gate Scoping Correction (recorded 2026-07-22)
+
+**Trigger**: Phase 1's implementation-plan exit gate (`phase-1-2-vendoring-batch-orchestration.md`,
+Exit gate line + Phase 1 Quality Gates checklist) stated `inspect` exits 0 for **all 4** new
+fixtures. Verified directly post-execution: `node tools/rf-bundle-to-kb-pack/cli.mjs inspect` exits
+`0` only for `tests/fixtures/rf-cbc-002` (target module `modules/cbc_suite_v1/` — per "The central
+truth" above, the *only* module with an `authoring-decisions.yaml`). It exits `1` with
+`DecisionsNotFoundError` for `rf-ev-001` (→ `modules/anemia`), `rf-kid-001` (→
+`modules/kidney_suite_v1`), and `rf-gro-002` (→ `modules/growth_suite_v1`) — pre-existing E0-era
+converter behavior (`tools/rf-bundle-to-kb-pack/lib/loader.mjs`), because those 3 target modules
+have no `authoring-decisions.yaml`, not something P1's fixture-generation work regressed.
+
+**Decision**: This is not a P1 defect, and it is **not** to be closed by authoring
+`authoring-decisions.yaml` for the 3 unqualified modules inside this feature — that is explicitly
+out of scope per line 190 ("Notes for implementation-planner" below: "Do not plan any task that
+authors `authoring-decisions.yaml` clinical content... those are human gates outside this
+feature"), and is exactly the gap named by **Deferred Item DF-E1-M1** (rule-authoring workflow per
+module; § Deferred Items Triage Table, parent plan). Accordingly:
+
+- P1's exit gate is corrected/scoped to: `inspect` exits 0 for `rf-cbc-002` only. `inspect`'s
+  `DecisionsNotFoundError` exit for the other 3 fixtures is the *expected*, correct result under the
+  current authoring-decisions posture and is **not** a P1 blocker or a regression to fix.
+- The other 3 fixtures (`rf-ev-001`, `rf-kid-001`, `rf-gro-002`) remain fully valid, complete P1
+  deliverables — rights-aware, deterministic, fail-closed, each with its own `HASH-PROVENANCE.md`.
+  Their `inspect`-against-a-decisions-file gap is a downstream (P4/P5, ultimately DF-E1-M1) concern,
+  never a P1 regression.
+- `docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1/phase-1-2-vendoring-batch-orchestration.md`
+  (Exit gate line + Phase 1 Quality Gates checklist) and
+  `.claude/progress/multi-bundle-conversion-e1/phase-1-progress.md` (Exit Criteria / Quality Gates)
+  are updated to reflect this scoping.
+- No `authoring-decisions.yaml` was, or will be, authored under P1 to force a pass on the other 3
+  fixtures.
+
+---
+
 ## Notes for implementation-planner
 
 - **Honesty ACs are load-bearing**: every projection phase (P4/P5) must carry an explicit AC asserting **zero new clinical rules** and `approvedBy: []` / null clinicalContentHash. Do not let "module complete" imply clinical readiness.
