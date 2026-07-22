@@ -10,17 +10,17 @@ execution_model: batch-parallel
 phase: 4
 title: "Clinical Review Workflow v1 \u2014 Phase 4: Portal-Promotion Framework & Concept\
   \ Assets"
-status: pending
+status: completed
 created: '2026-07-22'
 updated: '2026-07-22'
 started: 2026-07-22T13:20Z
-completed: null
+completed: 2026-07-22T15:50Z
 commit_refs: []
 pr_refs: []
-overall_progress: 65
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 4
+completed_tasks: 6
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -148,7 +148,7 @@ tasks:
     \ asset visibly carries the CONCEPT-ONLY watermark and the design spec's portal\
     \ section is still maturity: shaping; (4) zero portal code exists anywhere in\
     \ the diff."
-  status: pending
+  status: completed
   assigned_to:
   - karen
   dependencies:
@@ -159,11 +159,19 @@ tasks:
   model_effort: adaptive
   acceptance_criteria: karen sign-off recorded; any gap becomes a task before this
     gate reopens.
+  started: 2026-07-22T15:30Z
+  completed: 2026-07-22T15:45Z
+  evidence:
+  - karen APPROVED: 4 framework elements verified, 7/7 guardrails byte-for-byte, no
+      code parses framework file (self-trigger structurally impossible); should-fixes
+      routed to P5 + PR body
+  verified_by:
+  - P4-GATE2
 - id: P4-GATE3
   description: "codex gpt-5.6-terra read-only second-opinion diff review of the full\
     \ P4 changeset against R6 and FR-15..17 \u2014 checks for any language that reads\
     \ as a portal commitment rather than an informing artifact."
-  status: pending
+  status: completed
   assigned_to:
   - codex (read-only)
   dependencies:
@@ -174,6 +182,13 @@ tasks:
   model_effort: high
   acceptance_criteria: Review recorded; any flagged gap becomes a task before Phase
     5 opens.
+  started: 2026-07-22T15:00Z
+  completed: 2026-07-22T15:20Z
+  evidence:
+  - codex: 'gpt-5.6-terra wave-2 pass targets 7-9 (framework honesty, manifest fail-closed,
+      maturity shaping): zero P4 findings'
+  verified_by:
+  - P4-GATE3
 parallelization:
   batch_1:
   - P4-T1
@@ -198,21 +213,21 @@ success_criteria:
 - id: SC-1
   description: Framework names metric format, threshold-as-proposal, owner-role, decision-record
     template
-  status: pending
+  status: completed
 - id: SC-2
   description: "Owner-role is a role name only \u2014 never a person, never an agent/rf/ARC\
     \ role"
-  status: pending
+  status: completed
 - id: SC-3
   description: 'Every mockup asset carries the CONCEPT-ONLY watermark; design spec
     portal section stays maturity: shaping'
-  status: pending
+  status: completed
 - id: SC-4
   description: Zero portal code anywhere in the diff
-  status: pending
+  status: completed
 - id: SC-5
   description: npm run check green
-  status: pending
+  status: completed
 files_modified:
 - .claude/worknotes/clinical-review-workflow/friction-observations.md
 - docs/project_plans/design-specs/assets/
@@ -222,7 +237,7 @@ notes: "Wave 2 (parallel to Phase 2, both gated on Phase 1 only). Tier 3 milesto
   \ P4-GATE1 as sufficient on its own. Hard guardrail: no task in this phase writes\
   \ a single line of portal code; the mockups are CONCEPT-ONLY informing artifacts,\
   \ not a build commitment."
-progress: 66
+progress: 100
 ---
 
 # clinical-review-workflow — Phase 4: Portal-Promotion Framework & Concept Assets

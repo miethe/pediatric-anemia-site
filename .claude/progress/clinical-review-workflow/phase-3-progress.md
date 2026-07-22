@@ -8,11 +8,11 @@ prd_ref: docs/project_plans/PRDs/infrastructure/clinical-review-workflow-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/clinical-review-workflow-v1.md
 execution_model: batch-parallel
 phase: 3
-title: "Clinical Review Workflow v1 — Phase 3: Render Queue View & Reviewer Runbook"
-status: pending
+title: "Clinical Review Workflow v1 \u2014 Phase 3: Render Queue View & Reviewer Runbook"
+status: in_progress
 created: '2026-07-22'
 updated: '2026-07-22'
-started: null
+started: 2026-07-22T16:25Z
 completed: null
 commit_refs: []
 pr_refs: []
@@ -31,18 +31,22 @@ contributors:
 - codex-gpt-5.6-terra
 model_usage:
   primary: sonnet
-  external: [haiku, gpt-5.6-terra]
+  external:
+  - haiku
+  - gpt-5.6-terra
 tasks:
 - id: P3-T1
-  description: "Render queue/turn-state section (FR-11). Add a queue/turn-state section\
-    \ to lib/render.mjs's static HTML output: the five roles in order, each with its\
-    \ existing committed-record link, plus a NEXT or TERMINAL marker sourced from P1-T1's\
-    \ derived-state library. No <script>, no <a href> (existing constraint unchanged);\
-    \ semantic HTML headings for screen-reader navigation of the five roles."
+  description: 'Render queue/turn-state section (FR-11). Add a queue/turn-state section
+    to lib/render.mjs''s static HTML output: the five roles in order, each with its
+    existing committed-record link, plus a NEXT or TERMINAL marker sourced from P1-T1''s
+    derived-state library. No <script>, no <a href> (existing constraint unchanged);
+    semantic HTML headings for screen-reader navigation of the five roles.'
   status: pending
-  assigned_to: [general-purpose]
-  dependencies: ["P1-T1 (external, Phase 1)"]
-  estimated_effort: "1.5 pts"
+  assigned_to:
+  - general-purpose
+  dependencies:
+  - P1-T1 (external, Phase 1)
+  estimated_effort: 1.5 pts
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
@@ -51,18 +55,22 @@ tasks:
   - tests/fixtures/ef-review-render/golden/
   - tests/ef-review-render.test.mjs
   - tests/ef-review-render-smoke.test.mjs
-  acceptance_criteria: "Render golden under tests/fixtures/ef-review-render/golden/ updated\
-    \ to include the queue section; grep test confirms zero <script and zero <a href in the\
-    \ new section; tests/ef-review-render-smoke.test.mjs continues to pass via the real CLI\
-    \ entry point."
+  acceptance_criteria: Render golden under tests/fixtures/ef-review-render/golden/
+    updated to include the queue section; grep test confirms zero <script and zero
+    <a href in the new section; tests/ef-review-render-smoke.test.mjs continues to
+    pass via the real CLI entry point.
 - id: P3-T2
   description: "Terminal-state messaging fix (FR-12). On the structurally-non-qualifying\
     \ derived state, validate, status, and render each emit an explicit sentence naming\
-    \ this as the correct, by-design terminus for any synthetic: true set — not a defect."
+    \ this as the correct, by-design terminus for any synthetic: true set \u2014 not\
+    \ a defect."
   status: pending
-  assigned_to: [general-purpose]
-  dependencies: ["P1-T2 (external, Phase 1)", P3-T1]
-  estimated_effort: "0.5 pts"
+  assigned_to:
+  - general-purpose
+  dependencies:
+  - P1-T2 (external, Phase 1)
+  - P3-T1
+  estimated_effort: 0.5 pts
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
@@ -70,37 +78,43 @@ tasks:
   - tools/review-record/lib/verbs/validate.mjs
   - tools/review-record/lib/verbs/status.mjs
   - tools/review-record/lib/render.mjs
-  acceptance_criteria: "A shared-string test asserts the exact sentence (or agreed canonical\
-    \ substring) appears in validate's CLI output, status's human companion text, and\
-    \ render's HTML output on the committed cbc_suite_v1 synthetic set."
+  acceptance_criteria: A shared-string test asserts the exact sentence (or agreed
+    canonical substring) appears in validate's CLI output, status's human companion
+    text, and render's HTML output on the committed cbc_suite_v1 synthetic set.
 - id: P3-T3
-  description: "Author docs/governance/reviewer-runbook.md (FR-13, OQ-3, OQ-7). Guided git\
-    \ walkthrough of the five-role sequence against the committed cbc_suite_v1 dry-run\
-    \ fixture; corrections via supersedes (never in-place edits); what structurally\
-    \ non-qualifying means. Two labeled tracks: exercise (synthetic personas) — sign is\
-    \ visible only on this track — and post-G1 real reviewer (ends at scaffold-writes-the-file;\
-    \ real reviewers never run sign). Linked from README and architecture §11."
+  description: "Author docs/governance/reviewer-runbook.md (FR-13, OQ-3, OQ-7). Guided\
+    \ git walkthrough of the five-role sequence against the committed cbc_suite_v1\
+    \ dry-run fixture; corrections via supersedes (never in-place edits); what structurally\
+    \ non-qualifying means. Two labeled tracks: exercise (synthetic personas) \u2014\
+    \ sign is visible only on this track \u2014 and post-G1 real reviewer (ends at\
+    \ scaffold-writes-the-file; real reviewers never run sign). Linked from README\
+    \ and architecture \xA711."
   status: pending
-  assigned_to: [documentation-writer, general-purpose]
+  assigned_to:
+  - documentation-writer
+  - general-purpose
   dependencies: []
-  estimated_effort: "1.5 pts"
+  estimated_effort: 1.5 pts
   priority: high
-  assigned_model: "haiku -> sonnet"
+  assigned_model: haiku -> sonnet
   model_effort: adaptive
   target_surfaces:
   - docs/governance/reviewer-runbook.md
-  acceptance_criteria: "Runbook covers all five roles end-to-end; both labeled tracks\
-    \ present; docs-truth test asserts required section headers exist and that sign\
-    \ appears only under the exercise track."
+  acceptance_criteria: Runbook covers all five roles end-to-end; both labeled tracks
+    present; docs-truth test asserts required section headers exist and that sign
+    appears only under the exercise track.
 - id: P3-T4
-  description: "Honesty-language pass (FR-14, R4). Review every user-visible surface this\
-    \ phase touches (runbook, render's new section, README pointer) for language implying\
-    \ clinical validity, real sign-off, or a non-synthetic roster; confirm each carries or\
-    \ links one hop to the boundary statement."
+  description: Honesty-language pass (FR-14, R4). Review every user-visible surface
+    this phase touches (runbook, render's new section, README pointer) for language
+    implying clinical validity, real sign-off, or a non-synthetic roster; confirm
+    each carries or links one hop to the boundary statement.
   status: pending
-  assigned_to: [general-purpose]
-  dependencies: [P3-T1, P3-T3]
-  estimated_effort: "0.5 pts"
+  assigned_to:
+  - general-purpose
+  dependencies:
+  - P3-T1
+  - P3-T3
+  estimated_effort: 0.5 pts
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
@@ -108,60 +122,77 @@ tasks:
   - docs/governance/reviewer-runbook.md
   - tools/review-record/lib/render.mjs
   - tools/review-record/README.md
-  acceptance_criteria: "Docs-truth test asserts docs/governance/reviewer-runbook.md, the\
-    \ render's queue-section HTML, and tools/review-record/README.md each contain at least\
-    \ one of 'unvalidated research prototype' / 'roster is synthetic-only' / 'no clinical\
-    \ sign-off exists' (or agreed equivalent)."
+  acceptance_criteria: Docs-truth test asserts docs/governance/reviewer-runbook.md,
+    the render's queue-section HTML, and tools/review-record/README.md each contain
+    at least one of 'unvalidated research prototype' / 'roster is synthetic-only'
+    / 'no clinical sign-off exists' (or agreed equivalent).
 - id: P3-GATE1
-  description: "task-completion-validator gate: verify Phase 3 exit gate — render stays\
-    \ <script>-free/static; runbook covers all 5 roles end-to-end against the dry-run\
-    \ fixture; npm run check green."
+  description: "task-completion-validator gate: verify Phase 3 exit gate \u2014 render\
+    \ stays <script>-free/static; runbook covers all 5 roles end-to-end against the\
+    \ dry-run fixture; npm run check green."
   status: pending
-  assigned_to: [task-completion-validator]
-  dependencies: [P3-T1, P3-T2, P3-T3, P3-T4]
-  estimated_effort: "—"
+  assigned_to:
+  - task-completion-validator
+  dependencies:
+  - P3-T1
+  - P3-T2
+  - P3-T3
+  - P3-T4
+  estimated_effort: "\u2014"
   priority: critical
   assigned_model: sonnet
   model_effort: adaptive
-  acceptance_criteria: "All exit-gate criteria pass; recorded in phase progress note."
+  acceptance_criteria: All exit-gate criteria pass; recorded in phase progress note.
 - id: P3-GATE2
-  description: "codex gpt-5.6-terra read-only second-opinion diff review of the full P3\
-    \ changeset against R4/R6 and FR-11..14 — checks the render section stays\
-    \ script-free/static and the runbook's two-track split does not leak sign into the\
-    \ post-G1 track."
+  description: "codex gpt-5.6-terra read-only second-opinion diff review of the full\
+    \ P3 changeset against R4/R6 and FR-11..14 \u2014 checks the render section stays\
+    \ script-free/static and the runbook's two-track split does not leak sign into\
+    \ the post-G1 track."
   status: pending
-  assigned_to: ["codex (read-only)"]
-  dependencies: [P3-GATE1]
-  estimated_effort: "—"
+  assigned_to:
+  - codex (read-only)
+  dependencies:
+  - P3-GATE1
+  estimated_effort: "\u2014"
   priority: high
   assigned_model: gpt-5.6-terra
   model_effort: high
-  acceptance_criteria: "Review recorded; any flagged gap becomes a task before Phase 5 opens."
-
+  acceptance_criteria: Review recorded; any flagged gap becomes a task before Phase
+    5 opens.
 parallelization:
-  batch_1: [P3-T1, P3-T3]
-  batch_2: [P3-T2, P3-T4]
-  batch_3: [P3-GATE1]
-  batch_4: [P3-GATE2]
-  critical_path: [P3-T1, P3-T4, P3-GATE1, P3-GATE2]
-  estimated_total_time: "~2 engineer-days"
-
+  batch_1:
+  - P3-T1
+  - P3-T3
+  batch_2:
+  - P3-T2
+  - P3-T4
+  batch_3:
+  - P3-GATE1
+  batch_4:
+  - P3-GATE2
+  critical_path:
+  - P3-T1
+  - P3-T4
+  - P3-GATE1
+  - P3-GATE2
+  estimated_total_time: ~2 engineer-days
 blockers: []
-
 success_criteria:
 - id: SC-1
-  description: "Render queue section stays <script>-free and <a href>-free (static HTML constraint)"
+  description: Render queue section stays <script>-free and <a href>-free (static
+    HTML constraint)
   status: pending
 - id: SC-2
-  description: "Reviewer runbook covers all five roles end-to-end against the dry-run fixture"
+  description: Reviewer runbook covers all five roles end-to-end against the dry-run
+    fixture
   status: pending
 - id: SC-3
-  description: "sign appears only in the runbook's exercise track, never the post-G1 track"
+  description: sign appears only in the runbook's exercise track, never the post-G1
+    track
   status: pending
 - id: SC-4
-  description: "npm run check green"
+  description: npm run check green
   status: pending
-
 files_modified:
 - tools/review-record/lib/render.mjs
 - tools/review-record/lib/verbs/render.mjs
@@ -172,12 +203,11 @@ files_modified:
 - tests/fixtures/ef-review-render/golden/
 - tests/ef-review-render.test.mjs
 - tests/ef-review-render-smoke.test.mjs
-
-notes: "Wave 3 (per the computed wave split — depends only on Phase 1, but shares\
+notes: "Wave 3 (per the computed wave split \u2014 depends only on Phase 1, but shares\
   \ lib/verbs/validate.mjs with Phase 2, so is scheduled one wave later to avoid a\
   \ concurrent-write collision; this is a scheduling fact, not a P2 scope dependency).\
-  \ Render ∥ runbook fully parallel within the phase; runbook draft goes haiku (ICA-eligible\
-  \ free-tier draft) → sonnet honesty/structure pass in-session."
+  \ Render \u2225 runbook fully parallel within the phase; runbook draft goes haiku\
+  \ (ICA-eligible free-tier draft) \u2192 sonnet honesty/structure pass in-session."
 ---
 
 # clinical-review-workflow — Phase 3: Render Queue View & Reviewer Runbook

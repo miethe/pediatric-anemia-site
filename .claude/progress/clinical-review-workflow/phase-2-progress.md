@@ -9,17 +9,17 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/clinical-review
 execution_model: sequential
 phase: 2
 title: "Clinical Review Workflow v1 \u2014 Phase 2: Sign Verb & Validate Performance"
-status: pending
+status: completed
 created: '2026-07-22'
 updated: '2026-07-22'
 started: 2026-07-22T13:20Z
-completed: null
+completed: 2026-07-22T16:25Z
 commit_refs: []
 pr_refs: []
-overall_progress: 80
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 5
+completed_tasks: 6
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -205,7 +205,7 @@ tasks:
     \ fail-closed gaps in the sign staged-draft lifecycle (no existing-record rewrite,\
     \ F1) and the composite-key cache-staleness paths (per-component invalidation,\
     \ F3)."
-  status: pending
+  status: completed
   assigned_to:
   - codex (read-only)
   dependencies:
@@ -216,6 +216,14 @@ tasks:
   model_effort: high
   acceptance_criteria: Review recorded; any flagged gap becomes a task before Phase
     5 opens.
+  started: 2026-07-22T15:00Z
+  completed: 2026-07-22T16:20Z
+  evidence:
+  - codex: gpt-5.6-terra FAIL(3 BLOCKER,1 MAJOR)->fixes 2b8674e,05ae17a,9ba97ce,2b123d4,a0675ea,e20de0a->re-pass
+      B2/B3/M4 CLOSED, B1 committed-symlink closed; residual lstat-race adjudicated
+      out-of-threat-model (same-user), documented
+  verified_by:
+  - P2-GATE2
 parallelization:
   batch_1:
   - P2-T1
@@ -240,22 +248,22 @@ success_criteria:
 - id: SC-1
   description: sign consumes only a staged draft (never rewrites an existing reviews/
     file, F1) and round-trips against validate on the synthetic (TESTKEY) path
-  status: pending
+  status: completed
 - id: SC-2
   description: 'sign refuses fail-closed on any synthetic: false draft or --record
     over a committed file, naming G1 and G2'
-  status: pending
+  status: completed
 - id: SC-3
   description: Incremental validate wall-time measurably reduced across two separate
     processes sharing the persistent composite-keyed cache
-  status: pending
+  status: completed
 - id: SC-4
   description: 5/5 composite-key fresh-process invalidation tests prove fail-closed
     recompute (F3)
-  status: pending
+  status: completed
 - id: SC-5
   description: npm run check green
-  status: pending
+  status: completed
 files_modified:
 - tools/review-record/cli.mjs
 - tools/review-record/lib/verbs/sign.mjs
@@ -274,7 +282,7 @@ notes: "Wave 2 (parallel to Phase 4, both gated on Phase 1 only). Stays in-sessi
   \ file (FR-25, F1), never an existing reviews/ record, and the validate cache is\
   \ a cross-process PERSISTENT composite-keyed store (F3), not an in-process content-hash-pair\
   \ cache."
-progress: 83
+progress: 100
 ---
 
 # clinical-review-workflow — Phase 2: Sign Verb & Validate Performance
