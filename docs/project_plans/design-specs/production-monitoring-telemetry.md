@@ -5,7 +5,7 @@ title: "Evidence Foundry: Production Monitoring & Telemetry (DF-E2-02)"
 status: draft
 maturity: shaping
 created: 2026-07-21
-updated: 2026-07-21
+updated: 2026-07-22
 feature_slug: evidence-foundry-buildout
 prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-buildout-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-buildout-v1.md
@@ -60,6 +60,18 @@ design (CLAUDE.md: "No PHI in the public microsite... The browser assessment sen
 anywhere"), which is itself a constraint any future monitoring design must not silently violate by
 adding telemetry that ships facts off-device. No signed release, registry (`DF-E2-01`, deferred), or
 surveillance engine exists for a monitored release to be an entry in.
+
+## E1 State (Phase 5, 2026-07-22)
+
+`evidence-foundry-e1-v1` shipped no deployment surface at all — no change to `server.mjs`'s
+three existing endpoints, no metrics/telemetry emission path, and no live deployment anywhere. It
+did land the review-workflow, signing/registry, and retrospective-harness *machinery* this program
+would eventually need a monitored release to exercise, but every one of those artifacts stays
+schema-forced inert (empty roster, `signature: null` pre-G2, zero real registry entries) and none of
+it constitutes a "deployed release" in this spec's sense. This spec's promotion trigger — "First E1
+release activated" — is therefore unmet by construction: there is still nothing running anywhere for
+any of the seven named signals (activation, abstention, missingness, overrides, alert burden,
+incidents, version adoption) to be collected against, and this spec stays `maturity: shaping`.
 
 ## Design Sketch
 

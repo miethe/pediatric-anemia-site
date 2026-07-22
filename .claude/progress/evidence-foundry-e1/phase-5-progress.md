@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 13
-completed_tasks: 2
+completed_tasks: 3
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -154,7 +154,7 @@ tasks:
     entry criteria + blocked artifacts copied from the P1-T6 gates registry), mirroring
     the arc-adoption P5 "owner-blocked" precedent. Gates are never marked as tasks,
     never completable by agents, and no phase-completion record may claim gate progress.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -163,6 +163,23 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  note: 'Authored .claude/progress/evidence-foundry-e1/gates-status.md: all 5 gates
+    (G0-G4) present as standalone status: blocked-external / owner: human entries,
+    entry criteria + blocked artifacts/behaviors copied in substance from docs/governance/gates-registry.md
+    (P1-T6), which the file names as the authoritative source it mirrors -- not
+    the reverse. Mirrors the arc-clinical-council-adoption-v1 Phase 5 "owner-blocked"
+    precedent (.claude/progress/arc-clinical-council-adoption-v1/phase-5-completion.md),
+    cited explicitly in the new file. Zero gate rows added as tasks: grepped every
+    phase-N-progress.md and phase-N-completion.md under this directory for `id:
+    G0`..`id: G4` task entries -- none exist, none added. No phase-completion record
+    in this plan claims gate progress. Cross-reference to the gates registry present
+    in both directions (this file cites the registry per-gate + in a summary table;
+    the registry''s own Cross-references section already points back at this task).
+    Tracking-doc only -- not part of npm run check/validate; no schema/fixture touched.'
+  started: '2026-07-22T05:00:00Z'
+  completed: '2026-07-22T05:15:00Z'
+  evidence:
+  - doc: .claude/progress/evidence-foundry-e1/gates-status.md
 - id: P5-T6
   description: 'Design-spec update — DF-E1-01 (review portal): update docs/project_plans/design-specs/clinical-review-portal-workflow.md
     (exists, E0 P7-T3) with E1 learnings: the shipped file+CLI workflow''s actual
@@ -219,7 +236,7 @@ tasks:
     paragraph each). Author the one new stub: docs/project_plans/design-specs/cbc-suite-full-authoring.md
     for DF-E1-08 with maturity: shaping, prd_ref to this feature''s PRD, open_questions
     naming the OQ-7 rule-schema-v2 trigger reading. Append all five paths to deferred_items_spec_refs.'
-  status: pending
+  status: completed
   assigned_to:
   - documentation-writer
   dependencies:
@@ -228,6 +245,25 @@ tasks:
   priority: low
   assigned_model: sonnet
   model_effort: adaptive
+  note: 'Added one "## E1 State (evidence-foundry-e1-v1)" paragraph each to the four
+    pointer-refresh specs (cbc-12-angle-research-operation.md DF-E1-02, upstream-rf-validators-pediatric.md
+    DF-E1-03, fhir-terminology-emitters.md DF-E1-05, property-mutation-semantic-diff-ci.md
+    DF-E1-07): each confirms this plan (E1) did not touch that workstream, restates
+    the still-unmet promotion trigger (ADR-0008/RFUP-upstream/ADR-0003/OQ-7 respectively,
+    all still proposed/unresolved), and bumped each frontmatter updated date. Authored
+    the new stub docs/project_plans/design-specs/cbc-suite-full-authoring.md for
+    DF-E1-08 (maturity: shaping, prd_ref: evidence-foundry-e1-v1 PRD, plan_ref: this
+    plan, open_questions[0] names OQ-7 unresolved verbatim). Appended all five paths
+    to the plan frontmatter deferred_items_spec_refs (now 9/11, alongside P5-T6/T8''s
+    4 prior entries -- P5-T7''s remaining 2 close out the full 11-path list).'
+  started: 2026-07-22T05:00Z
+  completed: 2026-07-22T05:20Z
+  evidence:
+  - docs: docs/project_plans/design-specs/cbc-12-angle-research-operation.md
+  - docs: docs/project_plans/design-specs/upstream-rf-validators-pediatric.md
+  - docs: docs/project_plans/design-specs/fhir-terminology-emitters.md
+  - docs: docs/project_plans/design-specs/property-mutation-semantic-diff-ci.md
+  - docs: docs/project_plans/design-specs/cbc-suite-full-authoring.md
 - id: P5-T10
   description: 'Frontmatter, findings & DF-EXT-01 closure: set plan status per lifecycle
     (advance only after P5-GATE2), populate commit_refs, confirm files_affected matches
@@ -385,7 +421,7 @@ files_modified:
 - CHANGELOG.md
 - docs/project_plans/design-specs/*.md
 - .claude/progress/evidence-foundry-e1/**
-progress: 15
+progress: 23
 updated: '2026-07-22'
 ---
 
