@@ -84,3 +84,19 @@ export class RegistryError extends UsageError {
     super(message);
   }
 }
+
+/**
+ * FR-24's structural prespecified-protocol shape gate (P4-T6, `lib/protocol.mjs#assertProtocolShape`):
+ * thrown when a `--protocol` document fails `schemas/protocol.schema.json` -- in particular, when
+ * it declares any non-null value where the schema requires `const: null` (a populated-threshold
+ * document), or omits a required human-authorship/threshold-slot field. Maps to `EXIT_USAGE` (same
+ * non-taxonomy-bloat rationale `RegistryError` above documents: a rejected protocol document is a
+ * bad-document-shape problem, not a NEW structural exit code the way FR-20's corpus boundary is)
+ * but gets its own CLASS so a test -- or a future caller -- can tell "protocol shape rejected"
+ * apart from any other `UsageError` by class alone.
+ */
+export class ProtocolError extends UsageError {
+  constructor(message) {
+    super(message);
+  }
+}

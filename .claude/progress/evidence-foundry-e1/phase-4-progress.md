@@ -14,10 +14,10 @@ started: null
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 50
 completion_estimate: on-track
 total_tasks: 10
-completed_tasks: 4
+completed_tasks: 5
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -146,7 +146,7 @@ tasks:
     invents or defaults a clinical threshold). An unpopulated protocol renders every
     harness report "non-qualifying — protocol not prespecified by humans" (wired in
     P4-T4). Seeded populated-threshold fixture rejected fail-closed.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -155,6 +155,36 @@ tasks:
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
+  note: 'Prespecified-protocol shape (FR-24): tools/retro-validate/schemas/protocol.schema.json
+    (tool-local) shapes the ONE kind of protocol document `report --protocol` may accept
+    -- slots for dangerousMissRateThreshold, utilityMeasures (sensitivity/specificity/PPV/NPV
+    thresholds), and strata.{subgroup,analyzer,site} (per-stratum threshold), every threshold
+    leaf `const: null`, plus a REQUIRED non-empty `authoredBy` (named-human ownership -- FR-24
+    is an authorship requirement, not merely a null-threshold one). New lib/protocol.mjs
+    (loadProtocolSchema/validateProtocolDocument/assertProtocolShape, same json-schema-lite
+    reuse posture as boundary.mjs) + errors.mjs ProtocolError (UsageError subclass, EXIT_USAGE,
+    same non-taxonomy-bloat rationale as RegistryError). Wired into lib/verbs/report.mjs: a
+    supplied --protocol document is now schema-validated immediately after JSON-parse and BEFORE
+    any report/provenance write -- a populated-threshold document throws ProtocolError fail-closed,
+    zero output written. This is layered ON TOP OF (not instead of) P4-T4''s already-landed
+    evaluateProtocolQualification, which independently never returns qualifying:true regardless
+    of this schema''s own gate. Seeded fixtures: tests/fixtures/ef-retro/protocol/{null-threshold,populated-threshold}-protocol.json.
+    New tests/ef-retro-protocol.test.mjs (15 tests: schema load/keyword-support, slot presence,
+    const:null on every threshold leaf, both fixtures, all 3 threshold-slot locations independently
+    rejecting a populated value, authorship requirement, closed-shape check). Updated
+    tests/ef-retro-metrics.test.mjs: fixed the pre-existing ad-hoc --protocol literal in the
+    report-verb acceptance test to the new schema-conformant shape (populatedFields assertion
+    corrected to reflect findPopulatedProtocolFields'' generic, schemaVersion-only metadata
+    allowlist -- protocolId/authoredBy/description now legitimately show up as "populated" even
+    on an all-null-threshold document; qualifying stays false regardless) and added a new
+    report-verb integration test proving the seeded populated-threshold fixture is rejected
+    fail-closed with NO agreement-report.json/run-provenance.json written.'
+  started: 2026-07-22T06:20Z
+  completed: 2026-07-22T07:10Z
+  evidence:
+  - test: tests/ef-retro-protocol.test.mjs
+  - test: tests/ef-retro-metrics.test.mjs (updated)
+  - commit: ef-e1(P4-T6)
 - id: P4-T7
   description: 'Validation-data access log (FR-22), ADR-0006 audit clause: every check-fixtures/run/report
     invocation appends a structured entry (actor identity from env/flag, timestamp,
@@ -309,7 +339,7 @@ files_modified:
 - tests/ef-retro-corpus.test.mjs
 - tests/fixtures/ef-retro/**
 - docs/project_plans/SPIKEs/spike-007-retrospective-data-source.md
-progress: 40
+progress: 50
 updated: '2026-07-22'
 ---
 

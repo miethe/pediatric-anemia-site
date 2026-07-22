@@ -99,7 +99,7 @@ same pattern `tools/rf-bundle-to-kb-pack/` already established for this repo's E
 | **Corpus** | `lib/corpus.mjs` | Reads/parses `<dir>/corpus.json`; loads (and caches) the fixture-corpus schema. Pure I/O + parse, no validation, no writes. | **P4-T1** (this task) | errors |
 | **Boundary** | `lib/boundary.mjs` | `checkFixtures(corpusDir)` -- the schema-enforced (not procedural) de-identification gate (FR-20). Real schema-validation as of P4-T1; **P4-T2** hardened `run`/`report` (`lib/verbs/run.mjs`, `lib/verbs/report.mjs`) to call it FIRST, unconditionally, and refuse to proceed past an unchecked/failing corpus. | P4-T1 (initial), **P4-T2** (enforcement + hardening, landed) | corpus, errors |
 | **Replay** | `lib/replay.mjs` | Version-pinned deterministic engine replay (FR-19) -- `resolveCandidate()` resolves the candidate build exclusively via a registry-entry `packDigest` match (never "current tree"); `replayCorpus()`/`writeReplayOutput()` sort cases, strip `assess()`'s one non-deterministic field (`meta.generatedAt`), and write canonical (sorted-key) bytes; byte-identical double-run output, test-proven. Landed, **P4-T3**. | **P4-T3** (landed) | boundary, corpus, errors |
-| **Metrics** | `lib/metrics.mjs`, plus the discordance/adjudication model (P4-T5, FR-23) and the human-only protocol schema (P4-T6, FR-24) | Software-agreement `agreement-report.json` (5 OQ-5 measures) + `run-provenance.json` sidecar; FR-24 protocol-qualification banner (structurally always non-qualifying). Landed, **P4-T4**. Discordance records (P4-T5) and the `protocol.schema.json` structural gate (P4-T6) still to come. | **P4-T4** (landed) / **P4-T5** / **P4-T6** | replay, errors |
+| **Metrics** | `lib/metrics.mjs`, plus the discordance/adjudication model (P4-T5, FR-23) and the human-only protocol schema (`lib/protocol.mjs`, `schemas/protocol.schema.json`, **P4-T6**, FR-24) | Software-agreement `agreement-report.json` (5 OQ-5 measures) + `run-provenance.json` sidecar; FR-24 protocol-qualification banner (structurally always non-qualifying) AND, as of P4-T6, a structural `const:null`-threshold schema gate on any `--protocol` document, enforced fail-closed by `lib/verbs/report.mjs`. Landed, **P4-T4**/**P4-T6**. Discordance records (P4-T5) still to come. | **P4-T4** (landed) / **P4-T5** / **P4-T6** (landed) | replay, errors |
 | **Access log** | `lib/access-log.mjs`, `access-log.jsonl` (generated, not committed) | Append-only, structured audit trail of every `check-fixtures`/`run`/`report` invocation (FR-22) -- distinct from the review-record chain (no shared files, no shared schema, no cross-import; test-asserted). Landed, P4-T7. | **P4-T7** (landed) | errors |
 
 **Access-log call sites**: every file under `lib/verbs/` calls `access-log.mjs#logAccessAttempt` as
@@ -121,11 +121,11 @@ lib/verbs/run.mjs              -- boundary-gated (P4-T2) -> real (P4-T3, landed)
 lib/verbs/report.mjs            -- boundary-gated (P4-T2: calls checkFixtures first) -> real (P4-T4, landed): reads replay-output.json -> computeAgreementMeasures() -> writeAgreementReport() + writeRunProvenance()
 ```
 
-**Data flow** (P4-T5/T6 still to come):
+**Data flow** (P4-T5 still to come):
 
 ```
-corpus.loadCorpusDocument()  ->  boundary.checkFixtures()  ->  replay.resolveCandidate() + replayCorpus()  ->  metrics.computeAgreementMeasures() + evaluateProtocolQualification()
-        (P4-T1)                        (P4-T1/P4-T2)                          (P4-T3, landed)                       (P4-T4, landed; P4-T5/T6 extend)
+corpus.loadCorpusDocument()  ->  boundary.checkFixtures()  ->  replay.resolveCandidate() + replayCorpus()  ->  protocol.assertProtocolShape() (P4-T6)  ->  metrics.computeAgreementMeasures() + evaluateProtocolQualification()
+        (P4-T1)                        (P4-T1/P4-T2)                          (P4-T3, landed)                                       (P4-T6, landed; --protocol only)                          (P4-T4, landed; P4-T5 extends)
 ```
 
 `run` and `report` each call `boundary.checkFixtures()` first and refuse to proceed on an
@@ -244,9 +244,39 @@ incapable of ever returning `qualifying: true` -- not merely "false by default",
 branch in the function that assigns `true`. An optional `--protocol <path>` is read (if given)
 only so its content can be recorded in the banner's `populatedFields`/`reason` detail; even a
 document with real, non-null threshold values is *detected* (via `findPopulatedProtocolFields`, a
-generic recursive walk with no dependency on P4-T6's not-yet-authored `protocol.schema.json` field
-names) but never honored. Every `agreement-report.json` therefore carries the FR-24
+generic recursive walk with no dependency on `protocol.schema.json`'s own field names) but never
+honored. Every `agreement-report.json` therefore carries the FR-24
 "non-qualifying — protocol not prespecified by humans" banner unconditionally.
+
+## Prespecified-protocol shape (`schemas/protocol.schema.json`, `lib/protocol.mjs`, P4-T6, FR-24)
+
+Also tool-local, same rationale as the fixture-corpus schema. Shapes the ONE kind of prespecified
+validation protocol document `report --protocol <path>` may ever accept, with slots for the
+dangerous-miss-rate threshold, the utility measures (sensitivity/specificity/PPV/NPV thresholds),
+and the three stratification axes (subgroup/analyzer/site) a future human-authored protocol would
+pin per-stratum thresholds against. **Every threshold-bearing field is `const: null`** -- there is
+no value other than `null` that satisfies this schema for any threshold field, in Evidence Foundry
+E1; software never invents or defaults a clinical threshold. The schema also requires a non-empty
+`authoredBy` (named human owner(s)) -- FR-24's "TBD-by-named-humans" is an authorship requirement,
+not merely a null-threshold one.
+
+`lib/protocol.mjs#assertProtocolShape(protocolDoc)` is the fail-closed structural gate:
+`lib/verbs/report.mjs` calls it on any supplied `--protocol` document, immediately after parsing it
+and BEFORE computing or writing anything -- a document that fails this schema (a populated
+threshold being the paradigm case) throws `ProtocolError` (a `UsageError` subclass, `EXIT_USAGE`,
+same non-taxonomy-bloat rationale `RegistryError` documents) and `report` writes **zero** output.
+This is layered ON TOP OF, not instead of, `evaluateProtocolQualification`'s own defensive
+"never returns `qualifying: true`" posture above -- two independent guarantees, neither depends on
+the other holding (a caller of `buildAgreementReportDocument` that bypasses `report.mjs` entirely,
+e.g. a unit test, still gets the second guarantee even without the first).
+
+Seeded fixtures: `tests/fixtures/ef-retro/protocol/null-threshold-protocol.json` (all thresholds
+`null`, valid) and `.../populated-threshold-protocol.json` (a real `dangerousMissRateThreshold`,
+the rejection-class fixture) -- `tests/ef-retro-protocol.test.mjs` covers the schema itself
+(supported-keyword load, every one of the three threshold-slot locations independently rejecting a
+populated value, the authorship requirement, the closed-shape check) and
+`tests/ef-retro-metrics.test.mjs` covers the `report`-verb-level integration (acceptance +
+fail-closed rejection with no report/provenance written).
 
 **Determinism + provenance split (FR-19/FR-21).** `agreement-report.json` carries NO timestamp
 anywhere in its shape -- `buildAgreementReportDocument` + `canonicalStringify` (reused from
@@ -315,18 +345,19 @@ tools/retro-validate/
   schemas/
     fixture-corpus.schema.json      tool-local fixture-corpus schema (P4-T1, FR-20)
     access-log-entry.schema.json     tool-local access-log-entry schema (P4-T7, FR-22)
-    protocol.schema.json             human-only prespecified-protocol schema (P4-T6; does not exist until then)
+    protocol.schema.json             human-only prespecified-protocol schema (P4-T6, FR-24, landed)
   lib/
-    errors.mjs                        exit taxonomy: OK/USAGE/BOUNDARY + RegistryError class (P4-T1, extended P4-T3)
+    errors.mjs                        exit taxonomy: OK/USAGE/BOUNDARY + RegistryError/ProtocolError classes (P4-T1, extended P4-T3/P4-T6)
     corpus.mjs                         CORPUS module: load/parse (P4-T1)
     boundary.mjs                        BOUNDARY module: schema-enforced gate (P4-T1 / P4-T2)
     replay.mjs                           REPLAY module: resolveCandidate/replayCorpus/writeReplayOutput (P4-T3, landed)
-    metrics.mjs                           METRICS module: computeAgreementMeasures/evaluateProtocolQualification/report+provenance builders+writers (P4-T4, landed; P4-T5/T6 extend)
+    metrics.mjs                           METRICS module: computeAgreementMeasures/evaluateProtocolQualification/report+provenance builders+writers (P4-T4, landed; P4-T5 extends)
+    protocol.mjs                           PROTOCOL module: loadProtocolSchema/validateProtocolDocument/assertProtocolShape (P4-T6, landed, FR-24)
     access-log.mjs                         ACCESS-LOG module: append/verify hash chain (P4-T7, landed)
     verbs/
       check-fixtures.mjs                    `check-fixtures` verb (P4-T1, real; access-logged P4-T7)
       run.mjs                                 `run` verb: boundary-gated (P4-T2) -> real replay (P4-T3, landed); access-logged P4-T7
-      report.mjs                               `report` verb: boundary-gated (P4-T2) -> real metrics (P4-T4, landed); access-logged P4-T7
+      report.mjs                               `report` verb: boundary-gated (P4-T2) -> real metrics (P4-T4, landed) + protocol-shape-gated (P4-T6, landed); access-logged P4-T7
 ```
 
 Corpus fixtures for tests live under `tests/fixtures/ef-retro/<corpus-name>/corpus.json` (never
@@ -367,14 +398,24 @@ branch of all 5 OQ-5 measures at once; each case's own `tags` name the branch it
   usage paths), hash-chain append-only enforcement (clean chain + seeded mutation/deletion
   rejection), actor/purpose/path resolution order, and the 4-dimension distinctness proof against
   `tools/review-record/`.
-- `tests/ef-retro-metrics.test.mjs` (P4-T4) -- `isDangerousMissDiscordant`/`computeAgreementMeasures`
-  edge-case unit coverage (zero-denominator `null` rates, all-unlabeled/empty corpora); the
-  metrics-corpus fixture's full hand-derived expected values for all 5 measures;
-  `evaluateProtocolQualification`/`findPopulatedProtocolFields` (always `qualifying: false`, even
-  against a populated protocol); banner presence + exact FR-24 phrase; the grep-proof that
-  `sensitivity`/`specificity`/`clinical performance` appear nowhere outside the one negation
-  banner; `run-provenance.json` completeness and its sole-timestamp-location proof against
-  `agreement-report.json`; double-build and double-invocation (direct + CLI subprocess) byte-
-  identity; usage-error paths (missing `--run`, missing/mismatched `replay-output.json`, unreadable/
-  unparsable `--protocol`); and the de-identified-aggregates-only proof (no per-case `input`/
-  `output`/`caseId` content in the report).
+- `tests/ef-retro-metrics.test.mjs` (P4-T4, extended P4-T6) -- `isDangerousMissDiscordant`/
+  `computeAgreementMeasures` edge-case unit coverage (zero-denominator `null` rates,
+  all-unlabeled/empty corpora); the metrics-corpus fixture's full hand-derived expected values for
+  all 5 measures; `evaluateProtocolQualification`/`findPopulatedProtocolFields` (always
+  `qualifying: false`, even against a populated protocol); banner presence + exact FR-24 phrase;
+  the grep-proof that `sensitivity`/`specificity`/`clinical performance` appear nowhere outside the
+  one negation banner; `run-provenance.json` completeness and its sole-timestamp-location proof
+  against `agreement-report.json`; double-build and double-invocation (direct + CLI subprocess)
+  byte-identity; usage-error paths (missing `--run`, missing/mismatched `replay-output.json`,
+  unreadable/unparsable `--protocol`); a schema-conformant `--protocol` document accepted; a seeded
+  populated-threshold `--protocol` fixture rejected FAIL-CLOSED (`ProtocolError`, no
+  report/provenance written, P4-T6); and the de-identified-aggregates-only proof (no per-case
+  `input`/`output`/`caseId` content in the report).
+- `tests/ef-retro-protocol.test.mjs` (P4-T6) -- `schemas/protocol.schema.json` loads cleanly under
+  `json-schema-lite` (fail-closed on any unsupported keyword) and names the three required slots
+  (dangerous-miss rate, utility measures, subgroup/analyzer/site strata); every threshold-bearing
+  leaf is `const: null`; the seeded all-null-threshold fixture validates; the seeded
+  populated-threshold fixture is rejected (`ProtocolError`, a `UsageError` subclass); each of the
+  three threshold-slot locations (top-level, per-utility-measure, per-stratum on all three axes)
+  independently rejects a populated value; the required non-empty `authoredBy` (named-human
+  ownership) is enforced; and the closed (`additionalProperties: false`) shape is enforced.

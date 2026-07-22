@@ -24,9 +24,14 @@
 //
 // An optional `--protocol <path>` is read (if given) purely so its content can be recorded in the
 // non-qualifying banner's `populatedFields`/`reason` detail -- it can never flip a report to
-// "qualifying" (see `../metrics.mjs#evaluateProtocolQualification`). `tools/retro-validate/schemas/
-// protocol.schema.json` (P4-T6, lands after this task) is a SEPARATE, later-authored structural
-// gate on what a protocol document may even contain; this verb does not depend on it existing.
+// "qualifying" (see `../metrics.mjs#evaluateProtocolQualification`). As of P4-T6, a supplied
+// `--protocol` document is ALSO validated against `tools/retro-validate/schemas/protocol.schema.json`
+// (`../protocol.mjs#assertProtocolShape`) -- a SEPARATE, structural gate on what a protocol document
+// may even contain (every threshold field `const: null`, TBD-by-named-humans). A document failing
+// that gate (a populated-threshold document, the paradigm case) throws `ProtocolError` fail-closed,
+// BEFORE either output artifact below is written -- this call site sits between the JSON parse and
+// the metrics/report-assembly logic, so a rejected protocol leaves zero output on disk, exactly like
+// a rejected corpus boundary check.
 //
 // P4-T7 (FR-22, ADR-0006 audit clause): the FIRST statement of `run()` below unconditionally
 // appends one entry to the access log (`../access-log.mjs#logAccessAttempt`) -- BEFORE even the
@@ -39,6 +44,7 @@ import path from 'node:path';
 
 import { checkFixtures } from '../boundary.mjs';
 import { logAccessAttempt } from '../access-log.mjs';
+import { assertProtocolShape } from '../protocol.mjs';
 import {
   computeAgreementMeasures,
   evaluateProtocolQualification,
@@ -74,6 +80,8 @@ async function readJsonOrThrow(filePath, describe) {
  *   document's `corpusId` does not match `--corpus`'s own resolved id, or `--protocol` names an
  *   unreadable/unparsable file
  * @throws {import('../errors.mjs').BoundaryError} the corpus fails the FR-20 boundary (checked FIRST)
+ * @throws {import('../errors.mjs').ProtocolError} `--protocol` names a document that fails the
+ *   FR-24 structural protocol shape (schemas/protocol.schema.json) -- e.g. a populated threshold
  */
 export async function run(options) {
   await logAccessAttempt('report', options);
@@ -113,6 +121,9 @@ export async function run(options) {
       throw new UsageError('--protocol, if given, must be a file path');
     }
     protocolDoc = await readJsonOrThrow(protocolPath, 'a --protocol document');
+    // FR-24 structural gate (P4-T6): a document that reads/parses fine can still fail the
+    // protocol schema (e.g. a populated threshold) -- fail closed here, before any output write.
+    await assertProtocolShape(protocolDoc, { describe: `the --protocol document at "${protocolPath}"` });
   }
 
   // computeAgreementMeasures/evaluateProtocolQualification are also called (again, purely) inside

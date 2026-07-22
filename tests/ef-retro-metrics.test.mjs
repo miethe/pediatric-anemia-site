@@ -54,7 +54,7 @@ import {
 } from '../tools/retro-validate/lib/replay.mjs';
 import { loadCorpusDocument } from '../tools/retro-validate/lib/corpus.mjs';
 import { run as runReportVerb } from '../tools/retro-validate/lib/verbs/report.mjs';
-import { UsageError, EXIT_OK, EXIT_USAGE } from '../tools/retro-validate/lib/errors.mjs';
+import { UsageError, ProtocolError, EXIT_OK, EXIT_USAGE } from '../tools/retro-validate/lib/errors.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const RETRO_VALIDATE_ROOT = path.join(REPO_ROOT, 'tools', 'retro-validate');
@@ -65,6 +65,11 @@ const METRICS_CORPUS_DIR = path.join(FIXTURES_ROOT, 'metrics-corpus');
 const REPLAY_CORPUS_DIR = path.join(FIXTURES_ROOT, 'replay-corpus');
 const VALID_REGISTRY_PATH = path.join(FIXTURES_ROOT, 'registries', 'valid', 'registry.json');
 const VALID_DIGEST = 'sha256:ef1adfb4d4e2640812f9d1de363c68c979c9c159b60ede121376e1befbe7212c';
+
+// P4-T6 (FR-24) protocol-shape fixtures -- see tests/ef-retro-protocol.test.mjs for the dedicated
+// schema-level coverage; this file only exercises the `report` verb's own wiring of the gate.
+const NULL_THRESHOLD_PROTOCOL_FIXTURE = path.join(FIXTURES_ROOT, 'protocol', 'null-threshold-protocol.json');
+const POPULATED_THRESHOLD_PROTOCOL_FIXTURE = path.join(FIXTURES_ROOT, 'protocol', 'populated-threshold-protocol.json');
 
 // Isolated tmp access log per this file, same pattern the other ef-retro-*.test.mjs files already
 // established -- `npm test` must never mutate the tracked access-log.jsonl.
@@ -547,18 +552,63 @@ test('report verb: an unparsable --protocol file fails closed (UsageError)', asy
   }
 });
 
-test('report verb: a --protocol document that reads/parses fine is accepted, and is reflected in the non-qualifying banner (still qualifying:false)', async () => {
+test('report verb: a schema-conformant, all-null-threshold --protocol document is accepted, and is reflected in the non-qualifying banner (still qualifying:false)', async () => {
   const runDir = await writeMetricsReplayOutput();
   const protocolPath = path.join(runDir, 'null-threshold-protocol.json');
   await mkdir(runDir, { recursive: true });
-  await writeFile(protocolPath, JSON.stringify({ schemaVersion: 1, thresholds: { dangerousMissRate: null } }), 'utf8');
+  await writeFile(protocolPath, await readFile(NULL_THRESHOLD_PROTOCOL_FIXTURE, 'utf8'), 'utf8');
   try {
     const code = await runReportVerb({ corpus: METRICS_CORPUS_DIR, run: runDir, protocol: protocolPath, accessLogPath: ACCESS_LOG_PATH });
     assert.equal(code, EXIT_OK);
     const reportDoc = JSON.parse(await readFile(path.join(runDir, AGREEMENT_REPORT_FILENAME), 'utf8'));
     assert.equal(reportDoc.banners.nonQualifyingProtocol.qualifying, false);
     assert.equal(reportDoc.banners.nonQualifyingProtocol.protocolSupplied, true);
-    assert.deepEqual(reportDoc.banners.nonQualifyingProtocol.populatedFields, []);
+    // `findPopulatedProtocolFields` (P4-T4, generic/schema-name-agnostic by design) allowlists
+    // only the bare `schemaVersion` metadata key -- every OTHER non-null leaf counts as
+    // "populated", including this schema's legitimate, REQUIRED, non-threshold metadata
+    // (`protocolId`, `description`, `authoredBy` entries) -- none of these are threshold values,
+    // but the generic scan does not (and by its own doc comment, deliberately does not) know that.
+    // It still never flips `qualifying` to `true` -- that is the FR-24 guarantee this test proves
+    // holds even though `populatedFields` is non-empty here.
+    assert.deepEqual(reportDoc.banners.nonQualifyingProtocol.populatedFields, [
+      'authoredBy.0.name',
+      'authoredBy.0.role',
+      'description',
+      'protocolId',
+      'thresholds.strata.subgroup.0.stratumName',
+    ]);
+  } finally {
+    await rm(runDir, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// P4-T6 (FR-24): a seeded populated-threshold --protocol fixture is rejected FAIL-CLOSED --
+// ProtocolError, and NO agreement-report.json/run-provenance.json written into --run at all.
+// -------------------------------------------------------------------------------------------
+
+test('report verb: a seeded populated-threshold --protocol fixture is rejected fail-closed (ProtocolError), writing NO report/provenance', async () => {
+  const runDir = await writeMetricsReplayOutput();
+  try {
+    await assert.rejects(
+      () => runReportVerb({
+        corpus: METRICS_CORPUS_DIR,
+        run: runDir,
+        protocol: POPULATED_THRESHOLD_PROTOCOL_FIXTURE,
+        accessLogPath: ACCESS_LOG_PATH,
+      }),
+      (err) => {
+        assert.ok(err instanceof ProtocolError);
+        assert.ok(err instanceof UsageError, 'ProtocolError must still be a UsageError (EXIT_USAGE, no new exit code)');
+        assert.equal(err.exitCode, EXIT_USAGE);
+        assert.match(err.message, /FR-24/);
+        assert.match(err.message, /dangerousMissRateThreshold/);
+        assert.match(err.message, /fail-closed/);
+        return true;
+      },
+    );
+    await assert.rejects(readFile(path.join(runDir, AGREEMENT_REPORT_FILENAME)), { code: 'ENOENT' });
+    await assert.rejects(readFile(path.join(runDir, RUN_PROVENANCE_FILENAME)), { code: 'ENOENT' });
   } finally {
     await rm(runDir, { recursive: true, force: true });
   }
