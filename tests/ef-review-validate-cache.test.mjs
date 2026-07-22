@@ -46,6 +46,7 @@ import { fileURLToPath } from 'node:url';
 
 import {
   VALIDATOR_POLICY_VERSION,
+  canonicalRecordHash,
   getCachedRecordResult,
   hashFileIfExists,
   hashPredecessorSet,
@@ -57,6 +58,7 @@ import {
   writeCacheFileAtomic,
 } from '../tools/review-record/lib/validate-cache.mjs';
 import { buildReviewId, listModuleReviewRecords, recordFilePathFor } from '../tools/review-record/lib/store.mjs';
+import { rosterFilePathFor } from '../tools/review-record/lib/roster.mjs';
 import { draftFilePathFor, run as runScaffold } from '../tools/review-record/lib/verbs/scaffold.mjs';
 import { run as runSign } from '../tools/review-record/lib/verbs/sign.mjs';
 import { run as runValidate } from '../tools/review-record/lib/verbs/validate.mjs';
@@ -64,6 +66,7 @@ import { EXIT_OK, EXIT_USAGE, UsageError } from '../tools/review-record/lib/erro
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CLI_PATH = path.join(REPO_ROOT, 'tools', 'review-record', 'cli.mjs');
+const SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'review-record.schema.json');
 const SUBJECT_HASH = 'sha256:537d2dcf29f8e2871a4b91129ec3da3d0012d48ee90af0784ea8c93db7398c6d';
 
 // Module-load-time (before any `test()` body runs) shared, throwaway cache root — see this file's
@@ -149,6 +152,40 @@ async function mutateRationale(filePath, newRationale) {
   assert.notEqual(mutated, raw, `expected to find a rationale line to mutate in ${filePath}`);
   await writeFile(filePath, mutated, 'utf8');
   return mutated;
+}
+
+/**
+ * Fix-cycle addendum (BLOCKER 3, CRW-F9) helper: computes the EXACT `RecordCacheKey` `validate.mjs`
+ * itself would compute for `allRecords[targetIndex]` at the CURRENT on-disk state of `tmp` (same
+ * formulas as `lib/verbs/validate.mjs`'s own per-record loop -- ascending-seq-order canonical
+ * hashes, the full predecessor-set hash, current roster/schema file hashes, the live
+ * `VALIDATOR_POLICY_VERSION`). Used ONLY to construct a cache entry whose composite KEY is
+ * genuinely correct (matches what a real `validate` call would compute) so a test can isolate
+ * "the stored RESULT's own shape is malformed" as the ONLY variable under test -- never used to
+ * forge a key that would not otherwise legitimately match.
+ *
+ * @param {string} tmp
+ * @param {string} moduleId
+ * @param {number} targetIndex
+ * @param {{ historyMode?: boolean }} [opts]
+ * @returns {Promise<{ reviewId: string, key: object }>}
+ */
+async function computeExpectedKeyForRecord(tmp, moduleId, targetIndex, opts = {}) {
+  const allRecords = await listModuleReviewRecords(tmp, moduleId);
+  const canonicalHashes = allRecords.map((entry) => canonicalRecordHash(entry.record));
+  const rosterFileHash = await hashFileIfExists(rosterFilePathFor(tmp));
+  const schemaFileHash = await hashFileIfExists(SCHEMA_PATH);
+  return {
+    reviewId: allRecords[targetIndex].reviewId,
+    key: {
+      recordContentHash: canonicalHashes[targetIndex],
+      predecessorSetHash: hashPredecessorSet(canonicalHashes.slice(0, targetIndex)),
+      rosterFileHash,
+      schemaFileHash,
+      validatorPolicyVersion: VALIDATOR_POLICY_VERSION,
+      historyMode: opts.historyMode === true,
+    },
+  };
 }
 
 // -------------------------------------------------------------------------------------------
@@ -541,5 +578,193 @@ test('validate-cache marker line is present in tools/review-record/lib/verbs/val
     assert.match(stdout, /module-wide checks .* always re-run this invocation, never cache-eligible \(R9\)/);
   } finally {
     await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+// -------------------------------------------------------------------------------------------
+// (C) Fix-cycle addendum (Wave-2 gate, BLOCKER 3, CRW-F9) — per-entry structural hardening.
+// `readCacheFile`'s existing coverage above ("Corrupt JSON on disk" / "Foreign/wrong shape" in the
+// "readCacheFile / writeCacheFileAtomic" test) already proves acceptance criterion (ii) — a
+// truncated/corrupt cache FILE fails closed to `null` (a full-file miss) — so this section adds
+// only the NEW per-ENTRY coverage BLOCKER 3 actually required: (i) a well-formed-JSON entry whose
+// stored RESULT has a malformed shape, (iii) one whose stored KEY has wrong-typed composite-key
+// fields, and (iv) an end-to-end proof that a poisoned-shape cache never changes `validate`'s
+// outcome on a module with a real violation, versus a genuinely cold cache.
+// -------------------------------------------------------------------------------------------
+
+test('getCachedRecordResult: a well-formed-JSON entry with a malformed RESULT shape (missing field / wrong type / extra field) is a MISS, never a crash or pass-through (BLOCKER 3, CRW-F9)', () => {
+  const key = baselineKey();
+  const reviewId = 'rr-0001-clinical-1';
+  const validResult = { schemaViolations: [], rosterViolation: null, signatureViolation: null, chainViolation: null };
+
+  const malformedResults = [
+    // Missing a required field entirely.
+    { rosterViolation: null, signatureViolation: null, chainViolation: null },
+    // schemaViolations wrong type: not an array at all.
+    { ...validResult, schemaViolations: 'not-an-array' },
+    // schemaViolations wrong type: array of non-strings.
+    { ...validResult, schemaViolations: [1, 2, 3] },
+    // rosterViolation wrong type: number instead of string-or-null.
+    { ...validResult, rosterViolation: 42 },
+    // signatureViolation wrong type: an injected object masquerading as "no violation".
+    { ...validResult, signatureViolation: { ok: true } },
+    // chainViolation wrong type: boolean instead of string-or-null.
+    { ...validResult, chainViolation: false },
+    // Extra, unexpected property alongside an otherwise-correct shape.
+    { ...validResult, injected: 'attacker-controlled-extra-field' },
+  ];
+
+  for (const malformedResult of malformedResults) {
+    const records = { [reviewId]: { key, result: malformedResult } };
+    assert.equal(
+      getCachedRecordResult(records, reviewId, key),
+      null,
+      `expected a MISS for malformed result shape: ${JSON.stringify(malformedResult)}`,
+    );
+  }
+
+  // Sanity: the SAME key against a genuinely well-shaped result is still a HIT (proves the
+  // rejections above are shape-driven, not an accidental blanket miss).
+  const goodRecords = { [reviewId]: { key, result: validResult } };
+  assert.deepEqual(getCachedRecordResult(goodRecords, reviewId, key), validResult);
+});
+
+test('getCachedRecordResult: an entry whose RESULT is well-shaped but whose stored KEY has wrong-typed composite-key fields is a MISS, checked before comparison (BLOCKER 3, CRW-F9)', () => {
+  const key = baselineKey();
+  const reviewId = 'rr-0001-clinical-1';
+  const validResult = { schemaViolations: [], rosterViolation: null, signatureViolation: null, chainViolation: null };
+
+  const malformedKeys = [
+    { ...key, recordContentHash: 12345 }, // number instead of string
+    { ...key, predecessorSetHash: null }, // null instead of string
+    { ...key, validatorPolicyVersion: '1' }, // string instead of integer
+    { ...key, validatorPolicyVersion: 1.5 }, // non-integer number
+    { ...key, historyMode: 'false' }, // string instead of boolean
+    (() => { const { historyMode: _drop, ...rest } = key; return rest; })(), // missing field
+    { ...key, extraKeyField: 'unexpected' }, // extra field
+  ];
+
+  for (const malformedKey of malformedKeys) {
+    const records = { [reviewId]: { key: malformedKey, result: validResult } };
+    assert.equal(
+      getCachedRecordResult(records, reviewId, key),
+      null,
+      `expected a MISS for malformed key shape: ${JSON.stringify(malformedKey)}`,
+    );
+  }
+});
+
+test('getCachedRecordResult: malformed cacheRecords container itself (not an object, or an entry that is not a {key, result} object) is a MISS, never a crash (BLOCKER 3, CRW-F9)', () => {
+  const key = baselineKey();
+  const reviewId = 'rr-0001-clinical-1';
+
+  assert.equal(getCachedRecordResult(null, reviewId, key), null);
+  assert.equal(getCachedRecordResult(undefined, reviewId, key), null);
+  assert.equal(getCachedRecordResult('not-an-object', reviewId, key), null);
+  assert.equal(getCachedRecordResult({ [reviewId]: 'not-an-object' }, reviewId, key), null);
+  assert.equal(getCachedRecordResult({ [reviewId]: null }, reviewId, key), null);
+  assert.equal(getCachedRecordResult({ [reviewId]: { key } }, reviewId, key), null, 'entry missing its result field');
+  assert.equal(
+    getCachedRecordResult(
+      { [reviewId]: { key, result: { schemaViolations: [], rosterViolation: null, signatureViolation: null, chainViolation: null }, extra: 'nope' } },
+      reviewId,
+      key,
+    ),
+    null,
+    'entry with an extra top-level property beyond {key, result}',
+  );
+});
+
+test('a well-formed-JSON entry with a malformed RESULT shape never crashes a real validate run end-to-end -- treated as a MISS, silently recomputed, correct passing outcome unaffected (BLOCKER 3, CRW-F9)', async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), 'ef-validate-cache-poison-noCrash-'));
+  try {
+    const moduleId = 'cache_poison_nocrash_v1';
+    const [r1, r2] = await buildSignedChain(tmp, moduleId, ['clinical-1', 'lab']);
+
+    const cold = runCli(['validate', '--module', moduleId, '--root', tmp]);
+    assert.equal(cold.status, EXIT_OK, cold.stderr);
+    assert.deepEqual(parseCacheMarker(cold.stdout), { hits: 0, misses: 2, scoped: 2 });
+
+    // Poison r1's cached RESULT with a value that would THROW if ever spread with `...` (a plain
+    // object has no default iterator) -- exactly the shape `validate.mjs`'s
+    // `violations.push(...result.schemaViolations)` would previously have handed straight to the
+    // JS runtime. Its stored KEY is left byte-for-byte untouched, so a naive re-check would treat
+    // it as a matching, "trustworthy" entry.
+    const existingCache = await readCacheFile(tmp, moduleId);
+    assert.ok(existingCache, 'expected the cold run above to have written a cache file');
+    const poisonedRecords = {
+      ...existingCache.records,
+      [r1]: {
+        ...existingCache.records[r1],
+        result: { schemaViolations: { poisoned: true }, rosterViolation: null, signatureViolation: null, chainViolation: null },
+      },
+    };
+    await writeCacheFileAtomic(tmp, moduleId, poisonedRecords);
+
+    const afterPoison = runCli(['validate', '--module', moduleId, '--root', tmp]);
+    assert.equal(afterPoison.status, EXIT_OK, `expected NO crash and a clean pass, got stderr:\n${afterPoison.stderr}`);
+    assert.doesNotMatch(afterPoison.stderr, /internal error/, 'a malformed cached result must never surface as an uncaught internal error');
+    assert.match(afterPoison.stdout, /OK — 2 record\(s\) validated/, 'the marker line proves the per-record loop ran to completion without throwing');
+    assert.deepEqual(
+      parseCacheMarker(afterPoison.stdout),
+      { hits: 1, misses: 1, scoped: 2 },
+      `expected r1 (poisoned shape) to MISS and recompute while r2 stays a clean HIT (r1=${r1}, r2=${r2})`,
+    );
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('validate\'s outcome on a module with a REAL violation is IDENTICAL whether a poisoned-shape (well-formed-JSON, malformed-RESULT) cache entry is present at correct composite-key values, or the cache is genuinely cold (BLOCKER 3, CRW-F9)', async () => {
+  const moduleId = 'cache_poison_real_violation_v1';
+  const trueColdTmp = await mkdtemp(path.join(tmpdir(), 'ef-validate-cache-poison-cold-'));
+  const poisonedTmp = await mkdtemp(path.join(tmpdir(), 'ef-validate-cache-poison-warm-'));
+  try {
+    // Identical construction in two separate roots: a single-record module, then its ONLY
+    // roster entry is removed entirely -- a genuine per-record roster-resolution violation
+    // (mirrors this file's existing "genuine roster removal is actually re-caught" test).
+    const [trueColdReviewId] = await buildSignedChain(trueColdTmp, moduleId, ['clinical-1']);
+    await rm(path.join(trueColdTmp, 'governance', 'reviewer-roster.yaml'));
+
+    const [poisonedReviewId] = await buildSignedChain(poisonedTmp, moduleId, ['clinical-1']);
+    assert.equal(poisonedReviewId, trueColdReviewId, 'both roots must construct the identically-named record');
+    await rm(path.join(poisonedTmp, 'governance', 'reviewer-roster.yaml'));
+
+    // Inject a poisoned-shape (all-clear, but MALFORMED -- missing `chainViolation`) entry into
+    // `poisonedTmp`'s cache under the CORRECT composite-key values for this exact on-disk state
+    // (post-roster-removal) -- an attacker's best attempt at suppressing the roster violation via
+    // a well-formed-JSON-but-wrong-shaped forged result. This must still MISS on shape alone.
+    const { key: correctKeyForCurrentState } = await computeExpectedKeyForRecord(poisonedTmp, moduleId, 0);
+    const forgedAllClearButMalformedResult = { schemaViolations: [], rosterViolation: null, signatureViolation: null }; // missing chainViolation
+    await writeCacheFileAtomic(poisonedTmp, moduleId, {
+      [poisonedReviewId]: { key: correctKeyForCurrentState, result: forgedAllClearButMalformedResult },
+    });
+
+    const trueCold = runCli(['validate', '--module', moduleId, '--root', trueColdTmp]);
+    const poisoned = runCli(['validate', '--module', moduleId, '--root', poisonedTmp]);
+
+    assert.equal(trueCold.status, EXIT_USAGE, 'sanity: the genuinely cold run must fail on the real roster violation');
+    assert.equal(
+      poisoned.status,
+      EXIT_USAGE,
+      'the poisoned-shape cache must NOT suppress the real violation -- outcome must match the cold run',
+    );
+
+    const violationPattern = /does not resolve to any entry in governance\/reviewer-roster\.yaml/;
+    assert.match(trueCold.stderr, violationPattern);
+    assert.match(poisoned.stderr, violationPattern);
+    assert.equal(
+      poisoned.stderr,
+      trueCold.stderr,
+      'the poisoned-shape-cache run\'s reported violation text must be byte-identical to the cold run\'s',
+    );
+
+    // Both runs must show a full per-record MISS for this record -- the poisoned entry was never
+    // usable as a hit (shape-rejected before `keysMatch` was ever consulted).
+    assert.deepEqual(parseCacheMarker(trueCold.stdout), { hits: 0, misses: 1, scoped: 1 });
+    assert.deepEqual(parseCacheMarker(poisoned.stdout), { hits: 0, misses: 1, scoped: 1 });
+  } finally {
+    await rm(trueColdTmp, { recursive: true, force: true });
+    await rm(poisonedTmp, { recursive: true, force: true });
   }
 });

@@ -55,6 +55,33 @@
 // depends on `rootDir` at all, by construction — it cannot resolve inside the repo working tree.
 // Zero new runtime dependencies (`node:crypto`/`node:fs`/`node:os`/`node:path` only), zero network,
 // zero LLM — matches this whole tool's standing guardrail.
+//
+// --- fix-cycle addendum (Clinical Review Workflow v1, Wave-2 gate, BLOCKER 3, CRW-F9): per-ENTRY
+// structural hardening. `readCacheFile` above only ever validated the top-level `{cacheFormatVersion,
+// root, moduleId, records}` envelope — it never inspected any individual `records[reviewId]` entry's
+// own shape. `getCachedRecordResult` then returned a matching entry's `result` verbatim. A
+// well-formed-JSON but malformed-shaped entry (a missing field, a wrong type, an extra property) could
+// therefore either CRASH a downstream consumer (`validate.mjs` spreads `result.schemaViolations` and
+// reads the other three fields as strings-or-null) or, worse, silently PASS THROUGH an all-clear
+// forged result (`{schemaViolations:[], rosterViolation:null, ...}`) under otherwise-correct
+// composite-key values, suppressing that record's real per-record findings. `getCachedRecordResult`
+// now runs `isValidCachedEntryShape` (below) against BOTH the entry's stored `key` and its `result` —
+// exact expected key sets, exact types (string / string-or-null / string[] / integer / boolean), zero
+// extra properties — before even attempting `keysMatch`. ANY deviation, in either the key block or
+// the result block, is treated exactly like an absent entry: a cache MISS forcing full recompute,
+// never a crash, never a partial trust. This mirrors `readCacheFile`'s own already-fail-closed
+// envelope check, just one layer deeper, and changes no exported function's signature.
+//
+// ORCHESTRATOR-ADJUDICATED THREAT MODEL (stated once, plainly, no hedging): this cache lives in a
+// same-user OS tmp/XDG directory. An attacker who already has write access there can already replace
+// this CLI's own source files or the `node` binary that runs them — at that point they do not need to
+// forge a cache entry at all. Consequently a PERFECTLY-SHAPED forged entry (right keys, right types,
+// matching the correct composite-key values) is explicitly OUTSIDE this tool's threat model and this
+// fix does not attempt to defend against it; what this fix defends against is corruption, truncation,
+// format drift, and accidental-or-hostile MALFORMED content, which is a materially different (and
+// materially cheaper-to-trigger) failure mode than a fully-privileged same-user forger. Per-record
+// cached results are, and remain, integrity-bounded by the exact same trust boundary as the working
+// tree itself — this module makes that boundary fail closed on malformed input, not attacker-proof.
 
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
@@ -300,10 +327,142 @@ export function keysMatch(a, b) {
   );
 }
 
+// -------------------------------------------------------------------------------------------
+// Fix-cycle addendum (BLOCKER 3, CRW-F9) — strict per-entry structural validation. See this
+// module's own header addendum above for the "why"; everything below is the "how." Every helper
+// here is a pure predicate over already-in-memory (untrusted, disk-derived) data — no I/O, no
+// throwing; a `false` return is always interpreted by its caller as "treat this as absent."
+// -------------------------------------------------------------------------------------------
+
+const RECORD_CACHE_KEY_FIELDS = Object.freeze([
+  'recordContentHash',
+  'predecessorSetHash',
+  'rosterFileHash',
+  'schemaFileHash',
+  'validatorPolicyVersion',
+  'historyMode',
+]);
+
+const RECORD_CACHE_RESULT_FIELDS = Object.freeze([
+  'schemaViolations',
+  'rosterViolation',
+  'signatureViolation',
+  'chainViolation',
+]);
+
+const CACHE_ENTRY_FIELDS = Object.freeze(['key', 'result']);
+
 /**
- * Looks up `reviewId`'s cached result inside an already-loaded cache file's `records` map,
- * returning it ONLY when `key` matches EVERY component of the stored entry's own key (`keysMatch`).
- * Any mismatch, or no entry at all, returns `null` — a cache MISS, never a stale hit. Never throws.
+ * @param {*} value
+ * @returns {boolean} true iff `value` is a non-null, non-array object (`typeof === 'object'`)
+ */
+function isPlainObject(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+/**
+ * @param {object} obj already known to be a plain object
+ * @param {readonly string[]} expectedFields
+ * @returns {boolean} true iff `obj`'s own enumerable keys are EXACTLY `expectedFields` — same
+ *   count, same names, no extras, none missing. Order does not matter.
+ */
+function hasExactOwnKeys(obj, expectedFields) {
+  const actual = Object.keys(obj);
+  if (actual.length !== expectedFields.length) return false;
+  return expectedFields.every((field) => Object.prototype.hasOwnProperty.call(obj, field));
+}
+
+/**
+ * @param {*} value
+ * @returns {boolean} true iff `value` is an array whose every element is a `string`
+ */
+function isStringArray(value) {
+  return Array.isArray(value) && value.every((v) => typeof v === 'string');
+}
+
+/**
+ * @param {*} value
+ * @returns {boolean} true iff `value` is `null` or a `string` — the shape every one of
+ *   `RecordCacheResult`'s three `*Violation` fields must have.
+ */
+function isNullOrString(value) {
+  return value === null || typeof value === 'string';
+}
+
+/**
+ * Strict structural validation of an untrusted (disk-derived) `RecordCacheKey`: exactly the six
+ * expected fields, no extras, and every field's own type matches `RecordCacheKey`'s typedef above
+ * (four hash-or-`"absent"` strings, one integer, one boolean). This is deliberately a TYPE check
+ * only — it never re-derives or compares against a fresh value, that is `keysMatch`'s job, and
+ * `keysMatch` is only ever reached once this returns `true` (see `getCachedRecordResult`).
+ *
+ * @param {*} key
+ * @returns {boolean}
+ */
+function isValidCachedKeyShape(key) {
+  if (!isPlainObject(key)) return false;
+  if (!hasExactOwnKeys(key, RECORD_CACHE_KEY_FIELDS)) return false;
+  return (
+    typeof key.recordContentHash === 'string'
+    && typeof key.predecessorSetHash === 'string'
+    && typeof key.rosterFileHash === 'string'
+    && typeof key.schemaFileHash === 'string'
+    && Number.isInteger(key.validatorPolicyVersion)
+    && typeof key.historyMode === 'boolean'
+  );
+}
+
+/**
+ * Strict structural validation of an untrusted (disk-derived) `RecordCacheResult`: exactly the
+ * four expected fields, no extras, `schemaViolations` an array of strings (possibly empty), and
+ * each of `rosterViolation`/`signatureViolation`/`chainViolation` either `null` or a `string`. This
+ * is exactly the shape `validate.mjs`'s `computePerRecordResult` produces and its `run` loop
+ * consumes (spreading `schemaViolations`, reading the other three as `string | null`) — any
+ * deviation here is precisely what could otherwise crash or silently mislead that consumer.
+ *
+ * @param {*} result
+ * @returns {boolean}
+ */
+function isValidCachedResultShape(result) {
+  if (!isPlainObject(result)) return false;
+  if (!hasExactOwnKeys(result, RECORD_CACHE_RESULT_FIELDS)) return false;
+  return (
+    isStringArray(result.schemaViolations)
+    && isNullOrString(result.rosterViolation)
+    && isNullOrString(result.signatureViolation)
+    && isNullOrString(result.chainViolation)
+  );
+}
+
+/**
+ * Strict structural validation of one ENTIRE cache entry (`{key, result}`) as stored under one
+ * `reviewId` inside a cache file's `records` map: the entry itself is a plain object with EXACTLY
+ * `key` and `result`, AND both of those pass their own shape checks above. This is the single gate
+ * `getCachedRecordResult` runs before it will even attempt `keysMatch` against a freshly computed
+ * key — a malformed entry (missing field, wrong type, extra property, at ANY level) never reaches
+ * comparison at all.
+ *
+ * @param {*} entry
+ * @returns {boolean}
+ */
+function isValidCachedEntryShape(entry) {
+  if (!isPlainObject(entry)) return false;
+  if (!hasExactOwnKeys(entry, CACHE_ENTRY_FIELDS)) return false;
+  return isValidCachedKeyShape(entry.key) && isValidCachedResultShape(entry.result);
+}
+
+/**
+ * Looks up `reviewId`'s cached result inside an already-loaded cache file's `records` map. FAIL
+ * CLOSED, in this order:
+ *   1. No entry at all for `reviewId` → `null` (absent, ordinary miss).
+ *   2. The stored entry does not pass `isValidCachedEntryShape` (BLOCKER 3, CRW-F9 — corrupt,
+ *      truncated-but-still-parseable, format-drifted, or hostile-malformed content at either the
+ *      `key` or `result` level, including an extra injected property) → `null`, exactly like an
+ *      absent entry. Never throws, never returns a partially-trusted value, and never even reaches
+ *      step 3 — a malformed entry's `key` is not compared against anything.
+ *   3. The (now shape-verified) stored `key` does not match every component of the freshly
+ *      computed `key` (`keysMatch`, F3) → `null`, an ordinary stale-key miss.
+ *   4. Otherwise → the stored `result`, verbatim (already shape-verified in step 2).
  *
  * @param {object} cacheRecords a `records` map (`reviewId -> { key, result }`), e.g. from
  *   `readCacheFile(...).records`, or `{}` when no cache file was found
@@ -312,8 +471,10 @@ export function keysMatch(a, b) {
  * @returns {RecordCacheResult | null}
  */
 export function getCachedRecordResult(cacheRecords, reviewId, key) {
-  const entry = cacheRecords?.[reviewId];
-  if (!entry || !keysMatch(entry.key, key)) return null;
+  if (!isPlainObject(cacheRecords)) return null;
+  const entry = cacheRecords[reviewId];
+  if (!isValidCachedEntryShape(entry)) return null;
+  if (!keysMatch(entry.key, key)) return null;
   return entry.result;
 }
 
