@@ -9,7 +9,7 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundr
 execution_model: batch-parallel
 phase: 2
 title: 'Evidence Foundry E1 — Phase 2: Review Workflow Machinery'
-status: in_progress
+status: pending
 started: null
 completed: null
 commit_refs: []
@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 1
+completed_tasks: 2
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -76,7 +76,7 @@ tasks:
     tests: one-byte mutation of a committed fixture fails chain validation; a simulated
     history rewrite fails the history validator. Chain state is a structured audit
     artifact.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -85,6 +85,15 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: extended
+  note: 'Two-layer FR-9/OQ-2 append-only enforcement landed: previousRecordHash chain
+    (always) + opt-in validate --history git-history check (lib/history.mjs). 18 new
+    tests (tests/ef-review-appendonly.test.mjs): seeded one-byte chain mutation +
+    simulated history rewrite both fail closed; valid superseding record passes; broken_chain_v1
+    now rejected by validate itself (not just list); both layers deterministic.'
+  started: '2026-07-22T05:00:00Z'
+  completed: '2026-07-22T06:15:00Z'
+  evidence:
+  - commit: 48d3fd2
 - id: P2-T4
   description: 'Adjudication + release-authorization validators, PRD OQ-5/FR-5/FR-6:
     implement the authorship-union computation (identities in authoring-decisions.yaml
@@ -261,7 +270,7 @@ files_modified:
 - tests/ef-review-render-smoke.test.mjs
 - tests/fixtures/ef-review-render/**
 - .claude/worknotes/evidence-foundry-e1-v1/dryrun-friction.md
-progress: 11
+progress: 22
 updated: '2026-07-22'
 ---
 
