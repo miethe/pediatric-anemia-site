@@ -17,7 +17,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 8
-completed_tasks: 1
+completed_tasks: 2
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -158,7 +158,7 @@ tasks:
     only — the ceremony itself is gate G2, out of scope, stated explicitly. Carries
     the unvalidated-research-prototype posture; states no signature confers clinical
     standing.'
-  status: pending
+  status: completed
   assigned_to:
   - documentation-writer
   dependencies:
@@ -167,6 +167,17 @@ tasks:
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
+  note: 'Signing-ceremony runbook authored (docs/governance/signing-ceremony-runbook.md):
+    offline key generation (OpenSSL Ed25519), custody model, signing steps over the
+    P3-T2 canonical digest, rotation + compromise-response ownership, G2 entry-criteria
+    checklist cross-referencing gates-registry.md''s A2 reconciliation. Explicitly
+    document-deliverable only -- ceremony is gate G2, out of scope; no signature confers
+    clinical standing (stated in the opening banner). ADR-0005 still ''proposed''
+    -- runbook framed as recommended-default procedure pending G0 ratification.'
+  started: 2026-07-22T00:00Z
+  completed: 2026-07-22T00:00Z
+  evidence:
+  - doc: docs/governance/signing-ceremony-runbook.md
 - id: P3-GATE
   description: 'task-completion-validator gate: verify Phase 3 exit gate — byte-identity
     + golden-bytes tests green; dry-run sign→verify byte-stable across 2 runs; 5/5
@@ -251,7 +262,7 @@ files_modified:
 - tests/ef-release-registry.test.mjs
 - tests/ef-release-no-keys.test.mjs
 - tests/fixtures/ef-release/**
-progress: 12
+progress: 25
 updated: '2026-07-22'
 ---
 
