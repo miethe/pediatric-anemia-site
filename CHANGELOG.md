@@ -78,9 +78,10 @@ toward one.** No rule, candidate, or threshold was added, changed, or approved i
   `evidence-assertions.json` + `unresolved.json` (73 assertions / 83 unresolved entries from
   `rf-kid-001`, including one named, un-averaged proteinuria-cutoff source conflict), and
   `modules/growth_suite_v1/evidence-assertions.json` + `evidence.json` + `unresolved.json`
-  (79 assertions / 89 unresolved entries from `rf-gro-002`, including one named, un-averaged
-  WHO-vs-CDC growth-standard source conflict). Every assertion resolves to a rights-restricted,
-  hash-verified passage reference (`exactPassageSha256`), never a fabricated quote.
+  (79 assertions / 90 unresolved entries from `rf-gro-002` — 89 deferred-claim entries plus one
+  named, un-averaged WHO-vs-CDC growth-standard source conflict). Every assertion resolves to a
+  rights-restricted, hash-verified passage reference (`exactPassageSha256`), never a fabricated
+  quote.
 - **Provenance is split, not uniform, across these four projections — this distinction is
   load-bearing and must not be collapsed in any future summary:** only `rf-cbc-002` →
   `modules/cbc_suite_v1/` was produced by running the committed `tools/rf-bundle-to-kb-pack/`
