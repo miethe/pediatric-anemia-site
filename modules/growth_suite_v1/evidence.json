@@ -1,5 +1,832 @@
 {
   "knowledgeBaseVersion": "0.1.0-2026-07-21",
   "reviewedThrough": "2026-07-21",
-  "sources": []
+  "sources": [
+    {
+      "id": "AFP2023_GROWTH_FALTERING_REVIEW",
+      "rfSourceCardId": "src_20260718_rfgro002_10",
+      "priority": "secondary",
+      "year": 2023,
+      "publicationDate": "2023-06",
+      "title": "Growth Faltering and Failure to Thrive in Children",
+      "authors": [
+        "Emily T. Goodwin, MD",
+        "Katie L. Buel, DO",
+        "Laurel D. Cantrell, MD"
+      ],
+      "organization": "American Academy of Family Physicians (American Family Physician)",
+      "journal": "Am Fam Physician. 2023;107(6):597-603",
+      "url": "https://www.aafp.org/pubs/afp/issues/2023/0600/growth-faltering-failure-to-thrive.html",
+      "limitations": [
+        "Malnutrition severity z-score cutoffs live in Figure 1, which is not reproduced as text on the HTML page — those numeric ranges are NOT verbatim-locatable here."
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Growth faltering is diagnosed when weight, weight-for-length, or BMI is persistently below the 5th percentile, or when any of these drops by two percentile lines over time. (clm_034).",
+        "A z-score that decreases by 1 or more predicts likely growth faltering, unless the decrease is compensatory (e.g., large for gestational age at birth). (clm_035).",
+        "For children younger than two years, measurements are adjusted for gestational age and plotted on WHO growth charts; CDC growth charts are used for ages two to 20 years. (clm_036).",
+        "Close monitoring continues until the child reaches a z-score of -2 to -1 without additional dietary supplementation (recovery target). (clm_037).",
+        "Growth is generally monitored weekly for infants one to six months of age and every other week for infants six to 12 months of age. (clm_038).",
+        "Negative z-scores represent lower growth percentiles, with lower negative values signifying more severe malnutrition (directional convention, not a numeric cutoff). (clm_039)."
+      ],
+      "reviewBy": "2027-07-21",
+      "surveillanceQuery": "Growth Faltering and Failure to Thrive in Children — update or successor after 2023",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "AFP2023_GROWTH_FALTERING_REVIEW#implementation-proposal",
+          "sourceId": "AFP2023_GROWTH_FALTERING_REVIEW",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/growth_suite_v1/evidence.json for this source. Exact-passage traceability for growth_suite_v1's projected claims is recorded separately in modules/growth_suite_v1/evidence-assertions.json rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Growth Faltering and Failure to Thrive in Children — update or successor after 2023",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfgro002_10",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ANM2024_FALTERING_GROWTH_UPDATE",
+      "rfSourceCardId": "src_20260718_rfgro002_05",
+      "priority": "primary",
+      "year": 2024,
+      "publicationDate": "2024-11",
+      "title": "An Update on the Diagnosis and Management of Faltering Growth and Catch-Up Growth in Young Children",
+      "authors": [
+        "Rosan Meyer"
+      ],
+      "organization": "S. Karger AG (Annals of Nutrition and Metabolism)",
+      "journal": "Ann Nutr Metab 2024;80(Suppl 1):18-28",
+      "doi": "10.1159/000540930",
+      "url": "https://doi.org/10.1159/000540930",
+      "limitations": [
+        "Review, not a primary trial or a single guideline; numeric tables are reproduced/adapted from cited external sources (refs 22, 27, 31, 35, British Nutrition Foundation).",
+        "Internal inconsistency: abstract defines FG by weight-for-HEIGHT z-score drop; body text and Cooke definition use weight-for-AGE.",
+        "Box 1 WHO undernutrition labels appear internally mislabeled (stunting/wasting anthropometric bases swapped vs conventional usage) - preserved verbatim, not corrected."
+      ],
+      "conflictsWith": [
+        "Abstract 'weight-for-height 1 z-score' vs body 'weight-for-age 1 z-score' (same source)",
+        "Multiple competing FG definitions listed (NICE centile-space vs z-score >=1.0 vs Gomez 75% vs Waterlow 80%) - not reconciled"
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "A recent expert-opinion consensus recommends evaluating for faltering growth when weight-for-age drops by 1 z-score over 1 month or more, excluding the first 2 weeks of life. (clm_001).",
+        "The review's abstract states the consensus threshold as a drop of weight-for-HEIGHT of 1 z-score - conflicting with the weight-for-age framing used in the body text. (clm_002).",
+        "WHO undernutrition is defined by static anthropometric z-scores below -2 for underweight, stunting, and wasting (labels reproduced verbatim; see limitations). (clm_003).",
+        "UK NICE 2017 defines faltering growth by falls across weight centile spaces graded by birthweight centile, on WHO-UK charts where 1 centile space = 0.67 z-score; a >=1.0 weight-for-age z-score fall is an alternative (2021). (clm_004).",
+        "For 10 g/kg/day catch-up growth in infants, theoretical requirements are 2.82 g/kg/day protein and 126 kcal/kg/day energy (protein-energy ratio 8.9%); an ideal PE ratio for catch-up is 8.9-12%. (clm_005).",
+        "Golden-derived catch-up weight-gain velocities (g/kg/day) for children 65-80 cm length; e.g., to recover weight-for-age z-score -1 to 0 in 20 days, males need 4.1 and females 4.4 g/kg/day. (clm_006).",
+        "Reference nutrient intakes for micronutrient support in catch-up growth; for age 1-3 years: vitamin A 400 ug/day, vitamin D 10 ug/day, zinc 5 mg/day, iron 6.9 mg/day. (clm_007).",
+        "Older static undernutrition criteria are listed as alternative FG definitions: Gomez (weight <75% of median weight-for-age) and Waterlow (weight <80% of median weight-for-length). (clm_008)."
+      ],
+      "reviewBy": "2027-07-21",
+      "surveillanceQuery": "An Update on the Diagnosis and Management of Faltering Growth and Catch-Up Growth in Young Children — update or successor after 2024",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "ANM2024_FALTERING_GROWTH_UPDATE#implementation-proposal",
+          "sourceId": "ANM2024_FALTERING_GROWTH_UPDATE",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/growth_suite_v1/evidence.json for this source. Exact-passage traceability for growth_suite_v1's projected claims is recorded separately in modules/growth_suite_v1/evidence-assertions.json rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "An Update on the Diagnosis and Management of Faltering Growth and Catch-Up Growth in Young Children — update or successor after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfgro002_05",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rfSourceCardId": "src_20260718_rfgro002_07",
+      "duplicateRfSourceCardIds": [
+        "src_20260718_rfgro002_11"
+      ],
+      "priority": "secondary",
+      "year": 2015,
+      "publicationDate": "2015-01",
+      "title": "Consensus statement of the Academy of Nutrition and Dietetics/American Society for Parenteral and Enteral Nutrition: indicators recommended for the identification and documentation of pediatric malnutrition (undernutrition)",
+      "authors": [
+        "Becker P",
+        "Carney LN",
+        "Corkins MR",
+        "Monczka J",
+        "Smith E",
+        "Smith SE",
+        "Spear BA",
+        "White JV"
+      ],
+      "organization": "Nutrition in Clinical Practice (ASPEN / Academy of Nutrition and Dietetics)",
+      "journal": "AND/ASPEN 2015 consensus statement (Nutr Clin Pract 2015;30(1):147-61)",
+      "doi": "10.1177/0884533614557642",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/25422273/",
+      "limitations": [
+        "Numeric z-score / percentage classification cutoffs (mild/moderate/severe) live in the primary's tables, which were not accessible as verbatim text — asserted numbers here are limited to the abstract's age-band scopes.",
+        "Growth-reference standard (WHO vs CDC) for the z-scores is not stated in the accessed abstract.",
+        "This publication (DOI 10.1177/0884533614557642) was carded twice by the rf pipeline under distinct source_card_ids — src_20260718_rfgro002_07 (canonical) and src_20260718_rfgro002_11 (duplicate). Both are merged into this single evidence.json source (02 doc section 4.7's stable-identity rule for Source); the rfSourceCardId records the canonical card only."
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "The consensus statement defines a standardized indicator set to diagnose/document undernutrition in the pediatric population aged 1 month to 18 years. (clm_028).",
+        "With a single data point, the recommended indicators are z-scores for weight-for-height/length, BMI-for-age, or length/height-for-age, or mid-upper arm circumference. (clm_029).",
+        "With 2+ data points the indicators add weight gain velocity (age <2 years), weight loss (age 2-20 years), deceleration in weight-for-length/height z-score, and inadequate nutrient intake. (clm_030).",
+        "The indicators are intended for use across acute, ambulatory/outpatient, and residential care settings. (clm_031).",
+        "The statement is a diagnosis/documentation tool, not a nutritional-risk screening tool; deriving screening criteria is explicitly out of scope. (clm_032).",
+        "Clinicians should use as many available data points as possible to identify and document malnutrition. (clm_033).",
+        "For a single available data point, the recommended pediatric undernutrition indicators are z-scores for weight-for-height/length, BMI-for-age, length/height-for-age, or mid-upper arm circumference (MUAC). (clm_009).",
+        "When 2 or more data points are available, indicators additionally include weight-gain velocity (applies age <2 years), weight loss (applies age 2-20 years), deceleration in weight-for-length/height z-score, and inadequate nutrient intake. (clm_010).",
+        "The indicator set is intended to diagnose and document undernutrition across the pediatric population ages 1 month to 18 years. (clm_011).",
+        "The indicators are intended for use across multiple care settings — acute, ambulatory/outpatient, and residential care. (clm_012).",
+        "The statement defines diagnostic/documentation indicators, not nutritional-risk screening criteria; screening is explicitly out of scope. (clm_013).",
+        "Clinicians are directed to use as many data points as are available when identifying and documenting malnutrition (favoring multi-datapoint over single-datapoint indicators where possible). (clm_014)."
+      ],
+      "reviewBy": "2027-07-21",
+      "surveillanceQuery": "Consensus statement of the Academy of Nutrition and Dietetics/American Society for Parenteral and Enteral Nutrition: indicators recommended for the identification and documentation of pediatric malnutrition (undernutrition) — update or successor after 2015",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "ASPEN2015_MALNUTRITION_INDICATORS#implementation-proposal",
+          "sourceId": "ASPEN2015_MALNUTRITION_INDICATORS",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/growth_suite_v1/evidence.json for this source. Exact-passage traceability for growth_suite_v1's projected claims is recorded separately in modules/growth_suite_v1/evidence-assertions.json rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Consensus statement of the Academy of Nutrition and Dietetics/American Society for Parenteral and Enteral Nutrition: indicators recommended for the identification and documentation of pediatric malnutrition (undernutrition) — update or successor after 2015",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfgro002_07",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "CDC2010_WHO_CDC_CHART_USE_REC",
+      "rfSourceCardId": "src_20260718_rfgro002_00",
+      "priority": "primary",
+      "year": 2010,
+      "publicationDate": "2010-09-10",
+      "title": "Use of World Health Organization and CDC Growth Charts for Children Aged 0-59 Months in the United States",
+      "authors": [
+        "Grummer-Strawn LM",
+        "Reinold C",
+        "Krebs NF"
+      ],
+      "organization": "CDC / Morbidity and Mortality Weekly Report (MMWR) Recommendations and Reports",
+      "journal": "MMWR 2010;59(RR-9):1-15",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/20829749/",
+      "limitations": [
+        "An erratum exists for this article — corrections not reviewed here.",
+        "Percentile cutoffs are chart-set-specific (WHO vs CDC), not interchangeable; do not merge.",
+        "Recommendation is for growth-chart selection/screening, not diagnosis or treatment."
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "CDC recommends the 2006 WHO growth charts for children aged <24 months and continued use of CDC growth charts for persons aged 2-19 years, transitioning at 24 months. (clm_046).",
+        "On WHO charts for children <24 months, the 2.3rd and 97.7th percentiles (equal to +/-2 SD; labeled 2nd/98th on the charts) are the recommended screening cutoffs, not the 5th and 95th. (clm_047).",
+        "WHO charts are growth STANDARDS (how healthy children should grow under optimal conditions) whereas CDC charts are a growth REFERENCE (how certain children grew at a place and time). (clm_048).",
+        "The WHO growth-standard reference population was fully breastfed: 100% breastfed for 12 months and predominantly breastfed for at least 4 months. (clm_049).",
+        "For low weight-for-age at ages 6-23 months, the CDC reference (5th/95th) flags 7%-11% of children whereas the WHO standard (2.3rd/97.7th) flags <3%. (clm_050).",
+        "Misapplying the 5th/95th percentiles to the WHO weight charts would label 10% of an all-healthy reference population as underweight or overweight. (clm_051)."
+      ],
+      "reviewBy": "2027-07-21",
+      "surveillanceQuery": "Use of World Health Organization and CDC Growth Charts for Children Aged 0-59 Months in the United States — update or successor after 2010",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "CDC2010_WHO_CDC_CHART_USE_REC#implementation-proposal",
+          "sourceId": "CDC2010_WHO_CDC_CHART_USE_REC",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/growth_suite_v1/evidence.json for this source. Exact-passage traceability for growth_suite_v1's projected claims is recorded separately in modules/growth_suite_v1/evidence-assertions.json rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Use of World Health Organization and CDC Growth Charts for Children Aged 0-59 Months in the United States — update or successor after 2010",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfgro002_00",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "rfSourceCardId": "src_20260718_rfgro002_08",
+      "priority": "secondary",
+      "year": 2024,
+      "publicationDate": "2024-08",
+      "title": "Risk Assessment of Cognitive Impairment at 2 Years of Age in Infants Born Extremely Preterm Using the INTERGROWTH-21st Growth Standards",
+      "authors": [
+        "Ariel A Salas",
+        "Waldemar A Carlo",
+        "Carla M Bann",
+        "Edward F Bell",
+        "Tarah T Colaizy",
+        "Noelle Younge",
+        "Myriam Peralta",
+        "Namasivayam Ambalavanan",
+        "Brenda B Poindexter"
+      ],
+      "organization": "The Journal of Pediatrics (Elsevier); NICHD Neonatal Research Network",
+      "journal": "INTERGROWTH-21st standards (Newborn Size for Very Preterm Infants app; Postnatal Growth of Preterm Infants app)",
+      "doi": "10.1016/j.jpeds.2024.114239",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39168179/",
+      "limitations": [
+        "Cut points derived by CART recursive partitioning on one cohort (development/testing split); not externally validated as a clinical rule.",
+        "Restricted to 24-26 weeks gestation (excludes 22-23 and 27 weeks); limited generalizability.",
+        "Cognitive-impairment outcome (BSID-III CCS <85) not a universally accepted definition; may exclude severe global impairment.",
+        "No data on maternal-milk exposure."
+      ],
+      "conflictsWith": [
+        "Fenton growth curves yield a different growth-failure prevalence (57%) vs INTERGROWTH-21st (32%) in the same cohort.",
+        "Authors' own prior pilot study (and prior small INTERGROWTH-21st/Fenton studies) found NO significant association between postnatal growth and 2-year cognition."
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "CART identified a weight z-score of -1.79 or below at 36 weeks PMA as an alternative growth-failure cut point that showed high specificity (82%) for risk of 2-year cognitive impairment. (clm_015).",
+        "A length z-score less than -1 at 36 weeks PMA had the highest sensitivity (80%) among tested cut points for detecting 2-year cognitive impairment. (clm_016).",
+        "A head circumference z-score decline of 2.43 or greater from birth to 36 weeks PMA had the highest specificity (86%) among tested cut points for 2-year cognitive impairment. (clm_017).",
+        "CART identified a weight z-score decline of 1.06 or greater from birth to 36 weeks PMA as an alternative growth-faltering cut point (sensitivity 40%, specificity 67%), which did not reach statistical significance for adjusted cognitive-impairment risk. (clm_018).",
+        "The standard growth-failure definition (weight z-score below -1.28, i.e. below the 10th percentile) at 36 weeks PMA occurred in 32% of infants but had low sensitivity (40% and 26%) for cognitive impairment. (clm_019).",
+        "The standard growth-faltering definition (weight z-score decline greater than 1.2 from birth to 36 weeks PMA) had poor sensitivity (34%) for detecting 2-year cognitive impairment. (clm_020).",
+        "The cognitive-impairment outcome was defined by Bayley (BSID-III) cognitive composite score cut points: mild <85 (35% of infants) and moderate <70 (13% of infants), assessed at 2 years corrected gestational age. (clm_021).",
+        "Using Fenton growth curves instead of INTERGROWTH-21st, standard growth failure occurred in 57% of the same infants (vs 32% by INTERGROWTH-21st), and Fenton-based faltering was not associated with cognitive-impairment risk — establishing growth-standard dependence. (clm_022)."
+      ],
+      "reviewBy": "2027-07-21",
+      "surveillanceQuery": "Risk Assessment of Cognitive Impairment at 2 Years of Age in Infants Born Extremely Preterm Using the INTERGROWTH-21st Growth Standards — update or successor after 2024",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK#implementation-proposal",
+          "sourceId": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/growth_suite_v1/evidence.json for this source. Exact-passage traceability for growth_suite_v1's projected claims is recorded separately in modules/growth_suite_v1/evidence-assertions.json rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Risk Assessment of Cognitive Impairment at 2 Years of Age in Infants Born Extremely Preterm Using the INTERGROWTH-21st Growth Standards — update or successor after 2024",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfgro002_08",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "NICE2017_NG75_FALTERING_GROWTH",
+      "rfSourceCardId": "src_20260718_rfgro002_09",
+      "priority": "secondary",
+      "year": 2017,
+      "publicationDate": "2017-09-27",
+      "title": "Faltering growth: recognition and management of faltering growth in children (NICE guideline NG75)",
+      "authors": [
+        "National Institute for Health and Care Excellence (NICE)"
+      ],
+      "organization": "National Institute for Health and Care Excellence (NICE)",
+      "journal": "NG75 (published 27 September 2017)",
+      "url": "https://www.nice.org.uk/guidance/ng75/chapter/recommendations",
+      "limitations": [
+        "Thresholds are chart-relative (UK-WHO centile spaces / centile lines), not standalone anthropometric cutoffs; correct chart and correctly plotted measurements are prerequisites.",
+        "'Centile space' semantics depend on the specific UK-WHO chart used; applying the rule requires the chart's centile-line spacing.",
+        "Guideline scope is UK practice; centile conventions (2nd, 0.4th, 9th, 91st centiles) follow UK-WHO chart lines and may differ from CDC/WHO percentile conventions used elsewhere."
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "NG75 frames the weight-centile-fall values as thresholds for concern about faltering growth in infants and children, i.e. triggers for further assessment, not diagnoses. (clm_065).",
+        "For an infant whose birthweight was below the 9th centile, a fall across 1 or more weight centile spaces is a threshold for concern. (clm_066).",
+        "For an infant whose birthweight was between the 9th and 91st centiles, a fall across 2 or more weight centile spaces is a threshold for concern. (clm_067).",
+        "For an infant whose birthweight was above the 91st centile, a fall across 3 or more weight centile spaces is a threshold for concern. (clm_068).",
+        "A current weight below the 2nd centile for age is a threshold for concern regardless of birthweight. (clm_069).",
+        "NG75 defines a 'centile space' as the space between adjacent centile lines on the UK-WHO growth charts, which the centile-fall thresholds are measured in. (clm_070).",
+        "In children older than 2 years, a BMI below the 0.4th centile suggests probable undernutrition that needs assessment and intervention. (clm_071).",
+        "A child's length or height centile more than 2 centile spaces below the mid-parental centile is below the range predicted from parental heights and suggests undernutrition or a primary growth disorder. (clm_072)."
+      ],
+      "reviewBy": "2027-07-21",
+      "surveillanceQuery": "Faltering growth: recognition and management of faltering growth in children (NICE guideline NG75) — update or successor after 2017",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "NICE2017_NG75_FALTERING_GROWTH#implementation-proposal",
+          "sourceId": "NICE2017_NG75_FALTERING_GROWTH",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/growth_suite_v1/evidence.json for this source. Exact-passage traceability for growth_suite_v1's projected claims is recorded separately in modules/growth_suite_v1/evidence-assertions.json rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Faltering growth: recognition and management of faltering growth in children (NICE guideline NG75) — update or successor after 2017",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfgro002_09",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "NUTRIENTS2026_PRETERM_ESPGHAN",
+      "rfSourceCardId": "src_20260718_rfgro002_03",
+      "priority": "primary",
+      "year": 2026,
+      "publicationDate": "2026-01-16",
+      "title": "Risk Factors for Postnatal Growth Faltering and Undernutrition at Discharge in Very Preterm Infants: A Retrospective Study Applying the ESPGHAN Consensus Definitions",
+      "authors": [
+        "Beghetti I",
+        "Magno D",
+        "Benvenuti E",
+        "Aceti A",
+        "Corvaglia LT"
+      ],
+      "organization": "Nutrients (MDPI)",
+      "journal": "Nutrients 2026;18(2):286",
+      "doi": "10.3390/nu18020286",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41599899/",
+      "limitations": [
+        "Single level-IV NICU (Bologna, Italy), 2013-2019 cohort — prevalence figures are cohort-specific, not reference-interval norms",
+        "Definitions are quoted as applied ESPGHAN criteria; the primary ESPGHAN position paper is the upstream authority for the thresholds",
+        "Retrospective design; ~3% missingness; small growth-restriction subgroup precluded some multivariate analysis"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "Growth faltering (GF) is defined longitudinally as a weight-for-age z-score fall of at least 1.0 SD from birth to discharge, per applied ESPGHAN criteria. (clm_052).",
+        "Undernutrition (UN) is defined cross-sectionally as a weight-for-age OR length-for-age z-score below −2 SD at discharge, per applied ESPGHAN criteria. (clm_053).",
+        "ESPGHAN flags infants whose weight or length z-score drops exceed 2 SD as requiring attention and tailored nutritional support. (clm_054).",
+        "Small for gestational age (SGA) is defined at birth as a birth-weight centile below the 3rd percentile. (clm_055).",
+        "Growth restriction (GR) at birth is defined by BW <3rd centile or <−2 SD, OR by at least three of five listed criteria (BW <10th, HC <10th, length <10th, prenatal IUGR diagnosis, or maternal hypertension/preeclampsia). (clm_056).",
+        "In this cohort of 402 very preterm infants with available data, GF occurred in 45.3% and UN in 33.1% at discharge — cohort prevalence, not a decision threshold. (clm_057).",
+        "All growth z-scores and centiles in this study are computed against INTERGROWTH-21st prescriptive standards, making every threshold reference-chart dependent. (clm_058)."
+      ],
+      "reviewBy": "2027-07-21",
+      "surveillanceQuery": "Risk Factors for Postnatal Growth Faltering and Undernutrition at Discharge in Very Preterm Infants: A Retrospective Study Applying the ESPGHAN Consensus Definitions — update or successor after 2026",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "NUTRIENTS2026_PRETERM_ESPGHAN#implementation-proposal",
+          "sourceId": "NUTRIENTS2026_PRETERM_ESPGHAN",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/growth_suite_v1/evidence.json for this source. Exact-passage traceability for growth_suite_v1's projected claims is recorded separately in modules/growth_suite_v1/evidence-assertions.json rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Risk Factors for Postnatal Growth Faltering and Undernutrition at Discharge in Very Preterm Infants: A Retrospective Study Applying the ESPGHAN Consensus Definitions — update or successor after 2026",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfgro002_03",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "PEDS2025_GRADUAL_TRANSITION_CHART",
+      "rfSourceCardId": "src_20260718_rfgro002_04",
+      "priority": "primary",
+      "year": 2025,
+      "publicationDate": "2025-09",
+      "title": "Creation and Evaluation of New Growth Charts With a Gradual Transition From WHO to CDC Values",
+      "authors": [
+        "Carrie Daymont",
+        "Wenke Hwang",
+        "Ian M Paul",
+        "Natasha Shur",
+        "David S Freedman"
+      ],
+      "organization": "American Academy of Pediatrics (Pediatrics)",
+      "journal": "Pediatrics vol 156, issue 3, e2025070697",
+      "doi": "10.1542/peds.2025-070697",
+      "url": "https://doi.org/10.1542/peds.2025-070697",
+      "limitations": [
+        "Full text not retrievable at access; only structured abstract available for verbatim quotes.",
+        "Study is US-population growth-chart methodology, not an assay reference-interval source."
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "CDC recommends switching from the WHO Growth Standards to the CDC 2000 Growth Reference at age 2 years, the transition point the study addresses. (clm_059).",
+        "The study defines a large change in z-score as a value less than -1 (drop) or greater than +1 (rise). (clm_060).",
+        "The gradual charts transition between WHO and CDC using a weighted average applied across ages 2 to 5 years. (clm_061).",
+        "In 7429 children, the abrupt CDC-recommended switch produced a large mean z-score decrease between 1.5 and 2 years (BMIz -0.59, WTz -0.35) that was nearly absent with the gradual charts (BMIz -0.09, WTz -0.01). (clm_062).",
+        "The proportion of children with a large drop in z-score was much higher with the CDC-recommended charts (BMIz 28.3%, WTz 6.0%) than the gradual charts (BMIz 11.6%, WTz 0.85%). (clm_063).",
+        "The authors conclude the gradual-transition charts may reduce overidentification of slow weight gain and may be useful in clinical care and research. (clm_064)."
+      ],
+      "reviewBy": "2027-07-21",
+      "surveillanceQuery": "Creation and Evaluation of New Growth Charts With a Gradual Transition From WHO to CDC Values — update or successor after 2025",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "PEDS2025_GRADUAL_TRANSITION_CHART#implementation-proposal",
+          "sourceId": "PEDS2025_GRADUAL_TRANSITION_CHART",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/growth_suite_v1/evidence.json for this source. Exact-passage traceability for growth_suite_v1's projected claims is recorded separately in modules/growth_suite_v1/evidence-assertions.json rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Creation and Evaluation of New Growth Charts With a Gradual Transition From WHO to CDC Values — update or successor after 2025",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfgro002_04",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "WHO2006_LHFA_STANDARD",
+      "rfSourceCardId": "src_20260718_rfgro002_02",
+      "priority": "primary",
+      "year": 2006,
+      "publicationDate": "2006",
+      "title": "WHO Child Growth Standards: Length/height-for-age",
+      "authors": [
+        "WHO Multicentre Growth Reference Study Group"
+      ],
+      "organization": "World Health Organization",
+      "journal": "2006 WHO Child Growth Standards (birth-5 y); operational thresholds from WHO Anthro for Personal Computers Manual v3.2.2 (2011)",
+      "url": "https://www.who.int/tools/child-growth-standards/standards/length-height-for-age",
+      "limitations": [
+        "Standards page itself carries no prose thresholds — it is a download index of z-score/percentile charts and tables.",
+        "0.7 cm length/height conversion is a modelled adjustment, not a per-child measurement."
+      ],
+      "conflictsWith": [
+        "CDC 2000 growth reference (descriptive US reference); CDC recommends WHO standards for 0-24 mo and CDC charts for >=2 y in US clinical use — different reference type, not averaged here."
+      ],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "The length/height indicator is selected by age: recumbent length is used for children younger than 24 months and standing height for children 24 months and older. (clm_073).",
+        "The computational boundary between length-for-age and height-for-age is exact in days: up to 730 days inclusive is length-for-age, and 731 days or more is height-for-age. (clm_074).",
+        "When a child is measured in the position that does not match the age rule, 0.7 cm is subtracted from length to estimate height, or added to height to estimate length, before deriving indicators. (clm_075).",
+        "The 0.7 cm length-height offset was derived empirically from MGRS children aged 18-30 months who had both length and height measured. (clm_076).",
+        "When neither age nor measurement type is known, values below 87 cm are treated as length and 87 cm or above as height; 87 cm is the mean of the sex-specific median length and height at 24 months. (clm_077).",
+        "Length-based indicators are set to not-available outside 45-110 cm for age under 24 months, and height-based indicators outside 65-120 cm for age 24 months or older. (clm_078).",
+        "The published standard provides length-for-age birth to 2 years and height-for-age 2 to 5 years, plus a combined length/height-for-age birth to 5 years, as z-score and percentile charts and tables for boys and girls. (clm_079)."
+      ],
+      "reviewBy": "2027-07-21",
+      "surveillanceQuery": "WHO Child Growth Standards: Length/height-for-age — update or successor after 2006",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "WHO2006_LHFA_STANDARD#implementation-proposal",
+          "sourceId": "WHO2006_LHFA_STANDARD",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/growth_suite_v1/evidence.json for this source. Exact-passage traceability for growth_suite_v1's projected claims is recorded separately in modules/growth_suite_v1/evidence-assertions.json rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "WHO Child Growth Standards: Length/height-for-age — update or successor after 2006",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfgro002_02",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "WHO2006_WFL_WFH_STANDARD",
+      "rfSourceCardId": "src_20260718_rfgro002_01",
+      "priority": "primary",
+      "year": 2006,
+      "publicationDate": "2006",
+      "title": "WHO Child Growth Standards: Weight-for-length/height",
+      "authors": [
+        "World Health Organization Multicentre Growth Reference Study Group"
+      ],
+      "organization": "World Health Organization (WHO)",
+      "journal": "WHO Child Growth Standards (2006 release)",
+      "url": "https://www.who.int/tools/child-growth-standards/standards/weight-for-length-height",
+      "limitations": [
+        "Page does not publish the z-score classification cutoffs (e.g. wasting/severe wasting) or the length-vs-height measurement adjustment; those live in the WHO methodology report / training modules, not on this portal page."
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "The WHO weight-for-length indicator is the standard applied from birth to 2 years of age. (clm_023).",
+        "The WHO weight-for-height indicator is the standard applied from 2 to 5 years of age. (clm_024).",
+        "The combined weight-for-length/height standard spans birth to 5 years, joining the length-based (birth-2y) and height-based (2-5y) segments. (clm_025).",
+        "The standard is published in both z-score and percentile form, provided separately for girls and boys. (clm_026).",
+        "WHO distributes the standard in multiple derived formats (charts, full tables, simplified field tables, and expanded national-health-card tables), each split by sex and z-score vs percentile. (clm_027)."
+      ],
+      "reviewBy": "2027-07-21",
+      "surveillanceQuery": "WHO Child Growth Standards: Weight-for-length/height — update or successor after 2006",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "WHO2006_WFL_WFH_STANDARD#implementation-proposal",
+          "sourceId": "WHO2006_WFL_WFH_STANDARD",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/growth_suite_v1/evidence.json for this source. Exact-passage traceability for growth_suite_v1's projected claims is recorded separately in modules/growth_suite_v1/evidence-assertions.json rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "WHO Child Growth Standards: Weight-for-length/height — update or successor after 2006",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfgro002_01",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "WHO2007_BMI_5_19Y_REFERENCE",
+      "rfSourceCardId": "src_20260718_rfgro002_06",
+      "priority": "secondary",
+      "year": 2007,
+      "publicationDate": "2007-09",
+      "title": "Development of a WHO growth reference for school-aged children and adolescents",
+      "authors": [
+        "de Onis M",
+        "Onyango AW",
+        "Borghi E",
+        "Siyam A",
+        "Nishida C",
+        "Siekmann J"
+      ],
+      "organization": "Bulletin of the World Health Organization (World Health Organization)",
+      "journal": "Bull World Health Organ 2007;85(9):660-667",
+      "doi": "10.2471/BLT.07.043497",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/18026621/",
+      "limitations": [
+        "Reference derived from 1977 NCHS/WHO US sample merged with the 0-5y standards sample, not a fresh multi-country prescriptive sample like the 0-5y standards",
+        "Cutoffs are population/statistical (SD-score anchored to adult BMI cutoffs), not assay-based"
+      ],
+      "conflictsWith": [],
+      "contentRights": {
+        "allowedForPublicOutput": false,
+        "allowedForWorkOutput": true,
+        "allowedForPersonalMeatywiki": true,
+        "citationRequired": true,
+        "quoteLimitNotes": "Short excerpts only."
+      },
+      "supports": [
+        "At 19 years the WHO 2007 BMI-for-age +1 SD value is 25.4 kg/m2 for boys and 25.0 kg/m2 for girls, set equivalent to the adult overweight cutoff of >=25.0 kg/m2. (clm_040).",
+        "At 19 years the WHO 2007 BMI-for-age +2 SD value is 29.7 kg/m2 for both sexes, aligned with the adult obesity cutoff of >=30.0 kg/m2. (clm_041).",
+        "The BMI-for-age transition between the 0-5y standards and the 5-19y reference at age 5 is smooth, with differences across all centiles mostly 0.0-0.1 kg/m2 and never more than 0.2 kg/m2. (clm_042).",
+        "Weight-for-age is not extended across the full 5-19y range because it cannot distinguish height from body mass beyond childhood; the weight-for-age charts extend only to 10 years. (clm_043).",
+        "The WHO 2007 height-for-age and BMI-for-age charts extend to 19 years, the WHO-defined upper limit of adolescence, giving a reference for the 5-19y age group. (clm_044).",
+        "The WHO 2007 reference curves were constructed with the Box-Cox power exponential (BCPE) method with cubic-spline smoothing, the same approach used for the 0-5y WHO Child Growth Standards. (clm_045)."
+      ],
+      "reviewBy": "2027-07-21",
+      "surveillanceQuery": "Development of a WHO growth reference for school-aged children and adolescents — update or successor after 2007",
+      "supersessionStatus": "not_superseded",
+      "passages": [
+        {
+          "id": "WHO2007_BMI_5_19Y_REFERENCE#implementation-proposal",
+          "sourceId": "WHO2007_BMI_5_19Y_REFERENCE",
+          "status": "implementation-proposal",
+          "sourceLocator": {
+            "raw": "Implementation-proposal sentinel: no located passage recorded in modules/growth_suite_v1/evidence.json for this source. Exact-passage traceability for growth_suite_v1's projected claims is recorded separately in modules/growth_suite_v1/evidence-assertions.json rather than duplicated into this nested array; this sentinel exists only so a downstream consumer of this file's passages[] resolves to something explicit rather than nothing.",
+            "page": null,
+            "section": null,
+            "table": null,
+            "figure": null
+          },
+          "exactPassage": "",
+          "passageFidelity": "paraphrase",
+          "reviewFlags": [],
+          "reviewFindingIds": [],
+          "evidenceGrade": null,
+          "applicability": {
+            "age": null,
+            "sex": null,
+            "assay": null
+          },
+          "reviewDate": "2026-07-21",
+          "supersedes": null,
+          "surveillanceQuery": "Development of a WHO growth reference for school-aged children and adolescents — update or successor after 2007",
+          "provenance": {
+            "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
+            "sourceCardId": "src_20260718_rfgro002_06",
+            "evidenceId": "implementation-proposal"
+          }
+        }
+      ]
+    }
+  ]
 }
