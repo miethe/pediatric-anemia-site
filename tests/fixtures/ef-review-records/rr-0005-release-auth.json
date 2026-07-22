@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "review_id": "rr-0005-release-auth",
+  "role": "release-auth",
+  "moduleId": "cbc_suite_v1",
+  "subjectContentHash": "sha256:b9b8b64fae56f3a3c9e6b03fb38413c76439d80d73532675695f06543c544cf8",
+  "previousRecordHash": "sha256:4ac93c16913b43d7ecf3c0894050a1a0c0ea15345ce4223857166c149d3c9f51",
+  "supersedes": null,
+  "reviewerId": "synthetic-reviewer-release-auth-01",
+  "decision": "approve",
+  "rationale": "Synthetic dry-run fixture (P1-T2) exercising the release-auth role act shape; not a real release authorization -- release authorization remains blocked on gates G1-G4 regardless of this fixture's decision value.",
+  "reviewedAt": "2026-07-21T14:20:00Z",
+  "synthetic": true,
+  "signature": {
+    "algorithm": "ed25519",
+    "keyId": "TESTKEY-ef-e1-p1t2-0005",
+    "value": "ZmFrZS1zaWduYXR1cmUtdmFsdWUtcnItMDAwNS1yZWxlYXNlLWF1dGg="
+  }
+}

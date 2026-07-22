@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "review_id": "rr-0003-lab",
+  "role": "lab",
+  "moduleId": "cbc_suite_v1",
+  "subjectContentHash": "sha256:b9b8b64fae56f3a3c9e6b03fb38413c76439d80d73532675695f06543c544cf8",
+  "previousRecordHash": "sha256:33cbd6da2e98c285bb0ecb97b2da303adea4844f5cb8141f99b3a3314c7b77f9",
+  "supersedes": null,
+  "reviewerId": "synthetic-reviewer-lab-01",
+  "decision": "approve",
+  "rationale": "Synthetic dry-run fixture (P1-T2) exercising the lab role act shape; not a real laboratory review.",
+  "reviewedAt": "2026-07-21T14:10:00Z",
+  "synthetic": true,
+  "signature": {
+    "algorithm": "ed25519",
+    "keyId": "TESTKEY-ef-e1-p1t2-0003",
+    "value": "ZmFrZS1zaWduYXR1cmUtdmFsdWUtcnItMDAwMy1sYWI="
+  }
+}
