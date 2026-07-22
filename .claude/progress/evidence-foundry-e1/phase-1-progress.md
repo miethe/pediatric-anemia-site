@@ -8,16 +8,16 @@ prd_ref: docs/project_plans/PRDs/infrastructure/evidence-foundry-e1-v1.md
 plan_ref: docs/project_plans/implementation_plans/infrastructure/evidence-foundry-e1-v1.md
 execution_model: batch-parallel
 phase: 1
-title: 'Evidence Foundry E1 — Phase 1: Contracts & Gates'
+title: "Evidence Foundry E1 \u2014 Phase 1: Contracts & Gates"
 status: pending
 started: null
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 80
 completion_estimate: on-track
 total_tasks: 9
-completed_tasks: 3
+completed_tasks: 8
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -32,17 +32,17 @@ model_usage:
   external: []
 tasks:
 - id: P1-T1
-  description: 'Contracts design note (R5 unification + OQ encodings), FR-2: author
-    .claude/worknotes/evidence-foundry-e1-v1/contracts-design.md fixing, before any
-    schema is written: (a) canonical ADR-0004 five-role review-record model + field-by-field
-    mapping of wave0''s 5-state schemas/review-record.schema.json contract onto it,
-    every wave0 field mapped or documented drop-with-reason; (b) OQ-2 store layout
-    + signature-object shape (detached-Ed25519, TESTKEY- marker, schema-forced-empty
-    on non-synthetic); (c) PRD OQ-5 authorship-union definition (FR-5/FR-23); (d)
-    OQ-4 registry entry shape (FR-14 fields only, inert withdrawal consts); (e) every
-    wave0-schema consumer found by grep across scripts/tests/src with disposition.
-    Design only — no schema files change.'
-  status: pending
+  description: "Contracts design note (R5 unification + OQ encodings), FR-2: author\
+    \ .claude/worknotes/evidence-foundry-e1-v1/contracts-design.md fixing, before\
+    \ any schema is written: (a) canonical ADR-0004 five-role review-record model\
+    \ + field-by-field mapping of wave0's 5-state schemas/review-record.schema.json\
+    \ contract onto it, every wave0 field mapped or documented drop-with-reason; (b)\
+    \ OQ-2 store layout + signature-object shape (detached-Ed25519, TESTKEY- marker,\
+    \ schema-forced-empty on non-synthetic); (c) PRD OQ-5 authorship-union definition\
+    \ (FR-5/FR-23); (d) OQ-4 registry entry shape (FR-14 fields only, inert withdrawal\
+    \ consts); (e) every wave0-schema consumer found by grep across scripts/tests/src\
+    \ with disposition. Design only \u2014 no schema files change."
+  status: completed
   assigned_to:
   - backend-architect
   dependencies: []
@@ -50,16 +50,22 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: extended
+  started: '2026-07-22T03:54:00Z'
+  completed: '2026-07-22T04:50:00Z'
+  evidence:
+  - commit: 1e4c8a9
+  verified_by:
+  - P1-GATE1
 - id: P1-T2
-  description: 'Canonical review-record schema v1, FR-1/FR-2/FR-3: replace wave0 contents
-    of schemas/review-record.schema.json with the canonical five-role model (clinical-1,
-    clinical-2, lab, adjudication, release-auth) from P1-T1 — same file path, ONE
-    canonical schema. Preserve D-4: reviewerType "human" const, attestedHuman true
-    const, approver arrays byte-compatible with module-manifest/rule schemas. Fields
-    per OQ-2: review_id (rr-<seq4>-<role>), moduleId, subjectContentHash, previousRecordHash,
-    supersedes (nullable), reviewerId, synthetic (required bool), signature object
-    forced null unless synthetic true (then keyId must match TESTKEY-).'
-  status: pending
+  description: "Canonical review-record schema v1, FR-1/FR-2/FR-3: replace wave0 contents\
+    \ of schemas/review-record.schema.json with the canonical five-role model (clinical-1,\
+    \ clinical-2, lab, adjudication, release-auth) from P1-T1 \u2014 same file path,\
+    \ ONE canonical schema. Preserve D-4: reviewerType \"human\" const, attestedHuman\
+    \ true const, approver arrays byte-compatible with module-manifest/rule schemas.\
+    \ Fields per OQ-2: review_id (rr-<seq4>-<role>), moduleId, subjectContentHash,\
+    \ previousRecordHash, supersedes (nullable), reviewerId, synthetic (required bool),\
+    \ signature object forced null unless synthetic true (then keyId must match TESTKEY-)."
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -68,14 +74,20 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  started: '2026-07-22T03:54:00Z'
+  completed: '2026-07-22T04:50:00Z'
+  evidence:
+  - commit: 5404f65
+  verified_by:
+  - P1-GATE1
 - id: P1-T3
-  description: 'Wave0 → canonical mapping migration test, FR-2: implement tests/ef-review-record-migration.test.mjs
-    proving P1-T1''s mapping — a pure mapping function (tools/review-record/lib/,
-    import-safe standalone) maps a representative wave0-shaped fixture for each of
-    the 5 wave0 states onto the P1-T2 canonical schema with D-4 guarantees intact.
-    Update every wave0-schema consumer identified in P1-T1(e) so npm run check stays
-    green. AC: migration test green for all 5 wave0 states; unmappable fixture fails
-    closed; zero remaining wave0 5-state references outside the migration helper/fixtures.'
+  description: "Wave0 \u2192 canonical mapping migration test, FR-2: implement tests/ef-review-record-migration.test.mjs\
+    \ proving P1-T1's mapping \u2014 a pure mapping function (tools/review-record/lib/,\
+    \ import-safe standalone) maps a representative wave0-shaped fixture for each\
+    \ of the 5 wave0 states onto the P1-T2 canonical schema with D-4 guarantees intact.\
+    \ Update every wave0-schema consumer identified in P1-T1(e) so npm run check stays\
+    \ green. AC: migration test green for all 5 wave0 states; unmappable fixture fails\
+    \ closed; zero remaining wave0 5-state references outside the migration helper/fixtures."
   status: completed
   assigned_to:
   - general-purpose
@@ -91,11 +103,14 @@ tasks:
     helper/fixtures (grep-guarded). Pre-existing (P1-T2-introduced) tests/rule-governance.test.mjs
     backfill --check drift flagged for P1-T7/P1-GATE1, not fixed here (out of P1-T3
     file scope; npm run validate/coverage:rules/check:imports/smoke all green).
-  started: 2026-07-22T02:00Z
-  completed: 2026-07-22T03:00Z
+  started: '2026-07-22T03:54:00Z'
+  completed: '2026-07-22T04:50:00Z'
   evidence:
   - test: tests/ef-review-record-migration.test.mjs
   - commit: 642c250
+  - commit: 642c250
+  verified_by:
+  - P1-GATE1
 - id: P1-T4
   description: 'Reviewer roster schema + empty roster, PRD OQ-1/FR-3: create schemas/reviewer-roster.schema.json
     and empty governance/reviewer-roster.yaml. Entry shape: reviewerId, name, credentialRef,
@@ -103,7 +118,7 @@ tasks:
     require verificationRef (out-of-band credential verification, a G1 human act,
     never performed by this plan). Roster ships with zero entries; header states real
     entries require gate G1 and synthetic entries can never satisfy release-authorization.'
-  status: pending
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -112,17 +127,23 @@ tasks:
   priority: medium
   assigned_model: sonnet
   model_effort: adaptive
+  started: '2026-07-22T03:54:00Z'
+  completed: '2026-07-22T04:50:00Z'
+  evidence:
+  - commit: 1edafa8
+  verified_by:
+  - P1-GATE1
 - id: P1-T5
-  description: 'Release-manifest signature slot + registry schema, OQ-4/FR-14/FR-16:
-    (a) extend schemas/release-manifest.schema.json with the ADR-0005 signature slot
-    ({algorithm, keyId, value}) schema-forced empty on any real candidate (const null
-    unless dry-run marker present, then keyId must match TESTKEY-); mirror clinicalApprovers[]
-    maxItems:0 pattern. (b) author schemas/release-registry.schema.json for releases/registry.json
-    with exactly the OQ-4 entry shape (version, moduleId, packDigest, manifestDigest,
-    signature null pre-G2, signedAt null, supersedes null, withdrawalState const "none",
-    withdrawnAt/withdrawalReason const null); top-level schemaVersion; no surveillance/cadence
-    fields. Registry seed file itself ships in P3-T4 — this task ships schemas + fixtures
-    only.'
+  description: "Release-manifest signature slot + registry schema, OQ-4/FR-14/FR-16:\
+    \ (a) extend schemas/release-manifest.schema.json with the ADR-0005 signature\
+    \ slot ({algorithm, keyId, value}) schema-forced empty on any real candidate (const\
+    \ null unless dry-run marker present, then keyId must match TESTKEY-); mirror\
+    \ clinicalApprovers[] maxItems:0 pattern. (b) author schemas/release-registry.schema.json\
+    \ for releases/registry.json with exactly the OQ-4 entry shape (version, moduleId,\
+    \ packDigest, manifestDigest, signature null pre-G2, signedAt null, supersedes\
+    \ null, withdrawalState const \"none\", withdrawnAt/withdrawalReason const null);\
+    \ top-level schemaVersion; no surveillance/cadence fields. Registry seed file\
+    \ itself ships in P3-T4 \u2014 this task ships schemas + fixtures only."
   status: completed
   assigned_to:
   - general-purpose
@@ -138,23 +159,28 @@ tasks:
     none, signature/signedAt/supersedes/withdrawnAt/withdrawalReason type null); fixtures
     under tests/fixtures/ef-release/; updated 2 pre-existing tests whose assertions
     predated this slot.
-  started: 2026-07-22T00:00Z
-  completed: 2026-07-22T01:30Z
+  started: '2026-07-22T03:54:00Z'
+  completed: '2026-07-22T04:50:00Z'
   evidence:
   - test: tests/ef-contract-release-registry.test.mjs
   - test: tests/release-manifest-schema.test.mjs
   - test: tests/ef-converter-invariants.test.mjs
+  - commit: fb6cd55
+  verified_by:
+  - P1-GATE1
 - id: P1-T6
-  description: 'Gates registry — G0–G4 (A1 + A2 encodings), FR-27: author docs/governance/gates-registry.md
-    enumerating all five external human gates — G0 ADR ratification, G1 named credentialed
-    reviewer roster, G2 signing custodian + offline key ceremony, G3 data-source SPIKE
-    verdict + data-partner DUA, G4 release authorizer — each with owner-role (human),
-    entry criteria, blocked artifacts/behaviors, and the schema-forced-inert mechanism
-    holding pre-gate. A2 (binding): G0''s ADR-0005 entry must record the SPIKE-006
-    reconciliation condition — signing custodian distinct authority from release author,
-    CI/agents never hold keys. A1 (binding): record design-spec §7.3 item 5 (methodologist/skeptic
-    evidence council) as an external upstream rf/ARC dependency (RFUP routing), zero
-    in-repo council tasks. State no gate is clearable by any task, agent, or plan.'
+  description: "Gates registry \u2014 G0\u2013G4 (A1 + A2 encodings), FR-27: author\
+    \ docs/governance/gates-registry.md enumerating all five external human gates\
+    \ \u2014 G0 ADR ratification, G1 named credentialed reviewer roster, G2 signing\
+    \ custodian + offline key ceremony, G3 data-source SPIKE verdict + data-partner\
+    \ DUA, G4 release authorizer \u2014 each with owner-role (human), entry criteria,\
+    \ blocked artifacts/behaviors, and the schema-forced-inert mechanism holding pre-gate.\
+    \ A2 (binding): G0's ADR-0005 entry must record the SPIKE-006 reconciliation condition\
+    \ \u2014 signing custodian distinct authority from release author, CI/agents never\
+    \ hold keys. A1 (binding): record design-spec \xA77.3 item 5 (methodologist/skeptic\
+    \ evidence council) as an external upstream rf/ARC dependency (RFUP routing),\
+    \ zero in-repo council tasks. State no gate is clearable by any task, agent, or\
+    \ plan."
   status: completed
   assigned_to:
   - general-purpose
@@ -165,24 +191,28 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
-  started: 2026-07-22T00:00Z
-  completed: 2026-07-22T00:30Z
+  started: '2026-07-22T03:54:00Z'
+  completed: '2026-07-22T04:50:00Z'
   evidence:
   - commit: 31a7bf5
   - doc: docs/governance/gates-registry.md
+  - commit: 31a7bf5
+  verified_by:
+  - P1-GATE1
 - id: P1-T7
-  description: 'Validator wiring + seeded forced-empty violations (seam task), FR-6/FR-16/R-P3:
-    wire the P1-T2/T4/T5 schemas into scripts/validate-kb.mjs — validate modules/<id>/reviews/*.yaml
-    against the canonical review-record schema, governance/reviewer-roster.yaml against
-    the roster schema, and (once it exists) releases/registry.json against the registry
-    schema (absent file = pass with explicit note, never a crash). Preserve approvedBy[]/clinicalApprovers[]
-    maxItems:0 enforcement and the anemia browser path''s SPIKE-006 posture byte-untouched
-    (assert via existing tests). Commit seeded-violation fixtures under tests/fixtures/ef-contract-violations/
-    (populated approvedBy[], populated real-candidate signature, non-synthetic roster
-    entry sans verificationRef, unsigned-stub → release-ready manifest transition)
-    and tests/ef-contract-forced-empty.test.mjs asserting each fails npm run validate
-    fail-closed. Backend-architect integration-owner sign-off recorded before P1-GATE1.'
-  status: pending
+  description: "Validator wiring + seeded forced-empty violations (seam task), FR-6/FR-16/R-P3:\
+    \ wire the P1-T2/T4/T5 schemas into scripts/validate-kb.mjs \u2014 validate modules/<id>/reviews/*.yaml\
+    \ against the canonical review-record schema, governance/reviewer-roster.yaml\
+    \ against the roster schema, and (once it exists) releases/registry.json against\
+    \ the registry schema (absent file = pass with explicit note, never a crash).\
+    \ Preserve approvedBy[]/clinicalApprovers[] maxItems:0 enforcement and the anemia\
+    \ browser path's SPIKE-006 posture byte-untouched (assert via existing tests).\
+    \ Commit seeded-violation fixtures under tests/fixtures/ef-contract-violations/\
+    \ (populated approvedBy[], populated real-candidate signature, non-synthetic roster\
+    \ entry sans verificationRef, unsigned-stub \u2192 release-ready manifest transition)\
+    \ and tests/ef-contract-forced-empty.test.mjs asserting each fails npm run validate\
+    \ fail-closed. Backend-architect integration-owner sign-off recorded before P1-GATE1."
+  status: completed
   assigned_to:
   - general-purpose
   - backend-architect
@@ -195,13 +225,20 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: adaptive
+  started: '2026-07-22T03:54:00Z'
+  completed: '2026-07-22T04:50:00Z'
+  evidence:
+  - commit: '2028692'
+  verified_by:
+  - P1-GATE1
 - id: P1-GATE1
-  description: 'task-completion-validator gate: verify Phase 1 exit gate — all schemas
-    validate their fixtures; migration test green (5/5 wave0 states); gates registry
-    enumerates G0–G4 with owner=human and contains the A2 + A1 encodings; 4/4 seeded
-    forced-empty violations rejected; npm run check green. Scope note: karen milestone
-    sign-off (P1-GATE2) is a separate subsequent gate, not in this gate''s scope.'
-  status: pending
+  description: "task-completion-validator gate: verify Phase 1 exit gate \u2014 all\
+    \ schemas validate their fixtures; migration test green (5/5 wave0 states); gates\
+    \ registry enumerates G0\u2013G4 with owner=human and contains the A2 + A1 encodings;\
+    \ 4/4 seeded forced-empty violations rejected; npm run check green. Scope note:\
+    \ karen milestone sign-off (P1-GATE2) is a separate subsequent gate, not in this\
+    \ gate's scope."
+  status: completed
   assigned_to:
   - task-completion-validator
   dependencies:
@@ -212,26 +249,31 @@ tasks:
   - P1-T5
   - P1-T6
   - P1-T7
-  estimated_effort: —
+  estimated_effort: "\u2014"
   priority: critical
   assigned_model: sonnet
   model_effort: adaptive
+  started: '2026-07-22T04:40:00Z'
+  completed: '2026-07-22T04:50:00Z'
+  evidence:
+  - commit: 544aa0c
+  - workflow: wf_3fe92902-d3b verdict approved after 1 fix cycle
 - id: P1-GATE2
-  description: 'karen milestone review — contract sanity (P1 exit), decisions block
-    §2''s first named milestone: independently re-check against the actual diff —
-    (1) exactly ONE canonical review-record schema exists, wave0 mapped not parallel
-    (R5); (2) every forced-empty ceiling (approvedBy[], clinicalApprovers[], signature
-    slots) intact, no ceiling raised; (3) gates registry models G0–G4 as human-only
-    external gates with the A2 SPIKE-006 reconciliation recorded and zero council
-    tasks anywhere in this plan (A1); (4) no schema description or doc implies clinical
-    validity. Runs only after P1-GATE1 passes; any gap becomes a new task before wave
-    2 (P2/P3/P4) opens.'
+  description: "karen milestone review \u2014 contract sanity (P1 exit), decisions\
+    \ block \xA72's first named milestone: independently re-check against the actual\
+    \ diff \u2014 (1) exactly ONE canonical review-record schema exists, wave0 mapped\
+    \ not parallel (R5); (2) every forced-empty ceiling (approvedBy[], clinicalApprovers[],\
+    \ signature slots) intact, no ceiling raised; (3) gates registry models G0\u2013\
+    G4 as human-only external gates with the A2 SPIKE-006 reconciliation recorded\
+    \ and zero council tasks anywhere in this plan (A1); (4) no schema description\
+    \ or doc implies clinical validity. Runs only after P1-GATE1 passes; any gap becomes\
+    \ a new task before wave 2 (P2/P3/P4) opens."
   status: pending
   assigned_to:
   - karen
   dependencies:
   - P1-GATE1
-  estimated_effort: —
+  estimated_effort: "\u2014"
   priority: critical
   assigned_model: sonnet
   model_effort: adaptive
@@ -273,19 +315,19 @@ success_criteria:
     missing-field and forced-empty violations
   status: pending
 - id: SC-4
-  description: Gates registry enumerates G0–G4, each owner=human; A2 reconciliation
-    + A1 external-council note present
+  description: "Gates registry enumerates G0\u2013G4, each owner=human; A2 reconciliation\
+    \ + A1 external-council note present"
   status: pending
 - id: SC-5
   description: Anemia browser path's SPIKE-006 posture byte-untouched
   status: pending
 - id: SC-6
-  description: 'ADR-delta check: ADR-0004/0005/0006 unchanged since plan authoring
-    (any human edit → escalate before wave 2)'
+  description: "ADR-delta check: ADR-0004/0005/0006 unchanged since plan authoring\
+    \ (any human edit \u2192 escalate before wave 2)"
   status: pending
 - id: SC-7
-  description: karen contract-sanity sign-off recorded (P1-GATE2) — hard prerequisite
-    for opening P2/P3/P4
+  description: "karen contract-sanity sign-off recorded (P1-GATE2) \u2014 hard prerequisite\
+    \ for opening P2/P3/P4"
   status: pending
 files_modified:
 - schemas/review-record.schema.json
@@ -299,7 +341,7 @@ files_modified:
 - tests/ef-contract-forced-empty.test.mjs
 - tests/fixtures/**
 - .claude/worknotes/evidence-foundry-e1-v1/contracts-design.md
-progress: 33
+progress: 88
 updated: '2026-07-22'
 ---
 

@@ -3,7 +3,7 @@ title: "Implementation Plan: Evidence Foundry E1 \u2014 Review Workflow, Signed 
   \ Release, Retrospective Validation"
 schema_version: 2
 doc_type: implementation_plan
-status: draft
+status: in_progress
 created: '2026-07-21'
 updated: '2026-07-21'
 feature_slug: evidence-foundry-e1
