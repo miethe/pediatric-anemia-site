@@ -18,7 +18,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 2
+completed_tasks: 3
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -110,7 +110,7 @@ tasks:
     Exercised by a FIXTURE entry only. Negative criterion: the live ledger is empty
     and a test asserts it; tests/attestation-ledger-gate.test.mjs is unmodified and
     still passes.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -119,6 +119,10 @@ tasks:
   priority: critical
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T00:00:00Z'
+  completed: '2026-07-21T00:00:00Z'
+  evidence:
+  - note: tests/rights-clearance-positive-checks.test.mjs
 - id: EPR4-T6
   description: 'Brief shape for clinician minutes (FR-WP4-07, Should, D5): the brief
     is one screen per decision, with the decision question stated FIRST, followed
@@ -206,7 +210,7 @@ files_modified:
 - scripts/rights/build-decision-brief.mjs
 - rights/rights-ledger.json
 - tests/rights-brief-contamination.test.mjs
-progress: 33
+progress: 50
 updated: '2026-07-21'
 ---
 
