@@ -54,12 +54,15 @@ import {
   MalformedReviewIdError,
   reviewsDirFor,
   recordFilePathFor,
+  draftFilePathFor,
+  writeDraftRecordFile,
   listModuleReviewRecords,
   nextSequenceFor,
 } from '../tools/review-record/lib/store.mjs';
 import { stableStringify, canonicalRecordHash, checkModuleChainLinkage } from '../tools/review-record/lib/chain.mjs';
 import { run as runList, formatModuleState } from '../tools/review-record/lib/verbs/list.mjs';
 import { run as runRender } from '../tools/review-record/lib/verbs/render.mjs';
+import { run as runSign } from '../tools/review-record/lib/verbs/sign.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const TOOL_ROOT = path.join(REPO_ROOT, 'tools', 'review-record');
@@ -373,6 +376,150 @@ test('checkModuleChainLinkage rejects a first record whose previousRecordHash is
   assert.equal(linkage[0].ok, false);
   assert.match(linkage[0].reason, /must carry previousRecordHash: null/);
 });
+
+// -------------------------------------------------------------------------------------------
+// sign — P2-T2 fail-closed refusal (synthetic:false naming G1+G2; no --keyfile/--key/--test-keys/
+// --record seam) + static key-reading grep (FR-7/23/25, R1). P2-T1's own round-trip/F1/moduleId-
+// mismatch/missing-required-flag coverage lives in tests/ef-review-workflow.test.mjs (a sibling
+// task's file, not this one) — this file covers exactly this task's own target surfaces:
+// lib/verbs/sign.mjs and this test file.
+// -------------------------------------------------------------------------------------------
+
+const SIGN_MJS_PATH = path.join(TOOL_ROOT, 'lib', 'verbs', 'sign.mjs');
+
+/**
+ * Builds + writes a minimal, hand-shaped staged draft directly under
+ * `<root>/.review-drafts/<moduleId>/` via `lib/store.mjs`'s own `writeDraftRecordFile` — bypasses
+ * `scaffold --draft` entirely (a sibling task's target surface, not this one) since `sign` itself
+ * never consults the roster; only the draft's own `moduleId`/`synthetic`/`review_id` fields matter
+ * for the checks this task adds.
+ */
+async function writeStagedDraft(root, moduleId, reviewId, overrides = {}) {
+  const draft = {
+    schemaVersion: 1,
+    review_id: reviewId,
+    role: 'clinical-1',
+    moduleId,
+    subjectContentHash: `sha256:${'0'.repeat(64)}`,
+    previousRecordHash: null,
+    supersedes: null,
+    reviewerId: 'p2-t2-fixture-reviewer',
+    decision: 'approve',
+    rationale: 'P2-T2 sign-refusal fixture draft, structural only, no clinical claim.',
+    reviewedAt: '2026-02-15T00:00:00Z',
+    synthetic: true,
+    signature: null,
+    ...overrides,
+  };
+  return writeDraftRecordFile(root, moduleId, reviewId, draft);
+}
+
+test('sign refuses a synthetic:false draft with a message naming both G1 and G2 (FR-7, R1)', async () => {
+  const tmp = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-real-'));
+  try {
+    const moduleId = 'p2t2_real_v1';
+    const draftPath = await writeStagedDraft(tmp, moduleId, 'rr-0001-clinical-1', { synthetic: false });
+
+    await assert.rejects(
+      () => runSign({ draft: draftPath, module: moduleId, root: tmp }),
+      (err) => {
+        assert.ok(err instanceof UsageError);
+        assert.match(err.message, /\bG1\b/, 'refusal message must name G1');
+        assert.match(err.message, /\bG2\b/, 'refusal message must name G2');
+        return true;
+      },
+    );
+
+    // Never actually written -- the refusal is truly fail-closed, not a partial write.
+    assert.deepEqual(await listModuleReviewRecords(tmp, moduleId), []);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('cli.mjs (subprocess): sign on a synthetic:false draft exits non-zero with a message naming both G1 and G2', async () => {
+  const tmp = await mkdtemp(path.join(os.tmpdir(), 'ef-review-record-cli-sign-real-cli-'));
+  try {
+    const moduleId = 'p2t2_real_cli_v1';
+    const draftPath = await writeStagedDraft(tmp, moduleId, 'rr-0001-clinical-1', { synthetic: false });
+
+    const { status, stderr } = runCli(['sign', '--draft', draftPath, '--module', moduleId, '--root', tmp]);
+    assert.equal(status, EXIT_USAGE);
+    assert.match(stderr, /\bG1\b/);
+    assert.match(stderr, /\bG2\b/);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('sign refuses --record over an already-committed file (FR-25, R1)', async () => {
+  // fixture_module_v1 (tests/fixtures/ef-review-record-cli/) already carries a real committed
+  // rr-0001-clinical-1.yaml -- proving the refusal holds even when --record legitimately names a
+  // real committed file, not just an arbitrary/unresolvable id.
+  await assert.rejects(
+    () => runSign({ module: 'fixture_module_v1', root: FIXTURES_ROOT, record: 'rr-0001-clinical-1' }),
+    (err) => {
+      assert.ok(err instanceof UsageError);
+      assert.match(err.message, /--record/);
+      return true;
+    },
+  );
+});
+
+test('cli.mjs (subprocess): sign --record over a committed file is rejected, exit 1', () => {
+  const { status, stderr } = runCli([
+    'sign', '--module', 'fixture_module_v1', '--root', FIXTURES_ROOT, '--record', 'rr-0001-clinical-1',
+  ]);
+  assert.equal(status, EXIT_USAGE);
+  assert.match(stderr, /--record/);
+});
+
+test('sign refuses --keyfile/--key/--test-keys unconditionally, even with no other flags present (OQ-1, FR-7/23, R1)', async () => {
+  for (const flag of ['keyfile', 'key', 'testKeys']) {
+    await assert.rejects(
+      () => runSign({ [flag]: '/tmp/not-a-real-key' }),
+      (err) => {
+        assert.ok(err instanceof UsageError);
+        assert.match(err.message, /OQ-1/);
+        return true;
+      },
+      `expected sign to refuse --${flag} even without --draft/--module/--root`,
+    );
+  }
+});
+
+test('cli.mjs (subprocess): sign --keyfile/--key/--test-keys are each rejected, exit 1', () => {
+  for (const cliFlag of ['--keyfile', '--key', '--test-keys']) {
+    const { status, stderr } = runCli(['sign', cliFlag, '/tmp/not-a-real-key']);
+    assert.equal(status, EXIT_USAGE, `expected ${cliFlag} to exit non-zero`);
+    assert.match(stderr, /keyfile\/key-material seam/, `expected ${cliFlag}'s refusal message`);
+  }
+});
+
+test(
+  'lib/verbs/sign.mjs contains zero key-reading code -- no fs.readFile call beyond the staged ' +
+    'draft itself, no environment-variable read (static grep, FR-7/23, R1)',
+  async () => {
+    const raw = await readFile(SIGN_MJS_PATH, 'utf8');
+    // Strip BOTH // line comments and /* ... */ block comments (this file carries both styles)
+    // before scanning -- prose explaining a guardrail must never trip a grep test looking for
+    // actual code.
+    const code = stripLineComments(raw.replace(/\/\*[\s\S]*?\*\//g, ''));
+
+    assert.doesNotMatch(code, /process\.env/, 'sign.mjs must never read any environment variable');
+    assert.doesNotMatch(code, /readFileSync/, 'sign.mjs must never use a synchronous file-read primitive');
+    assert.doesNotMatch(code, /createReadStream/, 'sign.mjs must never open a raw file read stream');
+    assert.doesNotMatch(code, /\brequire\(/, 'sign.mjs is ESM-only -- no CommonJS require() escape hatch');
+
+    const readFileCallCount = (code.match(/\breadFile\(/g) || []).length;
+    assert.equal(
+      readFileCallCount,
+      1,
+      'sign.mjs must call readFile() exactly once -- to read the staged --draft file itself, never ' +
+        'a key file (a second call site would be new, unreviewed key-reading capability)',
+    );
+  },
+);
 
 // -------------------------------------------------------------------------------------------
 // Zero network / zero model-invocation, structurally (static) and dynamically (patched fetch)
