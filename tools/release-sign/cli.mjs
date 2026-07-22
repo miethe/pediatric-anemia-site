@@ -17,8 +17,9 @@
 //               --dry-run mode is the only path any automated check may exercise (OQ-6).
 //               (Implemented P3-T2.)
 //   verify    — fail-closed structural + cryptographic verification of a signed/dry-run candidate
-//               against the registry (FR-13). (P3-T3, not yet implemented — this verb currently
-//               fails closed with a NotImplementedError)
+//               against the registry, with a documented 5-class exit-code taxonomy (FR-13). The
+//               sole CI/agent-reachable surface of this tool (ruling R3 — CI can never sign).
+//               (Implemented P3-T3.)
 //
 // node:crypto only — zero new crypto dependencies (decisions block Risk 6). Zero network calls,
 // zero LLM/generative-model invocations, ever. `tools/release-sign` never authors clinical
@@ -55,16 +56,23 @@ Verbs:
       Append a release candidate to the append-only registry. (P3-T4, not yet implemented)
 
   sign --candidate <pack dir with release-manifest.unsigned.json> --dry-run \
-       [--key-id <label>] [--out <path>] [--out-public-key <path>]
+       [--key-id <label>] [--out <path>] [--out-public-key <path>] [--out-candidate <path>]
   sign --candidate <pack dir with release-manifest.unsigned.json> \
-       --key <path outside repo> --key-id <id> [--out <path>] [--out-public-key <path>]
+       --key <path outside repo> --key-id <id> [--out <path>] [--out-public-key <path>] \
+       [--out-candidate <path>]
       Detached Ed25519 signature over the manifest digest. Designed for human offline execution
       (real mode, gate G2, never exercised by any automated check); --dry-run (ephemeral in-memory
       keypair, TESTKEY-forced keyId) is the only mode any automated check may invoke (OQ-6).
+      --out-candidate persists this tool's own full reporting object (signature + signerPublicKey +
+      manifest, alongside packDir/manifestPath/preimageSha256/dryRun) — the exact self-contained
+      shape "verify --candidate" (below) consumes.
 
-  verify --candidate <manifest> --registry releases/registry.json
-      Fail-closed verification against a documented exit-code taxonomy (FR-13). (P3-T3, not yet
-      implemented)
+  verify --candidate <sign's reporting-object JSON, e.g. a sign --out-candidate output file> \
+         --registry <releases/registry.json-shaped file>
+      Fail-closed verification against a documented 5-class exit-code taxonomy (FR-13): byte drift,
+      digest mismatch, unknown keyId, registry inconsistency, TESTKEY- identity on a non-dry-run
+      candidate. Non-zero exit produces no partial output. This is the sole CI/agent-reachable
+      surface of this tool (ruling R3 — CI can never sign). See README.md's "Exit codes" table.
 
 Global:
   -h, --help    Show this help and exit 0.

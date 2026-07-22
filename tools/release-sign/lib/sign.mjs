@@ -142,9 +142,11 @@ function resolvePackDir(options) {
  * @param {string | undefined} ctx.out optional `--out` path to also persist the signed candidate to
  * @param {string | undefined} ctx.outPublicKey optional `--out-public-key` path to also persist the
  *   ephemeral signer's public key PEM to
+ * @param {string | undefined} ctx.outCandidate optional `--out-candidate` path to also persist this
+ *   tool's own full reporting object to — the shape `verify` (P3-T3) consumes.
  * @returns {Promise<object>} see `finalizeSignedCandidate`
  */
-async function signDryRun({ packDir, manifestPath, bytes, sha256, keyIdHint, out, outPublicKey }) {
+async function signDryRun({ packDir, manifestPath, bytes, sha256, keyIdHint, out, outPublicKey, outCandidate }) {
   // Fresh, in-memory-only Ed25519 keypair. `privateKey` is used exactly once, immediately below,
   // and then falls out of scope — never assigned to any field this function returns, never
   // written to disk, never logged. Only the PUBLIC half (non-secret by definition) is exported and
@@ -158,6 +160,7 @@ async function signDryRun({ packDir, manifestPath, bytes, sha256, keyIdHint, out
 
   return finalizeSignedCandidate({
     packDir, manifestPath, bytes, sha256, dryRun: true, keyId, value, publicKeyPem, out, outPublicKey,
+    outCandidate,
   });
 }
 
@@ -175,9 +178,10 @@ async function signDryRun({ packDir, manifestPath, bytes, sha256, keyIdHint, out
  * @param {string | boolean | undefined} ctx.keyId raw `--key-id` CLI value
  * @param {string | undefined} ctx.out
  * @param {string | undefined} ctx.outPublicKey
+ * @param {string | undefined} ctx.outCandidate
  * @returns {Promise<object>}
  */
-async function signReal({ packDir, manifestPath, bytes, sha256, keyPath, keyId, out, outPublicKey }) {
+async function signReal({ packDir, manifestPath, bytes, sha256, keyPath, keyId, out, outPublicKey, outCandidate }) {
   if (typeof keyPath !== 'string' || keyPath.length === 0) {
     throw new UsageError(
       'real (non-dry-run) signing requires --key <path to an operator-supplied Ed25519 private-key ' +
@@ -244,6 +248,7 @@ async function signReal({ packDir, manifestPath, bytes, sha256, keyPath, keyId, 
   const publicKeyPem = createPublicKey(privateKey).export({ type: 'spki', format: 'pem' });
   return finalizeSignedCandidate({
     packDir, manifestPath, bytes, sha256, dryRun: false, keyId, value, publicKeyPem, out, outPublicKey,
+    outCandidate,
   });
 }
 
@@ -259,10 +264,11 @@ async function signReal({ packDir, manifestPath, bytes, sha256, keyPath, keyId, 
  * @returns {Promise<{schemaVersion: string, packDir: string, manifestPath: string,
  *   preimageSha256: string, dryRun: boolean, signature: {algorithm: string, keyId: string, value: string},
  *   signerPublicKey: {algorithm: string, format: string, value: string}, manifest: object,
- *   outPath?: string, outPublicKeyPath?: string}>}
+ *   outPath?: string, outPublicKeyPath?: string, outCandidatePath?: string}>}
  */
 async function finalizeSignedCandidate({
   packDir, manifestPath, bytes, sha256, dryRun, keyId, value, publicKeyPem, out, outPublicKey,
+  outCandidate,
 }) {
   const unsignedManifest = JSON.parse(bytes.toString('utf8'));
   const signature = { algorithm: ED25519_ALGORITHM, keyId, value };
@@ -319,6 +325,27 @@ async function finalizeSignedCandidate({
     result.outPublicKeyPath = resolvedOutPublicKey;
   }
 
+  if (outCandidate) {
+    // Persists this tool's OWN full reporting object (schemaVersion/packDir/manifestPath/
+    // preimageSha256/dryRun/signature/signerPublicKey/manifest) — never just the schema-conformant
+    // `manifest` field `--out` writes. `verify` (P3-T3) consumes exactly this shape: the
+    // self-contained candidate document carrying the (non-secret) public key alongside the
+    // signature is what lets a later, separate `verify` process cryptographically check a
+    // signature produced by a key nobody kept (see this file's own README section on
+    // `signerPublicKey`). `outCandidatePath` is set on `result` itself, so this write happens
+    // strictly after `result` above was assembled and cannot be reflected inside its own output.
+    const resolvedOutCandidate = path.resolve(outCandidate);
+    if (resolvedOutCandidate === path.resolve(manifestPath)) {
+      throw new UsageError(
+        `--out-candidate must not point at the unsigned source manifest itself (${manifestPath}) — ` +
+          'tools/release-sign never overwrites release-manifest.unsigned.json in place; write the ' +
+          'candidate document to a distinct path.',
+      );
+    }
+    result.outCandidatePath = resolvedOutCandidate;
+    await writeFile(resolvedOutCandidate, `${JSON.stringify(result, null, 2)}\n`, 'utf8');
+  }
+
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
   return result;
 }
@@ -338,6 +365,10 @@ async function finalizeSignedCandidate({
  * @param {string} [options.outPublicKey] optional path to also persist the signer's public key
  *   (SPKI PEM) to — public keys are non-secret; this is purely a convenience for a later, separate
  *   `verify` invocation, never required for `sign` itself to succeed.
+ * @param {string} [options.outCandidate] optional path to also persist this tool's own full
+ *   reporting object (packDir/manifestPath/preimageSha256/dryRun/signature/signerPublicKey/
+ *   manifest) to — the exact self-contained shape `verify --candidate` (P3-T3) consumes. Distinct
+ *   from `--out`, which writes ONLY the schema-conformant `manifest` field.
  * @returns {Promise<object>}
  */
 export async function run(options = {}) {
@@ -357,6 +388,7 @@ export async function run(options = {}) {
     return signDryRun({
       packDir, manifestPath, bytes, sha256,
       keyIdHint: options.keyId, out: options.out, outPublicKey: options.outPublicKey,
+      outCandidate: options.outCandidate,
     });
   }
 
@@ -369,5 +401,6 @@ export async function run(options = {}) {
     keyId: options.keyId,
     out: options.out,
     outPublicKey: options.outPublicKey,
+    outCandidate: options.outCandidate,
   });
 }

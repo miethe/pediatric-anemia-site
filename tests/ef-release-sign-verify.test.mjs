@@ -1,9 +1,9 @@
 // tests/ef-release-sign-verify.test.mjs — evidence-foundry-e1 Phase 3 signed-release machinery.
 //
-// P3-T2 (this file's current scope): Ed25519 `sign` verb, human-offline design, dry-run only in
-// E1 (OQ-6), FR-12/FR-15 (ruling R3). P3-T3 extends this SAME file with `verify`'s own fail-closed
-// exit-code taxonomy tests (dependency-ordered — verify signs candidates with this file's own
-// dry-run helper before checking them).
+// P3-T2: Ed25519 `sign` verb, human-offline design, dry-run only in E1 (OQ-6), FR-12/FR-15
+// (ruling R3). P3-T3 extends this SAME file with `verify`'s own fail-closed 5-class exit-code
+// taxonomy tests (FR-13) — verify signs candidates with this file's own dry-run helper before
+// checking them, per this file's original P3-T2-era forward note.
 //
 // P3-T2 acceptance criteria exercised below:
 //   1. `--dry-run` signing produces a structurally valid, cryptographically correct detached
@@ -22,19 +22,44 @@
 //      schema-forced-empty signature slot on a real candidate, by construction.
 //   6. No key-generation verb exists in this CLI at all (`--help` lists exactly the 4 documented
 //      verbs) — "no key-generation verb writes anything to the tree" holds trivially.
+//
+// P3-T3 acceptance criteria exercised in the "verify" section below (FR-13):
+//   7. `verify --candidate <candidate.json> --registry <registry.json>` succeeds (exit 0) on a
+//      genuinely valid dry-run candidate registered consistently — proving the happy path works
+//      end-to-end, not just the 5 failure paths.
+//   8. Each of the 5 documented failure classes — (1) byte drift, (2) digest mismatch,
+//      (3) unknown keyId, (4) registry inconsistency, (5) TESTKEY- on a non-dry-run candidate —
+//      is independently reachable via its own seeded tamper fixture, fails closed with the
+//      DISTINCT documented exit code, and produces ZERO stdout output (no partial output).
+//   9. `verify` never imports a signing primitive from `node:crypto` — structurally it can only
+//      ever check a signature, never produce one (ruling R3: CI/agents can verify but never sign).
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { verify as cryptoVerify, createPublicKey, generateKeyPairSync } from 'node:crypto';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { run as runManifest } from '../tools/release-sign/lib/manifest.mjs';
 import { run as runSign, signEd25519, forceTestKeyId, TESTKEY_PREFIX } from '../tools/release-sign/lib/sign.mjs';
+import { run as runVerify } from '../tools/release-sign/lib/verify.mjs';
 import { readCanonicalManifestBytes } from '../tools/release-sign/lib/canonical-bytes.mjs';
-import { UsageError } from '../tools/release-sign/lib/errors.mjs';
+import {
+  UsageError,
+  CandidateByteDriftError,
+  DigestMismatchError,
+  UnknownKeyIdError,
+  RegistryInconsistencyError,
+  TestKeyOnRealCandidateError,
+  EXIT_OK,
+  EXIT_BYTE_DRIFT,
+  EXIT_DIGEST_MISMATCH,
+  EXIT_UNKNOWN_KEYID,
+  EXIT_REGISTRY_INCONSISTENCY,
+  EXIT_TESTKEY_ON_REAL,
+} from '../tools/release-sign/lib/errors.mjs';
 import { main as cliMain } from '../tools/release-sign/cli.mjs';
 import { validate } from '../scripts/lib/json-schema-lite.mjs';
 
@@ -401,5 +426,384 @@ test('--out pointed at the unsigned source manifest itself is rejected (never ov
     );
   } finally {
     await rm(packDir, { recursive: true, force: true });
+  }
+});
+
+test('--out-candidate persists sign\'s own full reporting object (packDir/manifestPath/preimageSha256/dryRun/signature/signerPublicKey/manifest) — the shape "verify" consumes', async () => {
+  const packDir = await buildFreshPack();
+  const workDir = await mkdtemp(path.join(os.tmpdir(), 'ef-release-sign-out-candidate-'));
+  try {
+    const outCandidatePath = path.join(workDir, 'candidate.json');
+    const { result: signed } = await withCapturedStdout(() =>
+      runSign({ candidate: packDir, dryRun: true, keyId: 'ef-release-p3t3-out-candidate', outCandidate: outCandidatePath }),
+    );
+    assert.equal(signed.outCandidatePath, outCandidatePath);
+    const written = await readJson(outCandidatePath);
+    assert.deepEqual(written, signed);
+    assert.ok(written.signerPublicKey && written.signerPublicKey.value, 'the persisted candidate must carry signerPublicKey');
+    assert.equal(written.packDir, packDir);
+  } finally {
+    await rm(packDir, { recursive: true, force: true });
+    await rm(workDir, { recursive: true, force: true });
+  }
+});
+
+// =================================================================================================
+// P3-T3 — `verify` verb: fail-closed 5-class exit-code taxonomy (FR-13). `verify` is the sole
+// CI/agent-reachable surface of this tool (ruling R3 — CI can never sign).
+// =================================================================================================
+
+/**
+ * Builds a fresh, genuinely valid dry-run candidate (signed + persisted via --out-candidate) and a
+ * matching, schema-valid registry entry for it. The happy-path fixture every failure-class test
+ * below tampers exactly one thing away from.
+ */
+async function buildVerifiableFixture({ keyId = 'ef-release-p3t3-fixture' } = {}) {
+  const packDir = await buildFreshPack();
+  const workDir = await mkdtemp(path.join(os.tmpdir(), 'ef-release-verify-'));
+  const candidatePath = path.join(workDir, 'candidate.json');
+  const registryPath = path.join(workDir, 'registry.json');
+
+  const { result: signed } = await withCapturedStdout(() =>
+    runSign({ candidate: packDir, dryRun: true, keyId, outCandidate: candidatePath }),
+  );
+
+  const registry = {
+    schemaVersion: 1,
+    entries: [
+      {
+        version: signed.manifest.packVersion,
+        moduleId: signed.manifest.moduleId,
+        packDigest: `sha256:${'1'.repeat(64)}`,
+        manifestDigest: signed.preimageSha256,
+        signature: null,
+        signedAt: null,
+        supersedes: null,
+        withdrawalState: 'none',
+        withdrawnAt: null,
+        withdrawalReason: null,
+      },
+    ],
+  };
+  await writeFile(registryPath, `${JSON.stringify(registry, null, 2)}\n`, 'utf8');
+
+  return { packDir, workDir, candidatePath, registryPath, signed, registry };
+}
+
+async function cleanupFixture(fixture) {
+  await rm(fixture.packDir, { recursive: true, force: true });
+  await rm(fixture.workDir, { recursive: true, force: true });
+}
+
+test('P3-T3 AC7: verify succeeds (exit 0) on a genuine, consistently registered dry-run candidate', async () => {
+  const fixture = await buildVerifiableFixture();
+  try {
+    const { result, output } = await withCapturedStdout(() =>
+      runVerify({ candidate: fixture.candidatePath, registry: fixture.registryPath }),
+    );
+    assert.equal(result.verified, true);
+    assert.equal(result.dryRun, true);
+    assert.match(result.keyId, /^TESTKEY-/);
+    assert.equal(result.moduleId, fixture.signed.manifest.moduleId);
+    assert.equal(result.packVersion, fixture.signed.manifest.packVersion);
+    assert.equal(result.preimageSha256, fixture.signed.preimageSha256);
+    assert.match(output, /"verified": true/);
+
+    const { result: exitCode, output: cliOutput } = await withCapturedStdout(() =>
+      cliMain(['verify', '--candidate', fixture.candidatePath, '--registry', fixture.registryPath]),
+    );
+    assert.equal(exitCode, EXIT_OK);
+    assert.match(cliOutput, /"verified": true/);
+  } finally {
+    await cleanupFixture(fixture);
+  }
+});
+
+test('P3-T3 AC8 class (1): byte drift vs canonical bytes — a pack manifest tampered after signing fails closed with EXIT_BYTE_DRIFT and zero stdout output', async () => {
+  const fixture = await buildVerifiableFixture();
+  try {
+    const { manifestPath } = await readCanonicalManifestBytes(fixture.packDir);
+    const original = await readFile(manifestPath, 'utf8');
+    await writeFile(manifestPath, original.replace('"schemaVersion"', '"schemaVersionTampered"'), 'utf8');
+
+    await assert.rejects(
+      () => runVerify({ candidate: fixture.candidatePath, registry: fixture.registryPath }),
+      (err) => {
+        assert.ok(err instanceof CandidateByteDriftError);
+        assert.equal(err.exitCode, EXIT_BYTE_DRIFT);
+        return true;
+      },
+    );
+
+    const { result: exitCode, output } = await withCapturedStdout(() =>
+      cliMain(['verify', '--candidate', fixture.candidatePath, '--registry', fixture.registryPath]),
+    );
+    assert.equal(exitCode, EXIT_BYTE_DRIFT);
+    assert.equal(output, '', 'a failed verify must produce zero stdout output — no partial output on non-zero exit');
+  } finally {
+    await cleanupFixture(fixture);
+  }
+});
+
+test('P3-T3 AC8 class (2): digest mismatch vs manifest — a tampered signature value fails closed with EXIT_DIGEST_MISMATCH and zero stdout output', async () => {
+  const fixture = await buildVerifiableFixture();
+  try {
+    const candidateRaw = JSON.parse(await readFile(fixture.candidatePath, 'utf8'));
+    const original = candidateRaw.signature.value;
+    candidateRaw.signature.value = original[0] === 'A' ? `B${original.slice(1)}` : `A${original.slice(1)}`;
+    await writeFile(fixture.candidatePath, `${JSON.stringify(candidateRaw, null, 2)}\n`, 'utf8');
+
+    await assert.rejects(
+      () => runVerify({ candidate: fixture.candidatePath, registry: fixture.registryPath }),
+      (err) => {
+        assert.ok(err instanceof DigestMismatchError);
+        assert.equal(err.exitCode, EXIT_DIGEST_MISMATCH);
+        return true;
+      },
+    );
+
+    const { result: exitCode, output } = await withCapturedStdout(() =>
+      cliMain(['verify', '--candidate', fixture.candidatePath, '--registry', fixture.registryPath]),
+    );
+    assert.equal(exitCode, EXIT_DIGEST_MISMATCH);
+    assert.equal(output, '');
+  } finally {
+    await cleanupFixture(fixture);
+  }
+});
+
+test('P3-T3 AC8 class (3a): unknown keyId — a dry-run candidate whose keyId lost the TESTKEY- marker fails closed with EXIT_UNKNOWN_KEYID', async () => {
+  const fixture = await buildVerifiableFixture();
+  try {
+    const candidateRaw = JSON.parse(await readFile(fixture.candidatePath, 'utf8'));
+    assert.match(candidateRaw.signature.keyId, /^TESTKEY-/); // sanity: starts out valid
+    // keyId is metadata, not signed content — stripping it leaves the signature itself
+    // cryptographically valid, so this isolates the key-identity check specifically.
+    candidateRaw.signature.keyId = candidateRaw.signature.keyId.replace(/^TESTKEY-/, '');
+    await writeFile(fixture.candidatePath, `${JSON.stringify(candidateRaw, null, 2)}\n`, 'utf8');
+
+    await assert.rejects(
+      () => runVerify({ candidate: fixture.candidatePath, registry: fixture.registryPath }),
+      (err) => {
+        assert.ok(err instanceof UnknownKeyIdError);
+        assert.equal(err.exitCode, EXIT_UNKNOWN_KEYID);
+        return true;
+      },
+    );
+
+    const { result: exitCode, output } = await withCapturedStdout(() =>
+      cliMain(['verify', '--candidate', fixture.candidatePath, '--registry', fixture.registryPath]),
+    );
+    assert.equal(exitCode, EXIT_UNKNOWN_KEYID);
+    assert.equal(output, '');
+  } finally {
+    await cleanupFixture(fixture);
+  }
+});
+
+test('P3-T3 AC8 class (3b): unknown keyId — a non-dry-run candidate has no signing-custodian roster to check against in E1 (gate G2 has not happened), fails closed with EXIT_UNKNOWN_KEYID', async () => {
+  const fixture = await buildVerifiableFixture();
+  try {
+    const candidateRaw = JSON.parse(await readFile(fixture.candidatePath, 'utf8'));
+    candidateRaw.dryRun = false;
+    candidateRaw.signature.keyId = 'real-custodian-2026'; // NOT TESTKEY- prefixed
+    await writeFile(fixture.candidatePath, `${JSON.stringify(candidateRaw, null, 2)}\n`, 'utf8');
+
+    await assert.rejects(
+      () => runVerify({ candidate: fixture.candidatePath, registry: fixture.registryPath }),
+      (err) => {
+        assert.ok(err instanceof UnknownKeyIdError);
+        assert.equal(err.exitCode, EXIT_UNKNOWN_KEYID);
+        assert.doesNotMatch(err.message, /TESTKEY-.*prefix/); // distinct from class (5)'s message
+        return true;
+      },
+    );
+  } finally {
+    await cleanupFixture(fixture);
+  }
+});
+
+test('P3-T3 AC8 class (4a): registry inconsistency — a registered manifestDigest that disagrees with the candidate fails closed with EXIT_REGISTRY_INCONSISTENCY and zero stdout output', async () => {
+  const fixture = await buildVerifiableFixture();
+  try {
+    const registry = JSON.parse(await readFile(fixture.registryPath, 'utf8'));
+    registry.entries[0].manifestDigest = `sha256:${'9'.repeat(64)}`;
+    await writeFile(fixture.registryPath, `${JSON.stringify(registry, null, 2)}\n`, 'utf8');
+
+    await assert.rejects(
+      () => runVerify({ candidate: fixture.candidatePath, registry: fixture.registryPath }),
+      (err) => {
+        assert.ok(err instanceof RegistryInconsistencyError);
+        assert.equal(err.exitCode, EXIT_REGISTRY_INCONSISTENCY);
+        return true;
+      },
+    );
+
+    const { result: exitCode, output } = await withCapturedStdout(() =>
+      cliMain(['verify', '--candidate', fixture.candidatePath, '--registry', fixture.registryPath]),
+    );
+    assert.equal(exitCode, EXIT_REGISTRY_INCONSISTENCY);
+    assert.equal(output, '');
+  } finally {
+    await cleanupFixture(fixture);
+  }
+});
+
+test("P3-T3 AC8 class (4b): registry inconsistency — no entry at all for the candidate's module/version fails closed with EXIT_REGISTRY_INCONSISTENCY", async () => {
+  const fixture = await buildVerifiableFixture();
+  try {
+    const emptyRegistry = { schemaVersion: 1, entries: [] };
+    await writeFile(fixture.registryPath, `${JSON.stringify(emptyRegistry, null, 2)}\n`, 'utf8');
+
+    await assert.rejects(
+      () => runVerify({ candidate: fixture.candidatePath, registry: fixture.registryPath }),
+      (err) => {
+        assert.ok(err instanceof RegistryInconsistencyError);
+        assert.equal(err.exitCode, EXIT_REGISTRY_INCONSISTENCY);
+        return true;
+      },
+    );
+  } finally {
+    await cleanupFixture(fixture);
+  }
+});
+
+test("P3-T3 AC8 class (4c): registry inconsistency — a schema-invalid registry document (extra field) fails closed with EXIT_REGISTRY_INCONSISTENCY", async () => {
+  const fixture = await buildVerifiableFixture();
+  try {
+    const registry = JSON.parse(await readFile(fixture.registryPath, 'utf8'));
+    registry.entries[0].reviewerId = 'not-a-legal-field'; // additionalProperties: false
+    await writeFile(fixture.registryPath, `${JSON.stringify(registry, null, 2)}\n`, 'utf8');
+
+    await assert.rejects(
+      () => runVerify({ candidate: fixture.candidatePath, registry: fixture.registryPath }),
+      (err) => {
+        assert.ok(err instanceof RegistryInconsistencyError);
+        assert.equal(err.exitCode, EXIT_REGISTRY_INCONSISTENCY);
+        return true;
+      },
+    );
+  } finally {
+    await cleanupFixture(fixture);
+  }
+});
+
+test('P3-T3 AC8 class (5): TESTKEY- identity on a non-dry-run candidate — the release-path test-key leak — fails closed with EXIT_TESTKEY_ON_REAL and zero stdout output', async () => {
+  const fixture = await buildVerifiableFixture();
+  try {
+    const candidateRaw = JSON.parse(await readFile(fixture.candidatePath, 'utf8'));
+    assert.match(candidateRaw.signature.keyId, /^TESTKEY-/);
+    // keyId (still TESTKEY--prefixed) is left untouched — only dryRun flips to false, simulating a
+    // candidate document laundered to look like a real release while still carrying the ephemeral
+    // test-key marker. The signature itself remains cryptographically valid throughout.
+    candidateRaw.dryRun = false;
+    await writeFile(fixture.candidatePath, `${JSON.stringify(candidateRaw, null, 2)}\n`, 'utf8');
+
+    await assert.rejects(
+      () => runVerify({ candidate: fixture.candidatePath, registry: fixture.registryPath }),
+      (err) => {
+        assert.ok(err instanceof TestKeyOnRealCandidateError);
+        assert.equal(err.exitCode, EXIT_TESTKEY_ON_REAL);
+        assert.match(err.message, /TESTKEY-/);
+        return true;
+      },
+    );
+
+    const { result: exitCode, output } = await withCapturedStdout(() =>
+      cliMain(['verify', '--candidate', fixture.candidatePath, '--registry', fixture.registryPath]),
+    );
+    assert.equal(exitCode, EXIT_TESTKEY_ON_REAL);
+    assert.equal(output, '');
+  } finally {
+    await cleanupFixture(fixture);
+  }
+});
+
+test('P3-T3: the 5 documented failure-class exit codes (plus OK and USAGE) are all pairwise distinct — README table has no collisions', () => {
+  const codes = [
+    EXIT_OK, 1 /* EXIT_USAGE */, EXIT_BYTE_DRIFT, EXIT_DIGEST_MISMATCH,
+    EXIT_UNKNOWN_KEYID, EXIT_REGISTRY_INCONSISTENCY, EXIT_TESTKEY_ON_REAL,
+  ];
+  assert.equal(new Set(codes).size, codes.length);
+});
+
+test('P3-T3 AC9: verify.mjs structurally cannot sign — it never references a node:crypto signing primitive (ruling R3: verify-only is the CI/agent-reachable surface)', async () => {
+  const verifySourcePath = path.join(REPO_ROOT, 'tools', 'release-sign', 'lib', 'verify.mjs');
+  const source = await readFile(verifySourcePath, 'utf8');
+  for (const forbidden of ['generateKeyPairSync', 'createPrivateKey', 'cryptoSign', 'signEd25519']) {
+    assert.ok(!source.includes(forbidden), `verify.mjs must never reference "${forbidden}"`);
+  }
+  const importLine = source.split('\n').find((line) => line.includes("from 'node:crypto'"));
+  assert.ok(importLine, 'expected exactly one node:crypto import line');
+  assert.match(importLine, /verify as cryptoVerify/);
+  assert.match(importLine, /createPublicKey/);
+});
+
+test('P3-T3: verify fails closed (UsageError, exit 1) on a missing --candidate/--registry path, an omitted flag, or a structurally malformed candidate document', async () => {
+  const fixture = await buildVerifiableFixture();
+  try {
+    await assert.rejects(
+      () => runVerify({ candidate: path.join(fixture.workDir, 'does-not-exist.json'), registry: fixture.registryPath }),
+      UsageError,
+    );
+    await assert.rejects(
+      () => runVerify({ candidate: fixture.candidatePath, registry: path.join(fixture.workDir, 'does-not-exist.json') }),
+      UsageError,
+    );
+    await assert.rejects(() => runVerify({ registry: fixture.registryPath }), UsageError);
+    await assert.rejects(() => runVerify({ candidate: fixture.candidatePath }), UsageError);
+    await assert.rejects(() => runVerify({}), UsageError);
+
+    const malformedPath = path.join(fixture.workDir, 'malformed-candidate.json');
+    await writeFile(malformedPath, JSON.stringify({ notACandidate: true }), 'utf8');
+    await assert.rejects(() => runVerify({ candidate: malformedPath, registry: fixture.registryPath }), UsageError);
+
+    const notJsonPath = path.join(fixture.workDir, 'not-json.json');
+    await writeFile(notJsonPath, '{ this is not json', 'utf8');
+    await assert.rejects(() => runVerify({ candidate: notJsonPath, registry: fixture.registryPath }), UsageError);
+
+    const { result: exitCode } = await withCapturedStdout(() => cliMain(['verify']));
+    assert.equal(exitCode, 1);
+  } finally {
+    await cleanupFixture(fixture);
+  }
+});
+
+test('P3-T3 (P3-GATE precursor): two independent --dry-run sign->verify roundtrips of the SAME pack each independently verify — byte-stable preimage, independently valid signatures across 2 runs', async () => {
+  const packDir = await buildFreshPack();
+  const workDir = await mkdtemp(path.join(os.tmpdir(), 'ef-release-verify-roundtrip-'));
+  try {
+    let firstPreimage;
+    for (const label of ['run-a', 'run-b']) {
+      const candidatePath = path.join(workDir, `${label}-candidate.json`);
+      const registryPath = path.join(workDir, `${label}-registry.json`);
+      const { result: signed } = await withCapturedStdout(() =>
+        runSign({ candidate: packDir, dryRun: true, keyId: label, outCandidate: candidatePath }),
+      );
+      firstPreimage ??= signed.preimageSha256;
+      assert.equal(signed.preimageSha256, firstPreimage, 'the same pack must yield a byte-stable preimage across independent sign runs');
+
+      const registryDoc = {
+        schemaVersion: 1,
+        entries: [{
+          version: signed.manifest.packVersion,
+          moduleId: signed.manifest.moduleId,
+          packDigest: `sha256:${'1'.repeat(64)}`,
+          manifestDigest: signed.preimageSha256,
+          signature: null, signedAt: null, supersedes: null,
+          withdrawalState: 'none', withdrawnAt: null, withdrawalReason: null,
+        }],
+      };
+      await writeFile(registryPath, `${JSON.stringify(registryDoc, null, 2)}\n`, 'utf8');
+
+      const { result } = await withCapturedStdout(() =>
+        runVerify({ candidate: candidatePath, registry: registryPath }),
+      );
+      assert.equal(result.verified, true);
+      assert.equal(result.preimageSha256, signed.preimageSha256);
+    }
+  } finally {
+    await rm(packDir, { recursive: true, force: true });
+    await rm(workDir, { recursive: true, force: true });
   }
 });

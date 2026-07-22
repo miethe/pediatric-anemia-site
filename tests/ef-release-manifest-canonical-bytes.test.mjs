@@ -257,16 +257,20 @@ test('manifest verb fails closed (UsageError) when --pack has no release-manifes
 // tests/ef-release-sign-verify.test.mjs for `sign`'s own full P3-T2 acceptance-criteria coverage.
 // =================================================================================================
 
-test('register/verify verbs are dispatchable but currently fail closed with NotImplementedError (P3-T3/T4 scaffold); sign is implemented (P3-T2) and fails closed with its own UsageError on missing args', async () => {
+test('register verb is dispatchable but currently fails closed with NotImplementedError (P3-T4 scaffold); sign (P3-T2) and verify (P3-T3) are implemented and fail closed with their own UsageError on missing args', async () => {
   await assert.rejects(() => runRegister({}), NotImplementedError);
   await assert.rejects(() => runSign({}), UsageError);
-  await assert.rejects(() => runVerify({}), NotImplementedError);
+  // verify (P3-T3, FR-13) is implemented: an empty options object is a malformed invocation
+  // (missing --candidate/--registry), not the unimplemented-verb stub — see
+  // tests/ef-release-sign-verify.test.mjs for verify's own full 5-class exit-code taxonomy suite.
+  await assert.rejects(() => runVerify({}), UsageError);
+  await assert.rejects(() => runVerify({}), (err) => !(err instanceof NotImplementedError));
 });
 
-test('the CLI dispatches register/sign/verify to their stubs and maps NotImplementedError to exit 1', async () => {
+test('the CLI dispatches register/sign/verify with no args to exit 1 — register via NotImplementedError (P3-T4 scaffold), sign/verify via their own UsageError (missing required flags)', async () => {
   for (const verb of ['register', 'sign', 'verify']) {
     const { result: exitCode } = await withCapturedStdout(() => cliMain([verb]));
-    assert.equal(exitCode, 1, `${verb} must fail closed with exit 1 while unimplemented`);
+    assert.equal(exitCode, 1, `${verb} must fail closed with exit 1 on a bare invocation`);
   }
 });
 

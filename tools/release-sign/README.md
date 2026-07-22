@@ -1,7 +1,7 @@
 # `tools/release-sign` — signed-release manifest / registry / sign / verify tooling
 
-**Status**: `manifest` (P3-T1) and `sign` (P3-T2) are implemented; `register`/`verify` are
-structurally dispatched but not yet implemented (P3-T3/T4). **Structural validity produced by
+**Status**: `manifest` (P3-T1), `sign` (P3-T2), and `verify` (P3-T3) are implemented; `register` is
+structurally dispatched but not yet implemented (P3-T4). **Structural validity produced by
 this tool never implies clinical validity, safety, or release authorization.** No signature
 minted by this tool (dry-run or otherwise) confers clinical standing — see
 `docs/adr/0005-kb-serialization-signing-key-custody.md` and the forthcoming
@@ -45,8 +45,8 @@ impossible for them to diverge from E0's output by convention alone.
 | `lib/manifest.mjs` | `manifest` | Locates or builds a pack's manifest (delegating construction to E0's `propose` verb, never re-implementing it) and reports its canonical signing preimage as a small "release-candidate hash manifest" summary object. **Implemented in P3-T1.** |
 | `lib/registry.mjs` | `register` | Appends a release candidate to the append-only `releases/registry.json` (FR-14, OQ-4). Rejects any mutation/removal of an existing entry. **Not yet implemented — P3-T4.** |
 | `lib/sign.mjs` | `sign` | Detached Ed25519 signature over the manifest digest (FR-12/FR-15, ruling R3). Designed for human offline execution at signing-ceremony time (gate G2, real mode, never exercised by any automated check in E1); carries an OQ-6 `--dry-run` mode (ephemeral in-memory keypair, `TESTKEY-`-forced `keyId`, private key discarded at process exit) that is the only path any automated check may invoke. **Implemented in P3-T2.** |
-| `lib/verify.mjs` | `verify` | Fail-closed verification of a signed/dry-run candidate against the registry, with a documented 5-class exit-code taxonomy (FR-13). The sole CI/agent-reachable surface of this tool — CI can never sign (ruling R3). **Not yet implemented — P3-T3.** |
-| `lib/errors.mjs` | *(shared, not a verb)* | `ReleaseSignError` taxonomy scaffold (`0` OK / `1` USAGE today; P3-T3 extends this with `verify`'s own 5 documented failure-class codes). `GoldenDriftError` — a signing preimage disagreeing with a pinned golden-bytes fixture; never silently caught and re-baselined. `NotImplementedError` — the P3-T2..T4 stub marker. |
+| `lib/verify.mjs` | `verify` | Fail-closed verification of a signed/dry-run candidate against the registry, with a documented 5-class exit-code taxonomy (FR-13). The sole CI/agent-reachable surface of this tool — CI can never sign (ruling R3). **Implemented in P3-T3.** |
+| `lib/errors.mjs` | *(shared, not a verb)* | `ReleaseSignError` taxonomy — `0` OK / `1` USAGE, plus `verify`'s own 5 documented failure-class codes `2`-`6` (P3-T3, FR-13; see "Exit codes" below). `GoldenDriftError` — a signing preimage disagreeing with a pinned golden-bytes fixture; never silently caught and re-baselined. `NotImplementedError` — the `register` (P3-T4) stub marker. |
 
 Every verb-handler module exports a single `run(options)` async function; `cli.mjs` is the sole
 dispatcher (`manifest \| register \| sign \| verify` → the matching module's `run`), mirroring
@@ -142,6 +142,85 @@ structural guards on the real-mode path (proven by tests using ONLY failure case
 check ever completes a real signature): `--key`/`--key-id` are both required with no default;
 `--key-id` may never carry `TESTKEY-`; `--key` must resolve to a path outside this repository tree.
 
+## `verify` verb usage (P3-T3, FR-13)
+
+`verify` is the **sole CI/agent-reachable surface** of this tool (ruling R3 — CI can never sign):
+it never imports a `node:crypto` signing primitive, only the read-only `verify`/`createPublicKey`
+pair. It fails closed with a documented, distinctly-coded 5-class exit-code taxonomy — see "Exit
+codes" below — and produces **zero stdout output on any non-zero exit** (the success result is the
+only thing this verb ever prints, and only after every check has passed).
+
+```bash
+# 1. Sign a candidate, persisting THIS TOOL'S OWN FULL REPORTING OBJECT (not just --out's
+#    schema-conformant manifest) — the self-contained shape verify consumes: signature +
+#    signerPublicKey + manifest, alongside packDir/manifestPath/preimageSha256/dryRun.
+node tools/release-sign/cli.mjs sign \
+  --candidate build/kb-pack/cbc_suite_v1/0.1.0-proposal \
+  --dry-run --key-id ef-release-demo \
+  --out-candidate build/kb-pack/cbc_suite_v1/0.1.0-proposal/release-candidate.dryrun.json
+
+# 2. Verify it against a registry (releases/registry.json once P3-T4 seeds it; any
+#    schemas/release-registry.schema.json-shaped file otherwise).
+node tools/release-sign/cli.mjs verify \
+  --candidate build/kb-pack/cbc_suite_v1/0.1.0-proposal/release-candidate.dryrun.json \
+  --registry releases/registry.json
+```
+
+Output on success (printed to stdout ONLY after every check below has passed):
+
+```json
+{
+  "schemaVersion": "1.0",
+  "candidatePath": "build/kb-pack/cbc_suite_v1/0.1.0-proposal/release-candidate.dryrun.json",
+  "registryPath": "releases/registry.json",
+  "moduleId": "cbc_suite_v1",
+  "packVersion": "0.1.0-proposal",
+  "preimageSha256": "sha256:1597e42bb01e1afe9b422146cc65931f4b2eb0e5e6eee46b0d580bb2fc3cbde7",
+  "dryRun": true,
+  "keyId": "TESTKEY-ef-release-demo",
+  "verified": true
+}
+```
+
+### What `verify` checks, in order (FR-13's own 5-class enumeration)
+
+1. **Byte drift vs canonical bytes** — the candidate's own recorded `preimageSha256` must agree
+   with a FRESH re-read of its `packDir`'s current `release-manifest.unsigned.json` bytes (via
+   `./lib/canonical-bytes.mjs#readCanonicalManifestBytes` — never re-derived). Catches a pack whose
+   canonical manifest changed (or was hand-edited) since it was signed.
+2. **Digest mismatch vs manifest** — the embedded detached Ed25519 signature must cryptographically
+   verify (`node:crypto`'s `verify`) against those SAME fresh bytes, using the candidate's own
+   embedded (non-secret) `signerPublicKey`.
+3. **Unknown `keyId`** — E1 has no signing-custodian key roster (gate G2 has not happened): the
+   ONLY identity `verify` can ever recognize as known is a dry-run candidate's structurally
+   `TESTKEY-`-prefixed `keyId`. A dry-run `keyId` lacking that marker, or ANY non-dry-run `keyId`
+   at all, is "unknown" — by design, not a gap. This means `verify` structurally can never certify
+   a non-dry-run candidate as verified in E1.
+4. **Registry inconsistency** — the registry document must itself validate against
+   `schemas/release-registry.schema.json`, must carry EXACTLY ONE entry for the candidate's
+   `moduleId`/`packVersion` (its own `manifest.moduleId`/`manifest.packVersion`, matched against a
+   registry entry's `moduleId`/`version`), and that entry's `manifestDigest` must agree with the
+   candidate's own `preimageSha256`.
+5. **`TESTKEY-` identity on a non-dry-run candidate** — the release-path test-key leak: a candidate
+   whose `dryRun` is not `true` but whose `signature.keyId` still carries the `TESTKEY-` marker.
+   Checked as part of the same keyId-classification step as class (3) above, but raised as its own
+   distinctly-coded, more specific error (a `TESTKEY-` leak is a different, more actionable failure
+   than a merely-unrecognized identity).
+
+`keyId` is signature METADATA, not signed content — none of classes (3)/(5) ever require a fresh
+signature to construct a tamper fixture; only `dryRun`/`signature.keyId` need to change, and the
+embedded signature stays cryptographically valid throughout (`tests/ef-release-sign-verify.test.mjs`
+exploits exactly this to build every class-(3)/(5) fixture from one genuinely-signed base candidate).
+
+### `--out-candidate` (P3-T3 addition to `sign`)
+
+`sign --out-candidate <path>` persists this tool's own full reporting object — the exact shape
+`verify --candidate` consumes — distinct from `--out`, which persists ONLY the schema-conformant
+`manifest` field (no `signerPublicKey`, no top-level `packDir`/`manifestPath`). Without a persistent
+signing-key registry in E1, carrying the (non-secret) public key alongside the signature in one
+self-contained document is what lets a later, separate `verify` process check a signature produced
+by a key nobody kept (see `signerPublicKey`'s own note above).
+
 ## Golden-bytes regression pin (P3-T1)
 
 `tests/fixtures/ef-release/golden-canonical-bytes/release-manifest.unsigned.json` is a byte-exact
@@ -176,15 +255,27 @@ that:
 These mirror `tests/ef-converter-invariants.test.mjs`'s equivalent checks for
 `tools/rf-bundle-to-kb-pack/` (P2-T5) — the same posture, applied to this tool.
 
-## Exit codes (today)
+## Exit codes (FR-13's documented taxonomy)
 
-| Code | Name | Meaning |
-|---:|---|---|
-| 0 | OK | Verb succeeded. |
-| 1 | USAGE | Malformed invocation, missing pack/manifest, golden-bytes drift, a `sign`-verb usage/guard failure (missing/invalid `--key`/`--key-id`, `TESTKEY-` on a real keyId, in-repo `--key` path, `--dry-run`+`--key` combined), or an unimplemented verb (`register`/`verify` today). |
+This table is the canonical, complete exit-code contract for `tools/release-sign/cli.mjs` — every
+verb, not just `verify`. `cli.mjs`'s top-level catch forwards a thrown `ReleaseSignError`'s own
+`exitCode` verbatim; it never remaps a distinctly-coded failure into a different number. A non-zero
+exit from `verify` always produces **zero stdout output** — the success result is the only thing it
+ever prints, and only once every check has passed (`tests/ef-release-sign-verify.test.mjs` proves
+this per failure class, not just narratively).
 
-`verify`'s own documented 5-class exit-code taxonomy (FR-13) is defined and tested in P3-T3; this
-table will be extended there, not narrowed.
+| Code | Name | Meaning | Verbs that can raise it |
+|---:|---|---|---|
+| 0 | OK | Verb succeeded. | all |
+| 1 | USAGE | Malformed invocation — missing/unreadable pack or manifest, golden-bytes drift (`manifest`), a `sign`-verb usage/guard failure (missing/invalid `--key`/`--key-id`, `TESTKEY-` on a real keyId, in-repo `--key` path, `--dry-run`+`--key` combined), a `verify`-verb malformed invocation (missing/unreadable `--candidate`/`--registry` path, unparseable JSON, a candidate document missing a field this tool's own shape contract requires), or an unimplemented verb (`register` today, P3-T4). | `manifest`, `sign`, `verify`, `register` |
+| 2 | BYTE_DRIFT | `verify` class (1): the candidate's recorded preimage digest disagrees with a fresh re-read of its own canonical manifest bytes off disk. | `verify` |
+| 3 | DIGEST_MISMATCH | `verify` class (2): the embedded signature does not cryptographically verify against those fresh canonical bytes. | `verify` |
+| 4 | UNKNOWN_KEYID | `verify` class (3): the signature's `keyId` is not an identity this tool recognizes in E1 — a dry-run `keyId` lacking the `TESTKEY-` marker, or ANY non-dry-run `keyId` (no signing-custodian roster exists pre-gate-G2). | `verify` |
+| 5 | REGISTRY_INCONSISTENCY | `verify` class (4): the registry document is schema-invalid, carries no entry (or more than one) for the candidate's moduleId/packVersion, or that entry's `manifestDigest` disagrees with the candidate's own digest. | `verify` |
+| 6 | TESTKEY_ON_REAL | `verify` class (5): a non-dry-run candidate's `keyId` carries the `TESTKEY-` marker — the release-path test-key leak. | `verify` |
+
+See `tools/release-sign/lib/errors.mjs`'s own header for the machine-readable mirror of this same
+table (kept in sync by convention, not by generation) and each error class's exact throw sites.
 
 ## Related documents
 
