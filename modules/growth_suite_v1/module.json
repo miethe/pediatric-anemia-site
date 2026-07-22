@@ -1,0 +1,64 @@
+{
+  "id": "growth_suite_v1",
+  "title": "Pediatric Growth Suite",
+  "schemaVersion": 1,
+  "status": "unsigned-stub",
+  "knowledgeBaseVersion": "0.1.0-2026-07-21",
+  "evidenceReviewedThrough": "2026-07-21",
+  "engineLabel": "Pediatric Growth Suite Deterministic CDSS (not yet implemented)",
+  "supportedAgeMonths": {
+    "min": 0,
+    "max": 216
+  },
+  "clinicalContentHash": null,
+  "governanceHash": null,
+  "approvedBy": [],
+  "validationRunId": null,
+  "supersedes": null,
+  "releasedAt": null,
+  "module_topic": "Pediatric Growth Suite",
+  "intended_hcp_users": [
+    "general_pediatrician",
+    "family_physician",
+    "pediatric_advanced_practice_clinician",
+    "pediatric_endocrinologist"
+  ],
+  "patient_population": {
+    "age_min_months": 0,
+    "age_max_months_exclusive": 216,
+    "settings": [
+      "stable_outpatient_primary_care",
+      "urgent_care_followup",
+      "specialty_referral_preparation"
+    ]
+  },
+  "intended_output": [
+    "reviewable_pattern",
+    "safety_caution",
+    "missing_information_question",
+    "confirmatory_next_step_option",
+    "referral_readiness",
+    "longitudinal_followup_state"
+  ],
+  "explicit_exclusions": [
+    "acute_severe_malnutrition_requiring_emergency_evaluation",
+    "endocrine_emergency_management",
+    "growth_hormone_or_other_endocrine_treatment_decision",
+    "nutritional_intervention_prescription",
+    "preterm_corrected_age_growth_chart_selection"
+  ],
+  "jurisdictions": [
+    "US"
+  ],
+  "integration_targets": [
+    "web",
+    "api",
+    "smart_on_fhir",
+    "cds_hooks"
+  ],
+  "evidence_policy": {
+    "recent_window_days": 1825,
+    "older_source_rule": "foundational_not_superseded_with_reason",
+    "exact_passage_required_for_implementable_claim": true
+  }
+}
