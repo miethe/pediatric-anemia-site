@@ -134,10 +134,10 @@ async function buildSignedChain(tmp, moduleId, roles) {
       reviewedAt: `2026-03-0${seq}T00:00:00Z`,
       root: tmp,
       draft: true,
-      // CRW-F5 revision (BLOCKER 2): this throwaway tmp root carries a fixture roster but no
+      // CRW-F6 revision (BLOCKER 2): this throwaway tmp root carries a fixture roster but no
       // modules/<moduleId>/ content -- F5 now hard-fails by default on that "uncomputable module
       // content hash" shape. This suite is about the validate cache, not F5, so the loud, explicit
-      // escape hatch is used (see findings doc CRW-F5(e)).
+      // escape hatch is used (see findings doc CRW-F6(e)).
       allowHistoricalSubject: true,
     });
     assert.equal(scaffoldCode, EXIT_OK);
@@ -160,7 +160,7 @@ async function mutateRationale(filePath, newRationale) {
 }
 
 /**
- * Fix-cycle addendum (BLOCKER 3, CRW-F9) helper: computes the EXACT `RecordCacheKey` `validate.mjs`
+ * Fix-cycle addendum (BLOCKER 3, CRW-F7) helper: computes the EXACT `RecordCacheKey` `validate.mjs`
  * itself would compute for `allRecords[targetIndex]` at the CURRENT on-disk state of `tmp` (same
  * formulas as `lib/verbs/validate.mjs`'s own per-record loop -- ascending-seq-order canonical
  * hashes, the full predecessor-set hash, current roster/schema file hashes, the live
@@ -517,7 +517,7 @@ test('a warm per-record cache never masks a module-wide (FR-4 reviewer-2 indepen
       module: moduleId, role: 'clinical-1', reviewerId: 'cache-mw-clinical-1',
       decision: 'approve', rationale: 'Independent first assessment, formed without reading any prior act.',
       subject: SUBJECT_HASH, reviewedAt: '2026-03-10T00:00:00Z', root: tmp, draft: true,
-      // CRW-F5 revision (BLOCKER 2): no modules/<moduleId>/ content under this tmp root -- see the
+      // CRW-F6 revision (BLOCKER 2): no modules/<moduleId>/ content under this tmp root -- see the
       // comment on buildSignedChain's own scaffold call above.
       allowHistoricalSubject: true,
     });
@@ -532,7 +532,7 @@ test('a warm per-record cache never masks a module-wide (FR-4 reviewer-2 indepen
       module: moduleId, role: 'clinical-2', reviewerId: 'cache-mw-clinical-2',
       decision: 'approve', rationale: 'Per cache-mw-clinical-1 I independently agree with this assessment.',
       subject: SUBJECT_HASH, reviewedAt: '2026-03-10T00:05:00Z', root: tmp, draft: true,
-      // CRW-F5 revision (BLOCKER 2): same reason as scaffold1 above -- no modules/<moduleId>/
+      // CRW-F6 revision (BLOCKER 2): same reason as scaffold1 above -- no modules/<moduleId>/
       // content under this tmp root.
       allowHistoricalSubject: true,
     });
@@ -593,7 +593,7 @@ test('validate-cache marker line is present in tools/review-record/lib/verbs/val
 });
 
 // -------------------------------------------------------------------------------------------
-// (C) Fix-cycle addendum (Wave-2 gate, BLOCKER 3, CRW-F9) — per-entry structural hardening.
+// (C) Fix-cycle addendum (Wave-2 gate, BLOCKER 3, CRW-F7) — per-entry structural hardening.
 // `readCacheFile`'s existing coverage above ("Corrupt JSON on disk" / "Foreign/wrong shape" in the
 // "readCacheFile / writeCacheFileAtomic" test) already proves acceptance criterion (ii) — a
 // truncated/corrupt cache FILE fails closed to `null` (a full-file miss) — so this section adds
@@ -603,7 +603,7 @@ test('validate-cache marker line is present in tools/review-record/lib/verbs/val
 // outcome on a module with a real violation, versus a genuinely cold cache.
 // -------------------------------------------------------------------------------------------
 
-test('getCachedRecordResult: a well-formed-JSON entry with a malformed RESULT shape (missing field / wrong type / extra field) is a MISS, never a crash or pass-through (BLOCKER 3, CRW-F9)', () => {
+test('getCachedRecordResult: a well-formed-JSON entry with a malformed RESULT shape (missing field / wrong type / extra field) is a MISS, never a crash or pass-through (BLOCKER 3, CRW-F7)', () => {
   const key = baselineKey();
   const reviewId = 'rr-0001-clinical-1';
   const validResult = { schemaViolations: [], rosterViolation: null, signatureViolation: null, chainViolation: null };
@@ -640,7 +640,7 @@ test('getCachedRecordResult: a well-formed-JSON entry with a malformed RESULT sh
   assert.deepEqual(getCachedRecordResult(goodRecords, reviewId, key), validResult);
 });
 
-test('getCachedRecordResult: an entry whose RESULT is well-shaped but whose stored KEY has wrong-typed composite-key fields is a MISS, checked before comparison (BLOCKER 3, CRW-F9)', () => {
+test('getCachedRecordResult: an entry whose RESULT is well-shaped but whose stored KEY has wrong-typed composite-key fields is a MISS, checked before comparison (BLOCKER 3, CRW-F7)', () => {
   const key = baselineKey();
   const reviewId = 'rr-0001-clinical-1';
   const validResult = { schemaViolations: [], rosterViolation: null, signatureViolation: null, chainViolation: null };
@@ -665,7 +665,7 @@ test('getCachedRecordResult: an entry whose RESULT is well-shaped but whose stor
   }
 });
 
-test('getCachedRecordResult: malformed cacheRecords container itself (not an object, or an entry that is not a {key, result} object) is a MISS, never a crash (BLOCKER 3, CRW-F9)', () => {
+test('getCachedRecordResult: malformed cacheRecords container itself (not an object, or an entry that is not a {key, result} object) is a MISS, never a crash (BLOCKER 3, CRW-F7)', () => {
   const key = baselineKey();
   const reviewId = 'rr-0001-clinical-1';
 
@@ -686,7 +686,7 @@ test('getCachedRecordResult: malformed cacheRecords container itself (not an obj
   );
 });
 
-test('a well-formed-JSON entry with a malformed RESULT shape never crashes a real validate run end-to-end -- treated as a MISS, silently recomputed, correct passing outcome unaffected (BLOCKER 3, CRW-F9)', async () => {
+test('a well-formed-JSON entry with a malformed RESULT shape never crashes a real validate run end-to-end -- treated as a MISS, silently recomputed, correct passing outcome unaffected (BLOCKER 3, CRW-F7)', async () => {
   const tmp = await mkdtemp(path.join(tmpdir(), 'ef-validate-cache-poison-noCrash-'));
   try {
     const moduleId = 'cache_poison_nocrash_v1';
@@ -726,7 +726,7 @@ test('a well-formed-JSON entry with a malformed RESULT shape never crashes a rea
   }
 });
 
-test('validate\'s outcome on a module with a REAL violation is IDENTICAL whether a poisoned-shape (well-formed-JSON, malformed-RESULT) cache entry is present at correct composite-key values, or the cache is genuinely cold (BLOCKER 3, CRW-F9)', async () => {
+test('validate\'s outcome on a module with a REAL violation is IDENTICAL whether a poisoned-shape (well-formed-JSON, malformed-RESULT) cache entry is present at correct composite-key values, or the cache is genuinely cold (BLOCKER 3, CRW-F7)', async () => {
   const moduleId = 'cache_poison_real_violation_v1';
   const trueColdTmp = await mkdtemp(path.join(tmpdir(), 'ef-validate-cache-poison-cold-'));
   const poisonedTmp = await mkdtemp(path.join(tmpdir(), 'ef-validate-cache-poison-warm-'));

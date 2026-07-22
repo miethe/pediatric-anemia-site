@@ -68,7 +68,7 @@ tasks:
   completed: 2026-07-22T13:55Z
   evidence:
   - commit: c06544a
-  - finding: CRW-F5,CRW-F6
+  - finding: CRW-F6,CRW-F8
   verified_by:
   - P2-GATE1
 - id: P2-T2
@@ -134,7 +134,7 @@ tasks:
   completed: 2026-07-22T14:28Z
   evidence:
   - commit: 40b72c0
-  - finding: CRW-F7
+  - finding: CRW-F9
   verified_by:
   - P2-GATE1
 - id: P2-T4
@@ -170,7 +170,7 @@ tasks:
   completed: 2026-07-22T14:48Z
   evidence:
   - commit: 6fa6813
-  - finding: CRW-F8
+  - finding: CRW-F10
   verified_by:
   - P2-GATE1
 - id: P2-GATE1

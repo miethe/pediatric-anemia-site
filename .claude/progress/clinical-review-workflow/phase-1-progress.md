@@ -181,7 +181,7 @@ tasks:
   completed: 2026-07-22T13:15Z
   evidence:
   - commit: 742f9d8
-  - finding: CRW-F3
+  - finding: CRW-F4
   verified_by:
   - P1-GATE1
 - id: P1-GATE1

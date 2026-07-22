@@ -41,7 +41,7 @@
 // independently:
 //   (1) the `--draft` path must resolve STRICTLY inside `<root>/.review-drafts/<moduleId>/` — the
 //       exact staging directory `scaffold --draft` itself writes to (`draftsDirFor`, imported from
-//       `../store.mjs` — the same module `scaffold.mjs` re-exports it from, CRW-F6 — so both verbs
+//       `../store.mjs` — the same module `scaffold.mjs` re-exports it from, CRW-F8 — so both verbs
 //       and every caller share one path convention, never two that could drift).
 //   (2) a belt-and-suspenders check that the resolved path never falls inside
 //       `modules/<moduleId>/reviews/`, even though check (1) already excludes it by construction

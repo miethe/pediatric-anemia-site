@@ -149,7 +149,7 @@ tasks:
   completed: 2026-07-22T17:12Z
   evidence:
   - commit: 6cc8288,3ad3568
-  - finding: CRW-F10
+  - finding: CRW-F11
   verified_by:
   - P3-GATE1
 - id: P3-GATE1

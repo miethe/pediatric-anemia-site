@@ -57,8 +57,8 @@
 //       suppresses ONLY this comparison (never the pattern check), for the legitimate case of
 //       reviewing historical content that no longer matches the module's current on-disk bytes.
 //
-//       REVISED by CRW-F5 (clinical-review-workflow-v1 Wave-2 codex gate, BLOCKER 2 -- see
-//       .claude/findings/clinical-review-workflow-findings.md's CRW-F5 entry for the full history):
+//       REVISED by CRW-F6 (clinical-review-workflow-v1 Wave-2 codex gate, BLOCKER 2 -- see
+//       .claude/findings/clinical-review-workflow-findings.md's CRW-F6 entry for the full history):
 //       an UNCOMPUTABLE `computeModuleContentHash` (module directory absent, or present but empty
 //       of non-`reviews/` content) is now treated EXACTLY like a computed MISMATCH -- it hard-fails
 //       by default, naming the underlying failure, rather than being silently accepted as "nothing
@@ -97,7 +97,7 @@ import { EXIT_OK, UsageError } from '../errors.mjs';
 // Re-exported for callers (e.g. `lib/verbs/sign.mjs`, tests) that want the draft-staging path
 // convention without importing `store.mjs` directly — the actual definition, and the one
 // `writeFile` call site (`tests/ef-review-adjudication.test.mjs`'s structural invariant), both live
-// in `store.mjs`; see this file's header (CRW-F2/CRW-F6) and that file's own "Draft staging path"
+// in `store.mjs`; see this file's header (CRW-F2/CRW-F8) and that file's own "Draft staging path"
 // section for why.
 export { draftFilePathFor, draftsDirFor } from '../store.mjs';
 
@@ -164,10 +164,10 @@ function requireString(options, flag, key = flag) {
  * }} options `subject` is OPTIONAL (P1-T3, FR-3/R8) — when omitted, it is auto-derived via
  *   `lib/subject.mjs`'s `computeModuleContentHash(rootDir, moduleId)`, the same function `dry-run`
  *   uses for its own default (and hard-fails, unconditionally, if that derivation itself fails —
- *   unchanged by the CRW-F5 revision below); when supplied, its `sha256:<64 hex>` shape is
+ *   unchanged by the CRW-F6 revision below); when supplied, its `sha256:<64 hex>` shape is
  *   validated AND (F5, default, unless `allowHistoricalSubject`) compared against a freshly
  *   recomputed `computeModuleContentHash` — an uncomputable module hash is now treated exactly like
- *   a computed mismatch (CRW-F5 revision, see this file's header) rather than "nothing to compare."
+ *   a computed mismatch (CRW-F6 revision, see this file's header) rather than "nothing to compare."
  *   `allowHistoricalSubject: true` is the ONLY suppression for either condition, and this verb
  *   always prints a loud stdout NOTICE when it actually suppresses something. `draft: true` (F1
  *   seam) writes the built record to
@@ -215,7 +215,7 @@ export async function run(options = {}) {
   // Set below, ONLY when --allow-historical-subject actually suppresses a would-be hard-fail (an
   // uncomputable module hash, or an actual computed mismatch) -- prepended to whichever stdout
   // branch below ultimately fires, so the suppression is always LOUD in this verb's own output,
-  // never a silent skip (CRW-F5 revision requirement).
+  // never a silent skip (CRW-F6 revision requirement).
   let subjectOverrideNotice = '';
   let subjectContentHash = options.subject;
   if (typeof subjectContentHash === 'string' && subjectContentHash.length > 0) {
@@ -223,8 +223,8 @@ export async function run(options = {}) {
       throw new UsageError(`--subject "${subjectContentHash}" must match sha256:<64 hex>`);
     }
 
-    // F5 (CRW-F2 gap closure, REVISED by CRW-F5 -- clinical-review-workflow-v1 Wave-2 codex gate,
-    // BLOCKER 2; see .claude/findings/clinical-review-workflow-findings.md's CRW-F5 entry): the
+    // F5 (CRW-F2 gap closure, REVISED by CRW-F6 -- clinical-review-workflow-v1 Wave-2 codex gate,
+    // BLOCKER 2; see .claude/findings/clinical-review-workflow-findings.md's CRW-F6 entry): the
     // comparison ALWAYS attempts to recompute modules/<moduleId>/'s own content hash, whether or
     // not --allow-historical-subject is set, so the outcome (match / mismatch / uncomputable) can
     // always be reported -- an uncomputable module is now treated exactly like a computed MISMATCH,
@@ -245,7 +245,7 @@ export async function run(options = {}) {
             `could not be recomputed to verify it against (${recomputeError.message}) -- F5 hard-` +
             'fails by default whenever an explicitly-supplied --subject cannot be verified against ' +
             'the target module\'s current on-disk content, the same as an actual computed mismatch ' +
-            '(CRW-F5 revision: "cannot verify" is no longer treated as "nothing to compare"). If ' +
+            '(CRW-F6 revision: "cannot verify" is no longer treated as "nothing to compare"). If ' +
             'this --subject is intentionally NOT a module-content hash (e.g. an adjudication act\'s ' +
             'subject is a discordance record\'s own candidateDigest -- tools/retro-validate/lib/' +
             'discordance.mjs\'s toAdjudicationScaffoldInput bridge), or this is intentionally ' +
@@ -305,7 +305,7 @@ export async function run(options = {}) {
   // --draft (F1 seam, CRW-F2 gap closure): stage the built record for `sign` to consume, regardless
   // of the resolved roster entry's synthetic flag — see this file's header. Never falls through to
   // the preview-vs-direct-write branch below; never writes under reviews/. The actual `writeFile`
-  // call lives in `store.mjs`'s `writeDraftRecordFile` — see this file's header (CRW-F6) for why.
+  // call lives in `store.mjs`'s `writeDraftRecordFile` — see this file's header (CRW-F8) for why.
   if (options.draft === true) {
     const draftPath = await writeDraftRecordFile(rootDir, moduleId, reviewId, record);
     process.stdout.write(

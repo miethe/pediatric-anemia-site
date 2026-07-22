@@ -351,7 +351,7 @@ const FR26_SUBJECT_HASH = `sha256:${'11'.repeat(32)}`;
  *
  * @param {{ role: string, decision: string, supersedes?: string, rationale?: string }[]} specs
  *   `rationale` is optional -- defaults to an auto-generated, deliberately non-overlapping fixture
- *   string; CRW-F4's independence fixtures below override it per-record so they can seed a
+ *   string; CRW-F5's independence fixtures below override it per-record so they can seed a
  *   controlled verbatim-substring overlap (or its absence) between specific records.
  * @returns {{ reviewId: string, seq: number, role: string, record: object }[]}
  */
@@ -523,7 +523,7 @@ test('computeDerivedReviewState: disagree-path set MINUS adjudication reports th
 });
 
 // -------------------------------------------------------------------------------------------
-// CRW-F4 (P1-GATE2 finding 3, MAJOR): `computeDerivedReviewState`'s FR-4 independence check used
+// CRW-F5 (P1-GATE2 finding 3, MAJOR): `computeDerivedReviewState`'s FR-4 independence check used
 // to resolve its clinical-1/clinical-2 pair via a plain `allModuleRecords.find(...)` -- the FIRST
 // record of that role, never the FR-26 supersedes-aware EFFECTIVE (latest non-superseded) act
 // `resolveEffectiveRoleRecord` already resolves for the release-authorization completeness check
@@ -541,7 +541,7 @@ test('computeDerivedReviewState: disagree-path set MINUS adjudication reports th
 const CRW_F4_OVERLAP_TEXT =
   'abnormal reticulocyte response was overlooked during the initial pass through the labs';
 
-test('computeDerivedReviewState (CRW-F4, direction a): a clean superseded clinical-1 ORIGINAL passes independence in isolation, but the EFFECTIVE clinical-1 correction verbatim-overlaps clinical-2 -- must now be flagged', () => {
+test('computeDerivedReviewState (CRW-F5, direction a): a clean superseded clinical-1 ORIGINAL passes independence in isolation, but the EFFECTIVE clinical-1 correction verbatim-overlaps clinical-2 -- must now be flagged', () => {
   const records = buildRecordSequence([
     {
       role: 'clinical-1',
@@ -590,7 +590,7 @@ test('computeDerivedReviewState (CRW-F4, direction a): a clean superseded clinic
   );
 });
 
-test('computeDerivedReviewState (CRW-F4, direction b): a superseded clinical-1 ORIGINAL violates independence in isolation, but the EFFECTIVE clinical-1 correction is clean -- must now be clean (no stale-violation blocker)', () => {
+test('computeDerivedReviewState (CRW-F5, direction b): a superseded clinical-1 ORIGINAL violates independence in isolation, but the EFFECTIVE clinical-1 correction is clean -- must now be clean (no stale-violation blocker)', () => {
   const records = buildRecordSequence([
     {
       role: 'clinical-1',

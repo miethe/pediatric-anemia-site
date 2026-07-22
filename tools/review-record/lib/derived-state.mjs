@@ -107,7 +107,7 @@ export function computeDerivedReviewState(allModuleRecords, rosterVerifiedByRevi
   const blockers = [];
 
   // FR-4 reviewer-2 independence heuristic -- pairwise and module-scoped, not per-record: always
-  // computed over the module's EFFECTIVE clinical-1/clinical-2 pair (if both exist). CRW-F4 (fixed
+  // computed over the module's EFFECTIVE clinical-1/clinical-2 pair (if both exist). CRW-F5 (fixed
   // here): this used to resolve the pair via a plain `allModuleRecords.find((r) => r.role ===
   // 'clinical-1' | 'clinical-2')` -- the FIRST record of that role by seq order, NOT the FR-26
   // supersedes-aware EFFECTIVE (latest non-superseded) act `resolveEffectiveRoleRecord` (P1-T5,
@@ -120,7 +120,7 @@ export function computeDerivedReviewState(allModuleRecords, rosterVerifiedByRevi
   // own header). Reusing `resolveEffectiveRoleRecord` here (rather than forking a second copy of its
   // supersedes logic) means the independence heuristic and the FR-26 completeness check always agree
   // on which act is "the" clinical-1/clinical-2 record for a role -- one supersedes-resolution
-  // implementation, not two that can drift. See this feature's findings doc (CRW-F4) for the
+  // implementation, not two that can drift. See this feature's findings doc (CRW-F5) for the
   // both-direction fixtures this closes.
   const clinical1 = resolveEffectiveRoleRecord(allModuleRecords, 'clinical-1');
   const clinical2 = resolveEffectiveRoleRecord(allModuleRecords, 'clinical-2');

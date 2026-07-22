@@ -154,7 +154,7 @@ export async function nextSequenceFor(rootDir, moduleId) {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Draft staging path (Clinical Review Workflow v1, P1-T3(c)/P2-T1, CRW-F2/CRW-F6 gap closure).
+// Draft staging path (Clinical Review Workflow v1, P1-T3(c)/P2-T1, CRW-F2/CRW-F8 gap closure).
 //
 // `.review-drafts/<moduleId>/<reviewId>.draft.yaml` — OUTSIDE `modules/<id>/reviews/`, gitignored
 // (`.gitignore`), never git-tracked. `scaffold --draft` (`lib/verbs/scaffold.mjs`) writes here; the
@@ -324,7 +324,7 @@ function resolvesStrictlyInside(candidatePath, dirPath) {
  * Residual, adjudicated limitation (documented, not hedged): this check is `lstat`-then-mkdir/write,
  * NOT race-free -- a concurrent SAME-USER process could swap a checked real directory for a symlink
  * between the `lstat` here and the `mkdir`/`writeFile` below. That active race is OUTSIDE this
- * tool's threat model, the same same-user trust boundary CRW-F9 already documents for the validate
+ * tool's threat model, the same same-user trust boundary CRW-F7 already documents for the validate
  * cache (a same-user attacker with write access here could already replace the CLI or `node` binary
  * itself; a race-free fix would need openat-style dirfd-relative writes, unavailable in Node without
  * a new dependency -- guardrail-forbidden). This check's actual target -- the git-transmissible
