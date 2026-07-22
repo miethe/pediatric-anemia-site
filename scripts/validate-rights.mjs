@@ -89,10 +89,18 @@ import { checkNumericRecaptureResolution } from './lib/evidence-numeric-recaptur
 // authority-field reads would trip the D2 barrier probe. It reads no rights-authority field; the
 // split keeps the probe honest without an allowlist exemption (see the gate module's header).
 import { checkGuidelineRecommendationCapture } from './lib/evidence-guideline-recommendation-gate.mjs';
+// Gate (i) (EPR4-T4, FR-WP4-04) lives in its own module too, for the same reason as (f)/(g)/(h):
+// keeping the rights-decision ledger's join checks out of this authority-field-reading file. Unlike
+// (f)/(g)/(h) it reads no evidence-item axis field either — it is split out anyway to match the
+// established per-gate module pattern and to keep its RG-9-seam reuse (validateAttestationEntries,
+// imported from scripts/evidence/lib/attested-passage-map.mjs — see the module header there) in one
+// place, isolated from this file's own rights-authority-field reads.
+import { checkRightsDecisionLedgerCoverage } from './rights/lib/rights-decision-ledger-gate.mjs';
 
 export { checkEvidenceItemLocatorCapture };
 export { checkNumericRecaptureResolution };
 export { checkGuidelineRecommendationCapture };
+export { checkRightsDecisionLedgerCoverage };
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -539,7 +547,12 @@ export const GATES = [
     description: 'Every guideline_recommendation item carries the fact of the recommendation — a named issuing body and an independently-worded restatement — captured, not avoided (EPR3-T8, FR-WP3-08, D2). Coverage/consistency only; reads no rights-authority field (D7). Scoping (which items are guideline recommendations) is done in its own module, evidence-guideline-recommendation-gate.mjs, to keep this authority-field-reading file clear of the item-type axis (the D2 barrier probe).',
     run: checkGuidelineRecommendationCapture,
   },
-  // EP-R3 (later tasks): append your gate here as a new `{ id, description, run }` entry, with
+  {
+    id: 'rights-decision-ledger-coverage',
+    description: 'rights/rights-ledger.json#rights_decisions entries validate bidirectionally: the passage/attestation-shaped half is checked via a REUSE (not a duplicate) of attested-passage-map.mjs\'s validateAttestationEntries (the RG-9 seam), and the rights_record_id half via a plain existence-join lookup (EPR4-T4, FR-WP4-04, D4). The live ledger ships empty (D6).',
+    run: checkRightsDecisionLedgerCoverage,
+  },
+  // Later phases: append your gate here as a new `{ id, description, run }` entry, with
   // its own `export function checkX(context) {...}` defined above (per this file's module
   // contract, in the header comment). Do not rename, reorder-and-renumber, or edit the body or
   // signature of an existing entry — that is an escalation to the plan owner, not a local edit.

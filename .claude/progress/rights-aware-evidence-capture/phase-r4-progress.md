@@ -18,7 +18,7 @@ pr_refs: []
 overall_progress: 0
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 1
+completed_tasks: 2
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -88,7 +88,7 @@ tasks:
     joined bidirectionally to rights records and evidence items, reusing loadAttestationLedger
     / validateBindingsAgainstLedger in scripts/evidence/lib/attested-passage-map.mjs
     rather than adding a second validator. The live rights-decision ledger ships EMPTY.'
-  status: not_started
+  status: completed
   assigned_to:
   - general-purpose
   dependencies:
@@ -97,6 +97,11 @@ tasks:
   priority: high
   assigned_model: sonnet
   model_effort: high
+  started: '2026-07-21T00:00:00Z'
+  completed: '2026-07-21T00:00:00Z'
+  evidence:
+  - note: rights/rights-ledger.json#rights_decisions, scripts/rights/lib/rights-decision-ledger-gate.mjs,
+      tests/rights-decision-ledger.test.mjs
 - id: EPR4-T5
   description: 'Positive checks for future clearance entries; ledger stays empty (FR-WP4-05,
     FR-WP4-06, D6): any future counsel_approved / clearance entry must pass the same
@@ -167,7 +172,7 @@ success_criteria:
 - id: SC-4
   description: Rights-decision ledger validates bidirectionally on the reused RG-9
     seam; no second validator (EPR4-T4)
-  status: not_started
+  status: completed
 - id: SC-5
   description: Positive credential/path/date checks exist and are fixture-exercised
     (EPR4-T5)
@@ -201,7 +206,7 @@ files_modified:
 - scripts/rights/build-decision-brief.mjs
 - rights/rights-ledger.json
 - tests/rights-brief-contamination.test.mjs
-progress: 16
+progress: 33
 updated: '2026-07-21'
 ---
 

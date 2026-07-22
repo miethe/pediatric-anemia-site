@@ -96,8 +96,8 @@ test('D7 control: the unmutated substrate — every seeded record at overall_sta
     );
     assert.equal(result.status, 0, `an UNKNOWN overall_status must never fail the kb-json-file-coverage gate; stderr:\n${result.stderr}`);
     // Each phase that appends a gate bumps this literal, which tracks GATES.length (EPR3-T4 → 6,
-    // EPR3-T6 → 7, EPR3-T8 → 8).
-    assert.match(result.stdout, /validate-rights: 8 gate\(s\) passed/);
+    // EPR3-T6 → 7, EPR3-T8 → 8, EPR4-T4 → 9).
+    assert.match(result.stdout, /validate-rights: 9 gate\(s\) passed/);
   });
 });
 

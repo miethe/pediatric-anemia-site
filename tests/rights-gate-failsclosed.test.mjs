@@ -80,9 +80,10 @@ test('control: an unmutated copy of the seeded substrate passes the CLI with exi
   withSubstrateCopy(null, (result) => {
     assert.equal(result.status, 0, `expected exit 0 on the unmodified substrate; stderr:\n${result.stderr}`);
     // EPR1-T2 appended a 5th gate (kb-json-file-coverage); EPR3-T4 appends a 6th
-    // (evidence-item-locator-capture) per this file's own module contract — the literal here tracks
-    // GATES.length, not a fixed constant; each later phase that appends its own gate bumps it in turn.
-    assert.match(result.stdout, /validate-rights: 8 gate\(s\) passed/);
+    // (evidence-item-locator-capture); EPR4-T4 appends a 9th (rights-decision-ledger-coverage) per
+    // this file's own module contract — the literal here tracks GATES.length, not a fixed constant;
+    // each later phase that appends its own gate bumps it in turn.
+    assert.match(result.stdout, /validate-rights: 9 gate\(s\) passed/);
   });
 });
 
