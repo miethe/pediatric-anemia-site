@@ -9,17 +9,17 @@ plan_ref: docs/project_plans/implementation_plans/infrastructure/clinical-review
 execution_model: batch-parallel
 phase: 3
 title: "Clinical Review Workflow v1 \u2014 Phase 3: Render Queue View & Reviewer Runbook"
-status: pending
+status: completed
 created: '2026-07-22'
 updated: '2026-07-22'
 started: 2026-07-22T16:25Z
-completed: null
+completed: 2026-07-22T17:52Z
 commit_refs: []
 pr_refs: []
-overall_progress: 85
+overall_progress: 100
 completion_estimate: on-track
 total_tasks: 6
-completed_tasks: 5
+completed_tasks: 6
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -180,7 +180,7 @@ tasks:
     \ P3 changeset against R4/R6 and FR-11..14 \u2014 checks the render section stays\
     \ script-free/static and the runbook's two-track split does not leak sign into\
     \ the post-G1 track."
-  status: pending
+  status: completed
   assigned_to:
   - codex (read-only)
   dependencies:
@@ -191,6 +191,13 @@ tasks:
   model_effort: high
   acceptance_criteria: Review recorded; any flagged gap becomes a task before Phase
     5 opens.
+  started: 2026-07-22T17:25Z
+  completed: 2026-07-22T17:50Z
+  evidence:
+  - codex: gpt-5.6-terra FAIL(1 MAJOR,1 MINOR runbook accuracy)->fix f1f92f4->re-pass
+      both CLOSED
+  verified_by:
+  - P3-GATE2
 parallelization:
   batch_1:
   - P3-T1
@@ -213,18 +220,18 @@ success_criteria:
 - id: SC-1
   description: Render queue section stays <script>-free and <a href>-free (static
     HTML constraint)
-  status: pending
+  status: completed
 - id: SC-2
   description: Reviewer runbook covers all five roles end-to-end against the dry-run
     fixture
-  status: pending
+  status: completed
 - id: SC-3
   description: sign appears only in the runbook's exercise track, never the post-G1
     track
-  status: pending
+  status: completed
 - id: SC-4
   description: npm run check green
-  status: pending
+  status: completed
 files_modified:
 - tools/review-record/lib/render.mjs
 - tools/review-record/lib/verbs/render.mjs
@@ -240,7 +247,7 @@ notes: "Wave 3 (per the computed wave split \u2014 depends only on Phase 1, but 
   \ concurrent-write collision; this is a scheduling fact, not a P2 scope dependency).\
   \ Render \u2225 runbook fully parallel within the phase; runbook draft goes haiku\
   \ (ICA-eligible free-tier draft) \u2192 sonnet honesty/structure pass in-session."
-progress: 83
+progress: 100
 ---
 
 # clinical-review-workflow — Phase 3: Render Queue View & Reviewer Runbook
