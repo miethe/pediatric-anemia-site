@@ -33,6 +33,58 @@ Three registries dispatch module behavior: `src/facts/registry.js` (fact-derivat
 
 `modules/anemia/module.json` is no longer a stub: Wave-0 (EP-5) shipped the two-part signed-manifest scheme described in §6, and the anemia module's manifest is currently `status: "integrity-recorded"` — its `clinicalContentHash`/`governanceHash` are populated and verified at server startup. Its `approvedBy` is still schema-forced to `[]`: no credentialed clinical approver has signed off on this content.
 
+### Module inventory (as of `multi-bundle-conversion-e1` Phase 7)
+
+Four modules are registered under `modules/` today. Their `module.json.status` values are **not**
+uniform — read each row rather than assuming parity across modules:
+
+| Module | `module.json.status` | `clinicalContentHash` / `governanceHash` | `approvedBy` | Evidence-layer provenance |
+|---|---|---|---|---|
+| `anemia` | `integrity-recorded` (Wave-0/EP-5) | populated, verified at server startup | `[]` (no clinical sign-off) | **Bespoke evidence projection** — `evidence-assertions.json` was hand-authored against the verified `RF-EV-001` bundle by a one-off, uncommitted generator, not the converter's `propose` verb (see below). Its pre-existing `evidence.json` (EP-3/EP-4 pipeline) is a separate, parallel provenance view; see `modules/anemia/EVIDENCE-PROVENANCE-NOTE.md` and `docs/project_plans/design-specs/anemia-backfill-reconciliation-procedure.md` |
+| `cbc_suite_v1` | `unsigned-stub` | `null` / `null` | `[]` | **Converter-derived, end-to-end.** The only module whose evidence-layer artifacts (`evidence-assertions.json`, `rule-provenance.json`, and the drafted `rules.json`/`candidates.json` content) were produced by `tools/rf-bundle-to-kb-pack/`'s `propose` verb against the verified `RF-CBC-002` bundle, per §2b. It is also the only module with a hand-authored `authoring-decisions.yaml` (DF-E1-M1 dependency), which is what lets the converter's rule/candidate-drafting stage run for it at all |
+| `kidney_suite_v1` | `unsigned-stub` | `null` / `null` | `[]` | **Bespoke evidence projection**, not converter output — `evidence.json`/`evidence-assertions.json`/`unresolved.json` were hand-derived against the verified `RF-KID-001` bundle by an uncommitted one-off generator, because `propose.mjs` is hardwired to `cbc_suite_v1`'s own drafting content (FR-14) and no `authoring-decisions.yaml` exists yet for this module (Deferred Item DF-E1-M1) |
+| `growth_suite_v1` | `unsigned-stub` | `null` / `null` | `[]` | **Bespoke evidence projection**, not converter output — `evidence.json`/`evidence-assertions.json`/`unresolved.json` were hand-derived against the verified `RF-GRO-002` bundle by an uncommitted one-off generator, for the same DF-E1-M1 reason as `kidney_suite_v1` |
+
+**Converter-vs-bespoke-projection distinction (binding).** Only `RF-CBC-002` → `cbc_suite_v1` has
+ever completed the converter's `inspect -> verify -> propose` pipeline end-to-end and had its
+output copied into a committed module package. `anemia`, `kidney_suite_v1`, and `growth_suite_v1`
+all carry evidence-layer artifacts that trace to a verified `rf` bundle, but each was produced by a
+**bespoke, module-specific generator script**, not by running the converter's `propose` verb —
+`propose.mjs` cannot yet run generically against a module that lacks its own
+`authoring-decisions.yaml` (Deferred Item DF-E1-M1; design spec
+`docs/project_plans/design-specs/rule-authoring-workflow-per-module.md`). None of the three
+bespoke-generator scripts for `anemia`/`kidney_suite_v1`/`growth_suite_v1` is committed to this
+repository today — only `cbc_suite_v1`'s producing script, `scripts/evidence/backfill-cbc-002-evidence.mjs`,
+is checked in — so those three modules' evidence-layer files are not currently regenerable from
+committed code (tracked in `.claude/findings/multi-bundle-conversion-e1-findings.md`, Phase 6
+"Unreproducible-provenance gap" finding). Whichever module a future pass converts next, describe it
+as converter-derived **only** once it has an actual `propose` run behind it and its own
+`authoring-decisions.yaml` — never by analogy to another module's posture.
+
+### The `REG-001`/`REG-004` HOLD-record convention
+
+`multi-bundle-conversion-e1` Phase 6 (row P6-T1) introduced a durable pattern for handling any
+upstream `rf` run whose subject matter is flagged for legal review rather than cleared as clinical
+evidence: a standalone **HOLD record** at `docs/legal/reg-001-reg-004-hold.md`
+(`doc_type: legal_hold`). For `REG-001`/`REG-004` specifically — the program's two
+regulatory · **LEGAL** runs (as opposed to the 5 clinical runs that feed this platform's modules) —
+the HOLD record states plainly that an `rf verify`-passed bundle is a *structural/governance*
+verification only, never a legal or clinical sign-off; enumerates a binding, repo-wide exclusion
+(no fixture, no converter invocation, no module artifact, no clinical-drafting pathway, no upstream
+reads); and names the regression test that enforces it in code
+(`tests/ef-batch-reg-exclusion.test.mjs`, asserting the converter's `BATCH_PAIRS` list names exactly
+the 4 clinical bundles and scanning for either run's identifiers anywhere in the converter's own
+source). The forward-looking routing procedure for *lifting* such a hold — how an eventual legal
+sign-off would be captured and acted upon — is a separate design spec, not the HOLD record itself:
+`docs/project_plans/design-specs/reg-001-004-legal-signoff-routing.md`.
+
+**Apply this same pattern to any future bundle flagged for legal (or similarly non-clinical)
+review**: author a standalone HOLD record cross-referencing the flagging source (here,
+`docs/project_plans/expansion/rf-handoff/RESULTS.md` §5) and the owner action item that would lift
+it (§7); state explicitly that the flag is not itself a sign-off; enumerate the binding exclusion in
+the same shape as §4 of `reg-001-reg-004-hold.md`; and add a regression test asserting the exclusion
+holds against the converter's own batch list and source, not only against this document's prose.
+
 ## 2b. Converter (`rf-bundle-to-kb-pack`)
 
 `tools/rf-bundle-to-kb-pack/` is the deterministic, offline seam between a **verified** Research
