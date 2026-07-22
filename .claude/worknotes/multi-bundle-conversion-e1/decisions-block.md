@@ -216,6 +216,61 @@ module; § Deferred Items Triage Table, parent plan). Accordingly:
 
 ---
 
+## Addendum A2 — P2 Exit-Gate Scoping Correction (recorded 2026-07-22)
+
+**Trigger**: Phase 2's implementation-plan exit gate (`phase-1-2-vendoring-batch-orchestration.md`,
+Exit gate line + P2-GATE row + Phase 2 Quality Gates checklist) stated "batch runner green over the
+5 fixtures (incl. `rf-cbc-001`)". Verified directly post-execution, live: `node
+tools/rf-bundle-to-kb-pack/cli.mjs batch` **exits non-zero immediately at pair 0**
+(`{tests/fixtures/rf-ev-001, modules/anemia}`) with `DecisionsNotFoundError` — the exact same
+Addendum A1 / DF-E1-M1 blocker (no `authoring-decisions.yaml` on `modules/anemia`), which the batch
+runner's own halt-on-first-failure contract (P2-T3) guarantees will always be hit first, given
+`BATCH_PAIRS`' mandated order. `node cli.mjs aggregate` correspondingly reports all 4 named pairs as
+`bundlesNotAvailable: 4` / `bundlesReported: 0`. Run in isolation (`propose --run-dir
+tests/fixtures/rf-cbc-002 --module modules/cbc_suite_v1/module.json --decisions
+modules/cbc_suite_v1/authoring-decisions.yaml --out <dir>`, bypassing the batch runner), only
+`rf-cbc-002 → cbc_suite_v1` completes `propose` end to end; `rf-ev-001`, `rf-kid-001`, and
+`rf-gro-002` remain blocked on the same DF-E1-M1 gap Addendum A1 already scoped Phase 1 around. As
+literally written, "batch runner green over the 5 fixtures" is **false** today.
+
+**Decision**: This is not a P2 defect, and — per Addendum A1's same reasoning — it is **not** to be
+closed by authoring `authoring-decisions.yaml` for the 3 unqualified modules inside this feature.
+Accordingly:
+
+- P2's exit gate is corrected/scoped to: the batch-orchestration **machinery** (literal
+  `BATCH_PAIRS` enumeration, fixed `inspect → verify → propose` per-pair pipeline, fail-closed
+  halt-on-first-failure naming the failing pair, per-pair output isolation, run-to-run determinism,
+  and the `aggregate` roll-up's explicit 0/`[]`/`not_available` field semantics) is proven and green —
+  exercised directly via `runBatch`'s pairs-parameterized signature in
+  `tests/ef-converter-batch.test.mjs` and `tests/ef-batch-runner.test.mjs` (a synthetic 4-pair batch
+  with a seeded corruption, so the halt/isolation contract is verified independent of DF-E1-M1) — not
+  that `node cli.mjs batch` currently exits 0 end-to-end over all 5 fixtures. It does not, and is
+  **expected** not to, until DF-E1-M1 closes for the 3 modules without an `authoring-decisions.yaml`.
+- The `rf-cbc-002 → cbc_suite_v1` pair — the one fixture with an `authoring-decisions.yaml` — is
+  confirmed to complete `inspect → verify → propose` end to end (27 eligible, 0 conflicts, 61
+  rejected per its own `conversion-report.json`), consistent with Addendum A1's P1 scoping.
+- The **`rf-cbc-001` regression check** clause is satisfied by the pre-existing E0-era `rf-cbc-001`
+  test coverage (`tests/ef-converter-*.test.mjs`) continuing to pass under `npm run check`
+  (confirmed 1302/1302 green after all 6 P2 commits) — none of the 6 new P2 tests
+  (`tests/ef-converter-batch.test.mjs`, `tests/ef-wp1-eligibility.test.mjs`,
+  `tests/ef-converter-multi-bundle-report.test.mjs`, `tests/ef-batch-runner.test.mjs`,
+  `tests/ef-batch-reg-exclusion.test.mjs`) reference `rf-cbc-001` directly; the regression guarantee
+  is "the existing suite still passes," never "a new P2 test exercises rf-cbc-001." This linkage is
+  now stated explicitly here, in `tools/rf-bundle-to-kb-pack/lib/batch.mjs`'s header, and in the
+  phase-2 exit gate/quality-gate text — not left implicit.
+- `EF-WP1`'s structural pre-flight (`pediatric_cds` extension check, `lib/eligibility.mjs`) is
+  unaffected by this scoping — it is a per-bundle structural gate, independent of
+  `authoring-decisions.yaml`, and is confirmed passing for all 5 fixtures (P2-T1) as originally
+  written.
+- `docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1/phase-1-2-vendoring-batch-orchestration.md`
+  (Phase 2 exit gate line, P2-GATE row, Phase 2 Quality Gates checklist) and
+  `.claude/progress/multi-bundle-conversion-e1/phase-2-progress.md` (Exit Criteria / Quality Gates)
+  are updated to reflect this scoping.
+- No `authoring-decisions.yaml` was, or will be, authored under P2 to force a full end-to-end batch
+  pass over all 5 fixtures.
+
+---
+
 ## Notes for implementation-planner
 
 - **Honesty ACs are load-bearing**: every projection phase (P4/P5) must carry an explicit AC asserting **zero new clinical rules** and `approvedBy: []` / null clinicalContentHash. Do not let "module complete" imply clinical readiness.

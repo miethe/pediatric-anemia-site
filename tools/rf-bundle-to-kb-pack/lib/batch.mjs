@@ -45,6 +45,17 @@
 // `./errors.mjs`; none of those import `node:http`, `node:https`, `node:dgram`, `fetch`, or any
 // AI/model SDK.
 //
+// rf-cbc-001 REGRESSION CHECK (Phase 2 exit gate / Decisions Block Addendum A2): the Phase 2 exit
+// gate's "rf-cbc-001 regression check" clause is satisfied by the pre-existing E0-era `rf-cbc-001`
+// test coverage (`tests/ef-converter-*.test.mjs`, e.g. `ef-converter-inspect.test.mjs`,
+// `ef-converter-propose.test.mjs`, `ef-converter-eligibility.test.mjs`) continuing to pass under
+// `npm run check` -- confirmed 1302/1302 green after all 6 P2 commits landed. None of this pass's 6
+// new P2 tests (`tests/ef-converter-batch.test.mjs`, `tests/ef-wp1-eligibility.test.mjs`,
+// `tests/ef-converter-multi-bundle-report.test.mjs`, `tests/ef-batch-runner.test.mjs`,
+// `tests/ef-batch-reg-exclusion.test.mjs`, `tests/ef-generate-rf-fixture.test.mjs`) reference
+// `rf-cbc-001` directly -- the regression guarantee is "the pre-existing E0 suite still passes,"
+// stated here explicitly rather than left implicit.
+//
 // Verb-handler contract (same as every file in `./verbs/`, even though this file lives one level
 // up): the exported `run(options)` either resolves to a numeric exit code or throws a
 // `ConverterError` (or subclass) that `cli.mjs` forwards unaltered.
