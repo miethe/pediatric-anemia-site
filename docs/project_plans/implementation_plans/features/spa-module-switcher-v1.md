@@ -2,9 +2,9 @@
 schema_version: 2
 doc_type: implementation_plan
 title: "Implementation Plan: SPA Module Switcher — honest module inventory + eligibility-gated selection"
-status: draft
+status: in_review
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-23
 feature_slug: spa-module-switcher
 feature_version: v1
 prd_ref: docs/project_plans/PRDs/features/spa-module-switcher-v1.md
@@ -13,7 +13,7 @@ scope: "Wire the browser SPA to the already-module-agnostic runtime: list all fo
 tier: 3
 effort_estimate: "41 pts"
 architecture_summary: "New src/moduleManifests.js (four literal `import … with { type: 'json' }` statements → frozen moduleId-keyed map; browser verifies nothing) and src/moduleStatusVocabulary.js (single source for every clinician-facing status string) are registered in APP_SURFACE_FILES. A literal-specifier MODULE_KB_LOADERS map drives per-module KB fetches so build-static.mjs `?v=` stamping and check-app-imports per-file verification both still apply. Eligibility is a single READY_STATUS (src/kbVerify.js:43) comparison in the UI layer, decided before any assess() call; assessModule() is added alongside the retained assessPediatricAnemia export so the source-grepping smoke gate keeps passing. A distinct showModuleRefusal path — never showInputRejection — covers the four SQ-3 §4 refusal cases."
-related_documents: [docs/project_plans/PRDs/features/spa-module-switcher-v1.md, .claude/worknotes/spa-module-switcher/decisions-block.md, .claude/worknotes/spa-module-switcher/exploration-findings.md, .claude/worknotes/spa-module-switcher/spike-leg-sq1-module-eligibility.md, .claude/worknotes/spa-module-switcher/spike-leg-sq2-banner-truth-source.md, .claude/worknotes/spa-module-switcher/spike-leg-sq3-failure-surface.md, .claude/worknotes/spa-module-switcher/spike-leg-sq4-prior-art-reconciliation.md, .claude/worknotes/spa-module-switcher/routing-records.md, docs/project_plans/human-briefs/spa-module-switcher.md, docs/project_plans/design-specs/public-moduleid-api-surface.md, docs/architecture.md, docs/governance/gates-registry.md]
+related_documents: [docs/project_plans/PRDs/features/spa-module-switcher-v1.md, .claude/worknotes/spa-module-switcher/decisions-block.md, .claude/worknotes/spa-module-switcher/exploration-findings.md, .claude/worknotes/spa-module-switcher/spike-leg-sq1-module-eligibility.md, .claude/worknotes/spa-module-switcher/spike-leg-sq2-banner-truth-source.md, .claude/worknotes/spa-module-switcher/spike-leg-sq3-failure-surface.md, .claude/worknotes/spa-module-switcher/spike-leg-sq4-prior-art-reconciliation.md, .claude/worknotes/spa-module-switcher/routing-records.md, docs/project_plans/human-briefs/spa-module-switcher.md, docs/project_plans/design-specs/public-moduleid-api-surface.md, docs/architecture.md, docs/governance/gates-registry.md, .claude/findings/spa-module-switcher-findings.md]
 references:
   user_docs: [docs/architecture.md]
   context: []
@@ -21,10 +21,15 @@ references:
   related_prds: [docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1.md]
 spike_ref: docs/project_plans/SPIKEs/spike-008-spa-module-switcher.md
 adr_refs: [docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md, docs/adr/0010-browser-test-capability-for-the-spa.md]
-deferred_items_spec_refs: []
-findings_doc_ref: null
+deferred_items_spec_refs:
+  - docs/project_plans/design-specs/sign-kb-per-module-content-hashing.md
+  - docs/project_plans/design-specs/per-module-evidence-view.md
+  - docs/project_plans/design-specs/algorithm-explorer-module-generalization.md
+  - docs/project_plans/design-specs/public-moduleid-api-surface.md
+  - docs/adr/0010-browser-test-capability-for-the-spa.md
+findings_doc_ref: .claude/findings/spa-module-switcher-findings.md
 charter_ref: null
-changelog_ref: null
+changelog_ref: CHANGELOG.md#unreleased
 changelog_required: true
 test_plan_ref: null
 plan_structure: independent
@@ -36,9 +41,17 @@ risk_level: high
 category: features
 tags: [implementation, spa, module-switcher, governance, fail-closed, a11y, honesty-boundary]
 milestone: null
-commit_refs: []
+commit_refs:
+  - a42dbda
+  - 70b3bc4
+  - 1a4c8b9
+  - cfce8e1
+  - db3d336
+  - f103df2
+  - bb798c8
+  - 04aa713
 pr_refs: []
-files_affected: [docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md, docs/project_plans/design-specs/public-moduleid-api-surface.md, src/moduleManifests.js, src/moduleStatusVocabulary.js, src/moduleKbLoaders.js, src/moduleEligibility.js, src/engine.js, src/app.js, index.html, styles.css, src/algorithmExplorer.js, scripts/check-app-imports.mjs, scripts/smoke-browser-unit-rejection.mjs, tests/module-switcher-status-labels.test.mjs, tests/module-switcher-eligibility.test.mjs, tests/module-registry.test.mjs, docs/architecture.md, CLAUDE.md, CHANGELOG.md]
+files_affected: [docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md, docs/adr/0010-browser-test-capability-for-the-spa.md, docs/project_plans/design-specs/public-moduleid-api-surface.md, docs/project_plans/design-specs/sign-kb-per-module-content-hashing.md, docs/project_plans/design-specs/per-module-evidence-view.md, docs/project_plans/design-specs/algorithm-explorer-module-generalization.md, src/moduleManifests.js, src/moduleStatusVocabulary.js, src/moduleKbLoaders.js, src/moduleEligibility.js, src/engine.js, src/app.js, index.html, styles.css, src/algorithmExplorer.js, scripts/check-app-imports.mjs, scripts/smoke-browser-unit-rejection.mjs, tests/module-switcher-status-labels.test.mjs, tests/module-switcher-eligibility.test.mjs, tests/module-registry.test.mjs, tests/module-status-vocabulary.test.mjs, .claude/findings/spa-module-switcher-findings.md, docs/architecture.md, CLAUDE.md, CHANGELOG.md]
 wave_plan:
   serialization_barriers: [src/app.js, index.html, CLAUDE.md]
   phases:

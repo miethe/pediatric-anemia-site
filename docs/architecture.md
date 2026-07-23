@@ -93,6 +93,20 @@ it (§7); state explicitly that the flag is not itself a sign-off; enumerate the
 the same shape as §4 of `reg-001-reg-004-hold.md`; and add a regression test asserting the exclusion
 holds against the converter's own batch list and source, not only against this document's prose.
 
+### Client-facing module selection (SPA Module Switcher, `spa-module-switcher-v1`)
+
+The browser SPA (`src/app.js`) surfaces a header-dropdown module selector that lists every module
+returned by `listModules()`/`MODULE_IDS` (`src/modules/registry.js`), reads display fields from the
+frozen `src/moduleManifests.js` map (four literal `import … with { type: 'json' }` statements), and
+computes eligibility once by comparing each `moduleManifests[id].status` against `READY_STATUS`
+imported from `src/kbVerify.js`. **This surface is a read-only consumer of the existing module
+registry — it introduces no new registry, no runtime cache, and no persistence layer.** The four
+rows are rendered in two structurally distinct groups (selectable vs. inert-with-status-shown) per
+ADR-0009's mapping. Selection updates `?module=` on the URL only; nothing is written to
+`localStorage`, `sessionStorage`, or a cookie. The behavioral guarantees this surface makes are
+established by source inspection plus one human review pass, never by an executed browser test (see
+`docs/adr/0010-browser-test-capability-for-the-spa.md`, `status: proposed`, and PRD §11a).
+
 ## 2b. Converter (`rf-bundle-to-kb-pack`)
 
 `tools/rf-bundle-to-kb-pack/` is the deterministic, offline seam between a **verified** Research
@@ -221,6 +235,12 @@ The manifest is a **two-part SHA-256 digest**, not a cryptographic signature ove
 `status` is a closed lifecycle enum: `unsigned-stub` → `integrity-recorded` → `superseded`/
 `revoked`. Only `integrity-recorded` is servable (`src/kbVerify.js#READY_STATUS`); a matching hash
 proves content-provenance consistency with a prior release, never clinical validity.
+
+Since `spa-module-switcher-v1` the browser SPA also surfaces each module's `manifest.status` value
+directly in the header selector — reading it as-authored from `src/moduleManifests.js`, not from the
+server response or `dist/build-info.json` — and **the browser itself verifies nothing**: hash
+recomputation, schema validation, and servability all remain server- and build-side responsibilities
+(see §2a "Client-facing module selection").
 
 ```json
 {
@@ -386,6 +406,23 @@ in `src/kbVerify.js`, but `maxAgeDays` is `null` — no human has made the gover
 sets the staleness window. Every consumer of the expiry verdict must disclose "not enforced"
 loudly (`server.mjs` logs a warning at startup); `null` must never be read as "checked and passed"
 or as "never expires."
+
+**Client-side fail-closed refusal (SPA Module Switcher, `spa-module-switcher-v1`).** Selecting a
+module the eligibility predicate rejects — because its `manifest.status` is not `READY_STATUS`, or
+its evidence registry entry is absent, or its hooks are not implemented, or its KB fetch 404s —
+routes the browser SPA to an explicit refusal state (`showModuleRefusal(moduleId, reason)` in
+`src/app.js`), never to a silent or partially rendered assessment. The refusal path clears the prior
+result, disables the audit download, disables submit, and leaves the module selector interactive; it
+does not route through the `INPUT_REJECTION_CODES` used by the unit-rejection state (§10 condition 1
+above), and it never renders the "Check the entered units" heading. `src/evidence/registry.js`
+throws on an unknown module id today; the switcher catches that throw and routes to the refusal
+rather than crashing the page. **The verification ceiling on this behavior is stated by the feature
+that shipped it**: this refusal behavior is established by source inspection plus one human review
+pass, never by an executed browser test (this repository has no browser automation and no test
+dependencies — see PRD §11a of `spa-module-switcher-v1` and `docs/adr/0010-browser-test-capability-for-the-spa.md`,
+`status: proposed`). Read this entry against the same non-enforcement discipline the staleness
+paragraph above codifies: an untested behavioral guarantee is disclosed loudly, never inferred from
+a passing `npm run check`.
 
 A failed system displays a clear "no assessment produced"/refusal-to-start state, not stale or partially calculated advice.
 

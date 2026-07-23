@@ -36,12 +36,13 @@ interventional) are passed.
 ## Architecture orientation
 
 ```
-patient JSON → deriveFacts() (src/facts.js, shim over modules/anemia/facts.anemia.js) → JSON rule engine (src/ruleEngine.js over modules/anemia/rules.json)
-            → merge/rank candidate patterns (modules/anemia/candidates.json) → evidence-linked output + audit (src/engine.js)
+patient JSON → deriveFacts(input, moduleId) (src/facts.js shim; src/facts/registry.js) → JSON rule engine (src/ruleEngine.js over modules/<moduleId>/rules.json)
+            → merge/rank candidate patterns (modules/<moduleId>/candidates.json) → evidence-linked output + audit (src/engine.js)
 ```
 
-- Knowledge base: `modules/anemia/rules.json` (91 rules), `modules/anemia/candidates.json` (26 patterns),
-  `modules/anemia/evidence.json` (6 records), `modules/anemia/reference-ranges.json` (AAP fallbacks; local ranges override).
+- Knowledge base: `modules/<moduleId>/{rules,candidates,evidence,reference-ranges}.json` — four
+  modules registered today (only `anemia` is `status: integrity-recorded`; see `docs/architecture.md`
+  §2a for the inventory table). Local ranges override AAP fallbacks.
 - Rule DSL: `all`/`any`/`not`, tri-state + equality/numeric/existence checks → candidate/alert/
   question/note outputs with evidence IDs. Wave-0 safety substrate: `docs/architecture.md` §6/§7/§10
   (`clinicalApprovers[]`/`approvedBy[]` stay schema-forced empty; no clinical sign-off exists).

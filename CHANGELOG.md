@@ -6,6 +6,78 @@ Wave-0 Safety Foundation program (EP-1 through EP-6). This is still an unvalidat
 prototype: the items below describe software behavior only and prove nothing about clinical
 validity, safety, diagnostic performance, or regulatory status.
 
+### SPA Module Switcher — honest module inventory + eligibility-gated selection (spa-module-switcher-v1)
+
+The browser SPA's header now discloses every registered module rather than hiding all but one.
+Nothing in the feature signs any module, changes any `module.json.status`, or claims any clinical
+review has occurred — the ceiling on how its UI was established is `PRD §11a` (source inspection
+plus one human review pass; no browser test executed the state machine).
+
+- **Header module selector, four rows, two structural groups.** All four registered modules
+  (`anemia`, `cbc_suite_v1`, `growth_suite_v1`, `kidney_suite_v1`) are listed in a dropdown reached
+  from the header, with a verbatim panel header (`These modules are not peers. Read each row.`) and
+  each module's `module.json.status` shown as-read. Exactly one is selectable (`anemia`,
+  `status: integrity-recorded`); the other three are inert with their status displayed verbatim, the
+  same "never hide unservable state" disclosure precedent `GET /api/v1/knowledge-base` already applied
+  server-side (ADR-0009). No module's status changed; nothing was signed; every `approvedBy` and
+  `clinicalApprovers` array remains schema-forced empty (`docs/architecture.md` §6/§7). `?module=`
+  drives initial selection; selection is persisted to the URL only, never to `localStorage`,
+  `sessionStorage`, or a cookie.
+- **Eligibility bound to one runtime constant.** Selection eligibility is decided by comparing
+  `module.json.status` against `READY_STATUS` imported from `src/kbVerify.js` (`'integrity-recorded'`);
+  the literal never appears in any UI file. The predicate is evaluated inside the module-selection,
+  KB-load, and assessment-submit handlers so a devtools user who deletes the row's `disabled`
+  attribute and fires the handler still cannot reach `assess()` against an ineligible module — the
+  `disabled` attribute is a presentation guarantee, not the gate.
+- **Fail-closed refusal state, distinct from unit rejection.** A new `showModuleRefusal(moduleId,
+  reason)` path replaces four cases that previously mis-routed through `showInputRejection`
+  ("Check the entered units"): (1) evidence registry has no entry for the module, (2) the module's
+  hooks are not implemented, (3) manifest `status` is not `READY_STATUS`, (4) the module's KB fetch
+  404s. In each case a prior result is cleared, the audit download is disabled, submit is disabled,
+  and the module selector remains interactive. No refusal is routed through `INPUT_REJECTION_CODES`;
+  none renders the "Check the entered units" heading.
+- **Module-scoped degradation, not silent anemia fallback.** The active `moduleId` gates the
+  `#algorithm` tab (the explorer stays anemia-shaped by design — R-8 — and is hidden under any other
+  module rather than executed with a different label), the `#evidence` view (limited to modules with
+  a registered evidence loader), the `#rules` empty state, and the examples picker (empty **and**
+  disabled under a non-anemia module rather than offering anemia cases). `manifest.title` drives
+  `document.title`, `<h1>`, brand, and footer copy under whichever module is active; `index.html`'s
+  static `91`/`26` rule/pattern counts are neutralized in favor of the loaded module's own totals.
+- **Renderer allow-list, not just a token scan.** The row and banner renderer may read only an
+  enumerated subset of manifest fields (`id`, `title`, `status`, `knowledgeBaseVersion`,
+  `evidenceReviewedThrough`, `approvedBy.length`); every other property — including
+  `clinicalContentHash`, which anemia's manifest legitimately carries — is structurally unreachable
+  by the renderer. This is a corrective to a token-scan-only check that a `JSON.stringify(manifest)`
+  into a row would pass while emitting a hash cleanly.
+- **New app-surface modules registered.** `src/moduleManifests.js` (a frozen `moduleId`-keyed map
+  built from four literal `import … with { type: 'json' }` statements — the browser verifies nothing,
+  it surfaces `manifest.status` as-read), `src/moduleStatusVocabulary.js` (a single source of every
+  clinician-facing status string, panel header, honesty-boundary sentence, and staleness disclosure —
+  none inlined in `index.html` or `src/app.js`), `src/moduleKbLoaders.js` (a literal-specifier map so
+  `?v=` stamping and per-file import verification still apply), and `src/moduleEligibility.js` (the
+  predicate) are all added to `APP_SURFACE_FILES`. `assessModule(moduleId, input, rules, candidates)`
+  is exported from `src/engine.js` alongside the retained `assessPediatricAnemia` export, so the
+  source-grepping smoke gate keeps passing.
+- **Verification harness, D-6 ceiling stated in the harness itself.** 84 new gate tests across
+  `tests/module-switcher-*.test.mjs` and adjacent files run to the ceiling this repository actually
+  affords: `node:test` over non-DOM modules (predicate, vocabulary, engine graph) plus
+  `functionBody()` + regex assertions over `src/app.js`/`index.html`/`styles.css` for source-order
+  and identifier-reference facts. The existing `scripts/smoke-browser-unit-rejection.mjs` was
+  **extended, never rewritten**: its five pre-existing assertion sites and its own `:4-15`
+  no-browser-automation boundary statement are retained verbatim; a sibling assertion block was
+  added for the module-refusal UI mirroring the `AGE_OUT_OF_SUPPORTED_RANGE` block; and the
+  executed half now runs `assessModule('anemia', …)` against the built non-DOM graph. Two tripwire
+  comments were actioned separately: `tests/module-registry.test.mjs:20-24` (overdue since commit
+  `263120b` when four modules registered; not caused by this feature) and `src/modules/registry.js:39-50`
+  (fired by this feature — a client-selectable `moduleId` surface shipped; `DEFAULT_MODULE_ID` stays
+  `'anemia'` per E1 FR-14/R-8 and ADR-0009 as it is now the *initial* selection, not the *only* one).
+- **ADR-0010 records the missing capability.** `docs/adr/0010-browser-test-capability-for-the-spa.md`
+  (`status: proposed`) records the D-6 refusal to add jsdom or a headless browser as a side effect
+  of a UI feature, names the concrete cost measured against this feature (behavioral fail-closure,
+  banner placement, and refusal transitions are source-asserted plus human-reviewed, never executed),
+  and states its own promotion trigger: further safety-critical SPA UI, or a second selectable
+  module.
+
 ### Evidence Foundry E1: Clinical Governance Triad (Review Workflow · Signed Release · Retrospective Validation)
 
 Three new offline Node ESM CLIs implement the Evidence Foundry E1 clinical-governance machinery,

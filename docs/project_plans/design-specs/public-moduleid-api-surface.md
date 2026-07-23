@@ -209,3 +209,36 @@ client- or server-side — a fact `spa-module-switcher-v1`'s own decisions block
 and D-7 (`.claude/worknotes/spa-module-switcher/decisions-block.md`). A future server-side design
 built on PR #26's prior art must gate on the same eligibility predicate the browser switcher uses,
 not on "registered" alone.
+
+## Shipped-state evidence appended by `spa-module-switcher-v1` P7-DOC-006 (2026-07-23)
+
+The `spa-module-switcher-v1` feature has now shipped through Phase 6 (verification harness
+complete; a header-dropdown module selector, an eligibility-gated selection path, a fail-closed
+refusal state, and module-scoped tab degradation are all delivered). This is direct evidence that
+this spec's promotion trigger's clause (2) — "a client needs to choose via the HTTP API" —
+**still has not fired**, and lets the deferral verdict move from "verified against SQ-4 as of
+2026-07-22" to "verified against the actually-shipped switcher as of 2026-07-23".
+
+Concrete evidence, current repo state after the feature's Phase 6 commits (see
+`docs/project_plans/implementation_plans/features/spa-module-switcher-v1.md` `commit_refs` for the
+exact SHAs):
+
+- **The switcher makes zero HTTP `/api/` calls.** Verified via a grep of the four new
+  `APP_SURFACE_FILES` entries (`src/moduleManifests.js`, `src/moduleStatusVocabulary.js`,
+  `src/moduleKbLoaders.js`, `src/moduleEligibility.js`) plus the touched `src/app.js`,
+  `src/algorithmExplorer.js`, and `src/evidence.js`: every fetch specifier resolves to a relative
+  path (`./modules/<id>/...`, `./examples/...`, `./data/...`, `./dist/...`), and no
+  `/api/v1/knowledge-base` or `/api/v1/assess` reference exists in any switcher-owned file.
+- **`server.mjs` is byte-untouched by the feature.** Confirmed against P0-04's diff-scope guard
+  (FR-35) and against the FEATURE-KAREN P7 review of the whole feature diff: no
+  `POST /api/v1/assess` request-shape change, no new query parameter, no path-segment resource,
+  no error-response envelope change. `openapi.yaml` is also untouched.
+- **No client of `server.mjs` has changed its module-selection posture.** The browser SPA now
+  selects a module client-side; nothing new selects a module server-side. Any future non-browser
+  caller (CDS Hooks integration, a batch API, a second SPA served from a different origin) would be
+  the trigger for clause (2), not this browser feature.
+
+**Server-side `moduleId` therefore stays deferred, with the reason unchanged from the
+2026-07-22 SQ-4 re-confirmation section above: "no client reaches this API with a module
+selection to make."** The design sketch and open questions in this spec remain the right shape to
+resolve when a non-browser client actually needs to select a module over HTTP.

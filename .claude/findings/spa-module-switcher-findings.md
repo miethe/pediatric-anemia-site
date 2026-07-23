@@ -3,13 +3,13 @@ schema_version: 2
 doc_type: report
 report_category: findings
 title: "Findings — SPA Module Switcher execution (spa-module-switcher-v1)"
-status: draft
+status: accepted
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-23
 feature_slug: spa-module-switcher
 prd_ref: docs/project_plans/PRDs/features/spa-module-switcher-v1.md
 plan_ref: docs/project_plans/implementation_plans/features/spa-module-switcher-v1.md
-promoted_to: null
+promoted_to: docs/project_plans/implementation_plans/features/spa-module-switcher-v1.md
 source: execution
 tags: [findings, spa-module-switcher]
 ---
@@ -17,8 +17,9 @@ tags: [findings, spa-module-switcher]
 # Findings — SPA Module Switcher execution
 
 > Lazy-created at the first execution-time finding (2026-07-22, execution start). P7-DOC-007
-> appends the two planning-time-known findings (R-5 sign-kb hardcode; SQ-3 F9 cbc evidence IDs)
-> plus the stale-tripwire finding, and advances `status: draft → accepted`.
+> appended the three planning-time-known findings (R-5 sign-kb hardcode; SQ-3 F9 cbc evidence IDs;
+> the stale-tripwire comment overdue since commit `263120b`, actioned at P6-010) on 2026-07-23 and
+> advanced `status: draft → accepted`. Execution-time findings E-1/E-2/E-3 are retained intact.
 
 ## Finding E-1 (execution-time, 2026-07-22) — `main` is red before this feature's first commit: 25 test failures + `npm run validate` exit 1, all in `modules/**` / rights substrate
 
@@ -89,3 +90,81 @@ P7-DOC-006). Recorded so the DF-SMS-03 spec cites a measured, reviewer-confirmed
 re-deriving it. The related latent TOCTOU findings from the same review (stale KB-load resolution;
 loadExample's await between guard and assess) were **fixed in-phase** with a load-generation guard,
 not deferred.
+
+## Finding P-1 (planning-known, appended 2026-07-23 at P7-DOC-007) — R-5 / DF-SMS-01 — `scripts/sign-kb.mjs` anemia hardcode makes every module's `clinicalContentHash` a false attestation if surfaced
+
+**Observed pre-feature; recorded here per the parent plan's "In-Flight Findings" policy.**
+`scripts/sign-kb.mjs:58-73` hardcodes anemia's KB file list — `modules/anemia/rules.json`,
+`modules/anemia/candidates.json`, `modules/anemia/evidence.json`,
+`modules/anemia/reference-ranges.json`, plus `src/ranges.js` and `src/facts.anemia.js` as raw-byte
+sources. `scripts/build-static.mjs:54-55` invokes it per-module with no module id, so every module's
+`clinicalContentHash` is computed over **anemia's** files rather than the invoking module's own KB.
+The defect is currently masked because the three non-anemia modules ship
+`clinicalContentHash: null` and `src/kbVerify.js:240` short-circuits on `null`; anemia's own hash
+happens to be over anemia's files and so is not itself misattributed.
+
+**Attribution**: pre-existing, out of scope for `spa-module-switcher-v1` (PRD §7 non-goal). Kept
+off-screen entirely by FR-31's renderer allow-list (P6-008): the row/banner renderer may not read
+`clinicalContentHash`, `hashes`, `governanceHash`, or any hash-shaped manifest field, and cannot
+emit them into any `data-*` attribute, `innerHTML`, or `textContent`. A future integrity-hash UI
+must fix this defect before FR-31's prohibition can be relaxed.
+
+**Deferral**: **DF-SMS-01**, spec at `docs/project_plans/design-specs/sign-kb-per-module-content-hashing.md`
+(authored at P7-DOC-006). The spec's own trigger is "anyone proposes surfacing a hash,
+`hashes.recomputed`, or per-module integrity status in a clinician-facing surface" — until then FR-31
+is the guard, not the fix.
+
+## Finding P-2 (planning-known, appended 2026-07-23 at P7-DOC-007) — SQ-3 F9 / DF-SMS-05 — `cbc_suite_v1`'s 7 rule evidence IDs resolve to nothing against the anemia-only evidence registry
+
+**Observed pre-feature; recorded here per the parent plan's "In-Flight Findings" policy.** All
+seven evidence identifiers cited by `modules/cbc_suite_v1/rules.json`'s current rule set —
+
+- `HEMATOLREP2024_NEUTROPENIA_REVIEW`
+- `CALIPER2020_HEMATOLOGY_I`
+- `CALIPER2023_MINDRAY_79PARAM`
+- `SCNIR2022_GCSF_OUTCOMES`
+- `COH2015_ELANE_MUTATIONS`
+- `JPEDS2023_DUFFY_NULL_NEUTROPENIA`
+- `PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES`
+
+— resolve to nothing when passed to `src/evidence.js:9,22`, which contains anemia's 6 evidence
+records only and no other module's records. If `cbc_suite_v1` were ever rendered through the
+clinician-facing evidence path, every rule citation on a fired CBC/cytopenia candidate would
+silently vanish, breaching the CLAUDE.md guardrail that "every clinical statement ties to a source"
+and this repository's hard rule that missingness is never treated as normal.
+
+**Attribution**: pre-existing content-registration debt from `multi-bundle-conversion-e1`, out of
+scope for `spa-module-switcher-v1`. Unreachable while `cbc_suite_v1.status: unsigned-stub` and D-1's
+inert-with-status-shown treatment keeps `assess()`/`assessModule()` from ever being invoked against
+it — the eligibility predicate (`src/moduleEligibility.js`) refuses it before the evidence path is
+consulted. **A live bug the moment `cbc_suite_v1` becomes selectable** — its promotion trigger is
+therefore identical to the DF-SMS-05 promotion trigger, and remediation (registering the seven
+identifiers or amending the rules) is a hard prerequisite for that promotion.
+
+**Deferral**: **DF-SMS-05** — no separate design spec; this finding record *is* the deferral, per
+the parent plan's triage table. The DF-SMS-02 spec (`per-module-evidence-view.md`) covers the
+related-but-distinct question of how a per-module `#evidence` view would be added; that spec cites
+this finding for the evidence-registration prerequisite.
+
+## Finding P-3 (planning-known, appended 2026-07-23 at P7-DOC-007) — stale tripwire comment in `tests/module-registry.test.mjs:20-24`, overdue since commit `263120b`, actioned at P6-010
+
+**Observed pre-feature; **not** caused by `spa-module-switcher-v1`.** `tests/module-registry.test.mjs`
+lines 20-24 carry a comment stating the assertion "must be updated/deleted the day a second module
+registers", and the assertion itself asserts "today there is exactly one registered module". Four
+modules have been registered under `modules/` since commit `263120b` (`multi-bundle-conversion-e1`
+Phase 6, landed 2026-07-22): `anemia`, `cbc_suite_v1`, `growth_suite_v1`, `kidney_suite_v1`. The
+trigger this comment named fired at that commit and went unactioned for a release; the comment has
+been factually stale ever since, independent of whether `spa-module-switcher-v1` shipped or was
+cancelled.
+
+**Attribution**: pre-existing debt, closed by this feature at **P6-010** because the D-6 verification
+harness needed to touch this file. The correction updates the comment to state the real module
+count and records that the trigger had been unactioned since `263120b`; the commit message for
+P6-010 was required to treat this tripwire (Tripwire A) as distinct from the *separate*
+`src/modules/registry.js:39-50` tripwire (Tripwire B — a *client-selectable moduleId surface* trigger
+that `spa-module-switcher-v1` did fire, decided per E1 FR-14/R-8 + ADR-0009).
+
+**Deferral**: none — closed. Recorded here as a finding rather than a deferred item because the
+correction was mechanical, not a design question; the design question (whether `DEFAULT_MODULE_ID`
+should change from `'anemia'`) was answered by ADR-0009 and E1 FR-14/R-8 at P6-010, and does not
+require a further spec.
