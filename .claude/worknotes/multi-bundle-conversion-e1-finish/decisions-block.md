@@ -203,6 +203,18 @@ Resolved via `delegation-router`; source of truth `agentic_meta_dev/docs/agentic
 
 ---
 
+## 7a. Opus Resolutions (post-PRD, binding — supersede the corresponding OQs)
+
+The PRD-authoring pass surfaced three underspecifications. Resolved here so the implementation plan is not blocked:
+
+- **R-1 (corrects §0 `related_documents` and the P5 scope): the DF-E1-M1 and DF-E1-M3 design specs do NOT exist.** Only `docs/project_plans/design-specs/df-e1-04-retrospective-validation-linkage.md` is present. Treat both as **create, not update**. The decisions-block frontmatter reference to `df-e1-m1-rule-authoring-workflow.md` is aspirational, not a live path — do not read it, author it.
+
+- **R-2 (resolves OQ-A): the non-approving status value is `drafted_pending_human_approval`.** Rationale: it is impossible to misread as an approval when skimming YAML, it names the missing party (human) rather than a process stage, and it sorts adjacent to `approved_for_rule_draft` alphabetically so the contrast is visible in a diff. Add it to `authoring-decisions.schema.json`'s enum. **`rejected` and `withdrawn` must equally block emission** — the gate is an allowlist (`status === 'approved_for_rule_draft'` permits; everything else refuses), never a denylist. An allowlist fails closed when a future enum value is added; a denylist fails open. This is the single most important implementation detail in P1.
+
+- **R-3 (resolves OQ-D's missing fallback): converter output does NOT overwrite committed bespoke evidence in this plan.** If P4's semantic diff between converter-produced and committed-bespoke `evidence.json` for `kidney_suite_v1`/`growth_suite_v1` is anything other than empty, the default is fail-closed: write converter output to `build/` only, commit the `semantic-diff.json` as the evidence of divergence, and defer replacement to a follow-on increment with that diff as its input. **P4 does not block on resolving the diff** — it blocks on *producing and committing* it. Replacing committed evidence projections is a content change that deserves its own review, not a side effect of a reproducibility fix. If the diff *is* empty, note that as the strongest possible confirmation that the bespoke scripts and the real converter agree, and the replacement becomes trivial.
+
+---
+
 ## 8. Plan Skeleton Pointer
 
 This decisions block expands into a full **PRD + Implementation Plan**:
