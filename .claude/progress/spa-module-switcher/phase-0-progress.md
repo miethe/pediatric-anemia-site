@@ -10,17 +10,17 @@ phase_detail_ref: docs/project_plans/implementation_plans/features/spa-module-sw
 execution_model: batch-parallel
 phase: 0
 title: "SPA Module Switcher — Phase 0: Governance & Paperwork Prerequisites"
-status: pending
+status: in_progress
 created: '2026-07-22'
-updated: '2026-07-22'
-started: null
+updated: '2026-07-23'
+started: '2026-07-22T23:45:00Z'
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 80
 completion_estimate: on-track
 total_tasks: 5
-completed_tasks: 0
+completed_tasks: 4
 in_progress_tasks: 0
 blocked_tasks: 0
 at_risk_tasks: 0
@@ -45,7 +45,9 @@ tasks:
     server.mjs's GET /api/v1/knowledge-base. State this ADR governs every future module, not only
     the current four. Do NOT conflate with ADR-0001 (its trigger concerns rule-schema authoring, not
     UI selection — SQ-4 §3).
-  status: pending
+  status: completed
+  started: '2026-07-22T23:45:00Z'
+  completed: '2026-07-23T00:05:00Z'
   assigned_to: [general-purpose]
   provider: claude
   dependencies: []
@@ -60,6 +62,13 @@ tasks:
     enum values; the READY_STATUS-import constraint is stated as binding; ADR-0001 is explicitly
     named as not tripped, with SQ-4 §3's reason; no G0 ratification is claimed or implied (OQ-4:
     proposed suffices, matching ADR-0004/0005/0006).
+  evidence:
+  - "docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md created with front-matter `status: proposed`"
+  - "\"Decision\" section's status→affordance table covers all 4 enum values (integrity-recorded selectable; unsigned-stub/superseded/revoked all listed-but-inert)"
+  - "\"The eligibility predicate is bound to one runtime constant, never a literal\" section names `READY_STATUS` (src/kbVerify.js:43) as binding, prohibits the hardcoded literal"
+  - "\"Not conflated with ADR-0001\" section names ADR-0001 explicitly, states its trigger is rule-schema authoring (SQ-4 §3), not UI selection"
+  - "\"OQ-4 (resolved)\" section states proposed suffices, matching ADR-0004/0005/0006; no G0 ratification claimed"
+  - "\"Status\" section states explicitly: not accepted, no clinical governance body has reviewed or ratified this record"
 - id: P0-02
   description: >
     Record the FR-14/R-8 lifting authority inside ADR-0009. Add a dedicated ADR section stating that
@@ -69,7 +78,9 @@ tasks:
     lifted. Cross-reference multi-bundle-conversion-e1.md:523 (R-4, the four-peers misread risk) and
     state how D-1's structural grouping answers it. This section is the citation P6-010 quotes
     verbatim when flipping the DEFAULT_MODULE_ID tripwire.
-  status: pending
+  status: completed
+  started: '2026-07-23T00:05:00Z'
+  completed: '2026-07-23T00:12:00Z'
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P0-01]
@@ -83,6 +94,10 @@ tasks:
     ADR-0009 contains a section naming E1 FR-14 and R-8 by ID, the scope-bound reading, and the PRD
     path as the decision that lifts it; the section is self-contained enough to be cited verbatim in
     a test comment and a commit message (P6-010 depends on this).
+  evidence:
+  - "ADR-0009 \"The FR-14/R-8 lifting authority\" section names FR-14 and R-8 by ID (multi-bundle-conversion-e1.md:367,527), states the scope-bound reading (\"ahead of any UI/API decision to support it\") and names the switcher PRD path as the decision that lifts it"
+  - "\"R-4's four-peers misread risk, and how D-1's structural grouping answers it\" subsection cross-references multi-bundle-conversion-e1.md:523 (R-4) and states D-1's structural (selectable vs. inert) grouping as the answer"
+  - "Section is self-contained: quotes FR-14/R-8's own conditioning language verbatim and states the switcher PRD path, so it is citable in a future commit message or test comment without needing surrounding context"
 - id: P0-03
   description: >
     Reconcile public-moduleid-api-surface.md — hybrid (c)/(d), NOT promotion (SQ-4 §1). Fix the stale
@@ -94,7 +109,9 @@ tasks:
     :93 open question: single-module-at-a-time, not a combined view (assess() is single-module by
     design; ranking is an ordinal sort priority per module). Frontmatter: updated → 2026-07-22;
     related_documents += the PRD path; maturity: shaping stays unchanged. Do NOT promote the doc.
-  status: pending
+  status: completed
+  started: '2026-07-23T00:12:00Z'
+  completed: '2026-07-23T00:19:00Z'
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P0-01]
@@ -110,6 +127,13 @@ tasks:
     as single-module-at-a-time with the stated rationale; frontmatter updated is 2026-07-22 and
     related_documents includes the PRD; maturity is byte-unchanged; the doc's status/promotion state
     is unchanged.
+  evidence:
+  - "Stale \"no second module directory exists\" bullet corrected in place (2026-07-21 section) with an inline 2026-07-22/SQ-4 correction note citing commit 263120b"
+  - "New section titled exactly \"Deferral re-confirmation (SQ-4, 2026-07-22)\" added, stating clause (1) \"second module registered\" fired and clause (2) \"client needs to choose via HTTP API\" has not, with the corrected reason (browser switcher makes zero /api/ calls, verified against src/app.js, src/algorithmExplorer.js, src/evidence.js fetch call sites)"
+  - "\":93 answered\" subsection resolves the open question as single-module-at-a-time, citing assess()'s single-module design and per-module ordinal ranking"
+  - "\"Prior art: PR #26\" subsection added inside the dated section, naming the closed branch, its PRD path, error contract, path-injection guard, and FR-0 registration-gap analysis, and re-basing its \"all registered assessable\" premise on ADR-0009"
+  - "Frontmatter: `updated: 2026-07-21` -> `2026-07-22`; `related_documents` added with the switcher PRD path"
+  - "`maturity: shaping` line confirmed byte-unchanged (git diff shows no change to that line); doc's `status: draft` unchanged; doc not promoted"
 - id: P0-04
   description: >
     Zero-status-change verification (negative check), PRD FR-35 / decisions block §1 exit gate ("no
@@ -119,7 +143,9 @@ tasks:
     Record the four observed statuses in the phase progress note as the baseline P6-001/P6-004
     assert against (anemia: integrity-recorded; cbc_suite_v1, growth_suite_v1, kidney_suite_v1:
     unsigned-stub). This is a check, not an edit.
-  status: pending
+  status: completed
+  started: '2026-07-23T00:19:00Z'
+  completed: '2026-07-23T00:22:00Z'
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P0-01, P0-03]
@@ -132,6 +158,12 @@ tasks:
   acceptance_criteria: >
     `git diff --name-only -- modules/` is empty after P0; the four statuses are recorded in the
     phase progress note; no sign-kb or signing script was invoked during the phase.
+  evidence:
+  - "`git diff --name-only -- modules/` run post-P0-01..P0-03: empty output (confirmed)"
+  - "`git status --porcelain` post-P0-01..P0-03: only docs/adr/0009-... (new, untracked) and docs/project_plans/design-specs/public-moduleid-api-surface.md (modified) present; nothing under modules/ touched"
+  - "Per-module verification (grep of status/approvedBy/clinicalContentHash) confirms all four module.json files unchanged from pre-P0 state: anemia status=integrity-recorded, approvedBy=[], clinicalContentHash=sha256:97e65556a42dbd7ad8bf9a84867c2ed148419ba8c70bbdfcc1684d670c166bb6; cbc_suite_v1/growth_suite_v1/kidney_suite_v1 all status=unsigned-stub, approvedBy=[], clinicalContentHash=null"
+  - "No sign-kb.mjs or any signing script invoked at any point during Phase 0 (only Read/Edit/Write/Bash-read-only tool calls were made; no Bash write command touched scripts/ or modules/)"
+  - "Baseline recorded below in the P0-04 Baseline section of this progress note, for P6-001/P6-004 to assert against"
 - id: P0-GATE
   description: >
     task-completion-validator gate. Verify the Phase 0 exit gate (decisions block §1): ADR-0009
@@ -219,10 +251,10 @@ is present with the corrected fact; no status was flipped anywhere.
 
 | Task ID | Name | Assigned Subagent(s) | Model/Effort | Provider | Status | Dependencies |
 |---------|------|-----------------------|--------------|----------|--------|---------------|
-| P0-01 | Author ADR-0009 — module eligibility policy | general-purpose (documentation writer¹) | sonnet/adaptive | claude | pending | none |
-| P0-02 | Record FR-14/R-8 lifting authority in ADR-0009 | general-purpose | sonnet/adaptive | claude | pending | P0-01 |
-| P0-03 | Reconcile public-moduleid-api-surface.md | general-purpose | sonnet/adaptive | claude | pending | P0-01 |
-| P0-04 | Zero-status-change verification (negative check) | general-purpose | sonnet/adaptive | claude | pending | P0-01, P0-03 |
+| P0-01 | Author ADR-0009 — module eligibility policy | general-purpose (documentation writer¹) | sonnet/adaptive | claude | completed | none |
+| P0-02 | Record FR-14/R-8 lifting authority in ADR-0009 | general-purpose | sonnet/adaptive | claude | completed | P0-01 |
+| P0-03 | Reconcile public-moduleid-api-surface.md | general-purpose | sonnet/adaptive | claude | completed | P0-01 |
+| P0-04 | Zero-status-change verification (negative check) | general-purpose | sonnet/adaptive | claude | completed | P0-01, P0-03 |
 | P0-GATE | `task-completion-validator` gate | task-completion-validator | sonnet/adaptive | claude | pending | P0-01..P0-04 |
 
 ¹ **Agent-name substitution**: `documentation-writer` is not registered in this project; dispatched as
@@ -318,5 +350,36 @@ Phase 1): `task-completion-validator` sign-off on this phase's `P0-GATE`.
 
 ## Completion Notes
 
-Fill in when Phase 0 is complete: what was authored, key learnings, unexpected challenges,
-recommendations for Phase 2 (which depends on both Phase 0 and Phase 1).
+**P0-01..P0-04 completed 2026-07-23.** P0-GATE (`task-completion-validator`) has not yet run and is
+excluded from this note's completion claim.
+
+- **P0-01/P0-02**: `docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md`
+  authored in one pass covering both tasks — `status: proposed`, the closed 4-value status→affordance
+  mapping bound to `READY_STATUS` (never a hardcoded literal), the FR-14/R-8 lifting-authority section
+  (verbatim-quotable, per P6-010's dependency), the R-4 four-peers-misread cross-reference answered by
+  D-1's structural grouping, and an explicit "Not conflated with ADR-0001" section.
+- **P0-03**: `docs/project_plans/design-specs/public-moduleid-api-surface.md` reconciled per SQ-4
+  §1's hybrid (c)/(d) disposition — the stale 2026-07-21 "no second module directory" claim corrected
+  in place with a dated note, a new "Deferral re-confirmation (SQ-4, 2026-07-22)" section added
+  answering both promotion-trigger clauses and `:93`, and a "Prior art: PR #26" pointer added inside
+  that section. `maturity: shaping` is byte-unchanged (verified via `git diff` — no diff on that
+  line); the doc was **not** promoted.
+- **P0-04 baseline (negative check, recorded for P6-001/P6-004 to assert against)**: `git diff
+  --name-only -- modules/` was empty both before and after P0-01..P0-03, confirming zero module
+  manifest changes and nothing signed. The four observed `module.json` statuses, unchanged throughout
+  Phase 0:
+
+  | Module | `status` | `approvedBy` | `clinicalContentHash` |
+  |---|---|---|---|
+  | `anemia` | `integrity-recorded` | `[]` | `sha256:97e65556a42dbd7ad8bf9a84867c2ed148419ba8c70bbdfcc1684d670c166bb6` |
+  | `cbc_suite_v1` | `unsigned-stub` | `[]` | `null` |
+  | `growth_suite_v1` | `unsigned-stub` | `[]` | `null` |
+  | `kidney_suite_v1` | `unsigned-stub` | `[]` | `null` |
+
+- **Files touched this phase (exhaustive)**: `docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md`
+  (new), `docs/project_plans/design-specs/public-moduleid-api-surface.md` (edited), and this progress
+  file. Nothing under `modules/`, `src/`, `scripts/`, or `tests/` was touched; no git write command was
+  run.
+- **Recommendation for Phase 2**: P2-03's eligibility predicate can cite ADR-0009's status→affordance
+  table directly rather than re-deriving it; P6-010's tripwire flip can quote this ADR's "FR-14/R-8
+  lifting authority" section verbatim as instructed.

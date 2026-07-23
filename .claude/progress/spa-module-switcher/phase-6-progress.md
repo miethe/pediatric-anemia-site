@@ -10,19 +10,19 @@ phase_detail_ref: docs/project_plans/implementation_plans/features/spa-module-sw
 execution_model: batch-parallel
 phase: 6
 title: "SPA Module Switcher — Phase 6: Gates & Test Harness (Verification Phase)"
-status: pending
+status: in_progress
 created: '2026-07-22'
-updated: '2026-07-22'
-started: null
+updated: '2026-07-23'
+started: '2026-07-23T00:00:00Z'
 completed: null
 commit_refs: []
 pr_refs: []
-overall_progress: 0
+overall_progress: 79
 completion_estimate: on-track
 total_tasks: 14
-completed_tasks: 0
+completed_tasks: 11
 in_progress_tasks: 0
-blocked_tasks: 0
+blocked_tasks: 3
 at_risk_tasks: 0
 owners:
 - general-purpose
@@ -42,7 +42,16 @@ tasks:
     Include AC-1 resilience: a manifest missing an optional envelope field renders without
     undefined/empty-label artifacts; a module in MODULE_IDS absent from the manifest map appears
     in the not-selectable group with the FR-17 reason, never dropped.
-  status: pending
+  status: completed
+  completed_at: '2026-07-23T04:00:00Z'
+  evidence: >
+    tests/module-registry.test.mjs — 6 new source-asserted tests appended, named "…source
+    declares…" per the D-6 forbidden-phrasing rule: row set from MODULE_IDS (not a hardcoded
+    count); display fields from MODULE_MANIFESTS; group membership computed once via
+    isModuleSelectable; PANEL_HEADER referenced by identifier, never inlined in src/app.js; both
+    AC-1 resilience branches (optional-field omission guards in moduleRowMarkup; a
+    MODULE_IDS-but-no-manifest id routed to not-selectable with an FR-17 reason, never dropped).
+    All 6 pass. Ceiling: proves the source, not that four rows paint on screen (P6-011).
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P3-03, P5-06]
@@ -65,7 +74,14 @@ tasks:
     Assert READY_STATUS is imported from src/kbVerify.js into the eligibility path, and that the
     literal 'integrity-recorded' appears NOWHERE in src/app.js, src/moduleEligibility.js or
     index.html. Assert the comparison target is moduleManifests[id].status.
-  status: pending
+  status: completed
+  completed_at: '2026-07-23T04:15:00Z'
+  evidence: >
+    tests/module-switcher-eligibility.test.mjs (new file) — 4 tests: READY_STATUS imported from
+    src/kbVerify.js (not hardcoded); 'integrity-recorded' literal absent from src/app.js,
+    src/moduleEligibility.js and index.html (verified empty via grep before writing the test);
+    the comparison target really is MODULE_MANIFESTS[id].status === READY_STATUS for every
+    registered id (executed); strict === (not loose/substring) confirmed in source. All 4 pass.
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P2-03]
@@ -91,7 +107,22 @@ tasks:
     assess reference sits inside a body that evaluates the predicate first, and that no such
     reference exists elsewhere. The three entry paths (row selection, ?module= deep link, form
     submit) are checked individually.
-  status: pending
+  status: completed
+  completed_at: '2026-07-23T04:20:00Z'
+  evidence: >
+    tests/module-switcher-eligibility.test.mjs — (a) EXECUTED: isModuleSelectable false for all
+    three unsigned-stub ids and for a moduleId absent from MODULE_MANIFESTS (the executable proxy
+    for "status absent" — no live manifest has a genuinely absent status field); "out-of-enum
+    status" is proven by strict-equality construction (recorded as such, not implied executed —
+    no real manifest sits outside the enum today). (b) SOURCE-ASSERTED: every loadModuleKb(...)/
+    assessModule(...)/assessPediatricAnemia(...) call site in src/app.js falls inside one of
+    {activateModule, loadActiveModuleKb, the submit handler, loadExample, the onUseCase callback}
+    (verified by offset-range scan, not string search alone); each of the 3 entry paths (row
+    selection via selectModule->activateModule; ?module= deep link via
+    initialize->readModuleIdFromUrl->activateModule; form submit) individually shown to check the
+    predicate before any assess call. 10 tests, all pass. Two halves recorded separately per the
+    task's own instruction. DOES NOT PROVE assess() is unreachable at runtime — P6-011/P6-012 close
+    that gap partially; a textually-present-but-unreachable guard would still pass this section.
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P2-03, P4-04]
@@ -118,7 +149,24 @@ tasks:
     exported from src/moduleStatusVocabulary.js and referenced by identifier in src/app.js; no
     status text is written inline in index.html or src/app.js. Resilience case: a status value
     with no vocabulary entry fails the build. Pin the R-1 group headers here too.
-  status: pending
+  status: completed
+  completed_at: '2026-07-23T04:35:00Z'
+  evidence: >
+    tests/module-switcher-status-labels.test.mjs (new file) — 9 tests for this task: enum
+    coverage derived from schemas/module-manifest.schema.json (executed); every real registered
+    module's status resolves to a real sentence (executed); missing-entry sentinel returns
+    UNKNOWN_STATUS_SENTINEL, a Symbol, never a friendlier string (executed); PANEL_HEADER/
+    HONESTY_BOUNDARY_DISCLOSURE/EVIDENCE_STALENESS_DISCLOSURE imported+referenced by identifier in
+    src/app.js (source); no clinician-facing sentence text inlined in index.html or src/app.js —
+    scanned for 7 distinguishing fragments (COMPLETE); both R-1 group-header labels present
+    verbatim in index.html. FR-11 addendum: a real resolved-colour-VALUE scan over every
+    module-row/status-chip/module-status(-banner) rule in styles.css, merging :root custom
+    properties from BOTH styles.css and site-overrides.css (the latter overrides --success to a
+    REAL green — confirmed as a test precondition so the merge is not vacuously safe) — passes
+    clean today (0 green-band colours), PLUS two seeded mutation self-tests proving the checker
+    genuinely fails on a green value behind an innocuously-named token and on a raw green hex
+    literal. Comment states honestly: placement (panel vs. tooltip) is P6-011's alone — a tooltip
+    implementation would pass every assertion here.
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P1-02, P3-04]
@@ -150,7 +198,22 @@ tasks:
     "Check the entered units". Include the AC-4 resilience case (prior result cleared before the
     refusal renders; audit download disabled in the same tick) — the P4-06 seam re-asserted at
     gate level.
-  status: pending
+  status: completed
+  completed_at: '2026-07-23T04:50:00Z'
+  evidence: >
+    tests/module-switcher-eligibility.test.mjs — 7 tests: showModuleRefusal() textually distinct
+    from showInputRejection() (body strings unequal) and from showFatalError(), never references
+    INPUT_REJECTION_CODES, never contains "Check the entered units"; the six FR-19 invariants
+    present IN THE SPECIFIED ORDER (index-order asserted, not just presence); Case 1 (evidence-
+    registry miss) routed via isEvidenceRegistryMissError + deriveEvidenceUnavailableReason from
+    BOTH loadExample and submit; Case 2 (not-yet-implemented) — exactly one renderClassification
+    call site in the whole file (inside renderResult), reached only downstream of a
+    notYetImplementedRefusalReason guard in all 4 call sites (activateModule/loadExample/submit/
+    onUseCase); Case 3 (status != READY_STATUS) renders the verbatim moduleStatusReasonText, no
+    "warning" wording; Case 4 reset-before-fetch order re-confirmed at this gate level; resilience
+    test confirms the shared invariants + audit-disable all precede activateModule()'s only await,
+    with no setTimeout/rAF/queueMicrotask boundary between them. All 7 pass. DOES NOT PROVE the DOM
+    reaches this state — P6-011 alone establishes that.
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P4-01, P4-02, P4-03, P4-04, P4-05, P4-06, P4-07]
@@ -180,7 +243,21 @@ tasks:
     preserves the query string (R-7 — the specific regression this test exists for); unregistered
     or ineligible → explicit refusal naming the requested id, no silent substitution; and no
     localStorage/sessionStorage/cookie is read or written.
-  status: pending
+  status: completed
+  completed_at: '2026-07-23T05:00:00Z'
+  evidence: >
+    tests/module-switcher-eligibility.test.mjs — 6 tests: COMPLETE grep of localStorage./
+    sessionStorage./document.cookie across all 7 app-surface files + index.html returns zero API
+    usages (comment mentions of the words don't count — checked for actual API-call patterns);
+    switchTab() references location.search and the bare hash-only replaceState form is gone from
+    actual code (comment-stripped check, since the OLD buggy form is quoted in the fix's own
+    explanatory comment); readModuleIdFromUrl validates with isRegisteredModule(), falls back to
+    DEFAULT_MODULE_ID only when the param is absent, never silently substitutes for an
+    unregistered-but-present id; writeModuleUrlParam preserves the #tab hash;
+    deriveUnregisteredModuleReason wired to the FR-21 refusal case, naming the requested id. All 6
+    pass. PARTIAL per the task's own instruction: no real tab click was observed; P3-06 did not
+    factor URL construction into a pure exported non-DOM helper, so no optional strengthening
+    applied — recorded as a gap, not implied coverage.
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P3-05, P3-06, P4-07]
@@ -209,7 +286,22 @@ tasks:
     manifest.title drives document.title, <h1>, brand and footer; document.title must not carry
     anemia's KNOWLEDGE_BASE_VERSION under another module (F11); a missing manifest.title renders
     the moduleId verbatim, never a generic "Assessment".
-  status: pending
+  status: completed
+  completed_at: '2026-07-23T05:10:00Z'
+  evidence: >
+    tests/module-switcher-status-labels.test.mjs — 10 tests: COMPLETE check that the
+    #nav-rule-count/#nav-pattern-count elements carry no static digit fallback (scoped to the two
+    exact elements, not a blind whole-file 91/26 scan — the file legitimately contains "91" in
+    unrelated anemia-only marketing copy and "26" inside every 2026- date, so a blind scan would
+    misfire); nav counts set from rules.length/candidates key count; #algorithm/#evidence/#rules
+    each degrade via an identifier-sourced, moduleId-conditioned branch
+    (moduleSupportsAlgorithmExplorer / moduleHasEvidenceView / rules.length === 0); examples picker
+    emptied AND disabled ownership boundary confirmed in source comment; all 8 AC-7 copy sites
+    wired to updateModuleDerivedPageCopy(); document.title reads view.knowledgeBaseVersion, never
+    the anemia-only KNOWLEDGE_BASE_VERSION constant (confirmed absent from actual code, comment
+    discussion of the old bug excluded from the scan); missing manifest.title falls back to
+    moduleId verbatim, never "Assessment"; `git diff main -- src/algorithmExplorer.js` is empty
+    (executed via execFileSync, asserted, not assumed). All 10 pass.
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P5-01, P5-02, P5-03, P5-04, P5-05, P5-06]
@@ -249,7 +341,26 @@ tasks:
     exists). Run the allow-list assertion against dist/src/app.js instead, where the built renderer
     actually lives. Comment the test with scripts/sign-kb.mjs:58-73's anemia hardcode as the reason
     it cannot be relaxed.
-  status: pending
+  status: completed
+  completed_at: '2026-07-23T05:25:00Z'
+  evidence: >
+    tests/module-switcher-status-labels.test.mjs — 10 tests. PRIMARY allow-list:
+    getManifestView() (the sole function in src/app.js reading manifest.<field> off the raw
+    MODULE_MANIFESTS[moduleId] object — confirmed via an offset scan that no other MODULE_MANIFESTS[
+    read exists anywhere else in the file) reads/emits ONLY id/title/status/knowledgeBaseVersion/
+    evidenceReviewedThrough, plus manifest.approvedBy solely as deriveApprovedByClause()'s argument
+    (never rendered directly); no destructuring/JSON.stringify(manifest)/spread/Object.entries/
+    Object.keys/dataset-innerHTML-textContent manifest assignment. THREE seeded mutation self-tests
+    prove the allow-list genuinely fails on: a seeded manifest.clinicalContentHash read, a seeded
+    JSON.stringify(manifest), and a seeded sha256: fragment. SECONDARY token scan (with exact
+    negating-phrase carve-outs, including handling multi-line JS string concatenation so the
+    canonical sentences match as a clinician would read them) over src/app.js and
+    src/moduleStatusVocabulary.js, plus a styles.css class-name scan; a dedicated test proves the
+    carve-outs are exact (the real FR-9 clause passes, a bare "approved" nearby does not). (c) dist/
+    half — same three assertion layers run against dist/src/app.js (never the vacuous
+    dist/index.html), citing scripts/sign-kb.mjs:58-73's anemia hardcode as the reason the allow-list
+    cannot be relaxed to include clinicalContentHash. All 10 pass; requires `npm run build` to have
+    populated dist/ first (documented in-repo, not a hidden precondition).
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P3-04, P5-06]
@@ -289,7 +400,26 @@ tasks:
     assessPediatricAnemia(…), and isModuleSelectable() returns false for each unsigned-stub id.
     Resilience: the dist/ scan for unstamped fetch specifiers must pass against the FR-36 literal
     map. SCREENSHOTS ARE NOT CAPTURED HERE — they are P6-011's.
-  status: pending
+  status: completed
+  completed_at: '2026-07-23T05:40:00Z'
+  evidence: >
+    scripts/smoke-browser-unit-rejection.mjs extended additively (git diff: +84/-0 lines — grep of
+    the diff's removed-line hunks returns nothing; every pre-existing line survives byte-for-byte,
+    including the :4-15 boundary comment). All five original assertion sites confirmed present by
+    content-match after the edit (the two import-specifier regexes, the two
+    assessPediatricAnemia(input, rules, candidates) call-shape asserts, and the dist classification
+    ==='present' assert). Additions: (1) dev/dist resolution for the four new app-surface files; (2)
+    a sibling assertion block for showModuleRefusal — distinct from showInputRejection AND
+    showFatalError, no INPUT_REJECTION_CODES reference, no "Check the entered units", wired to both
+    activateModule (selection/deep-link choke point) and the submit handler; (3) :179/:188 extended
+    with an ADDITIONAL assessModule(moduleAtStart, input, rules, candidates) call-shape assert
+    alongside (not replacing) the original assessPediatricAnemia assert; (4) an executed dist/src/
+    half — assessModule('anemia', freshInput, rules, candidates).classification deep-equals
+    assessPediatricAnemia(...)'s (a FRESH input, since the pre-existing rejection test had already
+    mutated the shared `input` object); isModuleSelectable() false for all three unsigned-stub ids,
+    loaded from the built dist/src/moduleEligibility.js. `npm run smoke:browser` exits 0. The
+    unstamped-fetch scan (unchanged) still passes. The claim that the script "exercises default
+    load, module switch, refusal render, tab switch" is NOT made anywhere in this extension.
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P2-02, P4-01, P5-06]
@@ -330,7 +460,25 @@ tasks:
     one; no module status changed). Update this comment citing E1 FR-14/R-8 and ADR-0009
     explicitly. Governance decision, not a mechanical edit.
     The commit message must address A and B separately.
-  status: pending
+  status: completed
+  completed_at: '2026-07-23T05:45:00Z'
+  evidence: >
+    (a) tests/module-registry.test.mjs — 2 new tests confirm APP_SURFACE_FILES (scripts/
+    check-app-imports.mjs) lists all four new files, and all 8 MODULE_KB_LOADERS fetch specifiers
+    resolve under both dev and dist/ layouts; `npm run check:imports` independently exits 0. (b)
+    BOTH tripwires actioned SEPARATELY, never merged. TRIPWIRE A
+    (tests/module-registry.test.mjs:20-24): comment corrected to state the real count (four
+    registered modules today) and explicitly record that this trigger fired at commit `263120b`
+    and sat unactioned since — pre-existing debt this feature's P6-010 task closed, NOT caused by
+    this feature; a new assertion pins MODULE_IDS.length === 4. TRIPWIRE B
+    (src/modules/registry.js:39-50): comment block extended (27 lines, purely additive — see git
+    diff) recording that the DIFFERENT, client-selectable-surface trigger fired BY this feature
+    (the header-dropdown switcher), that `DEFAULT_MODULE_ID` stays `'anemia'` as a deliberate
+    decision (it is now the initial selection, not the only reachable module; no manifest status
+    changed per FR-35, so nothing else is eligible), citing E1 FR-14/R-8 and ADR-0009 explicitly —
+    quoting ADR-0009's own "The FR-14/R-8 lifting authority" section. Zero behavior change in
+    registry.js — comment-only, confirmed by re-running the full test suite (delta-green
+    unaffected) and `npm run check:imports`/`build` after the edit.
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P1-03, P2-01, P2-03, P2-05, P0-02]
@@ -421,7 +569,29 @@ tasks:
     Additionally EXECUTE src/moduleEligibility.js (non-DOM) and confirm
     isModuleSelectable('cbc_suite_v1') === false, likewise for the other two stubs and for
     absent/out-of-enum status.
-  status: pending
+  status: completed
+  completed_at: '2026-07-23T05:55:00Z'
+  evidence: >
+    tests/module-switcher-eligibility.test.mjs — 4 tests. EXECUTED: isModuleSelectable() ===
+    false for all three unsigned-stub ids and for an unregistered/absent/undefined/empty id.
+    SOURCE-ASSERTED: (1) the module-selection choke point (activateModule(), reached identically
+    by row selection via selectModule() and by the ?module= deep link — established in the P6-003
+    section) checks isModuleSelectable(moduleId) before loadActiveModuleKb(), with every early
+    return before that point shown to follow one of the three synchronous refusal checks, never a
+    bare skip; (2) loadActiveModuleKb() (the P2-04 reset-before-fetch call site) checks eligibility
+    as its literal first statement; (3) the submit handler checks isModuleSelectable(activeModuleId)
+    before every assess call. (4) no loadModuleKb(/assessModule(/assessPediatricAnemia( call site
+    exists anywhere in src/app.js outside {activateModule, loadActiveModuleKb, the submit handler,
+    loadExample, onUseCase} (offset-range scan, not string search). (5) none of the three reads
+    eligibility from DOM state — a write-vs-read-aware regex distinguishes `.disabled = true`
+    (FR-37 presentation, written inside activateModule's own invariant block) from a bare `.disabled`
+    READ (none found); the click listener's own `row.disabled` early-return is explicitly carved out
+    of scope and documented as a UI convenience, not one of the three named handlers, because
+    activateModule() re-derives eligibility unconditionally for any moduleId regardless of that
+    check's outcome. A seeded mutation self-test proves the DOM-state scan genuinely throws against
+    an injected `el?.disabled` eligibility read. LOAD-BEARING LIMITATION recorded verbatim in test
+    comments: none of this proves invoking the selection handler with cbc_suite_v1 refuses AT
+    RUNTIME — that is closed only by P6-011 item (7), a human devtools check.
   assigned_to: [general-purpose]
   provider: claude
   dependencies: [P2-03, P3-07, P4-01, P4-04]
@@ -658,18 +828,18 @@ its `:4-15` boundary statement verbatim.
 
 | Task ID | Name | AC | Assigned Subagent(s) | Model/Effort | Provider | Status | Dependencies |
 |---------|------|----|-----------------------|--------------|----------|--------|---------------|
-| P6-001 | Module inventory & grouping test | AC-1 | general-purpose (frontend engineer¹) | sonnet/extended | claude | pending | P3-03, P5-06 |
-| P6-002 | Eligibility predicate imported, never literal | AC-2 | general-purpose | sonnet/extended | claude | pending | P2-03 |
-| P6-003 | Eligibility gating — only integrity-recorded reaches `assess()` | AC-2 | general-purpose | sonnet/extended | claude | pending | P2-03, P4-04 |
-| P6-004 | Status-labels doc-truth pin | AC-3 | general-purpose | sonnet/extended | claude | pending | P1-02, P3-04 |
-| P6-005 | Four refusal-case tests | AC-4 | general-purpose | sonnet/extended | claude | pending | P4-01..P4-07 |
-| P6-006 | `?module=` URL-state round-trip test | AC-5 | general-purpose | sonnet/extended | claude | pending | P3-05, P3-06, P4-07 |
-| P6-007 | Module-scoped degradation + module-derived copy tests | AC-6, AC-7 | general-purpose | sonnet/extended | claude | pending | P5-01..P5-06 |
-| P6-008 | Negative-assertion test (no integrity/approval/release claim) | AC-8 | general-purpose | sonnet/extended | claude | pending | P3-04, P5-06 |
-| P6-009-smoke | **Extend** `smoke-browser-unit-rejection.mjs` | AC-9 | general-purpose | sonnet/extended | claude | pending | P2-02, P4-01, P5-06 |
-| P6-010 | Import verification + **two** deliberate tripwire decisions | AC-10 | general-purpose | sonnet/extended | claude | pending | P1-03, P2-01, P2-03, P2-05, P0-02 |
+| P6-001 | Module inventory & grouping test | AC-1 | general-purpose (frontend engineer¹) | sonnet/extended | claude | completed | P3-03, P5-06 |
+| P6-002 | Eligibility predicate imported, never literal | AC-2 | general-purpose | sonnet/extended | claude | completed | P2-03 |
+| P6-003 | Eligibility gating — only integrity-recorded reaches `assess()` | AC-2 | general-purpose | sonnet/extended | claude | completed | P2-03, P4-04 |
+| P6-004 | Status-labels doc-truth pin | AC-3 | general-purpose | sonnet/extended | claude | completed | P1-02, P3-04 |
+| P6-005 | Four refusal-case tests | AC-4 | general-purpose | sonnet/extended | claude | completed | P4-01..P4-07 |
+| P6-006 | `?module=` URL-state round-trip test | AC-5 | general-purpose | sonnet/extended | claude | completed | P3-05, P3-06, P4-07 |
+| P6-007 | Module-scoped degradation + module-derived copy tests | AC-6, AC-7 | general-purpose | sonnet/extended | claude | completed | P5-01..P5-06 |
+| P6-008 | Negative-assertion test (no integrity/approval/release claim) | AC-8 | general-purpose | sonnet/extended | claude | completed | P3-04, P5-06 |
+| P6-009-smoke | **Extend** `smoke-browser-unit-rejection.mjs` | AC-9 | general-purpose | sonnet/extended | claude | completed | P2-02, P4-01, P5-06 |
+| P6-010 | Import verification + **two** deliberate tripwire decisions | AC-10 | general-purpose | sonnet/extended | claude | completed | P1-03, P2-01, P2-03, P2-05, P0-02 |
 | **P6-011** | **HUMAN visual-evidence capture & review** (9 items; item 9 is **FR-37**'s only verifier) | AC-1, 3, 4, 6, 7, 8, 9, 11 + **FR-37** | **human (named)** | — | — | pending (BLOCKER-P6-011-HUMAN) | P6-001..P6-010 |
-| P6-012 | Forced-activation coverage (predicate gates inside the handlers) | AC-2, AC-11 | general-purpose | sonnet/extended | claude | pending | P2-03, P3-07, P4-01, P4-04 |
+| P6-012 | Forced-activation coverage (predicate gates inside the handlers) | AC-2, AC-11 | general-purpose | sonnet/extended | claude | completed | P2-03, P3-07, P4-01, P4-04 |
 | P6-GATE | `task-completion-validator` gate | — | task-completion-validator | sonnet/adaptive | claude | pending | P6-001..P6-012 |
 | P6-KAREN | **`karen` milestone review (Milestone 3)** | — | karen | sonnet/extended | claude | pending | P6-GATE, P6-011 |
 
@@ -932,5 +1102,226 @@ record + `task-completion-validator` sign-off (`P6-GATE`) + `karen` Milestone 3 
 
 ## Completion Notes
 
-Fill in when Phase 6 is complete: what was built, key learnings, unexpected challenges,
-recommendations for Phase 7 (documentation finalization).
+### 2026-07-23 — automated verification session (P6-001..P6-010, P6-009-smoke, P6-012)
+
+**Scope of this session**: the eleven automated Phase 6 tasks. **P6-011 was NOT performed, NOT
+marked, and is not implied complete by anything below** — it remains a pending human task per its
+own `blockers: BLOCKER-P6-011-HUMAN` entry. (Note for the record: this session found pre-existing,
+dated files under `.claude/worknotes/spa-module-switcher/visual-evidence/` — apparently a P6-011
+evidence packet prepared separately by/for the coordinator. This session did not create, read the
+contents of, or rely on those files in any way, and does not report P6-011 as complete on their
+strength; only a person appending a signed, dated block to this progress note — naming themselves —
+can do that.) P6-GATE and P6-KAREN also remain pending, both blocked on P6-011.
+
+**Files touched** (exactly the set the task authorized — nothing else):
+- `tests/module-registry.test.mjs` — tripwire-A comment corrected (P6-010) + 8 new tests (P6-001, P6-010a)
+- `tests/module-switcher-eligibility.test.mjs` (new) — 32 tests (P6-002, P6-003, P6-005, P6-006, P6-012)
+- `tests/module-switcher-status-labels.test.mjs` (new) — 29 tests (P6-004, P6-007, P6-008)
+- `scripts/smoke-browser-unit-rejection.mjs` — extended additively (P6-009-smoke)
+- `src/modules/registry.js` — comment block only, zero behavior change (P6-010 tripwire B)
+- `.claude/progress/spa-module-switcher/phase-6-progress.md` — this file
+
+**Delta-green posture — record this explicitly, per the task's honesty rules; `npm run check`
+CANNOT go fully green today (main is red — Finding E-1/E-2,
+`.claude/findings/spa-module-switcher-findings.md`)**:
+
+| Stage | Result | Note |
+|---|---|---|
+| `npm test` | **26 known pre-existing failures, 0 new** | Baseline failure-name set captured before this session and diffed byte-for-byte against the post-session set — identical. All 26 are unrelated pre-existing EF/rights-substrate/CBC-evidence-fixture failures (see the findings doc); zero involve `tests/module-registry.test.mjs`, `tests/module-switcher-*.test.mjs`, or anything this session touched. 2677 passing (up from 2604 baseline passing — +73 new tests, all green). |
+| `npm run validate` | **exit 1, byte-identical output** | Diffed byte-for-byte against a `git stash`-isolated pre-session run of the same command — identical stdout+stderr, identical exit code. This session touches nothing `validate` reads. |
+| `npm run coverage:rules` | exit 0 (91/91, 100%) | |
+| `npm run build` | exit 0 | |
+| `npm run verify:d4` | exit 0 | |
+| `npm run check:imports` | exit 0 | |
+| `npm run smoke:browser` | exit 0 | Extended script; see P6-009-smoke evidence above |
+| `npm run smoke` | exit 0 | |
+
+**No test name or progress-text sentence in this session's output uses "renders"/"executes"/
+"spies"/"exercises" for DOM-dependent behavior.** Every source-asserted test states its ceiling in
+an inline comment (and, for several sections, a dedicated "DOES NOT PROVE" test or comment block).
+Package.json still declares zero `dependencies` and zero `devDependencies` — confirmed by direct
+inspection after this session's edits.
+
+**Smoke-script extension — before/after assertion counts, and every place it was extended (never
+rewritten)**:
+- Line count: 254 → ~296 (git diff: +84 insertions, **0 deletions** — confirmed via
+  `git diff scripts/smoke-browser-unit-rejection.mjs | grep '^-' | grep -v '^---'` returning empty).
+- All five original breaking-assertion sites (the two `import { assessPediatricAnemia }` specifier
+  regexes, the two `assessPediatricAnemia(input, rules, candidates)` call-shape asserts in
+  `loadExampleBody`/`submitBody`, and the dist `classification.anemiaStatus === 'present'` assert)
+  confirmed present, unmodified, by content match after the edit.
+- The `:4-15` header boundary comment confirmed byte-identical (`sed -n '4,15p'` before/after
+  compared).
+- Five extension points, each additive:
+  1. A new paragraph appended immediately after the `:4-15` boundary comment (not inside it),
+     describing the extension's own scope — the original text is untouched above it.
+  2. Four new `assertRelativeModuleResolves(...)` calls for the four new app-surface files,
+     appended after the pre-existing three.
+  3. A new ~15-line sibling assertion block for `showModuleRefusal()`, inserted between the
+     existing rejection-UI assertions and the `loadExampleBody` section.
+  4. One new `assert.match` line appended after each of the two pre-existing
+     `assessPediatricAnemia(input, rules, candidates)` asserts (in `loadExampleBody` and
+     `submitBody`), checking the `assessModule(moduleAtStart, ...)` shape ALSO exists — the
+     original asserts are untouched, not replaced.
+  5. A new "built module-switcher graph" section appended after the existing rejection-catch test,
+     importing `assessModule`/`isModuleSelectable` from the built `dist/src/` graph and running
+     them for real, plus a second, separate boundary print statement (the original final
+     `BROWSER-MODE BOUNDARY` print line is untouched, byte-identical, immediately below the new one
+     — not replaced).
+
+**Per-task summary**: see each task's `evidence:` field in the YAML frontmatter above
+(`P6-001`..`P6-010`, `P6-009-smoke`, `P6-012`) for the specific tests written, what tier each is
+(executed / source-asserted, per D-6), and what each explicitly does NOT prove.
+
+**Both P6-010 tripwires actioned, kept strictly separate**: Tripwire A
+(`tests/module-registry.test.mjs:20-24`, "a second module registers") fired at commit `263120b` and
+sat unactioned since — corrected as pre-existing debt this session's P6-010 task closed, explicitly
+NOT attributed to the spa-module-switcher-v1 feature. Tripwire B (`src/modules/registry.js:39-50`,
+"a client-selectable moduleId surface actually ships") is fired BY this feature; the decision
+(`DEFAULT_MODULE_ID` stays `'anemia'`) is recorded with E1 FR-14/R-8 and ADR-0009 cited by ID,
+quoting ADR-0009's "The FR-14/R-8 lifting authority" section.
+
+**Next steps**: a named human must perform P6-011 (all nine items) and append a signed, dated block
+to this file before `P6-GATE` (task-completion-validator) and then `P6-KAREN` (karen Milestone 3)
+can run. Neither gate is self-certifiable by this session.
+
+### POST-REVIEW FIXES — response to P6-GATE CHANGES_REQUESTED + gpt-5.6-terra adversarial pass
+
+P6-GATE (task-completion-validator) returned CHANGES_REQUESTED on phrasing-honesty grounds; a
+gpt-5.6-terra adversarial pass separately found the harness narrower than it claimed in five
+places. All eight items fixed below, same file boundaries as the original session (no new files,
+no git operations). Files touched: `tests/module-switcher-eligibility.test.mjs`,
+`tests/module-switcher-status-labels.test.mjs`. `tests/module-registry.test.mjs`,
+`scripts/smoke-browser-unit-rejection.mjs`, `src/modules/registry.js` — untouched this pass (no
+findings against them).
+
+**Validator items (blocking) — all fixed:**
+
+1. **Three DOM-behavior test-name renames.** `tests/module-switcher-eligibility.test.mjs` (P6-005
+   Case 3): "…activateModule() renders the verbatim enum-sourced sentence…" →
+   "…activateModule() source calls showModuleRefusal with the verbatim enum-sourced sentence…".
+   `tests/module-switcher-status-labels.test.mjs` (P6-007 AC-6 #rules): "…renders an explicit
+   empty state…" → "…source declares an explicit empty state…". (P6-007 AC-7 resilience): "…a
+   missing manifest.title renders the moduleId…" → "…source declares that a missing
+   manifest.title falls back to the moduleId…". Re-grepped both files' `test('...')` names for
+   `renders|executes` (case-insensitive) after the renames: zero remaining hits.
+2. **Self-certification headers verified true.** Eligibility file's own header claim ("Forbidden
+   phrasing … is not used anywhere below") and status-labels' ("No test name uses
+   'renders'/'executes' for DOM behavior") — both confirmed accurate by the same grep above,
+   post-rename. No edit to the header text itself was needed; the renames made the pre-existing
+   claim true rather than aspirational.
+3. **Four dead imports removed + one overclaiming comment corrected.**
+   `DEFAULT_MODULE_ID` (eligibility) was imported but only ever appeared inside regex/string
+   literals, never as a live binding — removed from the import statement (`MODULE_IDS` alone
+   remains, genuinely used). `PANEL_HEADER`, `HONESTY_BOUNDARY_DISCLOSURE`,
+   `EVIDENCE_STALENESS_DISCLOSURE`, `MODULE_IDS` (status-labels) — same pattern, all four removed;
+   `MODULE_STATUS_SENTENCES`/`getStatusSentence`/`UNKNOWN_STATUS_SENTINEL` confirmed genuinely
+   used and kept. The comment above the "every real registered module's manifest status resolves"
+   test claimed "MODULE_IDS + schema enum coverage above is the load-bearing claim" — factually
+   wrong (the test iterates `schema.properties.status.enum`, never `MODULE_IDS`, which was never
+   imported into that test's scope) — corrected to state plainly that the test iterates the
+   schema enum only.
+
+**Codex hardening items — all addressed; each with a seeded mutation self-test proving the
+mechanism is not vacuous, per this phase's own standing rule:**
+
+4. **Comment-decoy resistance for the source-location extractors.** Both files'
+   `namedFunctionRange()`/`markerRange()` searched raw source text for a `function <name>(`/marker
+   string, so a block- or line-comment decoy containing that exact text earlier in the file would
+   have been matched instead of the real declaration. Added `stripCommentsPreservingOffsets()` (a
+   same-length comment-blanking pass that never touches string/template contents) to both files;
+   declaration/marker location is now found against the stripped copy, while the returned `body`
+   still slices from the original source at the same offsets. Four new seeded-decoy self-tests (3
+   in eligibility, 1 in status-labels) prove the real declaration is found and the decoy is never
+   extracted as the body.
+5. **Ordering coverage widened to all five `guardedRanges()` bodies.** The P6-012 ordering test
+   previously asserted predicate-precedes-call ordering for only 3 of the 5 guarded bodies
+   (activateModule, loadActiveModuleKb, the submit handler). Extended the SAME test to also assert
+   it for `loadExample` and `onUseCase`, so all five bodies the file's own `guardedRanges()`
+   enumerates carry an explicit ordering check in one place (loadExample's ordering was already
+   separately proven in the P6-003(b) section; this closes the gap that P6-012 itself didn't
+   individually cover it, and adds `onUseCase` coverage that existed nowhere before).
+6. **AC-8 allow-list hardened against bracket/template access and MODULE_MANIFESTS aliasing.**
+   `assertAllowListedManifestReads()` now also scans for `manifest[...]` bracket/template property
+   access of any form — a literal-string key must be one of the allow-listed field names (bracket
+   access to `approvedBy` is never sanctioned, dot-notation only); any dynamic/interpolated key
+   fails outright. `assertGetManifestViewIsTheSoleManifestReader()` was widened from scanning only
+   the literal substring `MODULE_MANIFESTS[` to scanning every bare occurrence of the
+   `MODULE_MANIFESTS` identifier (comment-stripped) — an alias assignment
+   (`const m = MODULE_MANIFESTS`) or a direct dot-notation field read
+   (`MODULE_MANIFESTS.anemia.clinicalContentHash`) outside `getManifestView()` now fails; neither
+   contained the literal text the old check looked for. Four new seeded self-tests (non-allow-
+   listed bracket key, dynamic bracket key, bracket-form `approvedBy`, alias assignment, direct
+   dot-notation read) prove each bypass is caught.
+7. **FR-11 green-hue check widened on four axes.** (a) Space-form `rgb()`/`hsl()` (e.g.
+   `rgb(46 125 50)`) were previously silently MIS-parsed as a single NaN component by a
+   comma-only splitter — a real false-negative (a space-form green would have passed silently);
+   rewrote the component parser to handle both forms identically (regression-guard test included),
+   and added a small curated named-green keyword list (green, seagreen, forestgreen, limegreen,
+   lime, springgreen, olivedrab, darkgreen, and 11 more). (b) An unresolved colour value (an
+   undefined `var()`, or `color-mix()`/`currentColor`, both context-dependent and unresolvable
+   statically) previously fell through `extractResolvedColors()`'s `unresolved` array UNCHECKED —
+   `assertNoGreenState()` never looked at it, so an unresolvable colour silently passed. Now
+   FAIL-CLOSED: any unresolved value in a color-bearing property is a hard failure. Making this
+   safe required scoping colour extraction to an explicit `COLOR_BEARING_PROPERTIES` list
+   (`color`/`background`/`border*`/`box-shadow`/etc.) — the un-scoped version would have
+   false-failed on legitimate non-colour `var()` usage the widened selector set now also reaches
+   (e.g. `border-radius: var(--radius)`, `box-shadow: var(--shadow)` — the latter's value is a
+   composite offset+blur+colour definition, not a bare colour; the fix recursively resolves `var()`
+   text and re-scans it for an embedded real colour, e.g. the `rgba(...)` inside `--shadow`'s own
+   value, rather than requiring the WHOLE resolved value to itself be one hex/rgb token). (c)
+   `site-overrides.css` is now scanned alongside `styles.css` (empty for these selectors today,
+   confirmed by a separate grep, but the scan no longer silently depends on that staying true). (d)
+   The selector filter was a hardcoded `/module-row|status-chip|module-status/` guess; replaced
+   with `extractAppliedClassNames()`, which derives the actual class list from every literal
+   `module-`/`status-`-prefixed class name found in `src/app.js` (static `class="..."` strings and
+   `classList.add/toggle/contains(...)` calls) and `index.html` — tied to the real markup, not an
+   author's guess at which selectors mattered. A sanity assertion confirms the derived set is
+   substantial (≥15 classes) and contains the two classes the old hardcoded regex was built
+   around, so the derivation itself can't silently degrade to near-empty. Five new seeded
+   mutation self-tests cover: space-form rgb, space- and comma-form hsl, a bare named-green
+   keyword, `color-mix()`, `currentColor`, and an undefined `var()` reference — each individually
+   proven to fail the check. A CEILING comment records the explicit, honest scope limit: ~19 named
+   greens (not all 148 CSS named colours — the other ~130 are non-green, so their omission isn't a
+   green-hiding gap), and no `hwb()`/`lab()`/`lch()`/`oklch()` support (none appear in this
+   codebase's stylesheets today).
+8. **P6-012 DOM-state scan widened to 5 bodies and 4 more patterns, with an exact allow-list.**
+   Previously scanned only 3 bodies (activateModule, loadActiveModuleKb, the submit handler)
+   against a 4-pattern set. Now scans 5 (adding `selectModule()` — the literal "module-selection
+   handler" by name — and the panel click listener, the actual DOM entry point) against an
+   8-pattern set (added `.closest(`, `.matches(`, `.className`, `getAttribute(` — the last flagged
+   for ANY argument, with no built-in exception, forcing a human to explicitly allow-list any
+   future legitimate use the same way the three lines below are). The click listener legitimately
+   touches DOM state on three lines (id extraction via `.closest()`, the FR-37(a) `row.disabled`
+   presentation short-circuit, and `row.dataset.moduleId` forwarding) — each is now allow-listed
+   by EXACT, byte-for-byte line content with its own comment explaining why it's safe (none of the
+   three DECIDE eligibility; `activateModule()` re-derives it unconditionally downstream
+   regardless), so any edit to those three lines OR any new DOM-state touch anywhere else in the
+   listener fails. Two new seeded self-tests: one proves the four new patterns
+   (getAttribute/closest/matches/className) are genuinely caught; one proves the allow-list itself
+   is exact (a one-character change to an allow-listed line is detected as stale, not silently
+   passed through). A CEILING comment states plainly that a constructed/dynamic attribute name
+   (`el[computedName]`, `el.getAttribute('data-' + x)`) defeats regex-based scanning by design —
+   this mechanism guards accidental regression and unsophisticated decoys, not a determined
+   adversary rewriting `src/app.js` specifically to evade this test file.
+
+**Re-verification after all fixes (delta-green posture unchanged):**
+
+| Stage | Result |
+|---|---|
+| `npm test` | 26 known pre-existing failures (byte-identical name-set to the original session's baseline), 0 new. 2688 passing (up from 2677 — +11 net new tests across the two edited files after the hardening pass: several items added multiple seeded self-tests each). |
+| `npm run validate` | exit 1, byte-identical output (re-diffed against the same `git stash`-isolated pre-session baseline) |
+| `npm run build` | exit 0 |
+| `npm run verify:d4` | exit 0 |
+| `npm run check:imports` | exit 0 |
+| `npm run smoke:browser` | exit 0 (script untouched this pass — no findings against it) |
+| `npm run smoke` | exit 0 |
+
+`tests/module-switcher-eligibility.test.mjs`: 38 tests (was 32). `tests/module-switcher-status-
+labels.test.mjs`: 34 tests (was 29). `tests/module-registry.test.mjs`: unchanged at 12. All three
+files green in isolation and in the full suite. No test name anywhere in either edited file uses
+"renders"/"executes"/"spies"/"exercises" for DOM-dependent behavior (re-verified by grep after
+every edit in this pass, not just once at the end).
+
+Fill in when Phase 6 is fully complete (after P6-011/P6-GATE/P6-KAREN): key learnings, unexpected
+challenges, recommendations for Phase 7 (documentation finalization).

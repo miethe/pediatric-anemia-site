@@ -13,6 +13,24 @@
 //
 // It does not claim to paint or inspect a real browser DOM.  See the explicit boundary output at
 // the end of this script.
+//
+// EXTENDED (P6-009-smoke, spa-module-switcher-v1, phase-6-7-gates-docs.md) — additive only, per
+// R-3: every assertion above this line is unchanged. Two more things are now checked, still
+// within the same (a)/(b) shape:
+//
+//   (a) also proves the module-refusal UI (src/app.js#showModuleRefusal) exists, is textually
+//       distinct from both showInputRejection() and showFatalError(), and is wired to both the
+//       module-selection path (activateModule) and the assessment submit path — the third
+//       fail-closed state, pinned the same way input-rejection already was; plus dev/dist link
+//       resolution for the four new module-switcher app-surface files; and
+//   (b) also dynamically loads src/moduleEligibility.js and src/engine.js#assessModule from the
+//       built dist/src/ graph and proves assessModule('anemia', ...) yields the same
+//       classification as assessPediatricAnemia(...), and that isModuleSelectable() returns false
+//       for each unsigned-stub id — real executions, since neither module touches the DOM.
+//
+// This extension does NOT add default-load, module-switch, refusal-render, or tab-switch coverage
+// — none of those is executable without a browser, and this script's posture on that point is
+// unchanged (see the boundary output at the end, also extended, never softened).
 
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
@@ -136,6 +154,14 @@ assertRelativeModuleResolves('src/app.js', './engine.js');
 assertRelativeModuleResolves('src/app.js', './algorithmExplorer.js');
 assertRelativeModuleResolves('src/algorithmExplorer.js', './engine.js');
 
+// P6-009-smoke (additive) — the four new module-switcher app-surface files src/app.js imports
+// (P1-03/P2-01/P2-03 truth sources): dev/dist link resolution, same pattern as the pre-existing
+// checks immediately above.
+assertRelativeModuleResolves('src/app.js', './moduleManifests.js');
+assertRelativeModuleResolves('src/app.js', './moduleStatusVocabulary.js');
+assertRelativeModuleResolves('src/app.js', './moduleKbLoaders.js');
+assertRelativeModuleResolves('src/app.js', './moduleEligibility.js');
+
 for (const file of [
   ...collectJavaScript(path.join(distRoot, 'src')),
   ...collectJavaScript(path.join(distRoot, 'modules')),
@@ -175,8 +201,34 @@ assert.doesNotMatch(rejectionBody, /form\.reset\s*\(/, 'the rejection UI must no
 assert.match(fatalBody, /Application error/);
 assert.match(rejectionBody, /Check the entered units/);
 
+// P6-009-smoke (additive) — sibling block for the module-refusal UI (P4-01, FR-14/FR-19),
+// mirroring the AGE_OUT_OF_SUPPORTED_RANGE block immediately above: the third fail-closed state
+// is now pinned the same way input-rejection already was. showModuleRefusal() is a SEPARATE
+// function from both showInputRejection() (just asserted above) and showFatalError() (below), and
+// is wired to both the module-selection path and the assessment submit path.
+const refusalBody = functionBody(appSource, 'showModuleRefusal');
+assert.notEqual(refusalBody, rejectionBody, 'showModuleRefusal() must remain distinct from showInputRejection()');
+assert.notEqual(refusalBody, fatalBody, 'showModuleRefusal() must remain distinct from showFatalError()');
+assert.doesNotMatch(refusalBody, /INPUT_REJECTION_CODES/, 'the module-refusal path must never route through INPUT_REJECTION_CODES');
+assert.doesNotMatch(refusalBody, /Check the entered units/, 'the module-refusal path must never render the input-rejection heading');
+assert.match(refusalBody, /currentAudit\s*=\s*null/);
+assert.match(refusalBody, /\$\('#results'\)\.hidden\s*=\s*true/);
+assert.match(refusalBody, /\$\('#results-placeholder'\)\.hidden\s*=\s*false/);
+assert.match(refusalBody, /refreshAuditView\(\)/);
+const activateModuleBody = functionBody(appSource, 'activateModule');
+assert.match(activateModuleBody, /showModuleRefusal\(/, 'the module-selection choke point (activateModule) must be wired to the refusal UI');
+const submitHandlerMarker = "form.addEventListener('submit'";
+const submitHandlerStart = appSource.indexOf(submitHandlerMarker);
+assert.notEqual(submitHandlerStart, -1, 'src/app.js must register the submit handler');
+assert.match(appSource.slice(submitHandlerStart), /showModuleRefusal\(/, 'the assessment submit path must also be wired to the refusal UI (Case 1 defensive re-check)');
+
 const loadExampleBody = functionBody(appSource, 'loadExample');
 assert.match(loadExampleBody, /assessPediatricAnemia\(input, rules, candidates\)/);
+// P6-009-smoke (additive) — extended to also accept the module-generic assessModule(...) call
+// shape (R-3): today's real code carries BOTH forms in a ternary dispatched on the snapshotted
+// moduleAtStart (anemia -> the literal assessPediatricAnemia call above; any other selectable
+// module -> assessModule below), so this is a genuinely additional assertion, not a replacement.
+assert.match(loadExampleBody, /assessModule\(moduleAtStart, input, rules, candidates\)/, 'loadExample() must also carry the module-generic assessModule(...) call shape');
 // EP5-T6 generalized the two rejection codes into a shared INPUT_REJECTION_CODES set, so the
 // dispatch is set-membership rather than a literal ===. Both codes must still be covered, and the
 // set itself is asserted below, so this is a follow-the-refactor change, not a relaxation.
@@ -186,6 +238,8 @@ assert.match(loadExampleBody, /showInputRejection\(error\)/);
 const submitBody = eventHandlerBody(appSource, 'submit');
 assert.match(submitBody, /const\s+input\s*=\s*buildInput\(\)/);
 assert.match(submitBody, /assessPediatricAnemia\(input, rules, candidates\)/);
+// P6-009-smoke (additive) — same extension as loadExampleBody above (R-3).
+assert.match(submitBody, /assessModule\(moduleAtStart, input, rules, candidates\)/, 'the submit handler must also carry the module-generic assessModule(...) call shape');
 assert.match(submitBody, /INPUT_REJECTION_CODES\.has\(error\.code\)/);
 // The set must genuinely contain both rejection codes; without this the membership assertions above
 // would be satisfied by a set that dropped UNIT_REJECTED entirely.
@@ -249,5 +303,35 @@ assert.deepEqual(hemoglobinDetail, {
 });
 assert.equal(input.cbc.hemoglobin, originalHemoglobin, 'the rejected input value must not be converted or mutated');
 console.log(`OK: caught ${rejection.code} for ${hemoglobinDetail.field}: entered ${hemoglobinDetail.providedUnit}; expected ${hemoglobinDetail.expectedUnit}.`);
+
+// P6-009-smoke (additive) — executed half over the built dist/src/ module-switcher graph. Both
+// src/moduleEligibility.js and src/engine.js#assessModule are non-DOM, so importing and calling
+// them from the ACTUAL built dist output is a real execution, not a source assertion.
+console.log('\n== smoke:browser: built module-switcher graph (assessModule + isModuleSelectable) under Node ==');
+const builtEligibilityUrl = pathToFileURL(path.join(distRoot, 'src/moduleEligibility.js'));
+builtEligibilityUrl.searchParams.set('v', buildInfo.assetStamp);
+const { assessModule } = await import(builtEngineUrl.href);
+const { isModuleSelectable } = await import(builtEligibilityUrl.href);
+
+// `input` was deliberately mutated (hemoglobinUnit -> 'g/L') by the rejection test just above —
+// re-read a FRESH, unmutated copy for this equivalence check rather than reusing that object.
+const freshInput = JSON.parse(readFileSync(path.join(distRoot, 'examples/ida-toddler.json'), 'utf8'));
+const moduleGenericAssessment = assessModule('anemia', freshInput, rules, candidates);
+assert.deepEqual(
+  moduleGenericAssessment.classification,
+  validAssessment.classification,
+  "assessModule('anemia', ...) must classify identically to assessPediatricAnemia(...) for the same input/rules/candidates",
+);
+console.log("OK: built dist assessModule('anemia', ...) classification matches assessPediatricAnemia(...).");
+
+for (const unsignedStubId of ['cbc_suite_v1', 'growth_suite_v1', 'kidney_suite_v1']) {
+  assert.equal(isModuleSelectable(unsignedStubId), false, `built dist isModuleSelectable('${unsignedStubId}') must be false`);
+}
+console.log('OK: built dist isModuleSelectable() returns false for all three unsigned-stub ids.');
+
+// P6-009-smoke (additive) — the module-switcher extension's own boundary statement, printed
+// ALONGSIDE (never replacing) the original boundary line immediately below, per R-3's "additive
+// only, nothing deleted or weakened" constraint.
+console.log('\nMODULE-SWITCHER EXTENSION BOUNDARY (P6-009-smoke): this extension additionally proves the built assessModule/isModuleSelectable module-switcher functions behave identically to their single-module counterparts, and that src/app.js contains the module-refusal UI (showModuleRefusal), distinct from both showInputRejection and showFatalError, wired to both the module-selection and assessment-submit paths. It does not execute DOM-dependent app.js in a browser, render the refusal HTML, dispatch a click, or perform a module switch — those remain P6-011\'s (human) alone.');
 
 console.log('\nBROWSER-MODE BOUNDARY: this check proves static SPA wiring, dev/dist module resolution, and valid/rejected assessments through the built dist module graph under Node. It does not execute DOM-dependent app.js/algorithmExplorer.js in a browser, render the rejection HTML, or verify visual/accessibility behavior; no browser automation dependency is available in this zero-dependency repository.');

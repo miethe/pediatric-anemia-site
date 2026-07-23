@@ -1,56 +1,242 @@
 ---
 schema_version: 2
 doc_type: implementation_plan
-title: "Implementation Plan: SPA Module Switcher — honest module inventory + eligibility-gated selection"
-status: draft
+title: "Implementation Plan: SPA Module Switcher \u2014 honest module inventory +\
+  \ eligibility-gated selection"
+status: review
 created: 2026-07-22
-updated: 2026-07-22
+updated: '2026-07-23'
 feature_slug: spa-module-switcher
 feature_version: v1
 prd_ref: docs/project_plans/PRDs/features/spa-module-switcher-v1.md
 plan_ref: null
-scope: "Wire the browser SPA to the already-module-agnostic runtime: list all four registered modules with their verbatim manifest status, gate selectability on READY_STATUS before assess() is ever called, and replace the misattributed 'Check the entered units' failure with a distinct fail-closed refusal state — changing no module's status and signing nothing."
+scope: "Wire the browser SPA to the already-module-agnostic runtime: list all four\
+  \ registered modules with their verbatim manifest status, gate selectability on\
+  \ READY_STATUS before assess() is ever called, and replace the misattributed 'Check\
+  \ the entered units' failure with a distinct fail-closed refusal state \u2014 changing\
+  \ no module's status and signing nothing."
 tier: 3
-effort_estimate: "41 pts"
-architecture_summary: "New src/moduleManifests.js (four literal `import … with { type: 'json' }` statements → frozen moduleId-keyed map; browser verifies nothing) and src/moduleStatusVocabulary.js (single source for every clinician-facing status string) are registered in APP_SURFACE_FILES. A literal-specifier MODULE_KB_LOADERS map drives per-module KB fetches so build-static.mjs `?v=` stamping and check-app-imports per-file verification both still apply. Eligibility is a single READY_STATUS (src/kbVerify.js:43) comparison in the UI layer, decided before any assess() call; assessModule() is added alongside the retained assessPediatricAnemia export so the source-grepping smoke gate keeps passing. A distinct showModuleRefusal path — never showInputRejection — covers the four SQ-3 §4 refusal cases."
-related_documents: [docs/project_plans/PRDs/features/spa-module-switcher-v1.md, .claude/worknotes/spa-module-switcher/decisions-block.md, .claude/worknotes/spa-module-switcher/exploration-findings.md, .claude/worknotes/spa-module-switcher/spike-leg-sq1-module-eligibility.md, .claude/worknotes/spa-module-switcher/spike-leg-sq2-banner-truth-source.md, .claude/worknotes/spa-module-switcher/spike-leg-sq3-failure-surface.md, .claude/worknotes/spa-module-switcher/spike-leg-sq4-prior-art-reconciliation.md, .claude/worknotes/spa-module-switcher/routing-records.md, docs/project_plans/human-briefs/spa-module-switcher.md, docs/project_plans/design-specs/public-moduleid-api-surface.md, docs/architecture.md, docs/governance/gates-registry.md]
+effort_estimate: 41 pts
+architecture_summary: "New src/moduleManifests.js (four literal `import \u2026 with\
+  \ { type: 'json' }` statements \u2192 frozen moduleId-keyed map; browser verifies\
+  \ nothing) and src/moduleStatusVocabulary.js (single source for every clinician-facing\
+  \ status string) are registered in APP_SURFACE_FILES. A literal-specifier MODULE_KB_LOADERS\
+  \ map drives per-module KB fetches so build-static.mjs `?v=` stamping and check-app-imports\
+  \ per-file verification both still apply. Eligibility is a single READY_STATUS (src/kbVerify.js:43)\
+  \ comparison in the UI layer, decided before any assess() call; assessModule() is\
+  \ added alongside the retained assessPediatricAnemia export so the source-grepping\
+  \ smoke gate keeps passing. A distinct showModuleRefusal path \u2014 never showInputRejection\
+  \ \u2014 covers the four SQ-3 \xA74 refusal cases."
+related_documents:
+- docs/project_plans/PRDs/features/spa-module-switcher-v1.md
+- .claude/worknotes/spa-module-switcher/decisions-block.md
+- .claude/worknotes/spa-module-switcher/exploration-findings.md
+- .claude/worknotes/spa-module-switcher/spike-leg-sq1-module-eligibility.md
+- .claude/worknotes/spa-module-switcher/spike-leg-sq2-banner-truth-source.md
+- .claude/worknotes/spa-module-switcher/spike-leg-sq3-failure-surface.md
+- .claude/worknotes/spa-module-switcher/spike-leg-sq4-prior-art-reconciliation.md
+- .claude/worknotes/spa-module-switcher/routing-records.md
+- docs/project_plans/human-briefs/spa-module-switcher.md
+- docs/project_plans/design-specs/public-moduleid-api-surface.md
+- docs/architecture.md
+- docs/governance/gates-registry.md
+- .claude/findings/spa-module-switcher-findings.md
 references:
-  user_docs: [docs/architecture.md]
+  user_docs:
+  - docs/architecture.md
   context: []
-  specs: [schemas/module-manifest.schema.json, docs/governance/gates-registry.md, docs/project_plans/design-specs/public-moduleid-api-surface.md]
-  related_prds: [docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1.md]
+  specs:
+  - schemas/module-manifest.schema.json
+  - docs/governance/gates-registry.md
+  - docs/project_plans/design-specs/public-moduleid-api-surface.md
+  related_prds:
+  - docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1.md
 spike_ref: docs/project_plans/SPIKEs/spike-008-spa-module-switcher.md
-adr_refs: [docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md, docs/adr/0010-browser-test-capability-for-the-spa.md]
-deferred_items_spec_refs: []
-findings_doc_ref: null
+adr_refs:
+- docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md
+- docs/adr/0010-browser-test-capability-for-the-spa.md
+deferred_items_spec_refs:
+- docs/project_plans/design-specs/sign-kb-per-module-content-hashing.md
+- docs/project_plans/design-specs/per-module-evidence-view.md
+- docs/project_plans/design-specs/algorithm-explorer-module-generalization.md
+- docs/project_plans/design-specs/public-moduleid-api-surface.md
+- docs/adr/0010-browser-test-capability-for-the-spa.md
+findings_doc_ref: .claude/findings/spa-module-switcher-findings.md
 charter_ref: null
-changelog_ref: null
+changelog_ref: CHANGELOG.md#unreleased
 changelog_required: true
 test_plan_ref: null
 plan_structure: independent
 progress_init: auto
 owner: Nick Miethe
-contributors: [Opus orchestrator, implementation-planner]
+contributors:
+- Opus orchestrator
+- implementation-planner
 priority: high
 risk_level: high
 category: features
-tags: [implementation, spa, module-switcher, governance, fail-closed, a11y, honesty-boundary]
+tags:
+- implementation
+- spa
+- module-switcher
+- governance
+- fail-closed
+- a11y
+- honesty-boundary
 milestone: null
-commit_refs: []
-pr_refs: []
-files_affected: [docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md, docs/project_plans/design-specs/public-moduleid-api-surface.md, src/moduleManifests.js, src/moduleStatusVocabulary.js, src/moduleKbLoaders.js, src/moduleEligibility.js, src/engine.js, src/app.js, index.html, styles.css, src/algorithmExplorer.js, scripts/check-app-imports.mjs, scripts/smoke-browser-unit-rejection.mjs, tests/module-switcher-status-labels.test.mjs, tests/module-switcher-eligibility.test.mjs, tests/module-registry.test.mjs, docs/architecture.md, CLAUDE.md, CHANGELOG.md]
+commit_refs:
+- a42dbda
+- 70b3bc4
+- 1a4c8b9
+- cfce8e1
+- db3d336
+- f103df2
+- bb798c8
+- 04aa713
+pr_refs: ["#29"]
+files_affected:
+- docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md
+- docs/adr/0010-browser-test-capability-for-the-spa.md
+- docs/project_plans/design-specs/public-moduleid-api-surface.md
+- docs/project_plans/design-specs/sign-kb-per-module-content-hashing.md
+- docs/project_plans/design-specs/per-module-evidence-view.md
+- docs/project_plans/design-specs/algorithm-explorer-module-generalization.md
+- src/moduleManifests.js
+- src/moduleStatusVocabulary.js
+- src/moduleKbLoaders.js
+- src/moduleEligibility.js
+- src/engine.js
+- src/app.js
+- index.html
+- styles.css
+- src/algorithmExplorer.js
+- scripts/check-app-imports.mjs
+- scripts/smoke-browser-unit-rejection.mjs
+- tests/module-switcher-status-labels.test.mjs
+- tests/module-switcher-eligibility.test.mjs
+- tests/module-registry.test.mjs
+- tests/module-status-vocabulary.test.mjs
+- .claude/findings/spa-module-switcher-findings.md
+- docs/architecture.md
+- CLAUDE.md
+- CHANGELOG.md
 wave_plan:
-  serialization_barriers: [src/app.js, index.html, CLAUDE.md]
+  serialization_barriers:
+  - src/app.js
+  - index.html
+  - CLAUDE.md
   phases:
-  - {id: P0, depends_on: [], isolation: shared, parallelizable: true, provider: claude, model: sonnet, effort: adaptive, files_affected: [docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md, docs/project_plans/design-specs/public-moduleid-api-surface.md]}
-  - {id: P1, depends_on: [], isolation: shared, parallelizable: true, provider: claude, model: sonnet, effort: adaptive, files_affected: [src/moduleManifests.js, src/moduleStatusVocabulary.js, scripts/check-app-imports.mjs, tests/module-status-vocabulary.test.mjs]}
-  - {id: P2, depends_on: [P0, P1], isolation: shared, parallelizable: false, provider: claude, model: sonnet, effort: adaptive, files_affected: [src/moduleKbLoaders.js, src/moduleEligibility.js, src/engine.js, scripts/check-app-imports.mjs]}
-  - {id: P3, depends_on: [P2], isolation: shared, parallelizable: false, provider: claude, model: sonnet, effort: adaptive, integration_owner: phase-owner, files_affected: [index.html, styles.css, src/app.js]}
-  - {id: P4, depends_on: [P3], isolation: shared, parallelizable: false, provider: claude, model: sonnet, effort: extended, integration_owner: phase-owner, files_affected: [src/app.js, index.html]}
-  - {id: P5, depends_on: [P2, P4], isolation: shared, parallelizable: false, provider: claude, model: sonnet, effort: adaptive, files_affected: [src/app.js, index.html, src/algorithmExplorer.js]}
-  - {id: P6, depends_on: [P4, P5], isolation: shared, parallelizable: false, provider: claude, model: sonnet, effort: extended, files_affected: [tests/module-switcher-status-labels.test.mjs, tests/module-switcher-eligibility.test.mjs, tests/module-registry.test.mjs, scripts/smoke-browser-unit-rejection.mjs, scripts/check-app-imports.mjs]}
-  - {id: P7, depends_on: [P6], isolation: shared, parallelizable: false, provider: claude, model: haiku, effort: adaptive, files_affected: [docs/architecture.md, CLAUDE.md, CHANGELOG.md, "docs/project_plans/design-specs/*.md"]}
-  waves: [[P0, P1], [P2], [P3], [P4], [P5], [P6], [P7]]
+  - id: P0
+    depends_on: []
+    isolation: shared
+    parallelizable: true
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md
+    - docs/project_plans/design-specs/public-moduleid-api-surface.md
+  - id: P1
+    depends_on: []
+    isolation: shared
+    parallelizable: true
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - src/moduleManifests.js
+    - src/moduleStatusVocabulary.js
+    - scripts/check-app-imports.mjs
+    - tests/module-status-vocabulary.test.mjs
+  - id: P2
+    depends_on:
+    - P0
+    - P1
+    isolation: shared
+    parallelizable: false
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - src/moduleKbLoaders.js
+    - src/moduleEligibility.js
+    - src/engine.js
+    - scripts/check-app-imports.mjs
+  - id: P3
+    depends_on:
+    - P2
+    isolation: shared
+    parallelizable: false
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    integration_owner: phase-owner
+    files_affected:
+    - index.html
+    - styles.css
+    - src/app.js
+  - id: P4
+    depends_on:
+    - P3
+    isolation: shared
+    parallelizable: false
+    provider: claude
+    model: sonnet
+    effort: extended
+    integration_owner: phase-owner
+    files_affected:
+    - src/app.js
+    - index.html
+  - id: P5
+    depends_on:
+    - P2
+    - P4
+    isolation: shared
+    parallelizable: false
+    provider: claude
+    model: sonnet
+    effort: adaptive
+    files_affected:
+    - src/app.js
+    - index.html
+    - src/algorithmExplorer.js
+  - id: P6
+    depends_on:
+    - P4
+    - P5
+    isolation: shared
+    parallelizable: false
+    provider: claude
+    model: sonnet
+    effort: extended
+    files_affected:
+    - tests/module-switcher-status-labels.test.mjs
+    - tests/module-switcher-eligibility.test.mjs
+    - tests/module-registry.test.mjs
+    - scripts/smoke-browser-unit-rejection.mjs
+    - scripts/check-app-imports.mjs
+  - id: P7
+    depends_on:
+    - P6
+    isolation: shared
+    parallelizable: false
+    provider: claude
+    model: haiku
+    effort: adaptive
+    files_affected:
+    - docs/architecture.md
+    - CLAUDE.md
+    - CHANGELOG.md
+    - docs/project_plans/design-specs/*.md
+  waves:
+  - - P0
+    - P1
+  - - P2
+  - - P3
+  - - P4
+  - - P5
+  - - P6
+  - - P7
 ---
 
 # Implementation Plan: SPA Module Switcher
@@ -179,10 +365,14 @@ contracts live in the phase files (this parent stays under the 300-line guidelin
 
 Binding. Phase executors must not reopen these without a new decisions-block entry.
 
-**OQ-1 — Selector form factor.** **Persistent sidebar rail** (mockup A). A one-time interstitial gate
-(C) leaves no in-session reminder of which module is active, and that identity is exactly what FR-30
-and AC-7 keep visible. Both mockups render CBC Suite *selectable* — **superseded by D-1 / FR-4**; it
-is `unsigned-stub` and ships inert. Mockups are non-binding for behavior (PRD §14).
+**OQ-1 — Selector form factor.** **REVISED by decisions block §11 (D-7, operator override,
+2026-07-22): header dropdown (mockup B)**, superseding the prior "persistent sidebar rail (mockup A)"
+resolution. The collapsed control keeps the active module's title + verbatim status chip persistently
+visible in the header, which satisfies the in-session-reminder requirement (FR-30/AC-7) that ruled
+out interstitial C. The expanded panel keeps the two labelled structural groups and the verbatim
+panel header. Mockup B's CBC-row-without-lock divergence must not be copied — all three
+non-`integrity-recorded` modules ship inert (D-1/FR-4). Mockups remain non-binding for behavior
+(PRD §14).
 
 **OQ-2 — `#evidence` tab.** **Degrade** (FR-26). `src/evidence/registry.js:39-50` holds loaders for
 `anemia` and `cbc_suite_v1` only; growth/kidney have an `evidence.json` but no loader. A per-module

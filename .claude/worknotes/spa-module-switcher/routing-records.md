@@ -328,3 +328,30 @@ before this run, now +9). L7's audit entry deliberately sets `fallback_applied: 
 because a runtime failure occurred, but to flag in the audit trail that the emitted record was an
 explicit operator override of the registry's natural chain pick, per the task's instruction to
 "record the operator override explicitly with `fallback_applied` semantics noted."
+
+---
+
+## Execution-run legs (2026-07-22, /execute-plan dispatch)
+
+Operator directive at dispatch: "utilize /delegation-router thoroughly, especially ICA for leafs and
+gpt-5.6 as relevant." All 9 legs resolver-emitted and appended to
+`~/.claude/logs/routing-decisions.jsonl` (`task_id: spa-module-switcher-exec:E-*`). Overrides are
+explicit-provider (resolver step-1) and logged `fallback_applied: true` to mark them as operator
+overrides of the natural chain, matching the L7 convention above.
+
+| leg | phase | chosen | agent_type | model | effort | override? | rationale |
+|---|---|---|---|---|---|---|---|
+| E-P0 | P0 governance docs | ica | ica-executor | sonnet (`claude-sonnet-5[1m]`) | standard | yes | chain gives free haiku for `documentation`; governance needs sonnet; user directed ICA for leafs |
+| E-P1 | P1 manifest/vocab leaf | ica | ica-executor | sonnet | standard | yes | bounded data modules; validator gate re-run in-session |
+| E-P2 | P2 seams | claude | native | sonnet-5 | high | no | load-bearing foundation stays primary |
+| E-P3 | P3 dropdown UI (D-7) | claude | native | sonnet-5 | high | no | primary; orchestrator holds visual gate |
+| E-P4 | P4 fail-closed refusal | claude | native | sonnet-5 | xhigh | no | safety-critical — never offloaded |
+| E-P5 | P5 degradation leaf | ica | ica-executor | sonnet | standard | yes | bounded, exact-spec tasks |
+| E-P6 | P6 gates + tests | claude | native | sonnet-5 | xhigh | no | gate surgery, verdict-adjacent |
+| E-P7 | P7 docs leaf | ica | ica-executor | sonnet | standard | yes | upgraded from plan's haiku — ADR-0010 is governance-quality |
+| E-SO | per-milestone diff review | codex | codex-executor | gpt-5.6-terra | high | yes | operator directive; chain would pick ica/gemma; prior codex reviews caught real fail-closed gaps here |
+
+Reviewer gates (task-completion-validator, karen milestones, FEATURE-KAREN) run in-session on the
+primary subscription — MUST-stay `verdict`/`council-review` classes, never offloaded. ICA legs run
+with `--dangerously-skip-permissions` (acceptEdits alone cannot execute gates); every gate is re-run
+in-session by the orchestrator regardless of what the delegate reports.

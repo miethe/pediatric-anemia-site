@@ -286,3 +286,38 @@ lands on Haiku.
 - PRD output: `docs/project_plans/PRDs/features/spa-module-switcher-v1.md`
 - Plan output: `docs/project_plans/implementation_plans/features/spa-module-switcher-v1.md`
 - Phase files expected (plan will exceed 800 lines): `spa-module-switcher-v1/phase-{0-2,3-5,6-7}-*.md`
+
+## 11. D-7 — Operator override (2026-07-22, execution start): OQ-1 form factor revised to mockup B (header dropdown)
+
+**Authority**: direct operator instruction at `/execute-plan` dispatch — "Per the mock-ups, I
+preferred image B, the dropdown option." This entry is the new decisions-block record the parent
+plan requires before any settled decision is reopened; it supersedes the OQ-1 resolution
+("persistent sidebar rail, mockup A") in the parent plan, PRD §OQ-1, and the P3 phase-file
+form-factor paragraph.
+
+**Revised resolution**: the selector is the **header dropdown of mockup variant B**
+(`docs/dev/designs/mockups/spa-module-switcher/variant-b-dropdown-plus-banner.png`): a persistent
+header control labelled with the **active module's title and verbatim status chip at all times**
+(collapsed state), expanding to a panel listing all four registered modules.
+
+**Why this still satisfies OQ-1's underlying requirement**: the objection to variant C was that a
+one-time interstitial leaves **no in-session reminder** of the active module. Variant B's collapsed
+control *is* that persistent in-session reminder — module identity + status chip are always visible
+in the header (FR-30 / AC-7). The rail-vs-dropdown choice was layout, not honesty; layout is
+exactly what PRD §14 leaves to the mockups.
+
+**Everything else carries over unchanged — binding on P3**:
+- The expanded dropdown panel renders the two **labelled structural groups** (selectable /
+  not-selectable-with-reason) and the verbatim panel header `These modules are not peers. Read each
+  row.` (FR-1/FR-2/R-1). Grouping stays structural, never a footnote.
+- **Mockup B's own divergence must not be copied**: B renders the CBC Suite row without the
+  lock/inert affordance the growth/kidney rows carry. D-1/FR-4 bind — **all three**
+  non-`integrity-recorded` modules are inert, programmatically disabled, reason in accessible name
+  (FR-37).
+- No green/success state, no hash, no approval badge (D-3, FR-11, FR-31/FR-32).
+- 375px non-clipping (P3-02) now applies to the collapsed control **and** the expanded panel; the
+  expanded panel must be keyboard-navigable with linear focus order and dismissible via Escape
+  (FR-37 keyboard-nav requirement re-read for a disclosure widget).
+- The status **banner** (P3-04) is unchanged by this override — B is "dropdown **plus banner**";
+  the banner stays in the main column, not inside the dropdown.
+
