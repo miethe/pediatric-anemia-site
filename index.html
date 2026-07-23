@@ -34,6 +34,33 @@
             <span>KB v0.1.0 · reviewed 2026-07-15</span>
           </div>
         </div>
+        <!--
+          P3-01..P3-07 (spa-module-switcher-v1, phase-3-5-ui.md) — header dropdown module
+          switcher (mockup variant B, decisions-block.md §11 D-7 operator override). This element
+          supplies only the static container; the collapsed-control label, the panel header, the
+          group labels, and every row are rendered by src/app.js from src/moduleStatusVocabulary.js
+          and src/moduleManifests.js by identifier — no module name, status, or count is hardcoded
+          here (P3-01 AC).
+        -->
+        <div class="module-switcher" id="module-switcher">
+          <button type="button" id="module-switcher-toggle" class="module-switcher-toggle"
+            aria-haspopup="true" aria-expanded="false" aria-controls="module-switcher-panel">
+            <span class="module-switcher-eyebrow">Clinical module</span>
+            <span class="module-switcher-active-label" id="module-switcher-active-label"></span>
+            <span class="module-switcher-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="module-switcher-panel" id="module-switcher-panel" hidden>
+            <p class="module-switcher-panel-header" id="module-switcher-panel-header"></p>
+            <div class="module-switcher-group">
+              <h3 class="module-switcher-group-label">Selectable</h3>
+              <div class="module-row-list" id="module-row-list-selectable"></div>
+            </div>
+            <div class="module-switcher-group">
+              <h3 class="module-switcher-group-label">Not selectable — read the reason</h3>
+              <div class="module-row-list" id="module-row-list-not-selectable"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -69,6 +96,29 @@
     </nav>
 
   <main id="main" class="page-shell">
+    <!--
+      P3-04 (spa-module-switcher-v1, phase-3-5-ui.md) — active-module status banner. Lives in the
+      MAIN COLUMN (mockup B is "dropdown PLUS banner", not banner-in-dropdown) and, unlike the
+      tab-panel sections below, sits outside every tab-panel so it stays visible regardless of
+      which tab is active. Every string here is set by src/app.js from src/moduleStatusVocabulary.js
+      by identifier — none is written inline. role="alert" reuses the existing .safety-banner
+      pattern (index.html :41-44).
+    -->
+    <div class="module-status-banner" id="module-status-banner" role="alert">
+      <span class="module-status-icon" aria-hidden="true">!</span>
+      <div class="module-status-content">
+        <div class="module-status-headline">
+          <strong id="module-status-title"></strong>
+          <span class="status-chip" id="module-status-chip"></span>
+          <span class="module-status-subtitle" id="module-status-subtitle" hidden></span>
+        </div>
+        <p id="module-status-sentence"></p>
+        <p id="module-status-approved-by"></p>
+        <p class="module-status-kb-meta" id="module-status-kb-meta"></p>
+        <p class="module-status-honesty" id="module-status-honesty"></p>
+      </div>
+    </div>
+
     <section id="assessment" class="tab-panel active" aria-labelledby="assessment-title">
       <div class="page-heading assessment-heading">
         <div>

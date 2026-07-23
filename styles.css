@@ -245,3 +245,127 @@ footer { color: var(--muted); text-align: center; padding: 1.2rem; border-top: 1
   font-size: .58rem;
   font-weight: 900;
 }
+
+/* =================================================================================================
+   P3-01..P3-07 (spa-module-switcher-v1, phase-3-5-ui.md) — module switcher (header dropdown,
+   mockup variant B) + main-column status banner.
+
+   FR-11 / D-3 / D-6 corollary: every colour below is a LITERAL hex value chosen to sit outside the
+   green hue band at any meaningful saturation, deliberately NOT resolved through --success/
+   --success-soft (both real, saturated greens once site-overrides.css's :root block applies) or
+   through --brand (a teal that sits close enough to the green/cyan boundary to risk an automated
+   hue-band check). `integrity-recorded` and every `unsigned-stub`/`superseded`/`revoked` row share
+   the SAME .status-chip / severity treatment class below — there is no per-status colour
+   differentiation anywhere in this block, so there is no way for one status to read as "better"
+   than another. The amber/warning palette reuses this file's own already-established
+   .safety-banner / .alert-card.urgent language (#8a5a00 on #fff8e8, border #e5c978) rather than
+   inventing a new one (P3-02 AC: "reusing the existing :root tokens and the established
+   .safety-banner/.tab-nav visual language").
+   ================================================================================================= */
+
+.module-switcher { position: relative; }
+.module-switcher-toggle {
+  display: flex; align-items: center; gap: .55rem;
+  border: 1px solid rgba(255,255,255,.28); background: rgba(255,255,255,.11);
+  color: white; border-radius: 12px; padding: .55rem .8rem; backdrop-filter: blur(10px);
+  min-width: 220px; text-align: left;
+}
+.module-switcher-toggle:hover { background: rgba(255,255,255,.18); }
+.module-switcher-eyebrow { display: block; font-size: .66rem; text-transform: uppercase; letter-spacing: .09em; opacity: .78; font-weight: 800; }
+.module-switcher-active-label { display: flex; flex-direction: column; gap: .3rem; flex: 1 1 auto; min-width: 0; }
+.module-switcher-active-title { display: block; font-weight: 800; font-size: .92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.module-switcher-caret { opacity: .8; font-size: .75rem; margin-left: auto; }
+.module-switcher-toggle[aria-expanded="true"] .module-switcher-caret { transform: rotate(180deg); }
+
+.module-switcher-panel {
+  position: absolute; top: calc(100% + .5rem); right: 0; z-index: 60;
+  width: min(420px, 92vw); max-height: min(70vh, 620px); overflow-y: auto;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--shadow); padding: .9rem;
+}
+.module-switcher-panel-header { margin: 0 0 .7rem; font-weight: 800; font-size: .86rem; color: var(--ink); }
+.module-switcher-group + .module-switcher-group { margin-top: .85rem; padding-top: .75rem; border-top: 1px solid var(--line); }
+.module-switcher-group-label { margin: 0 0 .5rem; font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 800; }
+.module-row-list { display: grid; gap: .5rem; }
+.module-row-list:empty::after { content: 'None.'; color: var(--muted); font-size: .78rem; font-style: italic; }
+
+/* P3-GATE fix 2 (VISUAL) — the row is a STACKED column (title-block above detail-block), not a
+   two-column side-by-side split. The prior `display: flex` row with two `flex: 1 1 auto` columns
+   let a long title (e.g. "Pediatric CBC Suite" + chip + FR-10 subtitle) wrap onto multiple lines
+   that rendered underneath/overlapping the second column's engineLabel/counts/limitation/reason
+   text at the panel's 420px width. Stacking removes the possibility of that collision entirely,
+   independent of title length or panel width — the fix does not depend on tuning a minmax split
+   that a longer future title could re-break. `.module-row-lock` is positioned absolutely in the
+   row's top-right corner (title/meta blocks reserve right-padding so their text never runs under
+   it) rather than occupying a layout column of its own. */
+.module-row {
+  display: flex; flex-direction: column; align-items: stretch; gap: .4rem; width: 100%;
+  text-align: left; position: relative;
+  border: 1px solid var(--line); border-radius: 10px; padding: .6rem .7rem; background: var(--surface);
+}
+.module-row--selectable { cursor: pointer; border-color: #b9d3e9; background: #edf5fc; }
+.module-row--selectable:hover, .module-row--selectable:focus-visible { border-color: #245b8a; }
+.module-row--selectable[aria-current="true"] { box-shadow: inset 0 0 0 2px #245b8a; }
+.module-row--inert { background: var(--surface-alt); cursor: not-allowed; padding-right: 2.1rem; }
+.module-row--inert:disabled { opacity: 1; } /* the reason text, not opacity, carries the inert state (FR-37b) */
+.module-row-main, .module-row-meta {
+  display: flex; flex-direction: column; gap: .28rem; min-width: 0; width: 100%;
+}
+.module-row-title { font-size: .88rem; word-break: break-word; }
+.module-row-subtitle, .module-row-limitation, .module-row-reason { font-size: .72rem; color: var(--muted); }
+.module-row-engine-label { font-size: .72rem; color: #405168; }
+.module-row-counts { font-size: .72rem; color: var(--muted); font-weight: 700; }
+.module-row-reason { color: #8a5a00; }
+.module-row-lock { position: absolute; top: .6rem; right: .65rem; opacity: .65; font-size: .95rem; }
+
+/* Shared severity chip — identical treatment for every enum status value (FR-11: no green/success
+   state; integrity-recorded gets the same severity treatment as the scaffolds). */
+.status-chip {
+  display: inline-flex; align-items: center; width: fit-content;
+  border-radius: 999px; padding: .18rem .55rem; font-size: .68rem; font-weight: 900;
+  letter-spacing: .01em; background: #fff8e8; color: #8a5a00; border: 1px solid #e5c978;
+}
+
+/* Collapsed header control sits on the dark header gradient — the chip keeps its own opaque
+   background so it reads identically there and inside the light panel below. */
+.module-switcher-toggle .status-chip { background: #fff8e8; color: #6b4400; border-color: #f1d998; }
+
+/* -------------------------------------------------------------------------------------------
+   P3-04 — main-column status banner. Reuses .safety-banner's role="alert" visual language
+   (amber, left-accented) rather than a new one; explicitly never green (FR-11).
+   ------------------------------------------------------------------------------------------- */
+.module-status-banner {
+  display: flex; gap: .85rem; align-items: flex-start;
+  margin: 0 0 1.1rem; padding: .95rem 1.1rem;
+  background: #fff8e8; border: 1px solid #e5c978; border-left: 5px solid #d69c2f;
+  border-radius: var(--radius); color: #4a3200;
+}
+.module-status-icon {
+  flex: 0 0 auto; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  display: grid; place-items: center; background: #f1d998; color: #6b4400; font-weight: 900;
+}
+.module-status-content { display: grid; gap: .4rem; min-width: 0; }
+.module-status-headline { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.module-status-headline strong { font-size: 1.02rem; color: #2f2000; }
+.module-status-subtitle { font-size: .78rem; font-weight: 700; color: #6b4400; }
+.module-status-content p { margin: 0; font-size: .85rem; line-height: 1.5; }
+.module-status-content #module-status-sentence { font-weight: 600; }
+.module-status-kb-meta, .module-status-honesty { color: #5c3f00; font-size: .78rem; }
+
+@media (max-width: 820px) {
+  .module-switcher { width: 100%; }
+  .module-switcher-toggle { width: 100%; min-width: 0; }
+  .module-switcher-panel { position: static; width: 100%; margin-top: .5rem; }
+}
+
+@media (max-width: 560px) {
+  .module-status-banner { flex-direction: column; }
+}
+
+/* 375px non-clipping (P3-02/P6-011): the collapsed control and expanded panel must not overflow
+   the viewport at the narrowest supported width. */
+@media (max-width: 400px) {
+  .module-switcher-toggle { min-width: 0; width: 100%; }
+  .module-switcher-panel { right: auto; left: 0; width: 100%; max-width: 100vw; }
+  .module-switcher-active-title { max-width: 46vw; }
+}
