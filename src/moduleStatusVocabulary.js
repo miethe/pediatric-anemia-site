@@ -170,3 +170,34 @@ export function deriveUnregisteredModuleReason(requestedId) {
   return `No module is registered with id "${requestedId}". No assessment can be produced. Choose `
     + 'a listed module below — this app never substitutes a different module automatically.';
 }
+
+// ================================================================================================
+// Phase 5 (spa-module-switcher-v1, phase-3-5-ui.md) — explicit per-tab degradation copy (FR-25/
+// FR-26). Each is a pure derivation parameterized by the module's own title, same shape and same
+// side-effect-free/DOM-free/network-free contract as the Phase 4 reasons above.
+// ================================================================================================
+
+/**
+ * FR-25 / R-8 / P5-01 — the #algorithm tab's explicit unavailable-for-this-module state.
+ * src/algorithmExplorer.js is anemia-shaped end to end and is never generalized; this names the
+ * REQUESTING module, not the explorer's own anemia-specific internals, which stay out of scope.
+ *
+ * @param {string} moduleTitle
+ * @returns {string}
+ */
+export function deriveAlgorithmUnavailableReason(moduleTitle) {
+  return `The algorithm explorer is not available for ${moduleTitle}.`;
+}
+
+/**
+ * FR-26 / OQ-2 / P5-02 — the #evidence tab's explicit unavailable-for-this-module state, for any
+ * module with no per-module evidence-source list to render (a per-module evidence view is
+ * Deferred Item DF-SMS-02). Never an empty-but-present source list, which would read as "this
+ * module cites nothing" rather than "this view has not been built".
+ *
+ * @param {string} moduleTitle
+ * @returns {string}
+ */
+export function deriveEvidenceViewUnavailableReason(moduleTitle) {
+  return `No evidence view is available for ${moduleTitle}.`;
+}

@@ -6,7 +6,7 @@ import { assessPediatricAnemia } from './engine.js';
 // './engine.js'` — adding a second name inside those braces would break that regex. Two import
 // statements from the same specifier is valid ES module syntax.
 import { assessModule } from './engine.js';
-import { EVIDENCE, KNOWLEDGE_BASE_VERSION, sourceRightsPosition } from './evidence.js';
+import { EVIDENCE, sourceRightsPosition } from './evidence.js';
 import { initializeAlgorithmExplorer } from './algorithmExplorer.js';
 import { toTri } from './facts/tristate.js';
 // P3-01..P3-07 (spa-module-switcher-v1, phase-3-5-ui.md) — module switcher seam. P1/P2 exports
@@ -29,11 +29,22 @@ import {
   deriveNotYetImplementedReason,
   deriveKbLoadFailureReason,
   deriveUnregisteredModuleReason,
+  // Phase 5 (P5-01..P5-06) — module-scoped tab degradation + empty-state copy.
+  RULES_EMPTY_STATE,
+  deriveAlgorithmUnavailableReason,
+  deriveEvidenceViewUnavailableReason,
 } from './moduleStatusVocabulary.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const form = $('#assessment-form');
+
+// P5-04 (FR-28) — the six anemia <option> elements are ANEMIA-only static markup, captured once
+// here (before anything mutates the element) so updateExampleOptionsForActiveModule() below can
+// clear them to zero options for a non-anemia module and restore this exact markup when anemia
+// becomes active again, rather than either hand-duplicating the option list in JS or leaving
+// stale anemia case labels selectable/visible under another module's label.
+const exampleSelectDefaultHtml = $('#example-select')?.innerHTML ?? '';
 
 let rules = [];
 let candidates = {};
@@ -444,9 +455,35 @@ function renderResult(result) {
 // determined license.status) to "rights position unassessed" rather than throwing or being
 // silently omitted — an omitted label would read to a clinician as "nothing to worry about",
 // which is exactly the false "unrestricted" reading this task exists to prevent.
+// P5-02 (FR-26/OQ-2) — true only for a module with a REAL per-module evidence-source list to
+// render. Today that is 'anemia' alone: src/evidence.js's EVIDENCE map is the only such list in
+// this file's reach, and building one for any other module (including cbc_suite_v1, whose
+// src/evidence/registry.js entry supplies rule-audit PASSAGE accessors only, never a source-list
+// export renderEvidence() could iterate) is Deferred Item DF-SMS-02. Id-based, like
+// moduleSupportsAlgorithmExplorer below, for the same reason: no manifest capability flag for
+// "has an evidence-source list" exists, and inventing one for a single, permanently-true-for-
+// exactly-one-module fact would be speculative generality this phase does not need.
+function moduleHasEvidenceView(moduleId) {
+  return moduleId === DEFAULT_MODULE_ID;
+}
+
 function renderEvidence() {
+  const container = $('#evidence-list');
+  const unavailable = $('#evidence-unavailable');
+  if (!moduleHasEvidenceView(activeModuleId)) {
+    // P5-02 — explicit unavailable state, never an empty-but-present source list (which would
+    // read as "this module cites nothing" rather than "this view has not been built").
+    if (container) container.innerHTML = '';
+    if (unavailable) {
+      const view = getManifestView(activeModuleId);
+      unavailable.hidden = false;
+      unavailable.textContent = deriveEvidenceViewUnavailableReason(view ? view.title : activeModuleId);
+    }
+    return;
+  }
+  if (unavailable) unavailable.hidden = true;
   const entries = Object.values(EVIDENCE).sort((a, b) => b.year - a.year || a.id.localeCompare(b.id));
-  $('#evidence-list').innerHTML = entries.map((entry) => `
+  container.innerHTML = entries.map((entry) => `
     <article id="evidence-${escapeHtml(entry.id)}" class="card evidence-card">
       <span class="priority-pill ${(entry.priority ?? '').includes('foundational') ? 'foundational' : ''}">${escapeHtml(entry.priority)}</span>
       <h3>${escapeHtml(entry.title)}</h3>
@@ -470,6 +507,14 @@ function ruleDescription(rule) {
 }
 
 function renderRules(filterText = '') {
+  if (rules.length === 0) {
+    // P5-03 (FR-27/OQ-3) — the exact vocabulary string, referenced by identifier, never
+    // alternative phrasing ("not yet loaded" implies a loading failure; "not yet available"
+    // implies a pipeline toward release that gates-registry.md:130-132 makes schema-impossible).
+    $('#rule-count').textContent = '';
+    $('#rule-list').innerHTML = `<p class="empty-state">${escapeHtml(RULES_EMPTY_STATE)}</p>`;
+    return;
+  }
   const normalized = filterText.trim().toLowerCase();
   const filtered = rules.filter((rule) => {
     const haystack = `${rule.id} ${rule.category} ${ruleDescription(rule)} ${(rule.evidence ?? []).join(' ')}`.toLowerCase();
@@ -620,6 +665,134 @@ function moduleReportsNotYetImplemented(hooks) {
     return false;
   }
 }
+
+// =================================================================================================
+// Phase 5 (P5-01, P5-02 (moduleHasEvidenceView above), P5-03 (RULES_EMPTY_STATE above), P5-04,
+// P5-06) — module-scoped tab degradation, examples-picker gating, and page-copy derivation. Hard
+// boundary (R-8): none of this generalizes src/algorithmExplorer.js — it degrades the SPA around
+// it. Every predicate below is id-based (moduleId === DEFAULT_MODULE_ID) rather than a capability
+// flag on the manifest, because no such flag exists for "supports the algorithm explorer"/"has
+// example cases" and inventing one for a single, permanently-true-for-exactly-one-module fact
+// would be speculative generality this phase does not need.
+// =================================================================================================
+
+// P5-01 (FR-25/R-8) — single source of truth for "is the (anemia-only, never-generalized)
+// algorithm explorer allowed to run for this module", reused by BOTH
+// initializeAlgorithmExplorerIfEligible() (the existing init-time gate) and
+// updateAlgorithmTabAvailability() (the tab-level affordance, below) so the two can never diverge.
+function moduleSupportsAlgorithmExplorer(moduleId) {
+  return isModuleSelectable(moduleId) && moduleId === DEFAULT_MODULE_ID;
+}
+
+// P5-04 (FR-28) — true only for a module with real example CASES to offer (examples/ holds 6
+// anemia cases only; per-module examples/ authoring is an explicit non-goal, PRD §7). Kept as its
+// own named predicate rather than reusing moduleSupportsAlgorithmExplorer even though today's
+// logic is identical — the two are independent capabilities that merely happen to share today's
+// only eligible module; a future module could gain one without the other.
+function moduleHasExampleCases(moduleId) {
+  return isModuleSelectable(moduleId) && moduleId === DEFAULT_MODULE_ID;
+}
+
+// P5-01 — the #algorithm tab's own affordance: a real `disabled` + `aria-disabled` on the tab
+// button (the same FR-37-style presentation pattern used for module rows — NOT the security gate;
+// the actual enforcement remains moduleSupportsAlgorithmExplorer()'s init-time gate inside
+// initializeAlgorithmExplorerIfEligible(), unchanged by this function) plus an explicit "not
+// available" panel that REPLACES the anemia-shaped explorer layout, so it is never left rendering
+// (or attempting to render) under a module it was never built for. src/algorithmExplorer.js
+// itself is untouched by this function or anything it calls.
+function updateAlgorithmTabAvailability() {
+  const tabButton = $('.tab-button[data-tab="algorithm"]');
+  const layout = $('#algorithm-layout');
+  const unavailable = $('#algorithm-unavailable');
+  const available = moduleSupportsAlgorithmExplorer(activeModuleId);
+
+  if (tabButton) {
+    tabButton.disabled = !available;
+    tabButton.setAttribute('aria-disabled', String(!available));
+  }
+  if (layout) layout.hidden = !available;
+  if (unavailable) unavailable.hidden = available;
+
+  if (!available) {
+    const view = getManifestView(activeModuleId);
+    const title = view ? view.title : activeModuleId;
+    if ($('#algorithm-unavailable-title')) {
+      $('#algorithm-unavailable-title').textContent = `Algorithm explorer — not available for ${title}`;
+    }
+    if ($('#algorithm-unavailable-reason')) {
+      $('#algorithm-unavailable-reason').textContent = deriveAlgorithmUnavailableReason(title);
+    }
+    // Do not strand the clinician on a now-inert tab: if #algorithm was the active tab when this
+    // module became active, move to Assessment — the same tab initialize() defaults to.
+    if ($('#algorithm')?.classList.contains('active')) switchTab('assessment');
+  }
+}
+
+// P5-04 (FR-28) — clears the picker to zero options (never disabled-but-still-listing-anemia-
+// cases) for a module with no example cases, and restores the literal anemia option markup
+// (captured once, at script load, into exampleSelectDefaultHtml above) when anemia becomes active
+// again. This function owns ONLY the option-list content — the select/button `disabled` state is
+// already handled, on every path through activateModule(), by that function's own unconditional
+// top-of-function disable, updateAssessmentEnablement()'s success-path re-enable, and
+// showModuleRefusal()'s explicit disable.
+function updateExampleOptionsForActiveModule() {
+  const select = $('#example-select');
+  if (!select) return;
+  if (moduleHasExampleCases(activeModuleId)) {
+    if (select.innerHTML === '') select.innerHTML = exampleSelectDefaultHtml;
+  } else {
+    select.innerHTML = '';
+    select.value = '';
+  }
+}
+
+// P5-06 (FR-30/SQ-3 F10,F11) — module-derived copy at the 8 named index.html sites: document.
+// title; the meta description; the brand aria-label + brand title; the assessment <h1>; the
+// assessment placeholder's "Output includes" headline item; the #algorithm heading; the footer
+// brand title; and the footer's "Knowledge base reviewed through" line. Called on EVERY
+// activation (success or refusal — see activateModule() below) so switching modules updates it
+// live, not just once at page load.
+//
+// R-P2: a missing manifest (an unregistered activeModuleId, or — schema-impossible, defence in
+// depth — a manifest with no title) renders the moduleId VERBATIM at every site below, never a
+// generic "Assessment" that would hide which module is actually active.
+//
+// F11: document.title is now ALWAYS the active module's OWN manifest.knowledgeBaseVersion, never
+// anemia's statically-imported src/evidence.js#KNOWLEDGE_BASE_VERSION constant — so it can never
+// carry anemia's version string under another module. meta.status (src/engine.js:47) is a
+// hardcoded literal and is NEVER read here — the module status chip is the banner's job (P3-04).
+function updateModuleDerivedPageCopy() {
+  const view = getManifestView(activeModuleId);
+  const title = (view && view.title) || activeModuleId;
+  const kbVersion = view?.knowledgeBaseVersion ?? 'unspecified';
+  const reviewedThrough = view?.evidenceReviewedThrough ?? 'unspecified';
+
+  document.title = `${title} Decision Support — KB ${kbVersion}`;
+  $('#page-description')?.setAttribute(
+    'content',
+    `Transparent, deterministic clinical decision support for ${title}, with rule-level evidence provenance.`,
+  );
+  $('#brand-link')?.setAttribute('aria-label', `${title} Decision Support home`);
+  if ($('#brand-title')) $('#brand-title').textContent = `${title} CDS`;
+  if ($('#assessment-title')) $('#assessment-title').textContent = `Evaluate ${title}`;
+  if ($('#output-preview-primary')) {
+    $('#output-preview-primary').textContent = `Age-aware classification and interpretation for ${title}`;
+  }
+  if ($('#algorithm-heading-title')) $('#algorithm-heading-title').textContent = `Deterministic ${title} algorithm`;
+  if ($('#footer-brand-title')) $('#footer-brand-title').textContent = `${title} Decision Support`;
+  if ($('#footer-kb-reviewed')) $('#footer-kb-reviewed').textContent = `Knowledge base reviewed through ${reviewedThrough}`;
+}
+
+// P5-02/P5-03 — re-renders every view whose content depends on the ACTIVE module's rules/
+// candidates: the #rules tab and (defensively, since it depends only on activeModuleId, cheap and
+// idempotent to re-run here too) the #evidence tab. Replaces every prior, narrower
+// updateNavCounts()-only call below so growing this list can never miss a call site.
+function refreshKnowledgeBaseDependentViews() {
+  updateNavCounts();
+  renderRules();
+  renderEvidence();
+}
+// =================================================================================================
 
 // One row's markup for the dropdown panel — identical template for both structural groups; group
 // placement is decided by the caller from isModuleSelectable(moduleId) (P2-03), computed once.
@@ -910,7 +1083,7 @@ async function loadActiveModuleKb(generation) {
   if (!isModuleSelectable(activeModuleId)) {
     rules = [];
     candidates = {};
-    updateNavCounts();
+    refreshKnowledgeBaseDependentViews();
     return false;
   }
   try {
@@ -922,7 +1095,7 @@ async function loadActiveModuleKb(generation) {
     if (!rulesResponse.ok || !candidatesResponse.ok) {
       rules = [];
       candidates = {};
-      updateNavCounts();
+      refreshKnowledgeBaseDependentViews();
       return false;
     }
     const rulesJson = await rulesResponse.json();
@@ -931,13 +1104,13 @@ async function loadActiveModuleKb(generation) {
     if (!isCurrentLoadGeneration(generation)) return false; // superseded while awaiting candidates.json()
     rules = rulesJson;
     candidates = candidatesJson;
-    updateNavCounts();
+    refreshKnowledgeBaseDependentViews();
     return true;
   } catch {
     if (!isCurrentLoadGeneration(generation)) return false; // superseded; do not clobber the newer module's state
     rules = [];
     candidates = {};
-    updateNavCounts();
+    refreshKnowledgeBaseDependentViews();
     return false;
   }
 }
@@ -1051,6 +1224,14 @@ async function activateModule(moduleId) {
   if ($('#example-select')) $('#example-select').disabled = true;
   renderModuleSwitcher();
   renderModuleStatusBanner();
+  // P5-01/P5-04/P5-06 — module-scoped, activeModuleId-only UI (no rules/candidates dependency):
+  // page copy, algorithm-tab affordance, examples-picker options. Still fully synchronous, still
+  // strictly before this function's only await (loadActiveModuleKb() below) — the P4-06 seam
+  // ordering claim above (banner write happens before any promise boundary) is unaffected by
+  // adding more synchronous work after the banner write, not before it.
+  updateModuleDerivedPageCopy();
+  updateAlgorithmTabAvailability();
+  updateExampleOptionsForActiveModule();
 
   // FR-21 (P4-07) — `?module=` fails isRegisteredModule() entirely. Distinct from Case 3 (FR-17,
   // registered but ineligible): quotes the literal requested id verbatim, since there is no
@@ -1059,7 +1240,7 @@ async function activateModule(moduleId) {
   if (!isRegisteredModule(moduleId)) {
     rules = [];
     candidates = {};
-    updateNavCounts();
+    refreshKnowledgeBaseDependentViews();
     showModuleRefusal(moduleId, deriveUnregisteredModuleReason(moduleId));
     return;
   }
@@ -1073,7 +1254,7 @@ async function activateModule(moduleId) {
   if (!isModuleSelectable(moduleId)) {
     rules = [];
     candidates = {};
-    updateNavCounts();
+    refreshKnowledgeBaseDependentViews();
     const view = getManifestView(moduleId);
     showModuleRefusal(moduleId, moduleStatusReasonText(view ? view.status : ''));
     return;
@@ -1087,7 +1268,7 @@ async function activateModule(moduleId) {
   if (notImplementedReason) {
     rules = [];
     candidates = {};
-    updateNavCounts();
+    refreshKnowledgeBaseDependentViews();
     showModuleRefusal(moduleId, notImplementedReason);
     return;
   }
@@ -1129,11 +1310,13 @@ async function activateModule(moduleId) {
 // #algorithm tab would silently show anemia-algorithm output while growth_suite_v1 is "active."
 //
 // Fix (app.js-only, as instructed — src/algorithmExplorer.js stays untouched): only ever call
-// initializeAlgorithmExplorer() when the ACTIVE module is genuinely the selectable default —
-// `isModuleSelectable(activeModuleId) && activeModuleId === DEFAULT_MODULE_ID`. Both conditions
-// are checked, not merely the id equality, so a hypothetical future state where `anemia` itself
-// somehow failed eligibility could never slip through on the id check alone. Deferred, not merely
-// skipped: this helper is called BOTH from initialize() (page load) and from the success tail of
+// initializeAlgorithmExplorer() when the ACTIVE module is genuinely the selectable default, via
+// moduleSupportsAlgorithmExplorer() (P5-01, defined above) — the SAME predicate
+// updateAlgorithmTabAvailability() uses for the tab-level affordance, so the two can never
+// diverge. Both conditions inside that predicate (selectable AND the id equality) are checked, not
+// merely the id equality, so a hypothetical future state where `anemia` itself somehow failed
+// eligibility could never slip through on the id check alone. Deferred, not merely skipped: this
+// helper is called BOTH from initialize() (page load) and from the success tail of
 // activateModule() above (every later successful activation) — so if the page loads on an
 // ineligible module and the clinician subsequently switches to anemia (today the only selectable
 // module), the explorer initializes THEN, the first time the condition is actually met.
@@ -1143,12 +1326,14 @@ async function activateModule(moduleId) {
 // anemia activation after the first successful one — is always safe and cheap: every call after
 // the first real attempt short-circuits inside algorithmExplorer.js without a network request.
 //
-// P5-01 (a later phase) owns the FULL #algorithm tab degradation (hiding/disabling the tab itself
-// for non-anemia modules with explicit copy) — this fix closes the narrower, reachable-TODAY
-// init-time computation leak; it is not a substitute for P5-01's later, more complete tab-level
-// treatment.
+// P5-01 owns the FULL #algorithm tab degradation (updateAlgorithmTabAvailability(), called from
+// activateModule() below) — hiding/disabling the tab itself for non-anemia modules with explicit
+// copy. This fix closes the narrower init-time computation leak; it is not a substitute for that
+// tab-level treatment, and that treatment is not a substitute for this init-time gate either — the
+// tab affordance is presentation (a devtools user could re-enable the tab button), this gate is
+// what actually keeps initializeAlgorithmExplorer() from ever running against ineligible state.
 async function initializeAlgorithmExplorerIfEligible() {
-  if (!(isModuleSelectable(activeModuleId) && activeModuleId === DEFAULT_MODULE_ID)) return;
+  if (!moduleSupportsAlgorithmExplorer(activeModuleId)) return;
   try {
     await initializeAlgorithmExplorer({
       rules,
@@ -1544,7 +1729,11 @@ async function initialize() {
   window.addEventListener('hashchange', () => switchTab(window.location.hash.slice(1), { syncHash: false }));
   updateCaseUi();
   switchTab(window.location.hash.slice(1) || 'assessment', { syncHash: false });
-  document.title = `Pediatric Anemia Decision Support — KB ${KNOWLEDGE_BASE_VERSION}`;
+  // P5-06/F11 — document.title (and every other module-derived copy site) is already set by
+  // activateModule()'s own updateModuleDerivedPageCopy() call above, for whichever module
+  // readModuleIdFromUrl() resolved to. A hardcoded anemia-literal re-assignment used to sit here
+  // and would silently overwrite that correct, module-derived value on every full page load —
+  // exactly the F11 hazard this task exists to close. Do not restore it.
 }
 
 function showFatalError(error) {
