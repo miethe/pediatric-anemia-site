@@ -45,7 +45,19 @@ const distRoot = path.join(repoRoot, 'dist');
 // relative-specifier bug pass (a) exists to catch — the dev and dist/ layouts must BOTH resolve
 // it — and neither pass covered it before, because pass (a) only parses the files listed here
 // (it does not walk the import graph transitively).
-const APP_SURFACE_FILES = ['src/app.js', 'src/algorithmExplorer.js', 'src/evidence.js'];
+// src/moduleManifests.js and src/moduleStatusVocabulary.js registered here as of P1-03
+// (spa-module-switcher-v1, phase-0-2-foundation.md): pass (a) does not walk the import graph
+// transitively, so a file not listed here goes entirely unchecked even if something else imports
+// it. Both are frozen, side-effect-free data modules with zero fetch()/DOM/dynamic-import
+// surface, but src/moduleManifests.js's four `with { type: 'json' }` import specifiers still need
+// the same dev+dist resolution proof every other app-surface file gets.
+const APP_SURFACE_FILES = [
+  'src/app.js',
+  'src/algorithmExplorer.js',
+  'src/evidence.js',
+  'src/moduleManifests.js',
+  'src/moduleStatusVocabulary.js',
+];
 
 const DYNAMIC_IMPORT_TARGETS = [
   'src/engine.js',
