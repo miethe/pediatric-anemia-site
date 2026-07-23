@@ -55,8 +55,11 @@ files_affected: [index.html, styles.css, src/app.js, src/facts/fieldState.js,
 **Related Epic(s)/PRD ID(s):** P3-WP7 in `01-platform-expansion-roadmap.md:288,545` ("Tri-state adaptive
 questionnaire UI"). IntentTree node `node_01KXQ7XFBSFNEEAJA8XJM621PZ`.
 
-**Related Documents:** see frontmatter `related_documents`. `decisions-block.md` is **authoritative** —
-its decisions, scope, risks R1–R7, estimates, and open questions OQ-1..OQ-4 are binding on this PRD.
+**Related Documents:** see frontmatter `related_documents`. `decisions-block.md` is **authoritative** for
+the original decisions, scope, and R1–R7. This PRD has since been revised to incorporate the binding
+cross-family review adjudication (`.claude/findings/four-state-questionnaire-ui-cross-family-review.md`)
+— risks R8–R10, requirements FR-9 (broadened)/FR-15/FR-16/FR-17, and open question OQ-5 are additions
+that adjudication requires; OQ-1..OQ-5 are all binding on this PRD.
 
 **Status honesty:** this is an unvalidated research prototype. Nothing in this PRD describes a
 clinically validated capability, a diagnostic improvement, or a safety enhancement. This feature
@@ -195,18 +198,27 @@ that follows from having no browser test dependency.
 
 **Four clinician-visible states, three wire values, "not assessed" represented by key omission.**
 
-| Clinician sees (default order TBD, OQ-1) | Payload sent | What the rule engine sees | Provenance preserved? |
-|---|---|---|---|
-| *(never touched — the default state)* | key **omitted** from `symptoms`/`history`/`exam` | `'unknown'` (via `toTri()` on an absent path) | Yes — key-absence is durable across save/export/re-load of the JSON payload. |
-| Unknown / can't determine | `'unknown'` | `'unknown'` | Yes. |
-| Present | `'true'` | `'true'` | Yes. |
-| Absent | `'false'` | `'false'` | Yes. |
+| Clinician sees (default order TBD, OQ-1) | Payload sent | What the rule engine sees | Durable in exported JSON? | Unambiguous to a reader? |
+|---|---|---|---|---|
+| *(never touched — the default state)* | key **omitted** from `symptoms`/`history`/`exam` | `'unknown'` (via `toTri()` on an absent path) | Yes — key-absence is durable across save/export/re-load of the JSON payload. | **No — see caveat below and OQ-5.** |
+| Unknown / can't determine | `'unknown'` | `'unknown'` | Yes. | Yes. |
+| Present | `'true'` | `'true'` | Yes. | Yes. |
+| Absent | `'false'` | `'false'` | Yes. | Yes. |
 
-The distinction between "never touched" and "actively marked unknown" is captured and durable in the
-serialized payload (a clinician or reviewer reading the raw JSON can tell the two apart by key
-presence), but it is **invisible to the rule engine** — `toTri()` treats an absent path exactly like
-an explicit `'unknown'` (`src/facts/tristate.js:6-11`). This is deliberate: it is the mechanism that
-lets the fourth clinician-visible state exist without adding a fourth wire-level literal.
+**Corrected framing (cross-family review F-2; see the findings doc cited in the implementation plan's
+Review History):** an earlier pass of this PRD called the omitted-key state "provenance preserved"
+without qualification. That conflated two different properties. The distinction between "never
+touched" and "actively marked unknown" **is durable** — it survives serialization into an inspectable
+JSON artifact: `currentAudit = { input, result }` (`src/app.js:1357`, `:1558`, `:1686`) is written to a
+downloadable file by `downloadJson()` (`src/app.js:1579-1587`) and to the clipboard
+(`src/app.js:1720-1721`). But durable is **not** the same as **unambiguous**: a reader of that exported
+JSON cannot distinguish "the clinician deliberately chose not-assessed" from "an older client that
+never rendered this field," "a partial serializer that dropped the key," or "an API caller that omitted
+it" — `toTri()` (`src/facts/tristate.js:6-11`) collapses every one of those identically to `'unknown'`.
+This is deliberate and correct at the **engine** layer (§0 — the engine must stay tri-state), but it
+means this design must never be described as "provenance-preserving" without that qualification. **This
+PRD does not resolve that ambiguity — see OQ-5, a blocking open question requiring a named human
+decision before any P3 markup edit lands.**
 
 ### Why this and not the two more obvious alternatives
 
@@ -241,39 +253,54 @@ performance as a result of this distinction becoming capturable.
 
 ---
 
-## 4. Empirically verified: engine output is unchanged (leg D)
+## 4. Empirically verified: engine output is unchanged (leg D, corrected per F-3)
 
-Leg D ran the assessment engine (`assessPediatricAnemia` / `assess()` over `deriveFacts`) against all 6
-golden fixtures in `tests/golden/`, with every explicit `false` key inside `symptoms`/`history`/`exam`
-deleted (simulating the omit-unanswered payload this feature introduces). Method and result, verbatim
-from the SPIKE leg:
+**Correction (cross-family review F-3, accepted):** an earlier pass of this PRD (and of leg D)
+described this section's evidence as "all 6 golden fixtures byte-identical" and treated that as strong
+empirical support. Verified directly: `tests/module-equivalence.test.mjs:28-34` reads its inputs from
+`examples/*.json`, not `tests/golden/*.json` (those are assessment *outputs*). Across all six
+`examples/*.json` files there is **exactly one** explicit `false` key inside `symptoms`/`history`/`exam`
+— five of the six fixtures exercise **no transformation at all**, because they simply have nothing for
+the omit-vs-`false` change to act on. "6/6 identical" is real but near-vacuous as evidence; it does not
+by itself show the payload change is safe.
 
-- **All 6 fixture outputs were IDENTICAL**, byte-for-byte, original vs. variant. All 14
-  `triAny`/`triAll`/`triNone`-derived aggregate facts were unchanged on all 6 fixtures.
-- A synthetic all-negative bleeding-history case **did** flip an intermediate aggregate
-  (`history.bleedingHistory: 'false' → 'unknown'`) — proving the omission mechanism genuinely reaches
-  the facts layer — yet the final `assess()` output was still identical.
-- **Why:** every one of the **28 rule conditions** that touch those 14 aggregates
-  (`AINF-002/004`, `ALERT-001/004/006`, `HEM-002`, `ID-002/005/006`, `IMF-001`/`DBA-001`/`FANCONI-001`,
-  `LOSS-001/002`, `MARROW-001/003`, `PARVO-001`, `Q-CYT-001`, `MICRO-005`, `NORMO-*`, `SMEAR-001`,
-  `TEC-001`, `THAL-001`) uses `op: "is-present"`, which resolves to `toTri(actual) === 'true'`
-  (`src/ruleEngine.js:45`) — a check that **cannot distinguish `'false'` from `'unknown'`**, because
-  neither value is `'true'`. Zero of the 28 use `is-absent`, `is-unknown`, or `is-not-assessed`.
-  `congenitalSignalsFullyAssessed` (`modules/anemia/facts.anemia.js:261`) is referenced by **zero
-  rules** in the corpus today.
+**What still holds, and carries the conclusion:** the *structural* argument — a corpus-derived count,
+not a fixture-run result. Leg D found that every one of the **28 rule conditions** touching the 14
+`triAny`/`triAll`/`triNone`-derived aggregates (`AINF-002/004`, `ALERT-001/004/006`, `HEM-002`,
+`ID-002/005/006`, `IMF-001`/`DBA-001`/`FANCONI-001`, `LOSS-001/002`, `MARROW-001/003`, `PARVO-001`,
+`Q-CYT-001`, `MICRO-005`, `NORMO-*`, `SMEAR-001`, `TEC-001`, `THAL-001`) uses `op: "is-present"`, which
+resolves to `toTri(actual) === 'true'` (`src/ruleEngine.js:45`) — a check that **cannot distinguish
+`'false'` from `'unknown'`**, because neither value is `'true'`. Zero of the 28 use `is-absent`,
+`is-unknown`, or `is-not-assessed`. `congenitalSignalsFullyAssessed`
+(`modules/anemia/facts.anemia.js:261`) is referenced by **zero rules** in the corpus today. A synthetic
+all-negative bleeding-history case run by leg D **did** flip an intermediate aggregate
+(`history.bleedingHistory: 'false' → 'unknown'`) — proving the omission mechanism genuinely reaches the
+facts layer — yet the final `assess()` output was still identical, consistent with the structural
+argument.
+
+**The gate this PRD originally relied on cannot detect the change it exists to guard.** Running
+`tests/module-equivalence.test.mjs` unmodified — as originally proposed — never submits a fixture that
+omits a key versus one that sends an explicit `false`, because none of the `examples/*.json` fixtures do
+so meaningfully. §6/§8 now require a new **executed transform test** (FR-15) that builds
+explicit-`false`-vs-omitted input pairs directly, rather than relying on the pre-existing example
+fixtures to happen to cover the case.
 
 **Do not read this as "the UI improves nothing."** It improves capture fidelity for anyone reading the
 raw payload — an auditor, a future rule author, a longitudinal record — even though today's rule corpus
-cannot act on the distinction. That is the honest scope of this feature: engine behavior is unchanged,
-capture fidelity is not.
+cannot act on the distinction. That is the honest scope of this feature: engine behavior is unchanged
+(supported by the structural 28-condition proof, not by the fixture run), capture fidelity is not.
 
 ### The neutrality precondition is conditional, not inherent — and must be pinned by a test
 
 This neutrality holds **only because no rule currently distinguishes `'false'` from `'unknown'`**. It
-ends the instant any rule author writes an `is-absent`, `is-unknown`, or `is-not-assessed` condition
-against one of the 14 triAny/triAll/triNone-derived aggregates. At that point, omitting unanswered
-fields becomes a genuine clinical behavior change, silently, unless something catches it. §6 (FR-9)
-requires a guard test that asserts this precondition directly, so a future rule authored against these
+ends the instant any rule author writes a condition against one of the 14 triAny/triAll/triNone-derived
+aggregates using **any operator that can discriminate `'false'` from `'unknown'`** — not only the three
+`is-absent`/`is-unknown`/`is-not-assessed` spellings originally named, but every discriminating operator
+the engine supports: `eq`/`neq`, `missing`/`exists`, `truthy`/`falsy`, and, for completeness, all four
+`is-*` spellings including `is-present` (`src/ruleEngine.js:27-48` — see F-3 in the findings doc cited by
+the implementation plan's Review History). At that point, omitting unanswered fields becomes a genuine
+clinical behavior change, silently, unless something catches it. §6 (FR-9) requires a guard test that
+asserts this precondition directly and at this broadened scope, so a future rule authored against these
 aggregates fails loudly at authoring time instead of silently changing patient-facing output.
 
 ---
@@ -292,12 +319,30 @@ aggregates fails loudly at authoring time instead of silently changing patient-f
   `src/facts/tristate.js` pattern) holding the read/write mapping between a control's stored value and
   its four-way clinician-facing state — the only part of this feature a Node test can execute directly
   (§8).
-- The neutrality guard test (§4, FR-9).
+- The neutrality guard test (§4, FR-9), broadened per F-3 to every discriminating operator, not just
+  the three `is-*` spellings originally scoped.
+- A new **executed transform test** (FR-15) building explicit-`false`-vs-omitted input fixture pairs for
+  every booleanMap field and every all-negative aggregate group, deep-comparing derived facts and final
+  `assess()` results — the gate the original golden-fixture-only plan could not provide (F-3).
 - The registry-vs-markup parity test (§6, FR-11), closing a latent hand-sync drift risk that exists
   today regardless of this feature (`src/app.js:111-131`'s name arrays and `index.html`'s literal
   `name="..."` markup already have no automated check keeping them in sync).
 - The safety-reviewed mutual-exclusion rewrite at `src/app.js:1634-1650` (§6, FR-13) — a safety-adjacent
   change treated as its own reviewed unit of work, not an incidental side effect.
+- **Rewiring every booleanMap consumer of `checked()`/`anyChecked()` outside the serialization path**
+  (§6, FR-16) — `anyChecked()` (`src/app.js:254-256`), `updateWorkflowState()`'s three call sites
+  (`:261`, `:266`, `:267`), and `updateCaseUi()`'s two call sites (`:282`'s `safetyCount` filter, `:290`'s
+  depth contribution) all call `checked()`/`anyChecked()` against booleanMap field names. A `<select>`
+  has no `.checked`, so every one of these would silently return `false`/report zero after conversion —
+  including the safety banner's `safetyCount` (cross-family review F-1, confirmed by direct line
+  inspection; not caught by the earlier same-family review pass).
+- **Never inferring the safety-review attestation from missing data** (§6, FR-17) —
+  `populateFromInput()`'s `hasImmediateFlag` check (`src/app.js:1503-1506`) auto-sets
+  `#safety-reviewed-no-flags` whenever no `immediateSafetyNames` field reads `'true'`. This is
+  pre-existing behavior, but this feature's own change invalidates the premise that made it defensible:
+  under the old model `false` meant "clinician asserted absent"; under the new default an omitted key
+  means "never assessed," so the same code would auto-assert "reviewed" over fields nobody looked at
+  (cross-family review F-4).
 
 ### 5.2 Out of Scope
 
@@ -345,7 +390,10 @@ alongside the title fix in §5.3 (P4 documentation task).
 | FR-6 | `populateFromInput()` (`src/app.js:1470` onward) correctly repopulates all 59 fields from a payload that may omit any of them, treating an omitted key as the "not-assessed" default state. | Must | |
 | FR-7 | A new pure, zero-DOM module `src/facts/fieldState.js` exports the control-value ↔ four-way-state mapping functions (e.g. `stateFromControlValue`, `controlValueFromState`), containing no reference to `document`, `form`, or `RadioNodeList` anywhere in the file. | Must | Mirrors the existing, already-tested pattern in `src/facts/tristate.js:1-36`. This is the only part of the read/write logic a Node test can execute directly (leg B §3). |
 | FR-8 | `checked()`/`booleans()`/`setSimpleField()`/`populateFromInput()` delegate their state-mapping decisions to `src/facts/fieldState.js` rather than inlining the mapping. | Must | Mirrors how `setSimpleField:1466` already delegates to `toTri()` from `src/facts/tristate.js`. |
-| FR-9 | A neutrality guard test asserts that none of the 28 rule conditions currently reading the 14 triAny/triAll/triNone-derived aggregate facts uses `is-absent`, `is-unknown`, or `is-not-assessed` — i.e., it re-verifies the §4 precondition against the live rule corpus, not just against a point-in-time count. | Must | R3/leg D "load-bearing" recommendation. This must be written **before** any behavior change (P0 in the phase plan) so the precondition is pinned first. |
+| FR-9 | A neutrality guard test asserts that none of the 28 rule conditions currently reading the 14 triAny/triAll/triNone-derived aggregate facts uses **any operator that can discriminate `'false'` from `'unknown'`** — broadened per F-3 to `eq`/`neq`, `missing`/`exists`, `truthy`/`falsy`, and all four `is-*` spellings (`is-present`/`is-absent`/`is-unknown`/`is-not-assessed`), not only the three `is-*` spellings originally scoped (`src/ruleEngine.js:27-48`). Re-verifies the §4 precondition against the live rule corpus, not just against a point-in-time count. | Must | R3/leg D "load-bearing" recommendation. This must be written **before** any behavior change (P0 in the phase plan) so the precondition is pinned first. |
+| FR-15 | A new **executed transform test** builds, for every booleanMap field and every all-negative aggregate group, an input fixture pair (explicit `false` vs. key-omitted); runs `deriveFacts()` and the engine on both; and deep-compares derived facts and final `assess()` results. This replaces reliance on `tests/module-equivalence.test.mjs`'s existing `examples/*.json` fixtures as the change-detection gate, since those fixtures contain only one explicit `false` across all six files and therefore cannot detect this change (F-3). | Must | Corrects the mischaracterized "golden identity" gate; §4, §8. |
+| FR-16 | Every booleanMap consumer of `checked()`/`anyChecked()` **outside** the serialization path — `anyChecked()` (`src/app.js:254-256`), `updateWorkflowState()`'s three call sites (`:261`, `:266`, `:267`), and `updateCaseUi()`'s two call sites (`:282`'s `safetyCount` filter, `:290`'s depth contribution) — is rewired to use explicit `fieldState.js`-backed predicates (`isPresent`/`isAssessed`, and a booleanMap-aware `anyPresent(names)`) instead of `checked()`/`anyChecked()`, which return `false` for every `<select>`-backed field post-conversion. The 13 non-booleanMap checkbox call sites are unaffected and must stay on `checked()`/`anyChecked()`. | Must | Cross-family review F-1 (BLOCKER, confirmed) — missed by the same-family reviewer. Without this fix, `safetyCount` is permanently 0, `step-safety`/`step-history`/`step-smear` never complete from field input, and the depth score loses its 13% history/exam contribution. |
+| FR-17 | The safety-review auto-assertion in `populateFromInput()` (`src/app.js:1503-1506`, `hasImmediateFlag`) never infers "safety screen reviewed" from an **omitted** `immediateSafetyNames` field. Every such field must read explicitly **Absent** (or an explicit reviewed action must be required) before `#safety-reviewed-no-flags` is auto-set. | Must | Cross-family review F-4 (HIGH, confirmed with reframing) — pre-existing code, but this feature invalidates the premise (`false` = asserted-absent) that made the existing behavior defensible; an omitted key now means "never assessed," not "asserted absent." |
 | FR-10 | The safety-reviewed mutual-exclusion listeners at `src/app.js:1634-1650` are rewritten to set an explicit "Absent"/"Unknown" state on every `immediateSafetyNames` field (forward direction) and to correctly detect a non-"not-assessed"/non-"Absent" state on the reverse direction, instead of force-writing a boolean `.checked`. | Must | R2 — safety-adjacent; the decisions block calls out this rewrite as its own task requiring its own review, not an incidental side effect of the control swap. |
 | FR-11 | A registry-vs-markup parity test asserts that the field-name set in `index.html`'s `<select>` markup exactly matches the union of `symptomNames`/`historyNames`/`examNames` in `src/app.js:111-131` (both directions — no name in the registry missing from markup, and no markup name absent from the registry). | Must | Closes a latent hand-sync drift risk that exists today independent of this feature (leg C §2, §7). |
 | FR-12 | The 59 field-to-`<select>` markup conversions in `index.html` are hand-edited, not generated by a build-time or runtime script. | Must | Decisions block §4: this repo's SPA is deliberately zero-dependency/no-build-step; introducing markup generation would be a larger architectural change than the feature itself and would move the clinical-review surface out of human-readable `index.html`. FR-11's parity test is the mitigation for the copy-paste risk this choice accepts. |
@@ -415,10 +463,11 @@ set by `spa-module-switcher-v1.md`'s §11a.
 
 | What | How | Executes real logic? |
 |---|---|---|
-| The pure `src/facts/fieldState.js` mapping functions, incl. "omitted key → not-assessed" and "not-assessed → omit on serialize". | `tests/field-state.test.mjs` (new, `node --test`, direct import, no DOM). | Yes — same pattern as `tests/tristate-operators.test.mjs` against `src/facts/tristate.js`. |
-| The neutrality precondition (FR-9): none of the 28 rule conditions over the 14 aggregates uses `is-absent`/`is-unknown`/`is-not-assessed`. | `tests/tristate-neutrality-guard.test.mjs` (new) — scans the live `modules/*/rules.json`. | Yes — reads and evaluates the actual rule JSON, not a cached count. |
-| Golden-fixture identity: the payload change does not alter `assess()` output for the 6 golden fixtures. | `tests/module-equivalence.test.mjs` (existing, unmodified). | Yes — executes the real engine. |
-| That `checked()`/`setSimpleField()`/`buildInput()`/`populateFromInput()` reference the new `fieldState.js` functions rather than inlining the mapping, and no booleanMap field still writes a plain `element.checked` boolean. | Static source-shape pin — the `functionBody()`/regex technique already used by `scripts/smoke-browser-unit-rejection.mjs:45-104` and `tests/module-switcher-eligibility.test.mjs`. | No — proves the right identifiers appear at the right call sites; does not execute `src/app.js` (DOM-dependent, not importable under Node — leg B §2). |
+| The pure `src/facts/fieldState.js` mapping functions, incl. "omitted key → not-assessed" and "not-assessed → omit on serialize", and the `isPresent`/`isAssessed` predicates (FR-16). | `tests/field-state.test.mjs` (new, `node --test`, direct import, no DOM). | Yes — same pattern as `tests/tristate-operators.test.mjs` against `src/facts/tristate.js`. |
+| The neutrality precondition (FR-9, broadened): none of the 28 rule conditions over the 14 aggregates uses any discriminating operator (`eq`/`neq`, `missing`/`exists`, `truthy`/`falsy`, all four `is-*` spellings). | `tests/tristate-neutrality-guard.test.mjs` (new) — scans the live `modules/*/rules.json`. | Yes — reads and evaluates the actual rule JSON, not a cached count. |
+| **Executed transform test (FR-15):** for every booleanMap field and every all-negative aggregate group, an explicit-`false`-vs-omitted input fixture pair produces identical derived facts and `assess()` results. | New test (P2-08 in the implementation plan) — builds fixtures directly rather than relying on `examples/*.json`. | Yes — executes the real `deriveFacts()`/engine path against fixtures purpose-built to exercise the change. |
+| Golden-fixture identity: the payload change does not alter `assess()` output for the 6 `examples/*.json` fixtures. | `tests/module-equivalence.test.mjs` (existing, unmodified). | Yes — executes the real engine, **but this is weak evidence on its own** (F-3): only 1 of the 6 fixtures contains an explicit `false` inside `symptoms`/`history`/`exam`, so 5 of 6 exercise no transformation at all. The FR-15 transform test above, not this fixture run, is what actually detects the change. |
+| That `checked()`/`setSimpleField()`/`buildInput()`/`populateFromInput()`, and — per FR-16 — `anyChecked()`/`updateWorkflowState()`/`updateCaseUi()`'s booleanMap call sites, reference the new `fieldState.js` functions rather than inlining the mapping, and no booleanMap field name reaches a plain `element.checked` read or write anywhere in `src/app.js` post-rewire. | Static source-shape pin — the `functionBody()`/regex technique already used by `scripts/smoke-browser-unit-rejection.mjs:45-104` and `tests/module-switcher-eligibility.test.mjs`, extended (P2-06 in the implementation plan) to cover the FR-16 consumers. | No — proves the right identifiers appear at the right call sites; does not execute `src/app.js` (DOM-dependent, not importable under Node — leg B §2). |
 | Registry-vs-markup parity (FR-11): `index.html`'s field-name set matches `symptomNames ∪ historyNames ∪ examNames`. | `tests/questionnaire-registry-parity.test.mjs` (new) — reads both files as raw text (precedent: `tests/module-switcher-eligibility.test.mjs:29-34`). | Partially — a real set-equality check over extracted text, but the extraction is regex-based text parsing, not a DOM parse. |
 | Schema acceptance: `booleanMap` still accepts the omit-key and three string-value shapes. | Existing schema suite (`tests/tristate-schema.test.mjs` et al.), unmodified — no schema change (FR-13). | Yes. |
 
@@ -439,8 +488,14 @@ set by `spa-module-switcher-v1.md`'s §11a.
 - **Cross-browser behavior.** Any Safari/Chrome/Firefox rendering or interaction difference for the new
   control markup.
 - **`form.reset()` / browser autofill / paste interaction** with the new control type.
+- **The safety banner and workflow-step behavior driven by FR-16's rewired predicates** — that the
+  safety-findings banner's count (`safetyCount`) actually reflects fields marked Present, and that
+  `step-safety`/`step-history`/`step-smear` actually complete when a clinician enters corresponding
+  field data at runtime. No test can execute `updateCaseUi()`/`updateWorkflowState()` against a real DOM
+  (same import-time constraint as above), so a source-shape pin can prove the code calls the right
+  predicate but cannot prove the banner renders the right count in a browser (cross-family review F-1).
 
-These six bullets must be captured by a person exercising the running SPA and recorded by name, the
+These seven bullets must be captured by a person exercising the running SPA and recorded by name, the
 same discipline `spa-module-switcher-v1.md` establishes with its P6-011 human-verification step. This
 PRD does not name a specific task ID for that step; the implementation plan must add one.
 
@@ -464,11 +519,14 @@ DOM, not browser behavior" — never represented as proof the control works in a
 |---|---|---|---|---|
 | R1 | `RadioNodeList` guards in `src/app.js` (`checked()`/`checkedValues()`/`setSimpleField()`) bail out silently on a `RadioNodeList`. A radio-group implementation would silently break both read and write. | High | Would-be, if radios were chosen | Avoided structurally by choosing `<select>` (FR-1/FR-3) — always a single element, never a `RadioNodeList`. Verify explicitly during implementation, not just by design intent. |
 | R2 | The safety-reviewed mutual-exclusion logic (`:1634-1650`) force-writes `.checked = false` across every `immediateSafetyNames` field — safety-adjacent code, must not be rewritten as an incidental side effect. | High | Certain — rewrite is required (FR-10) | Own task, own review in the implementation plan; not folded into the general read/write rewrite. |
-| R3 | The neutrality precondition (§4) erodes silently the moment a future rule uses `is-absent`/`is-unknown`/`is-not-assessed` against one of the 14 aggregates. | High | Low near-term; failure mode is silent | The FR-9 guard test (§6, §8) — non-negotiable, written before any behavior change. |
+| R3 | The neutrality precondition (§4) erodes silently the moment a future rule uses a discriminating operator (broadened per F-3 to `eq`/`neq`, `missing`/`exists`, `truthy`/`falsy`, all four `is-*` spellings) against one of the 14 aggregates. | High | Low near-term; failure mode is silent | The FR-9 guard test (§6, §8), broadened per F-3 — non-negotiable, written before any behavior change. |
 | R4 | `tests/tristate-safety-invariant.test.mjs:270` hardcodes `TRI_VALUES = new Set(['true','false','unknown'])` (`:35`). | Medium | Low | No 4th wire value is added, so this stays green unmodified. **If it goes red, the design drifted from §3 — do not edit the test to match the code; stop and re-examine.** |
 | R5 | Verification-ceiling overclaim: presenting a source-shape pin or a DOM shim as proof of rendering/click/keyboard/a11y correctness. | Medium | Medium without an explicit gate | §8 enumerates the ceiling and forbids the DOM-shim-as-verification pattern outright. |
 | R6 | Survey fatigue: 59 dropdowns defaulting to "not assessed" may increase abandonment vs. 59 checkboxes. | Medium | Unknown — no data | Out of this PRD's power to measure; record as a human-factors validation item, not a claimed UX improvement. |
 | R7 | `npm run check` is currently **RED on `main`** with 8 pre-existing failures (byte-identity baselines + D1 rights checks), unrelated to this work. | High (process) | Certain — already true | Gate criterion is **"no NEW failures vs. the recorded main baseline of 8"** (§11). This PRD does not own fixing the 8. |
+| R8 | **(Cross-family review F-1, BLOCKER.)** `anyChecked()`, `updateWorkflowState()`, and `updateCaseUi()` call `checked()`/`anyChecked()` against booleanMap field names; a `<select>` has no `.checked`, so these silently return `false`/0 post-conversion — including the safety banner's `safetyCount`. | High (silently wrong safety banner) | Certain if unfixed — every converted field | FR-16: rewire every such consumer to `fieldState.js`-backed `isPresent`/`isAssessed`/`anyPresent()` predicates. Missed by the same-family review pass; caught by cross-family review. |
+| R9 | **(Cross-family review F-4, HIGH.)** `populateFromInput()`'s safety-review auto-assertion (`:1503-1506`) infers "reviewed" from the absence of a `'true'` flag — pre-existing, but this feature's omitted-key default invalidates the premise that made it defensible. | Medium-High | Certain if unfixed | FR-17: never infer the attestation from an omitted field; require explicit Absent (or an explicit reviewed action) first. |
+| R10 | **(Cross-family review F-2, human decision required.)** "Provenance preserved" is durable but not unambiguous — a reader cannot distinguish deliberate not-assessed from an omitting client/serializer/API caller. | Medium (audit-trail honesty) | Certain, by design, until resolved | OQ-5 — a named human must choose among the three options recorded there before P3 markup begins; not resolved by this PRD or by an agent. |
 
 ---
 
@@ -481,9 +539,13 @@ part of the UI implies this changes what the engine concludes.
 
 **Technical Architecture:** the wire payload for `symptoms`/`history`/`exam` omits any field left at its
 default state instead of defaulting it to `false`; `src/facts/fieldState.js` holds the pure state
-mapping; `src/app.js`'s five affected functions (`checked`, `booleans`, `buildInput`, `setSimpleField`,
-`populateFromInput`) and the safety-reviewed mutual-exclusion listeners delegate to it. The engine,
-rule schema, and all 6 golden fixtures are byte-identical to today.
+mapping plus `isPresent`/`isAssessed` predicates (FR-16); `src/app.js`'s five originally-scoped affected
+functions (`checked`, `booleans`, `buildInput`, `setSimpleField`, `populateFromInput`), the
+safety-reviewed mutual-exclusion listeners, **and — per cross-family review F-1 — `anyChecked()`,
+`updateWorkflowState()`, and `updateCaseUi()`'s booleanMap call sites** all delegate to it. The engine
+and rule schema are byte-identical to today; the 6 `examples/*.json` fixtures remain byte-identical too,
+though (per F-3) that fixture check is corroborating evidence, not the primary proof — the new executed
+transform test (FR-15) and the structural 28-rule-condition count (§4) carry that conclusion.
 
 **Observable Outcomes:** the round-trip data-loss defect at `setSimpleField:1466` is closed. A new
 neutrality guard test exists and passes, re-verified against the live rule corpus. A new registry-vs-
@@ -507,9 +569,20 @@ explicit `target_surfaces` list.
 
 ### AC-2: Payload omits unanswered fields; engine output is unchanged
 - target_surfaces: [src/app.js, tests/module-equivalence.test.mjs, tests/golden]
-- Criterion: `buildInput()` omits a booleanMap key when its control is at "not-assessed"; all 6 golden
-  fixtures in `tests/golden/` produce byte-identical `assess()` output before and after this feature
-  ships. Verified by `tests/module-equivalence.test.mjs` (executed, unmodified).
+- Criterion: `buildInput()` omits a booleanMap key when its control is at "not-assessed"; all 6
+  `examples/*.json` fixtures produce byte-identical `assess()` output before and after this feature
+  ships. Verified by `tests/module-equivalence.test.mjs` (executed, unmodified) — **but per F-3, this
+  fixture run alone is weak evidence** (only 1 of 6 fixtures contains an explicit `false` inside
+  `symptoms`/`history`/`exam`). The conclusion this AC actually rests on is carried by AC-4a's executed
+  transform test (FR-15) plus the corpus-derived 28-condition structural proof (§4), not by fixture
+  count alone.
+
+### AC-4a: The omit-vs-`false` transform is verified by a test that can actually detect it
+- target_surfaces: [src/app.js, src/facts/fieldState.js, tests/tristate-neutrality-guard.test.mjs]
+- Criterion: a new executed test (FR-15) builds an explicit-`false`-vs-omitted input fixture pair for
+  every booleanMap field and every one of the 14 all-negative aggregate groups, runs `deriveFacts()` and
+  the engine on both, and deep-compares derived facts and final results — closing the gap AC-2's
+  pre-existing fixture run cannot close (F-3).
 
 ### AC-3: The round-trip defect is fixed
 - target_surfaces: [src/app.js]
@@ -520,9 +593,12 @@ explicit `target_surfaces` list.
 
 ### AC-4: The neutrality precondition holds and is pinned
 - target_surfaces: [modules/anemia/rules.json, modules/cbc_suite_v1/rules.json, modules/growth_suite_v1/rules.json, modules/kidney_suite_v1/rules.json, tests/tristate-neutrality-guard.test.mjs]
-- Criterion: zero rule conditions over the 14 triAny/triAll/triNone-derived aggregate facts use
-  `is-absent`/`is-unknown`/`is-not-assessed`. Verified by `tests/tristate-neutrality-guard.test.mjs`
-  (executed, scans live rule JSON — a real re-check, not a cached count from the SPIKE legs).
+- Criterion: zero rule conditions over the 14 triAny/triAll/triNone-derived aggregate facts use any
+  operator that can discriminate `'false'` from `'unknown'` — broadened per F-3 to `eq`/`neq`,
+  `missing`/`exists`, `truthy`/`falsy`, and all four `is-*` spellings (`is-present`/`is-absent`/
+  `is-unknown`/`is-not-assessed`), not only the three `is-*` spellings originally scoped. Verified by
+  `tests/tristate-neutrality-guard.test.mjs` (executed, scans live rule JSON — a real re-check, not a
+  cached count from the SPIKE legs).
 
 ### AC-5: The safety-reviewed mutual-exclusion rewrite preserves its invariant
 - target_surfaces: [src/app.js]
@@ -544,6 +620,22 @@ explicit `target_surfaces` list.
   (byte-identity baselines + D1 rights checks). This feature does not fix, and is not blocked by, those
   8. Any new failure is this feature's responsibility; the 8 are not.
 
+### AC-8: Workflow, depth, count, and safety consumers of booleanMap fields are rewired (FR-16)
+- target_surfaces: [src/app.js]
+- Criterion: `anyChecked(names)` (`:254-256`), `updateWorkflowState()`'s three call sites (`:261`,
+  `:266`, `:267`), and `updateCaseUi()`'s two call sites (`:282` `safetyCount`, `:290` depth
+  contribution) no longer call `checked()`/`anyChecked()` against any booleanMap field name; each
+  delegates to `fieldState.js`-backed `isPresent`/`isAssessed`/`anyPresent()` predicates instead.
+  Source-asserted via an extended P2-06 source-shape pin; the actual banner/workflow-step runtime
+  behavior is **manually verified only** (§8) — no DOM execution is available.
+
+### AC-9: The safety-review attestation is never auto-inferred from missing data (FR-17)
+- target_surfaces: [src/app.js]
+- Criterion: `populateFromInput()`'s `hasImmediateFlag` check no longer auto-sets
+  `#safety-reviewed-no-flags` on the strength of an omitted `immediateSafetyNames` field; every such
+  field must read explicitly Absent (or an explicit reviewed action is required) first. Source-asserted;
+  runtime behavior is manually verified only (§8).
+
 ### Documentation Acceptance
 - [ ] `docs/project_plans/design-specs/tri-state-fact-model.md` updated to cross-reference this feature
       as the UI-layer consumer of the existing three-value model, without implying a fourth wire state
@@ -560,6 +652,9 @@ explicit `target_surfaces` list.
       for a representative sample of fields.
 - [ ] A named person has confirmed the safety-reviewed mutual-exclusion behavior at runtime (AC-5).
 - [ ] A named person has confirmed `form.reset()` behavior against the new controls.
+- [ ] A named person has confirmed the safety-findings banner's count (`safetyCount`) accurately
+      reflects Present fields, and that `step-safety`/`step-history`/`step-smear` complete correctly
+      from field input at runtime (AC-8/FR-16 — these cannot be proven by any executed test).
 
 ---
 
@@ -573,6 +668,7 @@ explicit `target_surfaces` list.
 | OQ-2 | Exact clinician-facing wording ("Not assessed" vs. "Not asked" vs. blank/placeholder). Must not imply the choice changes inference. | Open. |
 | OQ-3 | Should the roadmap/IntentTree title be corrected to drop "adaptive"? | Recommend **yes** (§5.3); not applied by this PRD itself. |
 | OQ-4 | Do the 13 non-booleanMap booleans (4 `localFlags` + 6 lab-result + 3 `patient` booleans) eventually need the same four-option treatment? | Deferred — named here so it is not lost, not answered by this feature. |
+| OQ-5 | **BLOCKING (cross-family review F-2).** "Durable but not unambiguous" (§3) is not resolved by this PRD. A named human must choose one: **(1)** stamp the payload with a capture-schema version so a future reader can distinguish "field existed and was omitted deliberately" from "field did not exist" (cheap, ~1-2 file blast radius); **(2)** a separate versioned capture envelope (`capture.booleanMap[field] = "not-assessed" \| "unknown" \| "present" \| "absent"`) feeding the unchanged 3-value model to the engine (full fix — a 4th *capture* enum, not a 4th *rule-engine* enum, so SPIKE-003's holding survives); **(3)** drop the "provenance preserved" claim entirely and state plainly that not-assessed is a UI affordance, durable but not self-describing (cheapest, still honest). | **Open — blocking. Must be resolved by a named human before any P3 markup edit lands.** Not an agent's decision. |
 
 ---
 
@@ -596,21 +692,23 @@ explicit `target_surfaces` list.
 
 ## Implementation
 
-Phase structure, agent/model routing, and estimation are owned by
-`.claude/worknotes/four-state-questionnaire-ui/decisions-block.md` §6–§8. Orientation only (**14 pts**,
-Tier 3, anchored against `spa-module-switcher-v1`):
+Phase structure, agent/model routing, and estimation are owned by the implementation plan (re-estimated
+after cross-family review; see its Review History section). Orientation only (**20 pts**, up from an
+initial 14-pt estimate that excluded the F-1/F-3/F-4 fixes below — Tier 3, anchored against
+`spa-module-switcher-v1`):
 
 | Phase | Name | Scope | Exit gate | Pts |
 |---|---|---|---|---|
-| P0 | Baseline & guard | Record the 8 pre-existing `main` failures (R7); write the FR-9 neutrality guard test **before** any behavior change | Guard test green; baseline recorded | 2 |
-| P1 | Pure logic extraction | New `src/facts/fieldState.js`; direct `node --test` coverage | New module tested; `src/app.js` not yet rewired | 2 |
-| P2 | SPA read/write rewire | `checked()`, `booleans()`, `setSimpleField()`, `populateFromInput()`, safety-exclusion listeners (R2/FR-10); omit-unanswered payload | Goldens still identical; source-shape pins added | 5 |
+| P0 | Baseline & guard | Record the 8 pre-existing `main` failures (R7); write the FR-9 neutrality guard test, broadened per F-3 to all discriminating operators, **before** any behavior change | Guard test green; baseline recorded | 2.5 |
+| P1 | Pure logic extraction | New `src/facts/fieldState.js` incl. `isPresent`/`isAssessed` predicates (FR-16); direct `node --test` coverage | New module tested; `src/app.js` not yet rewired | 3 |
+| P2 | SPA read/write rewire | `checked()`, `booleans()`, `setSimpleField()`, `populateFromInput()`, safety-exclusion listeners (R2/FR-10); omit-unanswered payload; **FR-16's workflow/depth/safety-count consumer rewrite; FR-15's executed transform test; FR-17's safety-attestation fix** | Transform test green; goldens still identical; source-shape pins added, extended to cover FR-16 | 9.5 |
 | P3 | Markup | 59 hand-edited `<select>` conversions in `index.html` + CSS; FR-11 parity test | Parity test green; human visual pass recorded | 3 |
-| P4 | Docs & honesty corrections | Update design spec + roadmap-title/dependency recommendation (§5.3/§5.4); manual-verification checklist (§11) recorded | `npm run check` shows no new failures vs. the R7 baseline | 2 |
+| P4 | Docs & honesty corrections | Update design spec + roadmap-title/dependency recommendation (§5.3/§5.4); OQ-5 decision recorded; manual-verification checklist (§11, incl. safety-banner/workflow-step items) recorded | `npm run check` shows no new failures vs. the R7 baseline | 2 |
 
 P0 precedes P1 deliberately: the neutrality guard must exist before the payload change it guards
-against. Full phase/task detail, agent routing (delegation-router resolved), and the risk-hotspot table
-are in the decisions block; this PRD does not duplicate them.
+against. Full phase/task detail, agent routing (delegation-router resolved), the risk-hotspot table, and
+the Review History recording both review passes and their adjudication are in the implementation plan;
+this PRD does not duplicate them.
 
 **Progress Tracking:** `.claude/progress/four-state-questionnaire-ui/` (per-phase files, once an
 implementation plan is authored from this PRD).
