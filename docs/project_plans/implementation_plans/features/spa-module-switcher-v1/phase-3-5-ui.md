@@ -42,9 +42,16 @@ only (PRD §14). Two known divergences must **not** be copied: the variants rend
 **`integration_owner`**: `phase-owner` (shared with P4)
 **Exit gate** (decisions block §1): banner renders all 4 statuses; a11y `role="alert"`;
 keyboard-navigable.
-**Form factor** (OQ-1, resolved in the parent plan): **persistent sidebar rail** (mockup variant A) —
-an interstitial one-time picker leaves no in-session reminder of which module is active, and the
-active module's identity is exactly what FR-30/AC-7 exist to keep visible.
+**Form factor** (OQ-1 as **revised by decisions block §11 — D-7 operator override, 2026-07-22**):
+**header dropdown** (mockup variant B, `variant-b-dropdown-plus-banner.png`) — the collapsed control
+persistently shows the active module's title + verbatim status chip in the header (the FR-30/AC-7
+in-session reminder), expanding to a panel that renders all four modules in the two labelled
+structural groups under the verbatim panel header. Every P3 task below that says "rail" reads as
+"dropdown control + expanded panel"; all honesty/grouping/a11y constraints are unchanged. The
+expanded panel must be dismissible via Escape and keyboard-navigable with linear focus order
+(FR-37 re-read for a disclosure widget). Do not copy mockup B's CBC-row-without-lock divergence —
+all three non-`integrity-recorded` rows are inert (D-1/FR-4). The status banner (P3-04) stays in
+the main column — B is "dropdown **plus banner**", not banner-in-dropdown.
 
 | Task ID | Task Name | Description | Acceptance Criteria | Estimate | Subagent(s) | Model | Effort | Provider | Dependencies |
 |---------|-----------|-------------|---------------------|---------:|-------------|-------|--------|----------|--------------|

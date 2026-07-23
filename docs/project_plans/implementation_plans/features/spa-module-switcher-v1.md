@@ -179,10 +179,14 @@ contracts live in the phase files (this parent stays under the 300-line guidelin
 
 Binding. Phase executors must not reopen these without a new decisions-block entry.
 
-**OQ-1 — Selector form factor.** **Persistent sidebar rail** (mockup A). A one-time interstitial gate
-(C) leaves no in-session reminder of which module is active, and that identity is exactly what FR-30
-and AC-7 keep visible. Both mockups render CBC Suite *selectable* — **superseded by D-1 / FR-4**; it
-is `unsigned-stub` and ships inert. Mockups are non-binding for behavior (PRD §14).
+**OQ-1 — Selector form factor.** **REVISED by decisions block §11 (D-7, operator override,
+2026-07-22): header dropdown (mockup B)**, superseding the prior "persistent sidebar rail (mockup A)"
+resolution. The collapsed control keeps the active module's title + verbatim status chip persistently
+visible in the header, which satisfies the in-session-reminder requirement (FR-30/AC-7) that ruled
+out interstitial C. The expanded panel keeps the two labelled structural groups and the verbatim
+panel header. Mockup B's CBC-row-without-lock divergence must not be copied — all three
+non-`integrity-recorded` modules ship inert (D-1/FR-4). Mockups remain non-binding for behavior
+(PRD §14).
 
 **OQ-2 — `#evidence` tab.** **Degrade** (FR-26). `src/evidence/registry.js:39-50` holds loaders for
 `anemia` and `cbc_suite_v1` only; growth/kidney have an `evidence.json` but no loader. A per-module
