@@ -20,9 +20,17 @@ tags: [findings, gate-recovery, rights-honesty, branch-green-main-red]
 Created during Phase 0 execution per the parent plan's lazy in-flight-findings rule
 ("If a new finding occurs during P0–P4, the executing agent creates this file at that point").
 
-## MBF-1 (BLOCKING) — The plan's P0 premise is falsified: `main` is red from causes SPIKE-009 never enumerated
+## MBF-1 (accepted record; carries OPEN owner decisions D-1..D-4) — The plan's P0 premise is falsified: `main` is red from causes SPIKE-009 never enumerated
 
-**Status**: open — requires owner adjudication before Phase 1 can claim a verifiable gate.
+**Status**: the finding itself is **accepted** as an accurate record (this is why the doc frontmatter
+reads `status: accepted`). Execution did **not** wait on it: all five phases (P0–P5) proceeded on the
+**D-4 recommended path** — a pinned known-red baseline whose gate is "no new failures vs. the recorded
+8," which every phase met (each phase ended at exactly the 8 pre-existing failures, zero new, verified
+by name-keyed diff). What remains genuinely **open** is the owner-decision set **D-1..D-4 below** — these
+do **not** block this feature's phases (they are all complete and independently gated) but they **do**
+gate a *literally-green* `npm run check` and therefore a clean squash-merge to `main`. Recorded here so
+the "accepted" frontmatter is not mistaken for "the 8 failures are resolved" — they are not; they await
+the owner calls D-1..D-4.
 
 ### What the plan assumed
 
