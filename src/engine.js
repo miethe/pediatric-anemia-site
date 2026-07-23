@@ -98,3 +98,13 @@ export function assess(input, moduleId, rules, candidates) {
 export function assessPediatricAnemia(input, rules, catalog) {
   return assess(input, 'anemia', rules, catalog);
 }
+
+// P2-02 (spa-module-switcher-v1, phase-0-2-foundation.md) — module-generic sibling of
+// assessPediatricAnemia above. Pure delegation to the existing generic assess(); adds no
+// clinical logic and no moduleId branching. assessPediatricAnemia is retained unchanged
+// (R-3, scripts/smoke-browser-unit-rejection.mjs greps src/app.js/src/algorithmExplorer.js
+// source text for its exact import/call shape at :132, :134, :179, :188, :216-223) — this
+// function is additive, not a replacement.
+export function assessModule(moduleId, input, rules, candidates) {
+  return assess(input, moduleId, rules, candidates);
+}

@@ -54,3 +54,23 @@ progress note may describe the full check as green.
 with the tightened `schemas/evidence.schema.json` — a clinical-adjacent content change requiring its
 own review under the repo's guardrails ("no AI-published rule changes"; evidence edits tie to
 sources).
+
+## Finding E-2 (execution-time, 2026-07-22) — E1's diff-scope guard fails on any later branch that adds `src/` files (branch-local +1 over the inherited 25)
+
+`tests/ef-release-registry-validate-wiring.test.mjs:234` ("diff-scope: src/, server.mjs,
+openapi.yaml, and modules/anemia/module.json are byte-untouched relative to main across all of
+evidence-foundry-e1") runs `git diff --name-only main...HEAD` and asserts the result is empty. That
+guard was written to police the evidence-foundry-e1 branch but is **not scoped to it** — it fails on
+any subsequent feature branch that legitimately commits `src/` work. On this branch it began failing
+at the Phase 1 commit (`1a4c8b9`, which added `src/moduleManifests.js` +
+`src/moduleStatusVocabulary.js`) and will keep matching more files as P2–P5 land. **Attribution
+correction** (P2-GATE validator, superseding the phase-2 progress note's "inherited drift" label):
+this is *branch-self-inflicted, by design of the guard* — not present in the inherited 25 at
+`cd20427`, not caused by any defect in this feature's code.
+
+**Disposition**: leave the guard untouched on this branch. It is main-scope-relative, so it
+**self-resolves on squash-merge** (`main...HEAD` is empty on main itself); post-merge `main` returns
+to exactly the inherited 25. The gate posture for this branch is therefore: inherited 25 + this one
+known, mechanically-explained guard failure, and nothing else. Follow-up for the separate main-red
+fix: rescope the guard to the E1 commit range (or retire it) so later feature branches stop
+inheriting a false negative.

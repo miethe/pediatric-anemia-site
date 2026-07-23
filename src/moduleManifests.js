@@ -25,7 +25,16 @@ import cbc_suite_v1 from '../modules/cbc_suite_v1/module.json' with { type: 'jso
 import growth_suite_v1 from '../modules/growth_suite_v1/module.json' with { type: 'json' };
 import kidney_suite_v1 from '../modules/kidney_suite_v1/module.json' with { type: 'json' };
 
+// Cross-phase hardening (post-P2 second-opinion review finding 1, applied here to the P1 file it
+// concerns): `__proto__: null` in the object-literal position below is special-cased object
+// literal syntax (not a regular property assignment) that gives this map a null prototype instead
+// of `Object.prototype`. This is belt-and-braces alongside src/moduleEligibility.js's
+// `Object.hasOwn()` guard, which is the primary, load-bearing fix — an id like `'constructor'` or
+// `'toString'` now resolves to `undefined` here even without that guard, closing the same
+// fail-open-on-inherited-property class of bug at its source. The map is still exactly the four
+// literal, moduleId-keyed manifests; nothing about D-2/FR-12's shape changes.
 export const MODULE_MANIFESTS = Object.freeze({
+  __proto__: null,
   anemia,
   cbc_suite_v1,
   growth_suite_v1,
