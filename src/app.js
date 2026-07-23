@@ -1,4 +1,11 @@
 import { assessPediatricAnemia } from './engine.js';
+// P4-02/P4-03 (spa-module-switcher-v1, phase-3-5-ui.md) — assessModule is engine.js's existing
+// module-generic sibling of assessPediatricAnemia (P2-02, additive, not a replacement). A SEPARATE
+// import statement, deliberately not merged into the line above: R-3/smoke-browser-unit-
+// rejection.mjs:132 greps for the EXACT literal `import { assessPediatricAnemia } from
+// './engine.js'` — adding a second name inside those braces would break that regex. Two import
+// statements from the same specifier is valid ES module syntax.
+import { assessModule } from './engine.js';
 import { EVIDENCE, KNOWLEDGE_BASE_VERSION, sourceRightsPosition } from './evidence.js';
 import { initializeAlgorithmExplorer } from './algorithmExplorer.js';
 import { toTri } from './facts/tristate.js';
@@ -16,6 +23,12 @@ import {
   getStatusSentence,
   deriveApprovedByClause,
   UNKNOWN_STATUS_SENTINEL,
+  // Phase 4 (P4-01..P4-07) — the four showModuleRefusal() reason derivations, one per SQ-3 §4
+  // case (FR-15/FR-16/FR-18) plus the P4-07 unregistered-id case (FR-21).
+  deriveEvidenceUnavailableReason,
+  deriveNotYetImplementedReason,
+  deriveKbLoadFailureReason,
+  deriveUnregisteredModuleReason,
 } from './moduleStatusVocabulary.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -720,10 +733,11 @@ function renderModuleSwitcherCollapsedControl() {
   if (!label) return;
   const view = getManifestView(activeModuleId);
   if (!view) {
-    // Interim, minimal, honest fallback for an id with no registered manifest (only reachable
-    // via a hand-edited `?module=`; readModuleIdFromUrl below never substitutes anemia for it).
-    // P4-07 replaces this with the full FR-21 refusal state naming the requested id; this is
-    // deliberately NOT that — it echoes the literal requested id and nothing invented about it.
+    // Minimal, honest fallback for an id with no registered manifest (only reachable via a
+    // hand-edited `?module=`; readModuleIdFromUrl never substitutes anemia for it). P4-01/P4-07
+    // ADD the full FR-21 refusal (showModuleRefusal(), naming the requested id) in the RESULTS
+    // area (#results-placeholder) — a separate DOM region from this collapsed control. This
+    // banner-area fallback is not replaced by that; both together are the complete picture.
     label.innerHTML = `<span class="module-switcher-active-title">Unregistered module: ${escapeHtml(activeModuleId)}</span>`;
     return;
   }
@@ -747,8 +761,9 @@ function renderModuleStatusBanner() {
   if (!banner) return;
   const view = getManifestView(activeModuleId);
   if (!view) {
-    // Same interim fallback boundary as renderModuleSwitcherCollapsedControl() above — P4-07's
-    // job to replace with the full FR-21 refusal state.
+    // Same fallback boundary as renderModuleSwitcherCollapsedControl() above — P4-01/P4-07 ADD
+    // the full FR-21 refusal in the results area (#results-placeholder), a separate DOM region;
+    // this banner-area fallback is unchanged by that.
     $('#module-status-title').textContent = `Unregistered module: ${activeModuleId}`;
     $('#module-status-chip').textContent = '';
     $('#module-status-subtitle').hidden = true;
@@ -829,6 +844,11 @@ function writeModuleUrlParam(moduleId) {
 // AC-11 groundwork — disables (functionally, not just visually) the controls that would otherwise
 // let a clinician attempt an assessment against an ineligible active module. This is presentation;
 // the real gate is the isModuleSelectable() guard re-checked inside the handlers themselves below.
+// Phase 4: this is now called ONLY on the activateModule() success path (module selectable, KB
+// loaded) — every refusal branch below disables the same three controls itself, explicitly,
+// inside showModuleRefusal(), rather than relying on this function's `isModuleSelectable`-only
+// logic (which would leave them ENABLED for Case 2's contradictory selectable-but-not-implemented
+// state).
 function updateAssessmentEnablement() {
   const selectable = isModuleSelectable(activeModuleId);
   const submitButton = $('#run-assessment');
@@ -839,38 +859,329 @@ function updateAssessmentEnablement() {
   if (exampleSelect) exampleSelect.disabled = !selectable;
 }
 
+function updateNavCounts() {
+  if ($('#nav-rule-count')) $('#nav-rule-count').textContent = String(rules.length);
+  if ($('#nav-pattern-count')) $('#nav-pattern-count').textContent = String(Object.keys(candidates).length);
+}
+
+// P4-GATE fix 4 (TOCTOU hardening, latent — codex + karen findings) — a module-scoped monotonic
+// load-generation counter. There was no request-generation guard around the awaits in
+// activateModule()/loadActiveModuleKb(): with a future second selectable module, a STALE in-flight
+// load (module A, started first, still awaiting its fetch) could resolve AFTER a NEWER load
+// (module B, started second, already resolved and already wrote `rules`/`candidates`) and
+// overwrite B's fresher state with A's stale one — invisible today only because exactly one module
+// is ever selectable, not because the code prevented it.
+//
+// `activateModule()` captures `moduleLoadGeneration` (after incrementing it) at entry; every await
+// boundary downstream of that point re-checks `isCurrentLoadGeneration(generation)` before
+// performing any further `rules`/`candidates`/DOM state write, and abandons (returns without
+// writing) the instant it detects a newer generation has superseded it. This is the SAME class of
+// fix as loadExample()/submit's `moduleAtStart` snapshot-and-recheck below — both close the same
+// underlying hazard (a stale async continuation writing over fresher state) using the pattern that
+// fits each call shape (a monotonic counter here, since activateModule can start again before a
+// prior call's `moduleId` argument would even be comparable in the way `activeModuleId` is).
+let moduleLoadGeneration = 0;
+function isCurrentLoadGeneration(generation) {
+  return generation === moduleLoadGeneration;
+}
+
 // KB loading for the ACTIVE module only, honoring src/moduleKbLoaders.js#loadModuleKb's
 // documented caller contract: resetState() synchronously clears rules/candidates to []/{} before
 // any fetch is issued. loadModuleKb itself is invoked ONLY when isModuleSelectable(activeModuleId)
-// — never for an inert/unregistered active module, per this phase's binding constraint.
-async function loadActiveModuleKb() {
+// — never for an inert/unregistered active module (AC-11). Called ONLY from activateModule()
+// below, always after every synchronously-detectable refusal case (FR-21/FR-17/FR-16) has already
+// passed, so isModuleSelectable(activeModuleId) is already guaranteed true by every real caller —
+// the check below is kept anyway as defence in depth, not load-bearing from this file's own call
+// site.
+//
+// `generation` (P4-GATE fix 4) is the snapshot activateModule() captured BEFORE this function's
+// first await; every await below it re-checks `isCurrentLoadGeneration(generation)` before writing
+// `rules`/`candidates`/nav counts, abandoning silently (no state write at all) the instant a newer
+// activation has superseded this one — resetState() itself needs no such check: it always runs
+// synchronously, before this function's own first await, so nothing could have superseded it yet
+// (JS run-to-completion: no other event can interleave mid-synchronous-execution).
+//
+// Returns `true` iff the KB genuinely loaded (a real rules/candidates payload was parsed) AND this
+// generation is still current; `false` for every failure mode (ineligible active module,
+// network/HTTP failure, malformed JSON, or superseded-by-a-newer-load) — the caller (activateModule)
+// treats a plain `false` as FR-18 (Case 4) and refuses UNLESS it separately detects its own
+// generation has also gone stale, in which case it abandons instead (see activateModule below).
+async function loadActiveModuleKb(generation) {
   if (!isModuleSelectable(activeModuleId)) {
-    // Inert/unregistered active module: loadModuleKb is reserved for selectable modules only.
-    // Reset directly so no prior module's KB lingers in memory or on screen. (The full FR-18
-    // module-scoped fetch-failure refusal case is P4's job; this is the fail-closed baseline
-    // every refusal case in this file already assumes.)
     rules = [];
     candidates = {};
-  } else {
-    try {
-      const [rulesResponse, candidatesResponse] = await loadModuleKb(activeModuleId, () => {
-        rules = [];
-        candidates = {};
-      });
-      if (!rulesResponse.ok || !candidatesResponse.ok) {
-        rules = [];
-        candidates = {};
-      } else {
-        rules = await rulesResponse.json();
-        candidates = await candidatesResponse.json();
-      }
-    } catch {
+    updateNavCounts();
+    return false;
+  }
+  try {
+    const [rulesResponse, candidatesResponse] = await loadModuleKb(activeModuleId, () => {
       rules = [];
       candidates = {};
+    });
+    if (!isCurrentLoadGeneration(generation)) return false; // superseded while awaiting the fetch pair
+    if (!rulesResponse.ok || !candidatesResponse.ok) {
+      rules = [];
+      candidates = {};
+      updateNavCounts();
+      return false;
+    }
+    const rulesJson = await rulesResponse.json();
+    if (!isCurrentLoadGeneration(generation)) return false; // superseded while awaiting rules.json()
+    const candidatesJson = await candidatesResponse.json();
+    if (!isCurrentLoadGeneration(generation)) return false; // superseded while awaiting candidates.json()
+    rules = rulesJson;
+    candidates = candidatesJson;
+    updateNavCounts();
+    return true;
+  } catch {
+    if (!isCurrentLoadGeneration(generation)) return false; // superseded; do not clobber the newer module's state
+    rules = [];
+    candidates = {};
+    updateNavCounts();
+    return false;
+  }
+}
+
+// Phase 4 (FR-16 / SQ-3 §4.2, F5-F7) — re-checks moduleReportsNotYetImplemented() (built in P3,
+// reused here as instructed, never reimplemented) for the GIVEN moduleId and, if it self-reports
+// not-yet-implemented, returns the ready-to-render FR-16 reason string; otherwise returns null.
+// Called from TWO kinds of site: (a) activateModule() below, "at selection time," so the refusal
+// renders BEFORE any render attempt is even possible; (b) defensively, again, inside
+// submit/loadExample()/the algorithm explorer's onUseCase — so a contradictory
+// selectable-but-not-implemented module can never reach renderClassification (F6/F7: `"undefined
+// g/dL"`, false `Indeterminate`) even if reached by a path other than activateModule().
+function notYetImplementedRefusalReason(moduleId) {
+  let hooks = null;
+  try {
+    hooks = getModule(moduleId);
+  } catch {
+    return null; // unregistered id — FR-21's concern, not this one
+  }
+  if (!moduleReportsNotYetImplemented(hooks)) return null;
+  const view = getManifestView(moduleId);
+  return deriveNotYetImplementedReason(view ? view.title : moduleId);
+}
+
+// FR-15 / SQ-3 §4.1 (Case 1) — src/evidence/registry.js#accessorsFor (reached via
+// src/engine.js:assess()'s ruleAudit mapping) throws this EXACT, source-coupled message for a
+// moduleId with no evidence-accessor entry. Matched narrowly (message prefix + the quoted
+// moduleId) so only THIS specific failure routes to the FR-15 refusal — every other thrown error
+// still propagates as a genuinely unexpected error (never mis-swallowed into a false "module
+// refusal" reading, and never silently treated as success).
+function isEvidenceRegistryMissError(error, moduleId) {
+  return typeof error?.message === 'string'
+    && error.message.startsWith('src/evidence/registry.js: unknown module')
+    && error.message.includes(`"${moduleId}"`);
+}
+
+// P4-01 (FR-14/FR-19) — the distinct THIRD state: refusal. NEVER showInputRejection (reserved for
+// garden-variety clinician data-entry errors — wrong units, out-of-range age — on a real,
+// selectable module) and NEVER routed through INPUT_REJECTION_CODES: no refusal reason code is
+// ever added to that Set, and this function is its own, separate DOM branch with its own heading.
+//
+// INVARIANT ORDER IS LOAD-BEARING (P4-06 seam, D-4/FR-19) — do not reorder the numbered steps:
+//   1. currentAudit = null
+//   2. #results hidden
+//   3. #results-placeholder shown
+//   4. refreshAuditView() (re-renders the audit panel against the now-null currentAudit)
+//   5. submit + load-example + example-select + audit copy/download ALL explicitly disabled —
+//      not merely inherited from refreshAuditView()'s/updateAssessmentEnablement()'s own internal
+//      logic, so this function's guarantee holds regardless of what called it or in what order
+//      (activateModule() below already disables these before ever calling this function too —
+//      that is belt-and-braces, not a substitute for the explicit disabling here, because
+//      showModuleRefusal is ALSO called directly from submit/loadExample()'s reactive Case-1/
+//      Case-2 catch paths, where nothing upstream has disabled anything yet)
+//   6. the reason rendered as its own heading/body — never the heading "Check the entered units",
+//      never showInputRejection's DOM branch
+// Every step runs synchronously, in this exact order, in one turn — no await/setTimeout/
+// requestAnimationFrame/queueMicrotask/promise boundary appears anywhere in this function.
+//
+// The MODULE SELECTOR is deliberately untouched: nothing here disables #module-switcher-toggle or
+// its panel, so a clinician can always switch back to a working module (FR-19 "module selector
+// stays usable").
+function showModuleRefusal(moduleId, reason) {
+  currentAudit = null;                                               // 1
+  $('#results').hidden = true;                                        // 2
+  $('#results-placeholder').hidden = false;                            // 3
+  refreshAuditView();                                                   // 4
+  if ($('#run-assessment')) $('#run-assessment').disabled = true;         // 5a
+  if ($('#load-example')) $('#load-example').disabled = true;              // 5b
+  if ($('#example-select')) $('#example-select').disabled = true;           // 5c
+  $('#copy-audit').disabled = true;                                          // 5d
+  $('#download-audit').disabled = true;                                       // 5e
+  const view = getManifestView(moduleId);
+  const label = view ? view.title : moduleId;
+  $('#results-placeholder').innerHTML = `
+    <h2>No assessment produced — ${escapeHtml(label)}</h2>
+    <p>${escapeHtml(reason)}</p>`;                                             // 6
+}
+
+// P4-01/P4-06 (SEAM TASK, R-P3) — the single choke point where the ACTIVE module changes. Every
+// refusal case decidable BEFORE a KB fetch (FR-21 unregistered, FR-17 registered-but-ineligible,
+// FR-16 hooks-not-implemented) is decided HERE, in this one function, so the banner and any
+// refusal render can never observably interleave with a stale prior result — there is no second
+// code path that also reassigns `activeModuleId`. FR-18 (KB fetch failure) is necessarily decided
+// AFTER the one `await` in this function, since it depends on that fetch's own outcome.
+async function activateModule(moduleId) {
+  // P4-GATE fix 4 (TOCTOU hardening) — claim a new load generation FIRST, synchronously, before
+  // anything else in this function runs. See isCurrentLoadGeneration()'s header comment
+  // (immediately above loadActiveModuleKb) for the full rationale.
+  const generation = ++moduleLoadGeneration;
+  activeModuleId = moduleId;
+
+  // FR-19 shared invariants — unconditional, BEFORE any refusal/success branching.
+  // P4-06 SEAM — SOURCE ORDER IS LOAD-BEARING, do not reorder:
+  //   currentAudit=null -> #results hidden -> #results-placeholder shown -> audit-download
+  //   disabled -> assessment controls disabled -> banner/switcher write.
+  // No await/setTimeout/requestAnimationFrame/queueMicrotask/promise boundary sits between the
+  // audit-disable lines and the banner/switcher write below: every statement from here through
+  // renderModuleStatusBanner() runs synchronously, in one turn, with zero promise boundaries
+  // between them. The only `await` anywhere in this function is loadActiveModuleKb() further
+  // down, reached (if at all) strictly AFTER the banner has already been written for the NEW
+  // module — so there is no tick in which a PRIOR module's result is visible beneath the NEW
+  // module's banner, and no tick in which the prior audit stays downloadable after the banner has
+  // already changed.
+  currentAudit = null;
+  $('#results').hidden = true;
+  $('#results-placeholder').hidden = false;
+  $('#copy-audit').disabled = true;
+  $('#download-audit').disabled = true;
+  if ($('#run-assessment')) $('#run-assessment').disabled = true;
+  if ($('#load-example')) $('#load-example').disabled = true;
+  if ($('#example-select')) $('#example-select').disabled = true;
+  renderModuleSwitcher();
+  renderModuleStatusBanner();
+
+  // FR-21 (P4-07) — `?module=` fails isRegisteredModule() entirely. Distinct from Case 3 (FR-17,
+  // registered but ineligible): quotes the literal requested id verbatim, since there is no
+  // manifest/title to substitute. Never a silent fallback to DEFAULT_MODULE_ID (D-4) — the id
+  // stays exactly what was requested, both in `activeModuleId` and in the refusal text.
+  if (!isRegisteredModule(moduleId)) {
+    rules = [];
+    candidates = {};
+    updateNavCounts();
+    showModuleRefusal(moduleId, deriveUnregisteredModuleReason(moduleId));
+    return;
+  }
+
+  // FR-17 / SQ-3 §4.3 (Case 3) — registered but manifest.status !== READY_STATUS. Reached only
+  // via a hand-edited `?module=` in practice (the P2-03 predicate already keeps every UI row for
+  // such a module inert/disabled) — kept as defence in depth. Verbatim enum status plus the
+  // canonical vocabulary sentence; never downgraded to a warning (build-static.mjs already
+  // warns-instead-of-exits for non-default modules, so this browser check is the only remaining
+  // enforcement point).
+  if (!isModuleSelectable(moduleId)) {
+    rules = [];
+    candidates = {};
+    updateNavCounts();
+    const view = getManifestView(moduleId);
+    showModuleRefusal(moduleId, moduleStatusReasonText(view ? view.status : ''));
+    return;
+  }
+
+  // FR-16 / SQ-3 §4.2 (Case 2) — hooks self-report not-yet-implemented, detected BEFORE any
+  // render attempt. renderClassification() is unreachable here: the only callers of renderResult
+  // are submit/loadExample()/the algorithm explorer's onUseCase, and this same reason function is
+  // re-checked, defensively, inside every one of them too (F6/F7 prevention in depth).
+  const notImplementedReason = notYetImplementedRefusalReason(moduleId);
+  if (notImplementedReason) {
+    rules = [];
+    candidates = {};
+    updateNavCounts();
+    showModuleRefusal(moduleId, notImplementedReason);
+    return;
+  }
+
+  // Success path — the only `await` in this function. FR-18 / SQ-3 §4.4 (Case 4) is decided by
+  // its own outcome: loadModuleKb's SQ-3 §4.4 reset-before-fetch ordering contract already
+  // guarantees rules/candidates are []/{} before the fetch is even issued (src/moduleKbLoaders.js)
+  // and again on any failure (loadActiveModuleKb() above), so a fetch failure here can never leave
+  // a prior module's KB in memory or on screen.
+  const loaded = await loadActiveModuleKb(generation);
+  // P4-GATE fix 4 (TOCTOU hardening) — re-check currency on THIS side too (belt-and-braces
+  // alongside loadActiveModuleKb's own internal checks): a `false` return can mean either a
+  // genuine FR-18 failure OR that a newer activateModule() call has already superseded this one.
+  // Only the FIRST is a real refusal; the second must do nothing at all — a newer call has already
+  // written its own correct banner/results state, and rendering a refusal for the OLD moduleId now
+  // would incorrectly overwrite it.
+  if (!isCurrentLoadGeneration(generation)) return;
+  if (!loaded) {
+    const view = getManifestView(moduleId);
+    showModuleRefusal(moduleId, deriveKbLoadFailureReason(view ? view.title : moduleId));
+    return;
+  }
+  updateAssessmentEnablement();
+  // P4-GATE fix 3 (explorer init leak, codex finding) — see initializeAlgorithmExplorerIfEligible()
+  // below for why this call is gated and why it is safe to invoke here on every successful
+  // activation (not just the very first one at page load).
+  initializeAlgorithmExplorerIfEligible().catch((error) => console.error(error));
+}
+
+// P4-GATE fix 3 (explorer init leak, reachable today — codex finding) — src/algorithmExplorer.js
+// (untouchable this phase) ends initializeAlgorithmExplorer() by unconditionally running
+// `assessPediatricAnemia` against its FIRST worked example case (src/algorithmExplorer.js:621),
+// using whatever `rules`/`candidates` it was handed, with no eligibility awareness of its own.
+// On load of `?module=growth_suite_v1`, activateModule() correctly refuses (rules=[]/
+// candidates={}), but the PRIOR src/app.js code still called initializeAlgorithmExplorer({ rules,
+// candidates, ... }) unconditionally right afterward — computing a real anemia walkthrough (a
+// genuine `assessPediatricAnemia` result over a real anemia example input, just against an empty
+// rule set) under an ineligible module's active context. That is a D-1-shaped masquerade: the
+// #algorithm tab would silently show anemia-algorithm output while growth_suite_v1 is "active."
+//
+// Fix (app.js-only, as instructed — src/algorithmExplorer.js stays untouched): only ever call
+// initializeAlgorithmExplorer() when the ACTIVE module is genuinely the selectable default —
+// `isModuleSelectable(activeModuleId) && activeModuleId === DEFAULT_MODULE_ID`. Both conditions
+// are checked, not merely the id equality, so a hypothetical future state where `anemia` itself
+// somehow failed eligibility could never slip through on the id check alone. Deferred, not merely
+// skipped: this helper is called BOTH from initialize() (page load) and from the success tail of
+// activateModule() above (every later successful activation) — so if the page loads on an
+// ineligible module and the clinician subsequently switches to anemia (today the only selectable
+// module), the explorer initializes THEN, the first time the condition is actually met.
+// initializeAlgorithmExplorer() is itself idempotent
+// (`if (!explorer || explorer.dataset.initialized === 'true') return;`, set to `'true'` before its
+// own fetch even resolves), so calling this wrapper repeatedly — including on every subsequent
+// anemia activation after the first successful one — is always safe and cheap: every call after
+// the first real attempt short-circuits inside algorithmExplorer.js without a network request.
+//
+// P5-01 (a later phase) owns the FULL #algorithm tab degradation (hiding/disabling the tab itself
+// for non-anemia modules with explicit copy) — this fix closes the narrower, reachable-TODAY
+// init-time computation leak; it is not a substitute for P5-01's later, more complete tab-level
+// treatment.
+async function initializeAlgorithmExplorerIfEligible() {
+  if (!(isModuleSelectable(activeModuleId) && activeModuleId === DEFAULT_MODULE_ID)) return;
+  try {
+    await initializeAlgorithmExplorer({
+      rules,
+      candidates,
+      // AC-11 (P3-tracked item, closed in an earlier fix) — the one remaining assessPediatricAnemia
+      // call site in src/app.js with no isModuleSelectable(activeModuleId) guard. The algorithm
+      // explorer is anemia-shaped end to end and out of scope to touch (src/algorithmExplorer.js is
+      // untouchable this phase; P5-01 degrades/hides the #algorithm tab entirely for non-anemia
+      // modules), so this callback still only ever calls the literal `assessPediatricAnemia` form
+      // — never assessModule — but it must not run at all against an ineligible or
+      // not-yet-implemented active module, matching the same two guards submit/loadExample() apply.
+      onUseCase: (input) => {
+        if (!isModuleSelectable(activeModuleId)) return;
+        const notImplementedReason = notYetImplementedRefusalReason(activeModuleId);
+        if (notImplementedReason) {
+          showModuleRefusal(activeModuleId, notImplementedReason);
+          return;
+        }
+        populateFromInput(input);
+        const result = assessPediatricAnemia(input, rules, candidates);
+        currentAudit = { input, result };
+        renderResult(result);
+        refreshAuditView();
+        switchTab('assessment');
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    const explorerError = $('#algorithm-step-map');
+    if (explorerError) {
+      explorerError.innerHTML = `<div class="algorithm-error"><strong>Algorithm explorer could not be loaded.</strong><span>${escapeHtml(error.message)}</span></div>`;
     }
   }
-  if ($('#nav-rule-count')) $('#nav-rule-count').textContent = String(rules.length);
-  if ($('#nav-pattern-count')) $('#nav-pattern-count').textContent = String(Object.keys(candidates).length);
 }
 
 function closeModuleSwitcher() {
@@ -896,18 +1207,28 @@ function toggleModuleSwitcher() {
   else closeModuleSwitcher();
 }
 
-// Row activation handler. Re-checks isModuleSelectable(moduleId) INSIDE the handler (AC-11
-// groundwork) rather than trusting the row's `disabled` attribute alone — see the code comment on
-// moduleRowMarkup()'s inert branch above for why that attribute is presentation, not the gate.
+// Row activation handler.
+//
+// P4-GATE fix 2 (forced-activation, AC-4's resilience clause / P6-011 item (7)): a forced click on
+// an ineligible row — e.g. a devtools user strips the row button's `disabled` attribute and clicks
+// CBC Suite anyway — must NOT be a silent no-op. The specified expected outcome is the REFUSAL
+// STATE ("selecting an ineligible module must swap the banner and clear results atomically"; "the
+// expected result is the refusal state, never an assessment"), exactly what the `?module=`
+// hand-edit path already produces via activateModule()'s own FR-17 branch. The prior version of
+// this handler early-returned on `!isModuleSelectable(moduleId)` BEFORE ever reaching
+// activateModule() — a genuine, silent no-op for that forced-click case, not a refusal.
+//
+// Fix: this handler no longer re-derives eligibility itself (no `isModuleSelectable`/`disabled`-
+// attribute read here at all) — it forwards ANY requested moduleId to activateModule(), which is
+// the SOLE decision-maker (its own isRegisteredModule()/isModuleSelectable() checks, FR-17/FR-21
+// branches). This does not weaken AC-11: activateModule() still gates every loadActiveModuleKb()/
+// assess-reaching path internally, ahead of any state write — the guard simply now lives in ONE
+// place (activateModule) instead of being duplicated (and, as this bug showed, able to diverge)
+// between this handler and that function.
 async function selectModule(moduleId) {
-  if (!isModuleSelectable(moduleId)) return;
   if (moduleId !== activeModuleId) {
-    activeModuleId = moduleId;
     writeModuleUrlParam(moduleId);
-    await loadActiveModuleKb();
-    renderModuleSwitcher();
-    renderModuleStatusBanner();
-    updateAssessmentEnablement();
+    await activateModule(moduleId);
   }
   closeModuleSwitcher();
   $('#module-switcher-toggle')?.focus();
@@ -1007,6 +1328,25 @@ async function loadExample() {
   // that actually prevents an inert active module's data from being run through the anemia engine
   // and misattributed as that module's assessment (SQ-3 F1/F2); the button state is presentation.
   if (!isModuleSelectable(activeModuleId)) return;
+  // Phase 4 (FR-16, Case 2 defensive re-check) — see notYetImplementedRefusalReason()'s own
+  // header comment for why this is checked again here even though activateModule() already
+  // checks it at selection time.
+  const notImplementedReason = notYetImplementedRefusalReason(activeModuleId);
+  if (notImplementedReason) {
+    showModuleRefusal(activeModuleId, notImplementedReason);
+    return;
+  }
+  // P4-GATE fix 4 (TOCTOU hardening, codex + karen findings) — snapshot the active module BEFORE
+  // any await in this function. `activeModuleId`/`rules`/`candidates` are shared mutable globals;
+  // if the clinician switches modules while this example fetch/json/assess chain is in flight
+  // (activateModule() runs its OWN, unrelated invariant-clearing sequence the instant that
+  // happens), a stale continuation here must never assess module B's data/rules against a
+  // response object that was really fetched/derived for module A — and must never render a
+  // refusal for the OLD module over top of the NEW module's already-correct, already-rendered
+  // state. Every state-mutating step below re-asserts `activeModuleId === moduleAtStart` first and
+  // silently no-ops (never a refusal — the NEW module's own activation already rendered whatever
+  // is correct) on a mismatch.
+  const moduleAtStart = activeModuleId;
   try {
     const selected = $('#example-select').value;
     if (!selected) {
@@ -1014,16 +1354,37 @@ async function loadExample() {
       return;
     }
     const response = await fetch(`./examples/${selected}.json`);
+    if (activeModuleId !== moduleAtStart) return; // superseded while awaiting the example fetch
     if (!response.ok) throw new Error(`Unable to load example: ${selected}`);
     const input = await response.json();
+    if (activeModuleId !== moduleAtStart) return; // superseded while awaiting response.json()
     populateFromInput(input);
-    const result = assessPediatricAnemia(input, rules, candidates);
+    // R-3 (smoke-browser-unit-rejection.mjs) pins the literal `assessPediatricAnemia(input, rules,
+    // candidates)` call shape below — never rewritten. `assessModule` is the module-generic
+    // sibling (P2-02) for any OTHER selectable module; today only DEFAULT_MODULE_ID ('anemia') is
+    // ever selectable (D-1), so this ternary's second branch is reachable-in-principle,
+    // exercised-in-practice-by-none-of-today's-real-modules — future-proofing, not dead weight.
+    // Dispatches on `moduleAtStart`, the snapshot, never the (possibly since-changed) live
+    // `activeModuleId` — assessing consistently as whatever module was active when this call began.
+    const result = moduleAtStart === DEFAULT_MODULE_ID
+      ? assessPediatricAnemia(input, rules, candidates)
+      : assessModule(moduleAtStart, input, rules, candidates);
+    if (activeModuleId !== moduleAtStart) return; // superseded between the assess call and here
     currentAudit = { input, result };
     renderResult(result);
     refreshAuditView();
   } catch (error) {
+    if (activeModuleId !== moduleAtStart) return; // superseded; a newer activation owns the screen now
     if (INPUT_REJECTION_CODES.has(error.code)) {
       showInputRejection(error);
+      return;
+    }
+    // P4-02 (FR-15, Case 1) — an evidence-registry miss for the active module routes to the
+    // distinct THIRD state instead of the generic "Application error" showFatalError would have
+    // produced (the pre-Phase-4 behaviour for this exact throw).
+    if (isEvidenceRegistryMissError(error, moduleAtStart)) {
+      const view = getManifestView(moduleAtStart);
+      showModuleRefusal(moduleAtStart, deriveEvidenceUnavailableReason(view ? view.title : moduleAtStart));
       return;
     }
     throw error;
@@ -1042,14 +1403,23 @@ function downloadJson() {
 }
 
 async function initialize() {
-  // P3-05 — resolve the active module from `?module=` (absent -> DEFAULT_MODULE_ID) BEFORE any
-  // KB load, then load only that module's KB, only if it is selectable (AC-11 groundwork).
-  activeModuleId = readModuleIdFromUrl();
-  await loadActiveModuleKb();
+  // P3-05/P4-01 — resolve + activate the module from `?module=` (absent -> DEFAULT_MODULE_ID)
+  // BEFORE any other UI wiring. activateModule() is the single P4-06 choke point: it performs
+  // every synchronously-decidable refusal check (FR-21/FR-17/FR-16) ahead of any KB fetch, writes
+  // the banner/switcher for whichever module this turns out to be, and — only on the success path
+  // — loads that module's KB (FR-18 decided by that load's own outcome).
+  await activateModule(readModuleIdFromUrl());
   if (activeModuleId === DEFAULT_MODULE_ID && rules.length === 0) {
-    // Preserves the original, more actionable diagnostic for the common default-path failure
-    // mode (opening index.html directly via file:// instead of serving it over HTTP) — the same
-    // condition the pre-P3 hardcoded fetch above used to throw on directly.
+    // Preserves the original, more actionable diagnostic for the common default-path failure mode
+    // (opening index.html directly via file:// instead of serving it over HTTP) — the same
+    // condition the pre-P3 hardcoded fetch used to throw on directly. activateModule() will
+    // already have rendered the generic FR-18 module-scoped refusal into #results-placeholder for
+    // this exact case; the throw below (caught at the bottom of this file by
+    // `initialize().catch(showFatalError)`) overwrites it with this more specific, more
+    // actionable message for the single most common real-world failure mode — both are honest,
+    // this one is just more useful here. Every OTHER module/failure combination keeps
+    // activateModule()'s own FR-18 refusal untouched, letting the rest of the app still finish
+    // initializing instead of hard-aborting.
     throw new Error('Unable to load the local rule knowledge base. Serve the directory over HTTP rather than opening index.html directly.');
   }
 
@@ -1058,31 +1428,13 @@ async function initialize() {
   refreshAuditView();
 
   initializeModuleSwitcher();
-  renderModuleSwitcher();
-  renderModuleStatusBanner();
-  updateAssessmentEnablement();
   loadModuleRowCounts().catch((error) => console.error(error));
 
-  try {
-    await initializeAlgorithmExplorer({
-      rules,
-      candidates,
-      onUseCase: (input) => {
-        populateFromInput(input);
-        const result = assessPediatricAnemia(input, rules, candidates);
-        currentAudit = { input, result };
-        renderResult(result);
-        refreshAuditView();
-        switchTab('assessment');
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    const explorerError = $('#algorithm-step-map');
-    if (explorerError) {
-      explorerError.innerHTML = `<div class="algorithm-error"><strong>Algorithm explorer could not be loaded.</strong><span>${escapeHtml(error.message)}</span></div>`;
-    }
-  }
+  // P4-GATE fix 3 — only initializes when the ACTIVE module is genuinely the selectable default;
+  // see initializeAlgorithmExplorerIfEligible()'s own header comment for the full rationale
+  // (codex's "explorer init leak" finding) and why this same call is safely repeatable from
+  // activateModule()'s success path too.
+  await initializeAlgorithmExplorerIfEligible();
 
   $$('.tab-button').forEach((button) => button.addEventListener('click', () => switchTab(button.dataset.tab)));
   $$('.workflow-step').forEach((button) => button.addEventListener('click', () => {
@@ -1122,15 +1474,43 @@ async function initialize() {
     // button being disabled (e.g. a devtools user re-enabling it — see moduleRowMarkup()'s
     // `disabled`-is-presentation comment; this predicate check is the actual gate, AC-11).
     if (!isModuleSelectable(activeModuleId)) return;
+    // Phase 4 (FR-16, Case 2 defensive re-check) — see notYetImplementedRefusalReason()'s own
+    // header comment.
+    const notImplementedReason = notYetImplementedRefusalReason(activeModuleId);
+    if (notImplementedReason) {
+      showModuleRefusal(activeModuleId, notImplementedReason);
+      return;
+    }
+    // P4-GATE fix 4 (TOCTOU hardening, codex + karen findings) — snapshot before any await, same
+    // pattern as loadExample() (see its matching comment for the full rationale). submit's own
+    // body has no `await` today (buildInput()/assess() are both synchronous, and JS run-to-
+    // completion means nothing can interleave mid-handler) — this is symmetry/future-proofing
+    // guarding the SAME shared `activeModuleId`/`rules`/`candidates` globals loadExample() guards,
+    // not a currently-reachable race in THIS function as written; it costs nothing and closes the
+    // gap immediately the moment an await is ever added here.
+    const moduleAtStart = activeModuleId;
     const input = buildInput();
     try {
-      const result = assessPediatricAnemia(input, rules, candidates);
+      // R-3 pins the literal `assessPediatricAnemia(input, rules, candidates)` call shape below —
+      // see loadExample()'s matching comment for why the ternary's second branch exists, and for
+      // why this dispatches on `moduleAtStart` rather than the live `activeModuleId`.
+      const result = moduleAtStart === DEFAULT_MODULE_ID
+        ? assessPediatricAnemia(input, rules, candidates)
+        : assessModule(moduleAtStart, input, rules, candidates);
+      if (activeModuleId !== moduleAtStart) return; // superseded between the assess call and here
       currentAudit = { input, result };
       renderResult(result);
       refreshAuditView();
     } catch (error) {
-      if (INPUT_REJECTION_CODES.has(error.code)) showInputRejection(error);
-      else throw error;
+      if (activeModuleId !== moduleAtStart) return; // superseded; a newer activation owns the screen now
+      if (INPUT_REJECTION_CODES.has(error.code)) { showInputRejection(error); return; }
+      // P4-02 (FR-15, Case 1) — see loadExample()'s matching comment.
+      if (isEvidenceRegistryMissError(error, moduleAtStart)) {
+        const view = getManifestView(moduleAtStart);
+        showModuleRefusal(moduleAtStart, deriveEvidenceUnavailableReason(view ? view.title : moduleAtStart));
+        return;
+      }
+      throw error;
     }
   });
 

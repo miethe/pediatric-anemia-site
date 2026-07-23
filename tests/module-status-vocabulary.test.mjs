@@ -29,6 +29,14 @@ import {
   EVIDENCE_STALENESS_DISCLOSURE,
   UNSIGNED_STUB_SUBTITLE,
   RULES_EMPTY_STATE,
+  // P4-GATE fix 1 (spa-module-switcher-v1, Phase 4 post-review) — the four showModuleRefusal()
+  // reason-derivation functions (src/moduleStatusVocabulary.js:127-172) had zero direct unit
+  // tests: they are pure and node-importable, so D-6's "no browser automation" ceiling never
+  // sheltered them from an executed test the way DOM-dependent src/app.js is sheltered.
+  deriveEvidenceUnavailableReason,
+  deriveNotYetImplementedReason,
+  deriveKbLoadFailureReason,
+  deriveUnregisteredModuleReason,
 } from '../src/moduleStatusVocabulary.js';
 import { MODULE_MANIFESTS } from '../src/moduleManifests.js';
 import { MODULE_IDS } from '../src/modules/registry.js';
@@ -254,4 +262,88 @@ test('P1-04: src/moduleManifests.js uses no template-literal import specifier', 
     assert.doesNotMatch(line, /\$\{/, `template-literal specifier found: ${line}`);
     assert.match(line, /with\s*\{\s*type:\s*'json'\s*\}/, `import must use the JSON import-attribute form: ${line}`);
   }
+});
+
+// ================================================================================================
+// P4-GATE fix 1 — direct unit tests for the four Phase 4 showModuleRefusal() reason-derivation
+// functions (FR-15/FR-16/FR-18/FR-21, src/moduleStatusVocabulary.js:127-172). Exact-string
+// assertions with title/id substitution, per case, plus a distinctness check across all four —
+// "all 4 refusal cases individually tested" (P4-GATE's own spec wording).
+// ================================================================================================
+
+test('P4-GATE fix 1: deriveEvidenceUnavailableReason (FR-15, Case 1) substitutes the module title verbatim', () => {
+  assert.equal(
+    deriveEvidenceUnavailableReason('Pediatric CBC Suite'),
+    'No assessment produced — evidence not available for module Pediatric CBC Suite.',
+  );
+  // A second, differently-titled call must differ — proving substitution, not a hardcoded string.
+  assert.equal(
+    deriveEvidenceUnavailableReason('Pediatric Kidney Suite'),
+    'No assessment produced — evidence not available for module Pediatric Kidney Suite.',
+  );
+  assert.match(deriveEvidenceUnavailableReason('X'), /^No assessment produced — evidence not available for module X\.$/);
+});
+
+test('P4-GATE fix 1: deriveNotYetImplementedReason (FR-16, Case 2) substitutes the module title verbatim', () => {
+  assert.equal(
+    deriveNotYetImplementedReason('Pediatric Growth Suite'),
+    'Pediatric Growth Suite is a package scaffold — no clinical logic is implemented. No '
+      + 'assessment can be produced from this module.',
+  );
+  assert.equal(
+    deriveNotYetImplementedReason('Pediatric Kidney Suite'),
+    'Pediatric Kidney Suite is a package scaffold — no clinical logic is implemented. No '
+      + 'assessment can be produced from this module.',
+  );
+  assert.match(deriveNotYetImplementedReason('X'), /^X is a package scaffold — no clinical logic is implemented\./);
+});
+
+test('P4-GATE fix 1: deriveKbLoadFailureReason (FR-18, Case 4) substitutes the module title verbatim', () => {
+  assert.equal(
+    deriveKbLoadFailureReason('Pediatric CBC Suite'),
+    "Unable to load module Pediatric CBC Suite's knowledge base.",
+  );
+  assert.equal(
+    deriveKbLoadFailureReason('Pediatric Anemia'),
+    "Unable to load module Pediatric Anemia's knowledge base.",
+  );
+  assert.match(deriveKbLoadFailureReason('X'), /^Unable to load module X's knowledge base\.$/);
+});
+
+test('P4-GATE fix 1: deriveUnregisteredModuleReason (FR-21, P4-07) quotes the requested id verbatim, never a title', () => {
+  assert.equal(
+    deriveUnregisteredModuleReason('not_a_module'),
+    'No module is registered with id "not_a_module". No assessment can be produced. Choose a '
+      + 'listed module below — this app never substitutes a different module automatically.',
+  );
+  // A different id must produce a differently-quoted string — proving substitution.
+  const other = deriveUnregisteredModuleReason('bogus_id_123');
+  assert.match(other, /"bogus_id_123"/);
+  assert.doesNotMatch(other, /not_a_module/);
+});
+
+test('P4-GATE fix 1: all four reason derivations produce distinct strings for the same input (no accidental aliasing)', () => {
+  const sameInput = 'anemia';
+  const outputs = new Set([
+    deriveEvidenceUnavailableReason(sameInput),
+    deriveNotYetImplementedReason(sameInput),
+    deriveKbLoadFailureReason(sameInput),
+    deriveUnregisteredModuleReason(sameInput),
+  ]);
+  assert.equal(outputs.size, 4, 'all 4 refusal-case reason strings must be distinct, even given the identical input');
+});
+
+test('P4-GATE fix 1: none of the four derived reasons contains a maturity-ladder or false-attestation phrase', () => {
+  const sample = [
+    deriveEvidenceUnavailableReason('Sample Module'),
+    deriveNotYetImplementedReason('Sample Module'),
+    deriveKbLoadFailureReason('Sample Module'),
+    deriveUnregisteredModuleReason('sample_module'),
+  ].join(' ').toLowerCase();
+  const bannedExactPhrases = [
+    'integrity verified', 'content unmodified', 'coming soon', 'temporarily unavailable',
+    'preview', 'beta', 'released',
+  ];
+  const hits = bannedExactPhrases.filter((phrase) => sample.includes(phrase));
+  assert.deepEqual(hits, [], `banned phrase(s) found in a derived reason string: ${JSON.stringify(hits)}`);
 });

@@ -74,3 +74,18 @@ to exactly the inherited 25. The gate posture for this branch is therefore: inhe
 known, mechanically-explained guard failure, and nothing else. Follow-up for the separate main-red
 fix: rescope the guard to the E1 commit range (or retire it) so later feature branches stop
 inheriting a false negative.
+
+## Finding E-3 (execution-time, 2026-07-22) — algorithm explorer's hardcoded anemia dispatch persists by design (R-8); reviewed, bounded, deferred to DF-SMS-03
+
+The gpt-5.6-terra adversarial review of the P4 slice confirmed `src/algorithmExplorer.js:621` (and
+the "Use in assessment" path) hardcode `assessPediatricAnemia` — if `DEFAULT_MODULE_ID` ever became
+a ready non-anemia module, explorer execution would still evaluate anemia under the other module's
+label. This is the known R-8 boundary (the explorer is anemia-shaped end to end and this feature
+must degrade, not generalize it): P4 gates explorer *initialization* on the selectable anemia module
+being active, and P5-01 degrades the `#algorithm` tab for non-anemia modules. The generalization
+itself — including this dispatch — is deferred item **DF-SMS-03**
+(`docs/project_plans/design-specs/algorithm-explorer-module-generalization.md`, authored at
+P7-DOC-006). Recorded so the DF-SMS-03 spec cites a measured, reviewer-confirmed anchor rather than
+re-deriving it. The related latent TOCTOU findings from the same review (stale KB-load resolution;
+loadExample's await between guard and assess) were **fixed in-phase** with a load-generation guard,
+not deferred.

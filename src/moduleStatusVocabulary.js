@@ -104,3 +104,69 @@ export function getStatusSentence(status) {
   }
   return UNKNOWN_STATUS_SENTINEL;
 }
+
+// ================================================================================================
+// Phase 4 (spa-module-switcher-v1, phase-3-5-ui.md) — showModuleRefusal() reason strings, one per
+// SQ-3 §4 case (FR-15/FR-16/FR-18) plus the P4-07 unregistered-id case (FR-21). Each is a pure
+// derivation parameterized by the module's own title (or, for the unregistered case, the literal
+// requested id) — never a module name hardcoded here, and this file stays side-effect-free (no
+// DOM touch, no network call, no rule-evaluation invocation — see the file header and the
+// executed test guarding it). Copied as closely to the PRD's quoted templates (§6.1.D) as a
+// parameterized template allows; none of the maturity-ladder words this vocabulary file's own
+// tests already ban (FR-5/FR-33's prohibited-vocabulary set, tested above) appear anywhere below.
+// ================================================================================================
+
+/**
+ * FR-15 / SQ-3 §4.1 — Case 1: the evidence registry (src/evidence/registry.js) has no accessor
+ * entry for this module, so any rule audit entry would throw resolving its evidence. PRD §6.1.D
+ * quotes this verbatim as "No assessment produced — evidence not available for module X".
+ *
+ * @param {string} moduleTitle
+ * @returns {string}
+ */
+export function deriveEvidenceUnavailableReason(moduleTitle) {
+  return `No assessment produced — evidence not available for module ${moduleTitle}.`;
+}
+
+/**
+ * FR-16 / SQ-3 §4.2 — Case 2: the module's own hooks self-report not-yet-implemented (detected
+ * BEFORE any render is attempted, via moduleReportsNotYetImplemented()). PRD §6.1.D's worked
+ * example: "Growth Suite is a package scaffold — no clinical logic is implemented. No assessment
+ * can be produced from this module." — parameterized here by the module's own title rather than
+ * hardcoding "Growth Suite".
+ *
+ * @param {string} moduleTitle
+ * @returns {string}
+ */
+export function deriveNotYetImplementedReason(moduleTitle) {
+  return `${moduleTitle} is a package scaffold — no clinical logic is implemented. No assessment `
+    + 'can be produced from this module.';
+}
+
+/**
+ * FR-18 / SQ-3 §4.4 — Case 4: the module's rules.json/candidates.json request failed or 404'd.
+ * Mirrors the existing default-KB-load failure message (src/app.js's initialize(), pre-Phase-3
+ * hardcoded network call), module-scoped. PRD §6.1.D quotes this verbatim as "Unable to load
+ * module X's knowledge base."
+ *
+ * @param {string} moduleTitle
+ * @returns {string}
+ */
+export function deriveKbLoadFailureReason(moduleTitle) {
+  return `Unable to load module ${moduleTitle}'s knowledge base.`;
+}
+
+/**
+ * FR-21 / P4-07 — the `?module=` value fails isRegisteredModule() entirely (distinct from Case 3,
+ * FR-17, which is for a REGISTERED-but-ineligible id and uses getStatusSentence() instead). Quotes
+ * the literal requested id verbatim — there is no manifest/title to substitute, because the id was
+ * never registered — and states plainly that no automatic substitution occurred (D-4 "never a
+ * silent fallback to anemia").
+ *
+ * @param {string} requestedId
+ * @returns {string}
+ */
+export function deriveUnregisteredModuleReason(requestedId) {
+  return `No module is registered with id "${requestedId}". No assessment can be produced. Choose `
+    + 'a listed module below — this app never substitutes a different module automatically.';
+}
