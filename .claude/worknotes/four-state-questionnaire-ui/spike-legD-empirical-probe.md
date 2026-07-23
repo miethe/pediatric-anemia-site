@@ -1,11 +1,36 @@
 # SPIKE Leg D — Empirical probe: does omitting unanswered fields change engine output?
 
+> ## ⚠ CORRECTION (2026-07-23, after cross-family review) — read before trusting this leg
+>
+> **This document originally mislabeled its input source and overstated its coverage.** Corrected by
+> an independent `gpt-5.6-terra` review and verified directly:
+>
+> 1. **`tests/golden/*.json` are OUTPUTS, not inputs.** Their top-level keys are `meta`,
+>    `classification`, `alerts`, `rankedDifferential`, `nextQuestions`, `interpretiveNotes`,
+>    `limitations`, `provenance` — they contain no `symptoms`/`history`/`exam` at all.
+>    `tests/module-equivalence.test.mjs:28-34` reads **inputs from `examples/`** and compares the
+>    result against `tests/golden/`. Wherever this leg says "golden fixture," read "example input."
+> 2. **Coverage was 1 field, not 6 fixtures.** Across all six `examples/*.json` there is exactly
+>    **ONE** explicit `false` in `symptoms`/`history`/`exam` (`examples/anemia-inflammation.json`).
+>    The other five contain zero, so the omission transform was a **no-op** on them — they did not
+>    exercise the scenario at all. "All 6 identical" was therefore near-vacuous as evidence.
+>
+> **What survives the correction:** the *structural* argument in "Why it does not reach final output"
+> below — all 28 rule conditions over these aggregates use `is-present`, which cannot distinguish
+> `'false'` from `'unknown'`. That argument is derived from the rule corpus, not from fixture
+> coverage, and it is what actually supports the conclusion. The per-fixture table below does **not**.
+>
+> **Consequence for the plan:** the "golden identity" gate as originally written runs the existing
+> unmodified test and therefore never submits an omitted-key payload — it cannot detect the change it
+> is meant to guard. An **executed transform test** over input fixtures (explicit-`false` vs omitted,
+> for every booleanMap field and every all-negative aggregate group) is required instead.
+
 **Method.** Throwaway script (outside the repo) imported `assessPediatricAnemia` from `src/engine.js`
-and `deriveFacts` from `src/facts.js` (moduleId `anemia`). For each of the 6 golden fixtures in
-`tests/golden/`, every key inside `symptoms` / `history` / `exam` whose value was `false` / `'false'`
-was **deleted entirely** (simulating a UI that omits unanswered fields instead of sending `false`).
-Original vs variant outputs were deep-diffed. All other sections (`patient`, `cbc`, `labs`, `smear`)
-were left untouched. No repo file was modified.
+and `deriveFacts` from `src/facts.js` (moduleId `anemia`). For each of the 6 example inputs, every key
+inside `symptoms` / `history` / `exam` whose value was `false` / `'false'` was **deleted entirely**
+(simulating a UI that omits unanswered fields instead of sending `false`). Original vs variant outputs
+were deep-diffed. All other sections (`patient`, `cbc`, `labs`, `smear`) were left untouched. No repo
+file was modified.
 
 **Baseline sanity.** `node --test tests/module-equivalence.test.mjs` → `# tests 6 / # pass 6 / # fail 0`.
 
