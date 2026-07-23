@@ -2,11 +2,14 @@
 
 [Return to Parent Plan](../multi-bundle-conversion-e1-finish.md)
 
-**Column conventions**: same as prior phase files. Phase 4's build/harness tasks route to
-`codex-executor` (`gpt-5.6-terra`); its adjudication task (P4-T6) is **MUST-stay-primary**
-(`native`, `claude-sonnet-5`) per this plan's binding rule that adjudication is never delegated, even
-in an otherwise off-primary phase. Phase 5's docs/runbook/CHANGELOG tasks route to `ica-executor`
-(`claude-haiku-4-5`); its design-spec and findings-doc tasks stay `native`.
+**Column conventions**: same as prior phase files. Phase 4's determinism/report-harness tasks
+(P4-T1..T3) route to `codex-executor` (`gpt-5.6-terra`); its semantic-diff extension work (P4-T4/T5)
+and adjudication task (P4-T6) are all **MUST-stay-primary** (`native`, `claude-sonnet-5`) — P4-T4/T5
+are judgment-bearing content/architecture work (a new diff capability, and committing its output),
+not mechanical harness code, so they stay primary alongside P4-T6's adjudication, per this plan's
+binding rule that adjudication is never delegated, even in an otherwise off-primary phase. Phase 5's
+docs/runbook/CHANGELOG tasks route to `ica-executor` (`claude-haiku-4-5`); its design-spec and
+findings-doc tasks stay `native`.
 
 **Executable-AC discipline**: identical to prior phase files.
 
@@ -16,9 +19,10 @@ in an otherwise off-primary phase. Phase 5's docs/runbook/CHANGELOG tasks route 
 
 **Duration**: ~2-3 engineer-days
 **Dependencies**: Phase 3 complete (all 3 non-cbc modules have their non-approving decisions files)
-**Assigned Subagent(s)**: `codex-executor` (`gpt-5.6-terra`, determinism/semantic-diff harness —
-escalates to `gpt-5.6-sol` on the two-failure rule); native Claude (`claude-sonnet-5`, adjudication of
-the semantic-diff result only — MUST-stay-primary); `task-completion-validator` gate
+**Assigned Subagent(s)**: `codex-executor` (`gpt-5.6-terra`, determinism/report harness, P4-T1..T3 —
+escalates to `gpt-5.6-sol` on the two-failure rule); native Claude (`claude-sonnet-5`, semantic-diff
+extension work, P4-T4/T5, and adjudication of the semantic-diff result, P4-T6 — both MUST-stay-primary);
+`task-completion-validator` gate
 **Exit gate** (decisions block §1, PRD Goal 4/FR-F14-F16): reproducibility claim is true for 4/4;
 3 independent `batch` runs produce SHA-256-identical bytes for all 4 modules; `semantic-diff.json` is
 produced AND committed for the 3 non-cbc modules — R-3 binding: it is NEVER used to overwrite

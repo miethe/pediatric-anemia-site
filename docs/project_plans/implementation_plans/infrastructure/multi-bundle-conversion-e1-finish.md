@@ -16,7 +16,7 @@ scope: "Make tools/rf-bundle-to-kb-pack genuinely module-generic AND genuinely d
   \ honestly via the existing EPR0-T4 unknown-triage pattern, and author 3 non-approving\
   \ authoring-decisions.yaml files — producing zero new clinical rules and leaving\
   \ cbc_suite_v1's existing converter output SHA-256 byte-identical throughout."
-effort_estimate: "38.5 pts (honest bottom-up total; differs from the decisions-block 32-pt anchor — see \xA7Estimation Sanity Check)"
+effort_estimate: "41.0 pts (honest bottom-up total, amended post-planning-gate to close 2 BLOCKING findings; differs from the decisions-block 32-pt anchor — see \xA7Estimation Sanity Check)"
 architecture_summary: "schemas/authoring-decisions.schema.json gains a non-approving `drafted_pending_human_approval`\
   \ status value; tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs becomes an allowlist-gated,\
   \ decision-driven emission path (status === 'approved_for_rule_draft' permits, everything else\
@@ -232,8 +232,10 @@ wave_plan:
 
 **Complexity**: Large (a safety-interlocked, 6-phase re-architecture of the one clinical emission
 gate this repository has; zero tolerance for a window where the gate is disarmed)
-**Total Estimated Effort**: **38.5 pts** (honest bottom-up; the decisions-block anchor was 32 —
-see §Estimation Sanity Check for the reconciliation)
+**Total Estimated Effort**: **41.0 pts** (honest bottom-up; the decisions-block anchor was 32 —
+see §Estimation Sanity Check for the reconciliation; amended from an earlier 38.5-pt draft to price
+in P1-T8 and P2-T7, added to close 2 BLOCKING findings from a planning-gate review — see those
+tasks' own phase files)
 **Provider**: mixed — `claude` (native, MUST-stay-primary, no fallback) for P1/P2/P3 and all
 adjudication; `ica-executor`/`codex-executor` only for mechanical, spec-bounded, non-adjudicating
 work in P0/P4/P5.
@@ -301,14 +303,14 @@ layered CRUD feature. The six phases are exactly the decisions block's own §1 t
 
 ### Critical Path
 
-**P0 → P1 → P2 → P3 → P4 → P5 (fully serial, 38.5 of 38.5 pts on the critical path)** — there is no
+**P0 → P1 → P2 → P3 → P4 → P5 (fully serial, 41.0 of 41.0 pts on the critical path)** — there is no
 phase with schedule slack in this plan; every phase gates the next.
 
 ```mermaid
 graph LR
   P0["P0: Gate recovery (4.75)"]
-  P1["P1: Fail-closed emission gate (6.75)"]
-  P2["P2: Module-generic substrate (6.5)"]
+  P1["P1: Fail-closed emission gate (8.25)"]
+  P2["P2: Module-generic substrate (7.5)"]
   P3["P3: 3x non-approving decisions files (8.5)"]
   P4["P4: 4-of-4 batch + determinism + semantic-diff (6.0)"]
   P5["P5: Honesty reconciliation + docs (6.0)"]
@@ -326,20 +328,37 @@ graph LR
 | Phase | Title | Estimate | Target Subagent(s) | Model(s) | Provider | Profile | Notes |
 |-------|-------|---------:|---------------------|----------|----------|---------|-------|
 | P0 | Gate recovery — green `npm run check` honestly | 4.75 pts | ica-executor (rights-field plumbing); codex-executor (fixture regen, regex fix, build-order) | claude-haiku-4-5 / gpt-5.6-luna | ICA free-tier / codex | — | Zero converter code touched; two file-disjoint parallel batches inside the phase |
-| P1 | Fail-closed emission gate becomes code (**MUST-stay-primary**) | 6.75 pts | native Claude; gpt-5.6-terra adversarial read-only review | claude-sonnet-5 (+ gpt-5.6-terra review) | claude (+codex review) | — | No fallback chain by design — blocks rather than downgrades if primary unavailable |
-| P2 | Module-generic drafting substrate (**MUST-stay-primary**) | 6.5 pts | native Claude | claude-sonnet-5 | claude | — | `cbc_suite_v1` byte-identity anchor is the hard exit gate |
+| P1 | Fail-closed emission gate becomes code (**MUST-stay-primary**) | 8.25 pts | native Claude; gpt-5.6-terra adversarial read-only review | claude-sonnet-5 (+ gpt-5.6-terra review) | claude (+codex review) | — | No fallback chain by design — blocks rather than downgrades if primary unavailable. Includes P1-T8 (+1.5 pts, planning-gate BLOCKING-finding fix): a governance refusal must be a caught, non-fatal signal, never an exception escaping `propose.mjs`'s `run()` |
+| P2 | Module-generic drafting substrate (**MUST-stay-primary**) | 7.5 pts | native Claude | claude-sonnet-5 | claude | — | `cbc_suite_v1` byte-identity anchor is the hard exit gate. Includes P2-T7 (+1.0 pt, planning-gate BLOCKING-finding fix): `writeDraftPack()`/`CANDIDATES` genericized by `moduleId`, not just the gate's own `RULE_PROPOSALS` consumption |
 | P3 | Author 3× non-approving decisions files (**MUST-stay-primary, zero delegation of authorship**) | 8.5 pts | native Claude (draft); claude-opus-4-8 (verdict); gpt-5.6-terra (adversarial review, flags only) | claude-sonnet-5 → claude-opus-4-8 (+ gpt-5.6-terra review) | claude (+codex review) | — | Opus sign-off pass is mandatory before the phase closes |
-| P4 | 4-of-4 batch + determinism + semantic-diff (R-3) | 6.0 pts | codex-executor (determinism/semantic-diff harness); native Claude (adjudication of the diff result) | gpt-5.6-terra → claude-sonnet-5 for T6 | codex (+claude adjudication) | — | Adjudication of the semantic-diff result is MUST-stay-primary |
+| P4 | 4-of-4 batch + determinism + semantic-diff (R-3) | 6.0 pts | codex-executor (determinism/report harness, P4-T1..T3); native Claude (semantic-diff extension, P4-T4/T5; adjudication of the diff result, P4-T6) | gpt-5.6-terra (P4-T1..T3) / claude-sonnet-5 (P4-T4..T6) | mixed (codex P4-T1..T3; claude native P4-T4..T6) | — | P4-T4/T5 and P4-T6 are all MUST-stay-primary — judgment-bearing content/adjudication work, not mechanical harness code |
 | P5 | Honesty reconciliation, docs, findings closure | 6.0 pts | ica-executor (docs/runbook/CHANGELOG); native Claude (design specs, findings doc) | claude-haiku-4-5 / claude-sonnet-5 | ICA free-tier / claude | — | 4 design specs are **created**, not updated (R-1) |
-| **Total** | — | **38.5 pts** | — | — | — | — | Differs from the decisions-block 32-pt anchor by +6.5 (~20%) — see below |
+| **Total** | — | **41.0 pts** | — | — | — | — | Differs from the decisions-block 32-pt anchor by +9.0 (~28%) — see below |
 
 ### Estimation Sanity Check (H1–H6, bottom-up)
 
-Full per-task point estimates live in the phase files. Bottom-up phase subtotals: P0 4.75, P1 6.75,
-P2 6.5, P3 8.5, P4 6.0, P5 6.0 = **38.5 pts**. This **differs from the decisions-block's 32-pt anchor
-by +6.5 (~20% higher)** — reported honestly per this plan's binding instructions, not back-fitted.
-Three concrete drivers, each traced to a specific scope decision made *during* this plan's expansion
+Full per-task point estimates live in the phase files. Bottom-up phase subtotals: P0 4.75, P1 8.25,
+P2 7.5, P3 8.5, P4 6.0, P5 6.0 = **41.0 pts**. This **differs from the decisions-block's 32-pt anchor
+by +9.0 (~28% higher)** — reported honestly per this plan's binding instructions, not back-fitted.
+Four concrete drivers, each traced to a specific scope decision made *during* this plan's expansion
 that the anchor's flatter per-phase numbers could not have priced in:
+
+- **P1 (+1.5) / P2 (+1.0) — planning-gate BLOCKING-finding fixes, amended into this plan after an
+  earlier 38.5-pt draft**: a planning-gate review found two BLOCKING correctness gaps the original
+  P1/P2 task breakdown left un-costed. (1) **P1-T3's own conditional-write change, taken alone, makes
+  `propose.mjs` crash** for any refused module: `writeStagedRulesAndProvenance()` becomes conditional,
+  but the unconditional `readFile(rulesPath)`/`readFile(ruleProvenancePath)` calls immediately after it
+  (feeding the release-manifest traceability hash and `semantic-diff.json`'s `headRules`) then throw
+  `ENOENT`, escaping `run()` uncaught — so `conversion-report.json` (FR-F8's own named-refusal
+  carrier) and `semantic-diff.json` are never written, and `batch` halts at `BATCH_PAIRS[0]`
+  (`rf-ev-001` → `modules/anemia`, itself a refused module) before ever reaching `cbc_suite_v1`.
+  **P1-T8** fixes this: the refusal becomes a caught, non-fatal signal, never an exception escaping
+  `run()`. (2) **P2-T3 only genericizes the gate's *consumption* of `MODULE_ID`/`RULE_PROPOSALS`,
+  never `writeDraftPack()`/`CANDIDATES`** (`rule-candidate-drafts.mjs`) — left as-is, a post-P2-T3
+  `propose` run for e.g. `kidney_suite_v1` would write `cbc_suite_v1`'s own 4 neutropenia proposals
+  and its `benign-ethnic-neutropenia-differential-pattern` candidate, under `kidney_suite_v1`'s
+  identity, into `kidney_suite_v1`'s own output tree. **P2-T7** fixes this. Both are now priced in,
+  not absorbed silently.
 
 - **P3 (+2.5 vs. anchor's 6)**: SPIKE-009's own 5–8 pt estimate for authoring the three files alone
   (~2 pts/module, ~85% judgment) already consumes the entire anchor; this plan additionally prices
@@ -353,12 +372,13 @@ that the anchor's flatter per-phase numbers could not have priced in:
   same applies to the other two deferred-item specs (DF-E1-M2, DF-EXT-M1), whose target paths also do
   not exist under those names today (confirmed by directory listing — only differently-named,
   pre-`df-e1-*` artifacts exist).
-- **P1/P4 (+1.75/+1.0 vs. anchor's 5/5)**: FR-F7's runtime `clm_*`/`evas_*` cross-resolution guard
+- **P1/P4 (+3.25/+1.0 vs. anchor's 5/5)**: FR-F7's runtime `clm_*`/`evas_*` cross-resolution guard
   ships in P1 (not deferred), per this PRD's own binding resolution of OQ-C — a real, separately
-  estimated task (P1-T4), not absorbed into the gate task. P4's semantic-diff evidence-projection
-  extension (R-3) is **new tooling** (an evidence-layer diff mode) — `lib/semantic-diff.mjs` today
-  only supports a rule-`id`-level comparison (OQ-4's E0-era scope); extending it to compare
-  `evidence-assertions.json` documents is not reuse of existing code, it is new capability.
+  estimated task (P1-T4), not absorbed into the gate task; P1's total also carries P1-T8's +1.5 pts
+  (see the planning-gate driver above). P4's semantic-diff evidence-projection extension (R-3) is
+  **new tooling** (an evidence-layer diff mode) — `lib/semantic-diff.mjs` today only supports a
+  rule-`id`-level comparison (OQ-4's E0-era scope); extending it to compare `evidence-assertions.json`
+  documents is not reuse of existing code, it is new capability.
 
 No phase came in under its anchor. This is consistent with the decisions-block's own estimation
 notes ("P2 is the schedule risk... do not let it silently absorb it") and with H5 (anchor reference):
@@ -494,9 +514,11 @@ not add a new invocation surface to `npm run check`.
 - **R-P3** (≥2 owner specialties + overlapping `files_affected` ⇒ `integration_owner` + seam task):
   **applied to P1** (integration owner: native Claude; seam task P1-T3, proving the conditional
   `writeStagedRulesAndProvenance()` change does not silently regress `cbc_suite_v1`'s existing
-  approved-emission path) and **P4** (integration owner: native Claude for adjudication; seam task
-  P4-T6, the FR-F16 closure-path decision that must read P4-T4's actual empirical diff result before
-  documenting either closure branch).
+  approved-emission path — and, per a planning-gate amendment, a SECOND P1 seam task, P1-T8, proving
+  a governance refusal is a caught, non-fatal signal that neither crashes `propose` nor halts `batch`
+  before `cbc_suite_v1`'s own pair is even attempted) and **P4** (integration owner: native Claude for
+  adjudication; seam task P4-T6, the FR-F16 closure-path decision that must read P4-T4's actual
+  empirical diff result before documenting either closure branch).
 - **R-P4** (UI-touching phases need a runtime-smoke task): **not applicable, stated explicitly**. No
   `*.tsx`/`*.jsx`/HTML-template file, `src/app.js`, `server.mjs`, or `openapi.yaml` appears in any
   phase's `files_affected` — this feature is a build-time content/tooling pipeline touching only
@@ -513,12 +535,12 @@ not add a new invocation surface to `npm run check`.
 | FR-F3 | P0-T6, P0-T7, P0-T8 | P0 |
 | FR-F4 | P0-T9, P0-GATE | P0 |
 | FR-F5 | P3-T2, P3-T3, P3-T4, P3-T7 | P3 |
-| FR-F6 | P1-T1, P1-T2, P1-T3 | P1 |
+| FR-F6 | P1-T1, P1-T2, P1-T3, P1-T8 | P1 |
 | FR-F7 | P1-T4 | P1 |
-| FR-F8 | P1-T5 | P1 |
+| FR-F8 | P1-T5, P1-T8 | P1 |
 | FR-F9 | P2-T1 | P2 |
-| FR-F10 | P2-T3, P2-T4 | P2 |
-| FR-F11 | P3-T1 | P3 |
+| FR-F10 | P2-T3, P2-T4, P2-T7 | P2 |
+| FR-F11 | P1-T8, P2-T7, P3-T1 | P1 (+P2/P3) |
 | FR-F12 | P3-T2, P3-T3, P3-T4 | P3 |
 | FR-F13 | P3-T5 | P3 |
 | FR-F14 | P4-T1, P4-T2 | P4 |
@@ -534,6 +556,16 @@ not add a new invocation surface to `npm run check`.
 | FR-F24 | P1-T6 (lands), verified green at P2-GATE/P3-GATE/P4-GATE (stays green) | P1 (+P2/P3/P4) |
 
 **Result: zero FR-F* uncovered; zero task without an FR-F* mapping.**
+
+**Note on P1-T8/P2-T7 (added post-planning-gate review, closing 2 BLOCKING findings)**: P1-T8 makes
+a governance refusal a caught, non-fatal signal inside `propose.mjs` — without it, FR-F8's own
+negative-control test (P1-T5) is unreachable (the process crashes before `conversion-report.json` is
+ever written) and `batch` cannot complete 4-of-4 (it halts at `BATCH_PAIRS[0]`, itself a refused
+module, before ever reaching `cbc_suite_v1`'s pair). P2-T7 genericizes `writeDraftPack()`/`CANDIDATES`
+by `moduleId` — without it, P2-T3's registry replacement is only half-generic, and a post-P2 `propose`
+run for any non-`cbc_suite_v1` module would silently write `cbc_suite_v1`'s own proposal/candidate
+content under the wrong module's identity. Both tasks are dependencies of the tasks whose ACs they
+make actually testable — see each phase file's own per-task `Dependencies` column.
 
 **Note on FR-F17's re-sequencing**: the PRD's own "Implementation Phases" section (§ rough map, not
 binding — stated explicitly in the PRD) places FR-F17 (the shared-mutable-state test-hazard fix) in
@@ -553,7 +585,7 @@ phase's Quality Gates.
 
 | Risk | Impact | Likelihood | Mitigation Strategy |
 |------|:------:|:----------:|----------------------|
-| R-1 — module genericity arms rule emission across 3 clinical modules before the gate is real | High | Medium (if phase order is violated) | Hard `depends_on` edge P1→P2 in this plan's own `wave_plan` frontmatter, not merely prose; P1-T6's FR-F24 invariant test is verified green at every subsequent phase's GATE (P2/P3/P4) |
+| R-1 — module genericity arms rule emission across 3 clinical modules before the gate is real | High | Medium (if phase order is violated) | Hard `depends_on` edge P1→P2 in this plan's own `wave_plan` frontmatter, not merely prose; P1-T6's FR-F24 invariant test is verified green at every subsequent phase's GATE (P2/P3/P4); P1-T8 ensures a governance refusal is caught and non-fatal, so `batch` can actually reach and re-verify every subsequent pair instead of halting at the first refused module before the invariant is ever exercised end-to-end |
 | R-2 — regressing `cbc_suite_v1`'s existing, already-committed converter output | High | Medium | P2-T1's pre-change SHA-256 manifest + P2-T4's post-change byte-identity test is a hard exit gate, not a spot-check |
 | R-3 — honest-`unknown` rights placeholders mistaken for rights determinations | Medium | Medium | Every P0-minted record carries `review.assessed_by_agent` naming this feature + `review_status: "agent_triage_only"`; P0-T9's negative-control test asserts zero record minted by this pass has `overall_status !== "UNKNOWN"` |
 | R-4 — decisions-file ID resolution enforced only by hand-written tests, not schema/runtime | Medium | Medium | P1-T4 ships `UnresolvedClaimReferenceError` in P1 (not deferred); P3-T5 reuses the same resolver to validate all 3 new files at authoring time |
@@ -574,9 +606,15 @@ Reference: `.claude/skills/planning/references/multi-model-guidance.md`,
   by design — if primary is unavailable, the phase blocks; it does not downgrade to ICA or a
   secondary provider. This is a repeated, explicit marker per this plan's own hard requirements, not
   an oversight of omission elsewhere in this plan.
-- **Adjudication is always MUST-stay-primary**, even in phases otherwise routed off-primary: P4-T6
-  (interpreting P4-T4's semantic-diff result to decide FR-F16's closure path) is native
-  `claude-sonnet-5`, even though P4-T1..T5 route to `codex-executor`.
+- **Adjudication and judgment-bearing content work are always MUST-stay-primary**, even in phases
+  otherwise routed off-primary: P4-T4/T5 (extending `lib/semantic-diff.mjs` with new evidence-
+  projection diff capability and committing its output — content/architecture work, not mechanical
+  harness code) and P4-T6 (interpreting the semantic-diff result to decide FR-F16's closure path) are
+  all native `claude-sonnet-5`, even though P4-T1..T3 route to `codex-executor` (the mechanical
+  determinism/report-harness work only). **This corrects an internal discrepancy this plan previously
+  carried** (the Phase Summary/this section's own prose once said "P4-T1..T5 route to codex-executor;
+  native Claude only for P4-T6" — the Phase 4-5 detail file's per-task table was always correct;
+  this section's prose is now reconciled to match it, not the other way around).
 - **Second-opinion / adversarial review never approves, only flags**: P1-T7, P3-T6 route to
   `gpt-5.6-terra` (read-only diff review) per the decisions block's mandatory P1–P3 adversarial-review
   row (project memory: per-wave codex diff reviews have caught real fail-closed gaps validators
@@ -584,8 +622,9 @@ Reference: `.claude/skills/planning/references/multi-model-guidance.md`,
   in the same phase, never auto-applied.
 - **Mechanical, spec-bounded, non-adjudicating work routes off-primary**: P0's rights-field plumbing
   (`ica-executor`, `claude-haiku-4-5`, free-tier) and fixture/regex/build-order fixes
-  (`codex-executor`, `gpt-5.6-luna`); P4's determinism/semantic-diff harness (`codex-executor`,
-  `gpt-5.6-terra`, escalating to `gpt-5.6-sol` on the two-failure rule); P5's docs/runbook/CHANGELOG
+  (`codex-executor`, `gpt-5.6-luna`); P4-T1..T3's determinism/report harness (`codex-executor`,
+  `gpt-5.6-terra`, escalating to `gpt-5.6-sol` on the two-failure rule — P4-T4/T5's semantic-diff
+  extension work is NOT part of this off-primary group, see above); P5's docs/runbook/CHANGELOG
   tasks (`ica-executor`, `claude-haiku-4-5`) — but **not** P5's design-spec authoring or findings-doc
   tasks, which stay native `claude-sonnet-5` (architectural judgment content, matching this program's
   own DOC-006 precedent).
@@ -611,11 +650,28 @@ phase files (this parent stays under the ~800-line guideline):
   — a positive membership check — never as an enumerated denylist of disallowed values. A test
   asserts adding a hypothetical new, unrecognized `status` value to a decisions file still refuses
   emission (proving fail-closed-on-unknown-value, the property a denylist cannot guarantee).
+- **P1-T8 (non-fatal refusal, FR-F6/FR-F8/FR-F11)**: a governance refusal is a caught, non-fatal
+  signal inside `propose.mjs` — never an exception escaping `run()`. On refusal, `evidence.json`,
+  `evidence-assertions.json`, `pack-provenance.json`, `conversion-report.json` (carrying the named
+  refusal reason), `semantic-diff.json` (with `headRules: []`), and empty `rule-proposals.json`/
+  `candidates.json` are ALL still written; `rules.json`/`rule-provenance.json` stay absent; `batch`
+  completes all 4 `BATCH_PAIRS` instead of halting at the first refused pair.
+- **P2-T7 (writeDraftPack/CANDIDATES genericity, FR-F10/FR-F11)**: `writeDraftPack()` and `CANDIDATES`
+  are genericized by `moduleId` the same way P2-T3 genericizes `RULE_PROPOSALS` — a post-P2 `propose`
+  run for any non-`cbc_suite_v1` module never emits `cbc_suite_v1`'s own proposal/candidate content
+  under the wrong module's identity, proven by a cross-module-leak negative-control test, not merely
+  by file-presence.
 - **P3 (FR-F5/FR-F11)**: every task authoring `modules/{anemia,kidney_suite_v1,growth_suite_v1}/authoring-decisions.yaml`
   carries an explicit AC that every decision's `status` is `drafted_pending_human_approval` (never
   `approved_for_rule_draft`) and every `review.*` role is `pending` — verified by a test reading the
   committed YAML, not only asserted in the task description.
   **No task in this plan populates `approvedBy[]` or `clinicalApprovers[]`.**
+- **P3-T1 (FR-F11 scope lock — substance, not existence, per the planning-gate amendment)**: for each
+  of `anemia`/`kidney_suite_v1`/`growth_suite_v1`, every emitted artifact's `moduleId` equals the
+  target module, `candidates.json` is the bare empty `{}`, and neither file contains any `dec_cbc_*`
+  decision id, any `cbc_suite_v1`-sourced claim/candidate identity, or `cbc_suite_v1`'s own
+  `RF_PROVENANCE` — a bounded file-set check alone (the pre-amendment AC) would pass even with
+  wrong-module content copied in verbatim.
 - **P4 (R-3)**: `semantic-diff.json` is committed for all 3 non-`cbc` modules regardless of the diff
   result; the converter's freshly-produced `evidence.json`/`evidence-assertions.json` for those 3
   modules is proven, by test, to never touch the committed `modules/<id>/evidence.json`/

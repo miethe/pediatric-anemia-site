@@ -14,7 +14,7 @@ related_documents:
   - "docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1.md"
   - "docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1.md"
   - ".claude/findings/multi-bundle-conversion-e1-findings.md"
-  - "docs/project_plans/design-specs/df-e1-m1-rule-authoring-workflow.md"
+  - "docs/project_plans/design-specs/df-e1-m1-rule-authoring-workflow.md"  # aspirational — does NOT exist yet; §7a R-1 directs the plan to CREATE it, not read it
 requirement_ids: ["DF-E1-M1", "DF-E1-M2", "DF-E1-M3", "OQ-1", "OQ-5", "FR-9", "FR-22"]
 intenttree_node: "node_01KXRTYFZVCRCM5FHYPHRJJC3R"
 ---
@@ -135,6 +135,27 @@ This satisfies the originating goal (reproducibility through the real converter)
 - **P0 may finish faster than estimated** — it is highly parallel and the failing tests give an exact, enumerable target list.
 - **Tech-debt payoff**: this feature retires finding #1 (test hazard), finding #3 (unreproducible provenance), finding #4 (rights-gate AC overstatement), and the FR-9 enforcement hole. That is unusually high debt payoff for a 32-pt feature and should be stated as a benefit in the PRD.
 - **Unknown that could inflate**: whether the three modules' `evidence-assertions.json` files are complete enough to satisfy runtime ID cross-resolution (Risk 4). SPIKE-009 confirmed `anemia`'s has real `evas_anemia_*` records; kidney/growth were not verified to the same depth. **P2 should front-load a spike-let on this.**
+
+### Reconciliation Note (post-implementation-planning, added — does not rewrite the anchor above)
+
+The 32-pt total above is the **original pre-expansion anchor**, preserved here as the historical
+estimate this Decisions Block produced before implementation planning began. It is **not** the final
+number. The expanded Implementation Plan's own bottom-up, honest per-task total is **41.0 pts**
+(P0 4.75, P1 8.25, P2 7.5, P3 8.5, P4 6.0, P5 6.0) — a **+9.0 (~28%) delta** from this anchor. Per this
+plan's own binding instruction ("estimates must not be back-fitted to the 32-pt anchor"), the honest
+41.0 total is authoritative; this anchor stays as a record of what was estimated before SPIKE-009 and
+a post-planning-gate review existed, not as a target to reconcile the real number toward. See
+`docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1-finish.md`'s
+"Estimation Sanity Check" section for the full driver-by-driver breakdown.
+
+**One-line reason for the delta**: a planning-gate review found **2 BLOCKING correctness gaps** this
+anchor's flatter per-phase numbers could not have priced in — (1) a governance refusal escaping
+`propose.mjs`'s `run()` as an uncaught exception instead of a caught, non-fatal signal (fixed by new
+task P1-T8, +1.5 pts), and (2) `writeDraftPack()`/`CANDIDATES` never being genericized by `moduleId`
+alongside `RULE_PROPOSALS`, which would silently leak `cbc_suite_v1`'s own rule-proposal/candidate
+content into another module's output tree (fixed by new task P2-T7, +1.0 pt) — plus P3/P5's own,
+separately-reasoned deltas (mandatory adversarial/Opus-verdict tasks; four newly-**created**, not
+updated, design specs) documented in the Implementation Plan's own Estimation Sanity Check.
 
 ---
 
