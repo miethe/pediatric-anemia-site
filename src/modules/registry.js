@@ -48,6 +48,33 @@ export const MODULE_IDS = Object.freeze([...REGISTRY.keys()]);
 // `REGISTRY`. Revisit this again the day a client-selectable moduleId surface actually ships (a
 // UI control, an API parameter, a CDS Hooks card selector, etc.) — that is the real trigger for
 // turning this into a selection decision, not merely the count of registered modules.
+//
+// P6-010 Tripwire B FIRED (spa-module-switcher-v1, phase-6-7-gates-docs.md) — DECISION RECORDED,
+// NOT MERELY A MECHANICAL EDIT (R-6). The client-selectable-surface trigger named immediately
+// above has now actually fired: the spa-module-switcher-v1 feature ships a real client-facing
+// module-selection UI (the header-dropdown switcher — a row click, or a `?module=` URL param, both
+// funnelling through `src/app.js#activateModule()`). This is a DIFFERENT trigger from — and must
+// never be conflated with — the separate, already-overdue "second module registers" tripwire at
+// `tests/module-registry.test.mjs:20-24` (that one fired at commit `263120b`, unrelated to this
+// feature, and was corrected there as pre-existing debt).
+//
+// The decision, made deliberately rather than by default: `DEFAULT_MODULE_ID` STAYS `'anemia'`.
+// It is now the switcher's INITIAL selection on load (absent `?module=`), not the ONLY module a
+// caller can ever reach — but it remains the correct default because no module's manifest
+// `status` changed as part of this feature (FR-35; still 3× `unsigned-stub` + 1× `integrity-
+// recorded`), so `anemia` is still the only module `isModuleSelectable()` (src/moduleEligibility.js,
+// FR-4/FR-6) ever returns `true` for. There is nothing else eligible to become the default.
+//
+// Authority for lifting the prior freeze: E1's own `multi-bundle-conversion-e1.md` FR-14/R-8
+// froze `DEFAULT_MODULE_ID` and prohibited a new client-selectable moduleId surface for that
+// pass specifically — but R-8's own text conditions that freeze on "ahead of any UI/API decision
+// to support it," not permanently. `docs/adr/0009-module-eligibility-policy-for-clinician-facing-
+// surfaces.md` ("The FR-14/R-8 lifting authority" section) records that the switcher PRD
+// (`docs/project_plans/PRDs/features/spa-module-switcher-v1.md`) IS that decision, and that the
+// ADR governs HOW eligibility is decided once such a surface exists — "which today still yields
+// exactly one selectable module (`anemia`) and three inert ones... `DEFAULT_MODULE_ID` itself is
+// unaffected by this ADR; the switcher adds a UI-level selection layer on top of the existing
+// registry, it does not change which module the registry treats as default."
 export const DEFAULT_MODULE_ID = 'anemia';
 
 // Literal, enumerated import() map — never build a specifier from a template string or
