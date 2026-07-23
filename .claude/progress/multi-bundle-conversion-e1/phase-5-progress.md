@@ -140,3 +140,16 @@ P5-T1 (RF-KID-001 -> kidney_suite_v1), P5-T2 (RF-GRO-002 -> growth_suite_v1), an
 P5-T4 (this task) test-enforces the load-bearing honesty AC over that projection: `modules/kidney_suite_v1/rules.json` and `modules/growth_suite_v1/rules.json` are proven byte-identical to Phase 3's scaffold state (`git diff` against each module's sole scaffold commit -- P3-T1 `9c803dc`, P3-T2 `b9741c9` -- is empty; the new regression test additionally pins the literal expected byte content so the invariant survives any future squash/rebase of branch history). Both modules' `module.json.status`/`approvedBy`/`clinicalContentHash` remain `"unsigned-stub"`/`[]`/`null`, unchanged by the projection. A language-honesty check confirms this phase's own tracked output (this file and the decisions-block worknote) never describes the evidence projection as module complete or clinically ready outside of an explicit negation. Evidence projected into these two modules remains claims routed to `unresolved.json`, not authored, reviewed, or approved clinical rules -- neither module is module complete, signed, or clinically ready. New test: `tests/ef-p5-t4-honesty-ac.test.mjs` (7 assertions).
 
 P5-GATE (task-completion-validator) has not yet run.
+
+### Superseded by `multi-bundle-conversion-e1-finish` (2026-07-23)
+
+`in_progress` (`P5-GATE` never run) is left as-is here — accurate, not stale — rather than
+force-set to `completed`. Noted so this tracker is not read as contradicting
+`.claude/progress/multi-bundle-conversion-e1-finish/`: the greenfield evidence projections this
+phase delivered (`modules/kidney_suite_v1/`, `modules/growth_suite_v1/`) are real, committed, and
+byte-identical to Phase 3's scaffold state, per the honesty AC above. Remaining gap-closure for
+these same two modules (per-module `authoring-decisions.yaml`, module-generic drafting so the
+converter itself — not a bespoke one-off script — can reach them) is tracked under the successor
+plan `docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1-finish.md`. Zero new
+clinical rules were emitted in either plan; both modules remain `unsigned-stub`, `approvedBy: []`;
+this repo remains an unvalidated research prototype.

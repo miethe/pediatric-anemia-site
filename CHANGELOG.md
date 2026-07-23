@@ -6,6 +6,42 @@ Wave-0 Safety Foundation program (EP-1 through EP-6). This is still an unvalidat
 prototype: the items below describe software behavior only and prove nothing about clinical
 validity, safety, diagnostic performance, or regulatory status.
 
+### Multi-Bundle Conversion E1 — finish the converter pass (multi-bundle-conversion-e1-finish)
+
+Makes `tools/rf-bundle-to-kb-pack`'s `propose` verb genuinely module-generic and genuinely
+decision-driven, so all 4 verified `rf` evidence bundles project through the real converter
+reproducibly. **Zero new clinical rules were emitted; `cbc_suite_v1` remains the sole rule-bearing
+module and its converter output is SHA-256 byte-identical throughout.** Nothing here is signed,
+validated, reviewed, or release-ready; every `approvedBy[]`/`clinicalApprovers[]` stays
+schema-forced empty; this remains an unvalidated research prototype.
+
+- **Code-enforced fail-closed emission gate (allowlist, never denylist).** A decisions file's
+  `status` field now actually gates AI-drafted rule emission at runtime: `status ===
+  'approved_for_rule_draft'` is the sole permitting condition, so `rejected`, `withdrawn`,
+  `drafted_pending_human_approval`, and any future/unknown status value all refuse emission
+  identically (fails closed on an unrecognized value — a property a denylist cannot guarantee). A
+  governance refusal is a caught, non-fatal signal: the module still emits its evidence-layer
+  artifacts and a named refusal reason in `conversion-report.json`, and never emits
+  `rules.json`/`rule-provenance.json`.
+- **Module-generic converter.** The hard-coded `MODULE_ID = 'cbc_suite_v1'` identity check is
+  replaced by `moduleId`-keyed drafting registries that default to empty; a runtime
+  `clm_*`/`evas_*` cross-resolution guard (resolving against the bundle the decisions themselves
+  declare) rejects any fabricated claim/assertion id before any output is written.
+- **Three new NON-approving decisions files.** `modules/{anemia,kidney_suite_v1,growth_suite_v1}/
+  authoring-decisions.yaml` — every decision `status: drafted_pending_human_approval`, every
+  `review.*` role `pending`. Each numeric threshold is copied verbatim from a cited `rf` claim; no
+  threshold is invented. No named clinical reviewer has evaluated any of them.
+- **4-of-4 batch + triple-run determinism.** All four `BATCH_PAIRS` now complete
+  `inspect → verify → propose` (`cbc_suite_v1` emits its 4 rules unchanged; the other three refuse
+  at the governance gate and emit evidence-layer artifacts only); three independent `batch` runs
+  produce byte-identical output across all four modules and the aggregate report.
+- **Committed `semantic-diff.json` per non-cbc module.** `modules/{anemia,kidney_suite_v1,
+  growth_suite_v1}/semantic-diff.json` document (never resolve) the evidence-layer comparison. All
+  three diffs are empty **by construction** — the converter copies each module's committed
+  evidence-assertions verbatim, so this instruments the reconciliation seam; it does **not** show
+  the converter independently re-deriving or replacing the bespoke evidence. Committed bespoke
+  evidence is never overwritten.
+
 ### SPA Module Switcher — honest module inventory + eligibility-gated selection (spa-module-switcher-v1)
 
 The browser SPA's header now discloses every registered module rather than hiding all but one.

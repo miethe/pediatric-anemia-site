@@ -3,7 +3,7 @@ title: 'Findings: Multi-Bundle Conversion E1 — Finish the Converter Pass'
 schema_version: 2
 doc_type: report
 report_category: findings
-status: open
+status: accepted
 created: '2026-07-23'
 updated: '2026-07-23'
 feature_slug: multi-bundle-conversion-e1-finish
@@ -225,3 +225,122 @@ P4-T1's "completes = clean, named terminal state emitting evidence-layer artifac
 evaluated against the post-corpus state. This is a real cross-phase seam, recorded here so P4 is
 sequenced deliberately rather than discovering the halt mid-batch. Not a Phase 2 defect — Phase 2's
 scope (genericity + cbc byte-identity) is fully met and its gate is green.
+
+## P5-T11 — Closure of the prior pass's 3 tracked findings (#1, #3, #4)
+
+The prior pass's own findings doc
+(`.claude/findings/multi-bundle-conversion-e1-findings.md`, `status: accepted`) tracked 3 open
+items this feature's PRD/plan explicitly scoped for closure: the shared-mutable-state test-isolation
+hazard (its "Bugs / Gotchas" section), the unreproducible-provenance gap (its "Plan / Reality
+Mismatches" section), and the P1-T7 AC overstatement (its "Post-Execution Findings" "New finding"
+section). Each is addressed below, honestly, against what this pass's actual commits do and do not
+change — a fourth item from that same doc (the P6-T3 AC/reality mismatch) was already resolved in
+place by the prior pass itself and is not re-litigated here.
+
+### Finding #1 (shared-mutable-state test hazard) — CLOSED
+
+**Prior finding**: `tests/ef-converter-rule-candidate-drafting.test.mjs` and
+`tests/ef-converter-rule-provenance-projection.test.mjs` both wrote into the real, shared,
+non-isolated `build/kb-pack/cbc_suite_v1/0.1.0-proposal/` directory (one test even `rm()`s it
+first), a latent flake hazard for two concurrent `npm test` invocations.
+
+**Closure**: Fixed in this pass's Phase 2, commit `19bf493` ("P2 (MUST-stay-primary): module-generic
+drafting substrate; cbc byte-identity held"), task P2-T5. Both files were rewritten to use an
+`mkdtemp(path.join(os.tmpdir(), ...))` scratch directory exclusively for their `writeDraftPack()`/
+`writeStagedRulesAndProvenance()` calls — the same isolated-scratch-dir pattern
+`tests/ef-multi-bundle-determinism.test.mjs` and this same file's own determinism test already
+proved works for this exact converter surface. Verified directly against the commit diff: both test
+files' own header comments now name the fix explicitly ("multi-bundle-conversion-e1-finish, Phase 2,
+P2-T5 (FR-F17): this file uses an mkdtemp scratch directory exclusively... never the real, shared
+`build/kb-pack/cbc_suite_v1/0.1.0-proposal` directory"). The prior pass's own recommended fix
+("rewrite both tests to use `mkdtemp`... the isolated path is already proven to work for this exact
+converter surface") is exactly what P2-T5 did — no partial fix, no scope narrowing.
+
+**What this closure does NOT extend to** (recorded honestly, not swept in as a bonus): this pass's
+own Phase 1 gate review (MBF-4, above) found the *same hazard class* recurring in two *different*
+files — `tests/ef-release-no-keys.test.mjs` and `tests/ef-retro-metrics.test.mjs`, both writing into
+the real `build/kb-pack/` tree. P2-T5 did not touch either of those files (they were never in its
+scope), and MBF-4 records that gap as still open, out of this plan's scope, exactly as the prior
+finding's own text was scoped to the two files it named. Closing finding #1 closes the exact hazard
+it named, in the exact two files it named — it does not close the hazard class in general.
+
+### Finding #3 (unreproducible-provenance gap) — PARTIALLY ADDRESSED, NOT FULLY CLOSED
+
+**Prior finding**: `modules/kidney_suite_v1/`'s and `modules/growth_suite_v1/`'s evidence-layer
+files (`evidence.json`, `evidence-assertions.json`, `unresolved.json`) had no committed producing
+script anywhere in the repository or its history — genuinely unregenerable from committed code. (The
+prior finding also named `anemia`'s generator as reproducibility-gapped in a *weaker* sense —
+committed but untested; that half of the gap was already remediated before this pass, per the prior
+doc's own in-place update citing commit `33bc6c5`, and is unchanged by this pass.)
+
+**What this pass's P4-T6 closure (commit `24be3f2`) actually establishes, stated precisely**: Phase 4
+made `propose.mjs` — now committed, code-reviewed, `npm run check`-covered tooling — capable of
+producing a byte-identical `evidence.json`/`evidence-assertions.json` for `kidney_suite_v1` and
+`growth_suite_v1` when run against their fixtures. This is real: before this pass, **zero** committed
+code path could reproduce either file for either module; after this pass, running
+`node cli.mjs propose --module kidney_suite_v1` (or `growth_suite_v1`) against the corresponding
+fixture reliably reproduces both files, verified by the empty semantic-diff and by
+`tests/ef-p4-t7*.test.mjs`/`tests/ef-p4-t8-honesty-ac.test.mjs`'s own byte-identity assertions.
+
+**What this pass's P4-T6 closure does NOT establish (do not overstate this):**
+
+1. **`propose` reproduces these files by COPYING them, not by independently re-deriving them from
+   the upstream `rf` fixture.** `propose.mjs`'s own header (lines 30-33) states plainly that both
+   `evidence.json` and `evidence-assertions.json` are "byte-verbatim copy of the module's own
+   committed" file, for a non-cbc module. If the committed `modules/kidney_suite_v1/evidence.json`
+   itself were ever lost (not merely regenerated from a stale copy), `propose` could not reconstruct
+   it from `tests/fixtures/rf-kid-001/` alone the way `cbc_suite_v1`'s
+   `scripts/evidence/backfill-cbc-002-evidence.mjs` or `anemia`'s
+   `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py` independently derive their module's
+   evidence layer from its own fixture. The prior finding's remediation option 2 ("close DF-E1-M1...
+   so the committed `propose` verb can actually produce their evidence-layer output going forward,
+   retiring the bespoke generators entirely") is **not** what happened — `propose` today is a
+   redundant, tested COPY path, not an independent-regeneration path, for these two modules'
+   evidence layer.
+2. **`unresolved.json` is untouched by `propose` entirely, for any of the 3 non-cbc modules.** It
+   does not appear in `propose`'s `--out` tree for `kidney_suite_v1` or `growth_suite_v1` (verified
+   directly: `build/kb-pack/kidney_suite_v1/0.1.0-proposal/` contains `candidates.json`,
+   `conversion-report.json`, `evidence-assertions.json`, `evidence.json`, `pack-provenance.json`,
+   `release-manifest.unsigned.json`, `rule-proposals.json`, `semantic-diff.json` — no
+   `unresolved.json`). The reproducibility gap for `unresolved.json` specifically — 83 entries for
+   `kidney_suite_v1`, 90 for `growth_suite_v1`, per `docs/project_plans/design-specs/df-e1-m2-clinical-review-portal-intake.md` —
+   remains exactly as open as the prior finding described it: no committed script produces it for
+   either module.
+3. **The bespoke one-off generators for `kidney_suite_v1`/`growth_suite_v1` are still not committed
+   anywhere in this repository or its history.** This pass did not recover or commit them (unlike
+   the prior pass's own in-place fix for `anemia`'s generator). They remain unrecoverable.
+
+**Honest summary**: finding #3 is **narrowed, not closed**. The specific sub-gap "zero committed code
+can reproduce `kidney_suite_v1`'s/`growth_suite_v1`'s `evidence.json`/`evidence-assertions.json`" is
+now false — `propose` provides that path, as a copy operation. The broader gap this finding named
+— genuine, fixture-derived regenerability of the full evidence layer (including `unresolved.json`)
+for these two modules, independent of the committed file already existing — remains open. Any future
+reader citing this finding as "closed by P4-T6" without this distinction would be overstating what
+happened; this section exists specifically so that overstatement does not occur.
+
+### Finding #4 (P1-T7 AC overstatement) — CLOSED
+
+**Prior finding**: `phase-1-2-vendoring-batch-orchestration.md` row P1-T7's acceptance-criterion text
+claimed the rights-leakage gate "greps every committed byte... for any string matching a source
+card's withheld/restricted verbatim passage," when the gate's actual, verified mechanism only
+inspects double-quoted spans outside `sources/` plus structural placeholders inside it — bare
+unquoted prose is not inspected.
+
+**Closure**: Already fixed, in the already-merged commit `263120b` ("E1 multi-bundle conversion: 2
+new module scaffolds + evidence projections — zero new clinical rules (1-of-4 converter-run)
+(#22)"), which amended that row's text in place to the real, scoped property: *"Scope limits, stated
+here deliberately... bare unquoted prose is NOT inspected, bare `locator` values are exempt by
+design... This is not byte-level absence proof."* Verified directly against the currently-committed
+file (`docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1/phase-1-2-vendoring-batch-orchestration.md`,
+row P1-T7 and the P1-GATE row) — the overstated "greps every committed byte" phrasing is gone from
+that row's live text.
+
+**Residual-occurrence check (P5-T1's own verification)**: `grep -rn "greps every committed byte"`
+across `docs/`, `tools/`, `scripts/`, `README.md` returns exactly two hits, both **negative/scoped
+descriptions of the finding itself** (this feature's own PRD row FR-F18, and the implementation
+plan's own P5-T1 row) — neither is a positive assertion that the gate has that property. Zero
+positive-claim occurrences remain. Finding #4 is fully closed.
+
+### Frontmatter status
+
+This doc's `status` is set to `accepted` as of this closure (P5-T11's own acceptance criterion).

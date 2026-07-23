@@ -33,41 +33,96 @@ Three registries dispatch module behavior: `src/facts/registry.js` (fact-derivat
 
 `modules/anemia/module.json` is no longer a stub: Wave-0 (EP-5) shipped the two-part signed-manifest scheme described in §6, and the anemia module's manifest is currently `status: "integrity-recorded"` — its `clinicalContentHash`/`governanceHash` are populated and verified at server startup. Its `approvedBy` is still schema-forced to `[]`: no credentialed clinical approver has signed off on this content.
 
-### Module inventory (as of `multi-bundle-conversion-e1` Phase 7)
+### Module inventory (as of `multi-bundle-conversion-e1-finish` Phase 4)
 
 Four modules are registered under `modules/` today. Their `module.json.status` values are **not**
-uniform — read each row rather than assuming parity across modules:
+uniform — read each row rather than assuming parity across modules. As of this pass, **all four**
+modules have a committed `authoring-decisions.yaml` and, for the three non-`cbc_suite_v1` modules, a
+committed `semantic-diff.json` — but `cbc_suite_v1` remains the **sole rule-bearing module**
+(`modules/{anemia,cbc_suite_v1}/rules.json` are 91 and 4 rules respectively, unchanged and
+SHA-256 byte-identical to their pre-pass baselines throughout this pass; `modules/{kidney_suite_v1,growth_suite_v1}/rules.json`
+are `[]`), and zero new clinical rules were emitted by this pass:
 
-| Module | `module.json.status` | `clinicalContentHash` / `governanceHash` | `approvedBy` | Evidence-layer provenance |
-|---|---|---|---|---|
-| `anemia` | `integrity-recorded` (Wave-0/EP-5) | populated, verified at server startup | `[]` (no clinical sign-off) | **Bespoke evidence projection** — `evidence-assertions.json` was hand-authored against the verified `RF-EV-001` bundle by a one-off generator script, not the converter's `propose` verb (see below). The generator is committed (`scripts/evidence/oneoff/gen-anemia-evidence-assertions.py`) and manually verified to reproduce this file byte-for-byte, but it is not wired into `npm run check` or any test. Its pre-existing `evidence.json` (EP-3/EP-4 pipeline) is a separate, parallel provenance view; see `modules/anemia/EVIDENCE-PROVENANCE-NOTE.md` and `docs/project_plans/design-specs/anemia-backfill-reconciliation-procedure.md` |
-| `cbc_suite_v1` | `unsigned-stub` | `null` / `null` | `[]` | **Converter-derived, end-to-end.** The only module whose evidence-layer artifacts (`evidence-assertions.json`, `rule-provenance.json`, and the drafted `rules.json`/`candidates.json` content) were produced by `tools/rf-bundle-to-kb-pack/`'s `propose` verb against the verified `RF-CBC-002` bundle, per §2b. It is also the only module with a hand-authored `authoring-decisions.yaml` (DF-E1-M1 dependency), which is what lets the converter's rule/candidate-drafting stage run for it at all |
-| `kidney_suite_v1` | `unsigned-stub` | `null` / `null` | `[]` | **Bespoke evidence projection**, not converter output — `evidence.json`/`evidence-assertions.json`/`unresolved.json` were hand-derived against the verified `RF-KID-001` bundle by an uncommitted one-off generator, because `propose.mjs` is hardwired to `cbc_suite_v1`'s own drafting content (FR-14) and no `authoring-decisions.yaml` exists yet for this module (Deferred Item DF-E1-M1) |
-| `growth_suite_v1` | `unsigned-stub` | `null` / `null` | `[]` | **Bespoke evidence projection**, not converter output — `evidence.json`/`evidence-assertions.json`/`unresolved.json` were hand-derived against the verified `RF-GRO-002` bundle by an uncommitted one-off generator, for the same DF-E1-M1 reason as `kidney_suite_v1` |
+| Module | `module.json.status` | `clinicalContentHash` / `governanceHash` | `approvedBy` | `authoring-decisions.yaml` | Evidence-layer provenance |
+|---|---|---|---|---|---|
+| `anemia` | `integrity-recorded` (Wave-0/EP-5) | populated, verified at server startup | `[]` (no clinical sign-off) | **Non-approving scaffold** (P3-T2, this pass): 4 decision records, `status: drafted_pending_human_approval`, every `review.*` field `pending`. Does not drive `rules.json` (predates this convention). | **Bespoke evidence projection** — `evidence-assertions.json` was hand-authored against the verified `RF-EV-001` bundle by a one-off generator script, not the converter's `propose` verb (see below). The generator is committed (`scripts/evidence/oneoff/gen-anemia-evidence-assertions.py`) and manually verified to reproduce this file byte-for-byte, but it is not wired into `npm run check` or any test. Its pre-existing `evidence.json` (EP-3/EP-4 pipeline) is a separate, parallel provenance view; see `modules/anemia/EVIDENCE-PROVENANCE-NOTE.md` and `docs/project_plans/design-specs/anemia-backfill-reconciliation-procedure.md` |
+| `cbc_suite_v1` | `unsigned-stub` | `null` / `null` | `[]` | **Approving** (pre-existing, prior pass): 4 decision records, `status: approved_for_rule_draft`, every `review.*` field still `pending` (that status means "ready to inform a drafted rule proposal," never clinical sign-off) | **Converter-derived, end-to-end.** The only module whose evidence-layer artifacts (`evidence-assertions.json`, `rule-provenance.json`, and the drafted `rules.json`/`candidates.json` content) were produced by `tools/rf-bundle-to-kb-pack/`'s `propose` verb against the verified `RF-CBC-002` bundle, per §2b. It is also the only module whose `authoring-decisions.yaml` actually gates rule/candidate drafting — the other three modules' scaffolds are non-approving by construction and drive no drafting |
+| `kidney_suite_v1` | `unsigned-stub` | `null` / `null` | `[]` | **Non-approving scaffold** (P3-T2, this pass): 4 decision records, `status: drafted_pending_human_approval`, every `review.*` field `pending` | **Bespoke evidence projection**, not converter output — `evidence.json`/`evidence-assertions.json`/`unresolved.json` were hand-derived against the verified `RF-KID-001` bundle by an uncommitted one-off generator |
+| `growth_suite_v1` | `unsigned-stub` | `null` / `null` | `[]` | **Non-approving scaffold** (P3-T2, this pass): 4 decision records, `status: drafted_pending_human_approval`, every `review.*` field `pending` | **Bespoke evidence projection**, not converter output — `evidence.json`/`evidence-assertions.json`/`unresolved.json` were hand-derived against the verified `RF-GRO-002` bundle by an uncommitted one-off generator |
 
 **Converter-vs-bespoke-projection distinction (binding).** Only `RF-CBC-002` → `cbc_suite_v1` has
-ever completed the converter's `inspect -> verify -> propose` pipeline end-to-end and had its
-output copied into a committed module package. `anemia`, `kidney_suite_v1`, and `growth_suite_v1`
-all carry evidence-layer artifacts that trace to a verified `rf` bundle, but each was produced by a
-**bespoke, module-specific generator script**, not by running the converter's `propose` verb —
-`propose.mjs` cannot yet run generically against a module that lacks its own
-`authoring-decisions.yaml` (Deferred Item DF-E1-M1; design spec
-`docs/project_plans/design-specs/rule-authoring-workflow-per-module.md`). Of the three
-bespoke-generator scripts for `anemia`/`kidney_suite_v1`/`growth_suite_v1`, only the `anemia`
-one is committed — `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py`. Its committed
-form had a path-resolution bug (a wrong repo-root computation) that made every invocation fail;
-this has been fixed, and running the corrected script now reproduces
-`modules/anemia/evidence-assertions.json` byte-for-byte (verified manually). Unlike
-`cbc_suite_v1`'s converter-produced script, `scripts/evidence/backfill-cbc-002-evidence.mjs`
-(whose `run()` is imported and exercised by the test suite `npm run check` runs), the anemia
-generator is **not** wired into `npm run check` or any test — it is a manual, standalone script
-whose reproducibility is not continuously enforced. `kidney_suite_v1`'s and `growth_suite_v1`'s
-generators remain uncommitted and unrecoverable from this repository or its history, so those two
-modules' evidence-layer files are not regenerable from committed code at all today (tracked in
-`.claude/findings/multi-bundle-conversion-e1-findings.md`, Phase 6
-"Unreproducible-provenance gap" finding). Whichever module a future pass converts next, describe it
-as converter-derived **only** once it has an actual `propose` run behind it and its own
-`authoring-decisions.yaml` — never by analogy to another module's posture.
+ever completed the converter's `inspect -> verify -> propose` pipeline end-to-end **and had its
+rule/candidate output copied into a committed module package.** As of this pass, `anemia`,
+`kidney_suite_v1`, and `growth_suite_v1` each have a real `authoring-decisions.yaml` and can now
+reach `propose`'s emission gate too (Phase 1's code-enforced fail-closed allowlist gate + Phase 2's
+module-generic drafting substrate + Phase 4's live 4-of-4 `batch` run all landed this pass) — but
+because every one of their decision records carries the deliberately **non-approving**
+`status: drafted_pending_human_approval` (never `approved_for_rule_draft`), `propose` refuses rule
+drafting for all three with a named governance reason and emits **only** their evidence-layer
+artifacts (`evidence.json`, `evidence-assertions.json`, `pack-provenance.json`, an inert empty
+`rule-proposals.json`, an inert empty `candidates.json`, `semantic-diff.json`) — `rules.json` and
+`rule-provenance.json` stay strictly absent for all three, exactly as before this pass. `cbc_suite_v1`
+still emits 4 rules, unchanged. This is proven live, not asserted: `batch` completes `inspect ->
+verify -> propose` for all 4 named pairs, 3 independent runs produce SHA-256-byte-identical output
+for every module and the aggregate report (`tests/ef-multi-bundle-determinism.test.mjs`), and every
+non-cbc module's rules/candidates/evidence file is asserted byte-unchanged from its pre-pass state
+(`tests/ef-p4-t7*.test.mjs`, `tests/ef-p4-t8-honesty-ac.test.mjs`).
+
+Each of the three non-cbc bespoke-generator scripts producing the underlying evidence layer traces
+the same way it did before this pass: `propose.mjs`'s evidence-projection output for a non-cbc
+module is a **byte-verbatim copy** of that module's own committed `evidence-assertions.json` — it
+does not independently re-derive it. Of the three bespoke-generator scripts, only the `anemia` one
+is committed — `scripts/evidence/oneoff/gen-anemia-evidence-assertions.py` — and it is **not** wired
+into `npm run check` or any test. `kidney_suite_v1`'s and `growth_suite_v1`'s generators remain
+uncommitted and unrecoverable from this repository or its history, so those two modules' evidence-
+layer files are not regenerable from committed code at all today (tracked in
+`.claude/findings/multi-bundle-conversion-e1-findings.md`, Phase 6 "Unreproducible-provenance gap"
+finding). Whichever module a future pass converts next, describe it as converter-derived **only**
+once it has an actual `propose` run behind it, its own `authoring-decisions.yaml`, and at least one
+decision at `status: approved_for_rule_draft` — never by analogy to another module's posture.
+
+**P4-T6 semantic-diff closure, per module (FR-F16/R-3) — instrumented, NOT resolved.** Phase 4
+committed `modules/{anemia,kidney_suite_v1,growth_suite_v1}/semantic-diff.json`, each comparing
+`propose`'s freshly-produced `evidence-assertions.json` against that module's own currently-committed
+one via the new `diffEvidenceAssertions()` (`tools/rf-bundle-to-kb-pack/lib/semantic-diff.mjs`). The
+empirical, per-module result, from a real `propose` run each:
+
+| Module | added | removed | changed |
+|---|---:|---:|---:|
+| `anemia` | 0 | 0 | 0 (35 assertions both sides) |
+| `kidney_suite_v1` | 0 | 0 | 0 (73 assertions both sides) |
+| `growth_suite_v1` | 0 | 0 | 0 (79 assertions both sides) |
+
+All three diffs are empty **by construction, not by independent agreement**: `propose`'s evidence
+projection for a non-cbc module carries the module's own committed `evidence-assertions.json` through
+verbatim (see above), so the diff is a self-comparison that is empty for any input. It is **not**
+evidence that the converter independently re-derives, regenerates, or reproduces the bespoke
+generator's evidence output, and it must never be described that way. The honest closure (all 3
+modules): the committed bespoke evidence stays authoritative and untouched (R-3's fail-closed
+default, proven by a `git diff`-empty test on the committed evidence files — `tests/ef-multi-bundle-determinism.test.mjs`,
+P4-T5's own AC), so there is no divergence to reconcile in this pass. `diffEvidenceAssertions()` is
+now committed, unit-tested, and wired into `propose` for all three modules — it **would** catch a
+real divergence the day a module's evidence projection stops being a verbatim copy — but that is a
+capability now instrumented, not a seam this pass resolved. See
+`.claude/findings/multi-bundle-conversion-e1-finish-findings.md` ("P4-T6") for the full derivation of
+this distinction, and `docs/project_plans/design-specs/df-e1-m3-anemia-reconciliation.md` for how it
+bears on anemia's separate EP-3/EP-4-vs.-projection reconciliation question.
+
+**FR-22/FR-F5 supersession (OQ-5, decisions-block OQ-E — cross-referenced explicitly here per that
+question's own resolution).** The prior PRD's FR-22
+(`docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1.md`) stated no task would author
+a new `authoring-decisions.yaml`. This pass's own PRD FR-F5
+(`docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1-finish.md`) records a narrow,
+explicit, scoped supersession: this pass DOES author new `authoring-decisions.yaml` files for
+`anemia`/`kidney_suite_v1`/`growth_suite_v1` (P3-T2), but every decision in every one of those files
+carries the non-approving `status: drafted_pending_human_approval`; every `review.*` role stays
+`pending`; and no task in this pass sets any decision's `status` to `approved_for_rule_draft`. Human
+clinical approval of any of the 12 new decision records remains an explicit, separate, out-of-scope
+human act — this pass performs it for no decision and enables no agent to perform it. Per OQ-5's own
+resolution, the prior PRD file itself is deliberately **not** amended in place (amending a
+`status: completed`-equivalent prior PRD to reference a not-yet-existing successor would itself be a
+doc-truth risk); this section of `docs/architecture.md` is the single place forward readers land for
+the FR-22/FR-F5 relationship.
 
 ### The `REG-001`/`REG-004` HOLD-record convention
 
