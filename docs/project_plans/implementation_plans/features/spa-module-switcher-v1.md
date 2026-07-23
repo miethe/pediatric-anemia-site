@@ -93,7 +93,7 @@ commit_refs:
 - f103df2
 - bb798c8
 - 04aa713
-pr_refs: []
+pr_refs: ["#29"]
 files_affected:
 - docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md
 - docs/adr/0010-browser-test-capability-for-the-spa.md
