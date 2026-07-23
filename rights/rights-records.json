@@ -1193,6 +1193,2736 @@
         "notes": "Triage-only record (cbc_suite_v1 rights-metadata backfill). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
       },
       "extensions": {}
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "source_id": "AAP_PEDIATRIC_HTN_GUIDELINE_2017"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-ADVCLINEXPMED2024_FA_CYTOGENETICS",
+      "source_id": "ADVCLINEXPMED2024_FA_CYTOGENETICS"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-AFP2023_GROWTH_FALTERING_REVIEW",
+      "source_id": "AFP2023_GROWTH_FALTERING_REVIEW"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-ANM2024_FALTERING_GROWTH_UPDATE",
+      "source_id": "ANM2024_FALTERING_GROWTH_UPDATE"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-ASPEN2015_MALNUTRITION_INDICATORS",
+      "source_id": "ASPEN2015_MALNUTRITION_INDICATORS"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-ASTCT2024_SAA_HCT_GUIDELINE",
+      "source_id": "ASTCT2024_SAA_HCT_GUIDELINE"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-BCMD2024_AIEOP_AA_GUIDELINE",
+      "source_id": "BCMD2024_AIEOP_AA_GUIDELINE"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-BJHAEM2024_BSH_AA_GUIDELINE",
+      "source_id": "BJHAEM2024_BSH_AA_GUIDELINE"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-BLOOD2022_TBD_OUTCOMES",
+      "source_id": "BLOOD2022_TBD_OUTCOMES"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-BLOODADV2024_SAA_DELPHI_CONSENSUS",
+      "source_id": "BLOODADV2024_SAA_DELPHI_CONSENSUS"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+      "source_id": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-CDC2010_WHO_CDC_CHART_USE_REC",
+      "source_id": "CDC2010_WHO_CDC_CHART_USE_REC"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-CKID_RACE_CR_CYSC_GFR_2021",
+      "source_id": "CKID_RACE_CR_CYSC_GFR_2021"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-CKID_U25_GFR_EQUATIONS_2021",
+      "source_id": "CKID_U25_GFR_EQUATIONS_2021"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+      "source_id": "CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+      "source_id": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "source_id": "HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-INDIANPEDIATR2022_IAP_AA_CONSENSUS",
+      "source_id": "INDIANPEDIATR2022_IAP_AA_CONSENSUS"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "source_id": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-KDIGO_CKD_GUIDELINE_2024",
+      "source_id": "KDIGO_CKD_GUIDELINE_2024"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-LANCETHAEM2024_DBA_CONSENSUS",
+      "source_id": "LANCETHAEM2024_DBA_CONSENSUS"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-LEUKEMIA2024_IBMFS_PROTEOGENOMICS",
+      "source_id": "LEUKEMIA2024_IBMFS_PROTEOGENOMICS"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-NICE2017_NG75_FALTERING_GROWTH",
+      "source_id": "NICE2017_NG75_FALTERING_GROWTH"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-NUTRIENTS2026_PRETERM_ESPGHAN",
+      "source_id": "NUTRIENTS2026_PRETERM_ESPGHAN"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-PBC2024_PEDIATRIC_SAA_RECOMMENDATIONS",
+      "source_id": "PBC2024_PEDIATRIC_SAA_RECOMMENDATIONS"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+      "source_id": "PEDIATRIC_EGFR_DISCORDANT_GFR_2023"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "source_id": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "source_id": "PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-PEDS2025_GRADUAL_TRANSITION_CHART",
+      "source_id": "PEDS2025_GRADUAL_TRANSITION_CHART"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "source_id": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "source_id": "PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+      "source_id": "SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-WHO2006_LHFA_STANDARD",
+      "source_id": "WHO2006_LHFA_STANDARD"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-WHO2006_WFL_WFH_STANDARD",
+      "source_id": "WHO2006_WFL_WFH_STANDARD"
+    },
+    {
+      "schema_version": "1.0.0",
+      "source_version": null,
+      "record_scope": "source",
+      "jurisdictions": [
+        "unknown"
+      ],
+      "access": {
+        "basis": "unknown",
+        "platform": null,
+        "account_or_agreement_id": null,
+        "terms_url": null,
+        "terms_snapshot_uri": null,
+        "terms_snapshot_sha256": null,
+        "terms_verified_at": "2026-07-23T00:00:00Z",
+        "authorized_users": null,
+        "automated_retrieval_allowed": "unknown",
+        "text_and_data_mining_allowed": "unknown",
+        "model_training_allowed": "not_assessed",
+        "termination_or_deletion_duties": []
+      },
+      "copyright": {
+        "status": "unknown",
+        "rights_holder": null,
+        "publication_license": null,
+        "license_version": null,
+        "license_url": null,
+        "license_applies_to": [],
+        "third_party_components": [],
+        "attribution_requirements": [],
+        "notice_requirements": [],
+        "change_indication_required": null,
+        "share_alike_required": null,
+        "noncommercial_only": null,
+        "no_derivatives": null
+      },
+      "contract": null,
+      "component_decisions": [
+        {
+          "component_type": "atomic_facts_and_methods",
+          "component_locator": null,
+          "decision": "unknown",
+          "conditions": [],
+          "notes": "Not yet assessed; triage-only record (multi-bundle-conversion-e1-finish-p0)."
+        }
+      ],
+      "other_rights": {
+        "patent": "unknown",
+        "trademark_or_endorsement": "unknown",
+        "database_right": "unknown",
+        "privacy_or_confidentiality": "not_applicable",
+        "data_use_agreement": "not_applicable",
+        "trade_secret": "not_applicable",
+        "notes": []
+      },
+      "permitted_uses": [],
+      "prohibited_uses": [],
+      "safe_residual_uses": [],
+      "overall_status": "UNKNOWN",
+      "recommended_action": null,
+      "permission_record_ids": [],
+      "rights_failure_ids": [],
+      "review": {
+        "assessed_by_agent": "multi-bundle-conversion-e1-finish-p0",
+        "human_reviewer": null,
+        "counsel_reviewer": null,
+        "reviewed_at": "2026-07-23T00:00:00Z",
+        "review_status": "agent_triage_only",
+        "next_review_at": null,
+        "change_triggers": [
+          "a formal source-rights assessment is run for this source"
+        ],
+        "notes": "Triage-only record (multi-bundle-conversion-e1-finish-p0). No rights assessment has been performed; access basis and copyright status are unknown pending future rights review."
+      },
+      "extensions": {},
+      "rights_record_id": "RR-WHO2007_BMI_5_19Y_REFERENCE",
+      "source_id": "WHO2007_BMI_5_19Y_REFERENCE"
     }
   ]
 }

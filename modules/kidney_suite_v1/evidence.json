@@ -75,9 +75,60 @@
             "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfkid001_00",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "CKID_U25_GFR_EQUATIONS_2021",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "CKID_RACE_CR_CYSC_GFR_2021",
@@ -151,9 +202,60 @@
             "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfkid001_01",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "CKID_RACE_CR_CYSC_GFR_2021",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "AAP_PEDIATRIC_HTN_GUIDELINE_2017",
@@ -245,9 +347,60 @@
             "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfkid001_02",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "KDIGO_CKD_GUIDELINE_2024",
@@ -317,9 +470,60 @@
             "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfkid001_03",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "KDIGO_CKD_GUIDELINE_2024",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
@@ -389,9 +593,60 @@
             "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfkid001_04",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
@@ -471,9 +726,60 @@
             "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfkid001_05",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
@@ -542,9 +848,60 @@
             "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfkid001_06",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
@@ -611,9 +968,60 @@
             "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfkid001_07",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
@@ -681,9 +1089,60 @@
             "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfkid001_08",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
@@ -754,9 +1213,60 @@
             "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfkid001_09",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
@@ -827,9 +1337,60 @@
             "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfkid001_10",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
@@ -909,9 +1470,60 @@
             "runId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfkid001_11",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/kidney_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     }
   ]
 }

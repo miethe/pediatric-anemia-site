@@ -11,7 +11,7 @@
     "validate": "node scripts/validate-kb.mjs && node scripts/evidence/build-evidence-pack.mjs --check && node scripts/validate-rights.mjs && node scripts/evidence/check-fixture-rights-leakage.mjs",
     "smoke": "node scripts/smoke-test.mjs",
     "mutation:run": "node scripts/mutation-run.mjs",
-    "check": "npm test && npm run validate && npm run coverage:rules && npm run build && npm run verify:d4 && npm run check:imports && npm run smoke:browser && npm run smoke",
+    "check": "npm run build && npm test && npm run validate && npm run coverage:rules && npm run verify:d4 && npm run check:imports && npm run smoke:browser && npm run smoke",
     "check:imports": "node scripts/check-app-imports.mjs",
     "verify:d4": "node scripts/verify-d4-built.mjs",
     "smoke:browser": "node scripts/smoke-browser-unit-rejection.mjs",

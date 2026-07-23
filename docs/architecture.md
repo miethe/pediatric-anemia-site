@@ -72,8 +72,8 @@ as converter-derived **only** once it has an actual `propose` run behind it and 
 ### The `REG-001`/`REG-004` HOLD-record convention
 
 `multi-bundle-conversion-e1` Phase 6 (row P6-T1) introduced a durable pattern for handling any
-upstream `rf` run whose subject matter is flagged for legal review rather than cleared as clinical
-evidence: a standalone **HOLD record** at `docs/legal/reg-001-reg-004-hold.md`
+upstream `rf` run whose subject matter is flagged for legal review and never treated as cleared
+clinical evidence: a standalone **HOLD record** at `docs/legal/reg-001-reg-004-hold.md`
 (`doc_type: legal_hold`). For `REG-001`/`REG-004` specifically — the program's two
 regulatory · **LEGAL** runs (as opposed to the 5 clinical runs that feed this platform's modules) —
 the HOLD record states plainly that an `rf verify`-passed bundle is a *structural/governance*
