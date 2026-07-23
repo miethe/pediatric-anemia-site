@@ -1,0 +1,136 @@
+# modules/kidney_suite_v1/authoring-decisions.yaml
+#
+# Task: P3-T3 (multi-bundle-conversion-e1-finish, Phase 3 -- Author 3x Non-Approving Decisions Files)
+# Per FR-14 / 02 section 4.12: the converter (tools/rf-bundle-to-kb-pack/) MUST NOT infer clinical
+# Boolean logic from prose. This file is the explicit, hand-authored, human-REVIEWABLE bridge between
+# rf claims and a possible future rule/candidate draft for the kidney_suite_v1 module -- one dec_*-ID
+# record per authored decision. Every decision below is status: drafted_pending_human_approval -- a
+# deliberately NON-approving scaffold status (multi-bundle-conversion-e1-finish R-2/OQ-1), distinct
+# from modules/cbc_suite_v1's approved_for_rule_draft decisions. No named clinical reviewer has
+# evaluated any of this; every review.* field below is pending. kidney_suite_v1 has no hand-authored
+# rule-body content in this pass (Phase 2's CANDIDATE_REGISTRY/RULE_PROPOSAL_REGISTRY both default
+# to empty for this module) -- this file is a decisions scaffold, not a converter input yet.
+#
+# Evidentiary source: the P2-T2-confirmed fixture at tests/fixtures/rf-kid-001/ (rf run
+# rf_run_20260717_rf_kid_001_pediatric_cds_evidence, bundle
+# bundle_20260718_intent_research_20260717_rf_kid_001, status verified). Every basis.rf_claim_ids
+# entry below is a real claim_id copied verbatim from tests/fixtures/rf-kid-001/claims/claim_ledger.yaml,
+# and every basis.exact_assertion_ids entry is a real assertionId copied verbatim from
+# modules/kidney_suite_v1/evidence-assertions.json. Every number named in basis.reasoning below is
+# copied from the cited claim's own text -- no invented threshold, no clinical judgment beyond what
+# the cited claim itself supports.
+
+schemaVersion: "1.0"
+moduleId: kidney_suite_v1
+rfProvenance:
+  rfRunId: rf_run_20260717_rf_kid_001_pediatric_cds_evidence
+  rfBundleId: bundle_20260718_intent_research_20260717_rf_kid_001
+  fixturePath: tests/fixtures/rf-kid-001/
+
+decisions:
+  # KDIGO's <90 (screening flag, >2y) and <60-for->3-months (CKD-staging/referral) eGFR cutoffs must
+  # coexist, not be reconciled into one number.
+  - decision_id: dec_kidney_egfr_dual_threshold_coexistence_001
+    module_id: kidney_suite_v1
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_009
+        - clm_006
+        - clm_inf01
+      exact_assertion_ids:
+        - evas_kid_clm_009
+        - evas_kid_clm_006
+      reasoning: clm_009 establishes that for children and adolescents over age 2, KDIGO 2024 advises
+        flagging an eGFRcr below 90 mL/min/1.73 m2 as "low" -- a higher cutoff than the adult
+        threshold and than the 2012 pediatric cutoff of 60. clm_006 establishes that depressed GFR is
+        characterized as less than 60 mL per minute per 1.73 m2 for more than three months and is
+        among the criteria prompting pediatric-nephrology referral and renal biopsy. clm_inf01 draws
+        the explicit inference that these are two distinct cutoffs that must coexist in the module,
+        not be reconciled: the <90 value is a screening flag (children over age 2), while the <60
+        value (sustained beyond three months) is the CKD-staging/referral threshold.
+    conflicts:
+      visible: true
+      representation: dual_threshold_coexistence
+    clinical_effect:
+      intended_output: interpretive_note
+      prohibited_effects:
+        - collapse_screening_flag_into_referral_threshold
+        - treat_90_and_60_cutoffs_as_interchangeable
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending
+
+  # CKiD U25 eGFR equation is validated only ages 1-25; infants under 1 year have no located
+  # source-supported eGFR threshold and must not have the equation extrapolated to them.
+  - decision_id: dec_kidney_infant_under_1y_egfr_scope_exit_001
+    module_id: kidney_suite_v1
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_012
+        - clm_inf07
+      exact_assertion_ids:
+        - evas_kid_clm_012
+      reasoning: clm_012 establishes that KDIGO 2024 directs GFR in children be estimated with
+        equations validated in comparable populations, naming the CKiD U25 2021 creatinine equation
+        -- explicitly scoped to ages 1-25 -- as a preferred example. clm_inf07 draws the
+        missingness-based inference that no located source in this bundle supplies a creatinine or
+        cystatin-C eGFR interpretation for infants under 1 year, since CKiD U25 is validated only for
+        ages 1-25; the module must therefore return "no validated eGFR threshold" for children under
+        1 year of age rather than extrapolate the equation downward.
+    conflicts:
+      visible: true
+      representation: abstain_below_validated_age_window
+    clinical_effect:
+      intended_output: scope_exit_alert
+      prohibited_effects:
+        - extrapolate_u25_equation_below_age_1
+        - interpret_egfr_under_1_year_of_age
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending
+
+  # Pediatric nephrotic-range proteinuria cutoff (spot ratio >2 mg/mg) is materially lower than the
+  # general/adult-literature spot-ratio cutoff (350 mg/mmol) -- a unit/population conflict, not a
+  # rounding artifact, that must be preserved rather than averaged.
+  - decision_id: dec_kidney_nephrotic_proteinuria_unit_conflict_001
+    module_id: kidney_suite_v1
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_004
+        - clm_015
+        - clm_inf02
+      exact_assertion_ids:
+        - evas_kid_clm_004
+        - evas_kid_clm_015
+      reasoning: clm_004 establishes that nephrotic-range (heavy) proteinuria is defined as more than
+        1,000 mg per m2 per day, or a urine protein-to-creatinine ratio of more than 2. clm_015
+        establishes that a spot urine protein-to-creatinine ratio above 350 mg/mmol confirms
+        nephrotic-range proteinuria. clm_inf02 draws the explicit inference that these represent a
+        genuine, unresolved unit/population conflict rather than a rounding artifact: pediatric
+        sources define the nephrotic threshold at a spot ratio above 2 mg/mg (approximately 226
+        mg/mmol after unit conversion), which is materially lower than the general/adult-literature
+        threshold of 350 mg/mmol (3.5 mg/mg) -- the module must preserve both cutoffs as distinct,
+        never average or silently prefer one.
+    conflicts:
+      visible: true
+      representation: preserve_unit_population_conflict_do_not_average
+    clinical_effect:
+      intended_output: interpretive_note
+      prohibited_effects:
+        - average_pediatric_and_adult_nephrotic_cutoffs
+        - silent_unit_conversion_without_conflict_flag
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending

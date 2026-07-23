@@ -1,8 +1,9 @@
 ---
-title: 'Implementation Plan: Multi-Bundle Conversion E1 — Finish the Converter Pass'
+title: "Implementation Plan: Multi-Bundle Conversion E1 \u2014 Finish the Converter\
+  \ Pass"
 schema_version: 2
 doc_type: implementation_plan
-status: draft
+status: completed
 created: '2026-07-23'
 updated: '2026-07-23'
 feature_slug: multi-bundle-conversion-e1-finish
@@ -10,54 +11,58 @@ feature_version: v1
 prd_ref: docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1-finish.md
 plan_ref: null
 scope: "Make tools/rf-bundle-to-kb-pack genuinely module-generic AND genuinely decision-driven,\
-  \ in that order (fail-closed emission gate before the module-identity hard-code is removed),\
-  \ so all 4 verified rf evidence bundles (rf-ev-001, rf-cbc-002, rf-kid-001, rf-gro-002) project\
-  \ into their target modules reproducibly through the real converter, green npm run check\
-  \ honestly via the existing EPR0-T4 unknown-triage pattern, and author 3 non-approving\
-  \ authoring-decisions.yaml files — producing zero new clinical rules and leaving\
-  \ cbc_suite_v1's existing converter output SHA-256 byte-identical throughout."
-effort_estimate: "41.0 pts (honest bottom-up total, amended post-planning-gate to close 2 BLOCKING findings; differs from the decisions-block 32-pt anchor — see \xA7Estimation Sanity Check)"
-architecture_summary: "schemas/authoring-decisions.schema.json gains a non-approving `drafted_pending_human_approval`\
-  \ status value; tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs becomes an allowlist-gated,\
-  \ decision-driven emission path (status === 'approved_for_rule_draft' permits, everything else\
-  \ refuses) with runtime clm_*/evas_* cross-resolution, replacing the hard-coded MODULE_ID identity\
-  \ check with a per-module drafting registry that defaults to empty; anemia/kidney_suite_v1/\
-  \ growth_suite_v1 each gain a non-approving authoring-decisions.yaml and can now reach propose's\
-  \ emission gate (refused by decision, not by identity); cbc_suite_v1's rules.json/rule-provenance.json\
-  \ stay the only converter-emitted rule content in the repo, SHA-256 byte-identical to a pre-change\
-  \ manifest; lib/semantic-diff.mjs gains an evidence-projection diff mode whose committed output\
-  \ documents (never resolves) any divergence between converter-produced and committed-bespoke\
-  \ evidence layers for the 3 non-cbc modules."
+  \ in that order (fail-closed emission gate before the module-identity hard-code\
+  \ is removed), so all 4 verified rf evidence bundles (rf-ev-001, rf-cbc-002, rf-kid-001,\
+  \ rf-gro-002) project into their target modules reproducibly through the real converter,\
+  \ green npm run check honestly via the existing EPR0-T4 unknown-triage pattern,\
+  \ and author 3 non-approving authoring-decisions.yaml files \u2014 producing zero\
+  \ new clinical rules and leaving cbc_suite_v1's existing converter output SHA-256\
+  \ byte-identical throughout."
+effort_estimate: "41.0 pts (honest bottom-up total, amended post-planning-gate to\
+  \ close 2 BLOCKING findings; differs from the decisions-block 32-pt anchor \u2014\
+  \ see \xA7Estimation Sanity Check)"
+architecture_summary: schemas/authoring-decisions.schema.json gains a non-approving
+  `drafted_pending_human_approval` status value; tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs
+  becomes an allowlist-gated, decision-driven emission path (status === 'approved_for_rule_draft'
+  permits, everything else refuses) with runtime clm_*/evas_* cross-resolution, replacing
+  the hard-coded MODULE_ID identity check with a per-module drafting registry that
+  defaults to empty; anemia/kidney_suite_v1/ growth_suite_v1 each gain a non-approving
+  authoring-decisions.yaml and can now reach propose's emission gate (refused by decision,
+  not by identity); cbc_suite_v1's rules.json/rule-provenance.json stay the only converter-emitted
+  rule content in the repo, SHA-256 byte-identical to a pre-change manifest; lib/semantic-diff.mjs
+  gains an evidence-projection diff mode whose committed output documents (never resolves)
+  any divergence between converter-produced and committed-bespoke evidence layers
+  for the 3 non-cbc modules.
 related_documents:
-  - docs/project_plans/SPIKEs/spike-009-converter-module-genericity.md
-  - docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1-finish.md
-  - docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1.md
-  - docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1.md
-  - .claude/findings/multi-bundle-conversion-e1-findings.md
-  - .claude/worknotes/multi-bundle-conversion-e1-finish/decisions-block.md
-  - docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
-  - docs/adr/0002-exact-passage-storage-licensing.md
-  - docs/adr/0004-clinical-approval-identity-adjudication.md
+- docs/project_plans/SPIKEs/spike-009-converter-module-genericity.md
+- docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1-finish.md
+- docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1.md
+- docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1.md
+- .claude/findings/multi-bundle-conversion-e1-findings.md
+- .claude/worknotes/multi-bundle-conversion-e1-finish/decisions-block.md
+- docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
+- docs/adr/0002-exact-passage-storage-licensing.md
+- docs/adr/0004-clinical-approval-identity-adjudication.md
 references:
   user_docs: []
   context: []
   specs:
-    - schemas/rule.schema.json
-    - schemas/candidate.schema.json
-    - schemas/authoring-decisions.schema.json
-    - schemas/evidence.schema.json
+  - schemas/rule.schema.json
+  - schemas/candidate.schema.json
+  - schemas/authoring-decisions.schema.json
+  - schemas/evidence.schema.json
   related_prds:
-    - docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1.md
+  - docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1.md
 spike_ref: docs/project_plans/SPIKEs/spike-009-converter-module-genericity.md
 adr_refs:
-  - docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
-  - docs/adr/0002-exact-passage-storage-licensing.md
-  - docs/adr/0004-clinical-approval-identity-adjudication.md
+- docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
+- docs/adr/0002-exact-passage-storage-licensing.md
+- docs/adr/0004-clinical-approval-identity-adjudication.md
 deferred_items_spec_refs:
-  - docs/project_plans/design-specs/df-e1-m1-rule-authoring-workflow.md
-  - docs/project_plans/design-specs/df-e1-m2-clinical-review-portal-intake.md
-  - docs/project_plans/design-specs/df-e1-m3-anemia-reconciliation.md
-  - docs/project_plans/design-specs/df-ext-m1-legal-signoff-routing.md
+- docs/project_plans/design-specs/df-e1-m1-rule-authoring-workflow.md
+- docs/project_plans/design-specs/df-e1-m2-clinical-review-portal-intake.md
+- docs/project_plans/design-specs/df-e1-m3-anemia-reconciliation.md
+- docs/project_plans/design-specs/df-ext-m1-legal-signoff-routing.md
 findings_doc_ref: null
 charter_ref: null
 changelog_ref: CHANGELOG.md
@@ -67,151 +72,156 @@ plan_structure: independent
 progress_init: auto
 owner: Nick Miethe
 contributors:
-  - Opus orchestrator
-  - implementation-planner
+- Opus orchestrator
+- implementation-planner
 priority: high
 risk_level: high
 category: infrastructure
 tags:
-  - implementation
-  - evidence-foundry
-  - research-foundry
-  - kb-pipeline
-  - converter
-  - multi-bundle
-  - fail-closed-gate
-  - infrastructure
+- implementation
+- evidence-foundry
+- research-foundry
+- kb-pipeline
+- converter
+- multi-bundle
+- fail-closed-gate
+- infrastructure
 milestone: null
 commit_refs: []
 pr_refs: []
 files_affected:
-  - schemas/authoring-decisions.schema.json
-  - tools/rf-bundle-to-kb-pack/lib/rule-candidate-drafts.mjs
-  - tools/rf-bundle-to-kb-pack/lib/rule-provenance-drafts.mjs
-  - tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs
-  - tools/rf-bundle-to-kb-pack/lib/errors.mjs
-  - tools/rf-bundle-to-kb-pack/lib/semantic-diff.mjs
-  - tools/rf-bundle-to-kb-pack/lib/batch.mjs
-  - tools/rf-bundle-to-kb-pack/lib/multi-bundle-report.mjs
-  - tools/rf-bundle-to-kb-pack/README.md
-  - scripts/evidence/govern-staged-rules.mjs
-  - scripts/evidence/lib/cbc-002-projection.mjs
-  - modules/anemia/authoring-decisions.yaml
-  - modules/kidney_suite_v1/authoring-decisions.yaml
-  - modules/growth_suite_v1/authoring-decisions.yaml
-  - modules/anemia/semantic-diff.json
-  - modules/kidney_suite_v1/semantic-diff.json
-  - modules/growth_suite_v1/semantic-diff.json
-  - modules/kidney_suite_v1/evidence.json
-  - modules/growth_suite_v1/evidence.json
-  - rights/rights-records.json
-  - rights/rights-ledger.json
-  - tests/fixtures/p4-t1-pre-merge-snapshot.json.txt
-  - tests/*.test.mjs
-  - package.json
-  - CLAUDE.md
-  - CHANGELOG.md
-  - docs/architecture.md
-  - docs/project_plans/design-specs/df-e1-m1-rule-authoring-workflow.md
-  - docs/project_plans/design-specs/df-e1-m2-clinical-review-portal-intake.md
-  - docs/project_plans/design-specs/df-e1-m3-anemia-reconciliation.md
-  - docs/project_plans/design-specs/df-ext-m1-legal-signoff-routing.md
-  - .claude/findings/multi-bundle-conversion-e1-finish-findings.md
-  - .claude/progress/multi-bundle-conversion-e1/*
-  - docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1-finish.md
-  - docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1-finish/*.md
+- schemas/authoring-decisions.schema.json
+- tools/rf-bundle-to-kb-pack/lib/rule-candidate-drafts.mjs
+- tools/rf-bundle-to-kb-pack/lib/rule-provenance-drafts.mjs
+- tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs
+- tools/rf-bundle-to-kb-pack/lib/errors.mjs
+- tools/rf-bundle-to-kb-pack/lib/semantic-diff.mjs
+- tools/rf-bundle-to-kb-pack/lib/batch.mjs
+- tools/rf-bundle-to-kb-pack/lib/multi-bundle-report.mjs
+- tools/rf-bundle-to-kb-pack/README.md
+- scripts/evidence/govern-staged-rules.mjs
+- scripts/evidence/lib/cbc-002-projection.mjs
+- modules/anemia/authoring-decisions.yaml
+- modules/kidney_suite_v1/authoring-decisions.yaml
+- modules/growth_suite_v1/authoring-decisions.yaml
+- modules/anemia/semantic-diff.json
+- modules/kidney_suite_v1/semantic-diff.json
+- modules/growth_suite_v1/semantic-diff.json
+- modules/kidney_suite_v1/evidence.json
+- modules/growth_suite_v1/evidence.json
+- rights/rights-records.json
+- rights/rights-ledger.json
+- tests/fixtures/p4-t1-pre-merge-snapshot.json.txt
+- tests/*.test.mjs
+- package.json
+- CLAUDE.md
+- CHANGELOG.md
+- docs/architecture.md
+- docs/project_plans/design-specs/df-e1-m1-rule-authoring-workflow.md
+- docs/project_plans/design-specs/df-e1-m2-clinical-review-portal-intake.md
+- docs/project_plans/design-specs/df-e1-m3-anemia-reconciliation.md
+- docs/project_plans/design-specs/df-ext-m1-legal-signoff-routing.md
+- .claude/findings/multi-bundle-conversion-e1-finish-findings.md
+- .claude/progress/multi-bundle-conversion-e1/*
+- docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1-finish.md
+- docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1-finish/*.md
 wave_plan:
   serialization_barriers:
-    - tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs
-    - CLAUDE.md
-    - package.json
+  - tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs
+  - CLAUDE.md
+  - package.json
   phases:
-    - id: P0
-      depends_on: []
-      isolation: shared
-      parallelizable: true
-      provider: mixed
-      model: claude-haiku-4-5
-      effort: low
-      files_affected:
-        - scripts/evidence/lib/cbc-002-projection.mjs
-        - modules/kidney_suite_v1/evidence.json
-        - modules/growth_suite_v1/evidence.json
-        - rights/rights-records.json
-        - rights/rights-ledger.json
-        - tests/fixtures/p4-t1-pre-merge-snapshot.json.txt
-        - docs/architecture.md
-        - package.json
-        - CLAUDE.md
-    - id: P1
-      depends_on: [P0]
-      isolation: shared
-      parallelizable: false
-      provider: claude
-      model: claude-sonnet-5
-      effort: high
-      files_affected:
-        - schemas/authoring-decisions.schema.json
-        - tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs
-        - tools/rf-bundle-to-kb-pack/lib/errors.mjs
-        - scripts/evidence/govern-staged-rules.mjs
-    - id: P2
-      depends_on: [P1]
-      isolation: shared
-      parallelizable: false
-      provider: claude
-      model: claude-sonnet-5
-      effort: high
-      files_affected:
-        - tools/rf-bundle-to-kb-pack/lib/rule-candidate-drafts.mjs
-        - tools/rf-bundle-to-kb-pack/lib/rule-provenance-drafts.mjs
-        - tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs
-    - id: P3
-      depends_on: [P2]
-      isolation: shared
-      parallelizable: false
-      provider: claude
-      model: claude-sonnet-5
-      effort: high
-      files_affected:
-        - modules/anemia/authoring-decisions.yaml
-        - modules/kidney_suite_v1/authoring-decisions.yaml
-        - modules/growth_suite_v1/authoring-decisions.yaml
-    - id: P4
-      depends_on: [P3]
-      isolation: shared
-      provider: mixed
-      model: gpt-5.6-terra
-      effort: medium
-      files_affected:
-        - tools/rf-bundle-to-kb-pack/lib/semantic-diff.mjs
-        - tools/rf-bundle-to-kb-pack/lib/multi-bundle-report.mjs
-        - tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs
-        - modules/anemia/semantic-diff.json
-        - modules/kidney_suite_v1/semantic-diff.json
-        - modules/growth_suite_v1/semantic-diff.json
-    - id: P5
-      depends_on: [P4]
-      isolation: shared
-      provider: mixed
-      model: claude-haiku-4-5
-      effort: low
-      files_affected:
-        - docs/architecture.md
-        - tools/rf-bundle-to-kb-pack/README.md
-        - CHANGELOG.md
-        - docs/project_plans/design-specs/df-e1-m1-rule-authoring-workflow.md
-        - docs/project_plans/design-specs/df-e1-m2-clinical-review-portal-intake.md
-        - docs/project_plans/design-specs/df-e1-m3-anemia-reconciliation.md
-        - docs/project_plans/design-specs/df-ext-m1-legal-signoff-routing.md
-        - .claude/findings/multi-bundle-conversion-e1-finish-findings.md
+  - id: P0
+    depends_on: []
+    isolation: shared
+    parallelizable: true
+    provider: mixed
+    model: claude-haiku-4-5
+    effort: low
+    files_affected:
+    - scripts/evidence/lib/cbc-002-projection.mjs
+    - modules/kidney_suite_v1/evidence.json
+    - modules/growth_suite_v1/evidence.json
+    - rights/rights-records.json
+    - rights/rights-ledger.json
+    - tests/fixtures/p4-t1-pre-merge-snapshot.json.txt
+    - docs/architecture.md
+    - package.json
+    - CLAUDE.md
+  - id: P1
+    depends_on:
+    - P0
+    isolation: shared
+    parallelizable: false
+    provider: claude
+    model: claude-sonnet-5
+    effort: high
+    files_affected:
+    - schemas/authoring-decisions.schema.json
+    - tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs
+    - tools/rf-bundle-to-kb-pack/lib/errors.mjs
+    - scripts/evidence/govern-staged-rules.mjs
+  - id: P2
+    depends_on:
+    - P1
+    isolation: shared
+    parallelizable: false
+    provider: claude
+    model: claude-sonnet-5
+    effort: high
+    files_affected:
+    - tools/rf-bundle-to-kb-pack/lib/rule-candidate-drafts.mjs
+    - tools/rf-bundle-to-kb-pack/lib/rule-provenance-drafts.mjs
+    - tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs
+  - id: P3
+    depends_on:
+    - P2
+    isolation: shared
+    parallelizable: false
+    provider: claude
+    model: claude-sonnet-5
+    effort: high
+    files_affected:
+    - modules/anemia/authoring-decisions.yaml
+    - modules/kidney_suite_v1/authoring-decisions.yaml
+    - modules/growth_suite_v1/authoring-decisions.yaml
+  - id: P4
+    depends_on:
+    - P3
+    isolation: shared
+    provider: mixed
+    model: gpt-5.6-terra
+    effort: medium
+    files_affected:
+    - tools/rf-bundle-to-kb-pack/lib/semantic-diff.mjs
+    - tools/rf-bundle-to-kb-pack/lib/multi-bundle-report.mjs
+    - tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs
+    - modules/anemia/semantic-diff.json
+    - modules/kidney_suite_v1/semantic-diff.json
+    - modules/growth_suite_v1/semantic-diff.json
+  - id: P5
+    depends_on:
+    - P4
+    isolation: shared
+    provider: mixed
+    model: claude-haiku-4-5
+    effort: low
+    files_affected:
+    - docs/architecture.md
+    - tools/rf-bundle-to-kb-pack/README.md
+    - CHANGELOG.md
+    - docs/project_plans/design-specs/df-e1-m1-rule-authoring-workflow.md
+    - docs/project_plans/design-specs/df-e1-m2-clinical-review-portal-intake.md
+    - docs/project_plans/design-specs/df-e1-m3-anemia-reconciliation.md
+    - docs/project_plans/design-specs/df-ext-m1-legal-signoff-routing.md
+    - .claude/findings/multi-bundle-conversion-e1-finish-findings.md
   waves:
-    - [P0]
-    - [P1]
-    - [P2]
-    - [P3]
-    - [P4]
-    - [P5]
+  - - P0
+  - - P1
+  - - P2
+  - - P3
+  - - P4
+  - - P5
 ---
 
 # Implementation Plan: Multi-Bundle Conversion E1 — Finish the Converter Pass

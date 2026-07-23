@@ -24,19 +24,18 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readdir, readFile, rm, stat } from 'node:fs/promises';
+import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
   BATCH_PAIRS,
-  BatchBundleFailedError,
+  DEFAULT_OUT_BASE_DIR,
   run as runBatchVerb,
   runBatch,
 } from '../tools/rf-bundle-to-kb-pack/lib/batch.mjs';
-import { DecisionsNotFoundError } from '../tools/rf-bundle-to-kb-pack/lib/loader.mjs';
-import { EXIT_OK, EXIT_USAGE } from '../tools/rf-bundle-to-kb-pack/lib/errors.mjs';
+import { EXIT_OK } from '../tools/rf-bundle-to-kb-pack/lib/errors.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const RULE_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'rule.schema.json');
@@ -190,57 +189,60 @@ test('P2-T3: running the same pair through runBatch twice into the SAME outDir i
 // 3. Fail-closed halt-on-first-failure + per-pair output isolation
 // =================================================================================================
 
-test('P2-T3: runBatch halts at the first failing pair, names it, and never attempts later pairs', async () => {
-  const outBase = await makeScratchOutBaseDir('halt');
+// multi-bundle-conversion-e1-finish Phase 4 (P4-T1, MBF-5 CLOSED): the Step 0 fix gates
+// `computeTestCorpusHash` on the emission gate's own `permitted` value (exactly parallel to
+// `writeStagedRulesAndProvenance`'s existing conditional call), so a module with no hand-authored
+// rule content (all 3 of `anemia`/`kidney_suite_v1`/`growth_suite_v1`, today) never calls
+// `computeTestCorpusHash` at all and can no longer halt over a missing test corpus it was never
+// going to need. All 4 named pairs now complete `inspect -> verify -> propose` end to end -- this
+// test now proves the POSITIVE property (all 4 complete) rather than the halt this gap used to
+// force; the halt-on-first-failure contract itself (naming the failing pair, never attempting
+// later ones) is proven separately, against a genuinely seeded failure, by
+// `tests/ef-batch-runner.test.mjs`.
+test('P4-T1: runBatch completes all 4 named pairs (cbc_suite_v1: 4 rules emitted; anemia/kidney_suite_v1/growth_suite_v1: 0 rules, named governance refusal each)', async () => {
+  const outBase = await makeScratchOutBaseDir('four-of-four');
   try {
-    await assert.rejects(
-      runBatch({
-        pairs: [CBC_002_PAIR, EV_001_PAIR, KID_001_PAIR],
-        ruleSchemaPath: RULE_SCHEMA_PATH,
-        outBaseDir: outBase,
-      }),
-      (err) => {
-        assert.ok(err instanceof BatchBundleFailedError);
-        assert.equal(err.pairIndex, 1);
-        assert.equal(err.fixture, 'tests/fixtures/rf-ev-001');
-        assert.equal(err.module, 'modules/anemia');
-        assert.equal(err.moduleId, 'anemia');
-        assert.equal(err.stage, 'inspect');
-        assert.ok(err.cause instanceof DecisionsNotFoundError);
-        assert.equal(err.exitCode, EXIT_USAGE);
-        return true;
-      },
+    const { result: results } = await withCapturedStdout(() =>
+      runBatch({ pairs: BATCH_PAIRS, ruleSchemaPath: RULE_SCHEMA_PATH, outBaseDir: outBase }),
     );
-
-    // Pair 0 (cbc_suite_v1) succeeded before the halt -- its own output is present and untouched.
-    const cbcOutDir = path.join(outBase, 'cbc_suite_v1', '0.1.0-proposal');
-    const cbcFiles = await listFilesRelative(cbcOutDir);
-    assert.ok(cbcFiles.includes('conversion-report.json'));
-
-    // Pair 1 (anemia) failed at inspect, before this batch's own mkdir(outDir) ever ran -- zero
-    // output, not even an empty directory.
-    const anemiaOutDir = path.join(outBase, 'anemia', '0.1.0-proposal');
-    await assert.rejects(stat(anemiaOutDir), { code: 'ENOENT' });
-
-    // Pair 2 (kidney_suite_v1) was never attempted at all.
-    const kidneyOutDir = path.join(outBase, 'kidney_suite_v1', '0.1.0-proposal');
-    await assert.rejects(stat(kidneyOutDir), { code: 'ENOENT' });
-  } finally {
-    await rm(outBase, { recursive: true, force: true });
-  }
-});
-
-test('P2-T3: BatchBundleFailedError forwards the underlying failure exit code verbatim', async () => {
-  const outBase = await makeScratchOutBaseDir('exitcode');
-  try {
-    await assert.rejects(
-      runBatch({ pairs: [GRO_002_PAIR], ruleSchemaPath: RULE_SCHEMA_PATH, outBaseDir: outBase }),
-      (err) => {
-        assert.ok(err instanceof BatchBundleFailedError);
-        assert.equal(err.exitCode, EXIT_USAGE); // DecisionsNotFoundError is a UsageError (exit 1)
-        return true;
-      },
+    assert.equal(results.length, 4, 'all 4 named pairs must succeed');
+    assert.deepEqual(
+      results.map((r) => r.moduleId),
+      ['anemia', 'cbc_suite_v1', 'kidney_suite_v1', 'growth_suite_v1'],
     );
+    for (const result of results) {
+      assert.equal(result.status, 'succeeded');
+    }
+
+    // Every pair's own conversion-report.json exists.
+    for (const moduleId of ['anemia', 'cbc_suite_v1', 'kidney_suite_v1', 'growth_suite_v1']) {
+      const outDir = path.join(outBase, moduleId, '0.1.0-proposal');
+      const files = await listFilesRelative(outDir);
+      assert.ok(files.includes('conversion-report.json'), `${moduleId} must have a conversion-report.json`);
+
+      const conversionReport = JSON.parse(await readFile(path.join(outDir, 'conversion-report.json'), 'utf8'));
+      if (moduleId === 'cbc_suite_v1') {
+        assert.ok(files.includes('rules.json'));
+        const rulesJson = JSON.parse(await readFile(path.join(outDir, 'rules.json'), 'utf8'));
+        assert.equal(rulesJson.length, 4, 'cbc_suite_v1 must emit exactly 4 rules (unchanged)');
+        assert.equal(conversionReport.ruleEmission.permitted, true);
+      } else {
+        assert.ok(!files.includes('rules.json'), `${moduleId} must never write rules.json`);
+        assert.ok(!files.includes('rule-provenance.json'), `${moduleId} must never write rule-provenance.json`);
+        assert.equal(conversionReport.ruleEmission.permitted, false, `${moduleId} must be refused at the emission gate`);
+        assert.ok(
+          typeof conversionReport.ruleEmission.refusalReason === 'string'
+            && conversionReport.ruleEmission.refusalReason.length > 0,
+          `${moduleId} must carry a named, non-empty governance refusal reason`,
+        );
+
+        // Step 0 fix (MBF-5): testCorpusHash is honestly null for a refused-emission module.
+        const releaseManifest = JSON.parse(
+          await readFile(path.join(outDir, 'release-manifest.unsigned.json'), 'utf8'),
+        );
+        assert.equal(releaseManifest.testCorpusHash, null);
+      }
+    }
   } finally {
     await rm(outBase, { recursive: true, force: true });
   }
@@ -250,17 +252,32 @@ test('P2-T3: BatchBundleFailedError forwards the underlying failure exit code ve
 // 4. CLI `batch` verb -- default invocation against the real, committed fixtures
 // =================================================================================================
 
-test('P2-T3: CLI batch verb runs BATCH_PAIRS in order and halts at the documented rf-ev-001 gap (Addendum A1 / DF-E1-M1)', async () => {
+// multi-bundle-conversion-e1-finish Phase 4 (P4-T1, MBF-5 CLOSED): the CLI's default, zero-override
+// `BATCH_PAIRS` run now completes ALL 4 named pairs end to end -- `node cli.mjs batch` exits 0.
+//
+// Deliberately does NOT capture this call's stdout (unlike the other CLI-verb tests below, which
+// use a scratch `--out-base` and so print far less): a real, zero-override, all-4-pair run prints
+// 12+ sub-verb JSON summaries (inspect/verify/propose x 4 pairs) plus the batch summary -- a large
+// volume this file's own `withCapturedStdout` helper is not designed to buffer/re-parse safely.
+// This test instead verifies success via the real, on-disk `build/kb-pack/<moduleId>/0.1.0-proposal/
+// conversion-report.json` each pair's own `propose` stage writes -- the same durable evidence
+// `tests/ef-converter-multi-bundle-report.test.mjs`'s own aggregate-report tests already read.
+test('P4-T1: CLI batch verb runs all 4 BATCH_PAIRS to completion and exits EXIT_OK (MBF-5 closed)', async () => {
   // No overrides -- exercises the exact default path `node cli.mjs batch` takes, against the real
   // committed fixtures/modules, writing into the real (gitignored) build/kb-pack/ root.
-  await assert.rejects(runBatchVerb({}), (err) => {
-    assert.ok(err instanceof BatchBundleFailedError);
-    assert.equal(err.pairIndex, 0);
-    assert.equal(err.fixture, 'tests/fixtures/rf-ev-001');
-    assert.equal(err.module, 'modules/anemia');
-    assert.ok(err.cause instanceof DecisionsNotFoundError);
-    return true;
-  });
+  const exitCode = await runBatchVerb({});
+  assert.equal(exitCode, EXIT_OK);
+
+  for (const moduleId of ['anemia', 'cbc_suite_v1', 'kidney_suite_v1', 'growth_suite_v1']) {
+    const conversionReportPath = path.join(DEFAULT_OUT_BASE_DIR, moduleId, '0.1.0-proposal', 'conversion-report.json');
+    const conversionReport = JSON.parse(await readFile(conversionReportPath, 'utf8'));
+    assert.equal(conversionReport.moduleId, moduleId);
+    if (moduleId === 'cbc_suite_v1') {
+      assert.equal(conversionReport.ruleEmission.permitted, true, 'cbc_suite_v1 must emit rules');
+    } else {
+      assert.equal(conversionReport.ruleEmission.permitted, false, `${moduleId} must be refused at the emission gate`);
+    }
+  }
 });
 
 test('P2-T3: CLI batch verb prints a JSON summary and returns EXIT_OK when every pair succeeds', async () => {

@@ -955,6 +955,31 @@
         "citationRequired": true,
         "quoteLimitNotes": "Short excerpts only."
       },
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "supports": [
         "Mean mitomycin C (MMC)-induced chromosome breaks per cell were far higher in FA patients (6.67 ±3.92) than in non-FA patients (0.23 ±0.18). (clm_025).",
         "Of 100 children with suspected FA, 13 (13%) had a true FA cellular phenotype, 27 had possible mosaic FA, and the remainder were classified non-FA. (clm_026).",
@@ -979,6 +1004,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "ADVCLINEXPMED2024_FA_CYTOGENETICS",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1039,6 +1081,31 @@
         "citationRequired": true,
         "quoteLimitNotes": "Short excerpts only."
       },
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "supports": [
         "The ASTCT panel preferentially recommends bone marrow (not peripheral blood) as the graft source for allogeneic HCT in severe aplastic anemia. (clm_049).",
         "The panel recommends rabbit ATG over horse ATG as part of the HCT conditioning regimen for severe aplastic anemia. (clm_050).",
@@ -1064,6 +1131,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "ASTCT2024_SAA_HCT_GUIDELINE",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1117,6 +1201,31 @@
         "citationRequired": true,
         "quoteLimitNotes": "Short excerpts only."
       },
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "supports": [
         "Acquired aplastic anemia incidence is 2-3 per million population per year in the Western world and about three times higher in East Asia. (clm_037).",
         "Acquired aplastic anemia is defined as pancytopenia with a hypoplastic bone marrow, framing the diagnostic construct for the guideline. (clm_038).",
@@ -1141,6 +1250,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "BCMD2024_AIEOP_AA_GUIDELINE",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1203,6 +1329,31 @@
         "citationRequired": true,
         "quoteLimitNotes": "Short excerpts only."
       },
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "supports": [
         "AA diagnosis requires pancytopenia with hypocellular marrow plus at least two of three peripheral-count thresholds (Hb, platelets, neutrophils). (clm_061).",
         "Severe AA (Camitta) is defined by marrow cellularity <25% (or 25–50% with <30% residual haematopoiesis) plus at least two of neutrophils <0.5, platelets <20, reticulocytes <60 ×10⁹/L. (clm_062).",
@@ -1229,6 +1380,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "BJHAEM2024_BSH_AA_GUIDELINE",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1281,6 +1449,31 @@
         "citationRequired": true,
         "quoteLimitNotes": "Short excerpts only."
       },
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "supports": [
         "The cohort comprised 231 individuals with dyskeratosis congenita/telomere biology disorders, 144 male, median age at diagnosis 19.4 years (range 0-71.6). (clm_030).",
         "At last follow-up 42% of patients were deceased, with a median overall survival of 52.8 years (95% CI 45.5-57.6). (clm_031).",
@@ -1307,6 +1500,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "BLOOD2022_TBD_OUTCOMES",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1367,6 +1577,31 @@
         "citationRequired": true,
         "quoteLimitNotes": "Short excerpts only."
       },
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "supports": [
         "Severe aplastic anemia (SAA) is defined by marrow cellularity <25% (or 25%-50% with <30% residual hematopoietic cells) plus at least 2 of: neutrophils <0.5 x10^9/L, platelets <20 x10^9/L, reticulocytes <60 x10^9/L. (clm_055).",
         "Very severe aplastic anemia fulfills the same criteria as SAA except that neutrophils are <0.2 x10^9/L. (clm_056).",
@@ -1392,6 +1627,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "BLOODADV2024_SAA_DELPHI_CONSENSUS",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1455,6 +1707,31 @@
         "citationRequired": true,
         "quoteLimitNotes": "Short excerpts only."
       },
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "supports": [
         "In this observed RCC cohort, 84% (84/100) presented with a hypocellular diagnostic bone marrow, consistent with the typical RCC presentation. (clm_001).",
         "EWOG-MDS assigned early HSCT (scope-exit from observation) for RCC patients with transfusion dependency, ANC <1×10^9/L, monosomy 7, del(7q), or >=2 chromosomal aberrations; others were observed. (clm_002).",
@@ -1482,6 +1759,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1540,6 +1834,31 @@
         "citationRequired": true,
         "quoteLimitNotes": "Short excerpts only."
       },
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "supports": [
         "Study enrollment defined neutropenia for suspected pediatric BMF as an absolute neutrophil count below 1.5 x10^9/L. (clm_068).",
         "Study enrollment defined thrombocytopenia for suspected pediatric BMF as a platelet count below 150 x10^9/L. (clm_069).",
@@ -1567,6 +1886,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1633,6 +1969,31 @@
         "citationRequired": true,
         "quoteLimitNotes": "Short excerpts only."
       },
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "supports": [
         "The IAP consensus states a bone marrow biopsy is mandatory to establish a diagnosis of acquired aplastic anemia in children. (clm_013).",
         "Before diagnosing acquired AA, the consensus requires excluding inherited bone marrow failure syndromes, connective tissue disorders, viral infections, PNH, and drug/heavy-metal marrow suppression in all cases. (clm_014).",
@@ -1657,6 +2018,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "INDIANPEDIATR2022_IAP_AA_CONSENSUS",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1707,6 +2085,31 @@
         "citationRequired": true,
         "quoteLimitNotes": "Short excerpts only."
       },
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "supports": [
         "The consensus sets the acceptable haemoglobin target for DBA syndrome patients of all ages at >=9-10 g/dL, individualized to keep the patient asymptomatic. (clm_042).",
         "Erythrocyte adenosine deaminase (eADA) activity helps differentiate DBA syndrome from other anaemias/IBMFS with 84% sensitivity and 95% specificity, but must be measured pre-transfusion and a normal value does not rule out DBA. (clm_043).",
@@ -1733,6 +2136,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "LANCETHAEM2024_DBA_CONSENSUS",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1793,6 +2213,31 @@
         "citationRequired": true,
         "quoteLimitNotes": "Short excerpts only."
       },
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "supports": [
         "In 417 samples, the targeted-proteomic SBDS screen had 85.7% sensitivity / 93.4% specificity and the ADH5 screen 100.0% sensitivity / 97.5% specificity for SDS and ADH5/ALDH2 deficiency respectively. (clm_018).",
         "The SBDS and ADH5 protein-expression cutoffs were defined as the cohort mean minus two standard deviations, computed on the 417 samples excluding confirmed SDS and ADH5/ALDH2 cases. (clm_019).",
@@ -1819,6 +2264,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "LEUKEMIA2024_IBMFS_PROTEOGENOMICS",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,
@@ -1883,6 +2345,31 @@
         "citationRequired": true,
         "quoteLimitNotes": "Short excerpts only."
       },
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      },
       "supports": [
         "Severe aplastic anemia (SAA) is a rare, potentially fatal hematologic disorder for which overall treatment outcomes are excellent, though management approaches vary and differ between adult and pediatric patients. (clm_009).",
         "Certain aspects of pediatric SAA treatment remain under active investigation in clinical trials, so recommendations are not fully settled. (clm_010).",
@@ -1906,6 +2393,23 @@
           },
           "exactPassage": "",
           "passageFidelity": "paraphrase",
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "PBC2024_PEDIATRIC_SAA_RECOMMENDATIONS",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [],
           "reviewFlags": [],
           "reviewFindingIds": [],
           "evidenceGrade": null,

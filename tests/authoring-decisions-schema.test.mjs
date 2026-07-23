@@ -78,10 +78,50 @@ test('all 4 committed modules/cbc_suite_v1/authoring-decisions.yaml records vali
   }
 });
 
-test('validateModule() treats a missing authoring-decisions.yaml as legal (existence-gated) — modules/anemia has none', async () => {
+// DF-E1-M1 gap closure (multi-bundle-conversion-e1-finish Phase 3, P3-T2): modules/anemia/ now HAS
+// an authoring-decisions.yaml (3 drafted_pending_human_approval records) — the "modules/anemia has
+// none" premise this test's name and body relied on is no longer true, so the existence-gate's
+// "absence is legal" property is proved below on a throwaway synthetic module instead, and anemia's
+// own file gets its own positive-path assertion (still legal, still zero-error, now non-empty).
+test('validateModule() validates the real, newly-authored modules/anemia/authoring-decisions.yaml cleanly (3 drafted_pending_human_approval records)', async () => {
   const result = await validateModule('anemia', REPO_ROOT);
   assert.deepEqual(result.errors, [], `validateModule('anemia', ...) should report zero errors: ${JSON.stringify(result.errors)}`);
-  assert.equal(result.authoringDecisionsCount, 0, 'modules/anemia/ predates authoring-decisions.yaml; its absence is not an error');
+  assert.equal(result.authoringDecisionsCount, 3, 'modules/anemia/authoring-decisions.yaml (P3-T2) carries 3 decision records');
+});
+
+test('validateModule() treats a missing authoring-decisions.yaml as legal (existence-gated) — a synthetic module with no such file', async () => {
+  // modules/anemia was the existence-gate's only real no-decisions-file example before P3-T2; now
+  // every real module has one, so the "absence is legal" property is proved on a throwaway temp
+  // module tree (same shape validateModule expects) that simply never writes the file.
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'ef-no-authoring-decisions-'));
+  const moduleId = 'synthetic_no_authoring_decisions';
+  try {
+    await mkdir(path.join(tempRoot, 'schemas'), { recursive: true });
+    for (const schemaFile of [
+      'rule.schema.json', 'candidate.schema.json', 'evidence.schema.json', 'module-manifest.schema.json',
+      'evidence-assertions.schema.json', 'authoring-decisions.schema.json',
+    ]) {
+      await cp(path.join(REPO_ROOT, 'schemas', schemaFile), path.join(tempRoot, 'schemas', schemaFile));
+    }
+
+    const moduleDir = path.join(tempRoot, 'modules', moduleId);
+    await mkdir(moduleDir, { recursive: true });
+    await writeFile(path.join(moduleDir, 'rules.json'), JSON.stringify([], null, 2));
+    await writeFile(path.join(moduleDir, 'candidates.json'), JSON.stringify({}, null, 2));
+    await writeFile(
+      path.join(moduleDir, 'evidence.json'),
+      JSON.stringify({ knowledgeBaseVersion: '0.0.0-test', reviewedThrough: '2026-07-21', sources: [] }, null, 2),
+    );
+    const manifest = await loadJson(path.join(REPO_ROOT, 'modules', 'cbc_suite_v1', 'module.json'));
+    await writeFile(path.join(moduleDir, 'module.json'), JSON.stringify({ ...manifest, id: moduleId }, null, 2));
+    // Deliberately no authoring-decisions.yaml written — this is the case under test.
+
+    const result = await validateModule(moduleId, tempRoot);
+    assert.deepEqual(result.errors, [], `validateModule('${moduleId}', ...) should report zero errors: ${JSON.stringify(result.errors)}`);
+    assert.equal(result.authoringDecisionsCount, 0, 'a module with no authoring-decisions.yaml at all: absence is not an error');
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
 });
 
 test('validateModule() validates the real modules/cbc_suite_v1/authoring-decisions.yaml cleanly and reports its count', async () => {
@@ -241,4 +281,53 @@ test('validateAuthoringDecisions() flags a decision module_id that disagrees wit
     errors.some((e) => e.includes('does not match the document\'s top-level moduleId')),
     `expected a module_id disagreement error, got: ${JSON.stringify(errors)}`,
   );
+});
+
+// =================================================================================================
+// P1-T1 (multi-bundle-conversion-e1-finish, FR-F6, R-2/OQ-1): `drafted_pending_human_approval` is
+// added to decision.status's closed enum as a visibly-non-approving scaffold value. This section
+// proves (a) all 4 enum members validate individually, (b) a 5th, invented value does NOT, and (c)
+// the real, committed modules/cbc_suite_v1/authoring-decisions.yaml (still all 4 records
+// `approved_for_rule_draft`) validates byte-unchanged against the widened schema.
+// =================================================================================================
+
+const STATUS_ENUM_MEMBERS = [
+  'approved_for_rule_draft',
+  'rejected',
+  'withdrawn',
+  'drafted_pending_human_approval',
+];
+
+test('authoring-decisions.schema.json: all 4 decision.status enum members validate individually', async () => {
+  const schema = await loadJson(SCHEMA_PATH);
+  for (const status of STATUS_ENUM_MEMBERS) {
+    const doc = makeValidDoc([makeValidDecision({ status })]);
+    assert.deepEqual(
+      validate(schema, doc),
+      [],
+      `status=${status} should validate with zero schema errors`,
+    );
+  }
+});
+
+test('authoring-decisions.schema.json: a 5th, invented decision.status value does NOT validate', async () => {
+  const schema = await loadJson(SCHEMA_PATH);
+  const doc = makeValidDoc([makeValidDecision({ status: 'invented_never_before_seen_status' })]);
+  const errors = validate(schema, doc);
+  assert.ok(errors.length > 0, 'an invented status value must fail schema validation');
+  assert.ok(
+    errors.some((e) => e.path === '$.decisions[0].status'),
+    `expected a $.decisions[0].status violation, got: ${JSON.stringify(errors)}`,
+  );
+});
+
+test('the widened schema still validates modules/cbc_suite_v1/authoring-decisions.yaml byte-unchanged (all 4 records approved_for_rule_draft)', async () => {
+  const schema = await loadJson(SCHEMA_PATH);
+  const raw = await readFile(path.join(REPO_ROOT, 'modules', 'cbc_suite_v1', 'authoring-decisions.yaml'), 'utf8');
+  const doc = parseYamlDocument(raw);
+  assert.equal(doc.decisions.length, 4);
+  assert.deepEqual(validate(schema, doc), []);
+  for (const decision of doc.decisions) {
+    assert.equal(decision.status, 'approved_for_rule_draft');
+  }
 });

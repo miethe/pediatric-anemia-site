@@ -14,13 +14,22 @@
 //      `sourcePassageId` genuinely resolve against the real, committed
 //      modules/cbc_suite_v1/evidence.json (reusing validateCandidates(), the same function
 //      `npm run validate` calls per module) — not merely schema-shape-legal in isolation.
-//   5. writeDraftPack() materializes both files at the `02 §4.4` staged-pack path
-//      (build/kb-pack/cbc_suite_v1/0.1.0-proposal/, gitignored per P1-T7) and the written bytes
-//      round-trip byte-for-byte with the in-memory constants.
+//   5. writeDraftPack() materializes both files at the `02 §4.4` staged-pack path and the written
+//      bytes round-trip byte-for-byte with the in-memory constants.
+//
+// multi-bundle-conversion-e1-finish, Phase 2, P2-T5 (FR-F17): this file uses an mkdtemp scratch
+// directory exclusively for its writeDraftPack() call, never the real, shared
+// `build/kb-pack/cbc_suite_v1/0.1.0-proposal` directory — that shared path is also written into by
+// tests/ef-converter-rule-provenance-projection.test.mjs's own writeStagedRulesAndProvenance()
+// test, and the two racing in the same `npm test` process (one `rm()`s the dir first) was a real
+// test-isolation hazard now closed the same way tests/ef-multi-bundle-determinism.test.mjs and
+// this same file's own writeStagedRulesAndProvenance() determinism test already prove works for
+// this precise converter surface.
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -40,9 +49,6 @@ const AUTHORING_DECISIONS_PATH = path.join(
 const EVIDENCE_PATH = path.join(REPO_ROOT, 'modules', 'cbc_suite_v1', 'evidence.json');
 const CANDIDATE_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'candidate.schema.json');
 const EVIDENCE_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'evidence.schema.json');
-const STAGED_PACK_DIR = path.join(
-  REPO_ROOT, 'build', 'kb-pack', 'cbc_suite_v1', '0.1.0-proposal',
-);
 
 async function loadJson(p) {
   return JSON.parse(await readFile(p, 'utf8'));
@@ -143,27 +149,33 @@ test('the candidate\'s evidence[] and sourcePassageId genuinely resolve against 
   assert.deepEqual(candidateErrors, [], `candidate must resolve cleanly against real evidence.json: ${JSON.stringify(candidateErrors)}`);
 });
 
-test('writeDraftPack() materializes rule-proposals.json + candidates.json at the 02 §4.4 staged-pack path, byte-identical to the in-memory constants', async () => {
-  await rm(STAGED_PACK_DIR, { recursive: true, force: true });
+test('writeDraftPack() materializes rule-proposals.json + candidates.json at an isolated scratch path, byte-identical to the in-memory constants', async () => {
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), 'ef-rule-candidate-drafting-'));
+  try {
+    const { ruleProposalsPath, candidatesPath } = await writeDraftPack({
+      outDir: tempDir,
+      moduleId: 'cbc_suite_v1',
+    });
+    assert.equal(ruleProposalsPath, path.join(tempDir, 'rule-proposals.json'));
+    assert.equal(candidatesPath, path.join(tempDir, 'candidates.json'));
 
-  const { ruleProposalsPath, candidatesPath } = await writeDraftPack();
-  assert.equal(ruleProposalsPath, path.join(STAGED_PACK_DIR, 'rule-proposals.json'));
-  assert.equal(candidatesPath, path.join(STAGED_PACK_DIR, 'candidates.json'));
+    const writtenProposalsDoc = await loadJson(ruleProposalsPath);
+    assert.equal(writtenProposalsDoc.moduleId, 'cbc_suite_v1');
+    assert.deepEqual(writtenProposalsDoc.proposals, RULE_PROPOSALS);
 
-  const writtenProposalsDoc = await loadJson(ruleProposalsPath);
-  assert.equal(writtenProposalsDoc.moduleId, 'cbc_suite_v1');
-  assert.deepEqual(writtenProposalsDoc.proposals, RULE_PROPOSALS);
+    const writtenCandidates = await loadJson(candidatesPath);
+    assert.deepEqual(writtenCandidates, CANDIDATES);
 
-  const writtenCandidates = await loadJson(candidatesPath);
-  assert.deepEqual(writtenCandidates, CANDIDATES);
-
-  // Determinism smoke check (full double-run proof is P5-T5's job): re-running writeDraftPack()
-  // against the same in-memory constants produces byte-identical files.
-  const beforeProposalsBytes = await readFile(ruleProposalsPath, 'utf8');
-  const beforeCandidatesBytes = await readFile(candidatesPath, 'utf8');
-  await writeDraftPack();
-  const afterProposalsBytes = await readFile(ruleProposalsPath, 'utf8');
-  const afterCandidatesBytes = await readFile(candidatesPath, 'utf8');
-  assert.equal(afterProposalsBytes, beforeProposalsBytes);
-  assert.equal(afterCandidatesBytes, beforeCandidatesBytes);
+    // Determinism smoke check (full double-run proof is P5-T5's job): re-running writeDraftPack()
+    // against the same in-memory constants produces byte-identical files.
+    const beforeProposalsBytes = await readFile(ruleProposalsPath, 'utf8');
+    const beforeCandidatesBytes = await readFile(candidatesPath, 'utf8');
+    await writeDraftPack({ outDir: tempDir, moduleId: 'cbc_suite_v1' });
+    const afterProposalsBytes = await readFile(ruleProposalsPath, 'utf8');
+    const afterCandidatesBytes = await readFile(candidatesPath, 'utf8');
+    assert.equal(afterProposalsBytes, beforeProposalsBytes);
+    assert.equal(afterCandidatesBytes, beforeCandidatesBytes);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
 });

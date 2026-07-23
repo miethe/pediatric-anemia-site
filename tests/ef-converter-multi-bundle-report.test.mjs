@@ -28,19 +28,16 @@ import {
   buildBundleReportSection,
   buildMultiBundleConversionReport,
   collectBundleReportSections,
-  extractConflictClasses,
   readBundleConversionReport,
-  readEvidenceSources,
   readFixtureClaimCount,
   readOptionalJsonArray,
   run as runAggregate,
 } from '../tools/rf-bundle-to-kb-pack/lib/multi-bundle-report.mjs';
-import { BATCH_PAIRS } from '../tools/rf-bundle-to-kb-pack/lib/batch.mjs';
+import { BATCH_PAIRS, runBatch } from '../tools/rf-bundle-to-kb-pack/lib/batch.mjs';
 import { run as runPropose } from '../tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs';
 import { EXIT_OK } from '../tools/rf-bundle-to-kb-pack/lib/errors.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const CBC_002_PAIR = Object.freeze({ fixture: 'tests/fixtures/rf-cbc-002', module: 'modules/cbc_suite_v1' });
 
 async function makeScratchDir(label) {
   return mkdtemp(path.join(os.tmpdir(), `ef-multi-bundle-report-test-${label}-`));
@@ -434,6 +431,47 @@ test('P2-T4: collectBundleReportSections reports a bundle "reported" with real c
     for (const other of otherSections) {
       assert.equal(other.status, 'not_available', 'a bundle this test never ran propose for must stay not_available');
     }
+  } finally {
+    await rm(scratch, { recursive: true, force: true });
+  }
+});
+
+// =================================================================================================
+// 4b. P4-T2 (multi-bundle-conversion-e1-finish Phase 4, FR-F14): a REAL, hermetic 4-of-4 aggregate --
+// bundlesReported: 4, bundlesNotAvailable: 0, and a zero-rule bundle still shows "rulesEmitted": 0
+// (present, never absent). Runs the real `runBatch` over ALL 4 named `BATCH_PAIRS` into its OWN
+// scratch `--out-base` first (never the shared, real `DEFAULT_OUT_BASE_DIR` -- avoiding any
+// dependency on another test file's ambient state/run order) so this test's own result is
+// deterministic regardless of what else has or has not run.
+//
+// Deliberately does NOT capture this call's stdout (`runBatch` over 4 real pairs prints 12+ verb
+// summaries) -- matches `tests/ef-converter-batch.test.mjs`'s own P4-T1 test, which found that
+// buffering that much captured output can destabilize this suite's own TAP reporting.
+// =================================================================================================
+
+test('P4-T2: a real 4-of-4 batch run + aggregate reports bundlesReported: 4, bundlesNotAvailable: 0, and rulesEmitted: 0 is PRESENT (not absent) for every zero-rule bundle', async () => {
+  const scratch = await makeScratchDir('four-of-four-aggregate');
+  try {
+    const results = await runBatch({ pairs: BATCH_PAIRS, outBaseDir: scratch });
+    assert.equal(results.length, 4, 'all 4 named pairs must succeed');
+
+    const sections = await collectBundleReportSections({ pairs: BATCH_PAIRS, outBaseDir: scratch });
+    const report = buildMultiBundleConversionReport({ bundles: sections });
+
+    assert.equal(report.bundlesTotal, 4);
+    assert.equal(report.aggregate.bundlesReported, 4, 'all 4 bundles must show status: reported once propose has genuinely run for each');
+    assert.equal(report.aggregate.bundlesNotAvailable, 0);
+
+    const raw = JSON.stringify(report, null, 2);
+    for (const section of report.bundles) {
+      assert.equal(section.status, 'reported');
+      assert.equal(section.statusReason, null);
+      // The literal AC text (P4-T2): a bundle producing zero rules still shows "rulesEmitted": 0,
+      // present as an explicit key, never an absent one.
+      assert.ok(Object.hasOwn(section, 'rulesEmitted'), `${section.moduleId}: rulesEmitted key must be present`);
+      assert.equal(section.rulesEmitted, 0, `${section.moduleId}: rulesEmitted must be the explicit 0 this converter always reports at this seam`);
+    }
+    assert.ok(raw.includes('"rulesEmitted": 0'), 'the serialized report bytes must literally contain "rulesEmitted": 0 for the zero-rule bundles');
   } finally {
     await rm(scratch, { recursive: true, force: true });
   }

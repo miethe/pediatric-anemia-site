@@ -7,37 +7,45 @@
 //    part of `npm run check`." (This file matches `tests/*.test.mjs`, already run by `npm test`,
 //    itself the first step of `npm run check` — no `package.json` change is needed to wire it in.)
 //
-// HONESTY NOTE, load-bearing (read before editing this file): as of this task, only ONE of the 4
-// named `BATCH_PAIRS` (`./batch.mjs`) — `rf-cbc-002` -> `cbc_suite_v1` — ever completes
-// `inspect -> verify -> propose` end to end. The other 3 (`rf-ev-001` -> `anemia`, `rf-kid-001` ->
-// `kidney_suite_v1`, `rf-gro-002` -> `growth_suite_v1`) halt at `inspect`'s
-// `loader.loadBundle()` step with a `DecisionsNotFoundError`, because none of those 3 modules has
-// an `authoring-decisions.yaml` yet (documented, pre-existing, non-regression gap — Decisions
-// Block Addendum A1 / Deferred Item DF-E1-M1; see `tests/ef-converter-batch.test.mjs`). Even if a
-// decisions file existed for one of those 3, `propose.mjs`'s own header comment states it "fails
-// closed if the loaded module id is not the one module this converter has hand-authored drafting
-// content for (`cbc_suite_v1`)" — `propose` cannot draft rule/candidate content for any other
-// module today, by design (FR-14). This is why `modules/anemia/evidence-assertions.json` and
+// HONESTY NOTE, load-bearing (read before editing this file): UPDATED for multi-bundle-conversion-
+// e1-finish Phase 4 (Step 0/MBF-5 CLOSED). Prior phases: modules/anemia/, modules/kidney_suite_v1/,
+// and modules/growth_suite_v1/ each gained an authoring-decisions.yaml (all 3
+// `drafted_pending_human_approval` — non-approving). Phase 4's Step 0 fix gates
+// `computeTestCorpusHash` on the emission gate's own `permitted` value (exactly parallel to
+// `writeStagedRulesAndProvenance`'s existing conditional call): a module with no hand-authored
+// rule content never calls `computeTestCorpusHash` at all, so it can no longer halt over a missing
+// test corpus it was never going to need. As a result, ALL 4 named `BATCH_PAIRS` now complete
+// `inspect -> verify -> propose` end to end: `rf-cbc-002` -> `cbc_suite_v1` (rules.json emitted,
+// its decisions are `approved_for_rule_draft`) and the other 3 (`rf-ev-001` -> `anemia`,
+// `rf-kid-001` -> `kidney_suite_v1`, `rf-gro-002` -> `growth_suite_v1`) are each refused at the
+// emission gate for rule content — a non-fatal governance refusal; every evidence-layer artifact
+// (including `release-manifest.unsigned.json`, with `testCorpusHash: null`) is written, but no
+// `rules.json`/`rule-provenance.json`. `propose.mjs`'s own header comment still states it "invents
+// nothing new about clinical content" for these 3 modules — their completion above is a refusal of
+// that same kind, not an exception to it. This is why `modules/anemia/evidence-assertions.json` and
 // `modules/{kidney_suite_v1,growth_suite_v1}/{evidence.json,evidence-assertions.json,
-// unresolved.json}` were projected by one-off, ephemeral, uncommitted generator scripts (P4-T2,
-// P5-T1, P5-T2 — see each commit's own message) rather than by a live, re-invokable `propose`
-// call — those files are the real, final, COMMITTED "per-bundle emitted output" for this pass for
-// those 3 bundles, not a build artifact this test can regenerate on demand.
+// unresolved.json}` were projected by one-off, ephemeral, uncommitted generator scripts (earlier
+// phases — see each commit's own message) rather than by a live, re-invokable `propose` call —
+// those files are the real, final, COMMITTED "per-bundle emitted output" for this pass for those 3
+// bundles, not a build artifact this test can regenerate on demand (Section 3 below still treats
+// them as at-rest-only for that reason).
 //
-// Given that real, documented constraint, this file proves the P6-T3 determinism claim in full,
-// honestly, via four complementary angles, none of which overstates what the converter can
+// Given that real, documented constraint, this file proves the P6-T3/P4-T3 determinism claim in
+// full, honestly, via four complementary angles, none of which overstates what the converter can
 // actually do today:
 //
 //   1. The REAL, canonical `BATCH_PAIRS` batch (unmodified, default order, same converter build),
-//      run twice into two fresh, independent output directories, halts at the exact same pair
-//      with the exact same named cause both times (Section 1) — proving the *documented failure*
-//      is itself deterministic, not merely "a test passed once."
-//   2. EVERY one of the 4 named pairs, run in ISOLATION, twice (three times for the one that
-//      succeeds), into fresh independent output directories (Section 2) — the one pair that
-//      completes (`cbc_suite_v1`) is proven SHA-256 byte-identical across every emitted file,
-//      including `evidence.json`/`evidence-assertions.json`, across all runs; the 3 pairs that
-//      halt are proven to halt identically (same stage, same cause, same message) across runs,
-//      with zero partial output in every run.
+//      run twice into two fresh, independent output directories, completes ALL 4 pairs, with
+//      byte-identical output for every emitted file across both runs (Section 1) — the
+//      reproducibility claim is true for 4/4 (P4-T3, FR-F15), not merely "a test passed once."
+//   2. EVERY one of the 4 named pairs, run in ISOLATION, twice (three times for `cbc_suite_v1`),
+//      into fresh independent output directories (Section 2) — ALL 4 pairs complete `propose` end
+//      to end (`cbc_suite_v1` with rules.json; the other 3 refused-but-complete, with no
+//      rules.json) and are each proven SHA-256 byte-identical across every emitted file, including
+//      `evidence.json`/`evidence-assertions.json`/`release-manifest.unsigned.json`/
+//      `semantic-diff.json`, across all runs. This test fails loudly (via the exhaustive
+//      `MODULE_IDS_COVERED` cross-check below) if any of the 4 modules is silently skipped from the
+//      per-pair comparison.
 //   3. Section 3 is an AT-REST INTEGRITY CHECK, NOT a determinism proof: the REAL, COMMITTED
 //      per-bundle `evidence.json`/`evidence-assertions.json`/`unresolved.json` for ALL 4 modules
 //      are confirmed non-corrupt/non-truncated via two reads each (reading an unmodified file
@@ -68,7 +76,6 @@ import {
   BatchBundleFailedError,
   runBatch,
 } from '../tools/rf-bundle-to-kb-pack/lib/batch.mjs';
-import { DecisionsNotFoundError } from '../tools/rf-bundle-to-kb-pack/lib/loader.mjs';
 import {
   MULTI_BUNDLE_REPORT_FILENAME,
   run as runAggregate,
@@ -86,9 +93,12 @@ const MODULE_DIRS = Object.freeze({
   growth_suite_v1: path.join(REPO_ROOT, 'modules', 'growth_suite_v1'),
 });
 
-// The one BATCH_PAIRS entry that completes `inspect -> verify -> propose` end to end today (see
-// this file's header note). Every other entry is expected to halt at `inspect` with
-// `DecisionsNotFoundError` (DF-E1-M1) — asserted explicitly, not assumed, throughout this file.
+// The one BATCH_PAIRS entry with hand-authored, approved rule content (its decisions are
+// `approved_for_rule_draft`) -- the other 3 modules are refused at the emission gate for rule
+// content (multi-bundle-conversion-e1-finish Phase 4, MBF-5 CLOSED: ALL 4 now complete `propose`
+// end to end regardless of this distinction; only cbc_suite_v1 emits rules.json/rule-provenance.
+// json). Kept for the cbc_suite_v1-specific tests below (Section 2's third-run check, Section 3's
+// committed-vs-live cross-check).
 const LIVE_SUCCEEDING_MODULE_ID = 'cbc_suite_v1';
 
 function sha256Hex(bufOrStr) {
@@ -109,6 +119,22 @@ async function withCapturedStdout(fn) {
   try {
     const result = await fn();
     return { result, output: chunks.join('') };
+  } finally {
+    process.stdout.write = original;
+  }
+}
+
+/** Suppresses (discards, never accumulates) `process.stdout.write` while `fn` runs, then restores
+ * it -- used for calls whose printed volume can be large (a real, all-4-pair batch run prints 12+
+ * verb summaries) and whose captured TEXT this file never needs to inspect (only `fn`'s own return
+ * value / thrown error matter here). Buffering that much captured text via `withCapturedStdout`
+ * above is what this file's own P4-T3 rewrite discovered can destabilize this suite's TAP
+ * reporting (see `tests/ef-converter-batch.test.mjs`'s own P4-T1 test for the same finding). */
+async function withSuppressedStdout(fn) {
+  const original = process.stdout.write.bind(process.stdout);
+  process.stdout.write = () => true;
+  try {
+    return await fn();
   } finally {
     process.stdout.write = original;
   }
@@ -151,8 +177,8 @@ async function readRawOrMissing(filePath) {
 
 async function runBatchOnce(pairs, outBaseDir) {
   try {
-    const captured = await withCapturedStdout(() => runBatch({ pairs, ruleSchemaPath: RULE_SCHEMA_PATH, outBaseDir }));
-    return { ok: true, results: captured.result };
+    const results = await withSuppressedStdout(() => runBatch({ pairs, ruleSchemaPath: RULE_SCHEMA_PATH, outBaseDir }));
+    return { ok: true, results };
   } catch (err) {
     if (err instanceof BatchBundleFailedError) {
       return {
@@ -176,38 +202,66 @@ async function runBatchOnce(pairs, outBaseDir) {
 // fresh output directories, using the same converter build and the same committed fixture inputs.
 // =================================================================================================
 
-test('P6-T3: two independent full-batch runs over the real, canonical BATCH_PAIRS halt at the exact same pair with the exact same named cause', async () => {
+// multi-bundle-conversion-e1-finish Phase 4 (P4-T3, FR-F15, MBF-5 CLOSED): the real batch now
+// completes ALL 4 named pairs end to end -- `cbc_suite_v1` emits its 4 rules; `anemia`/
+// `kidney_suite_v1`/`growth_suite_v1` are each refused at the emission gate for rule content (a
+// non-fatal governance refusal), with every evidence-layer artifact written. This test proves the
+// reproducibility claim is true for 4/4 (this plan's own Phase 4 exit gate wording): two
+// independent full-batch runs, same converter build, same committed fixture inputs, produce
+// EXACTLY the same set of files, SHA-256-identical byte for byte, for every one of the 4 modules --
+// asserted explicitly per-module (never a bare "the directories matched") so this test fails loudly
+// if any of the 4 modules were ever silently skipped from the comparison.
+test('P4-T3: two independent full-batch runs over the real, canonical BATCH_PAIRS complete ALL 4 pairs, byte-identical file for file', async () => {
   const outBaseA = await makeScratchDir('full-a');
   const outBaseB = await makeScratchDir('full-b');
   try {
     const runA = await runBatchOnce(BATCH_PAIRS, outBaseA);
     const runB = await runBatchOnce(BATCH_PAIRS, outBaseB);
 
-    // As of this task, the real batch halts at pair 0 (rf-ev-001 -> modules/anemia) with
-    // DecisionsNotFoundError (DF-E1-M1) — this is the documented, expected, non-regression state
-    // (see this file's header note and tests/ef-converter-batch.test.mjs). Asserted explicitly
-    // here, not assumed, so a future close of DF-E1-M1 fails this test loudly rather than letting
-    // a stale assumption silently pass.
-    assert.equal(runA.ok, false, 'run A is expected to halt (DF-E1-M1) — update this test if that gap has closed');
-    assert.equal(runB.ok, false, 'run B is expected to halt (DF-E1-M1) — update this test if that gap has closed');
+    // Asserted explicitly here, not assumed, so a future regression (a new halt reappearing) fails
+    // this test loudly rather than letting a stale "it completes" assumption silently pass.
+    assert.equal(runA.ok, true, 'run A is expected to complete all 4 pairs (MBF-5 closed) — update this test if a new halt was introduced');
+    assert.equal(runB.ok, true, 'run B is expected to complete all 4 pairs (MBF-5 closed) — update this test if a new halt was introduced');
+    assert.equal(runA.results.length, 4);
+    assert.equal(runB.results.length, 4);
 
-    // The core determinism claim: run A and run B fail at the SAME pair, SAME stage, SAME named
-    // cause, with byte-identical error messages (SHA-256 compared, not just `===`, so this is a
-    // real proof rather than an assertion of prose).
+    const expectedModuleIds = ['anemia', 'cbc_suite_v1', 'kidney_suite_v1', 'growth_suite_v1'];
+    assert.deepEqual(runA.results.map((r) => r.moduleId), expectedModuleIds);
+    assert.deepEqual(runB.results.map((r) => r.moduleId), expectedModuleIds);
+    for (const result of [...runA.results, ...runB.results]) {
+      assert.equal(result.status, 'succeeded');
+    }
+
+    // Every file either run emitted must be exactly the same set, AND byte-identical, across the
+    // two independent runs -- a genuine determinism proof over everything the batch actually
+    // produced, for ALL 4 modules, not merely for whichever pairs used to complete before a halt.
+    const filesA = await listFilesRelative(outBaseA);
+    const filesB = await listFilesRelative(outBaseB);
+    assert.ok(filesA.length > 0);
+    assert.deepEqual(filesA, filesB, 'both full-batch runs must emit exactly the same set of files');
+
+    // Exhaustive per-module coverage check (FR-F15's own "fails loudly if any module is silently
+    // skipped" AC): every one of the 4 module ids must own at least one file in the output, and the
+    // union of module prefixes actually covered must equal the full expected set exactly.
+    const moduleIdsCovered = new Set(filesA.map((relFile) => relFile.split(path.sep)[0]));
     assert.deepEqual(
-      { pairIndex: runA.pairIndex, fixture: runA.fixture, module: runA.module, moduleId: runA.moduleId, stage: runA.stage, exitCode: runA.exitCode, causeName: runA.causeName },
-      { pairIndex: runB.pairIndex, fixture: runB.fixture, module: runB.module, moduleId: runB.moduleId, stage: runB.stage, exitCode: runB.exitCode, causeName: runB.causeName },
-      'both full-batch runs must halt at the identical pair/stage/cause',
+      [...moduleIdsCovered].sort(),
+      [...expectedModuleIds].sort(),
+      'every one of the 4 modules must be represented in the batch output -- none silently skipped',
     );
-    assert.equal(runA.causeName, 'DecisionsNotFoundError');
-    assert.equal(sha256Hex(runA.causeMessage), sha256Hex(runB.causeMessage), 'the halting error message must be SHA-256-identical across both runs');
-    assert.equal(runA.pairIndex, 0);
-    assert.equal(runA.moduleId, 'anemia');
+    for (const moduleId of expectedModuleIds) {
+      assert.ok(filesA.some((f) => f.startsWith(`${moduleId}/`) && f.endsWith('conversion-report.json')), `${moduleId} must have completed propose (conversion-report.json present)`);
+    }
+    assert.ok(filesA.some((f) => f.startsWith('cbc_suite_v1/') && f.endsWith('rules.json')), 'cbc_suite_v1 completed, including rules.json');
+    for (const moduleId of ['anemia', 'kidney_suite_v1', 'growth_suite_v1']) {
+      assert.ok(!filesA.some((f) => f.startsWith(`${moduleId}/`) && f.endsWith('rules.json')), `${moduleId} must never emit rules.json (refused at the emission gate)`);
+    }
 
-    // Zero output anywhere under either scratch outBaseDir — the halt occurs before the halting
-    // pair's own `mkdir(outDir)` ever runs (see lib/batch.mjs), so neither run left ANY file behind.
-    assert.deepEqual(await listFilesRelative(outBaseA), []);
-    assert.deepEqual(await listFilesRelative(outBaseB), []);
+    for (const relFile of filesA) {
+      const bytesA = await readFile(path.join(outBaseA, relFile));
+      const bytesB = await readFile(path.join(outBaseB, relFile));
+      assert.ok(bytesA.equals(bytesB), `${relFile} must be byte-identical across two independent full-batch runs`);
+    }
   } finally {
     await rm(outBaseA, { recursive: true, force: true });
     await rm(outBaseB, { recursive: true, force: true });
@@ -215,69 +269,87 @@ test('P6-T3: two independent full-batch runs over the real, canonical BATCH_PAIR
 });
 
 // =================================================================================================
-// Section 2: EVERY one of the 4 named pairs, run in isolation, twice (three times for the pair
-// that succeeds) — the strongest per-bundle proof this converter can actually exercise live today.
+// Section 2: EVERY one of the 4 named pairs, run in isolation, twice (three times for cbc_suite_v1)
+// — the strongest per-bundle proof this converter can actually exercise live today.
+//
+// multi-bundle-conversion-e1-finish Phase 4 (P4-T3, MBF-5 CLOSED): ALL 4 pairs now complete
+// `propose` end to end in isolation -- `cbc_suite_v1` fully (rules.json emitted); the other 3
+// refused at the emission gate for rule content (non-fatal governance refusal, no rules.json/
+// rule-provenance.json, but every evidence-layer artifact + release-manifest.unsigned.json +
+// conversion-report.json + semantic-diff.json IS written, with testCorpusHash: null). A tracking
+// Set (`moduleIdsExercised`) proves, after the loop, that all 4 module ids were genuinely iterated
+// -- this test fails loudly if any of the 4 modules were ever silently skipped from this per-pair
+// comparison (FR-F15's own binding AC).
 // =================================================================================================
+
+const moduleIdsExercised = new Set();
 
 for (const pair of BATCH_PAIRS) {
   const moduleId = path.basename(pair.module);
-  const isLiveSucceeding = moduleId === LIVE_SUCCEEDING_MODULE_ID;
+  moduleIdsExercised.add(moduleId);
+  const isFullySucceeding = moduleId === LIVE_SUCCEEDING_MODULE_ID;
 
-  test(`P6-T3: pair "${moduleId}" (${pair.fixture}) run in isolation twice produces a deterministic outcome`, async () => {
+  test(`P4-T3: pair "${moduleId}" (${pair.fixture}) run in isolation twice produces a deterministic outcome`, async () => {
     const outBaseA = await makeScratchDir(`pair-${moduleId}-a`);
     const outBaseB = await makeScratchDir(`pair-${moduleId}-b`);
     try {
       const runA = await runBatchOnce([pair], outBaseA);
       const runB = await runBatchOnce([pair], outBaseB);
 
-      if (isLiveSucceeding) {
-        assert.equal(runA.ok, true, `${moduleId} is expected to complete propose end to end`);
-        assert.equal(runB.ok, true, `${moduleId} is expected to complete propose end to end`);
-        assert.equal(runA.results.length, 1);
-        assert.equal(runB.results.length, 1);
-        assert.equal(runA.results[0].status, 'succeeded');
-        assert.equal(runB.results[0].status, 'succeeded');
+      assert.equal(runA.ok, true, `${moduleId} is expected to complete propose end to end (MBF-5 closed)`);
+      assert.equal(runB.ok, true, `${moduleId} is expected to complete propose end to end (MBF-5 closed)`);
+      assert.equal(runA.results.length, 1);
+      assert.equal(runB.results.length, 1);
+      assert.equal(runA.results[0].status, 'succeeded');
+      assert.equal(runB.results[0].status, 'succeeded');
 
-        const outDirA = runA.results[0].outDir;
-        const outDirB = runB.results[0].outDir;
-        const filesA = await listFilesRelative(outDirA);
-        const filesB = await listFilesRelative(outDirB);
-        assert.ok(filesA.length > 0, 'expected propose to have written at least one file');
-        assert.deepEqual(filesA, filesB, 'both isolated runs must emit exactly the same set of files');
-        // The two files this task's AC names by name, both present in propose's own emitted pack.
-        assert.ok(filesA.includes('evidence.json'));
-        assert.ok(filesA.includes('evidence-assertions.json'));
-
-        const mismatches = [];
-        for (const relFile of filesA) {
-          const bytesA = await readFile(path.join(outDirA, relFile));
-          const bytesB = await readFile(path.join(outDirB, relFile));
-          const hashA = sha256Hex(bytesA);
-          const hashB = sha256Hex(bytesB);
-          if (hashA !== hashB) mismatches.push({ relFile, hashA, hashB });
-        }
-        assert.deepEqual(mismatches, [], `every emitted file for "${moduleId}" must be SHA-256-identical across two isolated runs; mismatches: ${JSON.stringify(mismatches)}`);
+      const outDirA = runA.results[0].outDir;
+      const outDirB = runB.results[0].outDir;
+      const filesA = await listFilesRelative(outDirA);
+      const filesB = await listFilesRelative(outDirB);
+      assert.ok(filesA.length > 0, 'expected propose to have written at least one file');
+      assert.deepEqual(filesA, filesB, 'both isolated runs must emit exactly the same set of files');
+      // The two files this task's AC names by name, both present in propose's own emitted pack.
+      assert.ok(filesA.includes('evidence.json'));
+      assert.ok(filesA.includes('evidence-assertions.json'));
+      assert.ok(filesA.includes('conversion-report.json'));
+      assert.ok(filesA.includes('release-manifest.unsigned.json'));
+      assert.ok(filesA.includes('semantic-diff.json'));
+      if (isFullySucceeding) {
+        assert.ok(filesA.includes('rules.json'), `${moduleId} has approved decisions -- rules.json is emitted`);
+        assert.ok(filesA.includes('rule-provenance.json'));
       } else {
-        // The other 3 pairs are expected to halt at `inspect` with DecisionsNotFoundError
-        // (DF-E1-M1) — proven identical across both isolated runs, and proven to leave zero output.
-        assert.equal(runA.ok, false, `${moduleId} is expected to halt (DF-E1-M1) — update this test if that gap has closed`);
-        assert.equal(runB.ok, false, `${moduleId} is expected to halt (DF-E1-M1) — update this test if that gap has closed`);
-        assert.equal(runA.stage, 'inspect');
-        assert.equal(runA.causeName, 'DecisionsNotFoundError');
-        assert.deepEqual(
-          { stage: runA.stage, causeName: runA.causeName, exitCode: runA.exitCode },
-          { stage: runB.stage, causeName: runB.causeName, exitCode: runB.exitCode },
-        );
-        assert.equal(sha256Hex(runA.causeMessage), sha256Hex(runB.causeMessage));
-        assert.deepEqual(await listFilesRelative(outBaseA), []);
-        assert.deepEqual(await listFilesRelative(outBaseB), []);
+        // anemia/kidney_suite_v1/growth_suite_v1: refused at the emission gate for rule content
+        // (non-fatal governance refusal) -- no rules.json/rule-provenance.json, even though
+        // propose otherwise completed. Step 0 fix (MBF-5): testCorpusHash is honestly null.
+        assert.ok(!filesA.includes('rules.json'), `${moduleId} is refused at the emission gate -- no rules.json`);
+        assert.ok(!filesA.includes('rule-provenance.json'));
+        const releaseManifest = JSON.parse(await readFile(path.join(outDirA, 'release-manifest.unsigned.json'), 'utf8'));
+        assert.equal(releaseManifest.testCorpusHash, null);
       }
+
+      const mismatches = [];
+      for (const relFile of filesA) {
+        const bytesA = await readFile(path.join(outDirA, relFile));
+        const bytesB = await readFile(path.join(outDirB, relFile));
+        const hashA = sha256Hex(bytesA);
+        const hashB = sha256Hex(bytesB);
+        if (hashA !== hashB) mismatches.push({ relFile, hashA, hashB });
+      }
+      assert.deepEqual(mismatches, [], `every emitted file for "${moduleId}" must be SHA-256-identical across two isolated runs; mismatches: ${JSON.stringify(mismatches)}`);
     } finally {
       await rm(outBaseA, { recursive: true, force: true });
       await rm(outBaseB, { recursive: true, force: true });
     }
   });
 }
+
+test('P4-T3: the per-pair isolation loop above genuinely exercised all 4 named modules (none silently skipped)', () => {
+  assert.deepEqual(
+    [...moduleIdsExercised].sort(),
+    ['anemia', 'cbc_suite_v1', 'growth_suite_v1', 'kidney_suite_v1'],
+  );
+});
 
 test('P6-T3: a third independent isolated run of the one live-succeeding pair (cbc_suite_v1) still matches the first two, file by file', async () => {
   const cbcPair = BATCH_PAIRS.find((p) => path.basename(p.module) === LIVE_SUCCEEDING_MODULE_ID);

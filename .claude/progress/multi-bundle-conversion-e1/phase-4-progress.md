@@ -210,3 +210,15 @@ evidence into both modules is not clinical review: neither module's rule count m
 `approvedBy` gained a name, and neither module is module complete, signed, or clinically ready.
 `npm run check` verified green as part of landing this task. P4-GATE (task-completion-validator) remains
 the outstanding reviewer-gate task for this phase.
+
+### Superseded by `multi-bundle-conversion-e1-finish` (2026-07-23)
+
+`in_progress` (`P4-GATE` never run) is left as-is here — accurate, not stale — rather than
+force-set to `completed`. Noted so this tracker is not read as contradicting
+`.claude/progress/multi-bundle-conversion-e1-finish/`: the two seam merges this phase delivered
+(`modules/anemia/`, `modules/cbc_suite_v1/`) are real, committed, and byte-identical to their
+pre-merge rule content, per the honesty AC above. The successor plan's own Phase 4
+(`multi-bundle-conversion-e1-finish`, committed at `24be3f2`) is a *different* piece of work — the
+module-generic drafting registry and 4-of-4 batch/determinism proof — not a re-run or replacement
+of this phase's seam merges. Zero new clinical rules were emitted in either plan; this repo remains
+an unvalidated research prototype.

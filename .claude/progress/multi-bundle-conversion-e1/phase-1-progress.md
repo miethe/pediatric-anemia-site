@@ -225,3 +225,17 @@ unlike Phase 3's `P3-GATE1`). Phase-level `status` is left `in_progress` (7/8 ta
 `completed` on that basis, per the dev-execution skill's Phase Completion Definition. The scoped
 exit criteria and quality gates above have been independently re-verified as part of this
 correction pass, but the formal `P1-GATE` reviewer checkpoint is still outstanding.
+
+### Superseded by `multi-bundle-conversion-e1-finish` (2026-07-23)
+
+This file's `in_progress` status (7/8 tasks; `P1-GATE` never run) is left as-is — accurate, not
+stale — rather than force-set to `completed`, because no `task-completion-validator` record for
+`P1-GATE` exists anywhere in this repo's history. This note exists solely so a future reader does
+not treat this tracker and `.claude/progress/multi-bundle-conversion-e1-finish/` as two
+contradictory records of the same converter surface: this plan (`multi-bundle-conversion-e1`)
+delivered the 7 real tasks named above; remaining gap-closure and gate-recovery work on this exact
+converter (fail-closed rule-emission gate, module-generic drafting substrate, decisions files,
+4-of-4 batch/determinism proof) is tracked under the successor plan
+`docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1-finish.md`
+(`.claude/progress/multi-bundle-conversion-e1-finish/`), not under this one. No clinical rule
+content changed in either plan; this repo remains an unvalidated research prototype.

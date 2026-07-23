@@ -32,14 +32,21 @@ import {
   PACK_VERSION,
   assertNoSoleConflictedBasis,
   buildPackProvenance,
+  resolveRuleEmissionGate,
   run as runPropose,
 } from '../tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs';
 import { loadBundle } from '../tools/rf-bundle-to-kb-pack/lib/loader.mjs';
 import { pinArtifacts } from '../tools/rf-bundle-to-kb-pack/lib/hashing.mjs';
 import { checkEligibility } from '../tools/rf-bundle-to-kb-pack/lib/eligibility.mjs';
 import { routeClaims } from '../tools/rf-bundle-to-kb-pack/lib/claim-routing.mjs';
-import { RULE_PROPOSALS } from '../tools/rf-bundle-to-kb-pack/lib/rule-candidate-drafts.mjs';
-import { GovernanceError, UsageError, EXIT_OK, EXIT_GOVERNANCE } from '../tools/rf-bundle-to-kb-pack/lib/errors.mjs';
+import { RULE_PROPOSAL_REGISTRY, RULE_PROPOSALS } from '../tools/rf-bundle-to-kb-pack/lib/rule-candidate-drafts.mjs';
+import {
+  GovernanceError,
+  RuleEmissionRefusedError,
+  UsageError,
+  EXIT_OK,
+  EXIT_GOVERNANCE,
+} from '../tools/rf-bundle-to-kb-pack/lib/errors.mjs';
 import { validate } from '../scripts/lib/json-schema-lite.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -187,10 +194,64 @@ test('P3-T7: propose run against the real fixture + real cbc_suite_v1 module suc
   }
 });
 
-test('P3-T7: propose fails closed (UsageError) on a module id it has no hand-authored drafting content for, and writes NOTHING to --out', async () => {
-  // propose has hand-authored drafting content (P3-T1..T6) only for "cbc_suite_v1" — this proves
-  // it refuses to silently draft that content under a different module's identity, and that the
-  // failure happens before any file is written to --out (mkdir/writeFile never runs).
+// =================================================================================================
+// P1-T3 (multi-bundle-conversion-e1-finish, Phase 1, seam task): cbc_suite_v1's real, existing
+// 4-decision approved_for_rule_draft emission path is BYTE-IDENTICAL to its pre-Phase-1 output.
+// These two SHA-256 digests were captured from a clean checkout BEFORE any Phase 1 code change
+// landed (schemas/authoring-decisions.schema.json, propose.mjs, govern-staged-rules.mjs,
+// errors.mjs) — a real regression pin, not merely a re-assertion of the current behavior.
+// =================================================================================================
+
+const PRE_PHASE1_RULES_JSON_SHA256 =
+  '8aa53eed1014d1ee0ac3aef1998e2c54e8dba80285201d49b2c261e8165f68a9';
+const PRE_PHASE1_RULE_PROVENANCE_JSON_SHA256 =
+  '0d5e249a2cefda3537f56212a023e08dcae0f4263fa74f36b0701fa60ee69125';
+
+test('P1-T3 (seam task): cbc_suite_v1\'s real 4-approved-decision propose run emits rules.json/rule-provenance.json byte-identical to the pre-Phase-1 baseline', async () => {
+  const { createHash } = await import('node:crypto');
+  const outDir = await mkdtemp(path.join(os.tmpdir(), 'ef-propose-test-p1-seam-'));
+  try {
+    const exitCode = await withCapturedStdout(() =>
+      runPropose({
+        runDir: FIXTURE_DIR,
+        module: REAL_MODULE_PATH,
+        decisions: REAL_DECISIONS_PATH,
+        out: outDir,
+      }),
+    ).then(({ result }) => result);
+    assert.equal(exitCode, EXIT_OK);
+
+    const rulesRaw = await readFile(path.join(outDir, 'rules.json'), 'utf8');
+    const ruleProvenanceRaw = await readFile(path.join(outDir, 'rule-provenance.json'), 'utf8');
+    assert.equal(
+      createHash('sha256').update(rulesRaw).digest('hex'),
+      PRE_PHASE1_RULES_JSON_SHA256,
+      'rules.json must be byte-identical (by SHA-256) to the pre-Phase-1 baseline -- the live ' +
+        'allowlist gate must not alter cbc_suite_v1\'s existing approved emission',
+    );
+    assert.equal(
+      createHash('sha256').update(ruleProvenanceRaw).digest('hex'),
+      PRE_PHASE1_RULE_PROVENANCE_JSON_SHA256,
+      'rule-provenance.json must be byte-identical (by SHA-256) to the pre-Phase-1 baseline',
+    );
+  } finally {
+    await rm(outDir, { recursive: true, force: true });
+  }
+});
+
+// =================================================================================================
+// multi-bundle-conversion-e1-finish, Phase 2 (P2-T3/P2-T6, FR-F10): the module-identity
+// `UsageError` propose.mjs used to throw for any non-"cbc_suite_v1" module id is REMOVED entirely
+// -- the two tests below replace the single pre-Phase-2 test that asserted it, per this task's own
+// binding instruction ("the old 'throws UsageError for non-cbc module' assertion is now WRONG and
+// must be updated to assert governance-refusal instead"). Verified real behavior, not an assumed
+// shape: a bare synthetic module missing its own required projection files still fails closed with
+// a genuinely different, honest UsageError (unrelated to module identity); a module with real
+// projections but zero hand-authored rule content reaches Phase 1's emission gate cleanly and is
+// refused there, never via a module-identity check that no longer exists.
+// =================================================================================================
+
+test('P2-T6: propose still fails closed (UsageError) if a non-cbc module is missing its own required evidence.json -- unrelated to the removed module-identity check', async () => {
   const outDir = await mkdtemp(path.join(os.tmpdir(), 'ef-propose-test-fail-'));
   const tempModuleDir = await mkdtemp(path.join(os.tmpdir(), 'ef-propose-test-wrongmodule-'));
   try {
@@ -198,10 +259,14 @@ test('P3-T7: propose fails closed (UsageError) on a module id it has no hand-aut
     await writeFile(wrongModulePath, JSON.stringify({ id: 'some_other_module', title: 'Wrong Module' }), 'utf8');
     await writeFile(
       path.join(tempModuleDir, 'authoring-decisions.yaml'),
-      'notes: temp stub for P3-T7 wrong-module test\n',
+      'notes: temp stub for P2-T6 wrong-module test\n',
       'utf8',
     );
 
+    // Note: propose no longer refuses on module identity at all (P2-T3) -- it proceeds straight
+    // to reading modules/<id>/evidence.json (readModuleProjectionFile), which this bare scratch
+    // module dir never provisioned. This is still a genuine, named, fail-closed UsageError; it is
+    // simply a DIFFERENT one than the removed module-identity check used to produce.
     await assert.rejects(
       () => runPropose({
         runDir: FIXTURE_DIR,
@@ -211,17 +276,152 @@ test('P3-T7: propose fails closed (UsageError) on a module id it has no hand-aut
       }),
       (err) => {
         assert.ok(err instanceof UsageError);
-        assert.match(err.message, /some_other_module/);
+        assert.match(err.message, /evidence\.json to already exist/);
         return true;
       },
     );
 
     const outDirEntries = await readdir(outDir);
-    assert.deepEqual(outDirEntries, [], 'nothing may be written to --out before the module-id check passes');
+    assert.deepEqual(outDirEntries, [], 'nothing may be written to --out before the required projection files are read');
   } finally {
     await rm(outDir, { recursive: true, force: true });
     await rm(tempModuleDir, { recursive: true, force: true });
   }
+});
+
+test('P2-T6: propose for a non-cbc module WITH real committed projections but ZERO hand-authored rule content reaches Phase 1\'s emission gate, computes and captures a real RuleEmissionRefusedError-shaped refusal, completes end to end (EXIT_OK), and writes every file under the correct module identity -- never a UsageError for module identity (that check no longer exists) nor for a missing test corpus (multi-bundle-conversion-e1-finish Phase 4, MBF-5 fix: computeTestCorpusHash is never called on a refused-emission run)', async () => {
+  // VERIFIED REAL BEHAVIOR (not an assumed shape): kidney_suite_v1 has no generated engine test
+  // corpus yet (tests/ef-kidney_suite_v1-*.test.mjs -- a separate, pre-existing, Phase 4/5
+  // requirement this plan does not touch). Before the Phase 4 Step 0 fix, a full propose run for
+  // it used to throw a UsageError late (computeTestCorpusHash, building release-manifest.unsigned.
+  // json). That fix gates computeTestCorpusHash on the emission gate's own `permitted` value --
+  // exactly parallel to writeStagedRulesAndProvenance's existing conditional call -- so a run whose
+  // emission gate refuses (as this one does: zero referenced decisions) now completes cleanly
+  // (EXIT_OK), with `testCorpusHash: null` on its release manifest, rather than throwing over an
+  // orthogonal, unrelated missing-test-corpus condition it was never going to need in the first
+  // place (this module drafted zero rule proposals, so no rule test corpus could ever bind to it).
+  const outDir = await mkdtemp(path.join(os.tmpdir(), 'ef-propose-test-kidney-gate-'));
+  const tempModuleDir = await mkdtemp(path.join(os.tmpdir(), 'ef-propose-test-kidney-module-'));
+  try {
+    // A synthetic kidney_suite_v1 module directory carrying REAL, committed evidence.json/
+    // evidence-assertions.json (so propose's readModuleProjectionFile calls succeed) plus a stub
+    // authoring-decisions.yaml with zero decisions -- this scratch dir stands in for a module with
+    // zero referenced decisions, independent of whatever the real, committed
+    // modules/kidney_suite_v1/authoring-decisions.yaml happens to carry.
+    const kidneyModuleDir = path.join(REPO_ROOT, 'modules', 'kidney_suite_v1');
+    const wrongModulePath = path.join(tempModuleDir, 'module.json');
+    const kidneyModuleDoc = JSON.parse(await readFile(path.join(kidneyModuleDir, 'module.json'), 'utf8'));
+    await writeFile(wrongModulePath, JSON.stringify(kidneyModuleDoc), 'utf8');
+    // Declares rfProvenance.rfBundleId matching FIXTURE_DIR's own real bundle id, so
+    // `bundleMatchesDecisionsProvenance` is true and propose reuses the already-pinned claim
+    // ledger rather than requiring a separate declared-bundle resolution (irrelevant to this
+    // test's own subject -- decisions: [] means there is nothing to cross-resolve either way).
+    await writeFile(
+      path.join(tempModuleDir, 'authoring-decisions.yaml'),
+      'schemaVersion: "1.0"\n'
+        + 'moduleId: kidney_suite_v1\n'
+        + 'rfProvenance:\n'
+        + '  rfBundleId: bundle_20260718_intent_research_20260717_rf_cbc_001\n'
+        + '  fixturePath: tests/fixtures/rf-cbc-001/\n'
+        + 'decisions: []\n',
+      'utf8',
+    );
+    await writeFile(
+      path.join(tempModuleDir, 'evidence.json'),
+      await readFile(path.join(kidneyModuleDir, 'evidence.json'), 'utf8'),
+      'utf8',
+    );
+    await writeFile(
+      path.join(tempModuleDir, 'evidence-assertions.json'),
+      await readFile(path.join(kidneyModuleDir, 'evidence-assertions.json'), 'utf8'),
+      'utf8',
+    );
+
+    const { result: exitCode } = await withCapturedStdout(() =>
+      runPropose({
+        runDir: FIXTURE_DIR, // reuses the real, already-verified rf-cbc-001 bundle -- the
+        // pipeline does not require the fixture's own topic to match the module id; it only
+        // needs a verified, loadable bundle, which this fixture already is.
+        module: wrongModulePath,
+        decisions: path.join(tempModuleDir, 'authoring-decisions.yaml'),
+        out: outDir,
+      }),
+    );
+    assert.equal(exitCode, EXIT_OK, 'a refused-emission run with real committed projections now completes cleanly (MBF-5 fix)');
+
+    // Everything propose writes is under the CORRECT (kidney_suite_v1) identity -- proving the
+    // emission gate and writeDraftPack() genericity both ran cleanly for this module.
+    const packProvenance = await loadJson(path.join(outDir, 'pack-provenance.json'));
+    assert.equal(packProvenance.moduleId, 'kidney_suite_v1');
+
+    const ruleProposalsDoc = await loadJson(path.join(outDir, 'rule-proposals.json'));
+    assert.equal(ruleProposalsDoc.moduleId, 'kidney_suite_v1', 'never cbc_suite_v1');
+    assert.deepEqual(ruleProposalsDoc.proposals, [], 'kidney_suite_v1 has zero hand-authored proposals');
+    assert.equal(ruleProposalsDoc.rfProvenance, null, 'never cbc\'s own RF_PROVENANCE');
+
+    const candidatesDoc = await loadJson(path.join(outDir, 'candidates.json'));
+    assert.deepEqual(candidatesDoc, {}, 'kidney_suite_v1 has zero hand-authored candidates');
+
+    // rules.json/rule-provenance.json are NEVER written -- zero referenced decisions means the
+    // emission gate's own `permitted` is false, so writeStagedRulesAndProvenance() never runs.
+    await assert.rejects(() => readFile(path.join(outDir, 'rules.json'), 'utf8'), { code: 'ENOENT' });
+    await assert.rejects(() => readFile(path.join(outDir, 'rule-provenance.json'), 'utf8'), { code: 'ENOENT' });
+
+    // release-manifest.unsigned.json IS written (unconditional), but with testCorpusHash: null
+    // (MBF-5 fix) -- a refused-emission run never calls computeTestCorpusHash at all.
+    const releaseManifest = await loadJson(path.join(outDir, 'release-manifest.unsigned.json'));
+    assert.equal(releaseManifest.testCorpusHash, null, 'a refused-emission run must never fabricate or unrelatedly hash a test-corpus digest');
+
+    // conversion-report.json IS written (unconditional), naming the real refusal reason.
+    const conversionReport = await loadJson(path.join(outDir, 'conversion-report.json'));
+    assert.equal(conversionReport.ruleEmission.permitted, false);
+    assert.ok(typeof conversionReport.ruleEmission.refusalReason === 'string' && conversionReport.ruleEmission.refusalReason.length > 0);
+
+    // semantic-diff.json IS written, in the evidence-projection mode (P4-T4) since this is a
+    // non-cbc_suite_v1 module -- a self-comparison against the same evidence-assertions.json this
+    // synthetic module dir carries, so its diff is empty by construction.
+    const semanticDiff = await loadJson(path.join(outDir, 'semantic-diff.json'));
+    assert.deepEqual(semanticDiff.summary, { addedCount: 0, removedCount: 0, changedCount: 0 });
+  } finally {
+    await rm(outDir, { recursive: true, force: true });
+    await rm(tempModuleDir, { recursive: true, force: true });
+  }
+});
+
+test('P2-T6 (pure-function complement): the emission gate itself refuses via a genuine RuleEmissionRefusedError-shaped result for any module whose RULE_PROPOSAL_REGISTRY entry is empty -- proven directly, independent of the test-corpus requirement above', () => {
+  for (const moduleId of ['kidney_suite_v1', 'growth_suite_v1', 'anemia']) {
+    const ruleProposals = RULE_PROPOSAL_REGISTRY[moduleId] ?? [];
+    assert.deepEqual(ruleProposals, [], `${moduleId} must have zero hand-authored proposals in this pass`);
+
+    // Even a decisions[] array with one fully-approved decision cannot make the gate permit
+    // emission, because ZERO proposals reference ANY decisionId -- the gate's own
+    // `referencedDecisionIds.length > 0` requirement is never met.
+    const decisions = [{ decision_id: 'some_decision', status: 'approved_for_rule_draft' }];
+    const gate = resolveRuleEmissionGate(decisions, ruleProposals);
+    assert.equal(gate.permitted, false);
+    assert.deepEqual(gate.referencedDecisionIds, []);
+    assert.deepEqual(gate.refusedDecisions, []);
+
+    // This is a REAL, named RuleEmissionRefusedError -- never a UsageError -- exactly what a real
+    // propose run's conversion-report.json.ruleEmission.refusalReason is built from.
+    const refusal = new RuleEmissionRefusedError(gate);
+    assert.ok(refusal instanceof RuleEmissionRefusedError);
+    assert.ok(refusal instanceof GovernanceError);
+    assert.ok(!(refusal instanceof UsageError));
+    assert.match(refusal.message, /rule\/rule-provenance emission refused/);
+  }
+
+  // Sanity: cbc_suite_v1's own registry entry is non-empty and CAN reach `permitted: true` when
+  // its decisions are approved -- proving the gate genuinely discriminates by module content, not
+  // a blanket "always refuse for a non-hardcoded module" rule.
+  const cbcProposals = RULE_PROPOSAL_REGISTRY.cbc_suite_v1;
+  assert.ok(cbcProposals.length > 0);
+  const cbcDecisions = [...new Set(cbcProposals.map((p) => p.decisionId))].map((decisionId) => ({
+    decision_id: decisionId,
+    status: 'approved_for_rule_draft',
+  }));
+  const cbcGate = resolveRuleEmissionGate(cbcDecisions, cbcProposals);
+  assert.equal(cbcGate.permitted, true);
 });
 
 test('P3-T7: propose requires --run-dir, --module, --decisions, and --out (usage error, not a stack trace)', async () => {

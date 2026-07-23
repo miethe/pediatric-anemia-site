@@ -29,6 +29,14 @@
 //
 // Pure functions only -- no I/O, no timestamps, sorted output throughout (FR-20 seam invariant 13;
 // this task's own "byte-identical across two runs" AC).
+//
+// multi-bundle-conversion-e1-finish Phase 4 (P4-T4, FR-F16) ADDS a second, independent comparison
+// mode below `diffEvidenceAssertions`/`buildEvidenceAssertionsDiffReport` -- an assertionId-level
+// added/removed/changed comparison over two `evidence-assertions.json` documents, for modules that
+// emit no rule content at all (`anemia`/`kidney_suite_v1`/`growth_suite_v1`), for which the rule-id
+// mode above has nothing meaningful to compare. `cbc_suite_v1`'s existing rule-id-level mode is
+// UNCHANGED and stays the only mode `propose.mjs` uses for that module; see each mode's own section
+// header below for the full rationale for why they are two DIFFERENT tools, not one generalized.
 
 /**
  * Deterministic deep-equality via a canonical (key-sorted) JSON stringification -- same technique
@@ -53,6 +61,111 @@ function stableStringify(value) {
  */
 function deepEqualRule(a, b) {
   return stableStringify(a ?? null) === stableStringify(b ?? null);
+}
+
+// =================================================================================================
+// multi-bundle-conversion-e1-finish Phase 4 (P4-T4, FR-F16): a SECOND, independent comparison mode
+// -- assertionId-level added/removed/changed over two evidence-assertions.json documents. This is
+// NOT a generalization of the rule-id mode above (it is keyed by a different field, over a
+// different document shape, with no "same-module-only removed" gating -- see this function's own
+// doc comment for why a base-minus-head subtraction is always meaningful here, unlike the rule-id
+// mode's cross-module case). `cbc_suite_v1`'s existing rule-id-level semantic-diff.json (OQ-4,
+// above) is UNCHANGED by this addition -- `propose.mjs` selects between the two modes by moduleId
+// (only `cbc_suite_v1` uses the rule-id mode; `anemia`/`kidney_suite_v1`/`growth_suite_v1` each use
+// this evidence-projection mode instead, since none of the 3 emits any rule for this comparison to
+// meaningfully cover). Pure function -- no I/O, no timestamps, sorted output throughout (FR-20 seam
+// invariant 13), same posture as `computeSemanticDiff` above.
+// =================================================================================================
+
+/**
+ * assertionId-level added/removed/changed comparison between two `evidence-assertions.json`
+ * documents' `assertions[]` arrays (P4-T4, FR-F16). Unlike `computeSemanticDiff`'s rule-id mode,
+ * `removed` here is ALWAYS computed as a plain base-minus-head subtraction, regardless of whether
+ * `baseAssertions`/`headAssertions` come from "the same module" or not -- this function has no
+ * cross-module additive-proposal concept to protect against (see `computeSemanticDiff`'s own header
+ * comment for that concern): its two call-site inputs are always the SAME module's own committed
+ * evidence-assertions.json compared against that SAME module's own freshly-produced copy of it
+ * (`propose.mjs`'s per-module wiring), so a base-only assertionId genuinely means "this run's fresh
+ * output no longer carries an assertion the committed file has" -- a real, honest signal, not a
+ * false alarm.
+ *
+ * @param {{
+ *   baseAssertions: ReadonlyArray<{ assertionId: string }>,
+ *   headAssertions: ReadonlyArray<{ assertionId: string }>,
+ * }} args
+ * @returns {{ added: string[], removed: string[], changed: string[] }}
+ */
+export function diffEvidenceAssertions({ baseAssertions, headAssertions }) {
+  const baseById = new Map((baseAssertions ?? []).map((assertion) => [assertion.assertionId, assertion]));
+  const headById = new Map((headAssertions ?? []).map((assertion) => [assertion.assertionId, assertion]));
+
+  const added = [];
+  const changed = [];
+  for (const [id, headAssertion] of headById) {
+    const baseAssertion = baseById.get(id);
+    if (!baseAssertion) {
+      added.push(id);
+    } else if (!deepEqualRule(baseAssertion, headAssertion)) {
+      changed.push(id);
+    }
+  }
+
+  const removed = [...baseById.keys()].filter((id) => !headById.has(id));
+
+  return {
+    added: added.sort(),
+    removed: removed.sort(),
+    changed: changed.sort(),
+  };
+}
+
+/**
+ * Full `semantic-diff.json` document shape for the evidence-projection comparison mode (P4-T4,
+ * FR-F16) -- the document `propose.mjs` writes for `anemia`/`kidney_suite_v1`/`growth_suite_v1`
+ * (never `cbc_suite_v1`, which keeps the rule-id-level `buildSemanticDiffReport` shape above
+ * unchanged). Same "no schema file, no timestamp" posture as `buildSemanticDiffReport`.
+ *
+ * @param {{
+ *   baseModuleId: string,
+ *   basePath: string,
+ *   baseAssertions: ReadonlyArray<{ assertionId: string }>,
+ *   headModuleId: string,
+ *   headAssertions: ReadonlyArray<{ assertionId: string }>,
+ * }} args
+ * @returns {object}
+ */
+export function buildEvidenceAssertionsDiffReport({
+  baseModuleId,
+  basePath,
+  baseAssertions,
+  headModuleId,
+  headAssertions,
+}) {
+  const diff = diffEvidenceAssertions({ baseAssertions, headAssertions });
+  return {
+    schemaVersion: '1.0',
+    scope: 'evidence-assertions.json assertionId-level added/removed/changed only (P4-T4, FR-F16) '
+      + '-- compares this run\'s freshly-produced evidence-assertions.json against this module\'s '
+      + 'own currently-committed evidence-assertions.json; no rule-id comparison is meaningful here '
+      + 'because this module emits no rule for this run (see propose.mjs\'s own per-module wiring)',
+    base: {
+      moduleId: baseModuleId,
+      path: basePath,
+      assertionCount: (baseAssertions ?? []).length,
+    },
+    head: {
+      moduleId: headModuleId,
+      assertionCount: (headAssertions ?? []).length,
+    },
+    added: diff.added,
+    removed: diff.removed,
+    changed: diff.changed,
+    summary: {
+      addedCount: diff.added.length,
+      removedCount: diff.removed.length,
+      changedCount: diff.changed.length,
+    },
+  };
 }
 
 /**

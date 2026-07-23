@@ -355,6 +355,768 @@
       "clinical_identifier": "modules/cbc_suite_v1/reference-ranges.json",
       "rights_record_id": "RR-AAP2026_IDA-REFERENCE-RANGES",
       "notes": "cbc_suite_v1 rights-metadata backfill: direct file-path-level coverage. modules/cbc_suite_v1/reference-ranges.json's own \"source\" field is AAP2026_IDA (cbc_suite_v1 has no fact-derivation code of its own in E0 and delegates to modules/anemia/facts.anemia.js, OQ-1) -- the same derived-fact channel EPR1-T1's RR-AAP2026_IDA-REFERENCE-RANGES already covers for modules/anemia/reference-ranges.json. This joins the cbc_suite_v1 artifact path to that existing component-scoped record rather than minting a duplicate."
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "rights_record_id": "RR-AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "ADVCLINEXPMED2024_FA_CYTOGENETICS",
+      "rights_record_id": "RR-ADVCLINEXPMED2024_FA_CYTOGENETICS",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "AFP2023_GROWTH_FALTERING_REVIEW",
+      "rights_record_id": "RR-AFP2023_GROWTH_FALTERING_REVIEW",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "ANM2024_FALTERING_GROWTH_UPDATE",
+      "rights_record_id": "RR-ANM2024_FALTERING_GROWTH_UPDATE",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "ASPEN2015_MALNUTRITION_INDICATORS",
+      "rights_record_id": "RR-ASPEN2015_MALNUTRITION_INDICATORS",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "ASTCT2024_SAA_HCT_GUIDELINE",
+      "rights_record_id": "RR-ASTCT2024_SAA_HCT_GUIDELINE",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "BCMD2024_AIEOP_AA_GUIDELINE",
+      "rights_record_id": "RR-BCMD2024_AIEOP_AA_GUIDELINE",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "BJHAEM2024_BSH_AA_GUIDELINE",
+      "rights_record_id": "RR-BJHAEM2024_BSH_AA_GUIDELINE",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "BLOOD2022_TBD_OUTCOMES",
+      "rights_record_id": "RR-BLOOD2022_TBD_OUTCOMES",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "BLOODADV2024_SAA_DELPHI_CONSENSUS",
+      "rights_record_id": "RR-BLOODADV2024_SAA_DELPHI_CONSENSUS",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+      "rights_record_id": "RR-BLOODADV2025_RCC_OBSERVATION_OUTCOMES",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "CDC2010_WHO_CDC_CHART_USE_REC",
+      "rights_record_id": "RR-CDC2010_WHO_CDC_CHART_USE_REC",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "CKID_RACE_CR_CYSC_GFR_2021",
+      "rights_record_id": "RR-CKID_RACE_CR_CYSC_GFR_2021",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "CKID_U25_GFR_EQUATIONS_2021",
+      "rights_record_id": "RR-CKID_U25_GFR_EQUATIONS_2021",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+      "rights_record_id": "RR-CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+      "rights_record_id": "RR-FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "rights_record_id": "RR-HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "INDIANPEDIATR2022_IAP_AA_CONSENSUS",
+      "rights_record_id": "RR-INDIANPEDIATR2022_IAP_AA_CONSENSUS",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "rights_record_id": "RR-JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "KDIGO_CKD_GUIDELINE_2024",
+      "rights_record_id": "RR-KDIGO_CKD_GUIDELINE_2024",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "LANCETHAEM2024_DBA_CONSENSUS",
+      "rights_record_id": "RR-LANCETHAEM2024_DBA_CONSENSUS",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "LEUKEMIA2024_IBMFS_PROTEOGENOMICS",
+      "rights_record_id": "RR-LEUKEMIA2024_IBMFS_PROTEOGENOMICS",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "NICE2017_NG75_FALTERING_GROWTH",
+      "rights_record_id": "RR-NICE2017_NG75_FALTERING_GROWTH",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "NUTRIENTS2026_PRETERM_ESPGHAN",
+      "rights_record_id": "RR-NUTRIENTS2026_PRETERM_ESPGHAN",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "PBC2024_PEDIATRIC_SAA_RECOMMENDATIONS",
+      "rights_record_id": "RR-PBC2024_PEDIATRIC_SAA_RECOMMENDATIONS",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+      "rights_record_id": "RR-PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "rights_record_id": "RR-PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "rights_record_id": "RR-PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "PEDS2025_GRADUAL_TRANSITION_CHART",
+      "rights_record_id": "RR-PEDS2025_GRADUAL_TRANSITION_CHART",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "rights_record_id": "RR-PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "rights_record_id": "RR-PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+      "rights_record_id": "RR-SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "WHO2006_LHFA_STANDARD",
+      "rights_record_id": "RR-WHO2006_LHFA_STANDARD",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "WHO2006_WFL_WFH_STANDARD",
+      "rights_record_id": "RR-WHO2006_WFL_WFH_STANDARD",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "evidence_source_id",
+      "clinical_identifier": "WHO2007_BMI_5_19Y_REFERENCE",
+      "rights_record_id": "RR-WHO2007_BMI_5_19Y_REFERENCE",
+      "notes": "modules/cbc_suite_v1, modules/kidney_suite_v1, or modules/growth_suite_v1 evidence.json sources[].id (multi-bundle-conversion-e1-finish-p0 backfill)"
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/rules.json",
+      "rights_record_id": "RR-CKID_U25_GFR_EQUATIONS_2021",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes CKID_U25_GFR_EQUATIONS_2021 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/rules.json",
+      "rights_record_id": "RR-CKID_RACE_CR_CYSC_GFR_2021",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes CKID_RACE_CR_CYSC_GFR_2021 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/rules.json",
+      "rights_record_id": "RR-AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes AAP_PEDIATRIC_HTN_GUIDELINE_2017 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/rules.json",
+      "rights_record_id": "RR-KDIGO_CKD_GUIDELINE_2024",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes KDIGO_CKD_GUIDELINE_2024 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/rules.json",
+      "rights_record_id": "RR-CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/rules.json",
+      "rights_record_id": "RR-PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/rules.json",
+      "rights_record_id": "RR-HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/rules.json",
+      "rights_record_id": "RR-PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PROTEINURIA_CHILDREN_EVALUATION_AFP_2017 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/rules.json",
+      "rights_record_id": "RR-PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/rules.json",
+      "rights_record_id": "RR-PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PEDIATRIC_EGFR_DISCORDANT_GFR_2023 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/rules.json",
+      "rights_record_id": "RR-SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/rules.json",
+      "rights_record_id": "RR-PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/candidates.json",
+      "rights_record_id": "RR-CKID_U25_GFR_EQUATIONS_2021",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes CKID_U25_GFR_EQUATIONS_2021 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/candidates.json",
+      "rights_record_id": "RR-CKID_RACE_CR_CYSC_GFR_2021",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes CKID_RACE_CR_CYSC_GFR_2021 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/candidates.json",
+      "rights_record_id": "RR-AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes AAP_PEDIATRIC_HTN_GUIDELINE_2017 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/candidates.json",
+      "rights_record_id": "RR-KDIGO_CKD_GUIDELINE_2024",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes KDIGO_CKD_GUIDELINE_2024 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/candidates.json",
+      "rights_record_id": "RR-CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/candidates.json",
+      "rights_record_id": "RR-PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/candidates.json",
+      "rights_record_id": "RR-HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/candidates.json",
+      "rights_record_id": "RR-PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PROTEINURIA_CHILDREN_EVALUATION_AFP_2017 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/candidates.json",
+      "rights_record_id": "RR-PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/candidates.json",
+      "rights_record_id": "RR-PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PEDIATRIC_EGFR_DISCORDANT_GFR_2023 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/candidates.json",
+      "rights_record_id": "RR-SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/candidates.json",
+      "rights_record_id": "RR-PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/evidence.json",
+      "rights_record_id": "RR-CKID_U25_GFR_EQUATIONS_2021",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes CKID_U25_GFR_EQUATIONS_2021 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/evidence.json",
+      "rights_record_id": "RR-CKID_RACE_CR_CYSC_GFR_2021",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes CKID_RACE_CR_CYSC_GFR_2021 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/evidence.json",
+      "rights_record_id": "RR-AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes AAP_PEDIATRIC_HTN_GUIDELINE_2017 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/evidence.json",
+      "rights_record_id": "RR-KDIGO_CKD_GUIDELINE_2024",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes KDIGO_CKD_GUIDELINE_2024 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/evidence.json",
+      "rights_record_id": "RR-CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/evidence.json",
+      "rights_record_id": "RR-PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/evidence.json",
+      "rights_record_id": "RR-HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/evidence.json",
+      "rights_record_id": "RR-PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PROTEINURIA_CHILDREN_EVALUATION_AFP_2017 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/evidence.json",
+      "rights_record_id": "RR-PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/evidence.json",
+      "rights_record_id": "RR-PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PEDIATRIC_EGFR_DISCORDANT_GFR_2023 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/evidence.json",
+      "rights_record_id": "RR-SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/evidence.json",
+      "rights_record_id": "RR-PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-CKID_U25_GFR_EQUATIONS_2021",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes CKID_U25_GFR_EQUATIONS_2021 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-CKID_RACE_CR_CYSC_GFR_2021",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes CKID_RACE_CR_CYSC_GFR_2021 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-AAP_PEDIATRIC_HTN_GUIDELINE_2017",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes AAP_PEDIATRIC_HTN_GUIDELINE_2017 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-KDIGO_CKD_GUIDELINE_2024",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes KDIGO_CKD_GUIDELINE_2024 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes CYSTATINC_EGFR_PEDIATRIC_UTILITY_2024 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PEDIATRIC_TRANSPLANT_EGFR_COMPARISON_2025 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes HEMATURIA_PROTEINURIA_CHILDREN_REVIEW_2018 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-PROTEINURIA_CHILDREN_EVALUATION_AFP_2017",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PROTEINURIA_CHILDREN_EVALUATION_AFP_2017 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PROTEINURIA_HEMATURIA_AMBULATORY_REVIEW_2022 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-PEDIATRIC_EGFR_DISCORDANT_GFR_2023",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PEDIATRIC_EGFR_DISCORDANT_GFR_2023 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes SPOT_PC_RATIO_DIAGNOSTIC_UTILITY_REVIEW_2020 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/kidney_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024",
+      "notes": "kidney_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from kidney_suite_v1/evidence.json's own sources[] enumeration, which includes PEDIATRIC_TRANSPLANT_CYSC_VS_CR_EGFR_2024 as one of the module's 12 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/rules.json",
+      "rights_record_id": "RR-AFP2023_GROWTH_FALTERING_REVIEW",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes AFP2023_GROWTH_FALTERING_REVIEW as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/rules.json",
+      "rights_record_id": "RR-ANM2024_FALTERING_GROWTH_UPDATE",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes ANM2024_FALTERING_GROWTH_UPDATE as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/rules.json",
+      "rights_record_id": "RR-ASPEN2015_MALNUTRITION_INDICATORS",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes ASPEN2015_MALNUTRITION_INDICATORS as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/rules.json",
+      "rights_record_id": "RR-CDC2010_WHO_CDC_CHART_USE_REC",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes CDC2010_WHO_CDC_CHART_USE_REC as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/rules.json",
+      "rights_record_id": "RR-JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes JPEDS2024_INTERGROWTH21_COGNITIVE_RISK as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/rules.json",
+      "rights_record_id": "RR-NICE2017_NG75_FALTERING_GROWTH",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes NICE2017_NG75_FALTERING_GROWTH as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/rules.json",
+      "rights_record_id": "RR-NUTRIENTS2026_PRETERM_ESPGHAN",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes NUTRIENTS2026_PRETERM_ESPGHAN as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/rules.json",
+      "rights_record_id": "RR-PEDS2025_GRADUAL_TRANSITION_CHART",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes PEDS2025_GRADUAL_TRANSITION_CHART as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/rules.json",
+      "rights_record_id": "RR-WHO2006_LHFA_STANDARD",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes WHO2006_LHFA_STANDARD as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/rules.json",
+      "rights_record_id": "RR-WHO2006_WFL_WFH_STANDARD",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes WHO2006_WFL_WFH_STANDARD as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/rules.json",
+      "rights_record_id": "RR-WHO2007_BMI_5_19Y_REFERENCE",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. rules.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes WHO2007_BMI_5_19Y_REFERENCE as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/candidates.json",
+      "rights_record_id": "RR-AFP2023_GROWTH_FALTERING_REVIEW",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes AFP2023_GROWTH_FALTERING_REVIEW as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/candidates.json",
+      "rights_record_id": "RR-ANM2024_FALTERING_GROWTH_UPDATE",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes ANM2024_FALTERING_GROWTH_UPDATE as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/candidates.json",
+      "rights_record_id": "RR-ASPEN2015_MALNUTRITION_INDICATORS",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes ASPEN2015_MALNUTRITION_INDICATORS as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/candidates.json",
+      "rights_record_id": "RR-CDC2010_WHO_CDC_CHART_USE_REC",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes CDC2010_WHO_CDC_CHART_USE_REC as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/candidates.json",
+      "rights_record_id": "RR-JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes JPEDS2024_INTERGROWTH21_COGNITIVE_RISK as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/candidates.json",
+      "rights_record_id": "RR-NICE2017_NG75_FALTERING_GROWTH",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes NICE2017_NG75_FALTERING_GROWTH as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/candidates.json",
+      "rights_record_id": "RR-NUTRIENTS2026_PRETERM_ESPGHAN",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes NUTRIENTS2026_PRETERM_ESPGHAN as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/candidates.json",
+      "rights_record_id": "RR-PEDS2025_GRADUAL_TRANSITION_CHART",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes PEDS2025_GRADUAL_TRANSITION_CHART as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/candidates.json",
+      "rights_record_id": "RR-WHO2006_LHFA_STANDARD",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes WHO2006_LHFA_STANDARD as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/candidates.json",
+      "rights_record_id": "RR-WHO2006_WFL_WFH_STANDARD",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes WHO2006_WFL_WFH_STANDARD as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/candidates.json",
+      "rights_record_id": "RR-WHO2007_BMI_5_19Y_REFERENCE",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. candidates.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes WHO2007_BMI_5_19Y_REFERENCE as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/evidence.json",
+      "rights_record_id": "RR-AFP2023_GROWTH_FALTERING_REVIEW",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes AFP2023_GROWTH_FALTERING_REVIEW as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/evidence.json",
+      "rights_record_id": "RR-ANM2024_FALTERING_GROWTH_UPDATE",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes ANM2024_FALTERING_GROWTH_UPDATE as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/evidence.json",
+      "rights_record_id": "RR-ASPEN2015_MALNUTRITION_INDICATORS",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes ASPEN2015_MALNUTRITION_INDICATORS as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/evidence.json",
+      "rights_record_id": "RR-CDC2010_WHO_CDC_CHART_USE_REC",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes CDC2010_WHO_CDC_CHART_USE_REC as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/evidence.json",
+      "rights_record_id": "RR-JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes JPEDS2024_INTERGROWTH21_COGNITIVE_RISK as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/evidence.json",
+      "rights_record_id": "RR-NICE2017_NG75_FALTERING_GROWTH",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes NICE2017_NG75_FALTERING_GROWTH as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/evidence.json",
+      "rights_record_id": "RR-NUTRIENTS2026_PRETERM_ESPGHAN",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes NUTRIENTS2026_PRETERM_ESPGHAN as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/evidence.json",
+      "rights_record_id": "RR-PEDS2025_GRADUAL_TRANSITION_CHART",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes PEDS2025_GRADUAL_TRANSITION_CHART as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/evidence.json",
+      "rights_record_id": "RR-WHO2006_LHFA_STANDARD",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes WHO2006_LHFA_STANDARD as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/evidence.json",
+      "rights_record_id": "RR-WHO2006_WFL_WFH_STANDARD",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes WHO2006_WFL_WFH_STANDARD as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/evidence.json",
+      "rights_record_id": "RR-WHO2007_BMI_5_19Y_REFERENCE",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. evidence.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes WHO2007_BMI_5_19Y_REFERENCE as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-AFP2023_GROWTH_FALTERING_REVIEW",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes AFP2023_GROWTH_FALTERING_REVIEW as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-ANM2024_FALTERING_GROWTH_UPDATE",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes ANM2024_FALTERING_GROWTH_UPDATE as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-ASPEN2015_MALNUTRITION_INDICATORS",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes ASPEN2015_MALNUTRITION_INDICATORS as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-CDC2010_WHO_CDC_CHART_USE_REC",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes CDC2010_WHO_CDC_CHART_USE_REC as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes JPEDS2024_INTERGROWTH21_COGNITIVE_RISK as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-NICE2017_NG75_FALTERING_GROWTH",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes NICE2017_NG75_FALTERING_GROWTH as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-NUTRIENTS2026_PRETERM_ESPGHAN",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes NUTRIENTS2026_PRETERM_ESPGHAN as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-PEDS2025_GRADUAL_TRANSITION_CHART",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes PEDS2025_GRADUAL_TRANSITION_CHART as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-WHO2006_LHFA_STANDARD",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes WHO2006_LHFA_STANDARD as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-WHO2006_WFL_WFH_STANDARD",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes WHO2006_WFL_WFH_STANDARD as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
+    },
+    {
+      "clinical_identifier_type": "kb_json_file_path",
+      "clinical_identifier": "modules/growth_suite_v1/reference-ranges.json",
+      "rights_record_id": "RR-WHO2007_BMI_5_19Y_REFERENCE",
+      "notes": "growth_suite_v1 rights-metadata backfill (P0-T5b, multi-bundle-conversion-e1-finish): direct kb_json_file_path coverage triage-only join. reference-ranges.json's content derives from growth_suite_v1/evidence.json's own sources[] enumeration, which includes WHO2007_BMI_5_19Y_REFERENCE as one of the module's 11 sources; this entry joins the artifact itself to that source's rights record (already separately covered via its evidence_source_id entry), mirroring the modules/cbc_suite_v1 kb_json_file_path precedent. Coverage join only -- asserts no rights determination."
     }
   ],
   "rights_decisions_description": "EPR4-T4 (FR-WP4-04, D4): the RIGHTS-DECISION LEDGER. A separate array from `entries` above — `entries` joins a CLINICAL KB identifier to a rights_record (the coverage join, EPR0-T1+); `rights_decisions` is the shape a future rights owner (OQ-2) fills in to record their actual per-passage rights DETERMINATION, joined BIDIRECTIONALLY to (1) a rights_record_id here in rights/rights-records.json and (2) a passage id ('evidence item') in a module's evidence.json. Entry shape, deliberately identical to scripts/evidence/lib/attested-passage-map.mjs's existing attestation-entry shape so a future entry validates through that SAME reused machinery (validateAttestationEntries — the RG-9 seam) rather than a second implementation: { rights_decision_id, rights_record_id, passageId, attestedBy, credential, attestedOn, attestationRef }. `passageId` -- not `evidence_item_id` -- deliberately: a derived_synthesis item carries no rights_record of its own (RF handoff Section 9.5, decisions-block D3/D6; see scripts/rights/build-decision-brief.mjs), so a rights decision is always about a passage, the thing that actually joins to a rights_record. Validated by scripts/rights/lib/rights-decision-ledger-gate.mjs's checkRightsDecisionLedgerCoverage gate (scripts/validate-rights.mjs GATES id 'rights-decision-ledger-coverage'): the passageId/attestation-shaped half reuses validateAttestationEntries unmodified; the rights_record_id half is a plain existence-join lookup. No code path in this repository may write a live entry here (D6) -- the array ships and stays EMPTY until a named rights owner exists (OQ-2) and a real determination is recorded through whatever write path a future rights-clearance workflow specifies (see docs/project_plans/design-specs/rights-clearance-workflow.md, idea-stage, DEF-R1). A record's own `decision`/`overall_status` disposition never lives in this array -- only the join to the record that carries it; this array is coverage/join plumbing, never a clearance value (D7).",

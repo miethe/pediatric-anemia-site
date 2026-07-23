@@ -154,6 +154,67 @@ export function isHaltingExitCode(exitCode) {
 }
 
 /**
+ * Exit 3 — GOVERNANCE. The live, code-enforced fail-closed emission gate (multi-bundle-conversion-
+ * e1-finish, Phase 1, FR-F6, R-2/OQ-1) refuses to emit `rules.json`/`rule-provenance.json` for this
+ * `propose` run: at least one `authoring-decisions.yaml` decision referenced by a drafted rule/
+ * candidate proposal does not carry `status: "approved_for_rule_draft"` — the ONLY permitting value
+ * (an allowlist check, never a denylist of the other enum members). This is a GOVERNANCE refusal,
+ * not a content defect: the referenced decision(s) resolve fine, they simply have not (yet, or
+ * ever) been approved for rule drafting. Per Phase 1's P1-T8 restructuring, `propose.mjs`'s `run()`
+ * catches this condition as a value BEFORE it would otherwise throw and folds it into
+ * `conversion-report.json` as a caught, non-fatal signal — `run()` still returns `EXIT_OK` on this
+ * path. This class exists (a) so the refusal has one canonical, named, taxonomy-mapped shape whose
+ * `.message`/`.refusedDecisions` feed that report, and (b) so a future call site that DOES need to
+ * halt on this condition (none exists yet in this build) has a ready-made GOVERNANCE-mapped error
+ * to throw, consistent with 02 §5.2's "Block; never override in the converter" posture for exit 3.
+ */
+export class RuleEmissionRefusedError extends GovernanceError {
+  constructor({ refusedDecisions, referencedDecisionIds }) {
+    const detail = refusedDecisions.length === 0
+      ? 'no decision in authoring-decisions.yaml is referenced by any drafted rule/candidate proposal'
+      : refusedDecisions
+          .map(({ decisionId, status }) => `${decisionId} (status=${JSON.stringify(status ?? null)})`)
+          .join(', ');
+    super(
+      `rule/rule-provenance emission refused: ${refusedDecisions.length} of ` +
+        `${referencedDecisionIds.length} decision(s) referenced by drafted rule proposals did not ` +
+        `carry status "approved_for_rule_draft" -- ${detail}. The emission gate is coded as an ` +
+        'allowlist (status === "approved_for_rule_draft" is the ONLY permitting condition) -- ' +
+        '"rejected", "withdrawn", "drafted_pending_human_approval", and any unrecognized future ' +
+        'status value all refuse identically via this same branch. rules.json/rule-provenance.json ' +
+        'are not written for this run.',
+    );
+    this.refusedDecisions = refusedDecisions;
+    this.referencedDecisionIds = referencedDecisionIds;
+  }
+}
+
+/**
+ * Exit 2 — SCHEMA. A decision's `basis.rf_claim_ids[]` or `basis.exact_assertion_ids[]` entry does
+ * not resolve to a real id in the bundle's own `claims/claim_ledger.yaml` or the module's own
+ * `evidence-assertions.json`, respectively (multi-bundle-conversion-e1-finish, Phase 1, P1-T4,
+ * FR-F7, OQ-3). `schemas/authoring-decisions.schema.json` documents that it "cannot verify that
+ * cross-file resolution itself" — this class is the runtime extension that DOES verify it. Unlike
+ * `RuleEmissionRefusedError` above, this is a genuine content/fabrication defect, never a caught,
+ * non-fatal signal: `propose.mjs` throws this BEFORE any output (including `mkdir(outDir)`) is
+ * written, and it is never swallowed or downgraded by the P1-T8 non-fatal-refusal restructuring.
+ */
+export class UnresolvedClaimReferenceError extends SchemaError {
+  constructor({ kind, id, decisionId }) {
+    super(
+      `authoring-decisions.yaml decision "${decisionId}" cites ${kind === 'clm' ? 'claim' : 'evidence-assertion'} ` +
+        `id "${id}", which does not resolve to a real id in ${
+          kind === 'clm' ? 'the bundle\'s claims/claim_ledger.yaml' : 'this module\'s evidence-assertions.json'
+        } -- this schema documents that it "cannot verify that cross-file resolution itself"; this ` +
+        'runtime check does. No output has been written for this run.',
+    );
+    this.kind = kind;
+    this.id = id;
+    this.decisionId = decisionId;
+  }
+}
+
+/**
  * Scaffold-only marker for a module boundary this phase defines but does not yet implement
  * (P2-T2..T7, or the P3 `propose` verb). Maps to EXIT_USAGE: from the caller's perspective an
  * unimplemented code path is "this CLI usage is not available yet," the closest fit among the 02

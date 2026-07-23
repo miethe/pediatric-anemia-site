@@ -68,9 +68,60 @@
             "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfgro002_10",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "AFP2023_GROWTH_FALTERING_REVIEW",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/growth_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "ANM2024_FALTERING_GROWTH_UPDATE",
@@ -144,9 +195,60 @@
             "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfgro002_05",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "ANM2024_FALTERING_GROWTH_UPDATE",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/growth_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "ASPEN2015_MALNUTRITION_INDICATORS",
@@ -231,9 +333,60 @@
             "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfgro002_07",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "ASPEN2015_MALNUTRITION_INDICATORS",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/growth_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "CDC2010_WHO_CDC_CHART_USE_REC",
@@ -303,9 +456,60 @@
             "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfgro002_00",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "CDC2010_WHO_CDC_CHART_USE_REC",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/growth_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
@@ -388,9 +592,60 @@
             "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfgro002_08",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "JPEDS2024_INTERGROWTH21_COGNITIVE_RISK",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/growth_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "NICE2017_NG75_FALTERING_GROWTH",
@@ -460,9 +715,60 @@
             "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfgro002_09",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "NICE2017_NG75_FALTERING_GROWTH",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/growth_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "NUTRIENTS2026_PRETERM_ESPGHAN",
@@ -536,9 +842,60 @@
             "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfgro002_03",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "NUTRIENTS2026_PRETERM_ESPGHAN",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/growth_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "PEDS2025_GRADUAL_TRANSITION_CHART",
@@ -610,9 +967,60 @@
             "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfgro002_04",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "PEDS2025_GRADUAL_TRANSITION_CHART",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/growth_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "WHO2006_LHFA_STANDARD",
@@ -682,9 +1090,60 @@
             "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfgro002_02",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "WHO2006_LHFA_STANDARD",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/growth_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "WHO2006_WFL_WFH_STANDARD",
@@ -749,9 +1208,60 @@
             "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfgro002_01",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "WHO2006_WFL_WFH_STANDARD",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/growth_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     },
     {
       "id": "WHO2007_BMI_5_19Y_REFERENCE",
@@ -824,9 +1334,60 @@
             "runId": "rf_run_20260717_rf_gro_002_pediatric_cds_evidence",
             "sourceCardId": "src_20260718_rfgro002_06",
             "evidenceId": "implementation-proposal"
-          }
+          },
+          "evidence_item_type": "bibliographic_metadata",
+          "judgment_basis": "unassessed",
+          "judgment_basis_attestation": null,
+          "rights_component_class": "bibliographic_metadata",
+          "structured_locator": {
+            "source": "WHO2007_BMI_5_19Y_REFERENCE",
+            "edition_or_version": null,
+            "section": null,
+            "table": null,
+            "row": null,
+            "column": null,
+            "assay_or_method": null,
+            "population_or_scope": null,
+            "retrieved_at": null,
+            "unresolved_components": []
+          },
+          "not_captured": [
+            {
+              "kind": "verbatim_wording",
+              "rationale": "No verbatim source text retained (D1)."
+            },
+            {
+              "kind": "other",
+              "rationale": "Exact-passage traceability is recorded separately in modules/growth_suite_v1/evidence-assertions.json (P3-T3 convention) rather than duplicated here."
+            }
+          ]
         }
-      ]
+      ],
+      "license": {
+        "status": "unknown",
+        "rights_holder": null,
+        "license_url": null,
+        "noncommercial_only": null,
+        "no_derivatives": null,
+        "government_basis": {
+          "government_work": null,
+          "government_funded": null
+        }
+      },
+      "access_basis": "unknown",
+      "terms": {
+        "incorporation_into_other_products": "unknown",
+        "adaptation": "unknown",
+        "commercial_use": "unknown",
+        "redistribution": "unknown",
+        "sublicensing": "unknown"
+      },
+      "terms_snapshot": {
+        "status": "unknown",
+        "locator": null,
+        "sha256": null,
+        "retrieved_at": null
+      }
     }
   ]
 }

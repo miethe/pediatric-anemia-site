@@ -229,3 +229,17 @@ phase stays `in_progress` until both gates run.
 See `.claude/findings/multi-bundle-conversion-e1-findings.md` § "Phase 6 Findings" — the P6-T3
 AC-vs-reality correction and the pre-existing shared-mutable-state test hazard (not load-bearing for
 P6; no new design-spec warranted, per the deferred-items/findings lifecycle).
+
+## Superseded by `multi-bundle-conversion-e1-finish` (2026-07-23)
+
+`in_progress` (`P6-GATE1` never run; `P6-GATE2` informally reviewed ahead of its declared slot, per
+the sequencing-discrepancy note above, but not recorded as a formal pass) is left as-is here —
+accurate, not stale — rather than force-set to `completed`. Noted so this tracker is not read as
+contradicting `.claude/progress/multi-bundle-conversion-e1-finish/`: the `karen` review this
+phase's own findings doc closes findings from is the direct predecessor of the successor plan
+`docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1-finish.md`, whose own P0
+("gate recovery: honest rights triage for 35 sources") and P1–P4 work
+(commits `dc1293a`, `a8762c4`, `19bf493`, `f7fc2c8`, `24be3f2`) is exactly the remediation that
+`karen`'s review of this phase called for — not a re-run of P6-T1..T4, which stay as committed
+here. Zero new clinical rules were emitted in either plan; this repo remains an unvalidated
+research prototype.

@@ -12,6 +12,13 @@
 // Also covers `computeSemanticDiff`/`buildSemanticDiffReport` in isolation (pure functions, no I/O)
 // against synthetic fixtures, including the same-module "removed"/"changed" case this task's
 // header comment promises is non-trivial in E1.
+//
+// multi-bundle-conversion-e1-finish Phase 4 (P4-T4, FR-F16) ADDS coverage below for the SECOND,
+// independent comparison mode this phase adds -- `diffEvidenceAssertions`/
+// `buildEvidenceAssertionsDiffReport` (assertionId-level, over two evidence-assertions.json
+// documents) -- plus an integration proof that `propose`'s emission for the 3 non-cbc modules
+// (anemia/kidney_suite_v1/growth_suite_v1) writes `semantic-diff.json` in THIS mode, never the
+// rule-id mode above (which stays exclusively `cbc_suite_v1`'s, unchanged).
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -20,7 +27,12 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { computeSemanticDiff, buildSemanticDiffReport } from '../tools/rf-bundle-to-kb-pack/lib/semantic-diff.mjs';
+import {
+  computeSemanticDiff,
+  buildSemanticDiffReport,
+  diffEvidenceAssertions,
+  buildEvidenceAssertionsDiffReport,
+} from '../tools/rf-bundle-to-kb-pack/lib/semantic-diff.mjs';
 import { run as runPropose } from '../tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -232,5 +244,160 @@ test('P5-T3 AC: semantic-diff.json is byte-identical across two clean propose ru
   } finally {
     await rm(outDirA, { recursive: true, force: true });
     await rm(outDirB, { recursive: true, force: true });
+  }
+});
+
+// =================================================================================================
+// P4-T4 (multi-bundle-conversion-e1-finish Phase 4, FR-F16): diffEvidenceAssertions — pure function,
+// synthetic fixtures.
+// =================================================================================================
+
+test('P4-T4: diffEvidenceAssertions of a document against itself is always empty (added/removed/changed)', () => {
+  const assertions = [
+    { assertionId: 'evas_001', text: 'a' },
+    { assertionId: 'evas_002', text: 'b' },
+  ];
+  const diff = diffEvidenceAssertions({ baseAssertions: assertions, headAssertions: assertions });
+  assert.deepEqual(diff, { added: [], removed: [], changed: [] });
+
+  // Also true for two SEPARATE (deep-equal, not same-reference) copies of the same content.
+  const diffCopies = diffEvidenceAssertions({
+    baseAssertions: JSON.parse(JSON.stringify(assertions)),
+    headAssertions: JSON.parse(JSON.stringify(assertions)),
+  });
+  assert.deepEqual(diffCopies, { added: [], removed: [], changed: [] });
+});
+
+test('P4-T4: diffEvidenceAssertions reports a seeded single-field change as exactly one `changed` entry naming that assertionId', () => {
+  const base = [
+    { assertionId: 'evas_001', text: 'original text' },
+    { assertionId: 'evas_002', text: 'unchanged' },
+  ];
+  const head = [
+    { assertionId: 'evas_001', text: 'CHANGED text' },
+    { assertionId: 'evas_002', text: 'unchanged' },
+  ];
+  const diff = diffEvidenceAssertions({ baseAssertions: base, headAssertions: head });
+  assert.deepEqual(diff.changed, ['evas_001']);
+  assert.deepEqual(diff.added, []);
+  assert.deepEqual(diff.removed, []);
+});
+
+test('P4-T4: diffEvidenceAssertions reports a head-only assertionId as added and a base-only assertionId as removed', () => {
+  const base = [
+    { assertionId: 'evas_001', text: 'a' },
+    { assertionId: 'evas_002', text: 'b' },
+  ];
+  const head = [
+    { assertionId: 'evas_001', text: 'a' },
+    { assertionId: 'evas_003', text: 'c' },
+  ];
+  const diff = diffEvidenceAssertions({ baseAssertions: base, headAssertions: head });
+  assert.deepEqual(diff.added, ['evas_003']);
+  assert.deepEqual(diff.removed, ['evas_002']);
+  assert.deepEqual(diff.changed, []);
+});
+
+test('P4-T4: diffEvidenceAssertions output arrays are always sorted (deterministic regardless of input order)', () => {
+  const head = [
+    { assertionId: 'evas_zzz', text: 'z' },
+    { assertionId: 'evas_aaa', text: 'a' },
+    { assertionId: 'evas_mmm', text: 'm' },
+  ];
+  const diff = diffEvidenceAssertions({ baseAssertions: [], headAssertions: head });
+  assert.deepEqual(diff.added, ['evas_aaa', 'evas_mmm', 'evas_zzz']);
+});
+
+test('P4-T4: diffEvidenceAssertions is a pure function (no I/O, deterministic given identical inputs)', () => {
+  const input = {
+    baseAssertions: [{ assertionId: 'evas_001', text: 'a' }],
+    headAssertions: [{ assertionId: 'evas_001', text: 'a' }, { assertionId: 'evas_002', text: 'b' }],
+  };
+  assert.deepEqual(diffEvidenceAssertions(input), diffEvidenceAssertions(input));
+});
+
+// =================================================================================================
+// P4-T4: buildEvidenceAssertionsDiffReport — full document shape
+// =================================================================================================
+
+test('P4-T4: buildEvidenceAssertionsDiffReport emits the base/head/added/removed/changed/summary shape, no timestamp field', () => {
+  const report = buildEvidenceAssertionsDiffReport({
+    baseModuleId: 'kidney_suite_v1',
+    basePath: 'modules/kidney_suite_v1/evidence-assertions.json',
+    baseAssertions: [{ assertionId: 'evas_001', text: 'a' }],
+    headModuleId: 'kidney_suite_v1',
+    headAssertions: [{ assertionId: 'evas_001', text: 'a' }, { assertionId: 'evas_002', text: 'b' }],
+  });
+  assert.deepEqual(
+    Object.keys(report).sort(),
+    ['added', 'base', 'changed', 'head', 'removed', 'schemaVersion', 'scope', 'summary'],
+  );
+  assert.equal(report.base.moduleId, 'kidney_suite_v1');
+  assert.equal(report.base.path, 'modules/kidney_suite_v1/evidence-assertions.json');
+  assert.equal(report.base.assertionCount, 1);
+  assert.equal(report.head.moduleId, 'kidney_suite_v1');
+  assert.equal(report.head.assertionCount, 2);
+  assert.deepEqual(report.added, ['evas_002']);
+  assert.deepEqual(report.removed, []);
+  assert.deepEqual(report.changed, []);
+  assert.deepEqual(report.summary, { addedCount: 1, removedCount: 0, changedCount: 0 });
+  const raw = JSON.stringify(report);
+  assert.ok(!/\d{4}-\d{2}-\d{2}T/.test(raw), 'evidence-projection semantic-diff.json must never embed a wall-clock timestamp');
+});
+
+// =================================================================================================
+// P4-T4: integration — propose's semantic-diff.json for the 3 non-cbc modules uses THIS mode
+// =================================================================================================
+
+const NON_CBC_CASES = [
+  { moduleId: 'anemia', fixture: 'rf-ev-001' },
+  { moduleId: 'kidney_suite_v1', fixture: 'rf-kid-001' },
+  { moduleId: 'growth_suite_v1', fixture: 'rf-gro-002' },
+];
+
+for (const { moduleId, fixture } of NON_CBC_CASES) {
+  test(`P4-T4: propose(${moduleId})'s semantic-diff.json uses the evidence-projection mode (never the rule-id mode) and is empty by construction (self-comparison)`, async () => {
+    const outDir = await mkdtemp(path.join(os.tmpdir(), `ef-semantic-diff-evidence-mode-${moduleId}-`));
+    try {
+      await withCapturedStdout(() =>
+        runPropose({
+          runDir: path.join(REPO_ROOT, 'tests', 'fixtures', fixture),
+          module: path.join(REPO_ROOT, 'modules', moduleId, 'module.json'),
+          decisions: path.join(REPO_ROOT, 'modules', moduleId, 'authoring-decisions.yaml'),
+          out: outDir,
+        }),
+      );
+      const report = JSON.parse(await readFile(path.join(outDir, 'semantic-diff.json'), 'utf8'));
+
+      assert.equal(report.base.moduleId, moduleId);
+      assert.equal(report.head.moduleId, moduleId);
+      assert.ok('assertionCount' in report.base, 'evidence-projection mode names assertionCount, never ruleCount');
+      assert.ok(!('ruleCount' in report.base), 'must never be the rule-id mode for a non-cbc module');
+      assert.match(report.scope, /evidence-assertions\.json assertionId-level/);
+
+      // Self-comparison (propose only ever copies the committed evidence-assertions.json verbatim
+      // today, per propose.mjs's own header comment) -- empty diff by construction.
+      assert.deepEqual(report.added, []);
+      assert.deepEqual(report.removed, []);
+      assert.deepEqual(report.changed, []);
+      assert.deepEqual(report.summary, { addedCount: 0, removedCount: 0, changedCount: 0 });
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+}
+
+test('P4-T4: propose(cbc_suite_v1)\'s semantic-diff.json still uses the rule-id mode (unchanged, OQ-4) -- never the evidence-projection mode', async () => {
+  const outDir = await mkdtemp(path.join(os.tmpdir(), 'ef-semantic-diff-rule-id-mode-'));
+  try {
+    await withCapturedStdout(() =>
+      runPropose({ runDir: FIXTURE_DIR, module: REAL_MODULE_PATH, decisions: REAL_DECISIONS_PATH, out: outDir }),
+    );
+    const report = JSON.parse(await readFile(path.join(outDir, 'semantic-diff.json'), 'utf8'));
+    assert.ok('ruleCount' in report.base, 'cbc_suite_v1 must keep the rule-id mode shape');
+    assert.ok(!('assertionCount' in report.base));
+    assert.match(report.scope, /rule-id-level/);
+  } finally {
+    await rm(outDir, { recursive: true, force: true });
   }
 });

@@ -1,0 +1,27 @@
+{
+  "$schema": "p2-t1-cbc-release-manifest-baseline@1",
+  "taskId": "P2-T4",
+  "purpose": "Supplementary reference baseline for tests/ef-cbc-byte-identity-regression.test.mjs (P2-T4), addressing a documented, structurally-necessary exception to the P2-T1 manifest's whole-file byte-identity property. release-manifest.unsigned.json's own converter.configSha256 field (tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs's computeConverterConfigSha256) is, BY DESIGN, a SHA-256 over every .mjs source file under this converter's own root -- it necessarily changes whenever this converter's own source code changes, which P2-T3/P2-T7's genericity refactor (editing rule-candidate-drafts.mjs and propose.mjs) does. This is the converter's own technical-integrity hash correctly detecting a real code change; it is NOT a clinical-content drift (per this plan's own NFR rationale: 'a cbc_suite_v1 output drift is a clinical content change, not a build break' -- a converter-code-driven configSha256 change is exactly the 'build break' side of that distinction, not the 'clinical content' side). Every OTHER field in release-manifest.unsigned.json -- schemaVersion, moduleId, packVersion, rfInputs[] (bundleSha256/claimLedgerSha256/verificationExitCode, all derived from the unchanged rf-cbc-001 fixture), converter.name/version, testCorpusHash, traceabilityHash -- is unaffected by the P2-T3/P2-T7 refactor and stays byte-identical. This fixture captures release-manifest.unsigned.json's full pre-Phase-2 content (commit a8762c4, unmodified code, identical run inputs to tests/fixtures/p2-t1-cbc-propose-manifest.json.txt's own capture -- its whole-file SHA-256 (213ca49089a0ec7aafddd3d9d96d7edf2fa142ba25bd35dea9898a9753b038e0) matches that manifest's own 'release-manifest.unsigned.json' entry exactly, proving this is the SAME captured artifact, not a re-derivation) so P2-T4 can assert every non-volatile field stays identical while explicitly, visibly asserting (never silently ignoring) that converter.configSha256 legitimately differs.",
+  "preCapturedWholeFileSha256": "213ca49089a0ec7aafddd3d9d96d7edf2fa142ba25bd35dea9898a9753b038e0",
+  "volatileFieldPath": ["converter", "configSha256"],
+  "preRefactorReleaseManifest": {
+    "schemaVersion": "1.0",
+    "moduleId": "cbc_suite_v1",
+    "packVersion": "0.1.0-proposal",
+    "rfInputs": [
+      {
+        "runId": "rf_run_20260717_rf_cbc_001_pediatric_cds_establish",
+        "bundleSha256": "sha256:9167e325a18fbcf0cad424f64c40585df9b513e8dd13d977f79ef4f98abd31ae",
+        "claimLedgerSha256": "sha256:ace45e9e0956700e9355db4d42a43c5a83dcf88c889703617acff92327018f4f",
+        "verificationExitCode": 0
+      }
+    ],
+    "converter": {
+      "name": "rf-bundle-to-kb-pack",
+      "version": "0.1.0",
+      "configSha256": "sha256:b0ac5ab669fae6f9e09ec65262ae1662b6f95ee565ef8e01b092a10a3107ad8d"
+    },
+    "testCorpusHash": "sha256:77724550bf925778aa0dbe7df7bb8b78cbdea9083a25e2928301e01815c66fad",
+    "traceabilityHash": "sha256:dbff19d668a93cd3b2605a6ca8fda1ad624a75597e2d9c3642b32d25ba15c5c9"
+  }
+}

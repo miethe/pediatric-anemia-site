@@ -49,9 +49,9 @@
     },
     "converter": { "$ref": "#/$defs/converter" },
     "testCorpusHash": {
-      "type": "string",
+      "type": ["string", "null"],
       "pattern": "^sha256:[0-9a-f]{64}$",
-      "description": "SHA-256 over this module's generated engine-test corpus (tests/ef-<moduleId>-*.test.mjs, P4-T5..T8), name + content, sorted by filename so the digest does not depend on directory-listing order."
+      "description": "SHA-256 over this module's generated engine-test corpus (tests/ef-<moduleId>-*.test.mjs, P4-T5..T8), name + content, sorted by filename so the digest does not depend on directory-listing order. REQUIRED (this key is always present -- see the top-level `required` list), but its VALUE is `null` when this run's rule-emission gate refused emission (multi-bundle-conversion-e1-finish Phase 4, MBF-5 fix): a module that emitted no rules this run has no rule test corpus to bind a hash to, and `null` is the honest, humblest value for that case -- never an invented `\"sha256:null\"` string, never a hash over an unrelated pre-existing test corpus that happens to share the module id, and never a thrown error for a module that was never going to emit a rule regardless of test-corpus existence. The JSON Schema `pattern` keyword does not apply to a `null` instance (2020-12 semantics), so a `null` value here satisfies this property's schema unconditionally; the `type` array is what actually admits it."
     },
     "traceabilityHash": {
       "type": "string",

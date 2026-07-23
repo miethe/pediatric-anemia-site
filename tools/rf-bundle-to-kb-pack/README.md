@@ -49,6 +49,36 @@ this repo's module-package refactor; see
 `.claude/worknotes/evidence-foundry-buildout/path-mapping.md` (P1-T1) for the full stale-path
 reconciliation. This scaffold, and every task built against it, cites current-tree paths only.
 
+## `propose`'s emission gate & module genericity (multi-bundle-conversion-e1-finish)
+
+`propose` is module-generic and decision-driven. Three behaviours govern whether it emits
+`rules.json`/`rule-provenance.json` for a given module — none of them makes any clinical
+judgement, and none signs, validates, or releases anything:
+
+- **Fail-closed emission gate — an allowlist, never a denylist.** `resolveRuleEmissionGate()` permits
+  rule emission for a decision **only** when `decision.status === 'approved_for_rule_draft'` — a
+  single positive membership check. Every other value (`rejected`, `withdrawn`,
+  `drafted_pending_human_approval`, a missing decision reference, or any future/unrecognised status
+  the schema has never seen) refuses emission identically, by falling through the same branch. This
+  fails **closed** the instant a new status value is added — the property a denylist enumeration
+  cannot guarantee. On refusal, `propose` returns `EXIT_OK`, writes its evidence-layer artifacts and a
+  named refusal reason into `conversion-report.json`, sets `semantic-diff.json`'s `headRules` to `[]`,
+  records `testCorpusHash: null` in the release manifest (a refused module emits no rules, so it has
+  no rule test corpus to bind), and never writes `rules.json`/`rule-provenance.json`.
+- **Per-module drafting registry (defaults empty).** `RULE_PROPOSAL_REGISTRY[moduleId]` and
+  `CANDIDATE_REGISTRY[moduleId]` (in `lib/rule-candidate-drafts.mjs`) select this module's
+  hand-authored drafting content, defaulting to `[]`/`{}` for any module without one — today only
+  `cbc_suite_v1` has any. There is **no** prose-inference path: content is pre-authored, reviewable,
+  and keyed by module id; a `basis.reasoning` field is never parsed as executable logic (FR-14).
+- **Runtime `clm_*`/`evas_*` cross-resolution guard.** Before any output is written,
+  `resolveDecisionReferences()` checks every decision's `rf_claim_ids[]` against the claim ledger of
+  the bundle the decisions file **itself declares** (`rfProvenance`, via `loadDeclaredBundleClaimIds()`
+  — never the bundle a given run happens to load), and every `exact_assertion_ids[]` against the
+  module's own `evidence-assertions.json`. An unresolvable id throws `UnresolvedClaimReferenceError`
+  (exit 2, SCHEMA) — a fabrication guard, distinct from and never downgraded by the non-fatal
+  governance-refusal path above. The declared provenance path is repo-containment-checked
+  (`assertWithinRepo`) so it can never redirect the check at an out-of-tree ledger.
+
 ## Module boundary
 
 Five internal boundaries, one file (or small directory) each, matching the phase task table's

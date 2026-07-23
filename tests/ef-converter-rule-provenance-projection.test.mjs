@@ -14,6 +14,13 @@
 //   4. writeStagedRulesAndProvenance() materializes both files at the `02 §4.4` staged-pack path
 //      and the write is deterministic (byte-identical across two runs against an isolated temp
 //      directory, so this test never races P3-T5's own writes into the shared staged-pack dir).
+//
+// multi-bundle-conversion-e1-finish, Phase 2, P2-T5 (FR-F17): both writeStagedRulesAndProvenance()
+// tests below use mkdtemp scratch directories exclusively — the real, shared
+// `build/kb-pack/cbc_suite_v1/0.1.0-proposal` directory is never written to from this file. This
+// closes the race the first version of this file had against
+// tests/ef-converter-rule-candidate-drafting.test.mjs's own writeDraftPack() test (one `rm()`s the
+// shared dir, the other writes into it, both in the same `npm test` process).
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -43,9 +50,6 @@ const RULE_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'rule.schema.json');
 const RULE_PROVENANCE_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'rule-provenance.schema.json');
 const AUTHORING_DECISIONS_PATH = path.join(
   REPO_ROOT, 'modules', 'cbc_suite_v1', 'authoring-decisions.yaml',
-);
-const STAGED_PACK_DIR = path.join(
-  REPO_ROOT, 'build', 'kb-pack', 'cbc_suite_v1', '0.1.0-proposal',
 );
 
 async function loadJson(p) {
@@ -156,18 +160,21 @@ test('every rule-provenance entry\'s ruleId resolves to a real staged rule (bije
   assert.deepEqual(provenanceRuleIds, stagedRuleIds);
 });
 
-test('writeStagedRulesAndProvenance() materializes rules.json + rule-provenance.json at the 02 §4.4 staged-pack path', async () => {
-  // Does NOT rm() the shared STAGED_PACK_DIR (P3-T5's own test also writes into it, concurrently
-  // in the same `npm test` run) — only adds/overwrites this task's own two files, non-destructively.
-  const { rulesPath, ruleProvenancePath } = await writeStagedRulesAndProvenance();
-  assert.equal(rulesPath, path.join(STAGED_PACK_DIR, 'rules.json'));
-  assert.equal(ruleProvenancePath, path.join(STAGED_PACK_DIR, 'rule-provenance.json'));
+test('writeStagedRulesAndProvenance() materializes rules.json + rule-provenance.json at an isolated scratch path', async () => {
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), 'ef-rule-provenance-materialize-'));
+  try {
+    const { rulesPath, ruleProvenancePath } = await writeStagedRulesAndProvenance({ outDir: tempDir });
+    assert.equal(rulesPath, path.join(tempDir, 'rules.json'));
+    assert.equal(ruleProvenancePath, path.join(tempDir, 'rule-provenance.json'));
 
-  const writtenRules = await loadJson(rulesPath);
-  assert.deepEqual(writtenRules, STAGED_STRICT_RULES);
+    const writtenRules = await loadJson(rulesPath);
+    assert.deepEqual(writtenRules, STAGED_STRICT_RULES);
 
-  const writtenProvenance = await loadJson(ruleProvenancePath);
-  assert.deepEqual(writtenProvenance, buildRuleProvenanceDocument());
+    const writtenProvenance = await loadJson(ruleProvenancePath);
+    assert.deepEqual(writtenProvenance, buildRuleProvenanceDocument());
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
 });
 
 test('writeStagedRulesAndProvenance() is deterministic — byte-identical across two runs against an isolated temp directory', async () => {

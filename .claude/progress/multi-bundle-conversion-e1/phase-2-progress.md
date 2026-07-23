@@ -171,3 +171,16 @@ result explicitly documented as blocked on the same DF-E1-M1 gap, not a P2 regre
 test) is now stated explicitly in this file, the phase-1-2 plan doc, `lib/batch.mjs`'s header, and
 Addendum A2. **P2-GATE** (task-completion-validator) remains `not_started` — this reconciliation
 pass is not itself that reviewer checkpoint; phase-level status is `in_progress` (6/7).
+
+### Superseded by `multi-bundle-conversion-e1-finish` (2026-07-23)
+
+`in_progress` (6/7; `P2-GATE` never run) is left as-is here — accurate, not stale — rather than
+force-set to `completed`, since no `task-completion-validator` record for `P2-GATE` exists. Noted
+so this tracker is not read as contradicting
+`.claude/progress/multi-bundle-conversion-e1-finish/`: the batch/aggregate orchestration machinery
+this phase delivered is real and committed; the DF-E1-M1 gap it documented (only `rf-cbc-002` runs
+past `inspect`) is the gap the successor plan
+(`docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1-finish.md`) closes, via a
+module-generic drafting substrate and per-module decisions files for the other 3 bundles, tracked
+in `.claude/progress/multi-bundle-conversion-e1-finish/`. No clinical rule content changed in
+either plan; this repo remains an unvalidated research prototype.
