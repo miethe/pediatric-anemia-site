@@ -140,11 +140,89 @@ materially incomplete as scoped.
 
 ---
 
-## Disposition
+---
 
-The plan is **not executable as written**. F-1 and F-4 are concrete defects in the SPA's
-safety-relevant behavior; F-3 undermines the stated verification; F-2 is a design decision that must
-go back to a human because it trades audit integrity against scope.
+# Adjudication — two reviewers, opposite verdicts
 
-This is precisely the value the cross-family review exists to provide — the findings survived
-verification against source, and a same-family reviewer had already passed the bundle.
+The bundle was reviewed twice, independently and in parallel:
+
+- **`karen` (same-family, Claude):** verdict **SHIP IT** — 4 minor findings, "nothing structural."
+- **`gpt-5.6-terra` (cross-family):** verdict **DO NOT EXECUTE AS WRITTEN** — 2 blockers.
+
+Neither verdict is adopted wholesale. Every disputed claim was checked against source.
+
+| # | karen | codex | Ruling |
+|---|---|---|---|
+| F-1 | **not addressed** | blocker | **UPHELD — blocker.** Verified: `updateWorkflowState()` (`src/app.js:261,266,267`) and `updateCaseUi()` (`:282,290`) call `checked()`/`anyChecked()` on booleanMap field names. A `<select>` has no `.checked`. This is mechanical fact, not judgment. karen missed it. |
+| F-2 | "real, not illusory" | blocker | **SPLIT — downgraded to a human design decision.** Both are right about different properties (see below). |
+| F-3 | "stronger than 6 fixtures passed" | high | **UPHELD in part.** Both agree the 28-condition structural proof is what carries the conclusion. But leg D's text was factually wrong about its own inputs, and the planned gate genuinely cannot detect the change. |
+| F-4 | not addressed | high | **UPHELD** with the reframing above (pre-existing; premise invalidated by this change). |
+| K-1..K-4 | 4 minor | — | **All four accepted.** |
+
+## The F-2 split, resolved
+
+karen supplied evidence the cross-family reviewer lacked, and it is **correct**: the built payload is
+persisted beyond the immediate computation — `currentAudit = { input, result }`
+(`src/app.js:1357`, `:1558`, `:1686`) is serialized to a downloadable artifact by `downloadJson()`
+(`:1579-1587`) and to the clipboard (`:1720-1721`). So an omitted key **does** survive into an
+inspectable JSON artifact.
+
+But that establishes **durability**, not **unambiguity** — and those are different properties:
+
+- **Durable (karen, correct):** the distinction persists in exported JSON; it is not thrown away.
+- **Ambiguous (codex, correct):** a reader of that JSON still cannot distinguish "the clinician chose
+  not-assessed" from "an older client never rendered this field," "a serializer dropped it," or "an
+  API caller omitted it." `toTri()` collapses all of them identically.
+
+Both hold simultaneously. The design is therefore **not a rationalization** (karen's question 5 is
+answered correctly) but is **weaker than the decisions block claimed** — "provenance preserved" was
+too strong for a clinical audit trail.
+
+**Disposition:** not a blocker to starting P0, but the plan may not describe the design as
+"provenance-preserving" without qualification. A human must choose:
+
+1. **Cheap mitigation** — stamp the payload with a capture-schema version so a future reader can at
+   least distinguish "field existed in this version and was omitted deliberately" from "field did not
+   exist." Keeps the 1-2 file blast radius.
+2. **Full fix** — a separate versioned capture envelope (`capture.booleanMap[field] = "not-assessed"
+   | "unknown" | "present" | "absent"`) feeding the unchanged 3-value model to the engine. A 4th
+   *capture* enum does not require a 4th *rule-engine* enum, so SPIKE-003's actual holding survives.
+3. **Drop the claim** — keep key-absence, state plainly that "not assessed" is a UI affordance that is
+   durable but not self-describing. Cheapest and still honest.
+
+## karen's four accepted findings
+
+- **K-1** `01-platform-expansion-roadmap.md:543` lists `"research_ids": ["SPIKE-010"]` under
+  **P3-WP4** (SMART App Launch) — wrong work package. P3-WP7 at `:545` has `"research_ids": []`.
+  P4-02 edits line 545 and would walk straight past it. Extend P4-02 to move the ID.
+- **K-2** `phase-2-spa-rewire.md:36`'s AC for P2-04 reads as if it promises an executable DOM test of
+  `populateFromInput()`, which cannot exist. Reword to "verified via the P2-06 source-shape pin
+  (static, not executed)."
+- **K-3** The provenance claim is the one assertion in the bundle with no file:line citation. Add the
+  `currentAudit`/`downloadJson()` anchors above (now doubly useful given the F-2 split).
+- **K-4** PRD §6.2 raises whether `src/facts/fieldState.js` needs an entry in
+  `scripts/check-app-imports.mjs`'s `APP_SURFACE_FILES`, with no owning task. karen verified the
+  analog (`tristate.js`) needs none, so it resolves by precedent — but it needs a triage row so no
+  open question is silently dropped.
+
+## Final verdict
+
+**FIX FIRST — then ship.** Neither "do not execute" (F-1 is fixable, not fatal) nor "ship it"
+(a real blocker was missed). Required before execution starts:
+
+1. **F-1** — add tasks rewiring every booleanMap consumer of `checked()`/`anyChecked()` in workflow,
+   depth, count, and safety logic. This is the largest omission and it belongs in P2.
+2. **F-3** — replace the "golden identity" gate with an **executed transform test** over input
+   fixtures, and broaden the FR-9 guard to all discriminating operators (`eq`/`neq`,
+   `missing`/`exists`, truthiness, all four `is-*`), per `src/ruleEngine.js:27-48`.
+3. **F-4** — add a task fixing the safety-review auto-assertion.
+4. **F-2** — record as an explicit human decision with the three options above; do not let an agent
+   pick.
+5. **K-1..K-4** — apply as polish.
+6. Re-estimate: 14 pts no longer covers the scope.
+
+**Process note.** A same-family reviewer that correctly ran the real gate, verified line numbers, and
+independently discovered the export mechanism still missed a blocking defect that a cross-family
+reviewer caught immediately. This is the second recorded instance of that pattern in this repo. The
+cross-family pass should stay mandatory for plans of this size, and its findings should be verified
+rather than either accepted or dismissed on authority.
