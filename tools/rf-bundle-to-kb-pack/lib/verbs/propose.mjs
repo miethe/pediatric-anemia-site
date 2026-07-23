@@ -10,11 +10,15 @@
 //   1. Runs the same fixed loader -> hashing -> eligibility pipeline `inspect`/`verify` already
 //      use (P2-T2/T3/T4), so `propose` gets every seam-invariant guarantee those stages already
 //      enforce (verified bundle only, hash pinning, fail-closed claim eligibility) for free.
-//   2. Fails closed if the loaded module id is not the one module this converter has hand-authored
-//      drafting content for (`cbc_suite_v1`, P3-T1..T6) -- `propose` does not attempt to draft
-//      content for any other module (FR-14: never infer clinical Boolean logic from prose; there
-//      is no prose-inference path here at all, only pre-authored, reviewable content keyed to one
-//      module).
+//   2. Is module-generic (multi-bundle-conversion-e1-finish, Phase 2, P2-T3/P2-T7, FR-F10): selects
+//      this module's hand-authored drafting content, if any, via `RULE_PROPOSAL_REGISTRY[moduleId]`/
+//      `CANDIDATE_REGISTRY[moduleId]` (rule-candidate-drafts.mjs), defaulting to `[]`/`{}` for any
+//      module with no hand-authored content yet -- today, only `cbc_suite_v1` has any (P3-T1..T6).
+//      There is no prose-inference path here at all, ever (FR-14: never infer clinical Boolean
+//      logic from prose) -- only pre-authored, reviewable content keyed by module id, and the
+//      empty default is exactly as inert as "no content" should be: an empty registry entry can
+//      never itself pass the emission gate below (permitted requires at least one referenced,
+//      approved decision id; zero proposals means zero referenced decisions).
 //   3. Routes the bundle's claims through `../claim-routing.mjs` (P3-T4) and asserts the seam
 //      invariant 8 guarantee (02 §2.3 item 8, this task's own AC): no drafted rule proposal may be
 //      grounded SOLELY by a mixed/contradicted (or otherwise non-anchoring) claim.
@@ -68,7 +72,7 @@ import { pinArtifacts } from '../hashing.mjs';
 import { checkEligibility } from '../eligibility.mjs';
 import { routeClaims } from '../claim-routing.mjs';
 import { parseYamlDocument } from '../yaml-lite.mjs';
-import { MODULE_ID, RULE_PROPOSALS, writeDraftPack } from '../rule-candidate-drafts.mjs';
+import { RULE_PROPOSAL_REGISTRY, writeDraftPack } from '../rule-candidate-drafts.mjs';
 import { writeStagedRulesAndProvenance } from '../../../../scripts/evidence/govern-staged-rules.mjs';
 import { buildSemanticDiffReport } from '../semantic-diff.mjs';
 import {
@@ -843,14 +847,11 @@ export async function run(options) {
   const pinned = await pinArtifacts(loaded);
   const eligibility = checkEligibility(pinned);
 
-  if (pinned.moduleId !== MODULE_ID) {
-    throw new UsageError(
-      `propose has hand-authored drafting content (P3-T1..T6, FR-14) only for module ` +
-        `"${MODULE_ID}" -- got module id "${pinned.moduleId}" from ${modulePath}. Drafting ` +
-        'content for a different module is not yet implemented; propose refuses to silently ' +
-        `draft "${MODULE_ID}" content under a different module's identity.`,
-    );
-  }
+  // Module-generic (multi-bundle-conversion-e1-finish, Phase 2, P2-T3, FR-F10): the old
+  // module-identity hard-code ("propose only has content for cbc_suite_v1") is removed entirely.
+  // Every module reaches this point and the emission gate below decides emission on decisions-file
+  // content alone -- never on which module happens to be running.
+  const ruleProposals = RULE_PROPOSAL_REGISTRY[pinned.moduleId] ?? [];
 
   const evidenceFile = await readModuleProjectionFile(resolvedModuleDir, 'evidence.json');
   const evidenceAssertionsFile = await readModuleProjectionFile(
@@ -908,7 +909,7 @@ export async function run(options) {
   // ---- P1-T2/T3 (FR-F6, R-2/OQ-1): the live, code-enforced ALLOWLIST emission gate -- computed
   // here, as a value, BEFORE `writeStagedRulesAndProvenance()` is ever called (P1-T8: the refusal
   // is captured, not discovered via a caught filesystem exception on a later, now-conditional read).
-  const emissionGate = resolveRuleEmissionGate(decisionsList, RULE_PROPOSALS);
+  const emissionGate = resolveRuleEmissionGate(decisionsList, ruleProposals);
   // Constructed (never thrown) purely to reuse this class's own canonical, named refusal message --
   // see errors.mjs's RuleEmissionRefusedError doc comment for why this is a caught, non-fatal
   // signal on this path rather than a thrown GOVERNANCE exception.
@@ -930,7 +931,7 @@ export async function run(options) {
 
   // Seam invariant 8 (02 §2.3 item 8, FR-13, this task's own AC): fail closed before writing
   // anything if any drafted proposal is grounded solely by a conflict-visible/rejected claim.
-  assertNoSoleConflictedBasis(RULE_PROPOSALS, routingReport);
+  assertNoSoleConflictedBasis(ruleProposals, routingReport);
 
   const packProvenance = buildPackProvenance(pinned, eligibility);
 
@@ -947,7 +948,7 @@ export async function run(options) {
 
   // P3-T5/P3-T6's own writers -- reused verbatim, not re-implemented, so this verb's output is
   // byte-identical to what those tasks' own tests already prove those functions produce.
-  const { ruleProposalsPath, candidatesPath } = await writeDraftPack({ outDir });
+  const { ruleProposalsPath, candidatesPath } = await writeDraftPack({ outDir, moduleId: pinned.moduleId });
 
   // ---- P1-T3/T8 (FR-F6/FR-F8/FR-F11): writeStagedRulesAndProvenance() is called CONDITIONALLY --
   // ONLY when the emission gate above permits it. On refusal, `rulesPath`/`ruleProvenancePath` stay

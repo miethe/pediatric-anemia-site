@@ -1,0 +1,57 @@
+{
+  "$schema": "p2-t1-cbc-propose-manifest@1",
+  "taskId": "P2-T1",
+  "planPath": "docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1-finish/phase-2-3-genericity-decisions-authoring.md",
+  "purpose": "Pre-Phase-2 SHA-256 byte-identity baseline for cbc_suite_v1's `propose` output, captured against the current, post-Phase-1, pre-Phase-2 code (commit a8762c4) BEFORE the RULE_PROPOSAL_REGISTRY/CANDIDATE_REGISTRY genericity refactor (P2-T3/P2-T7). tests/ef-cbc-byte-identity-regression.test.mjs (P2-T4) re-runs propose after that refactor lands and asserts every one of these 9 files still matches, byte-for-byte -- a drift here is a clinical-content change, not a build break. Regenerate only from a clean pre-Phase-2 checkout, only with review -- this fixture IS the frozen baseline, not a live derivation.",
+  "moduleId": "cbc_suite_v1",
+  "fixtureRunDir": "tests/fixtures/rf-cbc-001",
+  "modulePath": "modules/cbc_suite_v1/module.json",
+  "decisionsPath": "modules/cbc_suite_v1/authoring-decisions.yaml",
+  "files": [
+    {
+      "filename": "pack-provenance.json",
+      "sha256": "124f62639d48fbf6c90dc46f9eefddb32beb0c10bf19e5feae80537717908f63",
+      "sizeBytes": 10352
+    },
+    {
+      "filename": "evidence.json",
+      "sha256": "785467ffbef817faa38bb1f5a0f0f38404d87b18ebd791daa2ba0a7462af49d9",
+      "sizeBytes": 113934
+    },
+    {
+      "filename": "evidence-assertions.json",
+      "sha256": "123f407742b212fe2efdf13409a3e122f49002b1cd41c45960d7d7d1c4e43105",
+      "sizeBytes": 118213
+    },
+    {
+      "filename": "candidates.json",
+      "sha256": "b12c2dcca19dbcca79e1315d386b9107c3d138b5c4b4fc4ecaf8a5c469ed5c18",
+      "sizeBytes": 1550
+    },
+    {
+      "filename": "rule-proposals.json",
+      "sha256": "41ecb545912f2e0cb17aa441b0e9d7990220b12b3947566c886f86eb7af9dc2e",
+      "sizeBytes": 11354
+    },
+    {
+      "filename": "rules.json",
+      "sha256": "8aa53eed1014d1ee0ac3aef1998e2c54e8dba80285201d49b2c261e8165f68a9",
+      "sizeBytes": 6986
+    },
+    {
+      "filename": "rule-provenance.json",
+      "sha256": "0d5e249a2cefda3537f56212a023e08dcae0f4263fa74f36b0701fa60ee69125",
+      "sizeBytes": 7721
+    },
+    {
+      "filename": "release-manifest.unsigned.json",
+      "sha256": "213ca49089a0ec7aafddd3d9d96d7edf2fa142ba25bd35dea9898a9753b038e0",
+      "sizeBytes": 795
+    },
+    {
+      "filename": "conversion-report.json",
+      "sha256": "82280a0f5775d8e8dd78fe0e0c4a22a2dc2a1b2df858c62b618adc31f53bf170",
+      "sizeBytes": 19605
+    }
+  ]
+}

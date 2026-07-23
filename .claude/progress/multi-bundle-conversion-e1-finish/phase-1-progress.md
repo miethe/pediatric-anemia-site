@@ -2,11 +2,11 @@
 type: progress
 schema_version: 2
 doc_type: progress
-prd: "multi-bundle-conversion-e1-finish"
-feature_slug: "multi-bundle-conversion-e1-finish"
+prd: multi-bundle-conversion-e1-finish
+feature_slug: multi-bundle-conversion-e1-finish
 phase: 1
-title: "Fail-Closed Emission Gate Becomes Code (MUST-stay-primary)"
-status: "not_started"
+title: Fail-Closed Emission Gate Becomes Code (MUST-stay-primary)
+status: completed
 created: '2026-07-23'
 updated: '2026-07-23'
 prd_ref: docs/project_plans/PRDs/infrastructure/multi-bundle-conversion-e1-finish.md
@@ -17,126 +17,298 @@ pr_refs: []
 execution_model: sequential
 plan_structure: independent
 wave: 2
-depends_on: ["P0"]
-owners: ["general-purpose"]
-contributors: ["gpt-5.6-terra-review", "task-completion-validator", "karen"]
+depends_on:
+- P0
+owners:
+- general-purpose
+contributors:
+- gpt-5.6-terra-review
+- task-completion-validator
+- karen
 findings_doc_ref: null
-
 tasks:
-  - id: "P1-T1"
-    status: "not_started"
-    assigned_to: ["general-purpose"]
-    model: "claude-sonnet-5"
-    model_effort: "extended"
-    provider: "claude"
-    estimated_effort: "0.5 pts"
-    dependencies: []
-    must_stay_primary: true
-    fr_refs: ["FR-F6", "R-2", "OQ-1"]
-    description: "Add drafted_pending_human_approval to schemas/authoring-decisions.schema.json's decision.status enum (approved_for_rule_draft | rejected | withdrawn | drafted_pending_human_approval). Confirm no existing consumer breaks — cbc_suite_v1/authoring-decisions.yaml's 4 existing approved_for_rule_draft decisions must still validate unchanged."
-  - id: "P1-T2"
-    status: "not_started"
-    assigned_to: ["general-purpose"]
-    model: "claude-sonnet-5"
-    model_effort: "extended"
-    provider: "claude"
-    estimated_effort: "1.5 pts"
-    dependencies: ["P1-T1"]
-    must_stay_primary: true
-    fr_refs: ["FR-F6", "R-2"]
-    description: "THE single most load-bearing implementation detail in this plan. Make propose.mjs read pinned.decisions.parsed.decisions[] and branch on status === 'approved_for_rule_draft' as the ONLY permitting condition — coded as a positive ALLOWLIST membership check, never an enumerated denylist (an `if (status === 'rejected' || status === 'withdrawn') throw` shape is explicitly WRONG and must not appear anywhere in the diff). Add RuleEmissionRefusedError extends GovernanceError (tools/rf-bundle-to-kb-pack/lib/errors.mjs, exit 3 GOVERNANCE) naming the specific refusal reason in conversion-report.json."
-  - id: "P1-T3"
-    status: "not_started"
-    assigned_to: ["general-purpose"]
-    model: "claude-sonnet-5"
-    model_effort: "extended"
-    provider: "claude"
-    estimated_effort: "1.0 pts"
-    dependencies: ["P1-T2"]
-    must_stay_primary: true
-    fr_refs: ["FR-F6", "R-P3"]
-    description: "Seam task (R-P3): make scripts/evidence/govern-staged-rules.mjs's writeStagedRulesAndProvenance() (currently unconditional) refuse to write rules.json/rule-provenance.json unless at least one resolved, cross-validated decision carries status: approved_for_rule_draft. Must prove cbc_suite_v1's existing 4 approved decisions still permit its existing emission path unchanged — the one already-committed, already-verified rule content in this repo depends on this exact function continuing to fire for it."
-  - id: "P1-T4"
-    status: "not_started"
-    assigned_to: ["general-purpose"]
-    model: "claude-sonnet-5"
-    model_effort: "extended"
-    provider: "claude"
-    estimated_effort: "1.5 pts"
-    dependencies: ["P1-T1"]
-    must_stay_primary: true
-    fr_refs: ["FR-F7", "OQ-3"]
-    description: "Runtime clm_*/evas_* cross-resolution (resolved to Phase 1, a fabrication guard shipping with the other guards). Add a runtime resolver invoked by propose that cross-checks every decision's rf_claim_ids[] against the bundle's claims/claim_ledger.yaml and every exact_assertion_ids[] against the module's evidence-assertions.json. An unresolved id throws UnresolvedClaimReferenceError extends SchemaError (exit 2 SCHEMA) BEFORE any output is written."
-  - id: "P1-T5"
-    status: "not_started"
-    assigned_to: ["general-purpose"]
-    model: "claude-sonnet-5"
-    model_effort: "adaptive"
-    provider: "claude"
-    estimated_effort: "1.0 pts"
-    dependencies: ["P1-T2", "P1-T3", "P1-T4", "P1-T8"]
-    must_stay_primary: true
-    fr_refs: ["FR-F8"]
-    description: "Negative-control test (tests/ef-converter-emission-gate.test.mjs): a decisions file where every decision is non-approving (or cites an unresolvable id) MUST NOT result in rules.json/rule-provenance.json appearing anywhere in propose's output tree, and MUST result in a named, non-zero refusal captured in conversion-report.json. Assert file absence via fs.access throwing ENOENT, not merely 'empty array'. Only meaningfully testable once P1-T8 lands — without it, conversion-report.json is never written on a refusal (propose crashes first)."
-  - id: "P1-T6"
-    status: "not_started"
-    assigned_to: ["general-purpose"]
-    model: "claude-sonnet-5"
-    model_effort: "adaptive"
-    provider: "claude"
-    estimated_effort: "0.75 pts"
-    dependencies: ["P1-T2", "P1-T3", "P1-T4", "P1-T8"]
-    must_stay_primary: true
-    fr_refs: ["FR-F24"]
-    description: "Repo-level invariant test (tests/ef-rule-emission-invariant.test.mjs): (a) modules/{kidney_suite_v1,growth_suite_v1}/rules.json stay []; (b) modules/anemia/rules.json's 91 hand-authored, pre-existing rules stay byte-identical to a pinned baseline hash (never touched by this pass — predate the converter, not 'traceable to converter output'); (c) none of anemia/kidney_suite_v1/growth_suite_v1 has a rule-provenance.json. Must stay green through P2/P3/P4 — re-verified at each phase's GATE."
-  - id: "P1-T8"
-    status: "not_started"
-    assigned_to: ["general-purpose"]
-    model: "claude-sonnet-5"
-    model_effort: "extended"
-    provider: "claude"
-    estimated_effort: "1.5 pts"
-    dependencies: ["P1-T2", "P1-T3", "P1-T4"]
-    must_stay_primary: true
-    fr_refs: ["FR-F6", "FR-F8", "FR-F11"]
-    description: "PLANNING-GATE BLOCKING-FINDING FIX. Make a governance refusal a caught, non-fatal signal in propose.mjs's emission ordering — not an exception escaping run(). Today, P1-T3's conditional writeStagedRulesAndProvenance() is followed by an UNCONDITIONAL readFile(rulesPath)/readFile(ruleProvenancePath) (~line 634) that throws ENOENT on a refused module, crashing before conversion-report.json/semantic-diff.json are ever written (making FR-F8/FR-F11 unreachable) and halting `batch` at BATCH_PAIRS[0] (rf-ev-001 -> modules/anemia, itself a refused module) before cbc_suite_v1's own pair is ever attempted. Fix: capture the refusal as a value before the read is attempted; on refusal, rulesRaw/ruleProvenanceRaw are each the deterministic empty string '' for computeTraceabilityHash (never a file read); semantic-diff.json's headRules is [] directly (never JSON.parse(rulesRaw)) — the branch belongs in propose.mjs, the caller; release-manifest.unsigned.json, conversion-report.json (named refusal reason), and semantic-diff.json are ALL still written; run() returns EXIT_OK (0) on refusal, never throws. Explicitly distinct from UnresolvedClaimReferenceError (P1-T4), which stays a hard crash (exit 2 SCHEMA) — a fabricated claim id is a defect, not a refusal."
-  - id: "P1-T7"
-    status: "not_started"
-    assigned_to: ["gpt-5.6-terra"]
-    model: "gpt-5.6-terra"
-    model_effort: "medium"
-    provider: "codex"
-    estimated_effort: "0.5 pts"
-    dependencies: ["P1-T1", "P1-T2", "P1-T3", "P1-T4", "P1-T5", "P1-T6", "P1-T8"]
-    must_stay_primary: false
-    fr_refs: ["Risk-1"]
-    description: "Adversarial read-only diff review (flags only, never approves, never auto-applied) hunting for: (1) any denylist-shaped branch masquerading as the allowlist gate; (2) any code path reaching writeStagedRulesAndProvenance() without passing through the new status check; (3) any error path swallowing RuleEmissionRefusedError/UnresolvedClaimReferenceError before it reaches the CLI's top-level catch; (4) P1-T8's non-fatal-refusal restructuring accidentally also swallowing UnresolvedClaimReferenceError (which must stay a hard crash). Intentionally routed off-primary by plan design (per project memory: per-wave codex diff reviews have caught real fail-closed gaps validators approved in this repo before); findings are adjudicated by native Claude at P1-GATE, never auto-applied — this task itself is NOT must_stay_primary."
-  - id: "P1-GATE"
-    status: "not_started"
-    assigned_to: ["task-completion-validator", "karen"]
-    model: "claude-sonnet-5"
-    model_effort: "adaptive"
-    provider: "claude"
-    estimated_effort: "—"
-    dependencies: ["P1-T1", "P1-T2", "P1-T3", "P1-T4", "P1-T5", "P1-T6", "P1-T7", "P1-T8"]
-    must_stay_primary: true
-    description: "Safety-critical milestone reviewer gate. Verify: gate is code-enforced (P1-T2/T3), not documentation; cross-resolution ships (P1-T4); a governance refusal is caught and non-fatal, never crashing propose or halting batch (P1-T8); negative control (P1-T5) and invariant (P1-T6) tests pass; P1-T7's adversarial findings are all adjudicated; cbc_suite_v1's existing 4-rule emission path is provably unaffected. `karen` specifically checks that no artifact anywhere in this phase's diff is described as 'validated,' 'approved,' or 'release-ready.'"
-
+- id: P1-T1
+  status: completed
+  assigned_to:
+  - general-purpose
+  model: claude-sonnet-5
+  model_effort: extended
+  provider: claude
+  estimated_effort: 0.5 pts
+  dependencies: []
+  must_stay_primary: true
+  fr_refs:
+  - FR-F6
+  - R-2
+  - OQ-1
+  description: "Add drafted_pending_human_approval to schemas/authoring-decisions.schema.json's\
+    \ decision.status enum (approved_for_rule_draft | rejected | withdrawn | drafted_pending_human_approval).\
+    \ Confirm no existing consumer breaks \u2014 cbc_suite_v1/authoring-decisions.yaml's\
+    \ 4 existing approved_for_rule_draft decisions must still validate unchanged."
+  started: '2026-07-23T13:05:00Z'
+  completed: '2026-07-23T13:30:00Z'
+  evidence:
+  - test: ef-converter-emission-gate+ef-rule-emission-invariant 55/55; full suite
+      8 known-red only
+- id: P1-T2
+  status: completed
+  assigned_to:
+  - general-purpose
+  model: claude-sonnet-5
+  model_effort: extended
+  provider: claude
+  estimated_effort: 1.5 pts
+  dependencies:
+  - P1-T1
+  must_stay_primary: true
+  fr_refs:
+  - FR-F6
+  - R-2
+  description: "THE single most load-bearing implementation detail in this plan. Make\
+    \ propose.mjs read pinned.decisions.parsed.decisions[] and branch on status ===\
+    \ 'approved_for_rule_draft' as the ONLY permitting condition \u2014 coded as a\
+    \ positive ALLOWLIST membership check, never an enumerated denylist (an `if (status\
+    \ === 'rejected' || status === 'withdrawn') throw` shape is explicitly WRONG and\
+    \ must not appear anywhere in the diff). Add RuleEmissionRefusedError extends\
+    \ GovernanceError (tools/rf-bundle-to-kb-pack/lib/errors.mjs, exit 3 GOVERNANCE)\
+    \ naming the specific refusal reason in conversion-report.json."
+  started: '2026-07-23T13:05:00Z'
+  completed: '2026-07-23T13:30:00Z'
+  evidence:
+  - test: ef-converter-emission-gate+ef-rule-emission-invariant 55/55; full suite
+      8 known-red only
+- id: P1-T3
+  status: completed
+  assigned_to:
+  - general-purpose
+  model: claude-sonnet-5
+  model_effort: extended
+  provider: claude
+  estimated_effort: 1.0 pts
+  dependencies:
+  - P1-T2
+  must_stay_primary: true
+  fr_refs:
+  - FR-F6
+  - R-P3
+  description: "Seam task (R-P3): make scripts/evidence/govern-staged-rules.mjs's\
+    \ writeStagedRulesAndProvenance() (currently unconditional) refuse to write rules.json/rule-provenance.json\
+    \ unless at least one resolved, cross-validated decision carries status: approved_for_rule_draft.\
+    \ Must prove cbc_suite_v1's existing 4 approved decisions still permit its existing\
+    \ emission path unchanged \u2014 the one already-committed, already-verified rule\
+    \ content in this repo depends on this exact function continuing to fire for it."
+  started: '2026-07-23T13:05:00Z'
+  completed: '2026-07-23T13:30:00Z'
+  evidence:
+  - test: ef-converter-emission-gate+ef-rule-emission-invariant 55/55; full suite
+      8 known-red only
+- id: P1-T4
+  status: completed
+  assigned_to:
+  - general-purpose
+  model: claude-sonnet-5
+  model_effort: extended
+  provider: claude
+  estimated_effort: 1.5 pts
+  dependencies:
+  - P1-T1
+  must_stay_primary: true
+  fr_refs:
+  - FR-F7
+  - OQ-3
+  description: Runtime clm_*/evas_* cross-resolution (resolved to Phase 1, a fabrication
+    guard shipping with the other guards). Add a runtime resolver invoked by propose
+    that cross-checks every decision's rf_claim_ids[] against the bundle's claims/claim_ledger.yaml
+    and every exact_assertion_ids[] against the module's evidence-assertions.json.
+    An unresolved id throws UnresolvedClaimReferenceError extends SchemaError (exit
+    2 SCHEMA) BEFORE any output is written.
+  started: '2026-07-23T13:05:00Z'
+  completed: '2026-07-23T13:30:00Z'
+  evidence:
+  - test: ef-converter-emission-gate+ef-rule-emission-invariant 55/55; full suite
+      8 known-red only
+- id: P1-T5
+  status: completed
+  assigned_to:
+  - general-purpose
+  model: claude-sonnet-5
+  model_effort: adaptive
+  provider: claude
+  estimated_effort: 1.0 pts
+  dependencies:
+  - P1-T2
+  - P1-T3
+  - P1-T4
+  - P1-T8
+  must_stay_primary: true
+  fr_refs:
+  - FR-F8
+  description: "Negative-control test (tests/ef-converter-emission-gate.test.mjs):\
+    \ a decisions file where every decision is non-approving (or cites an unresolvable\
+    \ id) MUST NOT result in rules.json/rule-provenance.json appearing anywhere in\
+    \ propose's output tree, and MUST result in a named, non-zero refusal captured\
+    \ in conversion-report.json. Assert file absence via fs.access throwing ENOENT,\
+    \ not merely 'empty array'. Only meaningfully testable once P1-T8 lands \u2014\
+    \ without it, conversion-report.json is never written on a refusal (propose crashes\
+    \ first)."
+  started: '2026-07-23T13:05:00Z'
+  completed: '2026-07-23T13:30:00Z'
+  evidence:
+  - test: ef-converter-emission-gate+ef-rule-emission-invariant 55/55; full suite
+      8 known-red only
+- id: P1-T6
+  status: completed
+  assigned_to:
+  - general-purpose
+  model: claude-sonnet-5
+  model_effort: adaptive
+  provider: claude
+  estimated_effort: 0.75 pts
+  dependencies:
+  - P1-T2
+  - P1-T3
+  - P1-T4
+  - P1-T8
+  must_stay_primary: true
+  fr_refs:
+  - FR-F24
+  description: "Repo-level invariant test (tests/ef-rule-emission-invariant.test.mjs):\
+    \ (a) modules/{kidney_suite_v1,growth_suite_v1}/rules.json stay []; (b) modules/anemia/rules.json's\
+    \ 91 hand-authored, pre-existing rules stay byte-identical to a pinned baseline\
+    \ hash (never touched by this pass \u2014 predate the converter, not 'traceable\
+    \ to converter output'); (c) none of anemia/kidney_suite_v1/growth_suite_v1 has\
+    \ a rule-provenance.json. Must stay green through P2/P3/P4 \u2014 re-verified\
+    \ at each phase's GATE."
+  started: '2026-07-23T13:05:00Z'
+  completed: '2026-07-23T13:30:00Z'
+  evidence:
+  - test: ef-converter-emission-gate+ef-rule-emission-invariant 55/55; full suite
+      8 known-red only
+- id: P1-T8
+  status: completed
+  assigned_to:
+  - general-purpose
+  model: claude-sonnet-5
+  model_effort: extended
+  provider: claude
+  estimated_effort: 1.5 pts
+  dependencies:
+  - P1-T2
+  - P1-T3
+  - P1-T4
+  must_stay_primary: true
+  fr_refs:
+  - FR-F6
+  - FR-F8
+  - FR-F11
+  description: "PLANNING-GATE BLOCKING-FINDING FIX. Make a governance refusal a caught,\
+    \ non-fatal signal in propose.mjs's emission ordering \u2014 not an exception\
+    \ escaping run(). Today, P1-T3's conditional writeStagedRulesAndProvenance() is\
+    \ followed by an UNCONDITIONAL readFile(rulesPath)/readFile(ruleProvenancePath)\
+    \ (~line 634) that throws ENOENT on a refused module, crashing before conversion-report.json/semantic-diff.json\
+    \ are ever written (making FR-F8/FR-F11 unreachable) and halting `batch` at BATCH_PAIRS[0]\
+    \ (rf-ev-001 -> modules/anemia, itself a refused module) before cbc_suite_v1's\
+    \ own pair is ever attempted. Fix: capture the refusal as a value before the read\
+    \ is attempted; on refusal, rulesRaw/ruleProvenanceRaw are each the deterministic\
+    \ empty string '' for computeTraceabilityHash (never a file read); semantic-diff.json's\
+    \ headRules is [] directly (never JSON.parse(rulesRaw)) \u2014 the branch belongs\
+    \ in propose.mjs, the caller; release-manifest.unsigned.json, conversion-report.json\
+    \ (named refusal reason), and semantic-diff.json are ALL still written; run()\
+    \ returns EXIT_OK (0) on refusal, never throws. Explicitly distinct from UnresolvedClaimReferenceError\
+    \ (P1-T4), which stays a hard crash (exit 2 SCHEMA) \u2014 a fabricated claim\
+    \ id is a defect, not a refusal."
+  started: '2026-07-23T13:05:00Z'
+  completed: '2026-07-23T13:30:00Z'
+  evidence:
+  - test: ef-converter-emission-gate+ef-rule-emission-invariant 55/55; full suite
+      8 known-red only
+- id: P1-T7
+  status: completed
+  assigned_to:
+  - gpt-5.6-terra
+  model: gpt-5.6-terra
+  model_effort: medium
+  provider: codex
+  estimated_effort: 0.5 pts
+  dependencies:
+  - P1-T1
+  - P1-T2
+  - P1-T3
+  - P1-T4
+  - P1-T5
+  - P1-T6
+  - P1-T8
+  must_stay_primary: false
+  fr_refs:
+  - Risk-1
+  description: "Adversarial read-only diff review (flags only, never approves, never\
+    \ auto-applied) hunting for: (1) any denylist-shaped branch masquerading as the\
+    \ allowlist gate; (2) any code path reaching writeStagedRulesAndProvenance() without\
+    \ passing through the new status check; (3) any error path swallowing RuleEmissionRefusedError/UnresolvedClaimReferenceError\
+    \ before it reaches the CLI's top-level catch; (4) P1-T8's non-fatal-refusal restructuring\
+    \ accidentally also swallowing UnresolvedClaimReferenceError (which must stay\
+    \ a hard crash). Intentionally routed off-primary by plan design (per project\
+    \ memory: per-wave codex diff reviews have caught real fail-closed gaps validators\
+    \ approved in this repo before); findings are adjudicated by native Claude at\
+    \ P1-GATE, never auto-applied \u2014 this task itself is NOT must_stay_primary."
+  started: '2026-07-23T13:35:00Z'
+  completed: '2026-07-23T13:55:00Z'
+  evidence:
+  - codex: gpt-5.6-terra 2-round adversarial review; both findings fixed
+- id: P1-GATE
+  status: completed
+  assigned_to:
+  - task-completion-validator
+  - karen
+  model: claude-sonnet-5
+  model_effort: adaptive
+  provider: claude
+  estimated_effort: "\u2014"
+  dependencies:
+  - P1-T1
+  - P1-T2
+  - P1-T3
+  - P1-T4
+  - P1-T5
+  - P1-T6
+  - P1-T7
+  - P1-T8
+  must_stay_primary: true
+  description: 'Safety-critical milestone reviewer gate. Verify: gate is code-enforced
+    (P1-T2/T3), not documentation; cross-resolution ships (P1-T4); a governance refusal
+    is caught and non-fatal, never crashing propose or halting batch (P1-T8); negative
+    control (P1-T5) and invariant (P1-T6) tests pass; P1-T7''s adversarial findings
+    are all adjudicated; cbc_suite_v1''s existing 4-rule emission path is provably
+    unaffected. `karen` specifically checks that no artifact anywhere in this phase''s
+    diff is described as ''validated,'' ''approved,'' or ''release-ready.'''
+  started: '2026-07-23T13:55:00Z'
+  completed: '2026-07-23T14:10:00Z'
+  evidence:
+  - review: task-completion-validator APPROVED
+  - review: karen APPROVED
 parallelization:
-  batch_1: ["P1-T1"]
-  batch_2: ["P1-T2"]
-  batch_3: ["P1-T3"]
-  batch_4: ["P1-T4"]
-  batch_5: ["P1-T8"]
-  batch_6: ["P1-T5", "P1-T6"]
-  batch_7: ["P1-T7"]
-  batch_8: ["P1-GATE"]
-
+  batch_1:
+  - P1-T1
+  batch_2:
+  - P1-T2
+  batch_3:
+  - P1-T3
+  batch_4:
+  - P1-T4
+  batch_5:
+  - P1-T8
+  batch_6:
+  - P1-T5
+  - P1-T6
+  batch_7:
+  - P1-T7
+  batch_8:
+  - P1-GATE
 total_tasks: 9
-completed_tasks: 0
+completed_tasks: 9
 in_progress_tasks: 0
 blocked_tasks: 0
-progress: 0
+progress: 100
 ---
 
 # multi-bundle-conversion-e1-finish - Phase 1: Fail-Closed Emission Gate Becomes Code (MUST-stay-primary)

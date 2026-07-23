@@ -131,3 +131,40 @@ recorded in the delegation-router audit log (`mbce1f:P0-T3-retry`, `fallback_app
 **Takeaway**: for this repo, an off-primary delegate's self-reported verification is not evidence.
 Re-run the gate in the orchestrator. This is the operational cost of free-tier offload and it is
 worth paying, but only with the re-verification step treated as mandatory rather than optional.
+
+## MBF-3 (BLOCKING, converter path) — the P1 adversarial gate caught a real fail-closed hole the unit tests passed over
+
+Phase 1's mandated adversarial review (P1-T7, `gpt-5.6-terra`, read-only diff review) returned
+**HOLE-FOUND** on the fabrication guard, after all 55 of the phase's own unit tests were green:
+
+`propose.mjs`'s `rf_claim_ids[]` cross-resolution **silently skipped** verification (`claimIds =
+null`) whenever the run's loaded bundle id did not equal the decisions file's declared provenance
+(`rfProvenance.rfBundleId`). Because `batch.mjs` legitimately pairs `cbc_suite_v1` with the
+`rf-cbc-002` fixture while cbc's decisions declare `rf-cbc-001`, this skip path is real and reachable
+— a fabricated `clm_*` could pass unchecked and rules could emit. An allowlist-shaped gate that
+silently skips its own fabrication check is not fail-closed.
+
+**Fix** (adjudicated by the orchestrator, not auto-applied — per the plan's "adversarial findings are
+adjudicated by native Claude, never auto-applied"): resolve `rf_claim_ids[]` against the bundle the
+decisions **themselves declare** (`loadDeclaredBundleClaimIds`, reading the declared bundle's own
+`claim_ledger.yaml`), never skip. A fabricated id now throws `UnresolvedClaimReferenceError` (exit 2)
+regardless of which bundle a run projects, while cbc's real rf-cbc-001 claims still resolve under an
+rf-cbc-002 batch projection (no false rejection). A second review round flagged a path-traversal
+follow-on (the declared `fixturePath` was resolved without containment); closed with `assertWithinRepo`.
+Both are test-pinned in commit `a8762c4`. Both P1-GATE reviewers (task-completion-validator + karen)
+then returned APPROVED against the fixed code.
+
+This is the failure class in project memory (*"Codex second-opinion catches real gaps — per-wave
+read-only diff reviews found real fail-closed gaps validators approved"*), recurring exactly as
+predicted. The gate structure earned its cost here.
+
+## MBF-4 (process, out of scope) — test-isolation smell under concurrent `npm test`
+
+`karen`'s P1 gate review surfaced that `tests/ef-release-no-keys.test.mjs` and
+`tests/ef-retro-metrics.test.mjs` write to the real (non-temp) `build/kb-pack/` tree, so **two
+concurrent `npm test` invocations cross-contaminate** and can show false extra failures (observed:
+`P3-T5 (c)` and a `ef-retro-metrics` "report verb" test failing under overlap, both passing 100%
+standalone). Pre-existing; out of this plan's scope. Phase 2's P2-T5 fixes the same hazard for two
+*different* files (`ef-converter-rule-candidate-drafting`, `ef-converter-rule-provenance-projection`)
+but not these two. Recorded so a future parallel-CI run does not misread it as a regression; the
+operational mitigation used throughout this plan's execution is "never run two `npm test` at once."

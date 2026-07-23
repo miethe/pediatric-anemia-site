@@ -330,33 +330,84 @@ export const RULE_PROPOSALS = Object.freeze([
   }),
 ]);
 
+// =================================================================================================
+// multi-bundle-conversion-e1-finish Phase 2 (FR-F10, OQ-2, planning-gate BLOCKING-finding fix,
+// P2-T3/P2-T7): module-generic drafting-content registries.
+//
+// `RULE_PROPOSAL_REGISTRY`/`CANDIDATE_REGISTRY` replace the single-scalar `MODULE_ID`/
+// `RULE_PROPOSALS`/`CANDIDATES` constants above as the thing `propose.mjs` actually consumes —
+// keyed by `moduleId`, defaulting to `[]`/`{}` (zero content) for any unregistered module id,
+// including all 3 new modules (`anemia`, `kidney_suite_v1`, `growth_suite_v1`) — none of them has
+// hand-authored rule-body/candidate content in this pass (per OQ-2's "vestigial for 3 of 4
+// modules" resolution; the actual gating signal stays 100% decisions-file-driven, never inferred
+// from prose, FR-14 unchanged). `cbc_suite_v1`'s own entry is the SAME array/object reference as
+// `RULE_PROPOSALS`/`CANDIDATES` above — never a copy — so its own byte-identity proof
+// (tests/ef-cbc-byte-identity-regression.test.mjs, P2-T4) holds by construction.
+// =================================================================================================
+
 /**
- * Materializes this module's hand-authored content at the `02 §4.4` staged-pack output path.
- * Pure I/O (mkdir + 2 writeFile calls) — no clinical inference happens here, only serialization
- * of the constants already defined above. `outDir` defaults to this repo's own
- * `build/kb-pack/cbc_suite_v1/0.1.0-proposal/` (gitignored per P1-T7) so a caller (a test, or
- * Phase 3's forthcoming `propose` verb, P3-T7) gets the exact path this task's AC names without
- * having to recompute it.
+ * `moduleId` -> that module's hand-authored `RULE_PROPOSALS`-shaped array. Defaults to `[]` for any
+ * unregistered `moduleId` (P2-T3, FR-F10) — `propose.mjs` selects
+ * `RULE_PROPOSAL_REGISTRY[moduleId] ?? []`, never the bare `RULE_PROPOSALS` constant directly.
+ */
+export const RULE_PROPOSAL_REGISTRY = Object.freeze({
+  [MODULE_ID]: RULE_PROPOSALS,
+});
+
+/**
+ * `moduleId` -> that module's hand-authored `CANDIDATES`-shaped object. Defaults to `{}` for any
+ * unregistered `moduleId` (P2-T7, FR-F10/FR-F11) — matches the ALREADY-COMMITTED convention
+ * (`modules/kidney_suite_v1/candidates.json`/`modules/growth_suite_v1/candidates.json` are both
+ * already the bare `{}` today).
+ */
+export const CANDIDATE_REGISTRY = Object.freeze({
+  [MODULE_ID]: CANDIDATES,
+});
+
+/**
+ * Materializes a module's hand-authored drafting content at the `02 §4.4` staged-pack output path.
+ * Pure I/O (mkdir + 2 writeFile calls) — no clinical inference happens here, only serialization of
+ * whichever registry entries `moduleId` selects. `moduleId` is REQUIRED (P2-T7, FR-F10/FR-F11):
+ * the emitted `rule-proposals.json`'s wrapper `moduleId` field carries the ACTUAL target module's
+ * id, never `cbc_suite_v1`'s, never any other module's — selecting
+ * `RULE_PROPOSAL_REGISTRY[moduleId] ?? []`/`CANDIDATE_REGISTRY[moduleId] ?? {}` rather than the
+ * module-level `RULE_PROPOSALS`/`CANDIDATES` constants directly is what prevents a run for e.g.
+ * `kidney_suite_v1` from writing cbc's 4 neutropenia proposals and cbc's own candidate under a
+ * different module's identity. `outDir` defaults to this repo's own
+ * `build/kb-pack/<moduleId>/0.1.0-proposal/` (gitignored per P1-T7) so a caller (a test, or
+ * `propose`'s own verb handler) gets the exact path this task's AC names without having to
+ * recompute it.
  *
- * @param {{ outDir?: string }} [options]
+ * @param {{ outDir?: string, moduleId: string }} options
  * @returns {Promise<{ ruleProposalsPath: string, candidatesPath: string }>}
  */
-export async function writeDraftPack({ outDir } = {}) {
+export async function writeDraftPack({ outDir, moduleId } = {}) {
+  if (typeof moduleId !== 'string' || moduleId === '') {
+    throw new TypeError('writeDraftPack requires a non-empty "moduleId" option (P2-T7, FR-F10/FR-F11)');
+  }
   const targetDir = outDir
-    ?? path.join(process.cwd(), 'build', 'kb-pack', MODULE_ID, '0.1.0-proposal');
+    ?? path.join(process.cwd(), 'build', 'kb-pack', moduleId, '0.1.0-proposal');
   await mkdir(targetDir, { recursive: true });
+
+  const proposals = RULE_PROPOSAL_REGISTRY[moduleId] ?? [];
+  const candidates = CANDIDATE_REGISTRY[moduleId] ?? {};
+
+  // `rfProvenance` reflects the SAME module-scoped selection: cbc_suite_v1's own drafted
+  // proposals are grounded in RF_PROVENANCE (RF-CBC-001); any other module has zero proposals in
+  // this pass, so this run's rule-proposals.json carries no rf-run provenance to misattribute.
+  const rfProvenance = moduleId === MODULE_ID ? RF_PROVENANCE : null;
 
   const ruleProposalsDoc = {
     schemaVersion: '1.0',
-    moduleId: MODULE_ID,
-    rfProvenance: RF_PROVENANCE,
-    proposals: RULE_PROPOSALS,
+    moduleId,
+    rfProvenance,
+    proposals,
   };
   const ruleProposalsPath = path.join(targetDir, 'rule-proposals.json');
   await writeFile(ruleProposalsPath, `${JSON.stringify(ruleProposalsDoc, null, 2)}\n`, 'utf8');
 
   const candidatesPath = path.join(targetDir, 'candidates.json');
-  await writeFile(candidatesPath, `${JSON.stringify(CANDIDATES, null, 2)}\n`, 'utf8');
+  await writeFile(candidatesPath, `${JSON.stringify(candidates, null, 2)}\n`, 'utf8');
 
   return { ruleProposalsPath, candidatesPath };
 }
