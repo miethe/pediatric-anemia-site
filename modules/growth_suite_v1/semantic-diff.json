@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "scope": "evidence-assertions.json assertionId-level added/removed/changed only (P4-T4, FR-F16) -- compares this run's freshly-produced evidence-assertions.json against this module's own currently-committed evidence-assertions.json; no rule-id comparison is meaningful here because this module emits no rule for this run (see propose.mjs's own per-module wiring)",
+  "base": {
+    "moduleId": "growth_suite_v1",
+    "path": "modules/growth_suite_v1/evidence-assertions.json",
+    "assertionCount": 79
+  },
+  "head": {
+    "moduleId": "growth_suite_v1",
+    "assertionCount": 79
+  },
+  "added": [],
+  "removed": [],
+  "changed": [],
+  "summary": {
+    "addedCount": 0,
+    "removedCount": 0,
+    "changedCount": 0
+  }
+}

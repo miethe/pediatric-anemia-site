@@ -48,11 +48,18 @@
 //                                     exists for this file either (same OQ-7 ruling as
 //                                     pack-provenance.json above). See the P5-T2 block near the
 //                                     bottom of this file for `buildConversionReport`.
-//        semantic-diff.json        -- NEW this task (P5-T3, FR-21, OQ-4): a MINIMAL, rule-id-level
-//                                     added/removed/changed comparison between this run's staged
-//                                     head rules.json and the active modules/anemia/rules.json --
-//                                     no impact-graph traversal, no dedicated schema (same OQ-7
-//                                     posture). See `../semantic-diff.mjs`.
+//        semantic-diff.json        -- NEW this task (P5-T3, FR-21, OQ-4): for `cbc_suite_v1` only,
+//                                     a MINIMAL, rule-id-level added/removed/changed comparison
+//                                     between this run's staged head rules.json and the active
+//                                     modules/anemia/rules.json -- no impact-graph traversal, no
+//                                     dedicated schema (same OQ-7 posture). multi-bundle-conversion-
+//                                     e1-finish Phase 4 (P4-T4, FR-F16) ADDS a second mode for
+//                                     `anemia`/`kidney_suite_v1`/`growth_suite_v1` -- an
+//                                     assertionId-level comparison between this run's freshly-
+//                                     produced evidence-assertions.json and that module's own
+//                                     currently-committed one (these 3 modules emit no rule, so a
+//                                     rule-id comparison is meaningless for them). See
+//                                     `../semantic-diff.mjs`.
 //
 // Zero network calls, zero LLM/generative-model invocations, ever (FR-10) -- this file imports
 // only `node:fs/promises`, `node:path`, `node:crypto`, `node:url`, the already-vetted converter
@@ -74,7 +81,7 @@ import { routeClaims } from '../claim-routing.mjs';
 import { parseYamlDocument } from '../yaml-lite.mjs';
 import { RULE_PROPOSAL_REGISTRY, writeDraftPack } from '../rule-candidate-drafts.mjs';
 import { writeStagedRulesAndProvenance } from '../../../../scripts/evidence/govern-staged-rules.mjs';
-import { buildSemanticDiffReport } from '../semantic-diff.mjs';
+import { buildSemanticDiffReport, buildEvidenceAssertionsDiffReport } from '../semantic-diff.mjs';
 import {
   EXIT_OK,
   GovernanceError,
@@ -101,6 +108,20 @@ const CONVERTER_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url))
  */
 const SEMANTIC_DIFF_BASE_MODULE_ID = 'anemia';
 const SEMANTIC_DIFF_BASE_RULES_PATH = path.join(REPO_ROOT, 'modules', 'anemia', 'rules.json');
+
+/**
+ * multi-bundle-conversion-e1-finish Phase 4 (P4-T4, FR-F16): the ONE module whose `semantic-diff.
+ * json` still uses the original rule-id-level comparison mode (`buildSemanticDiffReport`, OQ-4,
+ * above) -- every other module (`anemia`/`kidney_suite_v1`/`growth_suite_v1`) emits no rule content
+ * at all, so a rule-id comparison has nothing meaningful to say for them; `run()` below selects the
+ * evidence-projection mode (`buildEvidenceAssertionsDiffReport`, `../semantic-diff.mjs`) for those
+ * 3 instead. Named explicitly, never inferred from `emissionGate.permitted` or any other proxy --
+ * `cbc_suite_v1` keeps the rule-id mode even on a hypothetical future run where its own emission
+ * gate is refused, because `cbc_suite_v1` is a real, hand-authored-content module this plan's own
+ * OQ-4 resolution scopes that comparison to, not merely "whichever module happens to emit rules
+ * this run."
+ */
+const RULE_ID_SEMANTIC_DIFF_MODULE_ID = 'cbc_suite_v1';
 
 /** This converter build's own identity, recorded in `pack-provenance.json.converter` (`02 §4.8`
  * implies a converter identity belongs on the provenance record; nothing else in this repo names
@@ -618,6 +639,19 @@ export async function computeConverterConfigSha256(converterRoot) {
  * has no generated test corpus yet -- a manifest asserting a test-corpus hash over zero files would
  * silently misrepresent "no tests exist" as "tests were hashed."
  *
+ * multi-bundle-conversion-e1-finish Phase 4 (Step 0, MBF-5 fix): `run()` below ONLY calls this
+ * function when the Phase 1 rule-emission gate (`resolveRuleEmissionGate`) actually PERMITTED
+ * emission for this run. A module that emits no rules has no rule test corpus to hash at all --
+ * there is nothing dishonest about that being `null`; what would be dishonest is either (a)
+ * throwing `UsageError` for a module that was never going to emit a rule in the first place
+ * (`kidney_suite_v1`/`growth_suite_v1` today -- they have zero hand-authored `RULE_PROPOSAL_
+ * REGISTRY` content, so their emission gate can never be `permitted: true` regardless of whether a
+ * test corpus exists), or (b) hashing a pre-existing, UNRELATED test corpus that happens to share
+ * the module id (`anemia`'s own `tests/ef-anemia-backfill-integrity.test.mjs`, authored for a
+ * different purpose entirely) and presenting that hash as if it verified rule content this run
+ * never emitted. See `buildReleaseManifest`'s own doc comment for how `testCorpusSha256: null`
+ * threads through to `testCorpusHash: null` on the emitted manifest.
+ *
  * @param {string} repoRoot repository root (this repo, not the `rf` run's own directory)
  * @param {string} moduleId e.g. "cbc_suite_v1"
  * @returns {Promise<{ sha256: string, files: string[] }>}
@@ -681,6 +715,12 @@ export function computeTraceabilityHash(parts) {
  * here would misrepresent an unvalidated, unsigned staged proposal as release-ready). Pure
  * function of its inputs -- no I/O -- directly unit-testable.
  *
+ * `testCorpusSha256` (multi-bundle-conversion-e1-finish Phase 4, Step 0/MBF-5 fix): `null` when
+ * this run's rule-emission gate refused emission (no rule test corpus binds a proposal that was
+ * never drafted) -- emitted verbatim as `testCorpusHash: null`, never a fabricated `"sha256:null"`
+ * string. A non-null `testCorpusSha256` (a real hex digest) is still wrapped in the repo-standard
+ * `sha256:` prefix, unchanged from this function's original behavior.
+ *
  * @returns {object}
  */
 export function buildReleaseManifest({
@@ -709,7 +749,7 @@ export function buildReleaseManifest({
       version: CONVERTER_VERSION,
       configSha256: `sha256:${converterConfigSha256}`,
     },
-    testCorpusHash: `sha256:${testCorpusSha256}`,
+    testCorpusHash: testCorpusSha256 === null ? null : `sha256:${testCorpusSha256}`,
     traceabilityHash: `sha256:${traceabilityHashHex}`,
   };
 }
@@ -974,7 +1014,18 @@ export async function run(options) {
   const decisionsRaw = pinned.decisions.raw.toString('utf8');
 
   const converterConfigSha256 = await computeConverterConfigSha256(CONVERTER_ROOT);
-  const { sha256: testCorpusSha256 } = await computeTestCorpusHash(REPO_ROOT, pinned.moduleId);
+  // ---- Step 0 fix (multi-bundle-conversion-e1-finish Phase 4, MBF-5) -----------------------------
+  // `computeTestCorpusHash` is gated on `emissionGate.permitted`, exactly parallel to
+  // `writeStagedRulesAndProvenance` above: a module with no rule content emitted this run has no
+  // rule test corpus to hash, so `testCorpusSha256` stays the honest `null` rather than either (a)
+  // throwing UsageError for a module that was never going to emit a rule regardless of whether a
+  // test corpus exists (`kidney_suite_v1`/`growth_suite_v1` -- zero `RULE_PROPOSAL_REGISTRY`
+  // content), or (b) hashing an unrelated pre-existing test corpus that happens to share the module
+  // id (`anemia`'s own `tests/ef-anemia-backfill-integrity.test.mjs`) and presenting it as if it
+  // verified rule content this run never emitted.
+  const testCorpusSha256 = emissionGate.permitted
+    ? (await computeTestCorpusHash(REPO_ROOT, pinned.moduleId)).sha256
+    : null;
   const traceabilityHashHex = computeTraceabilityHash({
     decisionsRaw,
     evidenceAssertionsRaw: evidenceAssertionsFile.raw,
@@ -1013,23 +1064,51 @@ export async function run(options) {
   const conversionReportPath = path.join(outDir, 'conversion-report.json');
   await writeFile(conversionReportPath, `${JSON.stringify(conversionReport, null, 2)}\n`, 'utf8');
 
-  // ---- semantic-diff.json (P5-T3, FR-21, OQ-4) ---------------------------------------------------
-  // Re-reads modules/anemia/rules.json fresh from disk each run (never cached across runs) so the
-  // comparison always reflects the file actually on disk, matching this file's own "hash/diff what
-  // is actually on disk" posture (see the release-manifest block above). `rulesRaw` (this run's
-  // freshly-written staged head, already read above for the release-manifest's hash) is re-parsed
-  // here rather than re-serialized from an in-memory object, for the same reason. P1-T8: on a
-  // refused run `rulesRaw` is the deterministic empty string, never valid JSON -- `headRules` is
-  // set to `[]` directly here (the caller), never via `JSON.parse(rulesRaw)`; `buildSemanticDiffReport`
-  // already tolerates `headRules: []` via its own `?? []` defaults.
-  const anemiaRulesRaw = await readFile(SEMANTIC_DIFF_BASE_RULES_PATH, 'utf8');
-  const semanticDiffReport = buildSemanticDiffReport({
-    baseModuleId: SEMANTIC_DIFF_BASE_MODULE_ID,
-    baseRulesPath: path.relative(REPO_ROOT, SEMANTIC_DIFF_BASE_RULES_PATH),
-    baseRules: JSON.parse(anemiaRulesRaw),
-    headModuleId: pinned.moduleId,
-    headRules: emissionGate.permitted ? JSON.parse(rulesRaw) : [],
-  });
+  // ---- semantic-diff.json (P5-T3/P4-T4, FR-21/FR-F16, OQ-4) ---------------------------------------
+  // Two independent, mode-selected-by-moduleId comparisons -- see `RULE_ID_SEMANTIC_DIFF_MODULE_ID`'s
+  // own doc comment above and `../semantic-diff.mjs`'s header comment for the full rationale for why
+  // these are two different tools, not one generalized comparison.
+  let semanticDiffReport;
+  if (pinned.moduleId === RULE_ID_SEMANTIC_DIFF_MODULE_ID) {
+    // cbc_suite_v1 (unchanged, OQ-4): rule-id-level comparison against modules/anemia/rules.json.
+    // Re-reads modules/anemia/rules.json fresh from disk each run (never cached across runs) so the
+    // comparison always reflects the file actually on disk, matching this file's own "hash/diff what
+    // is actually on disk" posture (see the release-manifest block above). `rulesRaw` (this run's
+    // freshly-written staged head, already read above for the release-manifest's hash) is re-parsed
+    // here rather than re-serialized from an in-memory object, for the same reason. P1-T8: on a
+    // refused run `rulesRaw` is the deterministic empty string, never valid JSON -- `headRules` is
+    // set to `[]` directly here (the caller), never via `JSON.parse(rulesRaw)`; `buildSemanticDiffReport`
+    // already tolerates `headRules: []` via its own `?? []` defaults.
+    const anemiaRulesRaw = await readFile(SEMANTIC_DIFF_BASE_RULES_PATH, 'utf8');
+    semanticDiffReport = buildSemanticDiffReport({
+      baseModuleId: SEMANTIC_DIFF_BASE_MODULE_ID,
+      baseRulesPath: path.relative(REPO_ROOT, SEMANTIC_DIFF_BASE_RULES_PATH),
+      baseRules: JSON.parse(anemiaRulesRaw),
+      headModuleId: pinned.moduleId,
+      headRules: emissionGate.permitted ? JSON.parse(rulesRaw) : [],
+    });
+  } else {
+    // anemia/kidney_suite_v1/growth_suite_v1 (P4-T4, FR-F16): evidence-projection comparison --
+    // this run's freshly-produced evidence-assertions.json (the byte-verbatim copy just written to
+    // `evidenceAssertionsPath` above) against this SAME module's own currently-committed
+    // evidence-assertions.json (re-read fresh from `modules/<id>/evidence-assertions.json`,
+    // independent of the already-in-memory `evidenceAssertionsDoc` -- matching this file's "diff
+    // what is actually on disk" posture, same as the rule-id branch above). Both reads resolve to
+    // the SAME source file today (`propose` only ever copies that file verbatim -- P3-T7's own
+    // header comment), so this comparison is, by construction, a self-comparison proving the copy
+    // is faithful; it becomes a real generation-to-generation comparison the moment this module
+    // gains a genuinely independent evidence-generation step (P4-T6's own closure-path framing).
+    const committedEvidenceAssertionsPath = path.join(resolvedModuleDir, 'evidence-assertions.json');
+    const freshRaw = await readFile(evidenceAssertionsPath, 'utf8');
+    const committedRaw = await readFile(committedEvidenceAssertionsPath, 'utf8');
+    semanticDiffReport = buildEvidenceAssertionsDiffReport({
+      baseModuleId: pinned.moduleId,
+      basePath: path.relative(REPO_ROOT, committedEvidenceAssertionsPath),
+      baseAssertions: JSON.parse(committedRaw).assertions ?? [],
+      headModuleId: pinned.moduleId,
+      headAssertions: JSON.parse(freshRaw).assertions ?? [],
+    });
+  }
   const semanticDiffPath = path.join(outDir, 'semantic-diff.json');
   await writeFile(semanticDiffPath, `${JSON.stringify(semanticDiffReport, null, 2)}\n`, 'utf8');
 

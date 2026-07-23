@@ -289,28 +289,25 @@ test('P2-T6: propose still fails closed (UsageError) if a non-cbc module is miss
   }
 });
 
-test('P2-T6: propose for a non-cbc module WITH real committed projections but ZERO hand-authored rule content reaches Phase 1\'s emission gate, computes and captures a real RuleEmissionRefusedError-shaped refusal, and writes every pre-gate file under the correct module identity -- never a UsageError for module identity (that check no longer exists)', async () => {
+test('P2-T6: propose for a non-cbc module WITH real committed projections but ZERO hand-authored rule content reaches Phase 1\'s emission gate, computes and captures a real RuleEmissionRefusedError-shaped refusal, completes end to end (EXIT_OK), and writes every file under the correct module identity -- never a UsageError for module identity (that check no longer exists) nor for a missing test corpus (multi-bundle-conversion-e1-finish Phase 4, MBF-5 fix: computeTestCorpusHash is never called on a refused-emission run)', async () => {
   // VERIFIED REAL BEHAVIOR (not an assumed shape): kidney_suite_v1 has no generated engine test
   // corpus yet (tests/ef-kidney_suite_v1-*.test.mjs -- a separate, pre-existing, Phase 4/5
-  // requirement this plan does not touch), so a full propose run for it still throws a UsageError
-  // overall today -- but that throw happens LATE (computeTestCorpusHash, building
-  // release-manifest.unsigned.json), strictly AFTER the module-generic emission gate has already
-  // been computed and AFTER pack-provenance.json/evidence.json/evidence-assertions.json/
-  // rule-proposals.json/candidates.json have already been written to --out under kidney_suite_v1's
-  // own correct identity. This test verifies exactly that real sequence: the removed
-  // module-identity check blocks nothing; the emission gate reaches a genuine, captured
-  // RuleEmissionRefusedError-shaped refusal (not thrown, folded into conversion-report.json in a
-  // real run -- observable here via the already-written rule-proposals.json's correct, empty,
-  // kidney-scoped content); and the EVENTUAL throw is the orthogonal, unrelated test-corpus
-  // UsageError, never a module-identity message.
+  // requirement this plan does not touch). Before the Phase 4 Step 0 fix, a full propose run for
+  // it used to throw a UsageError late (computeTestCorpusHash, building release-manifest.unsigned.
+  // json). That fix gates computeTestCorpusHash on the emission gate's own `permitted` value --
+  // exactly parallel to writeStagedRulesAndProvenance's existing conditional call -- so a run whose
+  // emission gate refuses (as this one does: zero referenced decisions) now completes cleanly
+  // (EXIT_OK), with `testCorpusHash: null` on its release manifest, rather than throwing over an
+  // orthogonal, unrelated missing-test-corpus condition it was never going to need in the first
+  // place (this module drafted zero rule proposals, so no rule test corpus could ever bind to it).
   const outDir = await mkdtemp(path.join(os.tmpdir(), 'ef-propose-test-kidney-gate-'));
   const tempModuleDir = await mkdtemp(path.join(os.tmpdir(), 'ef-propose-test-kidney-module-'));
   try {
     // A synthetic kidney_suite_v1 module directory carrying REAL, committed evidence.json/
     // evidence-assertions.json (so propose's readModuleProjectionFile calls succeed) plus a stub
-    // authoring-decisions.yaml with zero decisions -- kidney_suite_v1 has no authoring-decisions.yaml
-    // committed yet (that is Phase 3's job), so this scratch dir is what "runs propose against
-    // kidney_suite_v1 today" actually requires; it is not a substitute for Phase 3's real content.
+    // authoring-decisions.yaml with zero decisions -- this scratch dir stands in for a module with
+    // zero referenced decisions, independent of whatever the real, committed
+    // modules/kidney_suite_v1/authoring-decisions.yaml happens to carry.
     const kidneyModuleDir = path.join(REPO_ROOT, 'modules', 'kidney_suite_v1');
     const wrongModulePath = path.join(tempModuleDir, 'module.json');
     const kidneyModuleDoc = JSON.parse(await readFile(path.join(kidneyModuleDir, 'module.json'), 'utf8'));
@@ -340,31 +337,20 @@ test('P2-T6: propose for a non-cbc module WITH real committed projections but ZE
       'utf8',
     );
 
-    await assert.rejects(
-      () => withCapturedStdout(() =>
-        runPropose({
-          runDir: FIXTURE_DIR, // reuses the real, already-verified rf-cbc-001 bundle -- the
-          // pipeline does not require the fixture's own topic to match the module id; it only
-          // needs a verified, loadable bundle, which this fixture already is.
-          module: wrongModulePath,
-          decisions: path.join(tempModuleDir, 'authoring-decisions.yaml'),
-          out: outDir,
-        }),
-      ),
-      (err) => {
-        assert.ok(err instanceof UsageError);
-        // The ONE assertion this whole rewritten test exists to make: this message is about the
-        // orthogonal, unrelated test-corpus requirement -- NEVER about module identity (the old,
-        // now-removed check's message named MODULE_ID/"cbc_suite_v1" and "some_other_module").
-        assert.match(err.message, /generated test-corpus file matching tests\/ef-kidney_suite_v1-/);
-        assert.doesNotMatch(err.message, /cbc_suite_v1/);
-        return true;
-      },
+    const { result: exitCode } = await withCapturedStdout(() =>
+      runPropose({
+        runDir: FIXTURE_DIR, // reuses the real, already-verified rf-cbc-001 bundle -- the
+        // pipeline does not require the fixture's own topic to match the module id; it only
+        // needs a verified, loadable bundle, which this fixture already is.
+        module: wrongModulePath,
+        decisions: path.join(tempModuleDir, 'authoring-decisions.yaml'),
+        out: outDir,
+      }),
     );
+    assert.equal(exitCode, EXIT_OK, 'a refused-emission run with real committed projections now completes cleanly (MBF-5 fix)');
 
-    // Everything propose writes BEFORE that later, unrelated throw is already on disk, under the
-    // CORRECT (kidney_suite_v1) identity -- proving the emission gate and writeDraftPack()
-    // genericity both ran cleanly for this module before the orthogonal blocker was hit.
+    // Everything propose writes is under the CORRECT (kidney_suite_v1) identity -- proving the
+    // emission gate and writeDraftPack() genericity both ran cleanly for this module.
     const packProvenance = await loadJson(path.join(outDir, 'pack-provenance.json'));
     assert.equal(packProvenance.moduleId, 'kidney_suite_v1');
 
@@ -381,9 +367,21 @@ test('P2-T6: propose for a non-cbc module WITH real committed projections but ZE
     await assert.rejects(() => readFile(path.join(outDir, 'rules.json'), 'utf8'), { code: 'ENOENT' });
     await assert.rejects(() => readFile(path.join(outDir, 'rule-provenance.json'), 'utf8'), { code: 'ENOENT' });
 
-    // The later-stage files this throw pre-empts are correctly absent (not partially written).
-    await assert.rejects(() => readFile(path.join(outDir, 'release-manifest.unsigned.json'), 'utf8'), { code: 'ENOENT' });
-    await assert.rejects(() => readFile(path.join(outDir, 'conversion-report.json'), 'utf8'), { code: 'ENOENT' });
+    // release-manifest.unsigned.json IS written (unconditional), but with testCorpusHash: null
+    // (MBF-5 fix) -- a refused-emission run never calls computeTestCorpusHash at all.
+    const releaseManifest = await loadJson(path.join(outDir, 'release-manifest.unsigned.json'));
+    assert.equal(releaseManifest.testCorpusHash, null, 'a refused-emission run must never fabricate or unrelatedly hash a test-corpus digest');
+
+    // conversion-report.json IS written (unconditional), naming the real refusal reason.
+    const conversionReport = await loadJson(path.join(outDir, 'conversion-report.json'));
+    assert.equal(conversionReport.ruleEmission.permitted, false);
+    assert.ok(typeof conversionReport.ruleEmission.refusalReason === 'string' && conversionReport.ruleEmission.refusalReason.length > 0);
+
+    // semantic-diff.json IS written, in the evidence-projection mode (P4-T4) since this is a
+    // non-cbc_suite_v1 module -- a self-comparison against the same evidence-assertions.json this
+    // synthetic module dir carries, so its diff is empty by construction.
+    const semanticDiff = await loadJson(path.join(outDir, 'semantic-diff.json'));
+    assert.deepEqual(semanticDiff.summary, { addedCount: 0, removedCount: 0, changedCount: 0 });
   } finally {
     await rm(outDir, { recursive: true, force: true });
     await rm(tempModuleDir, { recursive: true, force: true });

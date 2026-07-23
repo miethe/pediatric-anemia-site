@@ -9,41 +9,21 @@
 // object, and a cross-module-leak negative control proving zero occurrence of any
 // `cbc_suite_v1`-owned identity string in the 3 modules' emitted files.
 //
-// HONESTY NOTE, load-bearing (read before editing this test) -- the REAL, empirically-verified
-// behavior of `propose` against the 3 real fixtures + the P3-T2/T3/T4 decisions files just
-// authored is NOT uniform across the 3 modules, and this test asserts that real behavior rather
-// than a uniform assumed shape:
-//
-//   * `anemia` already has a pre-existing generated test corpus
-//     (`tests/ef-anemia-backfill-integrity.test.mjs`, matching `computeTestCorpusHash`'s
-//     `tests/ef-anemia-*.test.mjs` glob) from before this feature, so its `propose` run completes
-//     end to end with `EXIT_OK` and writes the FULL file set `propose` is capable of emitting for
-//     a module with zero hand-authored rule-body content: `pack-provenance.json`, `evidence.json`,
-//     `evidence-assertions.json`, `candidates.json`, `rule-proposals.json`,
-//     `release-manifest.unsigned.json`, `conversion-report.json`, `semantic-diff.json` -- 8 files,
-//     never `rules.json`/`rule-provenance.json` (Phase 1's emission gate refuses, since every
-//     decision in the new `authoring-decisions.yaml` is `status: drafted_pending_human_approval`,
-//     never `approved_for_rule_draft`).
-//
-//   * `kidney_suite_v1` and `growth_suite_v1` have NO generated test corpus yet (Phase 4 creates
-//     it) -- `computeTestCorpusHash` throws `UsageError` for each, exactly as this task's own
-//     binding note describes ("a full `propose` for a non-cbc module currently throws
-//     computeTestCorpusHash's UsageError ... AFTER writing the evidence-layer artifacts"). By the
-//     time that throw fires, `propose.mjs`'s own `run()` has already written 5 files to `outDir`:
-//     `pack-provenance.json`, `evidence.json`, `evidence-assertions.json`, `candidates.json`, and
-//     `rule-proposals.json` (via `writeDraftPack`, called BEFORE `computeTestCorpusHash` in
-//     `run()`'s body) -- `release-manifest.unsigned.json`/`conversion-report.json`/
-//     `semantic-diff.json` are never reached and never written for these 2 modules today. This
-//     test catches that throw and inspects the PARTIAL output directory rather than pretending the
-//     run completes cleanly -- exactly this task's own binding instruction.
-//
-//   * `release-manifest.unsigned.json` is written unconditionally by `run()` whenever it reaches
-//     that point (unlike `rules.json`/`rule-provenance.json`, which are conditional on the
-//     emission gate) -- the phase-2-3 plan doc's own prose enumeration of the "allowed file set"
-//     does not separately name it, and this test's ALLOWED_FILES superset below includes it so a
-//     module whose test corpus already exists (`anemia`, today; `kidney_suite_v1`/
-//     `growth_suite_v1` once Phase 4 lands their corpora) is not spuriously flagged for emitting a
-//     file that carries no rule-body content at all.
+// HONESTY NOTE, load-bearing (read before editing this test) -- UPDATED for multi-bundle-
+// conversion-e1-finish Phase 4 (Step 0/MBF-5 fix). `computeTestCorpusHash` is now gated on the
+// Phase 1 emission gate's own `permitted` value, exactly parallel to
+// `writeStagedRulesAndProvenance`'s existing conditional call: a module whose emission gate
+// refuses (all 3 of `anemia`/`kidney_suite_v1`/`growth_suite_v1`, today -- none has any
+// hand-authored `RULE_PROPOSAL_REGISTRY` content yet) never calls `computeTestCorpusHash` at all,
+// so it can never throw over a missing test corpus that was never going to be needed. All 3
+// modules now complete `propose` end to end with `EXIT_OK`, writing the FULL file set `propose` is
+// capable of emitting for a module with zero hand-authored rule-body content: `pack-provenance.
+// json`, `evidence.json`, `evidence-assertions.json`, `candidates.json`, `rule-proposals.json`,
+// `release-manifest.unsigned.json` (with `testCorpusHash: null` -- see
+// `tests/release-manifest-schema.test.mjs`/`tests/ef-converter-release-manifest.test.mjs` for that
+// field's own dedicated coverage), `conversion-report.json`, `semantic-diff.json` -- 8 files, never
+// `rules.json`/`rule-provenance.json` (Phase 1's emission gate refuses for all 3, since none has an
+// `approved_for_rule_draft` decision referenced by any drafted proposal).
 //
 //   * `unresolved.json` is named in the plan doc's allowed-file prose but is NEVER written into
 //     `outDir` by `propose` for ANY module, including the fully-working `cbc_suite_v1` path
@@ -53,8 +33,7 @@
 //     test does not require its presence in `outDir` for any module; its absence is not itself an
 //     FR-F11 violation.
 //
-// What stays true for ALL 3 modules, in both the full-success and the partial-throw case, and is
-// this test's actual FR-F11 substance: `rules.json`/`rule-provenance.json` are NEVER written;
+// What stays true for ALL 3 modules: `rules.json`/`rule-provenance.json` are NEVER written;
 // `rule-proposals.json`'s wrapper `moduleId` is always the TARGET module's own id (never
 // `cbc_suite_v1`'s) with `proposals.length === 0`; `candidates.json` is always the bare `{}`; and
 // no `cbc_suite_v1`-owned decision/rule/candidate/provenance identity string leaks into either
@@ -68,7 +47,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { run as runPropose } from '../tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs';
-import { UsageError } from '../tools/rf-bundle-to-kb-pack/lib/errors.mjs';
+import { EXIT_OK } from '../tools/rf-bundle-to-kb-pack/lib/errors.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -114,16 +93,16 @@ const CBC_LEAK_NEEDLES = [
 ];
 
 const CASES = [
-  { moduleId: 'anemia', fixture: 'rf-ev-001', expectThrow: false },
-  { moduleId: 'kidney_suite_v1', fixture: 'rf-kid-001', expectThrow: true },
-  { moduleId: 'growth_suite_v1', fixture: 'rf-gro-002', expectThrow: true },
+  { moduleId: 'anemia', fixture: 'rf-ev-001' },
+  { moduleId: 'kidney_suite_v1', fixture: 'rf-kid-001' },
+  { moduleId: 'growth_suite_v1', fixture: 'rf-gro-002' },
 ];
 
 async function loadJson(filePath) {
   return JSON.parse(await readFile(filePath, 'utf8'));
 }
 
-for (const { moduleId, fixture, expectThrow } of CASES) {
+for (const { moduleId, fixture } of CASES) {
   test(`P3-T1: propose(${moduleId}) writes only the allowed file set, never rules.json/rule-provenance.json`, async () => {
     const outDir = await mkdtemp(path.join(os.tmpdir(), `ef-propose-scope-lock-${moduleId}-`));
     try {
@@ -134,38 +113,15 @@ for (const { moduleId, fixture, expectThrow } of CASES) {
         out: outDir,
       };
 
-      if (expectThrow) {
-        // kidney_suite_v1/growth_suite_v1: the run halts partway through, at
-        // `computeTestCorpusHash` (no `tests/ef-<moduleId>-*.test.mjs` corpus yet -- Phase 4). This
-        // is the REAL, current behavior this task's own binding note names explicitly -- catch it,
-        // do not pretend the run completes.
-        await assert.rejects(
-          () => runPropose(runOptions),
-          (err) => {
-            assert.ok(
-              err instanceof UsageError,
-              `expected propose(${moduleId}) to throw UsageError (missing test corpus), got ${err?.constructor?.name}: ${err?.message}`,
-            );
-            assert.match(
-              err.message,
-              new RegExp(`tests/ef-${moduleId}-.*\\.test\\.mjs`),
-              'the UsageError must name the missing test-corpus glob for this exact module, ' +
-                'confirming the throw is the documented computeTestCorpusHash gap, not some ' +
-                'other, unrelated failure',
-            );
-            return true;
-          },
-        );
-      } else {
-        // anemia: a pre-existing test corpus already satisfies computeTestCorpusHash, so this run
-        // completes cleanly end to end (EXIT_OK). Still asserted here as real, not assumed.
-        const exitCode = await runPropose(runOptions);
-        assert.equal(exitCode, 0, `propose(${moduleId}) was expected to complete (EXIT_OK)`);
-      }
+      // multi-bundle-conversion-e1-finish Phase 4 (Step 0/MBF-5 fix): `computeTestCorpusHash` is
+      // gated on the emission gate's own `permitted` value, so ALL 3 of these modules (none has
+      // any hand-authored RULE_PROPOSAL_REGISTRY content, so none can ever reach `permitted: true`
+      // in this pass) now complete `propose` cleanly end to end (EXIT_OK) -- never a thrown
+      // UsageError over an orthogonal, unrelated missing-test-corpus condition.
+      const exitCode = await runPropose(runOptions);
+      assert.equal(exitCode, EXIT_OK, `propose(${moduleId}) was expected to complete (EXIT_OK)`);
 
       // ---- Positive allowlist + hard forbidden-file check -----------------------------------
-      // Applies identically whether the run completed or threw partway through -- this is the
-      // FR-F11 scope lock itself, not conditioned on which case fired above.
       const filesWritten = await readdir(outDir);
       for (const forbidden of FORBIDDEN_FILES) {
         assert.ok(
@@ -221,6 +177,17 @@ for (const { moduleId, fixture, expectThrow } of CASES) {
         0,
         `${moduleId}'s candidates.json must be the bare empty object {} -- got keys ` +
           `${JSON.stringify(Object.keys(candidatesDoc))}`,
+      );
+
+      // ---- SUBSTANCE: release-manifest.unsigned.json's testCorpusHash is honestly null --------
+      // (multi-bundle-conversion-e1-finish Phase 4, Step 0/MBF-5 fix): none of these 3 modules'
+      // emission gates ever permit, so computeTestCorpusHash is never called for any of them --
+      // never a fabricated "sha256:null" string, never an unrelated pre-existing test corpus hash.
+      const releaseManifestDoc = await loadJson(path.join(outDir, 'release-manifest.unsigned.json'));
+      assert.equal(
+        releaseManifestDoc.testCorpusHash,
+        null,
+        `${moduleId}'s release-manifest.unsigned.json.testCorpusHash must be null (refused emission)`,
       );
 
       // ---- Cross-module-leak negative control -----------------------------------------------

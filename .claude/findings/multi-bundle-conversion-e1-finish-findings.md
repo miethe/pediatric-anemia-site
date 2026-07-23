@@ -169,6 +169,43 @@ standalone). Pre-existing; out of this plan's scope. Phase 2's P2-T5 fixes the s
 but not these two. Recorded so a future parallel-CI run does not misread it as a regression; the
 operational mitigation used throughout this plan's execution is "never run two `npm test` at once."
 
+## P4-T6 — FR-F16 / R-3 semantic-diff closure decision (MUST-stay-primary adjudication)
+
+Phase 4 (P4-T4/T5) produced and committed `modules/<id>/semantic-diff.json` for the 3 non-cbc
+modules. The empirical result, from a real `propose` run each:
+
+| Module | added | removed | changed |
+|---|---:|---:|---:|
+| anemia | 0 | 0 | 0 (35 assertions both sides) |
+| kidney_suite_v1 | 0 | 0 | 0 (73 both sides) |
+| growth_suite_v1 | 0 | 0 | 0 (79 both sides) |
+
+**Closure — stated honestly, NOT overstated (this is the whole point of P4-T6 being non-delegable).**
+All three diffs are empty **by construction, not by independent agreement.** `propose`'s
+`evidence-assertions.json` for a non-cbc module is a **byte-verbatim copy** of that module's own
+committed `modules/<id>/evidence-assertions.json` (propose.mjs header, lines 30-33: "byte-verbatim
+copy of the module's own committed P3-T3 projection"). The semantic-diff therefore compares a
+verbatim copy against its own source — a self-comparison that is empty for any input. It is **not**
+evidence that the converter independently re-derives the bespoke generator's evidence output.
+
+Consequently, the two R-3 branches resolve as:
+- **NOT** "empty diff → converter is the regenerator of record" in the strong sense the plan's R-3
+  language anticipated. `propose` does not *regenerate* the non-cbc evidence layer — it *carries the
+  committed projection through verbatim*. Documenting it as "the regenerator of record" would
+  overstate what the code does; that phrasing is deliberately not used.
+- The honest closure per module (all 3): the converter's evidence layer **is** the committed bespoke
+  projection (carried through unchanged), so **there is no divergence to reconcile in this pass** —
+  which is R-3's fail-closed default outcome (committed bespoke evidence stays authoritative,
+  untouched, proven by the P4-T5 `git diff`-empty test). The `diffEvidenceAssertions` tool now exists,
+  is wired into `propose`, and is committed + `npm run check`-covered, so it **would** detect a real
+  divergence the day `propose`'s evidence projection stops being a verbatim copy (e.g. a future
+  increment that has the converter independently re-derive assertions). That is the actual, bounded
+  thing this pass delivers: the seam is now instrumented, not resolved.
+
+This distinction (instrumented ≠ resolved; verbatim-copy ≠ independent-regeneration) feeds P5-T3
+(`docs/architecture.md`) and P5-T8 (`df-e1-m3-anemia-reconciliation.md`), which must both state it in
+these terms and must NOT claim the converter reproduces or replaces the bespoke evidence.
+
 ## MBF-5 (Phase 4 sequencing risk, surfaced in Phase 2) — non-cbc `propose` throws on missing test corpus after refusing
 
 Phase 2 (P2-T3) removed the module-identity `UsageError`, so a `propose` run for a non-cbc module
