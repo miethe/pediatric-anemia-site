@@ -187,6 +187,51 @@ test('P3-T7: propose run against the real fixture + real cbc_suite_v1 module suc
   }
 });
 
+// =================================================================================================
+// P1-T3 (multi-bundle-conversion-e1-finish, Phase 1, seam task): cbc_suite_v1's real, existing
+// 4-decision approved_for_rule_draft emission path is BYTE-IDENTICAL to its pre-Phase-1 output.
+// These two SHA-256 digests were captured from a clean checkout BEFORE any Phase 1 code change
+// landed (schemas/authoring-decisions.schema.json, propose.mjs, govern-staged-rules.mjs,
+// errors.mjs) — a real regression pin, not merely a re-assertion of the current behavior.
+// =================================================================================================
+
+const PRE_PHASE1_RULES_JSON_SHA256 =
+  '8aa53eed1014d1ee0ac3aef1998e2c54e8dba80285201d49b2c261e8165f68a9';
+const PRE_PHASE1_RULE_PROVENANCE_JSON_SHA256 =
+  '0d5e249a2cefda3537f56212a023e08dcae0f4263fa74f36b0701fa60ee69125';
+
+test('P1-T3 (seam task): cbc_suite_v1\'s real 4-approved-decision propose run emits rules.json/rule-provenance.json byte-identical to the pre-Phase-1 baseline', async () => {
+  const { createHash } = await import('node:crypto');
+  const outDir = await mkdtemp(path.join(os.tmpdir(), 'ef-propose-test-p1-seam-'));
+  try {
+    const exitCode = await withCapturedStdout(() =>
+      runPropose({
+        runDir: FIXTURE_DIR,
+        module: REAL_MODULE_PATH,
+        decisions: REAL_DECISIONS_PATH,
+        out: outDir,
+      }),
+    ).then(({ result }) => result);
+    assert.equal(exitCode, EXIT_OK);
+
+    const rulesRaw = await readFile(path.join(outDir, 'rules.json'), 'utf8');
+    const ruleProvenanceRaw = await readFile(path.join(outDir, 'rule-provenance.json'), 'utf8');
+    assert.equal(
+      createHash('sha256').update(rulesRaw).digest('hex'),
+      PRE_PHASE1_RULES_JSON_SHA256,
+      'rules.json must be byte-identical (by SHA-256) to the pre-Phase-1 baseline -- the live ' +
+        'allowlist gate must not alter cbc_suite_v1\'s existing approved emission',
+    );
+    assert.equal(
+      createHash('sha256').update(ruleProvenanceRaw).digest('hex'),
+      PRE_PHASE1_RULE_PROVENANCE_JSON_SHA256,
+      'rule-provenance.json must be byte-identical (by SHA-256) to the pre-Phase-1 baseline',
+    );
+  } finally {
+    await rm(outDir, { recursive: true, force: true });
+  }
+});
+
 test('P3-T7: propose fails closed (UsageError) on a module id it has no hand-authored drafting content for, and writes NOTHING to --out', async () => {
   // propose has hand-authored drafting content (P3-T1..T6) only for "cbc_suite_v1" — this proves
   // it refuses to silently draft that content under a different module's identity, and that the

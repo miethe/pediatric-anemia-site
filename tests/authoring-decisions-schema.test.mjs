@@ -242,3 +242,52 @@ test('validateAuthoringDecisions() flags a decision module_id that disagrees wit
     `expected a module_id disagreement error, got: ${JSON.stringify(errors)}`,
   );
 });
+
+// =================================================================================================
+// P1-T1 (multi-bundle-conversion-e1-finish, FR-F6, R-2/OQ-1): `drafted_pending_human_approval` is
+// added to decision.status's closed enum as a visibly-non-approving scaffold value. This section
+// proves (a) all 4 enum members validate individually, (b) a 5th, invented value does NOT, and (c)
+// the real, committed modules/cbc_suite_v1/authoring-decisions.yaml (still all 4 records
+// `approved_for_rule_draft`) validates byte-unchanged against the widened schema.
+// =================================================================================================
+
+const STATUS_ENUM_MEMBERS = [
+  'approved_for_rule_draft',
+  'rejected',
+  'withdrawn',
+  'drafted_pending_human_approval',
+];
+
+test('authoring-decisions.schema.json: all 4 decision.status enum members validate individually', async () => {
+  const schema = await loadJson(SCHEMA_PATH);
+  for (const status of STATUS_ENUM_MEMBERS) {
+    const doc = makeValidDoc([makeValidDecision({ status })]);
+    assert.deepEqual(
+      validate(schema, doc),
+      [],
+      `status=${status} should validate with zero schema errors`,
+    );
+  }
+});
+
+test('authoring-decisions.schema.json: a 5th, invented decision.status value does NOT validate', async () => {
+  const schema = await loadJson(SCHEMA_PATH);
+  const doc = makeValidDoc([makeValidDecision({ status: 'invented_never_before_seen_status' })]);
+  const errors = validate(schema, doc);
+  assert.ok(errors.length > 0, 'an invented status value must fail schema validation');
+  assert.ok(
+    errors.some((e) => e.path === '$.decisions[0].status'),
+    `expected a $.decisions[0].status violation, got: ${JSON.stringify(errors)}`,
+  );
+});
+
+test('the widened schema still validates modules/cbc_suite_v1/authoring-decisions.yaml byte-unchanged (all 4 records approved_for_rule_draft)', async () => {
+  const schema = await loadJson(SCHEMA_PATH);
+  const raw = await readFile(path.join(REPO_ROOT, 'modules', 'cbc_suite_v1', 'authoring-decisions.yaml'), 'utf8');
+  const doc = parseYamlDocument(raw);
+  assert.equal(doc.decisions.length, 4);
+  assert.deepEqual(validate(schema, doc), []);
+  for (const decision of doc.decisions) {
+    assert.equal(decision.status, 'approved_for_rule_draft');
+  }
+});

@@ -81,8 +81,10 @@ test('P5-T2: buildConversionReport emits exactly the documented top-level shape'
     routingReport,
   });
 
+  // 'ruleEmission' (multi-bundle-conversion-e1-finish, Phase 1, FR-F8) is a new top-level field
+  // added by the P1-T2/T3 emission gate — the report's "named, non-zero refusal reason" surface.
   assert.deepEqual(Object.keys(report).sort(), [
-    'exclusions', 'moduleId', 'packVersion', 'schemaVersion', 'summary',
+    'exclusions', 'moduleId', 'packVersion', 'ruleEmission', 'schemaVersion', 'summary',
   ]);
   assert.equal(report.moduleId, 'cbc_suite_v1');
   assert.equal(report.packVersion, '0.1.0-proposal');
@@ -91,6 +93,12 @@ test('P5-T2: buildConversionReport emits exactly the documented top-level shape'
     'claimsExcluded', 'claimsTotal', 'sourcesExcluded',
   ]);
   assert.deepEqual(Object.keys(report.exclusions).sort(), ['candidates', 'claims', 'sources']);
+  // No `ruleEmission` option was passed above — buildConversionReport must default to a safe,
+  // explicitly-refused shape (never silently "permitted") rather than crash on a missing arg.
+  assert.deepEqual(Object.keys(report.ruleEmission).sort(), [
+    'approvedDecisionIds', 'permitted', 'referencedDecisionIds', 'refusalReason', 'refusedDecisions',
+  ]);
+  assert.equal(report.ruleEmission.permitted, false);
 });
 
 test('P5-T2: buildConversionReport is non-empty and enumerates every rejected claim with a named reason (stub)', () => {

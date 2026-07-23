@@ -67,10 +67,18 @@ import { loadBundle } from '../loader.mjs';
 import { pinArtifacts } from '../hashing.mjs';
 import { checkEligibility } from '../eligibility.mjs';
 import { routeClaims } from '../claim-routing.mjs';
+import { parseYamlDocument } from '../yaml-lite.mjs';
 import { MODULE_ID, RULE_PROPOSALS, writeDraftPack } from '../rule-candidate-drafts.mjs';
 import { writeStagedRulesAndProvenance } from '../../../../scripts/evidence/govern-staged-rules.mjs';
 import { buildSemanticDiffReport } from '../semantic-diff.mjs';
-import { EXIT_OK, GovernanceError, SchemaError, UsageError } from '../errors.mjs';
+import {
+  EXIT_OK,
+  GovernanceError,
+  RuleEmissionRefusedError,
+  SchemaError,
+  UnresolvedClaimReferenceError,
+  UsageError,
+} from '../errors.mjs';
 
 // This file lives at tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs -- 4 directories below the
 // repository root, 2 below this converter's own root. Used only to locate (a) this module's own
@@ -150,6 +158,119 @@ export function assertNoSoleConflictedBasis(proposals, routingReport) {
       throw new ConflictedSoleBasisError(proposal.id, claimIds);
     }
   }
+}
+
+// =================================================================================================
+// multi-bundle-conversion-e1-finish Phase 1 (FR-F6/FR-F7/FR-F8, R-2/OQ-1, OQ-3): the fail-closed
+// emission gate becomes CODE, not prose. Two independent, pure, unit-testable functions:
+//
+//   resolveDecisionReferences  -- referential-integrity guard (P1-T4). Every decision's
+//                                  basis.rf_claim_ids[]/exact_assertion_ids[] must resolve to a
+//                                  real id in the bundle's own claim_ledger.yaml / this module's
+//                                  own evidence-assertions.json. An unresolvable id is a genuine
+//                                  content defect (fabrication guard) -- it throws
+//                                  UnresolvedClaimReferenceError, exit 2 SCHEMA, unconditionally,
+//                                  regardless of any decision's status. NEVER caught/downgraded to
+//                                  a non-fatal signal by the emission gate below.
+//
+//   resolveRuleEmissionGate    -- the live ALLOWLIST gate (P1-T2/T3). For every decision_id a
+//                                  drafted rule/candidate proposal (RULE_PROPOSALS) cites, this
+//                                  checks ONE positive condition: `decision.status ===
+//                                  'approved_for_rule_draft'`. This MUST stay a membership check
+//                                  against that single permitted value -- never an enumerated
+//                                  denylist of 'rejected'/'withdrawn'/'drafted_pending_human_
+//                                  approval' (a denylist fails OPEN the instant a new enum member
+//                                  is added; this allowlist fails CLOSED on the same event,
+//                                  including on a status string this schema has never seen before).
+//                                  A missing decision_id reference (the cited decision does not
+//                                  exist in this file at all) is treated identically to any other
+//                                  non-approving value -- refused, never silently permitted.
+// =================================================================================================
+
+/**
+ * P1-T4 (FR-F7, OQ-3): cross-checks EVERY decision in `decisions` (regardless of its `status` --
+ * this is a referential-integrity guard, not a governance gate) against the two real id spaces a
+ * `authoring-decisions.yaml` decision may legally cite. `schemas/authoring-decisions.schema.json`
+ * documents that it "cannot verify that cross-file resolution itself" for either field -- this is
+ * the runtime extension that does. Throws `UnresolvedClaimReferenceError` (exit 2 SCHEMA) naming
+ * the specific invented id and the decision that cites it, on the FIRST unresolvable reference
+ * found (decisions in array order, `rf_claim_ids` before `exact_assertion_ids` within a decision) --
+ * pure function, no I/O, so it can run before any output is written.
+ *
+ * @param {ReadonlyArray<object>} decisions `authoring-decisions.yaml`'s parsed `decisions[]`
+ * @param {{ claimIds: ReadonlySet<string>|null, assertionIds: ReadonlySet<string> }} universes the
+ *   real id spaces to resolve against -- the bundle's own `claim_ledger.yaml.claims[].claim_id`s
+ *   and this module's own `evidence-assertions.json.assertions[].assertionId`s. `claimIds` accepts
+ *   `null` only as a defensive/unit-testable capability of this pure function itself -- `run()`'s
+ *   call site below (multi-bundle-conversion-e1-finish, Phase 1 hardening) NEVER passes `null`: it
+ *   always resolves a real claim-id universe via `loadDeclaredBundleClaimIds()` before calling this,
+ *   so in production the `rf_claim_ids[]` half of this check is never skipped, regardless of
+ *   whether the run's loaded bundle matches the decisions file's declared provenance
+ *   (`exact_assertion_ids[]` is likewise never skipped; `evidence-assertions.json` is
+ *   bundle-independent, unlike `claim_ledger.yaml`).
+ * @returns {void}
+ */
+export function resolveDecisionReferences(decisions, { claimIds, assertionIds }) {
+  for (const decision of decisions ?? []) {
+    const decisionId = decision?.decision_id ?? null;
+    if (claimIds) {
+      for (const claimId of decision?.basis?.rf_claim_ids ?? []) {
+        if (!claimIds.has(claimId)) {
+          throw new UnresolvedClaimReferenceError({ kind: 'clm', id: claimId, decisionId });
+        }
+      }
+    }
+    for (const assertionId of decision?.basis?.exact_assertion_ids ?? []) {
+      if (!assertionIds.has(assertionId)) {
+        throw new UnresolvedClaimReferenceError({ kind: 'evas', id: assertionId, decisionId });
+      }
+    }
+  }
+}
+
+/**
+ * P1-T2/T3 (FR-F6, R-2/OQ-1 -- "the single most load-bearing implementation detail in this plan"):
+ * the live, runtime ALLOWLIST gate. For every distinct `decisionId` a `ruleProposals` entry cites,
+ * resolves the matching decision record (by `decision_id`) in `decisions` and checks the ONE
+ * permitting condition -- `status === 'approved_for_rule_draft'`. Emission is permitted only when
+ * at least one referenced decision exists AND every referenced decision passes that check; any
+ * referenced decision that is missing entirely, or carries any other status value (including a
+ * value this schema/enum has never seen before), refuses via this SAME branch -- there is no
+ * separate code path for "known-bad" statuses. Pure function, no I/O.
+ *
+ * @param {ReadonlyArray<object>} decisions `authoring-decisions.yaml`'s parsed `decisions[]`
+ * @param {ReadonlyArray<{ decisionId: string }>} ruleProposals the drafted rule/candidate
+ *   proposals whose `decisionId` join key names which decisions are actually relevant here
+ * @returns {{
+ *   permitted: boolean,
+ *   referencedDecisionIds: string[],
+ *   approvedDecisionIds: string[],
+ *   refusedDecisions: Array<{ decisionId: string, status: string|null }>,
+ * }}
+ */
+export function resolveRuleEmissionGate(decisions, ruleProposals) {
+  const decisionsById = new Map((decisions ?? []).map((decision) => [decision?.decision_id, decision]));
+  const referencedDecisionIds = [...new Set((ruleProposals ?? []).map((proposal) => proposal.decisionId))];
+
+  const approvedDecisionIds = [];
+  const refusedDecisions = [];
+  for (const decisionId of referencedDecisionIds) {
+    const decision = decisionsById.get(decisionId);
+    const status = decision?.status ?? null;
+    // The ONLY permitting condition -- a positive membership check, never a denylist branch.
+    if (status === 'approved_for_rule_draft') {
+      approvedDecisionIds.push(decisionId);
+    } else {
+      refusedDecisions.push({ decisionId, status });
+    }
+  }
+
+  return {
+    permitted: referencedDecisionIds.length > 0 && refusedDecisions.length === 0,
+    referencedDecisionIds,
+    approvedDecisionIds,
+    refusedDecisions,
+  };
 }
 
 /**
@@ -276,6 +397,138 @@ export function buildPackProvenance(pinnedBundle, eligibility) {
     rfWritebackApproved: governance.approved_for_writeback ?? null,
     rfLineage: bundleParsed.lineage ?? null,
   };
+}
+
+// =================================================================================================
+// multi-bundle-conversion-e1-finish hardening (adversarial-review follow-up to Phase 1's P1-T4):
+// the `rf_claim_ids[]` half of `resolveDecisionReferences`'s cross-check must NEVER be skipped, even
+// when this run's loaded bundle (`--run-dir`) differs from the bundle `authoring-decisions.yaml`
+// itself declares as its evidentiary source (`rfProvenance.rfBundleId`/`rfProvenance.fixturePath`) --
+// that mismatch is the documented, legitimate `batch.mjs` cbc/rf-cbc-002 pairing (see `run()`'s call
+// site below), but a mismatched run is exactly the case a fabricated `clm_*` id could otherwise slip
+// through unchecked in. `loadDeclaredBundleClaimIds` resolves the real claim-id universe from the
+// bundle the decisions ACTUALLY declare, independent of which bundle this run loaded.
+// =================================================================================================
+
+/**
+ * Resolves the real `claim_ledger.yaml.claims[].claim_id` universe for `rf_claim_ids[]`
+ * cross-checking FROM THE BUNDLE `authoring-decisions.yaml` ITSELF DECLARES
+ * (`rfProvenance.rfBundleId` / `rfProvenance.fixturePath`) -- never from whichever bundle a given
+ * `propose` invocation happens to have loaded via `--run-dir`. This is the fabrication guard's
+ * fail-closed replacement for the old "bundle mismatch -> skip the check" behavior: a decision
+ * citing an invented claim id must throw regardless of which bundle the run is projecting.
+ *
+ * Deliberately a NARROW, independent `evidence_bundle.yaml` -> `claim_ledger` artifact read (same
+ * posture as `../multi-bundle-report.mjs`'s `readFixtureClaimCount`) rather than a second
+ * `loadBundle()` call: the declared bundle's source cards, extraction cards, verification record,
+ * etc. are irrelevant to this one id-universe lookup, and `loadBundle()` additionally requires an
+ * `authoring-decisions.yaml` to sit next to whatever `modulePath` it is given -- machinery this
+ * lookup has no use for and should not depend on. Unlike that read-only aggregator, though, this
+ * function is a security guard, not a best-effort reporter: every failure mode below throws a
+ * `SchemaError` (fail closed) rather than returning `null`/an empty set.
+ *
+ * @param {object} decisionsParsed `authoring-decisions.yaml`'s parsed document
+ * @param {string} repoRootDir absolute repository root `rfProvenance.fixturePath` is relative to
+ * @returns {Promise<Set<string>>}
+ */
+/**
+ * Fail-closed containment guard: `resolved` must sit inside `repoRootDir`. A declared provenance
+ * path that escapes the repo tree (via `../` or an absolute path) is a hard `SchemaError`, never a
+ * silently-trusted read.
+ * @param {string} resolved an already-`path.resolve`d absolute path
+ * @param {string} repoRootDir absolute repository root
+ * @param {string} fieldName the decisions/bundle field the raw value came from (for the message)
+ * @param {string} rawValue the raw declared value (for the message)
+ * @returns {void}
+ */
+function assertWithinRepo(resolved, repoRootDir, fieldName, rawValue) {
+  const rootWithSep = repoRootDir.endsWith(path.sep) ? repoRootDir : repoRootDir + path.sep;
+  if (resolved !== repoRootDir && !resolved.startsWith(rootWithSep)) {
+    throw new SchemaError(
+      `${fieldName} ${JSON.stringify(rawValue)} resolves to ${resolved}, which escapes the ` +
+        'repository tree -- a declared provenance path may not point outside the repo. Fail closed.',
+    );
+  }
+}
+
+export async function loadDeclaredBundleClaimIds(decisionsParsed, repoRootDir) {
+  const rfProvenance = decisionsParsed?.rfProvenance ?? {};
+  const declaredBundleId = rfProvenance.rfBundleId ?? null;
+  const fixturePath = rfProvenance.fixturePath;
+  if (typeof fixturePath !== 'string' || fixturePath === '') {
+    throw new SchemaError(
+      'authoring-decisions.yaml has no rfProvenance.fixturePath -- cannot resolve the declared ' +
+        'bundle\'s claims/claim_ledger.yaml to cross-check basis.rf_claim_ids[] against. Fail ' +
+        'closed: this check is never skipped, regardless of which bundle the current run loaded.',
+    );
+  }
+
+  const fixtureDir = path.resolve(repoRootDir, fixturePath);
+  // Containment guard (defense-in-depth): a committed authoring-decisions.yaml already requires
+  // clinical review to change, but its declared provenance path must never escape the repository
+  // tree -- otherwise a `../`/absolute fixturePath could redirect this security check at an
+  // out-of-tree, attacker-supplied claim_ledger that "resolves" a fabricated id. Fail closed.
+  assertWithinRepo(fixtureDir, repoRootDir, 'rfProvenance.fixturePath', fixturePath);
+  const bundlePath = path.join(fixtureDir, 'evidence_bundle.yaml');
+  let bundleRaw;
+  try {
+    bundleRaw = await readFile(bundlePath, 'utf8');
+  } catch (err) {
+    throw new SchemaError(
+      `authoring-decisions.yaml declares rfProvenance.fixturePath ${JSON.stringify(fixturePath)} ` +
+        `but ${bundlePath} could not be read (${err.message}) -- cannot resolve the declared ` +
+        'bundle\'s claim_ledger.yaml. Fail closed rather than skip the rf_claim_ids[] check.',
+      { cause: err },
+    );
+  }
+  let bundleParsed;
+  try {
+    bundleParsed = parseYamlDocument(bundleRaw);
+  } catch (err) {
+    throw new SchemaError(`failed to parse ${bundlePath}: ${err.message}`, { cause: err });
+  }
+
+  if (declaredBundleId !== null && bundleParsed?.id !== declaredBundleId) {
+    throw new SchemaError(
+      `authoring-decisions.yaml declares rfProvenance.rfBundleId ${JSON.stringify(declaredBundleId)} ` +
+        `but the bundle at its declared rfProvenance.fixturePath (${bundlePath}) is bundle ` +
+        `${JSON.stringify(bundleParsed?.id ?? null)} -- the declared identity does not match the ` +
+        'fixture at the declared path. Fail closed rather than trust a mismatched claim ledger.',
+    );
+  }
+
+  const claimLedgerRel = bundleParsed?.artifacts?.claim_ledger;
+  if (typeof claimLedgerRel !== 'string' || claimLedgerRel === '') {
+    throw new SchemaError(
+      `${bundlePath} (the declared bundle) has no artifacts.claim_ledger entry -- cannot resolve ` +
+        'its claim_ledger.yaml.',
+    );
+  }
+  const claimLedgerPath = path.resolve(fixtureDir, claimLedgerRel);
+  // Same containment guard for the bundle-declared claim_ledger relative path.
+  assertWithinRepo(claimLedgerPath, repoRootDir, 'artifacts.claim_ledger', claimLedgerRel);
+  let claimLedgerRaw;
+  try {
+    claimLedgerRaw = await readFile(claimLedgerPath, 'utf8');
+  } catch (err) {
+    throw new SchemaError(
+      `could not read the declared bundle's claims/claim_ledger.yaml at ${claimLedgerPath} ` +
+        `(${err.message})`,
+      { cause: err },
+    );
+  }
+  let claimLedgerParsed;
+  try {
+    claimLedgerParsed = parseYamlDocument(claimLedgerRaw);
+  } catch (err) {
+    throw new SchemaError(`failed to parse ${claimLedgerPath}: ${err.message}`, { cause: err });
+  }
+
+  return new Set(
+    (claimLedgerParsed?.claims ?? [])
+      .map((claim) => claim?.claim_id)
+      .filter((claimId) => typeof claimId === 'string' && claimId !== ''),
+  );
 }
 
 /**
@@ -485,10 +738,28 @@ export function buildReleaseManifest({
  * Pure function of its inputs — no I/O — directly unit-testable, matching `buildReleaseManifest`'s
  * own convention (P5-T1).
  *
- * @param {{ moduleId: string, packVersion: string, routingReport: import('../claim-routing.mjs').RoutingReport }} args
+ * `ruleEmission` (multi-bundle-conversion-e1-finish, Phase 1, FR-F8): the P1-T2/T3 emission gate's
+ * own outcome, folded into this SAME report rather than a second file -- this is the "named,
+ * non-zero refusal reason in conversion-report.json" the Phase 1 exit gate and FR-F8 require.
+ * `refusalReason` is `null` when emission was permitted; a specific, non-empty string (never a
+ * bare "refused" or a boolean) naming exactly which decision(s) failed to reach
+ * `approved_for_rule_draft` when it was not.
+ *
+ * @param {{
+ *   moduleId: string,
+ *   packVersion: string,
+ *   routingReport: import('../claim-routing.mjs').RoutingReport,
+ *   ruleEmission?: {
+ *     permitted: boolean,
+ *     referencedDecisionIds: string[],
+ *     approvedDecisionIds: string[],
+ *     refusedDecisions: Array<{ decisionId: string, status: string|null }>,
+ *     refusalReason: string|null,
+ *   },
+ * }} args
  * @returns {object}
  */
-export function buildConversionReport({ moduleId, packVersion, routingReport }) {
+export function buildConversionReport({ moduleId, packVersion, routingReport, ruleEmission }) {
   const claimExclusions = routingReport.rejected
     .map((routed) => ({
       itemType: 'claim',
@@ -516,6 +787,13 @@ export function buildConversionReport({ moduleId, packVersion, routingReport }) 
       claims: claimExclusions,
       sources: [],
       candidates: [],
+    },
+    ruleEmission: {
+      permitted: ruleEmission?.permitted ?? false,
+      referencedDecisionIds: ruleEmission?.referencedDecisionIds ?? [],
+      approvedDecisionIds: ruleEmission?.approvedDecisionIds ?? [],
+      refusedDecisions: ruleEmission?.refusedDecisions ?? [],
+      refusalReason: ruleEmission?.permitted ? null : (ruleEmission?.refusalReason ?? null),
     },
   };
 }
@@ -587,6 +865,57 @@ export async function run(options) {
     throw new SchemaError(`${evidenceAssertionsFile.path} is not valid JSON: ${err.message}`, { cause: err });
   }
 
+  // ---- P1-T4 (FR-F7, OQ-3): runtime clm_*/evas_* cross-resolution -- BEFORE any output is written,
+  // BEFORE the emission-gate computation below, and unconditionally with respect to any decision's
+  // status. A decision citing an invented claim or evidence-assertion id is a genuine content
+  // defect (fabrication guard), never a caught/non-fatal governance signal -- this throws
+  // `UnresolvedClaimReferenceError` (exit 2 SCHEMA) straight out of `run()`.
+  const decisionsList = pinned.decisions.parsed?.decisions ?? [];
+  const realAssertionIds = new Set(
+    (evidenceAssertionsDoc.assertions ?? [])
+      .map((assertion) => assertion?.assertionId)
+      .filter((assertionId) => typeof assertionId === 'string' && assertionId !== ''),
+  );
+  // `rf_claim_ids[]` resolves against the bundle `authoring-decisions.yaml` ITSELF DECLARES
+  // (`rfProvenance.rfBundleId`/`rfProvenance.fixturePath`), never merely against whichever bundle
+  // this run happened to load via `--run-dir` -- see `loadDeclaredBundleClaimIds`'s own doc comment
+  // above for the full rationale (multi-bundle-conversion-e1-finish, adversarial-review follow-up
+  // to P1-T4: the prior "bundle mismatch -> skip the check" behavior was a fabrication-guard hole,
+  // not a legitimate exemption). When this run's loaded bundle (`pinned.bundleId`) already IS the
+  // declared bundle -- the common case -- this reuses the already-pinned claim ledger
+  // (`pinned.artifacts.claimLedger`) with zero extra I/O, byte-identical to the prior behavior on
+  // that path. When they differ -- e.g. `lib/batch.mjs`'s own `BATCH_PAIRS` legitimately pairing
+  // `cbc_suite_v1` with the `rf-cbc-002` fixture while the committed
+  // `modules/cbc_suite_v1/authoring-decisions.yaml` declares its own provenance as `rf-cbc-001` and
+  // cites that bundle's own claim ids (e.g. `clm_inf07`) -- the declared bundle's OWN claim ledger
+  // is loaded independently and resolved against instead, so a real cbc/rf-cbc-001 claim id still
+  // resolves cleanly (no false rejection) while a fabricated id throws regardless of which bundle
+  // the run projects. `claimIds` is NEVER `null` here. `exact_assertion_ids[]` is unaffected --
+  // `modules/<id>/evidence-assertions.json` is read from the committed module package, not the
+  // run's bundle, so it is bundle-independent and always resolvable regardless of which fixture a
+  // given `propose` invocation was run against.
+  const bundleMatchesDecisionsProvenance =
+    pinned.decisions.parsed?.rfProvenance?.rfBundleId === pinned.bundleId;
+  const realClaimIds = bundleMatchesDecisionsProvenance
+    ? new Set(
+        (pinned.artifacts.claimLedger.parsed?.claims ?? [])
+          .map((claim) => claim?.claim_id)
+          .filter((claimId) => typeof claimId === 'string' && claimId !== ''),
+      )
+    : await loadDeclaredBundleClaimIds(pinned.decisions.parsed, REPO_ROOT);
+  resolveDecisionReferences(decisionsList, { claimIds: realClaimIds, assertionIds: realAssertionIds });
+
+  // ---- P1-T2/T3 (FR-F6, R-2/OQ-1): the live, code-enforced ALLOWLIST emission gate -- computed
+  // here, as a value, BEFORE `writeStagedRulesAndProvenance()` is ever called (P1-T8: the refusal
+  // is captured, not discovered via a caught filesystem exception on a later, now-conditional read).
+  const emissionGate = resolveRuleEmissionGate(decisionsList, RULE_PROPOSALS);
+  // Constructed (never thrown) purely to reuse this class's own canonical, named refusal message --
+  // see errors.mjs's RuleEmissionRefusedError doc comment for why this is a caught, non-fatal
+  // signal on this path rather than a thrown GOVERNANCE exception.
+  const ruleEmissionRefusal = emissionGate.permitted
+    ? null
+    : new RuleEmissionRefusedError(emissionGate);
+
   // rfRunId-scoped (multi-bundle-conversion-e1, P4-T5, FR-7/FR-8): modules/cbc_suite_v1/
   // evidence-assertions.json may now hold more than one upstream rf run's assertions (RF-CBC-001 +
   // RF-CBC-002, appended by P4-T5) sharing the same clm_NNN claim-id namespace -- this run's own
@@ -619,14 +948,28 @@ export async function run(options) {
   // P3-T5/P3-T6's own writers -- reused verbatim, not re-implemented, so this verb's output is
   // byte-identical to what those tasks' own tests already prove those functions produce.
   const { ruleProposalsPath, candidatesPath } = await writeDraftPack({ outDir });
-  const { rulesPath, ruleProvenancePath } = await writeStagedRulesAndProvenance({ outDir });
 
-  // ---- release-manifest.unsigned.json (P5-T1, FR-18, `02 §4.18` minus `signature`) -------------
-  // Re-reads the just-written rules.json/rule-provenance.json bytes from disk (mirrors hashing.mjs's
-  // own "hash what is actually on disk, not what memory claims" posture) rather than re-serializing
-  // the in-memory objects, so a hash mismatch would be caught rather than papered over.
-  const rulesRaw = await readFile(rulesPath, 'utf8');
-  const ruleProvenanceRaw = await readFile(ruleProvenancePath, 'utf8');
+  // ---- P1-T3/T8 (FR-F6/FR-F8/FR-F11): writeStagedRulesAndProvenance() is called CONDITIONALLY --
+  // ONLY when the emission gate above permits it. On refusal, `rulesPath`/`ruleProvenancePath` stay
+  // `null` (never created, never read -- the seam task's "never calls writeStagedRulesAndProvenance
+  // at all" property, provable by `fs.access` ENOENT on the two paths this run never writes) and
+  // `rulesRaw`/`ruleProvenanceRaw` are each the deterministic empty string `''`, never a file read.
+  // `computeTraceabilityHash` below is still the SAME pure function over the two real inputs plus
+  // these two empty-string placeholders -- no special-cased hash logic for a refused run.
+  let rulesPath = null;
+  let ruleProvenancePath = null;
+  let rulesRaw = '';
+  let ruleProvenanceRaw = '';
+  if (emissionGate.permitted) {
+    ({ rulesPath, ruleProvenancePath } = await writeStagedRulesAndProvenance({ outDir }));
+    // ---- release-manifest.unsigned.json (P5-T1, FR-18, `02 §4.18` minus `signature`) -----------
+    // Re-reads the just-written rules.json/rule-provenance.json bytes from disk (mirrors
+    // hashing.mjs's own "hash what is actually on disk, not what memory claims" posture) rather
+    // than re-serializing the in-memory objects, so a hash mismatch would be caught rather than
+    // papered over.
+    rulesRaw = await readFile(rulesPath, 'utf8');
+    ruleProvenanceRaw = await readFile(ruleProvenancePath, 'utf8');
+  }
   const decisionsRaw = pinned.decisions.raw.toString('utf8');
 
   const converterConfigSha256 = await computeConverterConfigSha256(CONVERTER_ROOT);
@@ -658,6 +1001,13 @@ export async function run(options) {
     moduleId: pinned.moduleId,
     packVersion: PACK_VERSION,
     routingReport,
+    ruleEmission: {
+      permitted: emissionGate.permitted,
+      referencedDecisionIds: emissionGate.referencedDecisionIds,
+      approvedDecisionIds: emissionGate.approvedDecisionIds,
+      refusedDecisions: emissionGate.refusedDecisions,
+      refusalReason: ruleEmissionRefusal?.message ?? null,
+    },
   });
   const conversionReportPath = path.join(outDir, 'conversion-report.json');
   await writeFile(conversionReportPath, `${JSON.stringify(conversionReport, null, 2)}\n`, 'utf8');
@@ -667,14 +1017,17 @@ export async function run(options) {
   // comparison always reflects the file actually on disk, matching this file's own "hash/diff what
   // is actually on disk" posture (see the release-manifest block above). `rulesRaw` (this run's
   // freshly-written staged head, already read above for the release-manifest's hash) is re-parsed
-  // here rather than re-serialized from an in-memory object, for the same reason.
+  // here rather than re-serialized from an in-memory object, for the same reason. P1-T8: on a
+  // refused run `rulesRaw` is the deterministic empty string, never valid JSON -- `headRules` is
+  // set to `[]` directly here (the caller), never via `JSON.parse(rulesRaw)`; `buildSemanticDiffReport`
+  // already tolerates `headRules: []` via its own `?? []` defaults.
   const anemiaRulesRaw = await readFile(SEMANTIC_DIFF_BASE_RULES_PATH, 'utf8');
   const semanticDiffReport = buildSemanticDiffReport({
     baseModuleId: SEMANTIC_DIFF_BASE_MODULE_ID,
     baseRulesPath: path.relative(REPO_ROOT, SEMANTIC_DIFF_BASE_RULES_PATH),
     baseRules: JSON.parse(anemiaRulesRaw),
     headModuleId: pinned.moduleId,
-    headRules: JSON.parse(rulesRaw),
+    headRules: emissionGate.permitted ? JSON.parse(rulesRaw) : [],
   });
   const semanticDiffPath = path.join(outDir, 'semantic-diff.json');
   await writeFile(semanticDiffPath, `${JSON.stringify(semanticDiffReport, null, 2)}\n`, 'utf8');
@@ -699,6 +1052,10 @@ export async function run(options) {
       eligibleForRuleEvidence: routingReport.eligibleForRuleEvidence.length,
       conflictObjects: routingReport.conflictObjects.length,
       rejected: routingReport.rejected.length,
+    },
+    ruleEmission: {
+      permitted: emissionGate.permitted,
+      refusalReason: ruleEmissionRefusal?.message ?? null,
     },
   };
   process.stdout.write(`${JSON.stringify(summary, null, 2)}\n`);

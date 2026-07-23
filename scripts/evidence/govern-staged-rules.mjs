@@ -67,6 +67,19 @@ export const STAGED_STRICT_RULES = Object.freeze(PARTIAL_STRICT_RULES.map(finali
  * I/O — no clinical inference happens here, only serialization of the already-governed constants
  * above.
  *
+ * CONDITIONAL CALL-SITE CONTRACT (multi-bundle-conversion-e1-finish, Phase 1, P1-T3, FR-F6): this
+ * function itself stays a small, unconditional, pure serializer — the CONDITIONALITY this task's
+ * own name promises ("writeStagedRulesAndProvenance() becomes conditional") lives one level up, at
+ * `tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs`'s call site: `propose.mjs`'s `run()` computes
+ * the P1-T2 fail-closed emission gate (`resolveRuleEmissionGate()`) BEFORE ever reaching this
+ * function, and calls it ONLY when that gate's `permitted` is `true`. When the gate refuses,
+ * `run()` never calls this function at all — proven, per this task's own acceptance criteria, by
+ * `rules.json`/`rule-provenance.json` provably absent (`fs.access` ENOENT) from a refused run's
+ * output directory, not merely "the function returned early." Keeping the conditional branch in
+ * the caller (rather than threading a permission flag into this function) keeps this file a single-
+ * responsibility, trivially pure serializer, and keeps the gate's one canonical implementation in
+ * one place (`propose.mjs`) rather than duplicated across every writer it guards.
+ *
  * @param {{ outDir?: string }} [options]
  * @returns {Promise<{ rulesPath: string, ruleProvenancePath: string }>}
  */
