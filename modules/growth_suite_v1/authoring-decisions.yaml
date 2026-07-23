@@ -1,0 +1,157 @@
+# modules/growth_suite_v1/authoring-decisions.yaml
+#
+# Task: P3-T4 (multi-bundle-conversion-e1-finish, Phase 3 -- Author 3x Non-Approving Decisions Files)
+# Per FR-14 / 02 section 4.12: the converter (tools/rf-bundle-to-kb-pack/) MUST NOT infer clinical
+# Boolean logic from prose. This file is the explicit, hand-authored, human-REVIEWABLE bridge between
+# rf claims and a possible future rule/candidate draft for the growth_suite_v1 module -- one dec_*-ID
+# record per authored decision. Every decision below is status: drafted_pending_human_approval -- a
+# deliberately NON-approving scaffold status (multi-bundle-conversion-e1-finish R-2/OQ-1), distinct
+# from modules/cbc_suite_v1's approved_for_rule_draft decisions. No named clinical reviewer has
+# evaluated any of this; every review.* field below is pending. growth_suite_v1 has no hand-authored
+# rule-body content in this pass (Phase 2's CANDIDATE_REGISTRY/RULE_PROPOSAL_REGISTRY both default to
+# empty for this module) -- this file is a decisions scaffold, not a converter input yet.
+#
+# Evidentiary source: the P2-T2-confirmed fixture at tests/fixtures/rf-gro-002/ (rf run
+# rf_run_20260717_rf_gro_002_pediatric_cds_evidence, bundle
+# bundle_20260718_intent_research_20260717_rf_gro_002, status verified). Every basis.rf_claim_ids
+# entry below is a real claim_id copied verbatim from tests/fixtures/rf-gro-002/claims/claim_ledger.yaml,
+# and every basis.exact_assertion_ids entry is a real assertionId copied verbatim from
+# modules/growth_suite_v1/evidence-assertions.json. Every number named in basis.reasoning below is
+# copied from the cited claim's own text -- no invented threshold, no clinical judgment beyond what
+# the cited claim itself supports.
+
+schemaVersion: "1.0"
+moduleId: growth_suite_v1
+rfProvenance:
+  rfRunId: rf_run_20260717_rf_gro_002_pediatric_cds_evidence
+  rfBundleId: bundle_20260718_intent_research_20260717_rf_gro_002
+  fixturePath: tests/fixtures/rf-gro-002/
+
+decisions:
+  # The 1.0 z-score faltering-growth trigger is corroborated in magnitude across sources, but the
+  # anthropometric base (weight-for-age vs. weight-for-height) is itself an unresolved conflict, even
+  # within one source's own abstract vs. body text.
+  - decision_id: dec_growth_faltering_indicator_base_conflict_001
+    module_id: growth_suite_v1
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_001
+        - clm_002
+        - clm_inf01
+      exact_assertion_ids:
+        - evas_gro_clm_001
+        - evas_gro_clm_002
+      reasoning: clm_001 establishes that a recent expert-opinion consensus recommends evaluating for
+        faltering growth when weight-for-age drops by 1 z-score over 1 month or more, excluding the
+        first 2 weeks of life. clm_002 establishes that the same review's own abstract states the
+        consensus threshold as a drop of weight-for-HEIGHT of 1 z-score, conflicting with the
+        weight-for-age framing used in the body text. clm_inf01 draws the explicit inference that the
+        1.0 z-score-fall magnitude is corroborated across three independent standards (this
+        expert-opinion consensus, UK NICE 2021, and applied ESPGHAN preterm criteria) but they
+        disagree on the anthropometric base -- weight-for-age vs. weight-for-height -- so the numeric
+        magnitude is convergent while the choice of indicator remains an unresolved conflict the
+        module must not silently resolve.
+    conflicts:
+      visible: true
+      representation: preserve_indicator_base_conflict_same_magnitude
+    clinical_effect:
+      intended_output: interpretive_note
+      prohibited_effects:
+        - silently_prefer_weight_for_age_over_weight_for_height
+        - average_the_two_indicator_bases
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending
+
+  # Every numeric growth-faltering z-score/percentile threshold is growth-standard-dependent; the
+  # same infants classify very differently depending on which chart (Fenton/INTERGROWTH-21st,
+  # WHO/CDC) is used, so chart identity must travel with every threshold.
+  - decision_id: dec_growth_chart_dependent_threshold_binding_001
+    module_id: growth_suite_v1
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_022
+        - clm_050
+        - clm_051
+        - clm_058
+        - clm_inf03
+      exact_assertion_ids:
+        - evas_gro_clm_022
+        - evas_gro_clm_050
+        - evas_gro_clm_051
+        - evas_gro_clm_058
+      reasoning: clm_022 establishes that using Fenton growth curves instead of INTERGROWTH-21st,
+        standard growth failure occurred in 57% of the same infants versus 32% by INTERGROWTH-21st.
+        clm_050 establishes that for low weight-for-age at ages 6-23 months, the CDC reference
+        (5th/95th percentile) flags 7%-11% of children whereas the WHO standard (2.3rd/97.7th
+        percentile) flags fewer than 3%. clm_051 establishes that misapplying the 5th/95th
+        percentiles to WHO weight charts would label 10% of an all-healthy reference population as
+        underweight or overweight. clm_058 establishes that all growth z-scores and centiles in that
+        study are computed against INTERGROWTH-21st prescriptive standards, making every threshold
+        reference-chart dependent. clm_inf03 draws the composite inference that every numeric
+        z-score/percentile threshold in this evidence base is growth-standard-dependent and
+        non-transferable -- the same infants are classified growth-failed at materially different
+        rates depending on which chart is used, and the WHO-vs-CDC choice alone shifts low-weight-for-
+        age prevalence at 6-23 months -- so chart identity must be recorded and bound to every
+        threshold the module surfaces.
+    conflicts:
+      visible: true
+      representation: bind_chart_identity_to_every_threshold
+    clinical_effect:
+      intended_output: interpretive_note
+      prohibited_effects:
+        - apply_zscore_threshold_without_recording_growth_chart_source
+        - compare_thresholds_across_charts_as_equivalent
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending
+
+  # Preterm/VLBW infants require a distinct evaluation branch (INTERGROWTH-21st, corrected age);
+  # no located term WHO/CDC anthropometric threshold is validated for this population.
+  - decision_id: dec_growth_preterm_vlbw_scope_branch_001
+    module_id: growth_suite_v1
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_058
+        - clm_036
+        - clm_052
+        - clm_inf09
+      exact_assertion_ids:
+        - evas_gro_clm_058
+        - evas_gro_clm_036
+        - evas_gro_clm_052
+      reasoning: clm_058 establishes that all growth z-scores and centiles in that study are computed
+        against INTERGROWTH-21st prescriptive standards. clm_036 establishes that for children
+        younger than two years, measurements are adjusted for gestational age and plotted on WHO
+        growth charts, while CDC growth charts are used for ages two to 20 years. clm_052 establishes
+        that growth faltering is defined longitudinally, per applied ESPGHAN criteria, as a
+        weight-for-age z-score fall of at least 1.0 SD from birth to discharge. clm_inf09 draws the
+        explicit inference that the evidence supports a distinct preterm/very-low-birth-weight branch
+        -- z-scores plotted on the preterm-specific prescriptive INTERGROWTH-21st standard with
+        gestational-age/corrected-age adjustment before two years -- and that no located term WHO/CDC
+        anthropometric threshold in this bundle is validated for preterm infants, so applying a term
+        cutoff to a preterm population is an explicit evidence gap the module must not paper over by
+        extrapolation.
+    conflicts:
+      visible: true
+      representation: abstain_term_cutoffs_for_preterm_population
+    clinical_effect:
+      intended_output: scope_exit_alert
+      prohibited_effects:
+        - apply_term_who_cdc_cutoffs_to_preterm_infants
+        - interpret_preterm_growth_without_intergrowth21st_standard
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending

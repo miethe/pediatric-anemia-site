@@ -24,7 +24,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readdir, readFile, rm, stat } from 'node:fs/promises';
+import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -35,8 +35,7 @@ import {
   run as runBatchVerb,
   runBatch,
 } from '../tools/rf-bundle-to-kb-pack/lib/batch.mjs';
-import { DecisionsNotFoundError } from '../tools/rf-bundle-to-kb-pack/lib/loader.mjs';
-import { EXIT_OK, EXIT_USAGE } from '../tools/rf-bundle-to-kb-pack/lib/errors.mjs';
+import { EXIT_OK, EXIT_USAGE, UsageError } from '../tools/rf-bundle-to-kb-pack/lib/errors.mjs';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const RULE_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'rule.schema.json');
@@ -190,6 +189,17 @@ test('P2-T3: running the same pair through runBatch twice into the SAME outDir i
 // 3. Fail-closed halt-on-first-failure + per-pair output isolation
 // =================================================================================================
 
+// DF-E1-M1 gap closure (multi-bundle-conversion-e1-finish Phase 3, P3-T2): modules/anemia/ now has
+// an authoring-decisions.yaml AND a pre-existing test corpus (tests/ef-anemia-*.test.mjs), so pair 1
+// (anemia) below now COMPLETES `propose` end to end -- refused at the emission gate for rule content
+// (a non-fatal governance refusal: it writes its evidence-layer artifacts but no rules.json/
+// rule-provenance.json), not halted. modules/kidney_suite_v1/ also gained an authoring-decisions.yaml
+// this phase, but Phase 4 (which generates tests/ef-kidney_suite_v1-*.test.mjs) has not run yet, so
+// it clears inspect/verify and then halts INSIDE propose, at computeTestCorpusHash's UsageError
+// (missing test corpus) -- the new documented gap, tracked as MBF-5 in
+// .claude/findings/multi-bundle-conversion-e1-finish-findings.md. The halt-on-first-failure /
+// "names the failing pair, never attempts later ones" structural guarantee this test proves is
+// unchanged; only WHICH pair and WHICH cause moved.
 test('P2-T3: runBatch halts at the first failing pair, names it, and never attempts later pairs', async () => {
   const outBase = await makeScratchOutBaseDir('halt');
   try {
@@ -201,12 +211,16 @@ test('P2-T3: runBatch halts at the first failing pair, names it, and never attem
       }),
       (err) => {
         assert.ok(err instanceof BatchBundleFailedError);
-        assert.equal(err.pairIndex, 1);
-        assert.equal(err.fixture, 'tests/fixtures/rf-ev-001');
-        assert.equal(err.module, 'modules/anemia');
-        assert.equal(err.moduleId, 'anemia');
-        assert.equal(err.stage, 'inspect');
-        assert.ok(err.cause instanceof DecisionsNotFoundError);
+        assert.equal(err.pairIndex, 2);
+        assert.equal(err.fixture, 'tests/fixtures/rf-kid-001');
+        assert.equal(err.module, 'modules/kidney_suite_v1');
+        assert.equal(err.moduleId, 'kidney_suite_v1');
+        assert.equal(err.stage, 'propose');
+        assert.ok(err.cause instanceof UsageError);
+        assert.ok(
+          err.cause.message.includes('tests/ef-kidney_suite_v1-*.test.mjs'),
+          `expected the missing-test-corpus UsageError, got: ${err.cause.message}`,
+        );
         assert.equal(err.exitCode, EXIT_USAGE);
         return true;
       },
@@ -216,15 +230,27 @@ test('P2-T3: runBatch halts at the first failing pair, names it, and never attem
     const cbcOutDir = path.join(outBase, 'cbc_suite_v1', '0.1.0-proposal');
     const cbcFiles = await listFilesRelative(cbcOutDir);
     assert.ok(cbcFiles.includes('conversion-report.json'));
+    assert.ok(cbcFiles.includes('rules.json'), 'cbc_suite_v1 has approved decisions -- rules.json is emitted');
 
-    // Pair 1 (anemia) failed at inspect, before this batch's own mkdir(outDir) ever ran -- zero
-    // output, not even an empty directory.
+    // Pair 1 (anemia) ALSO succeeded before the halt (DF-E1-M1 gap closed) -- it completes propose,
+    // refused at the emission gate (rule content, non-fatal), with its evidence-layer artifacts
+    // written but no rules.json/rule-provenance.json.
     const anemiaOutDir = path.join(outBase, 'anemia', '0.1.0-proposal');
-    await assert.rejects(stat(anemiaOutDir), { code: 'ENOENT' });
+    const anemiaFiles = await listFilesRelative(anemiaOutDir);
+    assert.ok(anemiaFiles.includes('conversion-report.json'), 'anemia now completes propose end to end');
+    assert.ok(!anemiaFiles.includes('rules.json'), 'anemia is refused at the emission gate -- no rules.json');
+    assert.ok(!anemiaFiles.includes('rule-provenance.json'), 'anemia is refused at the emission gate -- no rule-provenance.json');
 
-    // Pair 2 (kidney_suite_v1) was never attempted at all.
+    // Pair 2 (kidney_suite_v1) WAS attempted (it clears inspect/verify now) but halts partway
+    // through propose -- its evidence-layer artifacts are written, but computeTestCorpusHash's
+    // UsageError fires before release-manifest.unsigned.json/conversion-report.json are ever
+    // written (Phase-4 missing-test-corpus gap, MBF-5).
     const kidneyOutDir = path.join(outBase, 'kidney_suite_v1', '0.1.0-proposal');
-    await assert.rejects(stat(kidneyOutDir), { code: 'ENOENT' });
+    const kidneyFiles = await listFilesRelative(kidneyOutDir);
+    assert.ok(kidneyFiles.includes('candidates.json'), 'kidney_suite_v1 got as far as writing its evidence-layer artifacts');
+    assert.ok(!kidneyFiles.includes('conversion-report.json'), 'kidney_suite_v1 halts before conversion-report.json is written');
+    assert.ok(!kidneyFiles.includes('release-manifest.unsigned.json'), 'kidney_suite_v1 halts before release-manifest.unsigned.json is written');
+    assert.ok(!kidneyFiles.includes('rules.json'));
   } finally {
     await rm(outBase, { recursive: true, force: true });
   }
@@ -250,15 +276,30 @@ test('P2-T3: BatchBundleFailedError forwards the underlying failure exit code ve
 // 4. CLI `batch` verb -- default invocation against the real, committed fixtures
 // =================================================================================================
 
-test('P2-T3: CLI batch verb runs BATCH_PAIRS in order and halts at the documented rf-ev-001 gap (Addendum A1 / DF-E1-M1)', async () => {
+// DF-E1-M1 gap closure (multi-bundle-conversion-e1-finish Phase 3, P3-T2): the CLI's default,
+// zero-override `BATCH_PAIRS` run no longer halts at pair 0 (rf-ev-001 / anemia) -- anemia now has
+// an authoring-decisions.yaml AND a pre-existing test corpus, so it completes `propose` (refused at
+// the emission gate for rule content, non-fatal). Pair 1 (rf-cbc-002 / cbc_suite_v1) still completes
+// as before. The default run now halts at pair 2 (rf-kid-001 / kidney_suite_v1): it too gained an
+// authoring-decisions.yaml this phase, but Phase 4 has not yet generated its
+// tests/ef-kidney_suite_v1-*.test.mjs corpus, so `propose`'s computeTestCorpusHash throws a
+// missing-test-corpus UsageError -- the new documented gap (MBF-5,
+// .claude/findings/multi-bundle-conversion-e1-finish-findings.md), never attempting pair 3 (growth).
+test('P2-T3: CLI batch verb runs BATCH_PAIRS in order and halts at the documented rf-kid-001 gap (MBF-5)', async () => {
   // No overrides -- exercises the exact default path `node cli.mjs batch` takes, against the real
   // committed fixtures/modules, writing into the real (gitignored) build/kb-pack/ root.
   await assert.rejects(runBatchVerb({}), (err) => {
     assert.ok(err instanceof BatchBundleFailedError);
-    assert.equal(err.pairIndex, 0);
-    assert.equal(err.fixture, 'tests/fixtures/rf-ev-001');
-    assert.equal(err.module, 'modules/anemia');
-    assert.ok(err.cause instanceof DecisionsNotFoundError);
+    assert.equal(err.pairIndex, 2);
+    assert.equal(err.fixture, 'tests/fixtures/rf-kid-001');
+    assert.equal(err.module, 'modules/kidney_suite_v1');
+    assert.equal(err.moduleId, 'kidney_suite_v1');
+    assert.equal(err.stage, 'propose');
+    assert.ok(err.cause instanceof UsageError);
+    assert.ok(
+      err.cause.message.includes('tests/ef-kidney_suite_v1-*.test.mjs'),
+      `expected the missing-test-corpus UsageError, got: ${err.cause.message}`,
+    );
     return true;
   });
 });

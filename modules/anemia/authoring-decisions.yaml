@@ -1,0 +1,135 @@
+# modules/anemia/authoring-decisions.yaml
+#
+# Task: P3-T2 (multi-bundle-conversion-e1-finish, Phase 3 -- Author 3x Non-Approving Decisions Files)
+# Per FR-14 / 02 section 4.12: the converter (tools/rf-bundle-to-kb-pack/) MUST NOT infer clinical
+# Boolean logic from prose. This file is the explicit, hand-authored, human-REVIEWABLE bridge between
+# rf claims and a possible future rule/candidate draft for the anemia module -- one dec_*-ID record
+# per authored decision. UNLIKE modules/cbc_suite_v1/authoring-decisions.yaml (whose decisions are
+# status: approved_for_rule_draft), every decision below is status: drafted_pending_human_approval --
+# a deliberately NON-approving scaffold status (multi-bundle-conversion-e1-finish R-2/OQ-1). No named
+# clinical reviewer has evaluated any of this; every review.* field below is pending. This file does
+# NOT drive modules/anemia/rules.json today -- anemia's existing rules predate this decisions-file
+# convention and are unaffected by this file's presence (see the plan's P4-T7/P4-T8/baseline
+# byte-identity invariants). modules/anemia/module.json.status is unaffected by this file.
+#
+# Evidentiary source: the P2-T2-confirmed fixture at tests/fixtures/rf-ev-001/ (rf run
+# rf_run_20260717_rf_ev_001_pediatric_cds_backfill, bundle
+# bundle_20260718_intent_research_20260717_rf_ev_001, status verified). Every basis.rf_claim_ids
+# entry below is a real claim_id copied verbatim from tests/fixtures/rf-ev-001/claims/claim_ledger.yaml,
+# and every basis.exact_assertion_ids entry is a real assertionId copied verbatim from
+# modules/anemia/evidence-assertions.json. Every number named in basis.reasoning below is copied from
+# the cited claim's own text -- no invented threshold, no clinical judgment beyond what the cited
+# claim itself supports.
+
+schemaVersion: "1.0"
+moduleId: anemia
+rfProvenance:
+  rfRunId: rf_run_20260717_rf_ev_001_pediatric_cds_backfill
+  rfBundleId: bundle_20260718_intent_research_20260717_rf_ev_001
+  fixturePath: tests/fixtures/rf-ev-001/
+
+decisions:
+  # WHO 6-23-month anaemia cutoff vs. AAP 6-24-month normal-Hb reference-interval discordance zone.
+  - decision_id: dec_anemia_who_aap_hb_discordance_zone_001
+    module_id: anemia
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_001
+        - clm_030
+        - clm_inf01
+      exact_assertion_ids:
+        - evas_anemia_clm_001
+        - evas_anemia_clm_030
+      reasoning: clm_001 establishes that WHO 2024 defines anaemia via age/population-specific
+        haemoglobin cutoffs, including four distinct pediatric bands from 6 months to 14 years.
+        clm_030 gives AAP's Table 1 age- and sex-specific normal haemoglobin (g/dL), MCV (fL), and
+        RDW (%) intervals spanning 6-24 months through 12-<18 years. clm_inf01 draws the explicit
+        cross-standard inference that WHO's 6-23 month anaemia cutoff of <105 g/L (<=10.5 g/dL) sits
+        below the AAP Table 1 normal-Hb lower bound of 11.0 g/dL for the same 6-24 month age band,
+        creating a 10.5-11.0 g/dL discordance zone in which a value reads "below AAP normal interval"
+        yet "not anaemic" by WHO -- two different statistical constructs (a WHO 5th-percentile
+        anaemia cutoff vs. an AAP reference interval) that the module must preserve side by side,
+        never conflate or average into a single number.
+    conflicts:
+      visible: true
+      representation: preserve_who_aap_discordance_zone
+    clinical_effect:
+      intended_output: interpretive_note
+      prohibited_effects:
+        - conflate_who_anaemia_cutoff_with_aap_reference_interval
+        - average_who_and_aap_thresholds_into_single_value
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending
+
+  # Severe-IDA (Hb <7 g/dL) severity classification is not itself a transfusion directive.
+  - decision_id: dec_anemia_severe_ida_severity_not_transfusion_directive_001
+    module_id: anemia
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_035
+        - clm_spec02
+      exact_assertion_ids:
+        - evas_anemia_clm_035
+      reasoning: clm_035 establishes that AAP defines severe IDA as confirmed IDA with a haemoglobin
+        below 7 g/dL, and notes that some children at this severity are minimally symptomatic, so
+        transfusion is reserved for clinical instability rather than triggered by the haemoglobin
+        value alone. clm_spec02, built on that same fact, proposes that confirmed severe IDA (Hb
+        <7 g/dL) accompanied by hemodynamic instability, poor intake, heart failure, or uncontrolled
+        blood loss is the acute-care referral event -- while Hb <7 g/dL alone remains a severity
+        classification, not a transfusion directive.
+    conflicts:
+      visible: true
+      representation: severity_label_not_treatment_directive
+    clinical_effect:
+      intended_output: referral_scope_exit_alert
+      prohibited_effects:
+        - treat_hb_value_alone_as_transfusion_trigger
+        - assume_clinical_instability_from_hb_alone
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending
+
+  # G6PD quantitative assay false-normal risk during/soon after a hemolytic episode; re-assay timing.
+  - decision_id: dec_anemia_g6pd_reassay_timing_001
+    module_id: anemia
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_008
+        - clm_009
+        - clm_inf06
+      exact_assertion_ids:
+        - evas_anemia_clm_008
+        - evas_anemia_clm_009
+      reasoning: clm_008 establishes that because reticulocytes and young red cells have much higher
+        G6PD activity than mature cells, a quantitative assay run during or soon after a hemolytic
+        episode can give a false-normal result. clm_009 establishes that when G6PD deficiency is
+        still suspected and no other cause of hemolysis is found, the assay should be repeated at
+        least 2-3 months after the hemolytic episode resolves so a deficiency is not missed.
+        clm_inf06 draws the composite inference that a normal quantitative G6PD assay obtained
+        during or soon after a haemolytic episode can be false-normal, so the CDS must not exclude
+        G6PD deficiency on such a result and should prompt re-assay at least 2-3 months after the
+        episode resolves when clinical suspicion persists.
+    conflicts:
+      visible: true
+      representation: non_excluding_result_pending_reassay
+    clinical_effect:
+      intended_output: reassay_prompt
+      prohibited_effects:
+        - exclude_g6pd_deficiency_on_acute_window_normal_result
+        - treat_early_reassay_as_confirmatory
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending

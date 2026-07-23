@@ -7,22 +7,30 @@
 //    part of `npm run check`." (This file matches `tests/*.test.mjs`, already run by `npm test`,
 //    itself the first step of `npm run check` — no `package.json` change is needed to wire it in.)
 //
-// HONESTY NOTE, load-bearing (read before editing this file): as of this task, only ONE of the 4
-// named `BATCH_PAIRS` (`./batch.mjs`) — `rf-cbc-002` -> `cbc_suite_v1` — ever completes
-// `inspect -> verify -> propose` end to end. The other 3 (`rf-ev-001` -> `anemia`, `rf-kid-001` ->
-// `kidney_suite_v1`, `rf-gro-002` -> `growth_suite_v1`) halt at `inspect`'s
-// `loader.loadBundle()` step with a `DecisionsNotFoundError`, because none of those 3 modules has
-// an `authoring-decisions.yaml` yet (documented, pre-existing, non-regression gap — Decisions
-// Block Addendum A1 / Deferred Item DF-E1-M1; see `tests/ef-converter-batch.test.mjs`). Even if a
-// decisions file existed for one of those 3, `propose.mjs`'s own header comment states it "fails
-// closed if the loaded module id is not the one module this converter has hand-authored drafting
-// content for (`cbc_suite_v1`)" — `propose` cannot draft rule/candidate content for any other
-// module today, by design (FR-14). This is why `modules/anemia/evidence-assertions.json` and
-// `modules/{kidney_suite_v1,growth_suite_v1}/{evidence.json,evidence-assertions.json,
-// unresolved.json}` were projected by one-off, ephemeral, uncommitted generator scripts (P4-T2,
-// P5-T1, P5-T2 — see each commit's own message) rather than by a live, re-invokable `propose`
-// call — those files are the real, final, COMMITTED "per-bundle emitted output" for this pass for
-// those 3 bundles, not a build artifact this test can regenerate on demand.
+// HONESTY NOTE, load-bearing (read before editing this file): UPDATED for multi-bundle-conversion-
+// e1-finish Phase 3 (P3-T2, DF-E1-M1 gap closure). modules/anemia/, modules/kidney_suite_v1/, and
+// modules/growth_suite_v1/ each gained an authoring-decisions.yaml this phase (all 3
+// `drafted_pending_human_approval` — non-approving). As a result, TWO of the 4 named `BATCH_PAIRS`
+// now complete `inspect -> verify -> propose` end to end: `rf-cbc-002` -> `cbc_suite_v1` (rules.json
+// emitted, its decisions are `approved_for_rule_draft`) and `rf-ev-001` -> `anemia` (refused at the
+// emission gate for rule content — a non-fatal governance refusal, since anemia already had a P4
+// test corpus from before this artifact type existed; NO rules.json/rule-provenance.json emitted,
+// but every evidence-layer artifact is). The other 2 (`rf-kid-001` -> `kidney_suite_v1`,
+// `rf-gro-002` -> `growth_suite_v1`) now clear `inspect`/`verify` (their decisions files exist) but
+// halt INSIDE `propose`, at `computeTestCorpusHash`'s `UsageError`, because Phase 4 (which
+// generates `tests/ef-<moduleId>-*.test.mjs`) has not run for either of them yet — the new
+// documented, non-regression gap, tracked as MBF-5 in
+// `.claude/findings/multi-bundle-conversion-e1-finish-findings.md` (superseding the old DF-E1-M1
+// gap this note used to describe, which this phase closed). `propose.mjs`'s own header comment
+// still states it "fails closed if the loaded module id is not the one module this converter has
+// hand-authored drafting content for (`cbc_suite_v1`)" for actual RULE content — anemia's own
+// completion above is a refusal of that same kind, not an exception to it. This is why
+// `modules/anemia/evidence-assertions.json` and `modules/{kidney_suite_v1,growth_suite_v1}/
+// {evidence.json,evidence-assertions.json,unresolved.json}` were projected by one-off, ephemeral,
+// uncommitted generator scripts (P4-T2, P5-T1, P5-T2 — see each commit's own message) rather than
+// by a live, re-invokable `propose` call — those files are the real, final, COMMITTED "per-bundle
+// emitted output" for this pass for those 3 bundles, not a build artifact this test can regenerate
+// on demand (Section 3 below still treats them as at-rest-only for that reason).
 //
 // Given that real, documented constraint, this file proves the P6-T3 determinism claim in full,
 // honestly, via four complementary angles, none of which overstates what the converter can
@@ -32,12 +40,14 @@
 //      run twice into two fresh, independent output directories, halts at the exact same pair
 //      with the exact same named cause both times (Section 1) — proving the *documented failure*
 //      is itself deterministic, not merely "a test passed once."
-//   2. EVERY one of the 4 named pairs, run in ISOLATION, twice (three times for the one that
-//      succeeds), into fresh independent output directories (Section 2) — the one pair that
-//      completes (`cbc_suite_v1`) is proven SHA-256 byte-identical across every emitted file,
-//      including `evidence.json`/`evidence-assertions.json`, across all runs; the 3 pairs that
-//      halt are proven to halt identically (same stage, same cause, same message) across runs,
-//      with zero partial output in every run.
+//   2. EVERY one of the 4 named pairs, run in ISOLATION, twice (three times for `cbc_suite_v1`),
+//      into fresh independent output directories (Section 2) — the 2 pairs that complete
+//      (`cbc_suite_v1` fully, with rules.json; `anemia` refused-but-complete, with no rules.json)
+//      are each proven SHA-256 byte-identical across every emitted file, including
+//      `evidence.json`/`evidence-assertions.json`, across all runs; the 2 pairs that halt inside
+//      `propose` on a missing test corpus (`kidney_suite_v1`, `growth_suite_v1` — MBF-5) are
+//      proven to halt identically (same stage, same cause, same message) across runs, AND their
+//      partial evidence-layer output is proven SHA-256 byte-identical across runs too.
 //   3. Section 3 is an AT-REST INTEGRITY CHECK, NOT a determinism proof: the REAL, COMMITTED
 //      per-bundle `evidence.json`/`evidence-assertions.json`/`unresolved.json` for ALL 4 modules
 //      are confirmed non-corrupt/non-truncated via two reads each (reading an unmodified file
@@ -68,7 +78,6 @@ import {
   BatchBundleFailedError,
   runBatch,
 } from '../tools/rf-bundle-to-kb-pack/lib/batch.mjs';
-import { DecisionsNotFoundError } from '../tools/rf-bundle-to-kb-pack/lib/loader.mjs';
 import {
   MULTI_BUNDLE_REPORT_FILENAME,
   run as runAggregate,
@@ -86,10 +95,25 @@ const MODULE_DIRS = Object.freeze({
   growth_suite_v1: path.join(REPO_ROOT, 'modules', 'growth_suite_v1'),
 });
 
-// The one BATCH_PAIRS entry that completes `inspect -> verify -> propose` end to end today (see
-// this file's header note). Every other entry is expected to halt at `inspect` with
-// `DecisionsNotFoundError` (DF-E1-M1) — asserted explicitly, not assumed, throughout this file.
+// The one BATCH_PAIRS entry that completes `inspect -> verify -> propose` end to end AND emits
+// rules.json/rule-provenance.json (its decisions are `approved_for_rule_draft`) — kept for the two
+// cbc_suite_v1-specific tests below (Section 2's third-run check, Section 3's committed-vs-live
+// cross-check) that predate DF-E1-M1's closure and are unaffected by it.
 const LIVE_SUCCEEDING_MODULE_ID = 'cbc_suite_v1';
+
+// DF-E1-M1 gap closure (multi-bundle-conversion-e1-finish Phase 3, P3-T2): anemia now ALSO
+// completes `inspect -> verify -> propose` end to end (it already had a P4 test corpus from before
+// this artifact type existed), but is refused at the emission gate for rule content — a non-fatal
+// governance refusal, so `runBatch` still reports `status: 'succeeded'` for it, just without
+// rules.json/rule-provenance.json.
+const REFUSED_BUT_COMPLETING_MODULE_ID = 'anemia';
+
+// The 2 BATCH_PAIRS entries that now clear `inspect`/`verify` (each has an authoring-decisions.yaml
+// as of P3-T2) but halt INSIDE `propose`, at `computeTestCorpusHash`'s `UsageError`, because
+// Phase 4 has not yet generated their `tests/ef-<moduleId>-*.test.mjs` corpus — the new documented,
+// non-regression gap (MBF-5, `.claude/findings/multi-bundle-conversion-e1-finish-findings.md`),
+// asserted explicitly, not assumed, throughout this file.
+const MISSING_TEST_CORPUS_MODULE_IDS = Object.freeze(['kidney_suite_v1', 'growth_suite_v1']);
 
 function sha256Hex(bufOrStr) {
   return createHash('sha256').update(bufOrStr).digest('hex');
@@ -176,6 +200,18 @@ async function runBatchOnce(pairs, outBaseDir) {
 // fresh output directories, using the same converter build and the same committed fixture inputs.
 // =================================================================================================
 
+// DF-E1-M1 gap closure (multi-bundle-conversion-e1-finish Phase 3, P3-T2): the real batch no
+// longer halts at pair 0 (anemia) with DecisionsNotFoundError -- anemia now has an authoring-
+// decisions.yaml AND a pre-existing test corpus, so it (pair 0) and cbc_suite_v1 (pair 1) both
+// complete `propose` before the halt. The real batch now halts at pair 2 (rf-kid-001 ->
+// modules/kidney_suite_v1): it gained an authoring-decisions.yaml this phase too, but Phase 4 has
+// not yet generated its own test corpus, so `propose`'s computeTestCorpusHash throws a missing-
+// test-corpus UsageError -- the new documented gap (MBF-5,
+// .claude/findings/multi-bundle-conversion-e1-finish-findings.md). The halt-on-first-failure /
+// "same pair, same cause, deterministic across two runs" property this test proves is unchanged;
+// only WHICH pair, WHICH stage, and WHICH cause moved -- and unlike the old pre-decisions-file
+// halt, real output now exists before the halt, so this version additionally proves that output is
+// byte-identical across both runs (a strictly stronger determinism check than before).
 test('P6-T3: two independent full-batch runs over the real, canonical BATCH_PAIRS halt at the exact same pair with the exact same named cause', async () => {
   const outBaseA = await makeScratchDir('full-a');
   const outBaseB = await makeScratchDir('full-b');
@@ -183,13 +219,10 @@ test('P6-T3: two independent full-batch runs over the real, canonical BATCH_PAIR
     const runA = await runBatchOnce(BATCH_PAIRS, outBaseA);
     const runB = await runBatchOnce(BATCH_PAIRS, outBaseB);
 
-    // As of this task, the real batch halts at pair 0 (rf-ev-001 -> modules/anemia) with
-    // DecisionsNotFoundError (DF-E1-M1) — this is the documented, expected, non-regression state
-    // (see this file's header note and tests/ef-converter-batch.test.mjs). Asserted explicitly
-    // here, not assumed, so a future close of DF-E1-M1 fails this test loudly rather than letting
-    // a stale assumption silently pass.
-    assert.equal(runA.ok, false, 'run A is expected to halt (DF-E1-M1) — update this test if that gap has closed');
-    assert.equal(runB.ok, false, 'run B is expected to halt (DF-E1-M1) — update this test if that gap has closed');
+    // Asserted explicitly here, not assumed, so a future close of MBF-5 fails this test loudly
+    // rather than letting a stale assumption silently pass.
+    assert.equal(runA.ok, false, 'run A is expected to halt (MBF-5) — update this test if that gap has closed');
+    assert.equal(runB.ok, false, 'run B is expected to halt (MBF-5) — update this test if that gap has closed');
 
     // The core determinism claim: run A and run B fail at the SAME pair, SAME stage, SAME named
     // cause, with byte-identical error messages (SHA-256 compared, not just `===`, so this is a
@@ -199,15 +232,31 @@ test('P6-T3: two independent full-batch runs over the real, canonical BATCH_PAIR
       { pairIndex: runB.pairIndex, fixture: runB.fixture, module: runB.module, moduleId: runB.moduleId, stage: runB.stage, exitCode: runB.exitCode, causeName: runB.causeName },
       'both full-batch runs must halt at the identical pair/stage/cause',
     );
-    assert.equal(runA.causeName, 'DecisionsNotFoundError');
+    assert.equal(runA.causeName, 'UsageError');
     assert.equal(sha256Hex(runA.causeMessage), sha256Hex(runB.causeMessage), 'the halting error message must be SHA-256-identical across both runs');
-    assert.equal(runA.pairIndex, 0);
-    assert.equal(runA.moduleId, 'anemia');
+    assert.equal(runA.pairIndex, 2);
+    assert.equal(runA.moduleId, 'kidney_suite_v1');
+    assert.equal(runA.stage, 'propose');
 
-    // Zero output anywhere under either scratch outBaseDir — the halt occurs before the halting
-    // pair's own `mkdir(outDir)` ever runs (see lib/batch.mjs), so neither run left ANY file behind.
-    assert.deepEqual(await listFilesRelative(outBaseA), []);
-    assert.deepEqual(await listFilesRelative(outBaseB), []);
+    // Pairs 0 (anemia) and 1 (cbc_suite_v1) both complete before the halt now, and pair 2
+    // (kidney_suite_v1) is attempted, writing partial evidence-layer output -- pair 3
+    // (growth_suite_v1) is never attempted at all. Every file either run DID emit must be exactly
+    // the same set, AND byte-identical, across the two independent runs -- a genuine determinism
+    // proof over everything the batch actually produced, not merely over the halting error.
+    const filesA = await listFilesRelative(outBaseA);
+    const filesB = await listFilesRelative(outBaseB);
+    assert.ok(filesA.length > 0, 'pairs 0/1 now succeed, so real output exists before the halt (unlike the old pre-decisions-file halt)');
+    assert.deepEqual(filesA, filesB, 'both full-batch runs must emit exactly the same set of files before halting');
+    assert.ok(filesA.some((f) => f.startsWith('anemia/') && f.endsWith('conversion-report.json')), 'pair 0 (anemia) completed');
+    assert.ok(filesA.some((f) => f.startsWith('cbc_suite_v1/') && f.endsWith('rules.json')), 'pair 1 (cbc_suite_v1) completed, including rules.json');
+    assert.ok(filesA.some((f) => f.startsWith('kidney_suite_v1/')), 'pair 2 (kidney_suite_v1) was attempted, leaving partial output');
+    assert.ok(!filesA.some((f) => f.startsWith('growth_suite_v1/')), 'pair 3 (growth_suite_v1) was never attempted -- zero output for it');
+
+    for (const relFile of filesA) {
+      const bytesA = await readFile(path.join(outBaseA, relFile));
+      const bytesB = await readFile(path.join(outBaseB, relFile));
+      assert.ok(bytesA.equals(bytesB), `${relFile} must be byte-identical across two independent full-batch runs`);
+    }
   } finally {
     await rm(outBaseA, { recursive: true, force: true });
     await rm(outBaseB, { recursive: true, force: true });
@@ -215,13 +264,25 @@ test('P6-T3: two independent full-batch runs over the real, canonical BATCH_PAIR
 });
 
 // =================================================================================================
-// Section 2: EVERY one of the 4 named pairs, run in isolation, twice (three times for the pair
-// that succeeds) — the strongest per-bundle proof this converter can actually exercise live today.
+// Section 2: EVERY one of the 4 named pairs, run in isolation, twice (three times for cbc_suite_v1)
+// — the strongest per-bundle proof this converter can actually exercise live today.
+//
+// DF-E1-M1 gap closure (multi-bundle-conversion-e1-finish Phase 3, P3-T2): anemia moves from the
+// "halts at inspect" branch into the "completes, byte-identical across runs" branch (refused at
+// the emission gate, so no rules.json -- unlike cbc_suite_v1, which fully succeeds). kidney_suite_v1
+// and growth_suite_v1 still halt, but now at `propose` (missing test corpus, MBF-5) instead of at
+// `inspect` (missing decisions file, the old DF-E1-M1) -- and they now leave real partial output
+// behind (their decisions file lets them clear inspect/verify and write their evidence-layer
+// artifacts), so this section additionally proves that partial output is itself byte-identical
+// across two isolated runs, a strictly stronger determinism check than the old "zero output"
+// assertion it replaces.
 // =================================================================================================
 
 for (const pair of BATCH_PAIRS) {
   const moduleId = path.basename(pair.module);
-  const isLiveSucceeding = moduleId === LIVE_SUCCEEDING_MODULE_ID;
+  const isFullySucceeding = moduleId === LIVE_SUCCEEDING_MODULE_ID;
+  const isRefusedButCompleting = moduleId === REFUSED_BUT_COMPLETING_MODULE_ID;
+  const isMissingTestCorpus = MISSING_TEST_CORPUS_MODULE_IDS.includes(moduleId);
 
   test(`P6-T3: pair "${moduleId}" (${pair.fixture}) run in isolation twice produces a deterministic outcome`, async () => {
     const outBaseA = await makeScratchDir(`pair-${moduleId}-a`);
@@ -230,7 +291,7 @@ for (const pair of BATCH_PAIRS) {
       const runA = await runBatchOnce([pair], outBaseA);
       const runB = await runBatchOnce([pair], outBaseB);
 
-      if (isLiveSucceeding) {
+      if (isFullySucceeding || isRefusedButCompleting) {
         assert.equal(runA.ok, true, `${moduleId} is expected to complete propose end to end`);
         assert.equal(runB.ok, true, `${moduleId} is expected to complete propose end to end`);
         assert.equal(runA.results.length, 1);
@@ -247,6 +308,16 @@ for (const pair of BATCH_PAIRS) {
         // The two files this task's AC names by name, both present in propose's own emitted pack.
         assert.ok(filesA.includes('evidence.json'));
         assert.ok(filesA.includes('evidence-assertions.json'));
+        if (isFullySucceeding) {
+          assert.ok(filesA.includes('rules.json'), `${moduleId} has approved decisions -- rules.json is emitted`);
+          assert.ok(filesA.includes('rule-provenance.json'));
+        } else {
+          // anemia: refused at the emission gate for rule content (non-fatal governance refusal,
+          // DF-E1-M1's "drafted_pending_human_approval is not approved_for_rule_draft" outcome) --
+          // no rules.json/rule-provenance.json, even though propose otherwise completed.
+          assert.ok(!filesA.includes('rules.json'), `${moduleId} is refused at the emission gate -- no rules.json`);
+          assert.ok(!filesA.includes('rule-provenance.json'));
+        }
 
         const mismatches = [];
         for (const relFile of filesA) {
@@ -258,19 +329,32 @@ for (const pair of BATCH_PAIRS) {
         }
         assert.deepEqual(mismatches, [], `every emitted file for "${moduleId}" must be SHA-256-identical across two isolated runs; mismatches: ${JSON.stringify(mismatches)}`);
       } else {
-        // The other 3 pairs are expected to halt at `inspect` with DecisionsNotFoundError
-        // (DF-E1-M1) — proven identical across both isolated runs, and proven to leave zero output.
-        assert.equal(runA.ok, false, `${moduleId} is expected to halt (DF-E1-M1) — update this test if that gap has closed`);
-        assert.equal(runB.ok, false, `${moduleId} is expected to halt (DF-E1-M1) — update this test if that gap has closed`);
-        assert.equal(runA.stage, 'inspect');
-        assert.equal(runA.causeName, 'DecisionsNotFoundError');
+        assert.ok(isMissingTestCorpus, `unexpected moduleId "${moduleId}" — every BATCH_PAIRS entry must be classified into exactly one branch above`);
+        // kidney_suite_v1 / growth_suite_v1: clear inspect/verify (each has an authoring-decisions.
+        // yaml as of P3-T2) but halt INSIDE propose, at computeTestCorpusHash's UsageError, because
+        // Phase 4 has not yet generated their own tests/ef-<moduleId>-*.test.mjs corpus (MBF-5) --
+        // proven identical across both isolated runs, including the partial output each run leaves.
+        assert.equal(runA.ok, false, `${moduleId} is expected to halt (MBF-5) — update this test if that gap has closed`);
+        assert.equal(runB.ok, false, `${moduleId} is expected to halt (MBF-5) — update this test if that gap has closed`);
+        assert.equal(runA.stage, 'propose');
+        assert.equal(runA.causeName, 'UsageError');
         assert.deepEqual(
           { stage: runA.stage, causeName: runA.causeName, exitCode: runA.exitCode },
           { stage: runB.stage, causeName: runB.causeName, exitCode: runB.exitCode },
         );
         assert.equal(sha256Hex(runA.causeMessage), sha256Hex(runB.causeMessage));
-        assert.deepEqual(await listFilesRelative(outBaseA), []);
-        assert.deepEqual(await listFilesRelative(outBaseB), []);
+
+        const filesA = await listFilesRelative(outBaseA);
+        const filesB = await listFilesRelative(outBaseB);
+        assert.ok(filesA.length > 0, `${moduleId} writes its partial evidence-layer output before halting inside propose`);
+        assert.deepEqual(filesA, filesB, 'both isolated halting runs must emit exactly the same partial output');
+        assert.ok(!filesA.some((f) => f.endsWith('rules.json')));
+        assert.ok(!filesA.some((f) => f.endsWith('conversion-report.json')), `${moduleId} halts before conversion-report.json is written`);
+        for (const relFile of filesA) {
+          const bytesA = await readFile(path.join(outBaseA, relFile));
+          const bytesB = await readFile(path.join(outBaseB, relFile));
+          assert.ok(bytesA.equals(bytesB), `${relFile} must be byte-identical across two isolated halting runs`);
+        }
       }
     } finally {
       await rm(outBaseA, { recursive: true, force: true });

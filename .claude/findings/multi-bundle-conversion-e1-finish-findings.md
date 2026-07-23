@@ -168,3 +168,23 @@ standalone). Pre-existing; out of this plan's scope. Phase 2's P2-T5 fixes the s
 *different* files (`ef-converter-rule-candidate-drafting`, `ef-converter-rule-provenance-projection`)
 but not these two. Recorded so a future parallel-CI run does not misread it as a regression; the
 operational mitigation used throughout this plan's execution is "never run two `npm test` at once."
+
+## MBF-5 (Phase 4 sequencing risk, surfaced in Phase 2) — non-cbc `propose` throws on missing test corpus after refusing
+
+Phase 2 (P2-T3) removed the module-identity `UsageError`, so a `propose` run for a non-cbc module
+now reaches Phase 1's emission gate and refuses cleanly, writing its evidence-layer artifacts
+(`pack-provenance.json`, `evidence.json`, `evidence-assertions.json`, `rule-proposals.json`,
+`candidates.json`) under the correct module identity. **But** `propose` then proceeds to build
+`release-manifest.unsigned.json`, which calls `computeTestCorpusHash(repoRoot, moduleId)` — a
+**pre-existing** guard (unrelated to the removed identity check) that throws `UsageError` when a
+module has no `tests/ef-<moduleId>-*.test.mjs` corpus. The 3 non-cbc modules have no such corpus yet.
+
+Consequence for Phase 4: `batch`'s `BATCH_PAIRS[0]` is `rf-ev-001 → modules/anemia` (a non-cbc,
+corpus-less module), and `batch` halts on first failure — so **batch 4-of-4 (P4-T1) cannot reach a
+clean terminal state for the non-cbc pairs until their test corpora exist**. Phase 4's own P4-T5..T8
+generate exactly those `tests/ef-<moduleId>-*.test.mjs` corpora. **Action for Phase 4 execution:**
+sequence P4-T1's live 4-of-4 batch verification AFTER P4-T5..T8 create the corpora — OR confirm
+P4-T1's "completes = clean, named terminal state emitting evidence-layer artifacts" definition is
+evaluated against the post-corpus state. This is a real cross-phase seam, recorded here so P4 is
+sequenced deliberately rather than discovering the halt mid-batch. Not a Phase 2 defect — Phase 2's
+scope (genericity + cbc byte-identity) is fully met and its gate is green.
