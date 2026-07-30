@@ -3,7 +3,7 @@
 ---
 title: "RF-ANE-001 — pediatric red-cell indices & derived-index substrate evidence run"
 description: "Design for a single-module rf deepen run on `anemia`, triggered by user feedback that the assessment accepts hemoglobin but not hematocrit. Scoped to the red-cell index substrate the engine lacks: Hct, MCHC, MCH, age/sex RBC intervals, and the corrected-reticulocyte/RPI denominators. Three legs (rf deepen · DR HITL packets · numerics hunt), mirroring 05."
-status: design-ready-not-launched
+status: approved
 created: 2026-07-24
 owner: Nick Miethe
 project: pediatric-cds-platform
