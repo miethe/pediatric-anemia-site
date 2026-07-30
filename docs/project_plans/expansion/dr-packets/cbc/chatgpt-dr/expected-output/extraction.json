@@ -1,0 +1,882 @@
+{
+  "module": "cbc",
+  "provider": "chatgpt",
+  "producer_profile": "chatgpt",
+  "declared_sensitivity": "personal",
+  "created_at": "2026-07-29T00:00:00Z",
+  "research_question": "deepen pass on RF-CBC-002 for the pediatric CBC suite",
+  "task_context": null,
+  "vendor_reference": {},
+  "sources": [
+    {
+      "source_id": "cbc_gpt_s01",
+      "title": "Braga 2013",
+      "doi": "10.5581/1516-8484.20130105",
+      "url": null,
+      "publication_year": 2013,
+      "access_status": "open-access",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Braga 2013"
+      }
+    },
+    {
+      "source_id": "cbc_gpt_s02",
+      "title": "Ye 2022",
+      "doi": "10.1002/ped4.12305",
+      "url": null,
+      "publication_year": 2022,
+      "access_status": "open-access",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Ye 2022"
+      }
+    },
+    {
+      "source_id": "cbc_gpt_s03",
+      "title": "Kunwar 2021",
+      "doi": "10.7759/cureus.17682",
+      "url": null,
+      "publication_year": 2021,
+      "access_status": "open-access",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Kunwar 2021"
+      }
+    },
+    {
+      "source_id": "cbc_gpt_s04",
+      "title": "Joly 2018",
+      "doi": "10.1111/ejh.13107",
+      "url": null,
+      "publication_year": 2018,
+      "access_status": "open-access",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Joly 2018"
+      }
+    },
+    {
+      "source_id": "cbc_gpt_s05",
+      "title": "Babushok 2024",
+      "doi": "10.1182/bloodadvances.2023011642",
+      "url": null,
+      "publication_year": 2024,
+      "access_status": "open-access",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Babushok 2024"
+      }
+    },
+    {
+      "source_id": "cbc_gpt_s06",
+      "title": "Tahmasebi 2020",
+      "doi": "10.1093/ajcp/aqaa059",
+      "url": null,
+      "publication_year": 2020,
+      "access_status": "open-access",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Tahmasebi 2020"
+      }
+    },
+    {
+      "source_id": "cbc_gpt_s07",
+      "title": "Satty 2023",
+      "doi": "10.1182/hematology.2023000464",
+      "url": null,
+      "publication_year": 2023,
+      "access_status": "open-access",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Satty 2023"
+      }
+    },
+    {
+      "source_id": "cbc_gpt_s08",
+      "title": "Marionneaux 2020",
+      "doi": "10.1016/B978-0-323-53045-3.00035-0",
+      "url": null,
+      "publication_year": 2020,
+      "access_status": "open-access",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Marionneaux 2020"
+      }
+    },
+    {
+      "source_id": "cbc_gpt_s09",
+      "title": "Ness 2023",
+      "doi": "10.1016/j.jpeds.2022.09.048",
+      "url": null,
+      "publication_year": 2023,
+      "access_status": "open-access",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Ness 2023"
+      }
+    },
+    {
+      "source_id": "cbc_gpt_s10",
+      "title": "Mangaonkar 2021",
+      "doi": "10.1007/s11899-021-00618-4",
+      "url": null,
+      "publication_year": 2021,
+      "access_status": "open-access",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Mangaonkar 2021"
+      }
+    },
+    {
+      "source_id": "cbc_gpt_s11",
+      "title": "another 2023 pediatric series",
+      "doi": null,
+      "url": null,
+      "publication_year": 2023,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "another 2023 pediatric series"
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "candidate_id": "cbc_gpt_c01",
+      "statement": "primary ITP candidate: isolated thrombocytopenia without other cytopenias or systemic illness",
+      "value": 100,
+      "unit": "10*9/L",
+      "direction": "lower_threshold",
+      "population": "all",
+      "qualifier_band": "primary ITP candidate",
+      "source_refs": [
+        "cbc_gpt_s01"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<100 10*9/L`",
+      "selector_value": "`<100 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "itp-diagnostic-thrombocytopenia"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c02",
+      "statement": "ITP treatment-consideration band: newly diagnosed child with ITP and grades 0–2 bleeding or limited quality-of-life impact",
+      "value": 20,
+      "unit": "10*9/L",
+      "direction": "lower_threshold",
+      "population": "all",
+      "qualifier_band": "ITP treatment-consideration band",
+      "source_refs": [
+        "cbc_gpt_s02"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<20 10*9/L`",
+      "selector_value": "`<20 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "itp-treatment-threshold"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c03",
+      "statement": "higher mucosal-bleeding likelihood band in pediatric ITP: child or adolescent with ITP, especially epistaxis or other mucosal bleeding",
+      "value": 10,
+      "unit": "10*9/L",
+      "direction": "lower_threshold",
+      "population": "all",
+      "qualifier_band": "higher mucosal-bleeding likelihood band in pediatric ITP",
+      "source_refs": [
+        "cbc_gpt_s01"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<10 10*9/L`",
+      "selector_value": "`<10 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "itp-mucosal-bleeding-band"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c04",
+      "statement": "highest serious-bleeding band in pediatric ITP: child or adolescent with ITP",
+      "value": 5,
+      "unit": "10*9/L",
+      "direction": "lower_threshold",
+      "population": "all",
+      "qualifier_band": "highest serious-bleeding band in pediatric ITP",
+      "source_refs": [
+        "cbc_gpt_s01"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<5 10*9/L`",
+      "selector_value": "`<5 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "itp-emergency-bleeding-band"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c05",
+      "statement": "consumptive coagulopathy candidate: thrombocytopenia with suspected DIC physiology",
+      "value": 80,
+      "unit": "10*9/L",
+      "direction": "lower_threshold",
+      "population": "all",
+      "qualifier_band": "consumptive coagulopathy platelet component",
+      "source_refs": [
+        "cbc_gpt_s03"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<80 10*9/L or >50 % fall in 24 h`",
+      "selector_value": "`<80 10*9/L or >50 % fall in 24 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "dic-consumptive-platelet-component"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c06",
+      "statement": "consumptive coagulopathy candidate: thrombocytopenia with suspected DIC physiology",
+      "value": 50,
+      "unit": "%",
+      "direction": "fall_threshold",
+      "population": "all",
+      "qualifier_band": "consumptive coagulopathy platelet fall in 24 h",
+      "source_refs": [
+        "cbc_gpt_s03"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<80 10*9/L or >50 % fall in 24 h`",
+      "selector_value": "`<80 10*9/L or >50 % fall in 24 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "dic-consumptive-platelet-component"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c07",
+      "statement": "TTP-pattern differentiator: thrombocytopenia with microangiopathic hemolysis or schistocytes and organ injury",
+      "value": 10,
+      "unit": "%",
+      "direction": "lower_threshold",
+      "population": "all",
+      "qualifier_band": "TTP-pattern differentiator",
+      "source_refs": [
+        "cbc_gpt_s04"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<10 %`",
+      "selector_value": "`<10 %`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "ttp-adamts13-severe-deficiency"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c08",
+      "statement": "aplastic-anemia pancytopenia criterion: suspected aplastic anemia with multilineage cytopenia",
+      "value": 20,
+      "unit": "10*9/L",
+      "direction": "lower_threshold",
+      "population": "all",
+      "qualifier_band": "aplastic-anemia pancytopenia platelet criterion",
+      "source_refs": [
+        "cbc_gpt_s05"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<20 10*9/L`",
+      "selector_value": "`<20 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "saa-platelet-criterion"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c09",
+      "statement": "aplastic-anemia pancytopenia criterion: suspected aplastic anemia with multilineage cytopenia",
+      "value": 60,
+      "unit": "10*9/L",
+      "direction": "lower_threshold",
+      "population": "all",
+      "qualifier_band": "aplastic-anemia pancytopenia reticulocyte criterion",
+      "source_refs": [
+        "cbc_gpt_s05"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<60 10*9/L`",
+      "selector_value": "`<60 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "saa-reticulocyte-criterion"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c10",
+      "statement": "very-severe aplastic-anemia referral band: suspected aplastic anemia with multilineage cytopenia",
+      "value": 0.2,
+      "unit": "10*9/L",
+      "direction": "lower_threshold",
+      "population": "all",
+      "qualifier_band": "very-severe aplastic-anemia ANC criterion",
+      "source_refs": [
+        "cbc_gpt_s05"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<0.2 10*9/L`",
+      "selector_value": "`<0.2 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "vsaa-anc-criterion"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c11",
+      "statement": "age-banded leukocytosis: WBC above CALIPER upper reference limit",
+      "value": 13.2,
+      "unit": "10*9/L",
+      "direction": "upper_threshold",
+      "population": "0-<3 y",
+      "qualifier_band": "WBC, 0-<3 y, above CALIPER upper reference limit, CALIPER 2020 DxH 900 pediatric interval paper; analyzer-specific fallback candidate only; local-lab-range precedence behavior",
+      "source_refs": [
+        "cbc_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "`>13.2 10*9/L`",
+      "selector_value": "`>13.2 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "wbc-leukocytosis-infancy"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c12",
+      "statement": "age-banded leukocytosis: WBC above CALIPER upper reference limit",
+      "value": 11.5,
+      "unit": "10*9/L",
+      "direction": "upper_threshold",
+      "population": "3-<5 y",
+      "qualifier_band": "WBC, 3-<5 y, above CALIPER upper reference limit, CALIPER 2020 DxH 900 pediatric interval paper; analyzer-specific fallback candidate only; local-lab-range precedence behavior",
+      "source_refs": [
+        "cbc_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "`>11.5 10*9/L`",
+      "selector_value": "`>11.5 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "wbc-leukocytosis-preschool"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c13",
+      "statement": "age-banded leukocytosis: WBC above CALIPER upper reference limit",
+      "value": 10.2,
+      "unit": "10*9/L",
+      "direction": "upper_threshold",
+      "population": "5-<21 y",
+      "qualifier_band": "WBC, 5-<21 y, above CALIPER upper reference limit, CALIPER 2020 DxH 900 pediatric interval paper; analyzer-specific fallback candidate only; local-lab-range precedence behavior",
+      "source_refs": [
+        "cbc_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "`>10.2 10*9/L`",
+      "selector_value": "`>10.2 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "wbc-leukocytosis-school-age-plus"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c14",
+      "statement": "leukemoid reaction candidate: marked leukocytosis, typically neutrophilic with immature myeloid forms or left shift",
+      "value": 50,
+      "unit": "10*9/L",
+      "direction": "upper_threshold",
+      "population": "all",
+      "qualifier_band": "leukemoid reaction candidate",
+      "source_refs": [
+        "cbc_gpt_s07"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>50 10*9/L`",
+      "selector_value": "`>50 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "leukemoid-reaction-band"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c15",
+      "statement": "hyperleukocytosis urgent-referral band: extreme leukocytosis",
+      "value": 100,
+      "unit": "10*9/L",
+      "direction": "upper_threshold",
+      "population": "all",
+      "qualifier_band": "hyperleukocytosis urgent-referral band",
+      "source_refs": [
+        "cbc_gpt_s07"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>100 10*9/L`",
+      "selector_value": "`>100 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "hyperleukocytosis-band"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c16",
+      "statement": "young-child lymphocytosis above age-banded RI: ALC above CALIPER upper reference limit",
+      "value": 7.1,
+      "unit": "10*9/L",
+      "direction": "upper_threshold",
+      "population": "1-<5 y",
+      "qualifier_band": "ALC, 1-<5 y, above CALIPER upper reference limit, CALIPER 2020 DxH 900 pediatric interval paper; analyzer-specific fallback candidate only; local-lab-range precedence behavior",
+      "source_refs": [
+        "cbc_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "`>7.1 10*9/L`",
+      "selector_value": "`>7.1 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "lymphocytosis-young-child-upper-ri"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c17",
+      "statement": "school-age lymphocytosis above age-banded RI: ALC above CALIPER upper reference limit",
+      "value": 4.1,
+      "unit": "10*9/L",
+      "direction": "upper_threshold",
+      "population": "5-<15 y",
+      "qualifier_band": "ALC, 5-<15 y, above CALIPER upper reference limit, CALIPER 2020 DxH 900 pediatric interval paper; analyzer-specific fallback candidate only; local-lab-range precedence behavior",
+      "source_refs": [
+        "cbc_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "`>4.1 10*9/L`",
+      "selector_value": "`>4.1 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "lymphocytosis-school-age-upper-ri"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c18",
+      "statement": "pathologic lymphocytosis in children: absolute lymphocyte count exceeding pediatric disease-definition threshold",
+      "value": 10,
+      "unit": "10*9/L",
+      "direction": "upper_threshold",
+      "population": "2 wk-8/10 y",
+      "qualifier_band": "pathologic lymphocytosis in children",
+      "source_refs": [
+        "cbc_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>10.0 10*9/L`",
+      "selector_value": "`>10.0 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "lymphocytosis-pathologic-child"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c19",
+      "statement": "mild eosinophilia: absolute eosinophil count elevation",
+      "value": 0.5,
+      "unit": "10*9/L",
+      "direction": "lower_bound",
+      "population": "all",
+      "qualifier_band": "mild eosinophilia",
+      "source_refs": [
+        "cbc_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`0.5-<1.5 10*9/L`",
+      "selector_value": "`0.5-<1.5 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "eosinophilia-mild"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c20",
+      "statement": "mild eosinophilia: absolute eosinophil count elevation",
+      "value": 1.5,
+      "unit": "10*9/L",
+      "direction": "upper_bound",
+      "population": "all",
+      "qualifier_band": "mild eosinophilia",
+      "source_refs": [
+        "cbc_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`0.5-<1.5 10*9/L`",
+      "selector_value": "`0.5-<1.5 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "eosinophilia-mild"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c21",
+      "statement": "moderate eosinophilia: absolute eosinophil count elevation",
+      "value": 1.5,
+      "unit": "10*9/L",
+      "direction": "lower_bound",
+      "population": "all",
+      "qualifier_band": "moderate eosinophilia",
+      "source_refs": [
+        "cbc_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`1.5-<4.5 10*9/L`",
+      "selector_value": "`1.5-<4.5 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "eosinophilia-moderate"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c22",
+      "statement": "moderate eosinophilia: absolute eosinophil count elevation",
+      "value": 4.5,
+      "unit": "10*9/L",
+      "direction": "upper_bound",
+      "population": "all",
+      "qualifier_band": "moderate eosinophilia",
+      "source_refs": [
+        "cbc_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`1.5-<4.5 10*9/L`",
+      "selector_value": "`1.5-<4.5 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "eosinophilia-moderate"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c23",
+      "statement": "severe eosinophilia: absolute eosinophil count elevation",
+      "value": 4.5,
+      "unit": "10*9/L",
+      "direction": "upper_threshold",
+      "population": "all",
+      "qualifier_band": "severe eosinophilia",
+      "source_refs": [
+        "cbc_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>4.5 10*9/L`",
+      "selector_value": "`>4.5 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "eosinophilia-severe"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c24",
+      "statement": "early-childhood monocytosis above age-banded RI: absolute monocyte count above CALIPER upper reference limit",
+      "value": 1.1,
+      "unit": "10*9/L",
+      "direction": "upper_threshold",
+      "population": "0-<5 y",
+      "qualifier_band": "absolute monocyte count, 0-<5 y, above CALIPER upper reference limit, CALIPER 2020 DxH 900 pediatric interval paper; analyzer-specific fallback candidate only; local-lab-range precedence behavior",
+      "source_refs": [
+        "cbc_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "`>1.1 10*9/L`",
+      "selector_value": "`>1.1 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "monocytosis-upper-ri-early-childhood"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c25",
+      "statement": "older-child or adolescent monocytosis above age-banded RI: absolute monocyte count above CALIPER upper reference limit",
+      "value": 0.8,
+      "unit": "10*9/L",
+      "direction": "upper_threshold",
+      "population": "5-<21 y",
+      "qualifier_band": "absolute monocyte count, 5-<21 y, above CALIPER upper reference limit, CALIPER 2020 DxH 900 pediatric interval paper; analyzer-specific fallback candidate only; local-lab-range precedence behavior",
+      "source_refs": [
+        "cbc_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "`>0.8 10*9/L`",
+      "selector_value": "`>0.8 10*9/L`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "monocytosis-upper-ri-older-child"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c26",
+      "statement": "persistent pathologic monocytosis: persistent monocytosis suggesting clonal work-up",
+      "value": 1,
+      "unit": "10*9/L",
+      "direction": "lower_threshold",
+      "population": "all",
+      "qualifier_band": "persistent pathologic monocytosis",
+      "source_refs": [
+        "cbc_gpt_s10"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>1.0 10*9/L and >10 % for >3 mo`",
+      "selector_value": "`>1.0 10*9/L and >10 % for >3 mo`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "persistent-monocytosis-clonal-signal"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c27",
+      "statement": "persistent pathologic monocytosis: persistent monocytosis suggesting clonal work-up",
+      "value": 10,
+      "unit": "%",
+      "direction": "lower_threshold",
+      "population": "all",
+      "qualifier_band": "persistent pathologic monocytosis",
+      "source_refs": [
+        "cbc_gpt_s10"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>1.0 10*9/L and >10 % for >3 mo`",
+      "selector_value": "`>1.0 10*9/L and >10 % for >3 mo`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "persistent-monocytosis-clonal-signal"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c28",
+      "statement": "persistent pathologic monocytosis: persistent monocytosis suggesting clonal work-up",
+      "value": 3,
+      "unit": "mo",
+      "direction": "duration",
+      "population": "all",
+      "qualifier_band": "persistent pathologic monocytosis",
+      "source_refs": [
+        "cbc_gpt_s10"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>1.0 10*9/L and >10 % for >3 mo`",
+      "selector_value": "`>1.0 10*9/L and >10 % for >3 mo`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "persistent-monocytosis-clonal-signal"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c29",
+      "statement": "microcytosis bridge into anemia module: MCV below CALIPER lower reference limit",
+      "value": 72.8,
+      "unit": "fL",
+      "direction": "lower_threshold",
+      "population": "1-<4 y",
+      "qualifier_band": "MCV, 1-<4 y, below CALIPER lower reference limit, CALIPER 2020 DxH 900 pediatric interval paper; analyzer-specific fallback candidate only; local-lab-range precedence behavior",
+      "source_refs": [
+        "cbc_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "`<72.8 fL`",
+      "selector_value": "`<72.8 fL`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "mcv-microcytosis-preschool"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c30",
+      "statement": "macrocytosis bridge into anemia module: MCV above CALIPER upper reference limit",
+      "value": 85.2,
+      "unit": "fL",
+      "direction": "upper_threshold",
+      "population": "1-<4 y",
+      "qualifier_band": "MCV, 1-<4 y, above CALIPER upper reference limit, CALIPER 2020 DxH 900 pediatric interval paper; analyzer-specific fallback candidate only; local-lab-range precedence behavior",
+      "source_refs": [
+        "cbc_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "`>85.2 fL`",
+      "selector_value": "`>85.2 fL`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "mcv-macrocytosis-preschool"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c31",
+      "statement": "microcytosis bridge into anemia module: MCV below CALIPER lower reference limit",
+      "value": 77.4,
+      "unit": "fL",
+      "direction": "lower_threshold",
+      "population": "4-<14 y",
+      "qualifier_band": "MCV, 4-<14 y, below CALIPER lower reference limit, CALIPER 2020 DxH 900 pediatric interval paper; analyzer-specific fallback candidate only; local-lab-range precedence behavior",
+      "source_refs": [
+        "cbc_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "`<77.4 fL`",
+      "selector_value": "`<77.4 fL`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "mcv-microcytosis-school-age"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c32",
+      "statement": "macrocytosis bridge into anemia module: MCV above CALIPER upper reference limit",
+      "value": 89.9,
+      "unit": "fL",
+      "direction": "upper_threshold",
+      "population": "4-<14 y",
+      "qualifier_band": "MCV, 4-<14 y, above CALIPER upper reference limit, CALIPER 2020 DxH 900 pediatric interval paper; analyzer-specific fallback candidate only; local-lab-range precedence behavior",
+      "source_refs": [
+        "cbc_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "`>89.9 fL`",
+      "selector_value": "`>89.9 fL`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "mcv-macrocytosis-school-age"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c33",
+      "statement": "many of the CBC-interval rows are analyzer-specific reference-interval boundaries, not disease cutoffs",
+      "value": null,
+      "unit": null,
+      "direction": null,
+      "population": "pediatric",
+      "qualifier_band": "analyzer-specific reference-interval boundaries",
+      "source_refs": [],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "The main design caveat is that many of the CBC-interval rows are **analyzer-specific reference-interval boundaries**, not disease cutoffs.",
+      "selector_value": "analyzer-specific reference-interval boundaries",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "CBC-interval implementation caution"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c34",
+      "statement": "CALIPER 2023 Mindray numeric tables were not independently retrievable in an open form during this pass",
+      "value": null,
+      "unit": null,
+      "direction": null,
+      "population": "pediatric",
+      "qualifier_band": "CALIPER 2023 Mindray source gap",
+      "source_refs": [],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "The biggest unresolved source gap remains **CALIPER 2023 Mindray**: it is in the supplied bundle, but its numeric tables were not independently retrievable in an open form during this pass, so I did **not** use it to populate threshold cells.",
+      "selector_value": "numeric tables were not independently retrievable in an open form",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "CALIPER 2023 Mindray gap"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c35",
+      "statement": "The report did not emit a numeric pediatric peripheral-blast referral row.",
+      "value": null,
+      "unit": null,
+      "direction": null,
+      "population": "pediatric",
+      "qualifier_band": "peripheral-blast referral gap",
+      "source_refs": [],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "I also did **not** emit a numeric pediatric **peripheral-blast referral** row.",
+      "selector_value": "did **not** emit a numeric pediatric **peripheral-blast referral** row",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "peripheral-blast referral gap"
+      }
+    },
+    {
+      "candidate_id": "cbc_gpt_c36",
+      "statement": "another 2023 pediatric series defines severe eosinophilia as ≥5.0 ×10*9/L",
+      "value": 5,
+      "unit": "×10*9/L",
+      "direction": "lower_threshold",
+      "population": "pediatric",
+      "qualifier_band": "severe eosinophilia classification conflict",
+      "source_refs": [
+        "cbc_gpt_s11"
+      ],
+      "relation": "contradicts",
+      "classification": "annotation",
+      "quote": "another 2023 pediatric series defines severe as **≥5.0 ×10*9/L**.",
+      "selector_value": "another 2023 pediatric series defines severe as **≥5.0 ×10*9/L**.",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "eosinophilia classification conflict"
+      }
+    }
+  ]
+}

@@ -1,5 +1,16 @@
 # DR HITL Packets — module evidence runs
 
+> **Status (2026-07-29): step 4 has run for the 7 returned reports.** The `chatgpt-dr` and
+> `perplexity` outputs for anemia/cbc/kidney plus `growth/chatgpt-dr` were transformed into
+> conformant packets and imported — 429 actions, 38 resolved, 391 quarantined, **0 verified**.
+> What that did and did not buy is in
+> [`../07-dr-packet-ingest-p3-execution-record.md`](../07-dr-packet-ingest-p3-execution-record.md);
+> the §5 audit gate is in [`../../audits/dr-packet-passage-fidelity-audit-2026-07-29.md`](../../audits/dr-packet-passage-fidelity-audit-2026-07-29.md)
+> (**not clean** — 13 high, 14 medium; the HIGHs were repaired and re-imported, the MEDIUMs are open);
+> design consequences are in [`../08-dr-packet-design-implications.md`](../08-dr-packet-design-implications.md).
+> Each returned packet's `expected-output/extraction.json` is the structured record that was imported.
+> The 3 `gemini-dr` packets have not been run.
+
 > Companion to [`../05-three-module-evidence-run-design.md`](../05-three-module-evidence-run-design.md) (§4 = the HITL loop + trust invariants)
 > and, for the `anemia/` packets, [`../06-anemia-red-cell-indices-evidence-run.md`](../06-anemia-red-cell-indices-evidence-run.md) (§6 = Leg B).
 > These packets are the **Leg B** upstream: owner-run deep-research, imported into rf as **candidates only**.

@@ -1,0 +1,2870 @@
+{
+  "module": "kidney",
+  "provider": "chatgpt",
+  "producer_profile": "chatgpt",
+  "declared_sensitivity": "personal",
+  "created_at": "2026-07-29T00:00:00Z",
+  "research_question": "RF-KID-001 Pediatric Kidney Candidate Patterns",
+  "task_context": null,
+  "vendor_reference": {},
+  "sources": [
+    {
+      "source_id": "kid_gpt_s01",
+      "title": "Age- and sex-dependent clinical equations to estimate glomerular filtration rates in children and young adults with chronic kidney disease",
+      "doi": "10.1016/j.kint.2020.10.047",
+      "url": null,
+      "publication_year": 2021,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Pierce 2021"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s02",
+      "title": "New Equations to Estimate GFR in Children with CKD",
+      "doi": "10.1681/ASN.2008030287",
+      "url": null,
+      "publication_year": 2009,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Schwartz 2009"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s03",
+      "title": "Hematuria and Proteinuria in Children",
+      "doi": "10.1542/pir.2017-0300",
+      "url": null,
+      "publication_year": 2018,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "2018 hematuria/proteinuria review"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s04",
+      "title": "Approach to Persistent Microscopic Hematuria in Children",
+      "doi": "10.34067/KID.0003222020",
+      "url": null,
+      "publication_year": 2020,
+      "access_status": "open-access",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Persistent microscopic hematuria review"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s05",
+      "title": "Hematuria and Proteinuria in Children",
+      "doi": null,
+      "url": "https://www.laaap.org/hematuria-and-proteinuria-in-children",
+      "publication_year": 2026,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "LA AAP clinician summary"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s06",
+      "title": "Proteinuria in Children: Evaluation and Differential Diagnosis",
+      "doi": null,
+      "url": "https://www.aafp.org/afp/2017/0215/p248",
+      "publication_year": 2017,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "AAFP 2017 review"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s07",
+      "title": "Diagnostic utility of protein to creatinine ratio (P/C ratio) in spot urine sample within routine clinical practice",
+      "doi": "10.1080/10408363.2020.1723487",
+      "url": null,
+      "publication_year": 2020,
+      "access_status": "paywalled",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Kaminska 2020 review"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s08",
+      "title": "Incorrect application of the KDIGO acute kidney injury staging criteria",
+      "doi": "10.1093/ckj/sfab256",
+      "url": null,
+      "publication_year": 2022,
+      "access_status": "open-access",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "CKJ 2022 KDIGO staging table"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s09",
+      "title": "Acute Renal Failure: Management and Investigation (Paediatrics)",
+      "doi": null,
+      "url": "https://www.clinicalguidelines.scot.nhs.uk/ggc-paediatric-guidelines/ggc-paediatric-guidelines/kidney-diseases/acute-renal-failure-management-and-investigation-paediatrics-353/",
+      "publication_year": 2020,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "NHSGGC 2020 pediatric guideline"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s10",
+      "title": "KDIGO 2024 commentary and secondary summaries",
+      "doi": null,
+      "url": null,
+      "publication_year": 2024,
+      "access_status": "open-access",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "CKD chronicity criterion"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s11",
+      "title": "KDIGO 2024 pediatric commentary",
+      "doi": null,
+      "url": null,
+      "publication_year": 2024,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "Pediatric low-eGFR screening flag"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s12",
+      "title": "KDIGO-based summaries",
+      "doi": null,
+      "url": null,
+      "publication_year": null,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "CKD diagnosis/referral GFR threshold"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s13",
+      "title": "KDIGO-aligned heatmap and summaries",
+      "doi": null,
+      "url": null,
+      "publication_year": null,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "KDIGO GFR category map"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s14",
+      "title": "KDIGO 2024 bundle capture plus KDIGO-aligned heatmap",
+      "doi": null,
+      "url": null,
+      "publication_year": 2024,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "KDIGO albuminuria category map"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s15",
+      "title": "AAFP 2018 review",
+      "doi": null,
+      "url": null,
+      "publication_year": 2018,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "AAP BP classification map"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s16",
+      "title": "AAP 2017 pediatric hypertension guideline",
+      "doi": "10.1542/peds.2017-1904",
+      "url": null,
+      "publication_year": 2017,
+      "access_status": "paywalled",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "AAP source-of-record"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s17",
+      "title": "Hyponatraemia",
+      "doi": null,
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/hyponatraemia/",
+      "publication_year": 2023,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "RCH Melbourne hyponatraemia guideline"
+      }
+    },
+    {
+      "source_id": "kid_gpt_s18",
+      "title": "NKF KDOQI pediatric CKD guideline",
+      "doi": null,
+      "url": "https://kidneyfoundation.cachefly.net/professionals/KDOQI/guidelines_pedbone/guide16.htm",
+      "publication_year": null,
+      "access_status": "unknown",
+      "authors": [],
+      "publisher": null,
+      "accessed_at": null,
+      "extensions": {
+        "report_label": "KDOQI pediatric CKD guideline"
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "candidate_id": "kid_gpt_c001",
+      "statement": "Male U25 creatinine eGFR equation coefficient K is 41.8.",
+      "value": 41.8,
+      "unit": "mL/min/1.73 m2",
+      "direction": "coefficient",
+      "population": "Children/young adults age 1–25 y",
+      "qualifier_band": "first-morning UPCR",
+      "source_refs": [
+        "kid_gpt_s01"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "male `K = 41.8`",
+      "selector_value": "male `K = 41.8`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "U25 creatinine eGFR equation"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c002",
+      "statement": "Female U25 creatinine eGFR equation coefficient K is 37.6.",
+      "value": 37.6,
+      "unit": "mL/min/1.73 m2",
+      "direction": "coefficient",
+      "population": "Children/young adults age 1–25 y",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s01"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "female `K = 37.6`",
+      "selector_value": "female `K = 37.6`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "U25 creatinine eGFR equation"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c003",
+      "statement": "Male age-dependent creatinine U25 coefficient K lower band is 35.7.",
+      "value": 35.7,
+      "unit": "mL/min/1.73 m2",
+      "direction": "lower_bound",
+      "population": "Male age 1–25 y",
+      "qualifier_band": "Male age-dependent creatinine U25 coefficient K, age 1 to 25 y",
+      "source_refs": [
+        "kid_gpt_s01"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "Male age-dependent `K` rises from `35.7` at age 1 to `50.8` at age ≥18",
+      "selector_value": "Male age-dependent `K` rises from `35.7` at age 1 to `50.8` at age ≥18",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "U25 age-dependent creatinine coefficient band"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c004",
+      "statement": "Male age-dependent creatinine U25 coefficient K upper band is 50.8.",
+      "value": 50.8,
+      "unit": "mL/min/1.73 m2",
+      "direction": "upper_bound",
+      "population": "Male age 1–25 y",
+      "qualifier_band": "Male age-dependent creatinine U25 coefficient K, age 1 to 25 y",
+      "source_refs": [
+        "kid_gpt_s01"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "Male age-dependent `K` rises from `35.7` at age 1 to `50.8` at age ≥18",
+      "selector_value": "Male age-dependent `K` rises from `35.7` at age 1 to `50.8` at age ≥18",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "U25 age-dependent creatinine coefficient band"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c005",
+      "statement": "Female age-dependent creatinine U25 coefficient K lower band is 33.1.",
+      "value": 33.1,
+      "unit": "mL/min/1.73 m2",
+      "direction": "lower_bound",
+      "population": "Female age 1–25 y",
+      "qualifier_band": "Female age-dependent creatinine U25 coefficient K, age 1 to 25 y",
+      "source_refs": [
+        "kid_gpt_s01"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "Female age-dependent `K` rises from `33.1` at age 1 to `41.4` at age ≥18",
+      "selector_value": "Female age-dependent `K` rises from `33.1` at age 1 to `41.4` at age ≥18",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "U25 age-dependent creatinine coefficient band"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c006",
+      "statement": "Female age-dependent creatinine U25 coefficient K upper band is 41.4.",
+      "value": 41.4,
+      "unit": "mL/min/1.73 m2",
+      "direction": "upper_bound",
+      "population": "Female age 1–25 y",
+      "qualifier_band": "Female age-dependent creatinine U25 coefficient K, age 1 to 25 y",
+      "source_refs": [
+        "kid_gpt_s01"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "Female age-dependent `K` rises from `33.1` at age 1 to `41.4` at age ≥18",
+      "selector_value": "Female age-dependent `K` rises from `33.1` at age 1 to `41.4` at age ≥18",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "U25 age-dependent creatinine coefficient band"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c007",
+      "statement": "Male U25 cystatin-C eGFR equation coefficient K is 81.9.",
+      "value": 81.9,
+      "unit": "mL/min/1.73 m2",
+      "direction": "coefficient",
+      "population": "Children/young adults age 1–25 y",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s01"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "male `K = 81.9`",
+      "selector_value": "male `K = 81.9`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "U25 cystatin-C eGFR equation"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c008",
+      "statement": "Female U25 cystatin-C eGFR equation coefficient K is 74.9.",
+      "value": 74.9,
+      "unit": "mL/min/1.73 m2",
+      "direction": "coefficient",
+      "population": "Children/young adults age 1–25 y",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s01"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "female `K = 74.9`",
+      "selector_value": "female `K = 74.9`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "U25 cystatin-C eGFR equation"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c009",
+      "statement": "Bedside Schwartz creatinine eGFR equation coefficient is 0.413.",
+      "value": 0.413,
+      "unit": "mL/min/1.73 m2",
+      "direction": "coefficient",
+      "population": "Children age 1–16 y in original derivation; often used more broadly in pediatrics",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s02"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`eGFR = 0.413 × [height (cm)/SCr (mg/dL)]`",
+      "selector_value": "`eGFR = 0.413 × [height (cm)/SCr (mg/dL)]`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Bedside Schwartz creatinine eGFR equation"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c010",
+      "statement": "Spun urine microscopic hematuria threshold is greater than 5 RBC/HPF.",
+      "value": 5,
+      "unit": "RBC/HPF",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s03"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>5`",
+      "selector_value": "`>5`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Microscopic hematuria definition"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c011",
+      "statement": "Uncentrifuged urine microscopic hematuria threshold is greater than 5 RBC/mm3.",
+      "value": 5,
+      "unit": "RBC/mm3",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s03"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>5`",
+      "selector_value": "`>5`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Microscopic hematuria definition"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c012",
+      "statement": "Persistent microscopic hematuria lower duration band is more than 4 weeks.",
+      "value": 4,
+      "unit": "weeks",
+      "direction": "lower_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "persistent microscopic hematuria duration, children/adolescents",
+      "source_refs": [
+        "kid_gpt_s03"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>4–6 weeks` **and** `>5 RBC/HPF` absent exercise, menses, trauma",
+      "selector_value": "`>4–6 weeks` **and** `>5 RBC/HPF` absent exercise, menses, trauma",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Persistent microscopic hematuria"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c013",
+      "statement": "Persistent microscopic hematuria upper duration band is more than 6 weeks.",
+      "value": 6,
+      "unit": "weeks",
+      "direction": "upper_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "persistent microscopic hematuria duration, children/adolescents",
+      "source_refs": [
+        "kid_gpt_s03"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>4–6 weeks` **and** `>5 RBC/HPF` absent exercise, menses, trauma",
+      "selector_value": "`>4–6 weeks` **and** `>5 RBC/HPF` absent exercise, menses, trauma",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Persistent microscopic hematuria"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c014",
+      "statement": "Persistent microscopic hematuria microscopy threshold is greater than 5 RBC/HPF.",
+      "value": 5,
+      "unit": "RBC/HPF",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s03"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>4–6 weeks` **and** `>5 RBC/HPF` absent exercise, menses, trauma",
+      "selector_value": "`>4–6 weeks` **and** `>5 RBC/HPF` absent exercise, menses, trauma",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Persistent microscopic hematuria"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c015",
+      "statement": "Glomerular hematuria morphology branch has no retrieved validated numeric cutoff and must not be used as a numeric threshold.",
+      "value": null,
+      "unit": "NA",
+      "direction": "present",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "`NO CITATION — do not use`",
+      "selector_value": "`NO CITATION — do not use`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Glomerular hematuria branch"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c016",
+      "statement": "Nonglomerular hematuria morphology branch has no retrievable numeric cutoff and must not be used as a numeric threshold.",
+      "value": null,
+      "unit": "NA",
+      "direction": "present",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "`NO CITATION — do not use`",
+      "selector_value": "`NO CITATION — do not use`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Nonglomerular hematuria branch"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c017",
+      "statement": "Urine calcium/creatinine hypercalciuria threshold is greater than 0.2 mg/mg.",
+      "value": 0.2,
+      "unit": "mg/mg",
+      "direction": "upper_threshold",
+      "population": "Children age >2 y",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s03"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>0.2`",
+      "selector_value": "`>0.2`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Hypercalciuria branch for nonglomerular hematuria"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c018",
+      "statement": "Infant urine calcium/creatinine acceptable upper limit is less than 0.8 mg/mg.",
+      "value": 0.8,
+      "unit": "mg/mg",
+      "direction": "upper_threshold",
+      "population": "Infants <6 months",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s03"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<0.8` acceptable upper limit",
+      "selector_value": "`<0.8` acceptable upper limit",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Infant Ca/Cr upper limit"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c019",
+      "statement": "Infant urine calcium/creatinine acceptable upper limit is less than 0.6 mg/mg.",
+      "value": 0.6,
+      "unit": "mg/mg",
+      "direction": "upper_threshold",
+      "population": "Infants 6–12 months",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s03"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<0.6` acceptable upper limit",
+      "selector_value": "`<0.6` acceptable upper limit",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Infant Ca/Cr upper limit"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c020",
+      "statement": "Pediatric spot UPCR threshold is greater than 0.2 mg/mg.",
+      "value": 0.2,
+      "unit": "mg/mg",
+      "direction": "upper_threshold",
+      "population": "Children >24 months",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>0.2`",
+      "selector_value": "`>0.2`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Pediatric proteinuria by spot ratio"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c021",
+      "statement": "Infant spot UPCR threshold is greater than 0.5 mg/mg.",
+      "value": 0.5,
+      "unit": "mg/mg",
+      "direction": "upper_threshold",
+      "population": "Children 6–24 months",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>0.5`",
+      "selector_value": "`>0.5`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Infant proteinuria by spot ratio"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c022",
+      "statement": "Orthostatic proteinuria first-morning UPCR upper bound is 0.2 mg/mg.",
+      "value": 0.2,
+      "unit": "mg/mg",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": "orthostatic proteinuria first-morning UPCR, children/adolescents",
+      "source_refs": [
+        "kid_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "First-morning `≤0.2` **and** upright/random `>0.2`",
+      "selector_value": "First-morning `≤0.2` **and** upright/random `>0.2`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Orthostatic proteinuria pattern"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c023",
+      "statement": "Orthostatic proteinuria upright or random UPCR threshold is greater than 0.2 mg/mg.",
+      "value": 0.2,
+      "unit": "mg/mg",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": "upright/random UPCR",
+      "source_refs": [
+        "kid_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "First-morning `≤0.2` **and** upright/random `>0.2`",
+      "selector_value": "First-morning `≤0.2` **and** upright/random `>0.2`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Orthostatic proteinuria pattern"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c024",
+      "statement": "Proteinuria by 24-hour quantitation is greater than 100 mg/m2/day.",
+      "value": 100,
+      "unit": "mg/m2/day",
+      "direction": "upper_threshold",
+      "population": "Children",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "`>100`",
+      "selector_value": "`>100`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Proteinuria by 24-hour quantitation"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c025",
+      "statement": "Pediatric nephrotic-range spot UPCR threshold is greater than 2 mg/mg.",
+      "value": 2,
+      "unit": "mg/mg",
+      "direction": "upper_threshold",
+      "population": "Children",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s06",
+        "kid_gpt_s02"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>2`",
+      "selector_value": "`>2`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Pediatric nephrotic-range proteinuria by spot ratio"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c026",
+      "statement": "Pediatric nephrotic-range proteinuria by 24-hour quantitation is greater than 1000 mg/m2/day.",
+      "value": 1000,
+      "unit": "mg/m2/day",
+      "direction": "upper_threshold",
+      "population": "Children",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>1000`",
+      "selector_value": "`>1000`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Pediatric nephrotic-range proteinuria by 24-hour quantitation"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c027",
+      "statement": "Mixed-population spot UPCR proteinuria threshold is greater than 20 mg/mmol.",
+      "value": 20,
+      "unit": "mg/mmol",
+      "direction": "upper_threshold",
+      "population": "General laboratory / mixed populations; not pediatric-specific",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s07"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>20`",
+      "selector_value": "`>20`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Spot UPCR proteinuria threshold in SI units"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c028",
+      "statement": "Mixed-population spot UPCR nephrotic threshold is greater than 350 mg/mmol.",
+      "value": 350,
+      "unit": "mg/mmol",
+      "direction": "upper_threshold",
+      "population": "General laboratory / mixed populations; not pediatric-specific",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s07"
+      ],
+      "relation": "contradicts",
+      "classification": "assertion",
+      "quote": "`>350`",
+      "selector_value": "`>350`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Spot UPCR nephrotic threshold in SI units"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c029",
+      "statement": "Hematuria plus proteinuria referral red flag uses UPCR greater than 0.2 mg/mg for children outside the stated infant band.",
+      "value": 0.2,
+      "unit": "mg/mg",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "Hematuria **plus** UPCR `>0.2` (`>0.5` if 6–24 months)",
+      "selector_value": "Hematuria **plus** UPCR `>0.2` (`>0.5` if 6–24 months)",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Hematuria plus proteinuria referral red flag"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c030",
+      "statement": "Hematuria plus proteinuria referral red flag uses UPCR greater than 0.5 mg/mg for ages 6–24 months.",
+      "value": 0.5,
+      "unit": "mg/mg",
+      "direction": "upper_threshold",
+      "population": "Children 6–24 months",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s06"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "Hematuria **plus** UPCR `>0.2` (`>0.5` if 6–24 months)",
+      "selector_value": "Hematuria **plus** UPCR `>0.2` (`>0.5` if 6–24 months)",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Hematuria plus proteinuria referral red flag"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c031",
+      "statement": "KDIGO AKI stage 1 SCr baseline multiplier lower bound is 1.5.",
+      "value": 1.5,
+      "unit": "× baseline",
+      "direction": "lower_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "KDIGO AKI stage 1 SCr baseline multiplier, children/adolescents",
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `1.5–1.9 × baseline` **or** absolute SCr increase `≥0.3 mg/dL` within 48 h **or** urine output `<0.5 mL/kg/h` for `6–12 h`",
+      "selector_value": "SCr `1.5–1.9 × baseline` **or** absolute SCr increase `≥0.3 mg/dL` within 48 h **or** urine output `<0.5 mL/kg/h` for `6–12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 1"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c032",
+      "statement": "KDIGO AKI stage 1 SCr baseline multiplier upper bound is 1.9.",
+      "value": 1.9,
+      "unit": "× baseline",
+      "direction": "upper_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "KDIGO AKI stage 1 SCr baseline multiplier, children/adolescents",
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `1.5–1.9 × baseline` **or** absolute SCr increase `≥0.3 mg/dL` within 48 h **or** urine output `<0.5 mL/kg/h` for `6–12 h`",
+      "selector_value": "SCr `1.5–1.9 × baseline` **or** absolute SCr increase `≥0.3 mg/dL` within 48 h **or** urine output `<0.5 mL/kg/h` for `6–12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 1"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c033",
+      "statement": "KDIGO AKI stage 1 criterion is absolute SCr increase ≥0.3 mg/dL within 48 h.",
+      "value": 0.3,
+      "unit": "mg/dL",
+      "direction": "lower_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": "KDIGO AKI stage 1 absolute SCr increase, children/adolescents, within 48 h",
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `1.5–1.9 × baseline` **or** absolute SCr increase `≥0.3 mg/dL` within 48 h **or** urine output `<0.5 mL/kg/h` for `6–12 h`",
+      "selector_value": "SCr `1.5–1.9 × baseline` **or** absolute SCr increase `≥0.3 mg/dL` within 48 h **or** urine output `<0.5 mL/kg/h` for `6–12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 1"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c034",
+      "statement": "KDIGO AKI stage 1 urine-output threshold is less than 0.5 mL/kg/h.",
+      "value": 0.5,
+      "unit": "mL/kg/h",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `1.5–1.9 × baseline` **or** absolute SCr increase `≥0.3 mg/dL` within 48 h **or** urine output `<0.5 mL/kg/h` for `6–12 h`",
+      "selector_value": "SCr `1.5–1.9 × baseline` **or** absolute SCr increase `≥0.3 mg/dL` within 48 h **or** urine output `<0.5 mL/kg/h` for `6–12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 1"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c035",
+      "statement": "KDIGO AKI stage 1 urine-output duration lower bound is 6 hours.",
+      "value": 6,
+      "unit": "hours",
+      "direction": "lower_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "KDIGO AKI stage 1 urine-output duration, children/adolescents, urine output <0.5 mL/kg/h",
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `1.5–1.9 × baseline` **or** absolute SCr increase `≥0.3 mg/dL` within 48 h **or** urine output `<0.5 mL/kg/h` for `6–12 h`",
+      "selector_value": "SCr `1.5–1.9 × baseline` **or** absolute SCr increase `≥0.3 mg/dL` within 48 h **or** urine output `<0.5 mL/kg/h` for `6–12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 1"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c036",
+      "statement": "KDIGO AKI stage 1 urine-output duration upper bound is 12 hours.",
+      "value": 12,
+      "unit": "hours",
+      "direction": "upper_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "KDIGO AKI stage 1 urine-output duration, children/adolescents, urine output <0.5 mL/kg/h",
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `1.5–1.9 × baseline` **or** absolute SCr increase `≥0.3 mg/dL` within 48 h **or** urine output `<0.5 mL/kg/h` for `6–12 h`",
+      "selector_value": "SCr `1.5–1.9 × baseline` **or** absolute SCr increase `≥0.3 mg/dL` within 48 h **or** urine output `<0.5 mL/kg/h` for `6–12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 1"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c037",
+      "statement": "KDIGO AKI stage 2 SCr baseline multiplier lower bound is 2.0.",
+      "value": 2,
+      "unit": "× baseline",
+      "direction": "lower_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "KDIGO AKI stage 2 SCr baseline multiplier, children/adolescents",
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `2.0–2.9 × baseline` **or** urine output `<0.5 mL/kg/h` for `≥12 h`",
+      "selector_value": "SCr `2.0–2.9 × baseline` **or** urine output `<0.5 mL/kg/h` for `≥12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 2"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c038",
+      "statement": "KDIGO AKI stage 2 SCr baseline multiplier upper bound is 2.9.",
+      "value": 2.9,
+      "unit": "× baseline",
+      "direction": "upper_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "KDIGO AKI stage 2 SCr baseline multiplier, children/adolescents",
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `2.0–2.9 × baseline` **or** urine output `<0.5 mL/kg/h` for `≥12 h`",
+      "selector_value": "SCr `2.0–2.9 × baseline` **or** urine output `<0.5 mL/kg/h` for `≥12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 2"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c039",
+      "statement": "KDIGO AKI stage 2 urine-output threshold is less than 0.5 mL/kg/h.",
+      "value": 0.5,
+      "unit": "mL/kg/h",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `2.0–2.9 × baseline` **or** urine output `<0.5 mL/kg/h` for `≥12 h`",
+      "selector_value": "SCr `2.0–2.9 × baseline` **or** urine output `<0.5 mL/kg/h` for `≥12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 2"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c040",
+      "statement": "KDIGO AKI stage 2 urine-output duration is at least 12 hours.",
+      "value": 12,
+      "unit": "hours",
+      "direction": "lower_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `2.0–2.9 × baseline` **or** urine output `<0.5 mL/kg/h` for `≥12 h`",
+      "selector_value": "SCr `2.0–2.9 × baseline` **or** urine output `<0.5 mL/kg/h` for `≥12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 2"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c041",
+      "statement": "KDIGO AKI stage 3 SCr baseline multiplier is at least 3.0.",
+      "value": 3,
+      "unit": "× baseline",
+      "direction": "lower_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "selector_value": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 3"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c042",
+      "statement": "KDIGO AKI stage 3 absolute SCr threshold is at least 4.0 mg/dL.",
+      "value": 4,
+      "unit": "mg/dL",
+      "direction": "lower_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "selector_value": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 3"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c043",
+      "statement": "KDIGO AKI stage 3 pediatric age criterion is less than 18 years.",
+      "value": 18,
+      "unit": "y",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "selector_value": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 3"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c044",
+      "statement": "KDIGO AKI stage 3 eGFR threshold is less than 35 mL/min/1.73 m2.",
+      "value": 35,
+      "unit": "mL/min/1.73 m2",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "selector_value": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 3"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c045",
+      "statement": "KDIGO AKI stage 3 urine-output threshold is less than 0.3 mL/kg/h.",
+      "value": 0.3,
+      "unit": "mL/kg/h",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "selector_value": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 3"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c046",
+      "statement": "KDIGO AKI stage 3 urine-output duration is at least 24 hours.",
+      "value": 24,
+      "unit": "hours",
+      "direction": "lower_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "selector_value": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 3"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c047",
+      "statement": "KDIGO AKI stage 3 anuria duration is at least 12 hours.",
+      "value": 12,
+      "unit": "hours",
+      "direction": "lower_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s08"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "selector_value": "SCr `≥3.0 × baseline` **or** SCr `≥4.0 mg/dL` **or** initiation of renal replacement therapy **or** in patients `<18 y`, eGFR `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `≥24 h` **or** anuria for `≥12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO AKI stage 3"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c048",
+      "statement": "pRIFLE Risk eCCl decrease is 25 percent.",
+      "value": 25,
+      "unit": "%",
+      "direction": "cutoff",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "eCCl decrease by `25%` **or** urine output `<0.5 mL/kg/h` for `8 h`",
+      "selector_value": "eCCl decrease by `25%` **or** urine output `<0.5 mL/kg/h` for `8 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "pRIFLE Risk"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c049",
+      "statement": "pRIFLE Risk urine-output threshold is less than 0.5 mL/kg/h.",
+      "value": 0.5,
+      "unit": "mL/kg/h",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "eCCl decrease by `25%` **or** urine output `<0.5 mL/kg/h` for `8 h`",
+      "selector_value": "eCCl decrease by `25%` **or** urine output `<0.5 mL/kg/h` for `8 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "pRIFLE Risk"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c050",
+      "statement": "pRIFLE Risk urine-output duration is 8 hours.",
+      "value": 8,
+      "unit": "hours",
+      "direction": "lower_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "eCCl decrease by `25%` **or** urine output `<0.5 mL/kg/h` for `8 h`",
+      "selector_value": "eCCl decrease by `25%` **or** urine output `<0.5 mL/kg/h` for `8 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "pRIFLE Risk"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c051",
+      "statement": "pRIFLE Injury eCCl decrease is 50 percent.",
+      "value": 50,
+      "unit": "%",
+      "direction": "cutoff",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "eCCl decrease by `50%` **or** urine output `<0.5 mL/kg/h` for `16 h`",
+      "selector_value": "eCCl decrease by `50%` **or** urine output `<0.5 mL/kg/h` for `16 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "pRIFLE Injury"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c052",
+      "statement": "pRIFLE Injury urine-output threshold is less than 0.5 mL/kg/h.",
+      "value": 0.5,
+      "unit": "mL/kg/h",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "eCCl decrease by `50%` **or** urine output `<0.5 mL/kg/h` for `16 h`",
+      "selector_value": "eCCl decrease by `50%` **or** urine output `<0.5 mL/kg/h` for `16 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "pRIFLE Injury"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c053",
+      "statement": "pRIFLE Injury urine-output duration is 16 hours.",
+      "value": 16,
+      "unit": "hours",
+      "direction": "lower_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "eCCl decrease by `50%` **or** urine output `<0.5 mL/kg/h` for `16 h`",
+      "selector_value": "eCCl decrease by `50%` **or** urine output `<0.5 mL/kg/h` for `16 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "pRIFLE Injury"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c054",
+      "statement": "pRIFLE Failure eCCl decrease is 75 percent.",
+      "value": 75,
+      "unit": "%",
+      "direction": "cutoff",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "eCCl decrease by `75%` **or** eCCl `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `24 h` **or** anuric for `12 h`",
+      "selector_value": "eCCl decrease by `75%` **or** eCCl `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `24 h` **or** anuric for `12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "pRIFLE Failure"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c055",
+      "statement": "pRIFLE Failure eCCl threshold is less than 35 mL/min/1.73 m2.",
+      "value": 35,
+      "unit": "mL/min/1.73 m2",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "eCCl decrease by `75%` **or** eCCl `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `24 h` **or** anuric for `12 h`",
+      "selector_value": "eCCl decrease by `75%` **or** eCCl `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `24 h` **or** anuric for `12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "pRIFLE Failure"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c056",
+      "statement": "pRIFLE Failure urine-output threshold is less than 0.3 mL/kg/h.",
+      "value": 0.3,
+      "unit": "mL/kg/h",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "eCCl decrease by `75%` **or** eCCl `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `24 h` **or** anuric for `12 h`",
+      "selector_value": "eCCl decrease by `75%` **or** eCCl `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `24 h` **or** anuric for `12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "pRIFLE Failure"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c057",
+      "statement": "pRIFLE Failure urine-output duration is 24 hours.",
+      "value": 24,
+      "unit": "hours",
+      "direction": "lower_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "eCCl decrease by `75%` **or** eCCl `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `24 h` **or** anuric for `12 h`",
+      "selector_value": "eCCl decrease by `75%` **or** eCCl `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `24 h` **or** anuric for `12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "pRIFLE Failure"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c058",
+      "statement": "pRIFLE Failure anuria duration is 12 hours.",
+      "value": 12,
+      "unit": "hours",
+      "direction": "lower_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "eCCl decrease by `75%` **or** eCCl `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `24 h` **or** anuric for `12 h`",
+      "selector_value": "eCCl decrease by `75%` **or** eCCl `<35 mL/min/1.73 m2` **or** urine output `<0.3 mL/kg/h` for `24 h` **or** anuric for `12 h`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "pRIFLE Failure"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c059",
+      "statement": "CKD chronicity criterion is at least 3 months.",
+      "value": 3,
+      "unit": "months",
+      "direction": "lower_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s10"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`≥3 months`",
+      "selector_value": "`≥3 months`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "CKD chronicity criterion"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c060",
+      "statement": "Pediatric low-eGFR screening flag is less than 90 mL/min/1.73 m2.",
+      "value": 90,
+      "unit": "mL/min/1.73 m2",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents age >2 y",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s11"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<90`",
+      "selector_value": "`<90`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Pediatric low-eGFR screening flag"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c061",
+      "statement": "CKD diagnosis/referral criterion is GFR <60 mL/min/1.73 m2 for ≥3 months.",
+      "value": 60,
+      "unit": "mL/min/1.73 m2",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": "CKD diagnosis/referral, children/adolescents, GFR <60 mL/min/1.73 m2 for ≥3 months",
+      "source_refs": [
+        "kid_gpt_s12",
+        "kid_gpt_s10"
+      ],
+      "relation": "contradicts",
+      "classification": "assertion",
+      "quote": "`<60` for `≥3 months`",
+      "selector_value": "`<60` for `≥3 months`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "CKD diagnosis/referral GFR threshold"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c062",
+      "statement": "CKD diagnosis/referral GFR threshold has a persistent-duration qualifier.",
+      "value": null,
+      "unit": null,
+      "direction": "context",
+      "population": "Children/adolescents",
+      "qualifier_band": "CKD diagnosis/referral, children/adolescents, GFR <60 mL/min/1.73 m2 for ≥3 months",
+      "source_refs": [
+        "kid_gpt_s12",
+        "kid_gpt_s10"
+      ],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "`<60` for `≥3 months`",
+      "selector_value": "`<60` for `≥3 months`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "CKD diagnosis/referral GFR threshold"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c063",
+      "statement": "KDIGO GFR category G1 boundary is 90.",
+      "value": 90,
+      "unit": "mL/min/1.73 m2",
+      "direction": "lower_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": "G1",
+      "source_refs": [
+        "kid_gpt_s13"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "selector_value": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO GFR category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c064",
+      "statement": "KDIGO GFR category G2 boundary is 60.",
+      "value": 60,
+      "unit": "mL/min/1.73 m2",
+      "direction": "lower_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "G2",
+      "source_refs": [
+        "kid_gpt_s13"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "selector_value": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO GFR category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c065",
+      "statement": "KDIGO GFR category G2 boundary is 89.",
+      "value": 89,
+      "unit": "mL/min/1.73 m2",
+      "direction": "upper_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "G2",
+      "source_refs": [
+        "kid_gpt_s13"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "selector_value": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO GFR category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c066",
+      "statement": "KDIGO GFR category G3a boundary is 45.",
+      "value": 45,
+      "unit": "mL/min/1.73 m2",
+      "direction": "lower_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "G3a",
+      "source_refs": [
+        "kid_gpt_s13"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "selector_value": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO GFR category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c067",
+      "statement": "KDIGO GFR category G3a boundary is 59.",
+      "value": 59,
+      "unit": "mL/min/1.73 m2",
+      "direction": "upper_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "G3a",
+      "source_refs": [
+        "kid_gpt_s13"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "selector_value": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO GFR category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c068",
+      "statement": "KDIGO GFR category G3b boundary is 30.",
+      "value": 30,
+      "unit": "mL/min/1.73 m2",
+      "direction": "lower_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "G3b",
+      "source_refs": [
+        "kid_gpt_s13"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "selector_value": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO GFR category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c069",
+      "statement": "KDIGO GFR category G3b boundary is 44.",
+      "value": 44,
+      "unit": "mL/min/1.73 m2",
+      "direction": "upper_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "G3b",
+      "source_refs": [
+        "kid_gpt_s13"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "selector_value": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO GFR category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c070",
+      "statement": "KDIGO GFR category G4 boundary is 15.",
+      "value": 15,
+      "unit": "mL/min/1.73 m2",
+      "direction": "lower_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "G4",
+      "source_refs": [
+        "kid_gpt_s13"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "selector_value": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO GFR category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c071",
+      "statement": "KDIGO GFR category G4 boundary is 29.",
+      "value": 29,
+      "unit": "mL/min/1.73 m2",
+      "direction": "upper_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "G4",
+      "source_refs": [
+        "kid_gpt_s13"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "selector_value": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO GFR category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c072",
+      "statement": "KDIGO GFR category G5 boundary is 15.",
+      "value": 15,
+      "unit": "mL/min/1.73 m2",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": "G5",
+      "source_refs": [
+        "kid_gpt_s13"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "selector_value": "`G1 ≥90; G2 60–89; G3a 45–59; G3b 30–44; G4 15–29; G5 <15`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO GFR category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c073",
+      "statement": "KDIGO albuminuria category A1 boundary is 30 mg/g.",
+      "value": 30,
+      "unit": "mg/g",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": "A1",
+      "source_refs": [
+        "kid_gpt_s14"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "selector_value": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO albuminuria category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c074",
+      "statement": "KDIGO albuminuria category A1 boundary is 3 mg/mmol.",
+      "value": 3,
+      "unit": "mg/mmol",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": "A1",
+      "source_refs": [
+        "kid_gpt_s14"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "selector_value": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO albuminuria category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c075",
+      "statement": "KDIGO albuminuria category A2 boundary is 30 mg/g.",
+      "value": 30,
+      "unit": "mg/g",
+      "direction": "lower_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "KDIGO albuminuria category A2, mg/g",
+      "source_refs": [
+        "kid_gpt_s14"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "selector_value": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO albuminuria category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c076",
+      "statement": "KDIGO albuminuria category A2 boundary is 300 mg/g.",
+      "value": 300,
+      "unit": "mg/g",
+      "direction": "upper_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "KDIGO albuminuria category A2, mg/g",
+      "source_refs": [
+        "kid_gpt_s14"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "selector_value": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO albuminuria category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c077",
+      "statement": "KDIGO albuminuria category A2 boundary is 3 mg/mmol.",
+      "value": 3,
+      "unit": "mg/mmol",
+      "direction": "lower_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "KDIGO albuminuria category A2, mg/mmol",
+      "source_refs": [
+        "kid_gpt_s14"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "selector_value": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO albuminuria category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c078",
+      "statement": "KDIGO albuminuria category A2 boundary is 30 mg/mmol.",
+      "value": 30,
+      "unit": "mg/mmol",
+      "direction": "upper_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "KDIGO albuminuria category A2, mg/mmol",
+      "source_refs": [
+        "kid_gpt_s14"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "selector_value": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO albuminuria category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c079",
+      "statement": "KDIGO albuminuria category A3 boundary is 300 mg/g.",
+      "value": 300,
+      "unit": "mg/g",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": "A3",
+      "source_refs": [
+        "kid_gpt_s14"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "selector_value": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO albuminuria category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c080",
+      "statement": "KDIGO albuminuria category A3 boundary is 30 mg/mmol.",
+      "value": 30,
+      "unit": "mg/mmol",
+      "direction": "upper_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": "A3",
+      "source_refs": [
+        "kid_gpt_s14"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "selector_value": "`A1 <30 mg/g and <3 mg/mmol; A2 30–300 mg/g and 3–30 mg/mmol; A3 >300 mg/g and >30 mg/mmol`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "KDIGO albuminuria category map"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c081",
+      "statement": "AAP BP classification Normal boundary is 90 percentile.",
+      "value": 90,
+      "unit": "percentile",
+      "direction": "upper_threshold",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Normal, age 1 to <13 y, office BP, <90th percentile",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c082",
+      "statement": "AAP BP classification Elevated boundary is 90 percentile.",
+      "value": 90,
+      "unit": "percentile",
+      "direction": "lower_threshold",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Elevated, age 1 to <13 y, office BP percentile range",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c083",
+      "statement": "AAP BP classification Elevated boundary is 95 percentile.",
+      "value": 95,
+      "unit": "percentile",
+      "direction": "upper_threshold",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Elevated, age 1 to <13 y, office BP percentile range",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c084",
+      "statement": "AAP BP classification Elevated SBP criterion is 120 mmHg to <95th percentile, whichever is lower.",
+      "value": 120,
+      "unit": "mmHg",
+      "direction": "lower_threshold",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Elevated, age 1 to <13 y, office SBP 120 mmHg to <95th percentile, whichever is lower",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c085",
+      "statement": "AAP BP classification Elevated DBP criterion is 80 mmHg to <95th percentile, whichever is lower.",
+      "value": 80,
+      "unit": "mmHg",
+      "direction": "lower_threshold",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Elevated, age 1 to <13 y, office DBP 80 mmHg to <95th percentile, whichever is lower",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c086",
+      "statement": "AAP BP classification Elevated upper percentile criterion is <95th percentile, whichever is lower than 120/80 mmHg.",
+      "value": 95,
+      "unit": "percentile",
+      "direction": "upper_threshold",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Elevated, age 1 to <13 y, office BP <95th percentile, whichever is lower than 120/80 mmHg",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c087",
+      "statement": "AAP BP classification Stage 1 boundary is 95 percentile.",
+      "value": 95,
+      "unit": "percentile",
+      "direction": "lower_threshold",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Stage 1, age 1 to <13 y, office BP ≥95th percentile",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c088",
+      "statement": "AAP BP classification Stage 1 criterion is ≥95th percentile to <95th percentile + 12 mmHg, whichever is lower with 130/80 to 139/89 mmHg.",
+      "value": 95,
+      "unit": "percentile",
+      "direction": "formula",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Stage 1, age 1 to <13 y, office BP ≥95th percentile to <95th percentile + 12 mmHg, whichever is lower",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c089",
+      "statement": "AAP BP classification Stage 1 upper boundary uses the percentile-plus-offset formula.",
+      "value": null,
+      "unit": null,
+      "direction": "context",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Stage 1, age 1 to <13 y, office BP ≥95th percentile to <95th percentile + 12 mmHg, whichever is lower",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c090",
+      "statement": "AAP BP classification Stage 1 SBP lower bound is 130 mmHg, whichever is lower.",
+      "value": 130,
+      "unit": "mmHg",
+      "direction": "lower_bound",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Stage 1, age 1 to <13 y, office SBP 130 to 139 mmHg, whichever is lower",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c091",
+      "statement": "AAP BP classification Stage 1 DBP lower bound is 80 mmHg, whichever is lower.",
+      "value": 80,
+      "unit": "mmHg",
+      "direction": "lower_bound",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Stage 1, age 1 to <13 y, office DBP 80 to 89 mmHg, whichever is lower",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c092",
+      "statement": "AAP BP classification Stage 1 SBP upper bound is 139 mmHg, whichever is lower.",
+      "value": 139,
+      "unit": "mmHg",
+      "direction": "upper_bound",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Stage 1, age 1 to <13 y, office SBP 130 to 139 mmHg, whichever is lower",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c093",
+      "statement": "AAP BP classification Stage 1 DBP upper bound is 89 mmHg, whichever is lower.",
+      "value": 89,
+      "unit": "mmHg",
+      "direction": "upper_bound",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Stage 1, age 1 to <13 y, office DBP 80 to 89 mmHg, whichever is lower",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c094",
+      "statement": "AAP BP classification Stage 2 criterion is ≥95th percentile + 12 mmHg, whichever is lower with ≥140/90 mmHg.",
+      "value": 95,
+      "unit": "percentile",
+      "direction": "formula",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Stage 2, age 1 to <13 y, office BP ≥95th percentile + 12 mmHg, whichever is lower",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c095",
+      "statement": "AAP BP classification Stage 2 boundary uses the percentile-plus-offset formula.",
+      "value": null,
+      "unit": null,
+      "direction": "context",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Stage 2, age 1 to <13 y, office BP ≥95th percentile + 12 mmHg, whichever is lower",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c096",
+      "statement": "AAP BP classification Stage 2 SBP criterion is ≥140 mmHg, whichever is lower.",
+      "value": 140,
+      "unit": "mmHg",
+      "direction": "lower_threshold",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Stage 2, age 1 to <13 y, office SBP ≥140 mmHg, whichever is lower",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c097",
+      "statement": "AAP BP classification Stage 2 DBP criterion is ≥90 mmHg, whichever is lower.",
+      "value": 90,
+      "unit": "mmHg",
+      "direction": "lower_threshold",
+      "population": "Age 1 to <13 y",
+      "qualifier_band": "Stage 2, age 1 to <13 y, office DBP ≥90 mmHg, whichever is lower",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "selector_value": "`Normal <90th percentile; Elevated ≥90th to <95th percentile or 120/80 mmHg to <95th percentile, whichever is lower; Stage 1 ≥95th percentile to <95th percentile + 12 mmHg, or 130/80 to 139/89 mmHg, whichever is lower; Stage 2 ≥95th percentile + 12 mmHg, or ≥140/90 mmHg, whichever is lower`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for children"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c098",
+      "statement": "AAP BP classification Normal SBP threshold is less than 120 mmHg.",
+      "value": 120,
+      "unit": "mmHg",
+      "direction": "upper_threshold",
+      "population": "Age ≥13 y",
+      "qualifier_band": "Normal, age ≥13 y, office SBP <120 mmHg",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "selector_value": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for adolescents"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c099",
+      "statement": "AAP BP classification Normal DBP threshold is less than 80 mmHg.",
+      "value": 80,
+      "unit": "mmHg",
+      "direction": "upper_threshold",
+      "population": "Age ≥13 y",
+      "qualifier_band": "Normal, age ≥13 y, office DBP <80 mmHg",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "selector_value": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for adolescents"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c100",
+      "statement": "AAP BP classification Elevated SBP lower bound is 120 mmHg.",
+      "value": 120,
+      "unit": "mmHg",
+      "direction": "lower_bound",
+      "population": "Age ≥13 y",
+      "qualifier_band": "Elevated, age ≥13 y, office SBP 120 to 129 mmHg",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "selector_value": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for adolescents"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c101",
+      "statement": "AAP BP classification Elevated DBP threshold is less than 80 mmHg.",
+      "value": 80,
+      "unit": "mmHg",
+      "direction": "upper_threshold",
+      "population": "Age ≥13 y",
+      "qualifier_band": "Elevated, age ≥13 y, office DBP <80 mmHg",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "selector_value": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for adolescents"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c102",
+      "statement": "AAP BP classification Elevated SBP upper bound is 129 mmHg.",
+      "value": 129,
+      "unit": "mmHg",
+      "direction": "upper_bound",
+      "population": "Age ≥13 y",
+      "qualifier_band": "Elevated, age ≥13 y, office SBP 120 to 129 mmHg",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "selector_value": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for adolescents"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c103",
+      "statement": "AAP BP classification Elevated DBP threshold is less than 80 mmHg.",
+      "value": 80,
+      "unit": "mmHg",
+      "direction": "upper_threshold",
+      "population": "Age ≥13 y",
+      "qualifier_band": "Elevated, age ≥13 y, office DBP <80 mmHg",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "selector_value": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for adolescents"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c104",
+      "statement": "AAP BP classification Stage 1 SBP lower bound is 130 mmHg.",
+      "value": 130,
+      "unit": "mmHg",
+      "direction": "lower_bound",
+      "population": "Age ≥13 y",
+      "qualifier_band": "Stage 1, age ≥13 y, office SBP 130 to 139 mmHg",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "selector_value": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for adolescents"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c105",
+      "statement": "AAP BP classification Stage 1 DBP lower bound is 80 mmHg.",
+      "value": 80,
+      "unit": "mmHg",
+      "direction": "lower_bound",
+      "population": "Age ≥13 y",
+      "qualifier_band": "Stage 1, age ≥13 y, office DBP 80 to 89 mmHg",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "selector_value": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for adolescents"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c106",
+      "statement": "AAP BP classification Stage 1 SBP upper bound is 139 mmHg.",
+      "value": 139,
+      "unit": "mmHg",
+      "direction": "upper_bound",
+      "population": "Age ≥13 y",
+      "qualifier_band": "Stage 1, age ≥13 y, office SBP 130 to 139 mmHg",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "selector_value": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for adolescents"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c107",
+      "statement": "AAP BP classification Stage 1 DBP upper bound is 89 mmHg.",
+      "value": 89,
+      "unit": "mmHg",
+      "direction": "upper_bound",
+      "population": "Age ≥13 y",
+      "qualifier_band": "Stage 1, age ≥13 y, office DBP 80 to 89 mmHg",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "selector_value": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for adolescents"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c108",
+      "statement": "AAP BP classification Stage 2 SBP threshold is at least 140 mmHg.",
+      "value": 140,
+      "unit": "mmHg",
+      "direction": "lower_threshold",
+      "population": "Age ≥13 y",
+      "qualifier_band": "Stage 2, age ≥13 y, office SBP ≥140 mmHg",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "selector_value": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for adolescents"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c109",
+      "statement": "AAP BP classification Stage 2 DBP threshold is at least 90 mmHg.",
+      "value": 90,
+      "unit": "mmHg",
+      "direction": "lower_threshold",
+      "population": "Age ≥13 y",
+      "qualifier_band": "Stage 2, age ≥13 y, office DBP ≥90 mmHg",
+      "source_refs": [
+        "kid_gpt_s15",
+        "kid_gpt_s16"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "selector_value": "`Normal <120/<80; Elevated 120/<80 to 129/<80; Stage 1 130/80 to 139/89; Stage 2 ≥140/90`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "AAP BP classification map for adolescents"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c110",
+      "statement": "Hyperkalemia action threshold is K >6.0 mmol/L on 2 separate occasions.",
+      "value": 6,
+      "unit": "mmol/L",
+      "direction": "lower_threshold",
+      "population": "Children with suspected AKI/acute renal failure",
+      "qualifier_band": "Hyperkalemia action threshold, children with suspected AKI/acute renal failure, K >6.0 mmol/L on 2 separate occasions",
+      "source_refs": [
+        "kid_gpt_s09"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`>6.0` on `2` separate occasions",
+      "selector_value": "`>6.0` on `2` separate occasions",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Electrolyte overlap: hyperkalemia action threshold"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c111",
+      "statement": "Hyperkalemia action threshold has a required serial-measurement qualifier.",
+      "value": null,
+      "unit": null,
+      "direction": "context",
+      "population": "Children with suspected AKI/acute renal failure",
+      "qualifier_band": "Hyperkalemia action threshold, children with suspected AKI/acute renal failure, K >6.0 mmol/L on 2 separate occasions",
+      "source_refs": [
+        "kid_gpt_s09"
+      ],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "`>6.0` on `2` separate occasions",
+      "selector_value": "`>6.0` on `2` separate occasions",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Electrolyte overlap: hyperkalemia action threshold"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c112",
+      "statement": "Hyponatremia consultation trigger is less than 130 mmol/L or symptomatic.",
+      "value": 130,
+      "unit": "mmol/L",
+      "direction": "upper_threshold",
+      "population": "Children",
+      "qualifier_band": "Hyponatremia consultation, children, serum sodium <130 mmol/L or symptomatic",
+      "source_refs": [
+        "kid_gpt_s17"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<130` or symptomatic",
+      "selector_value": "`<130` or symptomatic",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Electrolyte overlap: hyponatremia consultation threshold"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c113",
+      "statement": "Hyponatremia transfer threshold is less than 125 mmol/L.",
+      "value": 125,
+      "unit": "mmol/L",
+      "direction": "upper_threshold",
+      "population": "Children",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s17"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "`<125`",
+      "selector_value": "`<125`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Electrolyte overlap: hyponatremia transfer threshold"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c114",
+      "statement": "Pediatric CKD serum total CO₂ or bicarbonate should be maintained at least 22 mmol/L.",
+      "value": 22,
+      "unit": "mmol/L",
+      "direction": "lower_threshold",
+      "population": "Children age >2 y with CKD",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s18"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "maintain `≥22`; therefore low if `<22`",
+      "selector_value": "maintain `≥22`; therefore low if `<22`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Electrolyte overlap: CKD metabolic acidosis threshold"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c115",
+      "statement": "Pediatric CKD serum total CO₂ or bicarbonate low threshold is less than 22 mmol/L.",
+      "value": 22,
+      "unit": "mmol/L",
+      "direction": "upper_threshold",
+      "population": "Children age >2 y with CKD",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s18"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "maintain `≥22`; therefore low if `<22`",
+      "selector_value": "maintain `≥22`; therefore low if `<22`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Electrolyte overlap: CKD metabolic acidosis threshold"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c116",
+      "statement": "Neonatal or young-infant CKD serum total CO₂ or bicarbonate should be maintained at least 20 mmol/L.",
+      "value": 20,
+      "unit": "mmol/L",
+      "direction": "lower_threshold",
+      "population": "Neonates/young infants <2 y with CKD",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s18"
+      ],
+      "relation": "supports",
+      "classification": "assertion",
+      "quote": "maintain `≥20`; therefore low if `<20`",
+      "selector_value": "maintain `≥20`; therefore low if `<20`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Electrolyte overlap: CKD metabolic acidosis threshold"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c117",
+      "statement": "Neonatal or young-infant CKD serum total CO₂ or bicarbonate low threshold is less than 20 mmol/L.",
+      "value": 20,
+      "unit": "mmol/L",
+      "direction": "upper_threshold",
+      "population": "Neonates/young infants <2 y with CKD",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s18"
+      ],
+      "relation": "supports",
+      "classification": "inference",
+      "quote": "maintain `≥20`; therefore low if `<20`",
+      "selector_value": "maintain `≥20`; therefore low if `<20`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Electrolyte overlap: CKD metabolic acidosis threshold"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c118",
+      "statement": "This report is candidate-grade synthesis for kidney_suite_v1 and not verified rule text.",
+      "value": null,
+      "unit": null,
+      "direction": null,
+      "population": null,
+      "qualifier_band": null,
+      "source_refs": [],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "This table is **candidate-grade synthesis** for `kidney_suite_v1`, not verified rule text.",
+      "selector_value": "This table is **candidate-grade synthesis** for `kidney_suite_v1`, not verified rule text.",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Context"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c119",
+      "statement": "Source-native units are preserved and qualitative branches without defensible numbers are marked NO CITATION — do not use.",
+      "value": null,
+      "unit": null,
+      "direction": null,
+      "population": null,
+      "qualifier_band": null,
+      "source_refs": [],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "I preserved **source-native units** rather than silently converting, especially where pediatric and adult conventions diverge.",
+      "selector_value": "I preserved **source-native units** rather than silently converting, especially where pediatric and adult conventions diverge.",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Assumptions"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c120",
+      "statement": "Rows are downstream converter candidates that preserve competing thresholds rather than reconcile them.",
+      "value": null,
+      "unit": null,
+      "direction": null,
+      "population": null,
+      "qualifier_band": null,
+      "source_refs": [],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "Rows are written as **downstream converter candidates**, so many rows are deliberately narrow and preserve coexistence of competing thresholds rather than reconciling them.",
+      "selector_value": "Rows are written as **downstream converter candidates**, so many rows are deliberately narrow and preserve coexistence of competing thresholds rather than reconciling them.",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Approach"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c121",
+      "statement": "Glomerular versus nonglomerular morphology branches did not have a stable pediatric numeric proportion cutoff suitable for a threshold cell.",
+      "value": null,
+      "unit": null,
+      "direction": null,
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s04",
+        "kid_gpt_s05"
+      ],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "I did **not** retrieve a stable pediatric **numeric proportion cutoff** for dysmorphic cells that was suitable for a threshold cell in this pass.",
+      "selector_value": "I did **not** retrieve a stable pediatric **numeric proportion cutoff** for dysmorphic cells that was suitable for a threshold cell in this pass.",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Candidate-without-threshold patterns and conflicts"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c122",
+      "statement": "The report did not retrieve a defensible universal numeric trigger for the listed hematuria referral cues.",
+      "value": null,
+      "unit": null,
+      "direction": null,
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s03",
+        "kid_gpt_s04"
+      ],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "I did not retrieve a defensible universal numeric trigger for them.",
+      "selector_value": "I did not retrieve a defensible universal numeric trigger for them.",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Candidate-without-threshold patterns and conflicts"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c123",
+      "statement": "The report directs that albuminuria and total proteinuria not be silently cross-walked.",
+      "value": null,
+      "unit": null,
+      "direction": null,
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [],
+      "relation": "contradicts",
+      "classification": "annotation",
+      "quote": "**albuminuria** (`uACR`) and **total proteinuria** (`UPCR`) are different analytes and should not be silently cross-walked, even when numerically adjacent categories appear similar.",
+      "selector_value": "**albuminuria** (`uACR`) and **total proteinuria** (`UPCR`) are different analytes and should not be silently cross-walked, even when numerically adjacent categories appear similar.",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Candidate-without-threshold patterns and conflicts"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c124",
+      "statement": "The report identifies a source-formatting conflict for mg/mmol albuminuria category renderings and directs it be preserved.",
+      "value": null,
+      "unit": null,
+      "direction": null,
+      "population": "Children/adolescents",
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s14"
+      ],
+      "relation": "contradicts",
+      "classification": "annotation",
+      "quote": "That discrepancy should be preserved as a **source-formatting conflict**, not silently harmonized.",
+      "selector_value": "That discrepancy should be preserved as a **source-formatting conflict**, not silently harmonized.",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Candidate-without-threshold patterns and conflicts"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c125",
+      "statement": "The report retains the mg/mmol UPCR thresholds because they are already present in the RF-KID-001 bundle, while their source remains paywalled.",
+      "value": null,
+      "unit": null,
+      "direction": null,
+      "population": null,
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s07"
+      ],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "I retained them because they are already present in the RF-KID-001 bundle, but their source remains paywalled and I did not attempt to “recover” them from lower-quality derivative pages.",
+      "selector_value": "I retained them because they are already present in the RF-KID-001 bundle, but their source remains paywalled and I did not attempt to “recover” them from lower-quality derivative pages.",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Limits"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c126",
+      "statement": "AAP 2017 pediatric hypertension categories and some KDIGO 2024 displays rely on secondary retrieval paths and are high-priority for passage-level verification.",
+      "value": null,
+      "unit": null,
+      "direction": null,
+      "population": null,
+      "qualifier_band": null,
+      "source_refs": [
+        "kid_gpt_s11",
+        "kid_gpt_s13",
+        "kid_gpt_s15"
+      ],
+      "relation": "context",
+      "classification": "annotation",
+      "quote": "Those rows are still usable as candidate rows, but they should be high-priority items for the Research Foundry verifier to bind passage-by-passage against the source-of-record.",
+      "selector_value": "Those rows are still usable as candidate rows, but they should be high-priority items for the Research Foundry verifier to bind passage-by-passage against the source-of-record.",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Limits"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c127",
+      "statement": "The mirrored KDIGO-adjacent A2 albuminuria mg/mmol lower boundary is 3.",
+      "value": 3,
+      "unit": "mg/mmol",
+      "direction": "lower_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "A2 mirrored figure rendering",
+      "source_refs": [
+        "kid_gpt_s14"
+      ],
+      "relation": "contradicts",
+      "classification": "annotation",
+      "quote": "but mirrored figures sometimes render the middle band as `3–29` and the severe band as `≥30`",
+      "selector_value": "`3–29`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Candidate-without-threshold patterns and conflicts"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c128",
+      "statement": "The mirrored KDIGO-adjacent A2 albuminuria mg/mmol upper boundary is 29.",
+      "value": 29,
+      "unit": "mg/mmol",
+      "direction": "upper_bound",
+      "population": "Children/adolescents",
+      "qualifier_band": "A2 mirrored figure rendering",
+      "source_refs": [
+        "kid_gpt_s14"
+      ],
+      "relation": "contradicts",
+      "classification": "annotation",
+      "quote": "but mirrored figures sometimes render the middle band as `3–29` and the severe band as `≥30`",
+      "selector_value": "`3–29`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Candidate-without-threshold patterns and conflicts"
+      }
+    },
+    {
+      "candidate_id": "kid_gpt_c129",
+      "statement": "The mirrored KDIGO-adjacent A3 albuminuria mg/mmol lower boundary is 30.",
+      "value": 30,
+      "unit": "mg/mmol",
+      "direction": "lower_threshold",
+      "population": "Children/adolescents",
+      "qualifier_band": "A3 mirrored figure rendering",
+      "source_refs": [
+        "kid_gpt_s14"
+      ],
+      "relation": "contradicts",
+      "classification": "annotation",
+      "quote": "but mirrored figures sometimes render the middle band as `3–29` and the severe band as `≥30`",
+      "selector_value": "`≥30`",
+      "producer_confidence": null,
+      "extensions": {
+        "report_label": "Candidate-without-threshold patterns and conflicts"
+      }
+    }
+  ]
+}
