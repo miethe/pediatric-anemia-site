@@ -16,6 +16,27 @@ executes: "05-three-module-evidence-run-design.md §8 P3; 06-anemia-red-cell-ind
 > read from an artifact on disk, not asserted. What this run actually bought is stated in §6, and it
 > is narrower than "the modules now have evidence."
 
+> **⚠ Correction — 2026-07-30.** Every *count* in this document is accurate and has been independently
+> reconciled against the 766 `rf` effect files. Two *causal conclusions* are not, and are superseded:
+>
+> - **§6's "the binding constraint is source retrievability and rights metadata."** Measured from
+>   outside `rf`: only 3 of the 120 cited locators are dead; 66 return HTTP 200 to a plain `curl`.
+>   **29 of the 57 `source_unavailable` were never fetched at all** — `rf` has no DOI resolver, so a
+>   DOI-only locator fails a URL-scheme check before any network request
+>   (`external_research_resolution.py:742` → `source_acquisition_policy.py:308`). Consequently **§8
+>   action 3 is misdirected**: it routes the largest bucket to the REG-002 / licensing track when it is
+>   a packet-builder or upstream fix. This document could not have known — `rf` deliberately collapses
+>   every acquisition failure into one reason code with no diagnostic detail. See
+>   `09-rf-eri-enhancement-spec.md` (G1, G2).
+> - **§6's framing of why 0 verified.** Retrieval was a real blocker, but a second, independent cause
+>   dominates going forward: candidate quotes are anchored to *this report* while `rf` binds passages
+>   against the *acquired source*, so most candidates cannot bind regardless of acquisition. See
+>   `10-dr-claim-reanchoring-design.md` §1.
+>
+> **§7 is also stale:** all six `build/` artifact classes it lists have been deleted (`build/` is
+> `.gitignore`d). The 7 committed `extraction.json` files and the `rf` interchange store are the only
+> survivors; the raw per-packet audit output is unrecoverable. See `10-…` §6.
+
 ## 1. What ran
 
 Leg B of designs 05/06: the 7 provider deep-research reports the owner had already run and returned
