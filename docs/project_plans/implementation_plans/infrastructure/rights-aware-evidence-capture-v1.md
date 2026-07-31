@@ -168,6 +168,7 @@ wave_plan:
     - EP-R2
   - - EP-R3
   - - EP-R4
+merge_commit: 9b9a371
 ---
 
 # Implementation Plan: Rights-Aware Evidence Capture & Taxonomy
