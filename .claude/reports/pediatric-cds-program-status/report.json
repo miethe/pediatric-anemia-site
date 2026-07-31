@@ -1,0 +1,684 @@
+{
+  "schema_version": "1.0",
+  "report": {
+    "route": "program",
+    "title": "Thirteen days in: the governance machine is built, the product is still one module — and the gate is red.",
+    "subject": "Pediatric CDS Platform",
+    "revision": 3,
+    "generated_from": {
+      "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+      "ref": "main",
+      "commit": "cfdc1a0"
+    },
+    "truth_status": "verified",
+    "generated_by": "delivery-report 0.1.0",
+    "generated_at": "2026-07-28",
+    "scope_note": "Nine work programs have merged in thirteen days. What they built is almost entirely the evidence-and-governance substrate: a deterministic rf-bundle converter with a fail-closed emission gate, a git-signed clinical review workflow, a rights ledger, five schema-forced release gates, and ten ADRs. What a clinician can actually open in a browser is still the single anemia module it was on day one. Two things now stand between the program and forward motion: `npm run check` is red on `main` from eight failures that predate every open branch and need owner adjudication, and every path from verified evidence to a grounded rule terminates at a named credentialed human who has not been recruited. This report separates what shipped, what a machine can still do, and what only a person can — with a copyable handoff on every open item.",
+    "constraints": "UNVALIDATED RESEARCH PROTOTYPE — automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink — a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests)."
+  },
+  "vitals": [
+    {
+      "key": "Merged",
+      "value": "33",
+      "sub": "PRs · 63 commits · Jul 15 → Jul 24",
+      "severity": "neutral",
+      "measured_by": "gh pr list --state merged --limit 100 | wc -l; git rev-list --count main"
+    },
+    {
+      "key": "check gate",
+      "value": "FAIL",
+      "sub": "8 of 2,786 tests · 6 of 7 gate steps pass",
+      "severity": "critical",
+      "measured_by": "npm run check at cfdc1a0, then each remaining script run individually after the test step"
+    },
+    {
+      "key": "Modules",
+      "value": "4",
+      "sub": "1 selectable in the SPA · 3 inert",
+      "severity": "warn",
+      "measured_by": "modules/*/module.json status field vs src/modules/registry.js DEFAULT_MODULE_ID"
+    },
+    {
+      "key": "Rules",
+      "value": "95",
+      "sub": "91 anemia · 4 cbc · 0 growth · 0 kidney",
+      "severity": "neutral",
+      "measured_by": "node: JSON.parse over modules/*/rules.json"
+    },
+    {
+      "key": "Grounded",
+      "value": "0",
+      "sub": "of 95 rules · attestation ledger empty by design",
+      "severity": "critical",
+      "measured_by": "evidence-packs/passage-attestations.json — rules[] length 0, candidates[] length 0"
+    },
+    {
+      "key": "Human gates",
+      "value": "5",
+      "sub": "G0–G4 · all blocked-external, no agent path",
+      "severity": "critical",
+      "measured_by": "docs/governance/gates-registry.md §G0–G4; governance/reviewer-roster.yaml (0 real entries); 10 ADRs all `proposed`"
+    }
+  ],
+  "corrections": [
+    {
+      "revision": 2,
+      "claimed": "The clinical review workflow (DF-E1-01) is 30 commits ahead on an unmerged branch, phases 1/2/4 complete and 3 in progress.",
+      "actual": "It merged as PR #28 on 2026-07-22 (commit 78ae776), all five phases complete. No feature branch in the repo now holds unmerged product work — every branch that is ahead of main is a pre-squash-merge remnant whose content is already on main.",
+      "verified_by": "git log --oneline main | grep '#28'; git rev-list --count main..<each local branch> cross-checked against squash commit subjects"
+    },
+    {
+      "revision": 2,
+      "claimed": "The check gate is red with 25 of 2,412 tests failing on main.",
+      "actual": "8 of 2,786 tests fail on main at cfdc1a0. PR #31's Phase 0 cut the count from 27 to 8 and added zero new failures; the surviving 8 are Cluster B (6 stale pinned baselines) and Cluster C (2 rights-honesty D1 invariants), both requiring owner adjudication.",
+      "verified_by": "npm run check at cfdc1a0 — failing test IDs 336, 789, 814, 2132, 2133, 2138, 2363, 2364; cross-read against .claude/findings/multi-bundle-conversion-e1-finish-findings.md MBF-1"
+    },
+    {
+      "revision": 2,
+      "claimed": "The module switcher is not built — the runtime has been module-agnostic since P0 but the browser has never used it.",
+      "actual": "Shipped as PR #29 on 2026-07-23: an eligibility-gated SPA switcher that renders 1 selectable module and 3 inert ones behind a fail-closed refusal. The gap it closed is honesty of inventory, not clinical reach — the 3 inert modules remain unselectable because the eligibility policy (ADR-0009) correctly refuses them.",
+      "verified_by": "git show 165ed4d --stat; docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md"
+    },
+    {
+      "revision": 2,
+      "claimed": "G0 spans eight ADRs (0001–0008).",
+      "actual": "docs/adr/ now holds ten ADRs (0001–0010); every one is still `proposed`, and each clears G0 independently. ADRs 0003, 0005, 0007 and 0008 record status in a `**Status**:` body line rather than frontmatter, so a frontmatter-only grep under-counts them.",
+      "verified_by": "for f in docs/adr/*.md; grep -m1 -iE 'status' $f — all ten read proposed"
+    },
+    {
+      "revision": 2,
+      "claimed": "cbc_suite_v1 is the only module with a committed authoring-decisions.yaml, so growth and kidney emit no rules because the file is missing (DF-E1-M1).",
+      "actual": "All four modules have committed authoring-decisions.yaml — growth, kidney and anemia landed theirs in PR #31 on 2026-07-23, one day before doc 05 recorded the claim. The blocker is not a missing file: the converter's emission gate permits only `status: approved_for_rule_draft`, and growth and kidney hold 0 approved of 4 decisions each (cbc holds 4 of 4, anemia 1 of 5). That flip is a human review act, not a mechanical one.",
+      "verified_by": "git log -1 -- modules/growth_suite_v1/authoring-decisions.yaml → 1a59ad6 (2026-07-23); grep -c 'status: approved_for_rule_draft' per module; tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs:286"
+    }
+  ],
+  "domains": {
+    "UI": "build",
+    "Engine": "build",
+    "Infra": "build",
+    "Interop": "build",
+    "Evidence": "knowledge",
+    "Research": "knowledge",
+    "Validation": "knowledge",
+    "Governance": "governance",
+    "Compliance": "governance",
+    "Legal": "governance",
+    "Release": "governance"
+  },
+  "visuals": {
+    "flowsheet": {
+      "title": "Where thirteen days went",
+      "caption": "commits per workstream per day on main — 63 commits, 9 active days, every commit classified",
+      "columns": [
+        "Jul 15",
+        "Jul 17",
+        "Jul 18",
+        "Jul 19",
+        "Jul 20",
+        "Jul 21",
+        "Jul 22",
+        "Jul 23",
+        "Jul 24"
+      ],
+      "rows": [
+        {
+          "label": "Clinician-facing SPA",
+          "tag": "index.html · module switcher",
+          "cells": [5, 0, 0, 0, 0, 0, 1, 2, 0]
+        },
+        {
+          "label": "P0 — platform foundation",
+          "tag": "modules/<id>/ contract",
+          "cells": [0, 1, 1, 0, 0, 0, 0, 0, 0]
+        },
+        {
+          "label": "P1 — Wave-0 safety",
+          "tag": "EP-0 … EP-7",
+          "cells": [0, 0, 0, 3, 5, 3, 0, 0, 0]
+        },
+        {
+          "label": "ARC clinical council",
+          "tag": "P0 … P7 adoption",
+          "cells": [0, 0, 0, 6, 6, 6, 0, 0, 0]
+        },
+        {
+          "label": "Evidence Foundry E0/E1",
+          "tag": "converter · review · release",
+          "cells": [0, 0, 0, 1, 0, 3, 2, 2, 0]
+        },
+        {
+          "label": "Rights & evidence governance",
+          "tag": "rights/ ledger + taxonomy",
+          "cells": [0, 0, 0, 0, 0, 4, 1, 0, 0]
+        },
+        {
+          "label": "Clinical review workflow",
+          "tag": "DF-E1-01 · merged #28",
+          "cells": [0, 0, 0, 0, 0, 0, 3, 0, 0]
+        },
+        {
+          "label": "Evidence-run design (rf)",
+          "tag": "docs 05/06 · 12 DR packets",
+          "cells": [0, 2, 0, 0, 0, 0, 0, 0, 3]
+        },
+        {
+          "label": "Tooling & AOS wiring",
+          "tag": "trackers · routing pins",
+          "cells": [0, 0, 1, 0, 0, 0, 0, 2, 0]
+        }
+      ],
+      "legend": [
+        "1 commit",
+        "2–3",
+        "4+",
+        "· = no activity",
+        "Jul 16 had no commits; no unmerged product work exists"
+      ]
+    },
+    "ladder": {
+      "title": "The two tracks, and where you actually are",
+      "caption": "every item carries domains + a copyable handoff",
+      "tracks": [
+        {
+          "title": "Product track",
+          "note": "docs/…/01-platform-expansion-roadmap",
+          "steps": [
+            {
+              "code": "P0",
+              "state": "done",
+              "label": "Platform foundation refactor.",
+              "body": "Module-agnostic runtime, modules/<id>/ package contract, anemia output byte-equivalent under a permanent golden-fixture harness.",
+              "domains": ["Engine", "Infra"],
+              "ev": "7/7 phases · merged 2026-07-18 · no next step"
+            },
+            {
+              "code": "P1",
+              "state": "done",
+              "label": "Wave-0 safety & defensibility.",
+              "body": "Tri-state fact model, UCUM unit + local-range service, exact-passage evidence records, signed manifest + semantic diff, adversarial validation corpus, review contract.",
+              "domains": ["Engine", "Evidence", "Validation"],
+              "ev": "EP-0 … EP-7 · merged 2026-07-21"
+            },
+            {
+              "code": "SPA",
+              "state": "done",
+              "label": "Eligibility-gated module switcher.",
+              "body": "The browser finally reflects the real inventory: 1 selectable module, 3 inert, fail-closed refusal governed by ADR-0009.",
+              "domains": ["UI", "Governance"],
+              "ev": "PR #29 · merged 2026-07-23"
+            },
+            {
+              "code": "WP7",
+              "state": "part",
+              "label": "Tri-state questionnaire UI.",
+              "body": "Tier 3 plan complete and review-hardened (14 → 20 pts after a cross-family review found 2 blockers). Zero of five phases executed.",
+              "domains": ["UI", "Engine"],
+              "ev": "plan merged 463e4ba · 0/5 phases · /execute-plan is the next action"
+            },
+            {
+              "code": "P2",
+              "state": "none",
+              "label": "CBC Suite — the actual product.",
+              "body": "Neutropenia, leukocytosis/eosinophilia, platelets, pancytopenia, smear. Seven work packages, none started. Only E0's 4-rule cbc vertical slice exists.",
+              "domains": ["Engine", "Evidence"],
+              "ev": "not started · this is where the product thesis lives"
+            }
+          ]
+        },
+        {
+          "title": "Evidence & governance track",
+          "note": "rf → converter → review → release",
+          "steps": [
+            {
+              "code": "rf",
+              "state": "done",
+              "label": "Seven verified evidence bundles.",
+              "body": "RF-EV-001, RF-CBC-001/002, RF-KID-001, RF-GRO-002, REG-001, REG-004 — each verified on disk (exit 0, 0 unsupported). Bundles are claims, never rules.",
+              "domains": ["Research", "Evidence"],
+              "ev": "rf-handoff/RESULTS.md · 4 of 7 still read not_started in IntentTree"
+            },
+            {
+              "code": "E0/E1",
+              "state": "done",
+              "label": "Converter + review workflow + signed preclinical release.",
+              "body": "Deterministic offline rf-bundle → kb-pack converter with a code-enforced fail-closed emission gate; git-signed review verbs, derived-state lib, queue view; retrospective validation harness.",
+              "domains": ["Infra", "Governance"],
+              "ev": "PRs #17 #21 #22 #28 #31 · 4-of-4 batch determinism"
+            },
+            {
+              "code": "gate",
+              "state": "blocked",
+              "label": "npm run check is red on main.",
+              "body": "8 failures: 6 stale pinned baselines from prior merged phases, 2 rights-honesty D1 invariants whose allowlists are declared shrink-only. Every other gate step passes.",
+              "domains": ["Validation", "Infra"],
+              "ev": "owner decisions D-1 · D-2 · D-3 · blocks every commit"
+            },
+            {
+              "code": "G1",
+              "state": "blocked",
+              "label": "No credentialed reviewer exists.",
+              "body": "Roster ships with 0 real entries and 5 clearly-labelled synthetic personas. Until a named clinician is recruited and out-of-band verified, no rule can be grounded and no module can leave unsigned-stub.",
+              "domains": ["Governance", "Compliance"],
+              "ev": "human-only · gates grounding, rule emission, and release together"
+            },
+            {
+              "code": "G0",
+              "state": "blocked",
+              "label": "Ten ADRs, all proposed.",
+              "body": "Each clears independently by its named deciders. Until then every ADR's design is a recommendation, never adopted policy — the machinery implementing them ships anyway, inert.",
+              "domains": ["Governance", "Compliance"],
+              "ev": "human-only · no agent may write status: accepted"
+            }
+          ]
+        }
+      ],
+      "here": {
+        "label": "You are here",
+        "detail": "substrate built · gate red · one module in the browser"
+      }
+    }
+  },
+  "items": [
+    {
+      "id": "gate-cluster-b",
+      "title": "Adjudicate the 6 stale pinned baselines blocking the check gate",
+      "kind": "finding",
+      "domains": ["Validation", "Infra"],
+      "status_label": "blocking · owner decision D-3",
+      "verified_by": "self",
+      "note": "Test IDs 336, 789, 814, 2132, 2133, 2138 all compare live files against literals pinned by a prior phase. Example: tests/ef-p4-t8-honesty-ac.test.mjs pins modules/anemia/module.json at sha256:57280d04… while the live file hashes sha256:334ad705… (it last changed legitimately in PR #20). Each needs a per-item call: legitimate drift → re-pin with recorded rationale, or real regression → fix the data. A prior delegate naively regenerated the p4-t1-pre-merge-snapshot fixture, which made the guarantee compare current state against itself — vacuously true — and added a failure. That was reverted; do not repeat it.",
+      "handoff": {
+        "command": "/plan-feature",
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          ".claude/findings/multi-bundle-conversion-e1-finish-findings.md",
+          "tests/ef-p4-t8-honesty-ac.test.mjs",
+          "tests/rights-negative-invariant.test.mjs"
+        ],
+        "requirement_ids": ["MBF-1", "D-3"],
+        "gates": [],
+        "tracker": null,
+        "prompt": "Read MBF-1 Cluster B in the findings doc. For each of the 6 failing pinned-baseline tests, determine from git history whether the drift is a legitimate prior-phase change (re-pin, recording the commit that justified it) or a real regression (fix the data). Never regenerate a whole snapshot fixture — that makes the guarantee self-comparing. Present per-item recommendations before editing."
+      }
+    },
+    {
+      "id": "gate-cluster-c",
+      "title": "Decide D-1 and D-2 — the two rights-honesty D1 invariant failures",
+      "kind": "blocked_external",
+      "domains": ["Governance", "Compliance"],
+      "status_label": "owner decision only",
+      "verified_by": "self",
+      "note": "Test 2363: FIRST_PARTY_BINARY_ALLOWLIST rejects 11 first-party binaries committed by PR #29 (8 .jpg visual-evidence screenshots, 3 .png mockups). The allowlist's own contract states it MAY ONLY SHRINK and that a new entry is 'the exact failure mode D1 exists to prevent — an escalation, not an edit.' Test 2364: two capture surfaces carry an 8-word quoted run against a 7-word budget (modules/anemia/evidence-assertions.json assertions[10].applicability.ageRange and modules/kidney_suite_v1 assertions[31]). Rewording a capture body is source-expression-adjacent content work. No agent may resolve either without an explicit owner ruling.",
+      "handoff": {
+        "command": null,
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "tests/rights-negative-invariant.test.mjs",
+          ".claude/findings/multi-bundle-conversion-e1-finish-findings.md",
+          "modules/anemia/evidence-assertions.json"
+        ],
+        "requirement_ids": ["D-1", "D-2", "MBF-1"],
+        "gates": [],
+        "tracker": null,
+        "prompt": "Owner decision, no agent path. D-1: allowlist, relocate, or narrow scope for the 11 PR-#29 first-party binaries. D-2: reword the two over-budget ageRange quoted runs to 7 words, or allowlist them. Both allowlists are declared shrink-only — widening either is a deliberate, reviewable governance act, never a build fix."
+      }
+    },
+    {
+      "id": "questionnaire-ui",
+      "title": "Execute the tri-state questionnaire UI (P3-WP7)",
+      "kind": "not_started",
+      "domains": ["UI", "Engine"],
+      "status_label": "planned · 0 of 5 phases",
+      "verified_by": "self",
+      "note": "Tier 3 bundle merged at 463e4ba: PRD, 5-phase implementation plan, SPIKE evidence base, and per-phase progress artifacts — all five phase files read status: not_started, 0 of 4 tasks each. A cross-family review found 2 blockers in the first plan draft and the estimate rose 14 → 20 pts. The plan's own P0-01 task re-verifies the 8-failure gate baseline and proceeds against it, so the red gate does not block starting. Premise correction already applied in the plan: the engine is tri-state, not four-state — is-not-assessed is a declared synonym of is-unknown.",
+      "handoff": {
+        "command": "/execute-plan",
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "docs/project_plans/implementation_plans/features/four-state-questionnaire-ui-v1.md",
+          "docs/project_plans/PRDs/features/four-state-questionnaire-ui-v1.md",
+          ".claude/progress/four-state-questionnaire-ui/phase-0-progress.md"
+        ],
+        "requirement_ids": ["FR-1", "FR-8", "FR-11"],
+        "gates": [],
+        "tracker": "node_01KXQ7XFBSFNEEAJA8XJM621PZ — P3-WP7 Tri-state adaptive questionnaire UI",
+        "prompt": "Execute the five-phase plan from a worktree branch. Start with P0-01: run `npm run build && npm test` in that order and confirm the failure set is exactly IDs 336, 789, 814, 2132, 2133, 2138, 2363, 2364. If it differs, stop and escalate — never silently adopt a new baseline. Capture fidelity only; no engine change."
+      }
+    },
+    {
+      "id": "rf-ane-001",
+      "title": "Launch RF-ANE-001 — the anemia red-cell indices evidence run",
+      "kind": "not_started",
+      "domains": ["Research", "Evidence"],
+      "status_label": "approved · not launched",
+      "verified_by": "self",
+      "note": "Triggered by real user feedback: the assessment accepts hemoglobin but not hematocrit. The gap is structural — Hct appears in no schema, no rule, no reference range, and `additionalProperties: false` makes POST /api/v1/assess reject the key outright. Because hemoglobin is required, a clinician working from a report that leads with a spun crit cannot run the tool at all. Investigating it surfaced five more instances of the same class: wherever the KB lacks a sourced pediatric numeric interval for a red-cell index, the engine substitutes a clinician-entered dropdown. The run produces the evidence substrate that would make adding a field legitimate; it does not add the field. Note the working tree carries an uncommitted status flip on this doc (design-ready-not-launched → approved).",
+      "handoff": {
+        "command": "/rf",
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "docs/project_plans/expansion/06-anemia-red-cell-indices-evidence-run.md",
+          "docs/project_plans/expansion/dr-packets/anemia/chatgpt-dr/prompt.md",
+          "docs/project_plans/expansion/dr-packets/anemia/perplexity/prompt.md"
+        ],
+        "requirement_ids": ["RF-ANE-001"],
+        "gates": [],
+        "tracker": null,
+        "prompt": "Launch the three legs in doc 06: an rf deepen run extending the RF-EV-001 bundle, the three owner-run DR HITL packets, and the numerics hunt for threshold-carrying independently-retrievable passages. Check the rf catalog first (GET $RF_API_URL/api/catalog/search) — a verified claim may already exist. rf stops at verified claims; it authors no rule and writes no attestation."
+      }
+    },
+    {
+      "id": "three-module-run",
+      "title": "Finish the three-module evidence run (CBC · Growth · Kidney)",
+      "kind": "partial",
+      "domains": ["Research", "Evidence"],
+      "status_label": "1 of 12 DR packets returned · rf legs unlaunched",
+      "verified_by": "self",
+      "note": "Doc 05 is a launch-ready design; 12 DR HITL packets (4 modules × 3 providers) are authored and committed. One has been run: the CBC ChatGPT Deep Research packet returned 27 net-new candidate rows with open-access numeric anchors (CALIPER 2020 age-banded WBC/ALC/AMC/MCV, pediatric ITP platelet action bands, ASH leukocytosis thresholds, severe aplastic anemia criteria) — correctly self-labelled `inference` where a row derives from a reference-interval boundary rather than a source-stated cutoff. That output is sitting untracked in the working tree at dr-packets/cbc/chatgpt-dr/expected-output/rf-cbc-002-gpt-dr.md and is not committed. No rf deepen run has been launched for any of the three modules.",
+      "handoff": {
+        "command": "/rf",
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "docs/project_plans/expansion/05-three-module-evidence-run-design.md",
+          "docs/project_plans/expansion/dr-packets/README.md",
+          "docs/project_plans/expansion/dr-packets/cbc/chatgpt-dr/expected-output/rf-cbc-002-gpt-dr.md"
+        ],
+        "requirement_ids": ["DF-E1-M1"],
+        "gates": [],
+        "tracker": null,
+        "prompt": "First commit the untracked CBC ChatGPT DR output so the returned research is tracked. Then import it into rf as a candidate feeder only — platform_synthesis never launders into verified evidence — and launch the rf deepen legs for cbc_suite_v1, growth_suite_v1 and kidney_suite_v1 per doc 05 §2. Only verified bundles are admitted; speculation and unsupported claims are rejected outright."
+      }
+    },
+    {
+      "id": "approve-decisions",
+      "title": "Approve growth and kidney authoring decisions so the converter can emit rules",
+      "kind": "blocked_external",
+      "domains": ["Evidence", "Governance"],
+      "status_label": "human review act · 0 of 4 approved each",
+      "verified_by": "self",
+      "note": "This is DF-E1-M1, and it is not the missing-file problem doc 05 described. All four modules now carry a committed authoring-decisions.yaml. The converter's emission gate is coded as an allowlist — `status === 'approved_for_rule_draft'` is the ONLY permitting condition (propose.mjs:286). growth_suite_v1 and kidney_suite_v1 each hold 4 decisions at `drafted_pending_human_approval`, a deliberately non-approving scaffold status; cbc_suite_v1 holds 4 of 4 approved (hence its 4 rules), anemia 1 of 5. Every review.* field across all four files is `pending` — no named clinical reviewer has evaluated any of it. Flipping a decision to approved is a human act by design; no agent may do it.",
+      "handoff": {
+        "command": null,
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "modules/growth_suite_v1/authoring-decisions.yaml",
+          "modules/kidney_suite_v1/authoring-decisions.yaml",
+          "schemas/authoring-decisions.schema.json",
+          "tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs",
+          "docs/project_plans/expansion/05-three-module-evidence-run-design.md"
+        ],
+        "requirement_ids": ["FR-14", "DF-E1-M1"],
+        "gates": ["G1"],
+        "tracker": "node_01KXRTYG9GN2KEF45QN6FBW6N5 — EF-WP2 E1 operate: live discovery + council + dual clinical review",
+        "prompt": "Human review act, no agent path. A qualified reviewer reads each drafted decision against its cited rf claim and exact assertion, then flips status to approved_for_rule_draft where the reasoning holds. That status means ready-to-draft, not clinical sign-off — the review.* fields track sign-off separately and additionally require G1."
+      }
+    },
+    {
+      "id": "ground-rules",
+      "title": "Ground the first rules — bind rules to attested source passages",
+      "kind": "blocked_external",
+      "domains": ["Evidence", "Compliance"],
+      "status_label": "0 of 95 rules · ledger empty by design",
+      "verified_by": "self",
+      "note": "evidence-packs/passage-attestations.json ships with rules[] and candidates[] both empty. Measured from code, the gap is roughly two-thirds attestation-shaped — 60 rules whose sentinel's primary source already has at least one bindable passage, blocked only by the empty ledger — and one-third licensing-shaped: 31 rules bound to AAP2026_IDA, whose 7 passages are quarantined source-not-independently-retrievable. 13 passages are bindable today (BLOOD 5, WHO 3, CDC 2, BSH 2, FDA 1) and none has been bound. The catch: those 13 survivors are the numerics-light paraphrases — the threshold-bearing passages were quarantined for omits-source-numerics — so attesting them grounds rules to thin framework claims rather than to the cutoffs those rules actually encode. Binding requires a named credentialed clinician attesting each rule individually.",
+      "handoff": {
+        "command": null,
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "evidence-packs/passage-attestations.json",
+          ".claude/findings/rights-governance-spec-v1.0-review-findings.md",
+          "docs/governance/gates-registry.md"
+        ],
+        "requirement_ids": ["G1"],
+        "gates": ["G1"],
+        "tracker": null,
+        "prompt": "Human-only. Recruit and out-of-band verify a named credentialed clinician (G1), then have them attest rules individually against the 13 currently-bindable passages. Expect thin coverage: the bindable survivors are numerics-light, so most threshold-bearing rules stay ungrounded until the licensing-shaped 31 are resolved separately. No agent writes an attestation record."
+      }
+    },
+    {
+      "id": "g0-adrs",
+      "title": "Ratify the ten ADRs (G0)",
+      "kind": "blocked_external",
+      "domains": ["Governance", "Compliance"],
+      "status_label": "10 of 10 proposed",
+      "verified_by": "self",
+      "note": "ADR-0001 through ADR-0010, every one still `proposed`. Each clears G0 on its own — partial ratification is real, not a bundle. Until an individual ADR clears, its design stays a recommendation and no downstream artifact may describe it as adopted policy. The software implementing each recommended default already ships, deliberately, so it exists the moment ratification happens — but every real instance stays inert via G1/G2/G3's own schema-forced mechanisms. No task and no script in this repo may write `status: accepted` into an ADR.",
+      "handoff": {
+        "command": null,
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "docs/adr/0001-canonical-authoring-model-rule-schema-v2.md",
+          "docs/adr/0004-clinical-approval-identity-adjudication.md",
+          "docs/governance/gates-registry.md"
+        ],
+        "requirement_ids": ["G0"],
+        "gates": ["G0"],
+        "tracker": "node_01KXRTYNJ9NFGFFYV1617726KY — XC-3 E1-unblocking ADRs (8) via /create-adr",
+        "prompt": "Human-only, per ADR. Each named decider reads their ADR and records an explicit, attributable ratification in the ADR file itself — not in a session note or commit message. Ratify individually; do not batch. A premature flip does not unblock anything: G1/G2/G3 remain independently schema-enforced."
+      }
+    },
+    {
+      "id": "g1-g4-release",
+      "title": "Clear the release chain — reviewer roster, signing custodian, data boundary, release authorizer",
+      "kind": "blocked_external",
+      "domains": ["Governance", "Release", "Compliance"],
+      "status_label": "G1–G4 all blocked · human recruitment",
+      "verified_by": "self",
+      "note": "G1: governance/reviewer-roster.yaml holds 0 real entries and 5 synthetic dry-run personas; schemas/reviewer-roster.schema.json requires verificationRef whenever synthetic is false, so a real entry is structurally impossible until a credential is verified out-of-band. G2: the release-manifest signature slot is const null on every real candidate — a signing custodian must hold an offline Ed25519 key, and must be a role distinct from the release author. G3: the retrospective harness structurally rejects any fixture lacking a synthetic/de-identified provenance marker; clearing G3 does not by itself flip that off. G4: module.json approvedBy is maxItems: 0 across all four modules, making the unsigned-stub → release-ready transition schema-impossible. Raising any of these ceilings to make a build pass is a defect, never a feature.",
+      "handoff": {
+        "command": null,
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "governance/reviewer-roster.yaml",
+          "docs/governance/gates-registry.md",
+          "schemas/reviewer-roster.schema.json"
+        ],
+        "requirement_ids": ["G1", "G2", "G3", "G4"],
+        "gates": ["G1", "G2", "G3", "G4"],
+        "tracker": "node_01KXRTYN5FS7F97W5WS45246WG — XC-1 Clinical advisory board + content-governance SOP",
+        "prompt": "Human-only, four independent gates. Recruit two clinical reviewers, a laboratory reviewer, an adjudicator and a release authorizer; verify each credential out-of-band and commit the roster entry with verificationRef populated. Separately name a signing custodian and run an offline key ceremony. Never populate approvedBy[] or clinicalApprovers[] to make anything pass."
+      }
+    },
+    {
+      "id": "arc-pilot",
+      "title": "Unblock the ARC qualifying clinical-council pilot",
+      "kind": "blocked_external",
+      "domains": ["Governance", "Legal"],
+      "status_label": "owner-blocked since 2026-07-21",
+      "verified_by": "self",
+      "note": "The ARC pediatric clinical council is repository-complete and Portal-authorable (adoption phases P0–P7 all closed out), with a completed synthetic readiness audit that is explicitly non-qualifying. The Phase 5 qualifying-pilot attempt is blocked on two independent owner-held gates: an SDK credential and evidence-rights receipts. An Opus validator reproduced both blocks read-only. Treating any ARC output as credentialed clinical sign-off is one of the two mistakes this program is most likely to make — clinicalApprovers[] and approvedBy[] need real named humans, never ARC output.",
+      "handoff": {
+        "command": null,
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "docs/project_plans/expansion/03-arc-clinical-council-handoff.md",
+          ".claude/progress/arc-clinical-council-adoption-v1/phase-5-completion.md"
+        ],
+        "requirement_ids": [],
+        "gates": [],
+        "tracker": null,
+        "prompt": "Owner action only. The arc-runtime-owner provisions an SDK credential and registers evidence-rights receipts, then the qualifying pilot can run. Route the request through doc 03, the single maintained entry point — it owns the pinned baseline, the scaffold/populate/validate/read-verdict workflow, and the rollback runbook. Do not invoke the council ad hoc from another doc."
+      }
+    },
+    {
+      "id": "legal-review",
+      "title": "Complete the REG-001 and REG-004 legal reviews",
+      "kind": "blocked_external",
+      "domains": ["Legal", "Compliance"],
+      "status_label": "not_executed_owner_held",
+      "verified_by": "delegated",
+      "note": "Both are verified as rf evidence bundles — REG-001 the intended-use / non-device-CDS mapping memo, REG-004 the HIPAA / server-PHI controls scoping. Neither has had the actual legal review a qualified professional must perform; both remain not_executed_owner_held per rf-handoff/RESULTS.md. REG-004 gates P3, which is the first phase that touches server/PHI mode. Verified from the RESULTS.md record rather than by re-reading the run trees.",
+      "handoff": {
+        "command": null,
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "docs/project_plans/expansion/rf-handoff/RESULTS.md",
+          "docs/project_plans/expansion/00-expansion-plan.md"
+        ],
+        "requirement_ids": ["REG-001", "REG-004"],
+        "gates": [],
+        "tracker": "node_01KXRTYJWWGM2YJMARF942MTBA — REG-001 Intended-use / non-device-CDS mapping memo",
+        "prompt": "Owner action: route both verified rf bundles to qualified counsel. REG-001 covers intended-use and non-device-CDS positioning; REG-004 covers HIPAA controls for the server/PHI mode that P3 introduces. An rf bundle is research input to that review, never a substitute for it."
+      }
+    },
+    {
+      "id": "p2-cbc-suite",
+      "title": "Plan and build the CBC Suite (P2) — the product thesis",
+      "kind": "not_started",
+      "domains": ["Engine", "Evidence"],
+      "status_label": "7 work packages · none started",
+      "verified_by": "self",
+      "note": "Anemia is the wedge; the CBC/cytopenia suite is the product. P2-WP1 through WP6 plus WP9 cover neutropenia, leukocytosis/lymphocytosis + eosinophilia, platelets, pancytopenia, smear integration, a shared severity/urgency + missing-data gate, and referral-readiness output. Nothing is started. The only CBC content that exists is E0's 4-rule cbc_suite_v1 vertical slice. Its evidence input is real — RF-CBC-001/002 are verified and the ChatGPT DR pass returned 27 more candidate rows — but the sequencing rule is structure before safety before content, and both P0 and P1 are done, so P2 is genuinely unblocked on engineering. It is gated on release, not on build.",
+      "handoff": {
+        "command": "/plan-feature",
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "docs/project_plans/expansion/01-platform-expansion-roadmap.md",
+          "docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md",
+          "modules/cbc_suite_v1/authoring-decisions.yaml"
+        ],
+        "requirement_ids": ["P2-WP1", "P2-WP6"],
+        "gates": ["G1"],
+        "tracker": "node_01KXQ7XD487TV6FWY1APDVA2K3 — P2-WP1 Neutropenia branch",
+        "prompt": "Scope P2-WP1 (neutropenia branch) and P2-WP6 (shared CBC severity/urgency + missing-data gate) as the first slice. Every rule must trace to a verified rf claim through an approved authoring decision — no hand-authored clinical logic, no invented thresholds. Route the candidate rule set through the ARC council per doc 03 before merging any rf-derived proposal."
+      }
+    },
+    {
+      "id": "p3-longitudinal",
+      "title": "Longitudinal workspace + SMART-on-FHIR (P3)",
+      "kind": "deferred",
+      "domains": ["Interop", "Infra", "Compliance"],
+      "status_label": "deferred behind P2",
+      "verified_by": "self",
+      "note": "This is the monetizable layer — longitudinal state, unresolved-abnormality work queue, referral-readiness packets, SMART App Launch, CDS Hooks, FHIR mapping. It is also the phase that triggers server/PHI mode and therefore HIPAA controls, which is why REG-004's legal review gates it. Six work packages, none started. Deferring is correct: the critical path is P0 → P1 → P2 → P3, and P2 has not begun.",
+      "handoff": {
+        "command": "/plan-feature",
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "docs/project_plans/expansion/01-platform-expansion-roadmap.md"
+        ],
+        "requirement_ids": ["P3-WP1", "P3-WP4"],
+        "gates": [],
+        "tracker": "node_01KXQ7XEAV70X82QFQSKWMHSJ3 — P3-WP1 Longitudinal state model (server/PHI mode)",
+        "trigger": "P2 CBC Suite reaches a merged, council-reviewed rule set AND REG-004's legal review returns a HIPAA controls verdict.",
+        "prompt": "Scope the longitudinal state model and SMART App Launch. This is the first surface that leaves the browser-local invariant — the public microsite must keep sending no patient data anywhere, so server/PHI mode is a separate, HIPAA-controlled deployment, never a mode toggle on the public build."
+      }
+    },
+    {
+      "id": "tracker-drift",
+      "title": "Reconcile the IntentTree program graph against git",
+      "kind": "finding",
+      "domains": ["Infra", "Governance"],
+      "status_label": "63 nodes · systematically stale",
+      "verified_by": "self",
+      "note": "The graph misreports merged and verified work as not started. P1-WP1 through P1-WP7 all read not_started although Wave-0 merged on 2026-07-21; EF-WP0 (the rf-bundle → kb-pack converter) reads not_started although it shipped in PR #17 and was hardened in #31; RF-CBC-001, RF-CBC-002, RF-KID-001 and RF-GRO-002 read not_started although all four are verified on disk. Only 12 of 63 nodes read completed. Anyone driving this program from `itt today` will be handed work that is already done — verify against git log and rf-handoff/RESULTS.md before trusting a node status.",
+      "handoff": {
+        "command": "/intenttree",
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "docs/project_plans/expansion/00-expansion-plan.md",
+          "docs/project_plans/expansion/rf-handoff/RESULTS.md"
+        ],
+        "requirement_ids": [],
+        "gates": [],
+        "tracker": "tree_01KXQ7WC1HQE2GKZSCNDVXA9G7 — Pediatric CDS Platform Expansion",
+        "prompt": "Reconcile node status against evidence: mark P1-WP1..WP7 and EF-WP0 completed against their merge commits, and RF-CBC-001/002, RF-KID-001, RF-GRO-002 completed against each run's reviews/verification.yaml. Record the evidence ref on each node. Do not mark anything completed that git and the run records do not independently show."
+      }
+    },
+    {
+      "id": "working-tree",
+      "title": "Commit the uncommitted working-tree state",
+      "kind": "partial",
+      "domains": ["Infra", "Research"],
+      "status_label": "1 modified · 4 untracked paths",
+      "verified_by": "self",
+      "note": "Modified: doc 06's status flipped design-ready-not-launched → approved without a commit. Untracked: the returned CBC ChatGPT Deep Research output (58 lines, 27 candidate rows — real research product at risk of being lost), plus .agents/, .codex/ and AGENTS.md, which are Codex-side mirrors of the Claude project context. None of this is destructive, but the DR output is the only copy of a completed research leg.",
+      "handoff": {
+        "command": "/pr",
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "docs/project_plans/expansion/06-anemia-red-cell-indices-evidence-run.md",
+          "docs/project_plans/expansion/dr-packets/cbc/chatgpt-dr/expected-output/rf-cbc-002-gpt-dr.md",
+          "AGENTS.md"
+        ],
+        "requirement_ids": [],
+        "gates": [],
+        "tracker": null,
+        "prompt": "Commit the returned CBC DR output and doc 06's approved status on a branch off main. Decide separately whether .agents/, .codex/ and AGENTS.md belong in the repo or the ignore file. Gate against 'no new failures vs. the recorded 8', not a literally-green run, and say so in the PR."
+      }
+    },
+    {
+      "id": "advisory-board",
+      "title": "Convene the clinical advisory board and start buyer interviews",
+      "kind": "blocked_external",
+      "domains": ["Governance", "Compliance"],
+      "status_label": "not started · human recruitment",
+      "verified_by": "self",
+      "note": "Two 90-day commitments from the expansion plan that nothing else can substitute for. XC-1: a pediatric heme, lab medicine, general peds and informatics advisory board plus a content-governance SOP — this is also the recruiting pipeline that eventually clears G1, so it is upstream of both rule grounding and release. XC-2: 20–30 buyer/design-partner interviews and at least one data partner, which is what eventually clears G3's DUA requirement for retrospective and silent-mode validation. Both read not_started in the tracker, and unlike most tracker entries that status is accurate.",
+      "handoff": {
+        "command": null,
+        "repo": "/Users/miethe/dev/homelab/development/pediatric-anemia-site",
+        "paths": [
+          "docs/project_plans/expansion/00-expansion-plan.md",
+          "docs/governance/gates-registry.md"
+        ],
+        "requirement_ids": ["G1", "G3"],
+        "gates": ["G1", "G3"],
+        "tracker": "node_01KXRTYNCMXHTR5WEEMS5WCW68 — XC-2 Buyer/design-partner interviews (MKT-001) + data partner",
+        "prompt": "Owner action, no agent path. Recruit the four-discipline advisory board and draft the content-governance SOP; nothing ships without dual sign-off. In parallel start buyer/design-partner interviews and secure a data partner — that relationship is what eventually produces the DUA G3 needs for retrospective and silent-mode validation."
+      }
+    }
+  ],
+  "media": [],
+  "no_visual_reason": "No product screenshots are embedded: the only clinician-visible change since the last revision is the eligibility-gated module switcher, whose committed screenshots are themselves one of the two blockers holding the check gate red (D-1). Embedding them here would propagate the exact asset class the D1 rights invariant is refusing. The flowsheet and two-track ladder carry the visual story instead.",
+  "evidence": [
+    {
+      "id": "check-gate-run",
+      "label": "npm run check at cfdc1a0 on a clean tree",
+      "kind": "test",
+      "note": "8 of 2,786 tests fail (IDs 336, 789, 814, 2132, 2133, 2138, 2363, 2364); the test step aborts the chain, so validate / coverage:rules / verify:d4 / check:imports / smoke:browser / smoke were each run separately and all six PASS"
+    },
+    {
+      "id": "module-inventory",
+      "label": "JSON.parse over modules/*/{module,rules,candidates,evidence}.json",
+      "kind": "command",
+      "note": "anemia integrity-recorded 91 rules · cbc_suite_v1 unsigned-stub 4 rules · growth_suite_v1 and kidney_suite_v1 unsigned-stub 0 rules"
+    },
+    {
+      "id": "decision-gate",
+      "label": "grep -c 'status: approved_for_rule_draft' modules/*/authoring-decisions.yaml",
+      "kind": "command",
+      "note": "cbc 4 approved / 0 drafted · anemia 1 / 4 · growth 0 / 4 · kidney 0 / 4; emission gate at tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs:286"
+    },
+    {
+      "id": "attestation-ledger",
+      "label": "evidence-packs/passage-attestations.json",
+      "kind": "artifact",
+      "note": "rules[] length 0, candidates[] length 0 — empty by design; 13 passages bindable, none bound"
+    },
+    {
+      "id": "adr-status",
+      "label": "status grep across docs/adr/*.md",
+      "kind": "artifact",
+      "note": "10 ADRs, all proposed; 0003/0005/0007/0008 record status in a body line rather than frontmatter"
+    },
+    {
+      "id": "branch-reconciliation",
+      "label": "git rev-list --count main..<branch> for every local branch",
+      "kind": "branch",
+      "note": "15 branches ahead of main, all pre-squash-merge remnants — no unmerged product work exists"
+    },
+    {
+      "id": "tracker-nodes",
+      "label": "IntentTree list_tree_nodes on tree_01KXQ7WC1HQE2GKZSCNDVXA9G7",
+      "kind": "artifact",
+      "note": "63 work packages; 12 completed, 1 in_progress, 1 deferred, 49 not_started — including 8 that git or rf run records show complete"
+    },
+    {
+      "id": "findings-mbf1",
+      "label": ".claude/findings/multi-bundle-conversion-e1-finish-findings.md",
+      "kind": "artifact",
+      "note": "MBF-1 records the 27 → 8 failure reduction, the Cluster B/C split, and owner decisions D-1..D-4"
+    }
+  ]
+}

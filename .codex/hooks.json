@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "'/Users/miethe/dev/homelab/development/pediatric-anemia-site/.codex/hooks/aos-writeback.sh'"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; font-src data:; connect-src 'none'; media-src data:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Thirteen days in: the governance machine is built, the product is still one module &#8212; and the gate is red. &mdash; Program Status</title>
+<style>/* delivery-report &#8212; unified theme-aware stylesheet.
+ * Four-block token system (&#167;4 rule 2): :root light default, dark via media query,
+ * and explicit :root[data-theme=dark|light] so a viewer toggle wins both directions.
+ * Route chrome is scoped under body.route-feature / body.route-status; the handoff
+ * component, domain chips, media, and theme toggle are shared. */
+
+:root {
+  --paper:#f4f7f5; --paper-2:#ffffff; --rule:#d3ded9; --rule-hard:#b3c4be;
+  --ink:#0d1c1b; --ink-2:#354746; --muted:#6a7d79;
+  --accent:#0e6f68; --accent-dim:#d5e8e5; --know:#4a5486; --know-dim:#e2e5f2;
+  --crit:#a3302b; --crit-dim:#f6e0de; --warn:#8a5f05; --warn-dim:#f7ecd2;
+  --ok:#2f6d43; --ok-dim:#dcecdf; --idle:#8493a0; --idle-dim:#e6eaed;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --maxw: 1180px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:#0b1413; --paper-2:#111d1c; --rule:#233634; --rule-hard:#35504c;
+    --ink:#e7efec; --ink-2:#b3c5c1; --muted:#7d918d;
+    --accent:#4fc4b6; --accent-dim:#14312e; --know:#93a2e0; --know-dim:#1c2338;
+    --crit:#ef8078; --crit-dim:#371917; --warn:#d9a63c; --warn-dim:#33270e;
+    --ok:#74c68c; --ok-dim:#16301f; --idle:#7b8b95; --idle-dim:#1c2528;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:#0b1413; --paper-2:#111d1c; --rule:#233634; --rule-hard:#35504c;
+  --ink:#e7efec; --ink-2:#b3c5c1; --muted:#7d918d;
+  --accent:#4fc4b6; --accent-dim:#14312e; --know:#93a2e0; --know-dim:#1c2338;
+  --crit:#ef8078; --crit-dim:#371917; --warn:#d9a63c; --warn-dim:#33270e;
+  --ok:#74c68c; --ok-dim:#16301f; --idle:#7b8b95; --idle-dim:#1c2528;
+}
+:root[data-theme="light"] {
+  --paper:#f4f7f5; --paper-2:#ffffff; --rule:#d3ded9; --rule-hard:#b3c4be;
+  --ink:#0d1c1b; --ink-2:#354746; --muted:#6a7d79;
+  --accent:#0e6f68; --accent-dim:#d5e8e5; --know:#4a5486; --know-dim:#e2e5f2;
+  --crit:#a3302b; --crit-dim:#f6e0de; --warn:#8a5f05; --warn-dim:#f7ecd2;
+  --ok:#2f6d43; --ok-dim:#dcecdf; --idle:#8493a0; --idle-dim:#e6eaed;
+}
+
+/* ---- base ---- */
+* { box-sizing: border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans);
+  font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+a { color:var(--accent); }
+button { font:inherit; }
+code { font-family:var(--mono); font-size:0.88em; background:var(--accent-dim); color:var(--ink);
+  padding:1px 5px; border-radius:3px; overflow-wrap:anywhere; }
+.muted { color:var(--muted); }
+.wrap { max-width:var(--maxw); margin:0 auto; padding:0 28px 100px; }
+
+/* ---- theme toggle (shared, &#167;4.2) ---- */
+.theme-toggle { position:fixed; top:14px; right:16px; z-index:50; font-family:var(--mono);
+  font-size:10px; letter-spacing:0.09em; text-transform:uppercase; font-weight:600;
+  padding:6px 11px; cursor:pointer; background:var(--paper-2); color:var(--ink);
+  border:1px solid var(--rule-hard); border-radius:2px; }
+.theme-toggle:hover { border-color:var(--accent); color:var(--accent); }
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+
+/* ==================================================================== */
+/* STATUS ROUTES &#8212; program | phase | readiness (editorial, multi-item)   */
+/* ==================================================================== */
+.route-status .masthead { border-bottom:2px solid var(--ink); padding:46px 0 20px; margin-bottom:34px; }
+.route-status .eyebrow { font-family:var(--mono); font-size:11px; letter-spacing:0.13em; text-transform:uppercase;
+  color:var(--accent); margin:0 0 14px; display:flex; flex-wrap:wrap; gap:8px 16px; align-items:baseline; }
+.route-status .eyebrow .sep { color:var(--rule-hard); }
+.route-status h1 { font-size:clamp(30px,4.4vw,47px); line-height:1.04; letter-spacing:-0.024em; font-weight:700;
+  margin:0 0 14px; text-wrap:balance; }
+.route-status .dek { font-size:17px; color:var(--ink-2); max-width:62ch; margin:0; }
+.route-status section { margin:52px 0 0; }
+.route-status h2 { font-size:12px; font-family:var(--mono); letter-spacing:0.13em; text-transform:uppercase;
+  color:var(--muted); font-weight:600; margin:0 0 6px; padding-bottom:8px;
+  border-bottom:1px solid var(--rule); display:flex; justify-content:space-between; gap:16px; align-items:baseline; }
+.route-status h2 .h2-note { color:var(--rule-hard); letter-spacing:0.04em; text-transform:none; font-size:11px; }
+.route-status h3 { font-size:20px; letter-spacing:-0.015em; margin:26px 0 8px; font-weight:650; text-wrap:balance; }
+.route-status p { margin:0 0 14px; max-width:72ch; }
+
+.vitals { display:grid; grid-template-columns:repeat(auto-fit,minmax(158px,1fr)); gap:1px;
+  background:var(--rule); border:1px solid var(--rule); margin:22px 0 0; }
+.vital { background:var(--paper-2); padding:15px 16px 14px; }
+.vital .k { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:7px; }
+.vital .v { font-family:var(--mono); font-size:26px; font-weight:600; line-height:1;
+  letter-spacing:-0.02em; font-variant-numeric:tabular-nums; }
+.vital .sub { font-size:12px; color:var(--muted); margin-top:6px; line-height:1.35; }
+.vital .measured { font-family:var(--mono); font-size:10px; color:var(--rule-hard); margin-top:6px; line-height:1.4; }
+.vital.is-crit .v { color:var(--crit); }
+.vital.is-warn .v { color:var(--warn); }
+.vital.is-ok .v { color:var(--ok); }
+
+.callout { border:1px solid var(--rule); border-left:4px solid var(--muted); background:var(--paper-2);
+  padding:18px 20px; margin:22px 0; }
+.callout.crit { border-left-color:var(--crit); background:var(--crit-dim); }
+.callout.warn { border-left-color:var(--warn); background:var(--warn-dim); }
+.callout.fix  { border-left-color:var(--accent); background:var(--accent-dim); }
+.callout .ct { font-family:var(--mono); font-size:11px; letter-spacing:0.11em; text-transform:uppercase;
+  font-weight:600; margin-bottom:8px; }
+.callout.crit .ct { color:var(--crit); }
+.callout.warn .ct { color:var(--warn); }
+.callout.fix  .ct { color:var(--accent); }
+.callout p:last-child { margin-bottom:0; }
+.callout details.ns { border-top-color:var(--rule-hard); }
+
+.scroller { overflow-x:auto; border:1px solid var(--rule); background:var(--paper-2); margin:22px 0 10px; }
+table.flow { border-collapse:collapse; width:100%; min-width:760px; font-size:13px; }
+table.flow th, table.flow td { border-bottom:1px solid var(--rule); padding:0; }
+table.flow thead th { font-family:var(--mono); font-size:10px; letter-spacing:0.07em; text-transform:uppercase;
+  color:var(--muted); font-weight:600; text-align:center; padding:10px 4px 9px;
+  border-bottom:1px solid var(--rule-hard); white-space:nowrap; }
+table.flow thead th.rowhead { text-align:left; padding-left:14px; min-width:190px; }
+table.flow th.rowhead { text-align:left; padding:9px 10px 9px 14px; font-weight:550; font-size:13px;
+  color:var(--ink); white-space:nowrap; }
+table.flow th.rowhead .tag { display:block; font-family:var(--mono); font-size:10px; letter-spacing:0.06em;
+  color:var(--muted); text-transform:uppercase; margin-top:1px; }
+td.cell { text-align:center; vertical-align:middle; padding:6px 3px; }
+.dot { display:inline-flex; align-items:center; justify-content:center; width:30px; height:22px;
+  border-radius:2px; font-family:var(--mono); font-size:11px; font-variant-numeric:tabular-nums; font-weight:600; }
+.d1 { background:color-mix(in srgb, var(--accent) 34%, transparent); color:var(--ink); }
+.d2 { background:color-mix(in srgb, var(--accent) 58%, transparent); color:var(--ink); }
+.d3 { background:var(--accent); color:var(--paper); }
+@media (prefers-color-scheme: dark) { .d3 { color:#06201e; } }
+:root[data-theme="dark"] .d3 { color:#06201e; }
+:root[data-theme="light"] .d3 { color:var(--paper); }
+td.cell.empty::after { content:"\00B7"; color:var(--rule-hard); font-family:var(--mono); }
+.legend { display:flex; flex-wrap:wrap; gap:6px 20px; font-family:var(--mono); font-size:10.5px;
+  letter-spacing:0.05em; text-transform:uppercase; color:var(--muted); margin-bottom:26px; }
+.legend span { display:inline-flex; align-items:center; gap:6px; }
+.swatch { width:13px; height:13px; border-radius:2px; display:inline-block; }
+
+.tracks { display:grid; grid-template-columns:1fr 1fr; gap:26px; margin-top:22px; }
+@media (max-width:900px) { .tracks { grid-template-columns:1fr; } }
+.track-h { font-family:var(--mono); font-size:11px; letter-spacing:0.11em; text-transform:uppercase;
+  color:var(--ink); font-weight:600; padding-bottom:8px; border-bottom:1px solid var(--rule-hard); }
+.track-h em { font-style:normal; color:var(--muted); font-weight:400; letter-spacing:0.04em; }
+.step { display:grid; grid-template-columns:66px 1fr; gap:14px; border-bottom:1px solid var(--rule);
+  padding:13px 14px 13px 12px; border-left:4px solid var(--idle); background:var(--paper-2); }
+.step.s-done { border-left-color:var(--ok); }
+.step.s-part { border-left-color:var(--accent); }
+.step.s-blocked { border-left-color:var(--warn); }
+.step.s-none { border-left-color:var(--rule-hard); }
+.step .code { font-family:var(--mono); font-size:15px; font-weight:700; letter-spacing:-0.01em;
+  color:var(--ink); line-height:1.4; }
+.step .code small { display:block; font-size:9.5px; font-weight:600; letter-spacing:0.09em;
+  text-transform:uppercase; margin-top:3px; }
+.s-done .code small { color:var(--ok); }
+.s-part .code small { color:var(--accent); }
+.s-blocked .code small { color:var(--warn); }
+.s-none .code small { color:var(--idle); }
+.step .body { font-size:13.5px; line-height:1.5; }
+.step .body .ev { display:block; font-family:var(--mono); font-size:11px; color:var(--muted);
+  margin-top:5px; line-height:1.45; }
+.step .body .domline { margin-bottom:6px; }
+.step .body > .doms { display:flex; margin-bottom:6px; }
+.here { background:var(--accent); color:var(--paper); padding:9px 14px; font-family:var(--mono);
+  font-size:11px; letter-spacing:0.13em; text-transform:uppercase; font-weight:700;
+  display:flex; justify-content:space-between; gap:10px; align-items:center; margin-top:14px; }
+@media (prefers-color-scheme: dark) { .here { color:#06201e; } }
+:root[data-theme="dark"] .here { color:#06201e; }
+:root[data-theme="light"] .here { color:var(--paper); }
+
+table.data { border-collapse:collapse; width:100%; min-width:820px; font-size:13.5px; }
+table.data th { font-family:var(--mono); font-size:10px; letter-spacing:0.09em; text-transform:uppercase;
+  color:var(--muted); font-weight:600; text-align:left; padding:10px 14px;
+  border-bottom:1px solid var(--rule-hard); white-space:nowrap; }
+table.data td { padding:11px 14px; border-bottom:1px solid var(--rule); vertical-align:top; line-height:1.45; }
+table.data tr:last-child td { border-bottom:none; }
+table.data td.nowrap { white-space:nowrap; }
+table.data td .doms { display:flex; max-width:150px; }
+.route-status .pill { display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:0.07em;
+  text-transform:uppercase; font-weight:600; padding:3px 8px; border-radius:2px; white-space:nowrap; }
+.p-ok { background:var(--ok-dim); color:var(--ok); }
+.p-part { background:var(--accent-dim); color:var(--accent); }
+.p-none { background:var(--idle-dim); color:var(--idle); }
+.p-blocked { background:var(--warn-dim); color:var(--warn); }
+.p-crit { background:var(--crit-dim); color:var(--crit); }
+.p-deferred { background:var(--know-dim); color:var(--know); }
+.route-status footer { margin-top:56px; padding-top:20px; border-top:1px solid var(--rule);
+  font-size:12px; color:var(--muted); line-height:1.6; }
+.route-status footer strong { color:var(--ink-2); }
+
+/* ==================================================================== */
+/* FEATURE ROUTE &#8212; retrospective single feature (token-based, both themes)*/
+/* ==================================================================== */
+.route-feature .shell { width:min(var(--maxw), calc(100% - 36px)); margin:0 auto; }
+.route-feature .hero { padding:64px 0 40px; border-bottom:2px solid var(--ink); }
+.route-feature .hero .eyebrow { color:var(--accent); font-family:var(--mono); font-size:11px; font-weight:600;
+  letter-spacing:0.13em; text-transform:uppercase; }
+.route-feature h1 { max-width:900px; margin:14px 0 14px; font-size:clamp(30px,5vw,52px); line-height:1.04;
+  letter-spacing:-0.03em; font-weight:700; text-wrap:balance; }
+.route-feature .lede { max-width:820px; margin:0; color:var(--ink-2); font-size:clamp(16px,2vw,20px); }
+.route-feature .meta { display:flex; flex-wrap:wrap; gap:9px; margin-top:26px; }
+.route-feature .pill { display:inline-flex; align-items:center; gap:7px; border:1px solid var(--rule-hard);
+  border-radius:2px; padding:5px 10px; background:var(--paper-2); color:var(--ink-2);
+  font-family:var(--mono); font-size:11px; letter-spacing:0.04em; }
+.route-feature .pill.verified, .status.passed, .status.resolved, .status.shipped { border-color:var(--ok); color:var(--ok); }
+.route-feature .pill.draft, .status.failed, .status.open { border-color:var(--crit); color:var(--crit); }
+.route-feature .pill.partial, .status.unverified, .status.deferred, .status.not_executed, .status.owner_data_absent,
+  .status.accepted { border-color:var(--warn); color:var(--warn); }
+.draft-banner { margin-top:22px; padding:12px 16px; border:1px solid var(--crit); border-left:4px solid var(--crit);
+  background:var(--crit-dim); color:var(--crit); font-weight:700; font-family:var(--mono); font-size:12px;
+  letter-spacing:0.04em; text-transform:uppercase; }
+.route-feature .layout { display:grid; grid-template-columns:210px minmax(0,1fr); gap:44px; padding:34px 0 72px; }
+.route-feature .toc { position:sticky; top:20px; align-self:start; border:1px solid var(--rule);
+  background:var(--paper-2); padding:16px; }
+.route-feature .toc strong { display:block; margin-bottom:9px; font-family:var(--mono); font-size:10px;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+.route-feature .toc a { display:block; padding:6px 0; color:var(--ink-2); text-decoration:none; font-size:13.5px; }
+.route-feature .toc a:hover { color:var(--accent); }
+.route-feature main { min-width:0; }
+.route-feature section { scroll-margin-top:22px; padding:34px 0; border-bottom:1px solid var(--rule); }
+.route-feature section:first-child { padding-top:0; }
+.route-feature h2 { margin:0 0 18px; font-size:clamp(22px,3vw,32px); letter-spacing:-0.02em; font-weight:680; }
+.route-feature h3 { margin:0 0 8px; font-size:16px; font-weight:650; }
+.route-feature p { margin:0 0 14px; max-width:74ch; }
+.split { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
+.card { border:1px solid var(--rule); background:var(--paper-2); padding:19px 20px; }
+.card.accent { border-top:3px solid var(--know); }
+.card p:last-child { margin-bottom:0; }
+.beneficiary { color:var(--know); font-family:var(--mono); font-size:10px; font-weight:600;
+  letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px; }
+.list { margin:0; padding-left:1.25rem; }
+.list li { margin:8px 0; }
+.change { display:grid; grid-template-columns:minmax(140px,.35fr) 1fr; gap:18px; padding:19px 0;
+  border-top:1px solid var(--rule); }
+.change:first-child { border-top:0; }
+.area { color:var(--accent); font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:0.04em; }
+.technical { margin-top:9px; color:var(--muted); font-size:13px; }
+.refs { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+.ref { border-radius:2px; padding:3px 8px; background:var(--idle-dim); color:var(--ink-2);
+  text-decoration:none; font:600 11px var(--mono); }
+.ref:hover { color:var(--accent); }
+.status { display:inline-block; margin-bottom:10px; border:1px solid var(--rule-hard); border-radius:2px;
+  padding:3px 8px; font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; }
+.validation { width:100%; border-collapse:collapse; font-size:13.5px; }
+.validation th, .validation td { padding:13px 12px; border-bottom:1px solid var(--rule); text-align:left; vertical-align:top; }
+.validation th { color:var(--muted); font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; }
+.visual-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px; }
+.visual { overflow:hidden; border:1px solid var(--rule); background:var(--paper-2); }
+.visual img { display:block; width:100%; height:auto; max-height:720px; object-fit:contain; }
+.visual figcaption { padding:12px 15px; color:var(--muted); font-size:12px; border-top:1px solid var(--rule); }
+.visual-label { color:var(--know); font-family:var(--mono); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; }
+.chart, .diagram { overflow-x:auto; border:1px solid var(--rule); padding:16px; background:var(--paper-2); }
+.chart svg, .diagram svg { display:block; min-width:640px; width:100%; height:auto; }
+.timeline { position:relative; margin-left:8px; padding-left:25px; border-left:2px solid var(--rule-hard); }
+.moment { position:relative; padding:0 0 22px; }
+.moment::before { content:""; position:absolute; left:-32px; top:5px; width:11px; height:11px; border-radius:50%;
+  background:var(--accent); box-shadow:0 0 0 4px var(--paper); }
+.moment strong { display:block; }
+.evidence { display:grid; grid-template-columns:110px 1fr; gap:14px; padding:14px 0; border-top:1px solid var(--rule); }
+.evidence:first-child { border-top:0; }
+.evidence-id { color:var(--accent); font:600 12px var(--mono); }
+.evidence-meta { color:var(--muted); font-size:13px; }
+.toolbar { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+.btn { cursor:pointer; border:1px solid var(--rule-hard); border-radius:2px; padding:7px 11px;
+  background:var(--paper-2); color:var(--ink); font-family:var(--mono); font-size:11px; letter-spacing:0.04em; }
+.btn:hover { border-color:var(--accent); color:var(--accent); }
+.route-feature footer { padding:26px 0 50px; color:var(--muted); font-size:12px; }
+@media (max-width:780px) {
+  .route-feature .layout { grid-template-columns:1fr; }
+  .route-feature .toc { position:static; }
+  .split { grid-template-columns:1fr; }
+  .change { grid-template-columns:1fr; gap:6px; }
+  .validation { display:block; overflow-x:auto; }
+}
+
+/* ==================================================================== */
+/* SHARED &#8212; domain chips + handoff copy component + code-copy            */
+/* ==================================================================== */
+.doms { display:inline-flex; flex-wrap:wrap; gap:4px; vertical-align:middle; }
+.dom { font-family:var(--mono); font-size:9.5px; letter-spacing:0.09em; text-transform:uppercase;
+  font-weight:600; padding:2px 6px; border-radius:2px; white-space:nowrap;
+  border:1px solid currentColor; line-height:1.5; }
+.dom-build { color:var(--accent); }
+.dom-know  { color:var(--know); }
+.dom-gov   { color:var(--warn); }
+
+details.ns { margin-top:10px; border-top:1px dashed var(--rule); }
+details.ns > summary { cursor:pointer; list-style:none; padding:7px 0 0; font-family:var(--mono);
+  font-size:10px; letter-spacing:0.11em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; display:flex; align-items:center; gap:7px; user-select:none; }
+details.ns > summary::-webkit-details-marker { display:none; }
+details.ns > summary::before { content:"\25B8"; display:inline-block; transition:transform 0.14s ease; font-size:11px; }
+details.ns[open] > summary::before { transform:rotate(90deg); }
+details.ns > summary:hover { color:var(--ink); }
+details.ns.human > summary { color:var(--warn); }
+.ns-body { margin-top:9px; border:1px solid var(--rule); background:var(--paper);
+  padding:12px 13px 11px; display:grid; gap:9px; }
+.route-feature .ns-body, td .ns-body { background:var(--paper-2); }
+.ns-row { display:grid; grid-template-columns:90px 1fr; gap:10px; align-items:baseline; }
+.ns-row .kk { font-family:var(--mono); font-size:9.5px; letter-spacing:0.09em; text-transform:uppercase;
+  color:var(--muted); font-weight:600; }
+.ns-row .vv { font-family:var(--mono); font-size:11.5px; line-height:1.6; word-break:break-word; }
+.ns-row .vv .cmd { color:var(--accent); font-weight:600; }
+.ns-row .vv .cmd.human { color:var(--warn); }
+.ns-row .vv .idc { display:inline-block; background:var(--idle-dim); color:var(--ink-2);
+  padding:0 4px; border-radius:2px; margin:0 3px 3px 0; }
+.ns-row .vv .gate { background:var(--warn-dim); color:var(--warn); }
+.ns-row .vv .miss { color:var(--crit); }
+.ns-prompt { font-family:var(--mono); font-size:11.5px; line-height:1.6; color:var(--ink-2);
+  background:var(--paper-2); border-left:2px solid var(--rule-hard); padding:9px 11px;
+  white-space:pre-wrap; margin:0; }
+.ns-foot { display:flex; justify-content:flex-end; gap:8px; }
+.copy-btn { font-family:var(--mono); font-size:10px; letter-spacing:0.09em; text-transform:uppercase;
+  font-weight:600; padding:5px 11px; cursor:pointer; background:var(--accent); color:var(--paper-2);
+  border:1px solid var(--accent); border-radius:2px; transition:background 0.12s ease, color 0.12s ease; }
+@media (prefers-color-scheme: dark) { .copy-btn { color:#06201e; } }
+:root[data-theme="dark"] .copy-btn { color:#06201e; }
+:root[data-theme="light"] .copy-btn { color:var(--paper-2); }
+.copy-btn:hover { background:transparent; color:var(--accent); }
+.copy-btn.done { background:var(--ok); border-color:var(--ok); color:var(--paper-2); }
+.ns-payload { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:pre; }
+.ns-fallback { width:100%; min-height:150px; font-family:var(--mono); font-size:11px; line-height:1.55;
+  background:var(--paper-2); color:var(--ink); border:1px solid var(--accent); border-radius:2px;
+  padding:9px 11px; resize:vertical; white-space:pre; }
+
+/* per-<code> inline copy (feature route, &#167;7.4) */
+.copyable { cursor:pointer; border-bottom:1px dotted var(--rule-hard); }
+.copyable:hover { background:var(--accent-dim); }
+.copyable.done { background:var(--ok-dim); }
+
+figure { margin:26px 0; }
+figure img { width:100%; height:auto; display:block; border:1px solid var(--rule-hard); }
+figcaption { font-family:var(--mono); font-size:11px; color:var(--muted); line-height:1.5; margin-top:9px;
+  padding-left:10px; border-left:2px solid var(--rule-hard); max-width:78ch; }
+figcaption b { color:var(--ink-2); font-weight:600; }
+
+/* ==================================================================== */
+/* DOSSIER ROUTE &#8212; the living per-feature record (rides route-status)     */
+/* stage timeline + open-question panel + decision log; shares masthead,   */
+/* vitals, items table, corrections, handoff, and theming with route-status*/
+/* ==================================================================== */
+.route-dossier .dossier-meta { display:flex; flex-wrap:wrap; gap:9px; margin:16px 0 0; align-items:center; }
+.route-dossier .tstat { font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+  font-weight:600; padding:4px 9px; border-radius:2px; border:1px solid currentColor; }
+.route-dossier .tstat.is-ok { color:var(--ok); }
+.route-dossier .tstat.is-warn { color:var(--warn); }
+.route-dossier .tstat.is-crit { color:var(--crit); }
+.route-dossier .rev-chip { font-family:var(--mono); font-size:10px; letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--muted); border:1px solid var(--rule-hard); border-radius:2px; padding:4px 9px; }
+
+/* stage timeline &#8212; the heart */
+.route-dossier .stage-tools { display:flex; justify-content:flex-end; margin:16px 0 0; }
+.route-dossier .stages { list-style:none; margin:12px 0 0; padding:0; display:grid; gap:1px;
+  background:var(--rule); border:1px solid var(--rule); }
+.route-dossier .stage { display:grid; grid-template-columns:96px minmax(0,1fr); gap:16px; background:var(--paper-2);
+  padding:15px 16px; border-left:4px solid var(--idle); }
+.route-dossier .stage.st-done { border-left-color:var(--ok); }
+.route-dossier .stage.st-active { border-left-color:var(--accent); background:var(--accent-dim); }
+.route-dossier .stage.st-pending { border-left-color:var(--rule-hard); }
+.route-dossier .stage.st-blocked { border-left-color:var(--warn); }
+.route-dossier .stage-rail { font-family:var(--mono); }
+.route-dossier .stage-kind { display:block; font-size:12px; font-weight:700; letter-spacing:-0.01em;
+  color:var(--ink); text-transform:capitalize; }
+.route-dossier .stage-state { display:block; font-size:9.5px; font-weight:600; letter-spacing:0.09em;
+  text-transform:uppercase; margin-top:3px; color:var(--idle); }
+.route-dossier .st-done .stage-state { color:var(--ok); }
+.route-dossier .st-active .stage-state { color:var(--accent); }
+.route-dossier .st-blocked .stage-state { color:var(--warn); }
+.route-dossier .stage-main { min-width:0; }
+.route-dossier .stage-head { display:flex; flex-wrap:wrap; gap:10px; align-items:baseline; }
+.route-dossier .stage-head h3 { margin:0; font-size:17px; font-weight:650; letter-spacing:-0.01em; }
+.route-dossier .stage-time { font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:5px;
+  display:flex; flex-wrap:wrap; gap:12px; }
+.route-dossier .stage-outcome { margin:8px 0 0; font-size:14px; }
+.route-dossier .stage-dev { color:var(--warn); font-size:13px; margin:6px 0 0; }
+.route-dossier details.stage-narr { margin-top:9px; }
+.route-dossier details.stage-narr > summary { cursor:pointer; list-style:none; font-family:var(--mono);
+  font-size:10px; letter-spacing:0.11em; text-transform:uppercase; color:var(--accent); font-weight:600;
+  display:flex; align-items:center; gap:7px; user-select:none; }
+.route-dossier details.stage-narr > summary::-webkit-details-marker { display:none; }
+.route-dossier details.stage-narr > summary::before { content:"\25B8"; display:inline-block; transition:transform 0.14s ease; }
+.route-dossier details.stage-narr[open] > summary::before { transform:rotate(90deg); }
+.route-dossier details.stage-narr p { margin:9px 0 0; font-size:13.5px; max-width:74ch; }
+.route-dossier .stage-shots { display:flex; flex-wrap:wrap; gap:12px; margin:12px 0 0; }
+.route-dossier .stage-shot { margin:0; max-width:300px; }
+.route-dossier .stage-shot img { width:100%; height:auto; display:block; border:1px solid var(--rule-hard); }
+.route-dossier .stage-shot figcaption { font-family:var(--mono); font-size:10.5px; color:var(--muted);
+  margin-top:6px; padding-left:8px; border-left:2px solid var(--rule-hard); }
+.route-dossier .stage-commits { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+.route-dossier .stage .refs { margin-top:10px; }
+@media (max-width:640px) { .route-dossier .stage { grid-template-columns:1fr; gap:8px; } }
+
+/* open-question cards &#8212; blocking first */
+.route-dossier .oq-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-top:22px; }
+.route-dossier .oq { border:1px solid var(--rule); border-left:4px solid var(--muted); background:var(--paper-2);
+  padding:15px 16px; }
+.route-dossier .oq.is-blocking { border-left-color:var(--crit); }
+.route-dossier .oq.oq-answered, .route-dossier .oq.oq-resolved { border-left-color:var(--ok); }
+.route-dossier .oq.oq-superseded { border-left-color:var(--idle); opacity:0.82; }
+.route-dossier .oq-head { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:8px; }
+.route-dossier .oq-id { font-family:var(--mono); font-size:11px; font-weight:700; color:var(--ink); }
+.route-dossier .oq-status { font-family:var(--mono); font-size:9.5px; letter-spacing:0.08em; text-transform:uppercase;
+  font-weight:600; padding:2px 7px; border-radius:2px; border:1px solid currentColor; }
+.route-dossier .oq-status.oq-open { color:var(--crit); }
+.route-dossier .oq-status.oq-answered, .route-dossier .oq-status.oq-resolved { color:var(--ok); }
+.route-dossier .oq-status.oq-superseded { color:var(--idle); }
+.route-dossier .oq-block { font-family:var(--mono); font-size:9px; letter-spacing:0.09em; text-transform:uppercase;
+  font-weight:700; color:var(--crit); background:var(--crit-dim); padding:2px 7px; border-radius:2px; }
+.route-dossier .oq-raised { margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--muted); }
+.route-dossier .oq-q { margin:0 0 8px; font-size:14.5px; font-weight:600; max-width:none; }
+.route-dossier .oq-ctx { margin:0 0 8px; font-size:13px; color:var(--ink-2); max-width:none; }
+.route-dossier .oq-ans, .route-dossier .oq-chan { margin-top:10px; padding-top:9px; border-top:1px solid var(--rule); }
+.route-dossier .oq-ans p { margin:5px 0 0; font-size:13.5px; max-width:none; }
+.route-dossier .oq-k { font-family:var(--mono); font-size:9.5px; letter-spacing:0.09em; text-transform:uppercase;
+  font-weight:600; color:var(--muted); }
+.route-dossier .oq-chan span:last-child { display:block; margin-top:4px; font-size:12.5px; color:var(--ink-2); }
+
+/* decision log */
+.route-dossier .dec-log { display:grid; gap:12px; margin-top:22px; }
+.route-dossier .dec { border:1px solid var(--rule); background:var(--paper-2); padding:14px 16px;
+  border-left:4px solid var(--know); }
+.route-dossier .dec-head { display:flex; flex-wrap:wrap; gap:10px; align-items:baseline; margin-bottom:6px; }
+.route-dossier .dec-id { font-family:var(--mono); font-size:11px; font-weight:700; color:var(--know); }
+.route-dossier .dec-meta { font-family:var(--mono); font-size:10.5px; color:var(--muted); }
+.route-dossier .dec-what { margin:0; font-size:14.5px; font-weight:600; max-width:none; }
+.route-dossier .dec-why, .route-dossier .dec-alts { margin:8px 0 0; font-size:13px; color:var(--ink-2); max-width:none; }
+.route-dossier .dec-answers { margin:8px 0 0; font-size:12.5px; max-width:none; }
+.route-dossier .dec .refs { margin-top:10px; }
+.route-dossier .stages + .stage-tools { margin-top:0; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition:none !important; }
+  html { scroll-behavior:auto; }
+}
+@media print {
+  .theme-toggle, .toolbar, .route-feature .toc, .stage-tools { display:none; }
+  body { background:#fff; color:#111; }
+  .card, .visual, .chart, .diagram, .callout, .step, .stage, .oq, .dec { break-inside:avoid; }
+}
+</style>
+</head>
+<body class="dr route-status" data-route="program">
+<button class="theme-toggle" type="button" aria-label="Toggle colour theme">Theme</button>
+<div class="wrap">
+<header class="masthead">
+  <div class="eyebrow"><span>Program status</span><span class="sep">/</span><span>Pediatric CDS Platform</span><span class="sep">/</span><span>rev 3</span><span class="sep">/</span><span>main cfdc1a0</span><span class="sep">/</span><span>2026-07-28</span></div>
+  <h1>Thirteen days in: the governance machine is built, the product is still one module &#8212; and the gate is red.</h1>
+  <p class="dek">Nine work programs have merged in thirteen days. What they built is almost entirely the evidence-and-governance substrate: a deterministic rf-bundle converter with a fail-closed emission gate, a git-signed clinical review workflow, a rights ledger, five schema-forced release gates, and ten ADRs. What a clinician can actually open in a browser is still the single anemia module it was on day one. Two things now stand between the program and forward motion: `npm run check` is red on `main` from eight failures that predate every open branch and need owner adjudication, and every path from verified evidence to a grounded rule terminates at a named credentialed human who has not been recruited. This report separates what shipped, what a machine can still do, and what only a person can &#8212; with a copyable handoff on every open item.</p>
+</header>
+<section aria-label="Vitals"><div class="vitals"><div class="vital is-neutral"><div class="k">Merged</div><div class="v">33</div><div class="sub">PRs &#183; 63 commits &#183; Jul 15 &#8594; Jul 24</div><div class="measured">gh pr list --state merged --limit 100 | wc -l; git rev-list --count main</div></div><div class="vital is-critical"><div class="k">check gate</div><div class="v">FAIL</div><div class="sub">8 of 2,786 tests &#183; 6 of 7 gate steps pass</div><div class="measured">npm run check at cfdc1a0, then each remaining script run individually after the test step</div></div><div class="vital is-warn"><div class="k">Modules</div><div class="v">4</div><div class="sub">1 selectable in the SPA &#183; 3 inert</div><div class="measured">modules/*/module.json status field vs src/modules/registry.js DEFAULT_MODULE_ID</div></div><div class="vital is-neutral"><div class="k">Rules</div><div class="v">95</div><div class="sub">91 anemia &#183; 4 cbc &#183; 0 growth &#183; 0 kidney</div><div class="measured">node: JSON.parse over modules/*/rules.json</div></div><div class="vital is-critical"><div class="k">Grounded</div><div class="v">0</div><div class="sub">of 95 rules &#183; attestation ledger empty by design</div><div class="measured">evidence-packs/passage-attestations.json &#8212; rules[] length 0, candidates[] length 0</div></div><div class="vital is-critical"><div class="k">Human gates</div><div class="v">5</div><div class="sub">G0&#8211;G4 &#183; all blocked-external, no agent path</div><div class="measured">docs/governance/gates-registry.md &#167;G0&#8211;G4; governance/reviewer-roster.yaml (0 real entries); 10 ADRs all `proposed`</div></div></div></section>
+<section><h2>Corrections <span class="h2-note">prior-revision claims now known wrong</span></h2><div class="callout warn"><div class="ct">What changed since the last revision</div><p><strong>Rev 2 claimed:</strong> The clinical review workflow (DF-E1-01) is 30 commits ahead on an unmerged branch, phases 1/2/4 complete and 3 in progress.<br><strong>Actually:</strong> It merged as PR #28 on 2026-07-22 (commit 78ae776), all five phases complete. No feature branch in the repo now holds unmerged product work &#8212; every branch that is ahead of main is a pre-squash-merge remnant whose content is already on main.<br><span class="muted">Verified by: git log --oneline main | grep &#x27;#28&#x27;; git rev-list --count main..&lt;each local branch&gt; cross-checked against squash commit subjects</span></p><p><strong>Rev 2 claimed:</strong> The check gate is red with 25 of 2,412 tests failing on main.<br><strong>Actually:</strong> 8 of 2,786 tests fail on main at cfdc1a0. PR #31&#x27;s Phase 0 cut the count from 27 to 8 and added zero new failures; the surviving 8 are Cluster B (6 stale pinned baselines) and Cluster C (2 rights-honesty D1 invariants), both requiring owner adjudication.<br><span class="muted">Verified by: npm run check at cfdc1a0 &#8212; failing test IDs 336, 789, 814, 2132, 2133, 2138, 2363, 2364; cross-read against .claude/findings/multi-bundle-conversion-e1-finish-findings.md MBF-1</span></p><p><strong>Rev 2 claimed:</strong> The module switcher is not built &#8212; the runtime has been module-agnostic since P0 but the browser has never used it.<br><strong>Actually:</strong> Shipped as PR #29 on 2026-07-23: an eligibility-gated SPA switcher that renders 1 selectable module and 3 inert ones behind a fail-closed refusal. The gap it closed is honesty of inventory, not clinical reach &#8212; the 3 inert modules remain unselectable because the eligibility policy (ADR-0009) correctly refuses them.<br><span class="muted">Verified by: git show 165ed4d --stat; docs/adr/0009-module-eligibility-policy-for-clinician-facing-surfaces.md</span></p><p><strong>Rev 2 claimed:</strong> G0 spans eight ADRs (0001&#8211;0008).<br><strong>Actually:</strong> docs/adr/ now holds ten ADRs (0001&#8211;0010); every one is still `proposed`, and each clears G0 independently. ADRs 0003, 0005, 0007 and 0008 record status in a `**Status**:` body line rather than frontmatter, so a frontmatter-only grep under-counts them.<br><span class="muted">Verified by: for f in docs/adr/*.md; grep -m1 -iE &#x27;status&#x27; $f &#8212; all ten read proposed</span></p><p><strong>Rev 2 claimed:</strong> cbc_suite_v1 is the only module with a committed authoring-decisions.yaml, so growth and kidney emit no rules because the file is missing (DF-E1-M1).<br><strong>Actually:</strong> All four modules have committed authoring-decisions.yaml &#8212; growth, kidney and anemia landed theirs in PR #31 on 2026-07-23, one day before doc 05 recorded the claim. The blocker is not a missing file: the converter&#x27;s emission gate permits only `status: approved_for_rule_draft`, and growth and kidney hold 0 approved of 4 decisions each (cbc holds 4 of 4, anemia 1 of 5). That flip is a human review act, not a mechanical one.<br><span class="muted">Verified by: git log -1 -- modules/growth_suite_v1/authoring-decisions.yaml &#8594; 1a59ad6 (2026-07-23); grep -c &#x27;status: approved_for_rule_draft&#x27; per module; tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs:286</span></p></div></section>
+<section><h2>Where thirteen days went <span class="h2-note">commits per workstream per day on main &#8212; 63 commits, 9 active days, every commit classified</span></h2><div class="scroller"><table class="flow"><thead><tr><th class="rowhead">Workstream</th><th>Jul 15</th><th>Jul 17</th><th>Jul 18</th><th>Jul 19</th><th>Jul 20</th><th>Jul 21</th><th>Jul 22</th><th>Jul 23</th><th>Jul 24</th></tr></thead><tbody><tr><th class="rowhead">Clinician-facing SPA<span class="tag">index.html &#183; module switcher</span></th><td class="cell"><span class="dot d3">5</span></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell"><span class="dot d1">1</span></td><td class="cell"><span class="dot d2">2</span></td><td class="cell empty"></td></tr><tr><th class="rowhead">P0 &#8212; platform foundation<span class="tag">modules/&lt;id&gt;/ contract</span></th><td class="cell empty"></td><td class="cell"><span class="dot d1">1</span></td><td class="cell"><span class="dot d1">1</span></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td></tr><tr><th class="rowhead">P1 &#8212; Wave-0 safety<span class="tag">EP-0 &#8230; EP-7</span></th><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell"><span class="dot d2">3</span></td><td class="cell"><span class="dot d3">5</span></td><td class="cell"><span class="dot d2">3</span></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td></tr><tr><th class="rowhead">ARC clinical council<span class="tag">P0 &#8230; P7 adoption</span></th><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell"><span class="dot d3">6</span></td><td class="cell"><span class="dot d3">6</span></td><td class="cell"><span class="dot d3">6</span></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td></tr><tr><th class="rowhead">Evidence Foundry E0/E1<span class="tag">converter &#183; review &#183; release</span></th><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell"><span class="dot d1">1</span></td><td class="cell empty"></td><td class="cell"><span class="dot d2">3</span></td><td class="cell"><span class="dot d2">2</span></td><td class="cell"><span class="dot d2">2</span></td><td class="cell empty"></td></tr><tr><th class="rowhead">Rights &amp; evidence governance<span class="tag">rights/ ledger + taxonomy</span></th><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell"><span class="dot d3">4</span></td><td class="cell"><span class="dot d1">1</span></td><td class="cell empty"></td><td class="cell empty"></td></tr><tr><th class="rowhead">Clinical review workflow<span class="tag">DF-E1-01 &#183; merged #28</span></th><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell"><span class="dot d2">3</span></td><td class="cell empty"></td><td class="cell empty"></td></tr><tr><th class="rowhead">Evidence-run design (rf)<span class="tag">docs 05/06 &#183; 12 DR packets</span></th><td class="cell empty"></td><td class="cell"><span class="dot d2">2</span></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell"><span class="dot d2">3</span></td></tr><tr><th class="rowhead">Tooling &amp; AOS wiring<span class="tag">trackers &#183; routing pins</span></th><td class="cell empty"></td><td class="cell empty"></td><td class="cell"><span class="dot d1">1</span></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell empty"></td><td class="cell"><span class="dot d2">2</span></td><td class="cell empty"></td></tr></tbody></table></div><div class="legend"><span>1 commit</span><span>2&#8211;3</span><span>4+</span><span>&#183; = no activity</span><span>Jul 16 had no commits; no unmerged product work exists</span></div></section>
+<section><h2>The two tracks, and where you actually are <span class="h2-note">every item carries domains + a copyable handoff</span></h2><div class="tracks"><div><div class="track-h">Product track <em>&mdash; docs/&#8230;/01-platform-expansion-roadmap</em></div><div class="step s-done"><div class="code">P0<small>done</small></div><div class="body"><div class="domline"><span class="doms"><span class="dom dom-build">Engine</span><span class="dom dom-build">Infra</span></span></div><strong>Platform foundation refactor.</strong> Module-agnostic runtime, modules/&lt;id&gt;/ package contract, anemia output byte-equivalent under a permanent golden-fixture harness.<span class="ev">7/7 phases &#183; merged 2026-07-18 &#183; no next step</span></div></div><div class="step s-done"><div class="code">P1<small>done</small></div><div class="body"><div class="domline"><span class="doms"><span class="dom dom-build">Engine</span><span class="dom dom-know">Evidence</span><span class="dom dom-know">Validation</span></span></div><strong>Wave-0 safety &amp; defensibility.</strong> Tri-state fact model, UCUM unit + local-range service, exact-passage evidence records, signed manifest + semantic diff, adversarial validation corpus, review contract.<span class="ev">EP-0 &#8230; EP-7 &#183; merged 2026-07-21</span></div></div><div class="step s-done"><div class="code">SPA<small>done</small></div><div class="body"><div class="domline"><span class="doms"><span class="dom dom-build">UI</span><span class="dom dom-gov">Governance</span></span></div><strong>Eligibility-gated module switcher.</strong> The browser finally reflects the real inventory: 1 selectable module, 3 inert, fail-closed refusal governed by ADR-0009.<span class="ev">PR #29 &#183; merged 2026-07-23</span></div></div><div class="step s-part"><div class="code">WP7<small>part</small></div><div class="body"><div class="domline"><span class="doms"><span class="dom dom-build">UI</span><span class="dom dom-build">Engine</span></span></div><strong>Tri-state questionnaire UI.</strong> Tier 3 plan complete and review-hardened (14 &#8594; 20 pts after a cross-family review found 2 blockers). Zero of five phases executed.<span class="ev">plan merged 463e4ba &#183; 0/5 phases &#183; /execute-plan is the next action</span></div></div><div class="step s-none"><div class="code">P2<small>none</small></div><div class="body"><div class="domline"><span class="doms"><span class="dom dom-build">Engine</span><span class="dom dom-know">Evidence</span></span></div><strong>CBC Suite &#8212; the actual product.</strong> Neutropenia, leukocytosis/eosinophilia, platelets, pancytopenia, smear. Seven work packages, none started. Only E0&#x27;s 4-rule cbc vertical slice exists.<span class="ev">not started &#183; this is where the product thesis lives</span></div></div></div><div><div class="track-h">Evidence &amp; governance track <em>&mdash; rf &#8594; converter &#8594; review &#8594; release</em></div><div class="step s-done"><div class="code">rf<small>done</small></div><div class="body"><div class="domline"><span class="doms"><span class="dom dom-know">Research</span><span class="dom dom-know">Evidence</span></span></div><strong>Seven verified evidence bundles.</strong> RF-EV-001, RF-CBC-001/002, RF-KID-001, RF-GRO-002, REG-001, REG-004 &#8212; each verified on disk (exit 0, 0 unsupported). Bundles are claims, never rules.<span class="ev">rf-handoff/RESULTS.md &#183; 4 of 7 still read not_started in IntentTree</span></div></div><div class="step s-done"><div class="code">E0/E1<small>done</small></div><div class="body"><div class="domline"><span class="doms"><span class="dom dom-build">Infra</span><span class="dom dom-gov">Governance</span></span></div><strong>Converter + review workflow + signed preclinical release.</strong> Deterministic offline rf-bundle &#8594; kb-pack converter with a code-enforced fail-closed emission gate; git-signed review verbs, derived-state lib, queue view; retrospective validation harness.<span class="ev">PRs #17 #21 #22 #28 #31 &#183; 4-of-4 batch determinism</span></div></div><div class="step s-blocked"><div class="code">gate<small>blocked</small></div><div class="body"><div class="domline"><span class="doms"><span class="dom dom-know">Validation</span><span class="dom dom-build">Infra</span></span></div><strong>npm run check is red on main.</strong> 8 failures: 6 stale pinned baselines from prior merged phases, 2 rights-honesty D1 invariants whose allowlists are declared shrink-only. Every other gate step passes.<span class="ev">owner decisions D-1 &#183; D-2 &#183; D-3 &#183; blocks every commit</span></div></div><div class="step s-blocked"><div class="code">G1<small>blocked</small></div><div class="body"><div class="domline"><span class="doms"><span class="dom dom-gov">Governance</span><span class="dom dom-gov">Compliance</span></span></div><strong>No credentialed reviewer exists.</strong> Roster ships with 0 real entries and 5 clearly-labelled synthetic personas. Until a named clinician is recruited and out-of-band verified, no rule can be grounded and no module can leave unsigned-stub.<span class="ev">human-only &#183; gates grounding, rule emission, and release together</span></div></div><div class="step s-blocked"><div class="code">G0<small>blocked</small></div><div class="body"><div class="domline"><span class="doms"><span class="dom dom-gov">Governance</span><span class="dom dom-gov">Compliance</span></span></div><strong>Ten ADRs, all proposed.</strong> Each clears independently by its named deciders. Until then every ADR&#x27;s design is a recommendation, never adopted policy &#8212; the machinery implementing them ships anyway, inert.<span class="ev">human-only &#183; no agent may write status: accepted</span></div></div></div></div><div class="here"><span>You are here</span><span>substrate built &#183; gate red &#183; one module in the browser</span></div></section>
+<section><h2>Items <span class="h2-note">every open item carries a copyable handoff</span></h2><div class="scroller"><table class="data"><thead><tr><th>Item</th><th>Domains</th><th>State</th><th>Notes &amp; next step</th></tr></thead><tbody><tr><td>Adjudicate the 6 stale pinned baselines blocking the check gate</td><td><span class="doms"><span class="dom dom-know">Validation</span><span class="dom dom-build">Infra</span></span></td><td class="nowrap"><span class="pill p-blocked">blocking &#183; owner decision D-3</span><span class="muted"> &middot; self</span></td><td>Test IDs 336, 789, 814, 2132, 2133, 2138 all compare live files against literals pinned by a prior phase. Example: tests/ef-p4-t8-honesty-ac.test.mjs pins modules/anemia/module.json at sha256:57280d04&#8230; while the live file hashes sha256:334ad705&#8230; (it last changed legitimately in PR #20). Each needs a per-item call: legitimate drift &#8594; re-pin with recorded rationale, or real regression &#8594; fix the data. A prior delegate naively regenerated the p4-t1-pre-merge-snapshot fixture, which made the guarantee compare current state against itself &#8212; vacuously true &#8212; and added a failure. That was reverted; do not repeat it.<details class="ns"><summary>Next step</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd">/plan-feature</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">.claude/findings/multi-bundle-conversion-e1-finish-findings.md<br />tests/ef-p4-t8-honesty-ac.test.mjs<br />tests/rights-negative-invariant.test.mjs</span></div><div class="ns-row"><span class="kk">IDs</span><span class="vv"><span class="idc">MBF-1</span><span class="idc">D-3</span></span></div><p class="ns-prompt">Read MBF-1 Cluster B in the findings doc. For each of the 6 failing pinned-baseline tests, determine from git history whether the drift is a legitimate prior-phase change (re-pin, recording the commit that justified it) or a real regression (fix the data). Never regenerate a whole snapshot fixture &#8212; that makes the guarantee self-comparing. Present per-item recommendations before editing.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">/plan-feature
+
+Task: Adjudicate the 6 stale pinned baselines blocking the check gate
+Domains: Validation, Infra
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - .claude/findings/multi-bundle-conversion-e1-finish-findings.md
+  - tests/ef-p4-t8-honesty-ac.test.mjs
+  - tests/rights-negative-invariant.test.mjs
+
+Requirement IDs: MBF-1, D-3
+
+Prompt:
+Read MBF-1 Cluster B in the findings doc. For each of the 6 failing pinned-baseline tests, determine from git history whether the drift is a legitimate prior-phase change (re-pin, recording the commit that justified it) or a real regression (fix the data). Never regenerate a whole snapshot fixture &#8212; that makes the guarantee self-comparing. Present per-item recommendations before editing.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Decide D-1 and D-2 &#8212; the two rights-honesty D1 invariant failures</td><td><span class="doms"><span class="dom dom-gov">Governance</span><span class="dom dom-gov">Compliance</span></span></td><td class="nowrap"><span class="pill p-crit">owner decision only</span><span class="muted"> &middot; self</span></td><td>Test 2363: FIRST_PARTY_BINARY_ALLOWLIST rejects 11 first-party binaries committed by PR #29 (8 .jpg visual-evidence screenshots, 3 .png mockups). The allowlist&#x27;s own contract states it MAY ONLY SHRINK and that a new entry is &#x27;the exact failure mode D1 exists to prevent &#8212; an escalation, not an edit.&#x27; Test 2364: two capture surfaces carry an 8-word quoted run against a 7-word budget (modules/anemia/evidence-assertions.json assertions[10].applicability.ageRange and modules/kidney_suite_v1 assertions[31]). Rewording a capture body is source-expression-adjacent content work. No agent may resolve either without an explicit owner ruling.<details class="ns human"><summary>Human action</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd human">human decision &mdash; no agent path</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">tests/rights-negative-invariant.test.mjs<br />.claude/findings/multi-bundle-conversion-e1-finish-findings.md<br />modules/anemia/evidence-assertions.json</span></div><div class="ns-row"><span class="kk">IDs</span><span class="vv"><span class="idc">D-1</span><span class="idc">D-2</span><span class="idc">MBF-1</span></span></div><p class="ns-prompt">Owner decision, no agent path. D-1: allowlist, relocate, or narrow scope for the 11 PR-#29 first-party binaries. D-2: reword the two over-budget ageRange quoted runs to 7 words, or allowlist them. Both allowlists are declared shrink-only &#8212; widening either is a deliberate, reviewable governance act, never a build fix.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">human decision -- no agent path
+
+Task: Decide D-1 and D-2 &#8212; the two rights-honesty D1 invariant failures
+Domains: Governance, Compliance
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - tests/rights-negative-invariant.test.mjs
+  - .claude/findings/multi-bundle-conversion-e1-finish-findings.md
+  - modules/anemia/evidence-assertions.json
+
+Requirement IDs: D-1, D-2, MBF-1
+
+Prompt:
+Owner decision, no agent path. D-1: allowlist, relocate, or narrow scope for the 11 PR-#29 first-party binaries. D-2: reword the two over-budget ageRange quoted runs to 7 words, or allowlist them. Both allowlists are declared shrink-only &#8212; widening either is a deliberate, reviewable governance act, never a build fix.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Execute the tri-state questionnaire UI (P3-WP7)</td><td><span class="doms"><span class="dom dom-build">UI</span><span class="dom dom-build">Engine</span></span></td><td class="nowrap"><span class="pill p-none">planned &#183; 0 of 5 phases</span><span class="muted"> &middot; self</span></td><td>Tier 3 bundle merged at 463e4ba: PRD, 5-phase implementation plan, SPIKE evidence base, and per-phase progress artifacts &#8212; all five phase files read status: not_started, 0 of 4 tasks each. A cross-family review found 2 blockers in the first plan draft and the estimate rose 14 &#8594; 20 pts. The plan&#x27;s own P0-01 task re-verifies the 8-failure gate baseline and proceeds against it, so the red gate does not block starting. Premise correction already applied in the plan: the engine is tri-state, not four-state &#8212; is-not-assessed is a declared synonym of is-unknown.<details class="ns"><summary>Next step</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd">/execute-plan</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">docs/project_plans/implementation_plans/features/four-state-questionnaire-ui-v1.md<br />docs/project_plans/PRDs/features/four-state-questionnaire-ui-v1.md<br />.claude/progress/four-state-questionnaire-ui/phase-0-progress.md</span></div><div class="ns-row"><span class="kk">IDs</span><span class="vv"><span class="idc">FR-1</span><span class="idc">FR-8</span><span class="idc">FR-11</span></span></div><div class="ns-row"><span class="kk">Tracker</span><span class="vv">node_01KXQ7XFBSFNEEAJA8XJM621PZ &#8212; P3-WP7 Tri-state adaptive questionnaire UI</span></div><p class="ns-prompt">Execute the five-phase plan from a worktree branch. Start with P0-01: run `npm run build &amp;&amp; npm test` in that order and confirm the failure set is exactly IDs 336, 789, 814, 2132, 2133, 2138, 2363, 2364. If it differs, stop and escalate &#8212; never silently adopt a new baseline. Capture fidelity only; no engine change.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">/execute-plan
+
+Task: Execute the tri-state questionnaire UI (P3-WP7)
+Domains: UI, Engine
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - docs/project_plans/implementation_plans/features/four-state-questionnaire-ui-v1.md
+  - docs/project_plans/PRDs/features/four-state-questionnaire-ui-v1.md
+  - .claude/progress/four-state-questionnaire-ui/phase-0-progress.md
+
+Requirement IDs: FR-1, FR-8, FR-11
+Tracker: node_01KXQ7XFBSFNEEAJA8XJM621PZ &#8212; P3-WP7 Tri-state adaptive questionnaire UI
+
+Prompt:
+Execute the five-phase plan from a worktree branch. Start with P0-01: run `npm run build &amp;&amp; npm test` in that order and confirm the failure set is exactly IDs 336, 789, 814, 2132, 2133, 2138, 2363, 2364. If it differs, stop and escalate &#8212; never silently adopt a new baseline. Capture fidelity only; no engine change.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Launch RF-ANE-001 &#8212; the anemia red-cell indices evidence run</td><td><span class="doms"><span class="dom dom-know">Research</span><span class="dom dom-know">Evidence</span></span></td><td class="nowrap"><span class="pill p-none">approved &#183; not launched</span><span class="muted"> &middot; self</span></td><td>Triggered by real user feedback: the assessment accepts hemoglobin but not hematocrit. The gap is structural &#8212; Hct appears in no schema, no rule, no reference range, and `additionalProperties: false` makes POST /api/v1/assess reject the key outright. Because hemoglobin is required, a clinician working from a report that leads with a spun crit cannot run the tool at all. Investigating it surfaced five more instances of the same class: wherever the KB lacks a sourced pediatric numeric interval for a red-cell index, the engine substitutes a clinician-entered dropdown. The run produces the evidence substrate that would make adding a field legitimate; it does not add the field. Note the working tree carries an uncommitted status flip on this doc (design-ready-not-launched &#8594; approved).<details class="ns"><summary>Next step</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd">/rf</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">docs/project_plans/expansion/06-anemia-red-cell-indices-evidence-run.md<br />docs/project_plans/expansion/dr-packets/anemia/chatgpt-dr/prompt.md<br />docs/project_plans/expansion/dr-packets/anemia/perplexity/prompt.md</span></div><div class="ns-row"><span class="kk">IDs</span><span class="vv"><span class="idc">RF-ANE-001</span></span></div><p class="ns-prompt">Launch the three legs in doc 06: an rf deepen run extending the RF-EV-001 bundle, the three owner-run DR HITL packets, and the numerics hunt for threshold-carrying independently-retrievable passages. Check the rf catalog first (GET $RF_API_URL/api/catalog/search) &#8212; a verified claim may already exist. rf stops at verified claims; it authors no rule and writes no attestation.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">/rf
+
+Task: Launch RF-ANE-001 &#8212; the anemia red-cell indices evidence run
+Domains: Research, Evidence
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - docs/project_plans/expansion/06-anemia-red-cell-indices-evidence-run.md
+  - docs/project_plans/expansion/dr-packets/anemia/chatgpt-dr/prompt.md
+  - docs/project_plans/expansion/dr-packets/anemia/perplexity/prompt.md
+
+Requirement IDs: RF-ANE-001
+
+Prompt:
+Launch the three legs in doc 06: an rf deepen run extending the RF-EV-001 bundle, the three owner-run DR HITL packets, and the numerics hunt for threshold-carrying independently-retrievable passages. Check the rf catalog first (GET $RF_API_URL/api/catalog/search) &#8212; a verified claim may already exist. rf stops at verified claims; it authors no rule and writes no attestation.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Finish the three-module evidence run (CBC &#183; Growth &#183; Kidney)</td><td><span class="doms"><span class="dom dom-know">Research</span><span class="dom dom-know">Evidence</span></span></td><td class="nowrap"><span class="pill p-part">1 of 12 DR packets returned &#183; rf legs unlaunched</span><span class="muted"> &middot; self</span></td><td>Doc 05 is a launch-ready design; 12 DR HITL packets (4 modules &#215; 3 providers) are authored and committed. One has been run: the CBC ChatGPT Deep Research packet returned 27 net-new candidate rows with open-access numeric anchors (CALIPER 2020 age-banded WBC/ALC/AMC/MCV, pediatric ITP platelet action bands, ASH leukocytosis thresholds, severe aplastic anemia criteria) &#8212; correctly self-labelled `inference` where a row derives from a reference-interval boundary rather than a source-stated cutoff. That output is sitting untracked in the working tree at dr-packets/cbc/chatgpt-dr/expected-output/rf-cbc-002-gpt-dr.md and is not committed. No rf deepen run has been launched for any of the three modules.<details class="ns"><summary>Next step</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd">/rf</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">docs/project_plans/expansion/05-three-module-evidence-run-design.md<br />docs/project_plans/expansion/dr-packets/README.md<br />docs/project_plans/expansion/dr-packets/cbc/chatgpt-dr/expected-output/rf-cbc-002-gpt-dr.md</span></div><div class="ns-row"><span class="kk">IDs</span><span class="vv"><span class="idc">DF-E1-M1</span></span></div><p class="ns-prompt">First commit the untracked CBC ChatGPT DR output so the returned research is tracked. Then import it into rf as a candidate feeder only &#8212; platform_synthesis never launders into verified evidence &#8212; and launch the rf deepen legs for cbc_suite_v1, growth_suite_v1 and kidney_suite_v1 per doc 05 &#167;2. Only verified bundles are admitted; speculation and unsupported claims are rejected outright.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">/rf
+
+Task: Finish the three-module evidence run (CBC &#183; Growth &#183; Kidney)
+Domains: Research, Evidence
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - docs/project_plans/expansion/05-three-module-evidence-run-design.md
+  - docs/project_plans/expansion/dr-packets/README.md
+  - docs/project_plans/expansion/dr-packets/cbc/chatgpt-dr/expected-output/rf-cbc-002-gpt-dr.md
+
+Requirement IDs: DF-E1-M1
+
+Prompt:
+First commit the untracked CBC ChatGPT DR output so the returned research is tracked. Then import it into rf as a candidate feeder only &#8212; platform_synthesis never launders into verified evidence &#8212; and launch the rf deepen legs for cbc_suite_v1, growth_suite_v1 and kidney_suite_v1 per doc 05 &#167;2. Only verified bundles are admitted; speculation and unsupported claims are rejected outright.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Approve growth and kidney authoring decisions so the converter can emit rules</td><td><span class="doms"><span class="dom dom-know">Evidence</span><span class="dom dom-gov">Governance</span></span></td><td class="nowrap"><span class="pill p-crit">human review act &#183; 0 of 4 approved each</span><span class="muted"> &middot; self</span></td><td>This is DF-E1-M1, and it is not the missing-file problem doc 05 described. All four modules now carry a committed authoring-decisions.yaml. The converter&#x27;s emission gate is coded as an allowlist &#8212; `status === &#x27;approved_for_rule_draft&#x27;` is the ONLY permitting condition (propose.mjs:286). growth_suite_v1 and kidney_suite_v1 each hold 4 decisions at `drafted_pending_human_approval`, a deliberately non-approving scaffold status; cbc_suite_v1 holds 4 of 4 approved (hence its 4 rules), anemia 1 of 5. Every review.* field across all four files is `pending` &#8212; no named clinical reviewer has evaluated any of it. Flipping a decision to approved is a human act by design; no agent may do it.<details class="ns human"><summary>Human action</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd human">human decision &mdash; no agent path</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">modules/growth_suite_v1/authoring-decisions.yaml<br />modules/kidney_suite_v1/authoring-decisions.yaml<br />schemas/authoring-decisions.schema.json<br />tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs<br />docs/project_plans/expansion/05-three-module-evidence-run-design.md</span></div><div class="ns-row"><span class="kk">IDs</span><span class="vv"><span class="idc">FR-14</span><span class="idc">DF-E1-M1</span></span></div><div class="ns-row"><span class="kk">Gates</span><span class="vv"><span class="idc gate">G1</span></span></div><div class="ns-row"><span class="kk">Tracker</span><span class="vv">node_01KXRTYG9GN2KEF45QN6FBW6N5 &#8212; EF-WP2 E1 operate: live discovery + council + dual clinical review</span></div><p class="ns-prompt">Human review act, no agent path. A qualified reviewer reads each drafted decision against its cited rf claim and exact assertion, then flips status to approved_for_rule_draft where the reasoning holds. That status means ready-to-draft, not clinical sign-off &#8212; the review.* fields track sign-off separately and additionally require G1.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">human decision -- no agent path
+
+Task: Approve growth and kidney authoring decisions so the converter can emit rules
+Domains: Evidence, Governance
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - modules/growth_suite_v1/authoring-decisions.yaml
+  - modules/kidney_suite_v1/authoring-decisions.yaml
+  - schemas/authoring-decisions.schema.json
+  - tools/rf-bundle-to-kb-pack/lib/verbs/propose.mjs
+  - docs/project_plans/expansion/05-three-module-evidence-run-design.md
+
+Requirement IDs: FR-14, DF-E1-M1
+Gates: G1 (blocked-external, human-only)
+Tracker: node_01KXRTYG9GN2KEF45QN6FBW6N5 &#8212; EF-WP2 E1 operate: live discovery + council + dual clinical review
+
+Prompt:
+Human review act, no agent path. A qualified reviewer reads each drafted decision against its cited rf claim and exact assertion, then flips status to approved_for_rule_draft where the reasoning holds. That status means ready-to-draft, not clinical sign-off &#8212; the review.* fields track sign-off separately and additionally require G1.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Ground the first rules &#8212; bind rules to attested source passages</td><td><span class="doms"><span class="dom dom-know">Evidence</span><span class="dom dom-gov">Compliance</span></span></td><td class="nowrap"><span class="pill p-crit">0 of 95 rules &#183; ledger empty by design</span><span class="muted"> &middot; self</span></td><td>evidence-packs/passage-attestations.json ships with rules[] and candidates[] both empty. Measured from code, the gap is roughly two-thirds attestation-shaped &#8212; 60 rules whose sentinel&#x27;s primary source already has at least one bindable passage, blocked only by the empty ledger &#8212; and one-third licensing-shaped: 31 rules bound to AAP2026_IDA, whose 7 passages are quarantined source-not-independently-retrievable. 13 passages are bindable today (BLOOD 5, WHO 3, CDC 2, BSH 2, FDA 1) and none has been bound. The catch: those 13 survivors are the numerics-light paraphrases &#8212; the threshold-bearing passages were quarantined for omits-source-numerics &#8212; so attesting them grounds rules to thin framework claims rather than to the cutoffs those rules actually encode. Binding requires a named credentialed clinician attesting each rule individually.<details class="ns human"><summary>Human action</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd human">human decision &mdash; no agent path</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">evidence-packs/passage-attestations.json<br />.claude/findings/rights-governance-spec-v1.0-review-findings.md<br />docs/governance/gates-registry.md</span></div><div class="ns-row"><span class="kk">IDs</span><span class="vv"><span class="idc">G1</span></span></div><div class="ns-row"><span class="kk">Gates</span><span class="vv"><span class="idc gate">G1</span></span></div><p class="ns-prompt">Human-only. Recruit and out-of-band verify a named credentialed clinician (G1), then have them attest rules individually against the 13 currently-bindable passages. Expect thin coverage: the bindable survivors are numerics-light, so most threshold-bearing rules stay ungrounded until the licensing-shaped 31 are resolved separately. No agent writes an attestation record.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">human decision -- no agent path
+
+Task: Ground the first rules &#8212; bind rules to attested source passages
+Domains: Evidence, Compliance
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - evidence-packs/passage-attestations.json
+  - .claude/findings/rights-governance-spec-v1.0-review-findings.md
+  - docs/governance/gates-registry.md
+
+Requirement IDs: G1
+Gates: G1 (blocked-external, human-only)
+
+Prompt:
+Human-only. Recruit and out-of-band verify a named credentialed clinician (G1), then have them attest rules individually against the 13 currently-bindable passages. Expect thin coverage: the bindable survivors are numerics-light, so most threshold-bearing rules stay ungrounded until the licensing-shaped 31 are resolved separately. No agent writes an attestation record.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Ratify the ten ADRs (G0)</td><td><span class="doms"><span class="dom dom-gov">Governance</span><span class="dom dom-gov">Compliance</span></span></td><td class="nowrap"><span class="pill p-crit">10 of 10 proposed</span><span class="muted"> &middot; self</span></td><td>ADR-0001 through ADR-0010, every one still `proposed`. Each clears G0 on its own &#8212; partial ratification is real, not a bundle. Until an individual ADR clears, its design stays a recommendation and no downstream artifact may describe it as adopted policy. The software implementing each recommended default already ships, deliberately, so it exists the moment ratification happens &#8212; but every real instance stays inert via G1/G2/G3&#x27;s own schema-forced mechanisms. No task and no script in this repo may write `status: accepted` into an ADR.<details class="ns human"><summary>Human action</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd human">human decision &mdash; no agent path</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">docs/adr/0001-canonical-authoring-model-rule-schema-v2.md<br />docs/adr/0004-clinical-approval-identity-adjudication.md<br />docs/governance/gates-registry.md</span></div><div class="ns-row"><span class="kk">IDs</span><span class="vv"><span class="idc">G0</span></span></div><div class="ns-row"><span class="kk">Gates</span><span class="vv"><span class="idc gate">G0</span></span></div><div class="ns-row"><span class="kk">Tracker</span><span class="vv">node_01KXRTYNJ9NFGFFYV1617726KY &#8212; XC-3 E1-unblocking ADRs (8) via /create-adr</span></div><p class="ns-prompt">Human-only, per ADR. Each named decider reads their ADR and records an explicit, attributable ratification in the ADR file itself &#8212; not in a session note or commit message. Ratify individually; do not batch. A premature flip does not unblock anything: G1/G2/G3 remain independently schema-enforced.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">human decision -- no agent path
+
+Task: Ratify the ten ADRs (G0)
+Domains: Governance, Compliance
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - docs/adr/0001-canonical-authoring-model-rule-schema-v2.md
+  - docs/adr/0004-clinical-approval-identity-adjudication.md
+  - docs/governance/gates-registry.md
+
+Requirement IDs: G0
+Gates: G0 (blocked-external, human-only)
+Tracker: node_01KXRTYNJ9NFGFFYV1617726KY &#8212; XC-3 E1-unblocking ADRs (8) via /create-adr
+
+Prompt:
+Human-only, per ADR. Each named decider reads their ADR and records an explicit, attributable ratification in the ADR file itself &#8212; not in a session note or commit message. Ratify individually; do not batch. A premature flip does not unblock anything: G1/G2/G3 remain independently schema-enforced.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Clear the release chain &#8212; reviewer roster, signing custodian, data boundary, release authorizer</td><td><span class="doms"><span class="dom dom-gov">Governance</span><span class="dom dom-gov">Release</span><span class="dom dom-gov">Compliance</span></span></td><td class="nowrap"><span class="pill p-crit">G1&#8211;G4 all blocked &#183; human recruitment</span><span class="muted"> &middot; self</span></td><td>G1: governance/reviewer-roster.yaml holds 0 real entries and 5 synthetic dry-run personas; schemas/reviewer-roster.schema.json requires verificationRef whenever synthetic is false, so a real entry is structurally impossible until a credential is verified out-of-band. G2: the release-manifest signature slot is const null on every real candidate &#8212; a signing custodian must hold an offline Ed25519 key, and must be a role distinct from the release author. G3: the retrospective harness structurally rejects any fixture lacking a synthetic/de-identified provenance marker; clearing G3 does not by itself flip that off. G4: module.json approvedBy is maxItems: 0 across all four modules, making the unsigned-stub &#8594; release-ready transition schema-impossible. Raising any of these ceilings to make a build pass is a defect, never a feature.<details class="ns human"><summary>Human action</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd human">human decision &mdash; no agent path</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">governance/reviewer-roster.yaml<br />docs/governance/gates-registry.md<br />schemas/reviewer-roster.schema.json</span></div><div class="ns-row"><span class="kk">IDs</span><span class="vv"><span class="idc">G1</span><span class="idc">G2</span><span class="idc">G3</span><span class="idc">G4</span></span></div><div class="ns-row"><span class="kk">Gates</span><span class="vv"><span class="idc gate">G1</span><span class="idc gate">G2</span><span class="idc gate">G3</span><span class="idc gate">G4</span></span></div><div class="ns-row"><span class="kk">Tracker</span><span class="vv">node_01KXRTYN5FS7F97W5WS45246WG &#8212; XC-1 Clinical advisory board + content-governance SOP</span></div><p class="ns-prompt">Human-only, four independent gates. Recruit two clinical reviewers, a laboratory reviewer, an adjudicator and a release authorizer; verify each credential out-of-band and commit the roster entry with verificationRef populated. Separately name a signing custodian and run an offline key ceremony. Never populate approvedBy[] or clinicalApprovers[] to make anything pass.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">human decision -- no agent path
+
+Task: Clear the release chain &#8212; reviewer roster, signing custodian, data boundary, release authorizer
+Domains: Governance, Release, Compliance
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - governance/reviewer-roster.yaml
+  - docs/governance/gates-registry.md
+  - schemas/reviewer-roster.schema.json
+
+Requirement IDs: G1, G2, G3, G4
+Gates: G1, G2, G3, G4 (blocked-external, human-only)
+Tracker: node_01KXRTYN5FS7F97W5WS45246WG &#8212; XC-1 Clinical advisory board + content-governance SOP
+
+Prompt:
+Human-only, four independent gates. Recruit two clinical reviewers, a laboratory reviewer, an adjudicator and a release authorizer; verify each credential out-of-band and commit the roster entry with verificationRef populated. Separately name a signing custodian and run an offline key ceremony. Never populate approvedBy[] or clinicalApprovers[] to make anything pass.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Unblock the ARC qualifying clinical-council pilot</td><td><span class="doms"><span class="dom dom-gov">Governance</span><span class="dom dom-gov">Legal</span></span></td><td class="nowrap"><span class="pill p-crit">owner-blocked since 2026-07-21</span><span class="muted"> &middot; self</span></td><td>The ARC pediatric clinical council is repository-complete and Portal-authorable (adoption phases P0&#8211;P7 all closed out), with a completed synthetic readiness audit that is explicitly non-qualifying. The Phase 5 qualifying-pilot attempt is blocked on two independent owner-held gates: an SDK credential and evidence-rights receipts. An Opus validator reproduced both blocks read-only. Treating any ARC output as credentialed clinical sign-off is one of the two mistakes this program is most likely to make &#8212; clinicalApprovers[] and approvedBy[] need real named humans, never ARC output.<details class="ns human"><summary>Human action</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd human">human decision &mdash; no agent path</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">docs/project_plans/expansion/03-arc-clinical-council-handoff.md<br />.claude/progress/arc-clinical-council-adoption-v1/phase-5-completion.md</span></div><p class="ns-prompt">Owner action only. The arc-runtime-owner provisions an SDK credential and registers evidence-rights receipts, then the qualifying pilot can run. Route the request through doc 03, the single maintained entry point &#8212; it owns the pinned baseline, the scaffold/populate/validate/read-verdict workflow, and the rollback runbook. Do not invoke the council ad hoc from another doc.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">human decision -- no agent path
+
+Task: Unblock the ARC qualifying clinical-council pilot
+Domains: Governance, Legal
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - docs/project_plans/expansion/03-arc-clinical-council-handoff.md
+  - .claude/progress/arc-clinical-council-adoption-v1/phase-5-completion.md
+
+
+Prompt:
+Owner action only. The arc-runtime-owner provisions an SDK credential and registers evidence-rights receipts, then the qualifying pilot can run. Route the request through doc 03, the single maintained entry point &#8212; it owns the pinned baseline, the scaffold/populate/validate/read-verdict workflow, and the rollback runbook. Do not invoke the council ad hoc from another doc.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Complete the REG-001 and REG-004 legal reviews</td><td><span class="doms"><span class="dom dom-gov">Legal</span><span class="dom dom-gov">Compliance</span></span></td><td class="nowrap"><span class="pill p-crit">not_executed_owner_held</span><span class="muted"> &middot; delegated</span></td><td>Both are verified as rf evidence bundles &#8212; REG-001 the intended-use / non-device-CDS mapping memo, REG-004 the HIPAA / server-PHI controls scoping. Neither has had the actual legal review a qualified professional must perform; both remain not_executed_owner_held per rf-handoff/RESULTS.md. REG-004 gates P3, which is the first phase that touches server/PHI mode. Verified from the RESULTS.md record rather than by re-reading the run trees.<details class="ns human"><summary>Human action</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd human">human decision &mdash; no agent path</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">docs/project_plans/expansion/rf-handoff/RESULTS.md<br />docs/project_plans/expansion/00-expansion-plan.md</span></div><div class="ns-row"><span class="kk">IDs</span><span class="vv"><span class="idc">REG-001</span><span class="idc">REG-004</span></span></div><div class="ns-row"><span class="kk">Tracker</span><span class="vv">node_01KXRTYJWWGM2YJMARF942MTBA &#8212; REG-001 Intended-use / non-device-CDS mapping memo</span></div><p class="ns-prompt">Owner action: route both verified rf bundles to qualified counsel. REG-001 covers intended-use and non-device-CDS positioning; REG-004 covers HIPAA controls for the server/PHI mode that P3 introduces. An rf bundle is research input to that review, never a substitute for it.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">human decision -- no agent path
+
+Task: Complete the REG-001 and REG-004 legal reviews
+Domains: Legal, Compliance
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - docs/project_plans/expansion/rf-handoff/RESULTS.md
+  - docs/project_plans/expansion/00-expansion-plan.md
+
+Requirement IDs: REG-001, REG-004
+Tracker: node_01KXRTYJWWGM2YJMARF942MTBA &#8212; REG-001 Intended-use / non-device-CDS mapping memo
+
+Prompt:
+Owner action: route both verified rf bundles to qualified counsel. REG-001 covers intended-use and non-device-CDS positioning; REG-004 covers HIPAA controls for the server/PHI mode that P3 introduces. An rf bundle is research input to that review, never a substitute for it.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Plan and build the CBC Suite (P2) &#8212; the product thesis</td><td><span class="doms"><span class="dom dom-build">Engine</span><span class="dom dom-know">Evidence</span></span></td><td class="nowrap"><span class="pill p-none">7 work packages &#183; none started</span><span class="muted"> &middot; self</span></td><td>Anemia is the wedge; the CBC/cytopenia suite is the product. P2-WP1 through WP6 plus WP9 cover neutropenia, leukocytosis/lymphocytosis + eosinophilia, platelets, pancytopenia, smear integration, a shared severity/urgency + missing-data gate, and referral-readiness output. Nothing is started. The only CBC content that exists is E0&#x27;s 4-rule cbc_suite_v1 vertical slice. Its evidence input is real &#8212; RF-CBC-001/002 are verified and the ChatGPT DR pass returned 27 more candidate rows &#8212; but the sequencing rule is structure before safety before content, and both P0 and P1 are done, so P2 is genuinely unblocked on engineering. It is gated on release, not on build.<details class="ns"><summary>Next step</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd">/plan-feature</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">docs/project_plans/expansion/01-platform-expansion-roadmap.md<br />docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md<br />modules/cbc_suite_v1/authoring-decisions.yaml</span></div><div class="ns-row"><span class="kk">IDs</span><span class="vv"><span class="idc">P2-WP1</span><span class="idc">P2-WP6</span></span></div><div class="ns-row"><span class="kk">Gates</span><span class="vv"><span class="idc gate">G1</span></span></div><div class="ns-row"><span class="kk">Tracker</span><span class="vv">node_01KXQ7XD487TV6FWY1APDVA2K3 &#8212; P2-WP1 Neutropenia branch</span></div><p class="ns-prompt">Scope P2-WP1 (neutropenia branch) and P2-WP6 (shared CBC severity/urgency + missing-data gate) as the first slice. Every rule must trace to a verified rf claim through an approved authoring decision &#8212; no hand-authored clinical logic, no invented thresholds. Route the candidate rule set through the ARC council per doc 03 before merging any rf-derived proposal.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">/plan-feature
+
+Task: Plan and build the CBC Suite (P2) &#8212; the product thesis
+Domains: Engine, Evidence
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - docs/project_plans/expansion/01-platform-expansion-roadmap.md
+  - docs/project_plans/expansion/02-evidence-foundry-on-research-foundry.md
+  - modules/cbc_suite_v1/authoring-decisions.yaml
+
+Requirement IDs: P2-WP1, P2-WP6
+Gates: G1 (blocked-external, human-only)
+Tracker: node_01KXQ7XD487TV6FWY1APDVA2K3 &#8212; P2-WP1 Neutropenia branch
+
+Prompt:
+Scope P2-WP1 (neutropenia branch) and P2-WP6 (shared CBC severity/urgency + missing-data gate) as the first slice. Every rule must trace to a verified rf claim through an approved authoring decision &#8212; no hand-authored clinical logic, no invented thresholds. Route the candidate rule set through the ARC council per doc 03 before merging any rf-derived proposal.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Longitudinal workspace + SMART-on-FHIR (P3)</td><td><span class="doms"><span class="dom dom-build">Interop</span><span class="dom dom-build">Infra</span><span class="dom dom-gov">Compliance</span></span></td><td class="nowrap"><span class="pill p-deferred">deferred behind P2</span><span class="muted"> &middot; self</span></td><td>This is the monetizable layer &#8212; longitudinal state, unresolved-abnormality work queue, referral-readiness packets, SMART App Launch, CDS Hooks, FHIR mapping. It is also the phase that triggers server/PHI mode and therefore HIPAA controls, which is why REG-004&#x27;s legal review gates it. Six work packages, none started. Deferring is correct: the critical path is P0 &#8594; P1 &#8594; P2 &#8594; P3, and P2 has not begun.<details class="ns"><summary>Next step</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd">/plan-feature</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">docs/project_plans/expansion/01-platform-expansion-roadmap.md</span></div><div class="ns-row"><span class="kk">IDs</span><span class="vv"><span class="idc">P3-WP1</span><span class="idc">P3-WP4</span></span></div><div class="ns-row"><span class="kk">Tracker</span><span class="vv">node_01KXQ7XEAV70X82QFQSKWMHSJ3 &#8212; P3-WP1 Longitudinal state model (server/PHI mode)</span></div><div class="ns-row"><span class="kk">Trigger</span><span class="vv">P2 CBC Suite reaches a merged, council-reviewed rule set AND REG-004&#x27;s legal review returns a HIPAA controls verdict.</span></div><p class="ns-prompt">Scope the longitudinal state model and SMART App Launch. This is the first surface that leaves the browser-local invariant &#8212; the public microsite must keep sending no patient data anywhere, so server/PHI mode is a separate, HIPAA-controlled deployment, never a mode toggle on the public build.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">/plan-feature
+
+Task: Longitudinal workspace + SMART-on-FHIR (P3)
+Domains: Interop, Infra, Compliance
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - docs/project_plans/expansion/01-platform-expansion-roadmap.md
+
+Requirement IDs: P3-WP1, P3-WP4
+Tracker: node_01KXQ7XEAV70X82QFQSKWMHSJ3 &#8212; P3-WP1 Longitudinal state model (server/PHI mode)
+Re-entry trigger: P2 CBC Suite reaches a merged, council-reviewed rule set AND REG-004&#x27;s legal review returns a HIPAA controls verdict.
+
+Prompt:
+Scope the longitudinal state model and SMART App Launch. This is the first surface that leaves the browser-local invariant &#8212; the public microsite must keep sending no patient data anywhere, so server/PHI mode is a separate, HIPAA-controlled deployment, never a mode toggle on the public build.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Reconcile the IntentTree program graph against git</td><td><span class="doms"><span class="dom dom-build">Infra</span><span class="dom dom-gov">Governance</span></span></td><td class="nowrap"><span class="pill p-blocked">63 nodes &#183; systematically stale</span><span class="muted"> &middot; self</span></td><td>The graph misreports merged and verified work as not started. P1-WP1 through P1-WP7 all read not_started although Wave-0 merged on 2026-07-21; EF-WP0 (the rf-bundle &#8594; kb-pack converter) reads not_started although it shipped in PR #17 and was hardened in #31; RF-CBC-001, RF-CBC-002, RF-KID-001 and RF-GRO-002 read not_started although all four are verified on disk. Only 12 of 63 nodes read completed. Anyone driving this program from `itt today` will be handed work that is already done &#8212; verify against git log and rf-handoff/RESULTS.md before trusting a node status.<details class="ns"><summary>Next step</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd">/intenttree</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">docs/project_plans/expansion/00-expansion-plan.md<br />docs/project_plans/expansion/rf-handoff/RESULTS.md</span></div><div class="ns-row"><span class="kk">Tracker</span><span class="vv">tree_01KXQ7WC1HQE2GKZSCNDVXA9G7 &#8212; Pediatric CDS Platform Expansion</span></div><p class="ns-prompt">Reconcile node status against evidence: mark P1-WP1..WP7 and EF-WP0 completed against their merge commits, and RF-CBC-001/002, RF-KID-001, RF-GRO-002 completed against each run&#x27;s reviews/verification.yaml. Record the evidence ref on each node. Do not mark anything completed that git and the run records do not independently show.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">/intenttree
+
+Task: Reconcile the IntentTree program graph against git
+Domains: Infra, Governance
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - docs/project_plans/expansion/00-expansion-plan.md
+  - docs/project_plans/expansion/rf-handoff/RESULTS.md
+
+Tracker: tree_01KXQ7WC1HQE2GKZSCNDVXA9G7 &#8212; Pediatric CDS Platform Expansion
+
+Prompt:
+Reconcile node status against evidence: mark P1-WP1..WP7 and EF-WP0 completed against their merge commits, and RF-CBC-001/002, RF-KID-001, RF-GRO-002 completed against each run&#x27;s reviews/verification.yaml. Record the evidence ref on each node. Do not mark anything completed that git and the run records do not independently show.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Commit the uncommitted working-tree state</td><td><span class="doms"><span class="dom dom-build">Infra</span><span class="dom dom-know">Research</span></span></td><td class="nowrap"><span class="pill p-part">1 modified &#183; 4 untracked paths</span><span class="muted"> &middot; self</span></td><td>Modified: doc 06&#x27;s status flipped design-ready-not-launched &#8594; approved without a commit. Untracked: the returned CBC ChatGPT Deep Research output (58 lines, 27 candidate rows &#8212; real research product at risk of being lost), plus .agents/, .codex/ and AGENTS.md, which are Codex-side mirrors of the Claude project context. None of this is destructive, but the DR output is the only copy of a completed research leg.<details class="ns"><summary>Next step</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd">/pr</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">docs/project_plans/expansion/06-anemia-red-cell-indices-evidence-run.md<br />docs/project_plans/expansion/dr-packets/cbc/chatgpt-dr/expected-output/rf-cbc-002-gpt-dr.md<br />AGENTS.md</span></div><p class="ns-prompt">Commit the returned CBC DR output and doc 06&#x27;s approved status on a branch off main. Decide separately whether .agents/, .codex/ and AGENTS.md belong in the repo or the ignore file. Gate against &#x27;no new failures vs. the recorded 8&#x27;, not a literally-green run, and say so in the PR.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">/pr
+
+Task: Commit the uncommitted working-tree state
+Domains: Infra, Research
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - docs/project_plans/expansion/06-anemia-red-cell-indices-evidence-run.md
+  - docs/project_plans/expansion/dr-packets/cbc/chatgpt-dr/expected-output/rf-cbc-002-gpt-dr.md
+  - AGENTS.md
+
+
+Prompt:
+Commit the returned CBC DR output and doc 06&#x27;s approved status on a branch off main. Decide separately whether .agents/, .codex/ and AGENTS.md belong in the repo or the ignore file. Gate against &#x27;no new failures vs. the recorded 8&#x27;, not a literally-green run, and say so in the PR.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr><tr><td>Convene the clinical advisory board and start buyer interviews</td><td><span class="doms"><span class="dom dom-gov">Governance</span><span class="dom dom-gov">Compliance</span></span></td><td class="nowrap"><span class="pill p-crit">not started &#183; human recruitment</span><span class="muted"> &middot; self</span></td><td>Two 90-day commitments from the expansion plan that nothing else can substitute for. XC-1: a pediatric heme, lab medicine, general peds and informatics advisory board plus a content-governance SOP &#8212; this is also the recruiting pipeline that eventually clears G1, so it is upstream of both rule grounding and release. XC-2: 20&#8211;30 buyer/design-partner interviews and at least one data partner, which is what eventually clears G3&#x27;s DUA requirement for retrospective and silent-mode validation. Both read not_started in the tracker, and unlike most tracker entries that status is accurate.<details class="ns human"><summary>Human action</summary><div class="ns-body"><div class="ns-row"><span class="kk">Command</span><span class="vv"><span class="cmd human">human decision &mdash; no agent path</span></span></div><div class="ns-row"><span class="kk">Repo</span><span class="vv">/Users/miethe/dev/homelab/development/pediatric-anemia-site</span></div><div class="ns-row"><span class="kk">Paths</span><span class="vv">docs/project_plans/expansion/00-expansion-plan.md<br />docs/governance/gates-registry.md</span></div><div class="ns-row"><span class="kk">IDs</span><span class="vv"><span class="idc">G1</span><span class="idc">G3</span></span></div><div class="ns-row"><span class="kk">Gates</span><span class="vv"><span class="idc gate">G1</span><span class="idc gate">G3</span></span></div><div class="ns-row"><span class="kk">Tracker</span><span class="vv">node_01KXRTYNCMXHTR5WEEMS5WCW68 &#8212; XC-2 Buyer/design-partner interviews (MKT-001) + data partner</span></div><p class="ns-prompt">Owner action, no agent path. Recruit the four-discipline advisory board and draft the content-governance SOP; nothing ships without dual sign-off. In parallel start buyer/design-partner interviews and secure a data partner &#8212; that relationship is what eventually produces the DUA G3 needs for retrospective and silent-mode validation.</p><div class="ns-foot"><button class="copy-btn" type="button">Copy handoff</button></div><pre class="ns-payload">human decision -- no agent path
+
+Task: Convene the clinical advisory board and start buyer interviews
+Domains: Governance, Compliance
+Repo: /Users/miethe/dev/homelab/development/pediatric-anemia-site
+
+Paths:
+  - docs/project_plans/expansion/00-expansion-plan.md
+  - docs/governance/gates-registry.md
+
+Requirement IDs: G1, G3
+Gates: G1, G3 (blocked-external, human-only)
+Tracker: node_01KXRTYNCMXHTR5WEEMS5WCW68 &#8212; XC-2 Buyer/design-partner interviews (MKT-001) + data partner
+
+Prompt:
+Owner action, no agent path. Recruit the four-discipline advisory board and draft the content-governance SOP; nothing ships without dual sign-off. In parallel start buyer/design-partner interviews and secure a data partner &#8212; that relationship is what eventually produces the DUA G3 needs for retrospective and silent-mode validation.
+
+Constraints: UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</pre></div></details></td></tr></tbody></table></div></section>
+<section><h2>Visuals</h2><div class="callout"><div class="ct">No visual</div><p>No product screenshots are embedded: the only clinician-visible change since the last revision is the eligibility-gated module switcher, whose committed screenshots are themselves one of the two blockers holding the check gate red (D-1). Embedding them here would propagate the exact asset class the D1 rights invariant is refusing. The flowsheet and two-track ladder carry the visual story instead.</p></div></section>
+<section><h2>Domain key <span class="h2-note">closed vocabulary used throughout</span></h2><div class="scroller"><table class="data" style="min-width:520px;"><thead><tr><th>Group</th><th>Domains</th></tr></thead><tbody><tr><td><span class="dom dom-build">Build</span></td><td><span class="doms"><span class="dom dom-build">UI</span><span class="dom dom-build">Engine</span><span class="dom dom-build">Infra</span><span class="dom dom-build">Interop</span></span></td></tr><tr><td><span class="dom dom-know">Knowledge</span></td><td><span class="doms"><span class="dom dom-know">Evidence</span><span class="dom dom-know">Research</span><span class="dom dom-know">Validation</span></span></td></tr><tr><td><span class="dom dom-gov">Governance</span></td><td><span class="doms"><span class="dom dom-gov">Governance</span><span class="dom dom-gov">Compliance</span><span class="dom dom-gov">Legal</span><span class="dom dom-gov">Release</span></span></td></tr></tbody></table></div></section>
+<footer><strong>UNVALIDATED RESEARCH PROTOTYPE &#8212; automated checks prove software behavior, never clinical validity, safety, or regulatory status. Never populate approvedBy[]/clinicalApprovers[] and never add a `synthetic: false` reviewer-roster entry. No generative model in the clinical decision path. No invented thresholds; missingness is never treated as normal. FIRST_PARTY_BINARY_ALLOWLIST and QUOTED_RUN_ALLOWLIST may only shrink &#8212; a new entry is an escalation, not an edit. `npm run check` must be green before commit; it is currently RED on main (8 of 2,786 tests).</strong><br /><br />Revision 3, generated by delivery-report 0.1.0 at 2026-07-28. <p class="muted">Nine work programs have merged in thirteen days. What they built is almost entirely the evidence-and-governance substrate: a deterministic rf-bundle converter with a fail-closed emission gate, a git-signed clinical review workflow, a rights ledger, five schema-forced release gates, and ten ADRs. What a clinician can actually open in a browser is still the single anemia module it was on day one. Two things now stand between the program and forward motion: `npm run check` is red on `main` from eight failures that predate every open branch and need owner adjudication, and every path from verified evidence to a grounded rule terminates at a named credentialed human who has not been recruited. This report separates what shipped, what a machine can still do, and what only a person can &#8212; with a copyable handoff on every open item.</p> Source manifest remains canonical; the handoff prompts are drafting aids &mdash; pasting one starts work, it does not authorize anything.</footer>
+</div>
+<script>/* delivery-report client behaviour. ASCII-only (Appendix C pitfall 1: entities do not
+ * decode inside <script>). No external calls; pure DOM. */
+(function () {
+  "use strict";
+
+  /* ---- theme toggle: a viewer choice that wins over the media query (Sec 4.2) ---- */
+  var root = document.documentElement;
+  var toggle = document.querySelector(".theme-toggle");
+  function currentMode() {
+    var set = root.getAttribute("data-theme");
+    if (set) return set;
+    return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  function paintToggle() {
+    if (!toggle) return;
+    var next = currentMode() === "dark" ? "light" : "dark";
+    toggle.textContent = next === "dark" ? "Dark" : "Light";
+    toggle.setAttribute("aria-label", "Switch to " + next + " theme");
+  }
+  if (toggle) {
+    toggle.addEventListener("click", function () {
+      root.setAttribute("data-theme", currentMode() === "dark" ? "light" : "dark");
+      paintToggle();
+    });
+    paintToggle();
+  }
+
+  /* ---- feature-route toolbar: copy summary + print ---- */
+  var copySummary = document.querySelector("[data-copy-summary]");
+  if (copySummary) {
+    copySummary.addEventListener("click", function () {
+      var lede = document.querySelector("[data-summary]");
+      if (lede) writeText(lede.textContent.trim() + "\n", copySummary, "Copied");
+    });
+  }
+  var printBtn = document.querySelector("[data-print]");
+  if (printBtn) printBtn.addEventListener("click", function () { window.print(); });
+
+  /* ---- dossier route: expand / collapse every stage narrative at once ---- */
+  var expander = document.querySelector("[data-expand-stages]");
+  if (expander) {
+    expander.addEventListener("click", function () {
+      var narrs = document.querySelectorAll(".stage-narr");
+      var anyClosed = false;
+      for (var i = 0; i < narrs.length; i++) { if (!narrs[i].open) { anyClosed = true; break; } }
+      for (var j = 0; j < narrs.length; j++) { narrs[j].open = anyClosed; }
+      expander.textContent = anyClosed ? "Collapse all" : "Expand all";
+    });
+  }
+
+  /* ---- per-<code> inline copy (feature route, Sec 7.4) ---- */
+  document.addEventListener("click", function (ev) {
+    var c = ev.target && ev.target.closest ? ev.target.closest("code.copyable") : null;
+    if (!c) return;
+    writeText(c.textContent, c, null, function () {
+      c.classList.add("done");
+      window.setTimeout(function () { c.classList.remove("done"); }, 1200);
+    });
+  });
+
+  /* ---- handoff copy component: three-tier degrade path.
+   * The settled/guard race is load-bearing: Chrome can leave writeText's promise
+   * permanently pending when the click carries no user activation. ---- */
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.setAttribute("readonly", "");
+    ta.style.position = "fixed"; ta.style.top = "-1000px";
+    document.body.appendChild(ta); ta.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+  function revealForManualCopy(body, text) {
+    var existing = body.querySelector(".ns-fallback");
+    if (existing) { existing.focus(); existing.select(); return; }
+    var ta = document.createElement("textarea");
+    ta.className = "ns-fallback";
+    ta.value = text;
+    ta.setAttribute("aria-label", "Handoff text - select and copy manually");
+    body.insertBefore(ta, body.querySelector(".ns-foot"));
+    ta.focus(); ta.select();
+  }
+  function flash(btn, label) {
+    if (!btn.getAttribute("data-label")) btn.setAttribute("data-label", btn.textContent);
+    btn.textContent = label; btn.classList.add("done");
+    window.setTimeout(function () {
+      btn.textContent = btn.getAttribute("data-label");
+      btn.classList.remove("done");
+    }, 1600);
+  }
+  /* Shared writer used by summary + inline-code copy (single tier + fallback). */
+  function writeText(text, btn, okLabel, onOk) {
+    function done() { if (onOk) onOk(); else if (btn && okLabel) flash(btn, okLabel); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      var settled = false;
+      var guard = window.setTimeout(function () {
+        if (!settled) { settled = true; if (fallbackCopy(text)) done(); }
+      }, 1200);
+      navigator.clipboard.writeText(text).then(
+        function () { if (settled) return; settled = true; window.clearTimeout(guard); done(); },
+        function () { if (settled) return; settled = true; window.clearTimeout(guard); if (fallbackCopy(text)) done(); }
+      );
+    } else if (fallbackCopy(text)) { done(); }
+  }
+
+  document.addEventListener("click", function (ev) {
+    var btn = ev.target && ev.target.closest ? ev.target.closest(".copy-btn") : null;
+    if (!btn) return;
+    var body = btn.closest(".ns-body");
+    var payload = body ? body.querySelector(".ns-payload") : null;
+    if (!payload) return;
+    var text = payload.textContent.replace(/^\s+/, "").replace(/\s+$/, "") + "\n";
+    function degrade() {
+      if (fallbackCopy(text)) { flash(btn, "Copied"); return; }
+      revealForManualCopy(body, text);
+      flash(btn, "Copy manually");
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      var settled = false;
+      var guard = window.setTimeout(function () {
+        if (!settled) { settled = true; degrade(); }
+      }, 1200);
+      navigator.clipboard.writeText(text).then(
+        function () { if (settled) return; settled = true; window.clearTimeout(guard); flash(btn, "Copied"); },
+        function () { if (settled) return; settled = true; window.clearTimeout(guard); degrade(); }
+      );
+    } else {
+      degrade();
+    }
+  });
+})();
+</script>
+</body>
+</html>
