@@ -1,0 +1,27 @@
+schema_version: 1
+project: "pediatric-anemia-site"
+
+policy:
+  mode: auto
+
+artifacts:
+  - { name: "artifact-tracker", type: agent, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude agents artifact" }
+  - { name: "artifact-validator", type: agent, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude agents artifact" }
+  - { name: "phase-owner", type: agent, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude agents artifact" }
+  - { name: "code-review", type: command, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude commands artifact" }
+  - { name: "create-adr", type: command, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude commands artifact" }
+  - { name: "execute-phase", type: command, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude commands artifact" }
+  - { name: "execute-plan", type: command, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude commands artifact" }
+  - { name: "plan-feature", type: command, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude commands artifact" }
+  - { name: "pr", type: command, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude commands artifact" }
+  - { name: "pre-pr-validation", type: command, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude commands artifact" }
+  - { name: "artifact-tracking", type: skill, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude skills artifact" }
+  - { name: "council-review", type: skill, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude skills artifact" }
+  - { name: "dev-execution", type: skill, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude skills artifact" }
+  - { name: "planning", type: skill, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude skills artifact" }
+  - { name: "auto-feature", type: workflow, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude workflows artifact" }
+  - { name: "execute-contract", type: workflow, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude workflows artifact" }
+  - { name: "execute-plan", type: workflow, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude workflows artifact" }
+  - { name: "explore", type: workflow, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude workflows artifact" }
+  - { name: "review-council", type: workflow, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude workflows artifact" }
+  - { name: "spike", type: workflow, lifecycle: permanent, status: active, source: project-local, tuned: true, scope: null, version: null, note: "local .claude workflows artifact" }
