@@ -88,6 +88,34 @@ input:focus, select:focus, button:focus-visible, summary:focus-visible { outline
 .check-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem .85rem; }
 .check-grid label, .check-label { display: flex; flex-direction: row; align-items: flex-start; gap: .5rem; font-weight: 600; line-height: 1.3; }
 input[type="checkbox"] { width: 1.05rem; height: 1.05rem; margin: .08rem 0 0; flex: 0 0 auto; accent-color: var(--brand); }
+.check-grid .four-state-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: .38rem;
+  min-width: 0;
+  padding: .62rem .68rem;
+  border: 1px solid var(--line);
+  border-left: 3px solid #aab8c8;
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  color: var(--ink);
+  font-size: .8rem;
+}
+.quad-select, .local-flag-select { min-height: 2.35rem; font-weight: 700; }
+.quad-select[data-capture-state="present"], .local-flag-select[data-capture-state="present"] { border-color: #b77b7b; background: #fff7f7; }
+.quad-select[data-capture-state="absent"], .local-flag-select[data-capture-state="absent"] { border-color: #99cbb4; background: #f3fbf7; }
+.quad-select[data-capture-state="unknown"], .local-flag-select[data-capture-state="unknown"] { border-color: #d5ba73; background: #fffaf0; }
+.quad-select[data-capture-state="not-assessed"], .local-flag-select[data-capture-state="not-assessed"] { border-color: #b8c4d1; background: #f9fbfd; color: var(--muted); }
+.field-grid .four-state-field { align-self: stretch; }
+.smear-review-state { display: grid; gap: .4rem; max-width: 32rem; margin-bottom: .85rem; }
+.smear-review-state small { color: var(--muted); font-weight: 500; line-height: 1.4; }
+.check-grid input:disabled { opacity: .55; cursor: not-allowed; }
+.adaptive-toggle { margin: -.25rem 0 .8rem; font-size: .78rem; }
+.adaptive-group-complete { opacity: .8; }
+.adaptive-group-prioritized { border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.adaptive-focus-reason { margin: -.15rem 0 .85rem; color: var(--muted); font-size: .78rem; line-height: 1.45; }
+.question-group[hidden] { display: none; }
 .subsection { margin-top: 1rem; border-top: 1px solid var(--line); padding-top: .8rem; }
 .subsection summary { font-weight: 800; cursor: pointer; color: var(--brand-strong); }
 .padded-top { margin-top: .8rem; }

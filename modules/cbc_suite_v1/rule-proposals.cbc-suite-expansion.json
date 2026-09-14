@@ -1,0 +1,169 @@
+{
+  "schemaVersion": "1.0",
+  "moduleId": "cbc_suite_v1",
+  "posture": "non-executable-pending-human-approval",
+  "proposals": [
+    {
+      "decisionId": "dec_cbc_missing_age_question_002",
+      "decisionDocument": "authoring-proposals.cbc-suite-expansion.yaml",
+      "status": "drafted_pending_human_approval",
+      "proposedRule": {
+        "id": "CBC-GATE-MISSING-AGE-001",
+        "category": "missing-data",
+        "when": { "fact": "patient.ageMonths", "op": "missing" },
+        "evidence": ["CALIPER2020_HEMATOLOGY_I", "HEMATOLREP2024_NEUTROPENIA_REVIEW"],
+        "output": {
+          "type": "question",
+          "priority": 1,
+          "section": "demographics",
+          "prompt": "What is the patient age in months?",
+          "why": "The draft CBC suite must not interpret a missing age as an in-scope age."
+        },
+        "version": "0.2.0",
+        "effectiveDate": "2026-08-11",
+        "retireDate": null,
+        "owner": "team:pediatric-cds-kb-maintainers",
+        "safetyClass": "informational",
+        "requiredTestCaseIds": [],
+        "changeRationale": "Non-executable missing-data proposal pending distinct human approval.",
+        "sourcePassageId": "CALIPER2020_HEMATOLOGY_I#implementation-proposal",
+        "clinicalApprovers": []
+      }
+    },
+    {
+      "decisionId": "dec_cbc_shared_local_profile_question_002",
+      "decisionDocument": "authoring-proposals.cbc-suite-expansion.yaml",
+      "status": "drafted_pending_human_approval",
+      "proposedRule": {
+        "id": "CBC-GATE-LOCAL-PROFILE-001",
+        "category": "missing-data",
+        "when": { "fact": "cbc.urgency.localProfileIncomplete", "op": "is-present" },
+        "evidence": ["CALIPER2020_HEMATOLOGY_I", "CALIPER2023_MINDRAY_79PARAM"],
+        "output": {
+          "type": "question",
+          "priority": 2,
+          "section": "cbc",
+          "prompt": "For each supplied CBC lineage, provide the reporting laboratory's compatible local range or explicit local flag.",
+          "why": "This draft does not treat an unresolved lineage as normal or substitute a portable threshold."
+        },
+        "version": "0.2.0",
+        "effectiveDate": "2026-08-11",
+        "retireDate": null,
+        "owner": "team:pediatric-cds-kb-maintainers",
+        "safetyClass": "informational",
+        "requiredTestCaseIds": [],
+        "changeRationale": "Non-executable local-profile proposal pending distinct human approval.",
+        "sourcePassageId": "CALIPER2020_HEMATOLOGY_I#implementation-proposal",
+        "clinicalApprovers": []
+      }
+    },
+    {
+      "decisionId": "dec_cbc_neutropenia_context_question_002",
+      "decisionDocument": "authoring-proposals.cbc-suite-expansion.yaml",
+      "status": "drafted_pending_human_approval",
+      "proposedRule": {
+        "id": "CBC-NEUT-CONTEXT-001",
+        "category": "missing-data",
+        "when": { "fact": "cbc.neutropenia", "op": "is-present" },
+        "evidence": ["HEMATOLREP2024_NEUTROPENIA_REVIEW", "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES"],
+        "output": {
+          "type": "question",
+          "priority": 3,
+          "section": "neutropenia",
+          "prompt": "Document recurrent or serious infection history, family blood-disorder history, and serial-count context.",
+          "why": "This draft does not infer neutropenia etiology or urgency from a single locally flagged result."
+        },
+        "version": "0.2.0",
+        "effectiveDate": "2026-08-11",
+        "retireDate": null,
+        "owner": "team:pediatric-cds-kb-maintainers",
+        "safetyClass": "informational",
+        "requiredTestCaseIds": [],
+        "changeRationale": "Non-executable neutropenia-context proposal pending distinct human approval.",
+        "sourcePassageId": "HEMATOLREP2024_NEUTROPENIA_REVIEW#implementation-proposal",
+        "clinicalApprovers": []
+      }
+    },
+    {
+      "decisionId": "dec_cbc_platelet_context_gate_001",
+      "decisionDocument": "authoring-proposals.rf-cbc-002.yaml",
+      "status": "drafted_pending_human_approval",
+      "proposedRule": {
+        "id": "CBC-PLATELET-REVIEW-001",
+        "category": "missing-data",
+        "when": { "fact": "cbc.thrombocytopenia", "op": "is-present" },
+        "evidence": ["FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL"],
+        "output": {
+          "type": "question",
+          "priority": 4,
+          "section": "platelets",
+          "prompt": "Confirm the local platelet interpretation and document whether other CBC lineages are also abnormal.",
+          "why": "The draft asks for context only; it does not infer platelet-disorder etiology."
+        },
+        "version": "0.2.0",
+        "effectiveDate": "2026-08-11",
+        "retireDate": null,
+        "owner": "team:pediatric-cds-kb-maintainers",
+        "safetyClass": "informational",
+        "requiredTestCaseIds": [],
+        "changeRationale": "Non-executable platelet-context proposal pending human approval.",
+        "sourcePassageId": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL#implementation-proposal",
+        "clinicalApprovers": []
+      }
+    },
+    {
+      "decisionId": "dec_cbc_pancytopenia_scope_exit_001",
+      "decisionDocument": "authoring-proposals.rf-cbc-002.yaml",
+      "status": "drafted_pending_human_approval",
+      "proposedRule": {
+        "id": "CBC-PANCYTOPENIA-SCOPE-EXIT-001",
+        "category": "safety",
+        "when": { "fact": "cbc.pancytopenia", "op": "is-present" },
+        "evidence": ["FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL", "BCMD2024_AIEOP_AA_GUIDELINE", "BJHAEM2024_BSH_AA_GUIDELINE"],
+        "output": {
+          "type": "alert",
+          "severity": "urgent",
+          "title": "Three-lineage cytopenia pattern requires a separate reviewed pathway",
+          "detail": "This non-executable draft is a scope exit, not a diagnosis, severity assignment, or treatment directive.",
+          "actions": ["Use a separately reviewed pediatric multilineage-cytopenia pathway; do not rely on this unsigned draft."]
+        },
+        "version": "0.2.0",
+        "effectiveDate": "2026-08-11",
+        "retireDate": null,
+        "owner": "team:pediatric-cds-kb-maintainers",
+        "safetyClass": "safety-critical",
+        "requiredTestCaseIds": [],
+        "changeRationale": "Non-executable scope-exit proposal pending human approval and fact-definition adjudication.",
+        "sourcePassageId": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL#implementation-proposal",
+        "clinicalApprovers": []
+      }
+    },
+    {
+      "decisionId": "dec_cbc_smear_missingness_gate_001",
+      "decisionDocument": "authoring-proposals.rf-cbc-002.yaml",
+      "status": "drafted_pending_human_approval",
+      "proposedRule": {
+        "id": "CBC-SMEAR-REQUIRED-001",
+        "category": "missing-data",
+        "when": { "fact": "cbc.urgency.smearReviewRequired", "op": "is-present" },
+        "evidence": ["FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL"],
+        "output": {
+          "type": "question",
+          "priority": 5,
+          "section": "smear",
+          "prompt": "Has the peripheral smear been reviewed, and are any morphology findings available?",
+          "why": "The draft does not treat an absent smear review as reassuring or infer a morphology result."
+        },
+        "version": "0.2.0",
+        "effectiveDate": "2026-08-11",
+        "retireDate": null,
+        "owner": "team:pediatric-cds-kb-maintainers",
+        "safetyClass": "informational",
+        "requiredTestCaseIds": [],
+        "changeRationale": "Non-executable smear-missingness proposal pending human approval.",
+        "sourcePassageId": "FRONTIMMUNOL2022_PEDIATRIC_BMF_PROTOCOL#implementation-proposal",
+        "clinicalApprovers": []
+      }
+    }
+  ]
+}

@@ -162,7 +162,7 @@
 
           <fieldset id="step-patient" class="card form-section" data-workflow-step="1">
             <legend><span class="step-number">1</span> Patient and CBC</legend>
-            <p class="section-help">Local laboratory intervals override the built-in AAP fallback ranges.</p>
+            <p class="section-help">Built-in AAP fallbacks apply only to explicitly supported anemia measures; WBC, ANC, and platelet interpretation requires a compatible local laboratory range or explicit local flag. Enter values in the units shown. No cross-analyzer interval reuse or silent unit conversion is inferred. This unvalidated research prototype supports clinical review and does not replace local interpretation, scope checks, or clinician judgment.</p>
             <div class="field-grid four">
               <label>Age (months)<input name="ageMonths" type="number" min="0" max="300" step="1" required></label>
               <label>Sex assigned at birth
@@ -188,9 +188,9 @@
                   <option value="low">Low</option>
                 </select>
               </label>
-              <label class="check-label"><input name="menstruating" type="checkbox"> Currently menstruating</label>
-              <label class="check-label"><input name="recentTransfusion" type="checkbox"> Recent RBC transfusion</label>
-              <label class="check-label"><input name="highAltitude" type="checkbox"> High-altitude residence/exposure</label>
+              <label class="four-state-field"><span>Currently menstruating</span><select class="quad-select" name="menstruating"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Recent RBC transfusion</span><select class="quad-select" name="recentTransfusion"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>High-altitude residence/exposure</span><select class="quad-select" name="highAltitude"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
             </div>
 
             <details class="subsection">
@@ -200,15 +200,15 @@
                 <label>MCV lower (fL)<input name="mcvLower" type="number" min="20" max="150" step="0.1"></label>
                 <label>MCV upper (fL)<input name="mcvUpper" type="number" min="20" max="160" step="0.1"></label>
                 <label>RDW upper (%)<input name="rdwUpper" type="number" min="5" max="40" step="0.1"></label>
-                <label>WBC lower<input name="wbcLower" type="number" min="0" max="50" step="0.01"></label>
-                <label>ANC lower<input name="ancLower" type="number" min="0" max="20" step="0.01"></label>
-                <label>Platelet lower<input name="plateletsLower" type="number" min="0" max="1000" step="1"></label>
+                <label>WBC lower (×10⁹/L)<input name="wbcLower" type="number" min="0" max="50" step="0.01"></label>
+                <label>ANC lower (×10⁹/L)<input name="ancLower" type="number" min="0" max="20" step="0.01"></label>
+                <label>Platelet lower (×10⁹/L)<input name="plateletsLower" type="number" min="0" max="1000" step="1"></label>
               </div>
               <div class="check-grid padded-top">
-                <label><input name="leukopenia" type="checkbox"> Lab flagged leukopenia</label>
-                <label><input name="neutropenia" type="checkbox"> Lab flagged neutropenia</label>
-                <label><input name="thrombocytopenia" type="checkbox"> Lab flagged thrombocytopenia</label>
-                <label><input name="thrombocytosis" type="checkbox"> Lab flagged thrombocytosis</label>
+                <label class="four-state-field"><span>Lab flag: leukopenia</span><select class="local-flag-select" name="leukopenia"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Lab flag: neutropenia</span><select class="local-flag-select" name="neutropenia"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Lab flag: thrombocytopenia</span><select class="local-flag-select" name="thrombocytopenia"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Lab flag: thrombocytosis</span><select class="local-flag-select" name="thrombocytosis"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
               </div>
             </details>
           </fieldset>
@@ -217,20 +217,20 @@
             <legend><span class="step-number">2</span> Immediate safety screen</legend>
             <label class="safety-clear"><input id="safety-reviewed-no-flags" type="checkbox"> Safety screen reviewed — no immediate instability, major bleeding, cardiopulmonary, or neurologic red flags</label>
             <div class="check-grid">
-              <label><input name="hemodynamicInstability" type="checkbox"> Hemodynamic instability</label>
-              <label><input name="respiratoryDistress" type="checkbox"> Respiratory distress</label>
-              <label><input name="syncope" type="checkbox"> Syncope</label>
-              <label><input name="alteredMentalStatus" type="checkbox"> Altered mental status</label>
-              <label><input name="chestPain" type="checkbox"> Chest pain</label>
-              <label><input name="heartFailureSigns" type="checkbox"> Heart-failure signs</label>
-              <label><input name="activeMajorBleeding" type="checkbox"> Active major bleeding</label>
-              <label><input name="fever" type="checkbox"> Fever</label>
-              <label><input name="neurologicSymptoms" type="checkbox"> Other neurologic symptoms</label>
-              <label><input name="renalSymptoms" type="checkbox"> Oliguria/renal symptoms</label>
-              <label><input name="jaundice" type="checkbox"> Jaundice</label>
-              <label><input name="darkUrine" type="checkbox"> Dark urine/hemoglobinuria</label>
-              <label><input name="fatigue" type="checkbox"> Fatigue/exercise intolerance</label>
-              <label><input name="pallor" type="checkbox"> Pallor</label>
+              <label class="four-state-field"><span>Hemodynamic instability</span><select class="quad-select" name="hemodynamicInstability"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Respiratory distress</span><select class="quad-select" name="respiratoryDistress"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Syncope</span><select class="quad-select" name="syncope"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Altered mental status</span><select class="quad-select" name="alteredMentalStatus"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Chest pain</span><select class="quad-select" name="chestPain"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Heart-failure signs</span><select class="quad-select" name="heartFailureSigns"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Active major bleeding</span><select class="quad-select" name="activeMajorBleeding"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Fever</span><select class="quad-select" name="fever"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Other neurologic symptoms</span><select class="quad-select" name="neurologicSymptoms"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Oliguria/renal symptoms</span><select class="quad-select" name="renalSymptoms"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Jaundice</span><select class="quad-select" name="jaundice"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Dark urine/hemoglobinuria</span><select class="quad-select" name="darkUrine"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Fatigue/exercise intolerance</span><select class="quad-select" name="fatigue"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Pallor</span><select class="quad-select" name="pallor"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
             </div>
           </fieldset>
 
@@ -335,75 +335,77 @@
               </label>
             </div>
             <div class="check-grid padded-top">
-              <label><input name="hbBartNewbornScreen" type="checkbox"> Hb Bart’s on newborn screen</label>
-              <label><input name="alphaGlobinTestingPositive" type="checkbox"> Alpha-globin testing positive</label>
-              <label><input name="betaGlobinTestingPositive" type="checkbox"> Beta-globin testing positive</label>
-              <label><input name="sicklingHemoglobinDetected" type="checkbox"> Sickling hemoglobin detected</label>
-              <label><input name="g6pdTestDuringAcuteHemolysis" type="checkbox"> G6PD tested during acute hemolysis</label>
-              <label><input name="g6pdTestSoonAfterTransfusion" type="checkbox"> G6PD tested soon after transfusion</label>
+              <label class="four-state-field"><span>Hb Bart’s on newborn screen</span><select class="quad-select" name="hbBartNewbornScreen"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Alpha-globin testing positive</span><select class="quad-select" name="alphaGlobinTestingPositive"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Beta-globin testing positive</span><select class="quad-select" name="betaGlobinTestingPositive"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>Sickling hemoglobin detected</span><select class="quad-select" name="sicklingHemoglobinDetected"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>G6PD tested during acute hemolysis</span><select class="quad-select" name="g6pdTestDuringAcuteHemolysis"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+              <label class="four-state-field"><span>G6PD tested soon after transfusion</span><select class="quad-select" name="g6pdTestSoonAfterTransfusion"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
             </div>
           </details>
 
           <details id="step-history" class="card form-section" data-workflow-step="5">
             <summary class="fieldset-summary"><span class="step-number">5</span> History and exposure questionnaire</summary>
-            <div class="question-group">
+            <p id="questionnaire-adaptation-status" class="section-help" role="status">Focus order uses incomplete workflow inputs and already-generated output only; it is not a clinical score or diagnosis.</p>
+            <button id="show-completed-question-groups" type="button" class="button ghost adaptive-toggle" aria-expanded="false" aria-controls="question-group-iron question-group-inflammatory question-group-inherited question-group-congenital question-group-exam" hidden></button>
+            <div id="question-group-iron" class="question-group" data-adaptive-group data-adaptive-order="1" data-adaptive-sections="microcytic normocytic-high-retic platelets" data-adaptive-fields="excessCowMilk cowMilkBefore12Months lowIronDiet vegetarianOrVegan foodInsecurity pica prematurity malabsorption heavyMenstrualBleeding giBloodLoss recurrentEpistaxis frequentBloodDonation otherBloodLoss">
               <h3>Iron/diet and blood loss</h3>
               <div class="check-grid">
-                <label><input name="excessCowMilk" type="checkbox"> Cow milk &gt;24 oz/day</label>
-                <label><input name="cowMilkBefore12Months" type="checkbox"> Cow milk before 12 months</label>
-                <label><input name="lowIronDiet" type="checkbox"> Low iron intake</label>
-                <label><input name="vegetarianOrVegan" type="checkbox"> Vegetarian/vegan diet</label>
-                <label><input name="foodInsecurity" type="checkbox"> Food insecurity</label>
-                <label><input name="pica" type="checkbox"> Pica</label>
-                <label><input name="prematurity" type="checkbox"> Prematurity/low birth weight</label>
-                <label><input name="malabsorption" type="checkbox"> Celiac/GI malabsorption risk</label>
-                <label><input name="heavyMenstrualBleeding" type="checkbox"> Heavy menstrual bleeding</label>
-                <label><input name="giBloodLoss" type="checkbox"> GI blood loss</label>
-                <label><input name="recurrentEpistaxis" type="checkbox"> Recurrent epistaxis</label>
-                <label><input name="frequentBloodDonation" type="checkbox"> Frequent blood donation</label>
-                <label><input name="otherBloodLoss" type="checkbox"> Other blood loss</label>
+                <label class="four-state-field"><span>Cow milk &gt;24 oz/day</span><select class="quad-select" name="excessCowMilk"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Cow milk before 12 months</span><select class="quad-select" name="cowMilkBefore12Months"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Low iron intake</span><select class="quad-select" name="lowIronDiet"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Vegetarian/vegan diet</span><select class="quad-select" name="vegetarianOrVegan"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Food insecurity</span><select class="quad-select" name="foodInsecurity"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Pica</span><select class="quad-select" name="pica"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Prematurity/low birth weight</span><select class="quad-select" name="prematurity"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Celiac/GI malabsorption risk</span><select class="quad-select" name="malabsorption"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Heavy menstrual bleeding</span><select class="quad-select" name="heavyMenstrualBleeding"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>GI blood loss</span><select class="quad-select" name="giBloodLoss"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Recurrent epistaxis</span><select class="quad-select" name="recurrentEpistaxis"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Frequent blood donation</span><select class="quad-select" name="frequentBloodDonation"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Other blood loss</span><select class="quad-select" name="otherBloodLoss"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
               </div>
             </div>
-            <div class="question-group">
+            <div id="question-group-inflammatory" class="question-group" data-adaptive-group data-adaptive-order="2" data-adaptive-sections="microcytic normocytic-low-retic" data-adaptive-fields="inflammatoryBowelDisease rheumatologicDisease chronicInfection otherInflammatoryDisease chronicKidneyDisease liverDisease thyroidDisease recentViralIllness malariaTravelOrResidence">
               <h3>Inflammatory, renal, endocrine, infectious</h3>
               <div class="check-grid">
-                <label><input name="inflammatoryBowelDisease" type="checkbox"> Inflammatory bowel disease</label>
-                <label><input name="rheumatologicDisease" type="checkbox"> Rheumatologic disease</label>
-                <label><input name="chronicInfection" type="checkbox"> Chronic infection</label>
-                <label><input name="otherInflammatoryDisease" type="checkbox"> Other inflammatory disease</label>
-                <label><input name="chronicKidneyDisease" type="checkbox"> Chronic kidney disease</label>
-                <label><input name="liverDisease" type="checkbox"> Liver disease</label>
-                <label><input name="thyroidDisease" type="checkbox"> Thyroid disease</label>
-                <label><input name="recentViralIllness" type="checkbox"> Recent viral illness</label>
-                <label><input name="malariaTravelOrResidence" type="checkbox"> Malaria travel/residence</label>
+                <label class="four-state-field"><span>Inflammatory bowel disease</span><select class="quad-select" name="inflammatoryBowelDisease"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Rheumatologic disease</span><select class="quad-select" name="rheumatologicDisease"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Chronic infection</span><select class="quad-select" name="chronicInfection"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Other inflammatory disease</span><select class="quad-select" name="otherInflammatoryDisease"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Chronic kidney disease</span><select class="quad-select" name="chronicKidneyDisease"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Liver disease</span><select class="quad-select" name="liverDisease"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Thyroid disease</span><select class="quad-select" name="thyroidDisease"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Recent viral illness</span><select class="quad-select" name="recentViralIllness"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Malaria travel/residence</span><select class="quad-select" name="malariaTravelOrResidence"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
               </div>
             </div>
-            <div class="question-group">
+            <div id="question-group-inherited" class="question-group" data-adaptive-group data-adaptive-order="3" data-adaptive-sections="microcytic macrocytic normocytic-high-retic neutropenia" data-adaptive-fields="familyThalassemia familySickleCell familyHemoglobinopathy knownSickleCellDisease knownHereditarySpherocytosis knownThalassemiaMajor otherChronicHemolyticDisease oxidantMedicationOrFavaExposure macrocytosisAssociatedMedication leadExposureRisk">
               <h3>Inherited, medication, and exposure</h3>
               <div class="check-grid">
-                <label><input name="familyThalassemia" type="checkbox"> Family thalassemia</label>
-                <label><input name="familySickleCell" type="checkbox"> Family sickle hemoglobinopathy</label>
-                <label><input name="familyHemoglobinopathy" type="checkbox"> Other family hemoglobinopathy</label>
-                <label><input name="knownSickleCellDisease" type="checkbox"> Known sickle cell disease</label>
-                <label><input name="knownHereditarySpherocytosis" type="checkbox"> Known hereditary spherocytosis</label>
-                <label><input name="knownThalassemiaMajor" type="checkbox"> Known thalassemia major/intermedia</label>
-                <label><input name="otherChronicHemolyticDisease" type="checkbox"> Other chronic hemolytic disease</label>
-                <label><input name="oxidantMedicationOrFavaExposure" type="checkbox"> Oxidant drug/fava exposure</label>
-                <label><input name="macrocytosisAssociatedMedication" type="checkbox"> Medication associated with macrocytosis</label>
-                <label><input name="leadExposureRisk" type="checkbox"> Lead exposure risk/older housing</label>
+                <label class="four-state-field"><span>Family thalassemia</span><select class="quad-select" name="familyThalassemia"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Family sickle hemoglobinopathy</span><select class="quad-select" name="familySickleCell"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Other family hemoglobinopathy</span><select class="quad-select" name="familyHemoglobinopathy"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Known sickle cell disease</span><select class="quad-select" name="knownSickleCellDisease"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Known hereditary spherocytosis</span><select class="quad-select" name="knownHereditarySpherocytosis"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Known thalassemia major/intermedia</span><select class="quad-select" name="knownThalassemiaMajor"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Other chronic hemolytic disease</span><select class="quad-select" name="otherChronicHemolyticDisease"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Oxidant drug/fava exposure</span><select class="quad-select" name="oxidantMedicationOrFavaExposure"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Medication associated with macrocytosis</span><select class="quad-select" name="macrocytosisAssociatedMedication"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Lead exposure risk/older housing</span><select class="quad-select" name="leadExposureRisk"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
               </div>
             </div>
-            <div class="question-group">
+            <div id="question-group-congenital" class="question-group" data-adaptive-group data-adaptive-order="4" data-adaptive-sections="urgent normocytic-low-retic neutropenia platelets microcytic" data-adaptive-fields="congenitalAnomalies thumbOrRadiusAnomaly shortStature abnormalSkinPigmentation microcephaly priorAdequateIronTrialNoResponse adherenceVerified ongoingBloodLossKnown">
               <h3>Congenital/marrow and prior response</h3>
               <div class="check-grid">
-                <label><input name="congenitalAnomalies" type="checkbox"> Congenital anomalies</label>
-                <label><input name="thumbOrRadiusAnomaly" type="checkbox"> Thumb/radius anomaly</label>
-                <label><input name="shortStature" type="checkbox"> Short stature/growth failure</label>
-                <label><input name="abnormalSkinPigmentation" type="checkbox"> Abnormal skin pigmentation</label>
-                <label><input name="microcephaly" type="checkbox"> Microcephaly</label>
-                <label><input name="priorAdequateIronTrialNoResponse" type="checkbox"> No response to adequate iron trial</label>
-                <label><input name="adherenceVerified" type="checkbox"> Iron adherence verified</label>
-                <label><input name="ongoingBloodLossKnown" type="checkbox"> Ongoing blood loss already known</label>
+                <label class="four-state-field"><span>Congenital anomalies</span><select class="quad-select" name="congenitalAnomalies"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Thumb/radius anomaly</span><select class="quad-select" name="thumbOrRadiusAnomaly"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Short stature/growth failure</span><select class="quad-select" name="shortStature"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Abnormal skin pigmentation</span><select class="quad-select" name="abnormalSkinPigmentation"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Microcephaly</span><select class="quad-select" name="microcephaly"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>No response to adequate iron trial</span><select class="quad-select" name="priorAdequateIronTrialNoResponse"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Iron adherence verified</span><select class="quad-select" name="adherenceVerified"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Ongoing blood loss already known</span><select class="quad-select" name="ongoingBloodLossKnown"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
               </div>
             </div>
           </details>
@@ -412,6 +414,7 @@
             <summary class="fieldset-summary"><span class="step-number">6</span> Smear and examination</summary>
             <div class="question-group">
               <h3>Peripheral smear</h3>
+              <label class="four-state-field smear-review-state"><span>Peripheral smear reviewed</span><select class="quad-select" name="smearReviewed"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select><small>This review state is preserved in the questionnaire-capture audit envelope and does not enable, disable, or change morphology input. The current signed anemia fact model still treats only selected morphology findings as smear data; reviewed-normal smear integration remains pending clinical approval.</small></label>
               <div class="check-grid">
                 <label><input name="smear" value="target-cells" type="checkbox"> Target cells</label>
                 <label><input name="smear" value="spherocytes" type="checkbox"> Spherocytes</label>
@@ -426,14 +429,14 @@
                 <label><input name="smear" value="elliptocytes" type="checkbox"> Elliptocytes</label>
               </div>
             </div>
-            <div class="question-group">
+            <div id="question-group-exam" class="question-group" data-adaptive-group data-adaptive-order="5" data-adaptive-sections="smear urgent normocytic-high-retic platelets neutropenia" data-adaptive-fields="splenomegaly hepatomegaly lymphadenopathy petechiae unexplainedBruising">
               <h3>Examination</h3>
               <div class="check-grid">
-                <label><input name="splenomegaly" type="checkbox"> Splenomegaly</label>
-                <label><input name="hepatomegaly" type="checkbox"> Hepatomegaly</label>
-                <label><input name="lymphadenopathy" type="checkbox"> Lymphadenopathy</label>
-                <label><input name="petechiae" type="checkbox"> Petechiae</label>
-                <label><input name="unexplainedBruising" type="checkbox"> Unexplained bruising</label>
+                <label class="four-state-field"><span>Splenomegaly</span><select class="quad-select" name="splenomegaly"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Hepatomegaly</span><select class="quad-select" name="hepatomegaly"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Lymphadenopathy</span><select class="quad-select" name="lymphadenopathy"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Petechiae</span><select class="quad-select" name="petechiae"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
+                <label class="four-state-field"><span>Unexplained bruising</span><select class="quad-select" name="unexplainedBruising"><option value="true">Present</option><option value="false">Absent</option><option value="unknown">Unknown</option><option value="" selected>Not assessed</option></select></label>
               </div>
             </div>
           </details>

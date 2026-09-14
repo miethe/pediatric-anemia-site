@@ -1,0 +1,107 @@
+# Pending CBC-suite authoring proposals grounded in the RF-CBC-002 fixture.
+#
+# This is deliberately separate from authoring-decisions.yaml, whose top-level provenance is
+# RF-CBC-001. Claim IDs are only unique inside an RF run; combining both runs under one provenance
+# header would make a converter resolve bare IDs against the wrong ledger. These records remain
+# drafted_pending_human_approval. They authorize no executable rule, release, clinical sign-off,
+# or module-status change; no canonical rule-provenance entry references these decision IDs.
+
+schemaVersion: "1.0"
+moduleId: cbc_suite_v1
+rfProvenance:
+  rfRunId: rf_run_20260717_rf_cbc_002_pediatric_cds_establish
+  rfBundleId: bundle_20260718_intent_research_20260717_rf_cbc_002
+  fixturePath: tests/fixtures/rf-cbc-002/
+
+decisions:
+  - decision_id: dec_cbc_platelet_context_gate_001
+    module_id: cbc_suite_v1
+    status: drafted_pending_human_approval
+    basis:
+      kind: source_supported_fact
+      rf_claim_ids:
+        - clm_069
+      exact_assertion_ids:
+        - evas_cbc002_clm_069
+      reasoning: RF-CBC-002 records a platelet-count definition used in a suspected pediatric
+        marrow-failure cohort. The proposed future use, only if separately approved, is limited to
+        requesting confirmation of an already locally resolved thrombocytopenia status and
+        co-occurring-lineage context; it does not adopt the cohort definition as this module's
+        threshold or diagnosis rule.
+    conflicts:
+      visible: true
+      representation: local_profile_context_question
+    clinical_effect:
+      intended_output: missing_data_question
+      prohibited_effects:
+        - infer_itp_or_reactive_etiology
+        - create_portable_platelet_threshold
+        - issue_treatment_directive
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending
+
+  - decision_id: dec_cbc_pancytopenia_scope_exit_001
+    module_id: cbc_suite_v1
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_038
+        - clm_061
+        - clm_068
+        - clm_069
+        - clm_072
+      exact_assertion_ids:
+        - evas_cbc002_clm_038
+        - evas_cbc002_clm_061
+        - evas_cbc002_clm_068
+        - evas_cbc002_clm_069
+        - evas_cbc002_clm_072
+      reasoning: The source-linked facts define marrow-failure evaluation context and describe
+        exclusion of malignant or reversible causes before extended workup. The scope-exit alert
+        is an implementation proposal over locally resolved lineage facts, not a source-stated
+        diagnosis, severity assignment, or treatment recommendation.
+    conflicts:
+      visible: true
+      representation: scope_exit_without_diagnosis
+    clinical_effect:
+      intended_output: safety_caution
+      prohibited_effects:
+        - diagnose_aplastic_anemia
+        - infer_marrow_cellularity
+        - direct_treatment_or_transfusion
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending
+
+  - decision_id: dec_cbc_smear_missingness_gate_001
+    module_id: cbc_suite_v1
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_072
+      exact_assertion_ids:
+        - evas_cbc002_clm_072
+      reasoning: The RF-CBC-002 diagnostic protocol places exclusion of malignant and reversible
+        causes before extended marrow-failure workup. The module only asks whether a smear review
+        exists after a resolved pancytopenia pattern; it never infers a smear result or leukemia.
+    conflicts:
+      visible: true
+      representation: missing_smear_question
+    clinical_effect:
+      intended_output: missing_data_question
+      prohibited_effects:
+        - infer_smear_morphology
+        - diagnose_leukemia
+        - treat_missing_smear_as_reassuring
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending

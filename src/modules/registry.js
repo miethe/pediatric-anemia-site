@@ -81,9 +81,9 @@ export const DEFAULT_MODULE_ID = 'anemia';
 // variable, which would defeat static analysis/bundler discovery and could enable path
 // injection from an untrusted moduleId.
 //
-// `cbc_suite_v1` intentionally points at the same `modules/anemia/facts.anemia.js` specifier as
-// `anemia` — this is the OQ-1 delegation, not a copy-paste error: `cbc_suite_v1` has no fact-
-// derivation code of its own in E0 (see modules/cbc_suite_v1/index.js's header comment).
+// cbc_suite_v1 has a module-local wrapper over the shared anemia CBC facts. The wrapper adds a
+// fail-closed local-profile substrate but does not execute pending clinical proposals or duplicate
+// range interpretation.
 //
 // `kidney_suite_v1` and `growth_suite_v1` (P3-T3) each point at their OWN module's `index.js`
 // instead — unlike `cbc_suite_v1`, neither has a sibling fact-derivation module to delegate to
@@ -94,7 +94,7 @@ export const DEFAULT_MODULE_ID = 'anemia';
 // hooks already return.
 const MODULE_CODE_LOADERS = Object.freeze({
   anemia: () => import('../../modules/anemia/facts.anemia.js'),
-  cbc_suite_v1: () => import('../../modules/anemia/facts.anemia.js'),
+  cbc_suite_v1: () => import('../../modules/cbc_suite_v1/facts.cbc.js'),
   kidney_suite_v1: () => import('../../modules/kidney_suite_v1/index.js'),
   growth_suite_v1: () => import('../../modules/growth_suite_v1/index.js'),
 });

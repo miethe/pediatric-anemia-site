@@ -9,6 +9,13 @@ import { assessModule } from './engine.js';
 import { EVIDENCE, sourceRightsPosition } from './evidence.js';
 import { initializeAlgorithmExplorer } from './algorithmExplorer.js';
 import { toTri } from './facts/tristate.js';
+import {
+  captureStateFromControlValue,
+  controlValueFromState,
+  isAssessed,
+  isPresent,
+  stateFromControlValue,
+} from './facts/fieldState.js';
 // P3-01..P3-07 (spa-module-switcher-v1, phase-3-5-ui.md) — module switcher seam. P1/P2 exports
 // (frozen, side-effect-free) are binding contracts; this file is their first real caller.
 import { MODULE_IDS, DEFAULT_MODULE_ID, isRegisteredModule, getModule } from './modules/registry.js';
@@ -104,6 +111,14 @@ function checked(name) {
   return Boolean(element && !(element instanceof RadioNodeList) && element.checked);
 }
 
+// Four-option controls are deliberately read separately from the remaining
+// checkbox-only fields. The engine continues to receive only true/false/unknown.
+function fieldStateValue(name) {
+  const element = field(name);
+  if (!element || element instanceof RadioNodeList) return undefined;
+  return stateFromControlValue(element.value);
+}
+
 function checkedValues(name) {
   return $$(`input[name="${CSS.escape(name)}"]:checked`, form).map((element) => element.value);
 }
@@ -141,8 +156,48 @@ const specializedLabNames = [
   'folateStatus', 'copperStatus', 'creatinineStatus', 'tshStatus', 'liverTestsStatus',
 ];
 
+const patientBooleanNames = ['menstruating', 'recentTransfusion', 'highAltitude'];
+const specializedBooleanNames = [
+  'hbBartNewbornScreen', 'alphaGlobinTestingPositive', 'betaGlobinTestingPositive',
+  'sicklingHemoglobinDetected', 'g6pdTestDuringAcuteHemolysis',
+  'g6pdTestSoonAfterTransfusion',
+];
+const localFlagNames = ['leukopenia', 'neutropenia', 'thrombocytopenia', 'thrombocytosis'];
+
 function booleans(names) {
   return Object.fromEntries(names.map((name) => [name, checked(name)]));
+}
+
+function triFields(names) {
+  return Object.fromEntries(names.flatMap((name) => {
+    const state = fieldStateValue(name);
+    return state === undefined ? [] : [[name, state]];
+  }));
+}
+
+function captureEnvelope() {
+  const booleanMap = Object.fromEntries(
+    [...symptomNames, ...historyNames, ...examNames]
+      .map((name) => [name, captureStateFromControlValue(field(name)?.value)]),
+  );
+  const localFlags = Object.fromEntries(
+    localFlagNames
+      .map((name) => [name, captureStateFromControlValue(field(name)?.value)]),
+  );
+  const patient = Object.fromEntries(
+    patientBooleanNames.map((name) => [name, captureStateFromControlValue(field(name)?.value)]),
+  );
+  const labs = Object.fromEntries(
+    specializedBooleanNames.map((name) => [name, captureStateFromControlValue(field(name)?.value)]),
+  );
+  return {
+    schemaVersion: 'questionnaire-capture/v1',
+    booleanMap,
+    localFlags,
+    patient,
+    labs,
+    smearReviewed: captureStateFromControlValue(field('smearReviewed')?.value),
+  };
 }
 
 function buildInput() {
@@ -150,9 +205,7 @@ function buildInput() {
     patient: {
       ageMonths: numeric('ageMonths'),
       sexAtBirth: value('sexAtBirth') || null,
-      menstruating: checked('menstruating'),
-      recentTransfusion: checked('recentTransfusion'),
-      highAltitude: checked('highAltitude'),
+      ...triFields(patientBooleanNames),
     },
     cbc: {
       hemoglobin: numeric('hemoglobin'),
@@ -172,20 +225,15 @@ function buildInput() {
         ancLower: numeric('ancLower'),
         plateletsLower: numeric('plateletsLower'),
       },
-      localFlags: {
-        leukopenia: checked('leukopenia'),
-        neutropenia: checked('neutropenia'),
-        thrombocytopenia: checked('thrombocytopenia'),
-        thrombocytosis: checked('thrombocytosis'),
-      },
+      localFlags: triFields(localFlagNames),
     },
     reticulocytes: {
       response: value('reticResponse', 'unknown'),
       absolute: numeric('absoluteRetic'),
     },
-    symptoms: booleans(symptomNames),
-    history: booleans(historyNames),
-    exam: booleans(examNames),
+    symptoms: triFields(symptomNames),
+    history: triFields(historyNames),
+    exam: triFields(examNames),
     labs: {
       ferritin: numeric('ferritin'),
       ferritinStatus: value('ferritinStatus', 'unknown'),
@@ -201,13 +249,8 @@ function buildInput() {
       bloodLeadLevel: numeric('bloodLeadLevel'),
       leadSpecimen: value('leadSpecimen', 'unknown'),
       hbA2Status: value('hbA2Status', 'unknown'),
-      hbBartNewbornScreen: checked('hbBartNewbornScreen'),
-      alphaGlobinTestingPositive: checked('alphaGlobinTestingPositive'),
-      betaGlobinTestingPositive: checked('betaGlobinTestingPositive'),
-      sicklingHemoglobinDetected: checked('sicklingHemoglobinDetected'),
+      ...triFields(specializedBooleanNames),
       g6pdStatus: value('g6pdStatus', 'unknown'),
-      g6pdTestDuringAcuteHemolysis: checked('g6pdTestDuringAcuteHemolysis'),
-      g6pdTestSoonAfterTransfusion: checked('g6pdTestSoonAfterTransfusion'),
       b12Status: value('b12Status', 'unknown'),
       folateStatus: value('folateStatus', 'unknown'),
       copperStatus: value('copperStatus', 'unknown'),
@@ -255,16 +298,121 @@ function anyChecked(names) {
   return names.some((name) => checked(name));
 }
 
+function anyPresent(names) {
+  return names.some((name) => isPresent(fieldStateValue(name)));
+}
+
+function anyAssessed(names) {
+  return names.some((name) => isAssessed(fieldStateValue(name)));
+}
+
+// This is deliberately a workflow adapter, not a clinical ranking model. It only
+// uses completion state already present in the form and output already generated
+// by the deterministic engine. Moving or hiding a complete group never clears its
+// controls; the versioned capture envelope still records every selected state.
+let showCompletedQuestionGroups = false;
+
+function updateAdaptiveQuestionnaire(coreComplete) {
+  const groups = $$('[data-adaptive-group]', form);
+  if (groups.length === 0) return;
+
+  $$('.quad-select, .local-flag-select', form).forEach((control) => {
+    control.dataset.captureState = captureStateFromControlValue(control.value);
+  });
+
+  const urgentOutput = currentAudit?.result?.alerts?.some((alert) => (
+    alert.severity === 'emergency' || alert.severity === 'urgent'
+  ));
+  const nextQuestions = currentAudit?.result?.nextQuestions ?? [];
+  const generatedQuestions = nextQuestions.length;
+  const sectionPriorities = new Map();
+  nextQuestions.forEach((question) => {
+    if (!question.section) return;
+    const priority = Number.isFinite(question.priority) ? question.priority : Number.MAX_SAFE_INTEGER;
+    sectionPriorities.set(
+      question.section,
+      Math.min(sectionPriorities.get(question.section) ?? Number.MAX_SAFE_INTEGER, priority),
+    );
+  });
+  const incomplete = groups.filter((group) => {
+    const names = (group.dataset.adaptiveFields ?? '').split(' ').filter(Boolean);
+    return names.some((name) => !isAssessed(fieldStateValue(name)));
+  });
+
+  const groupQuestionPriority = new Map(groups.map((group) => {
+    const sections = (group.dataset.adaptiveSections ?? '').split(' ').filter(Boolean);
+    const matching = sections
+      .filter((section) => sectionPriorities.has(section))
+      .map((section) => ({ section, priority: sectionPriorities.get(section) }))
+      .sort((left, right) => left.priority - right.priority || left.section.localeCompare(right.section));
+    const lead = matching[0] ?? null;
+    const reason = group.querySelector('.adaptive-focus-reason') ?? document.createElement('p');
+    reason.className = 'adaptive-focus-reason';
+    if (!reason.isConnected) group.querySelector('h3')?.insertAdjacentElement('afterend', reason);
+    reason.hidden = !lead;
+    reason.textContent = lead
+      ? `Surfaced from the current deterministic follow-up section “${lead.section}” (rule priority ${lead.priority}); this is not a probability or clinical score.`
+      : '';
+    group.classList.toggle('adaptive-group-prioritized', Boolean(lead));
+    return [group, lead?.priority ?? Number.MAX_SAFE_INTEGER];
+  }));
+
+  // Stable ordering: incomplete groups first. Within that workflow-only tier,
+  // existing engine question priorities may surface a related group; no new
+  // score, threshold, probability, or patient-specific inference is calculated.
+  // Never move the subtree that currently owns keyboard focus. Reordering is applied on initial
+  // render, after an assessment, or once focus leaves the adaptive questionnaire.
+  if (!groups.some((group) => group.contains(document.activeElement))) {
+    groups
+      .sort((left, right) => {
+        const leftIncomplete = incomplete.includes(left) ? 0 : 1;
+        const rightIncomplete = incomplete.includes(right) ? 0 : 1;
+        return leftIncomplete - rightIncomplete
+          || groupQuestionPriority.get(left) - groupQuestionPriority.get(right)
+          || Number(left.dataset.adaptiveOrder) - Number(right.dataset.adaptiveOrder);
+      })
+      .forEach((group) => group.parentElement?.append(group));
+  }
+
+  let hiddenCount = 0;
+  groups.forEach((group) => {
+    const complete = !incomplete.includes(group);
+    group.classList.toggle('adaptive-group-complete', complete);
+    const containsFocus = group.contains(document.activeElement);
+    group.hidden = complete && !showCompletedQuestionGroups && !containsFocus;
+    if (group.hidden) hiddenCount += 1;
+  });
+
+  const status = $('#questionnaire-adaptation-status');
+  if (status) {
+    const rationale = [];
+    if (!coreComplete) rationale.push('Core CBC inputs are incomplete');
+    if (incomplete.length) rationale.push(`${incomplete.length} questionnaire group${incomplete.length === 1 ? '' : 's'} still has unassessed fields`);
+    if (urgentOutput) rationale.push('the current deterministic output contains an urgent alert');
+    if (generatedQuestions) rationale.push(`${generatedQuestions} engine-generated follow-up question${generatedQuestions === 1 ? '' : 's'} informed the related-group order and remains available in Results`);
+    const nextStatus = rationale.length
+      ? `Focus order updated: ${rationale.join('; ')}. This is workflow guidance, not a clinical score or diagnosis.`
+      : 'All questionnaire groups are explicitly assessed. This focus order is workflow guidance, not a clinical score or diagnosis.';
+    if (status.textContent !== nextStatus) status.textContent = nextStatus;
+  }
+  const toggle = $('#show-completed-question-groups');
+  if (toggle) {
+    toggle.hidden = hiddenCount === 0 && !showCompletedQuestionGroups;
+    toggle.textContent = showCompletedQuestionGroups ? 'Hide completed groups' : `Show ${hiddenCount} completed group${hiddenCount === 1 ? '' : 's'}`;
+    toggle.setAttribute('aria-expanded', String(showCompletedQuestionGroups));
+  }
+}
+
 function updateWorkflowState(coreComplete) {
   const sectionState = {
     'step-patient': coreComplete,
-    'step-safety': Boolean($('#safety-reviewed-no-flags')?.checked || anyChecked(immediateSafetyNames)),
+    'step-safety': Boolean($('#safety-reviewed-no-flags')?.checked || anyAssessed(immediateSafetyNames)),
     'step-iron': meaningful('reticResponse') || numeric('ferritin') !== null || meaningful('crpStatus') || meaningful('tsatStatus'),
     'step-specialized': specializedLabNames.some((name) => numeric(name) !== null || meaningful(name))
-      || checked('hbBartNewbornScreen') || checked('alphaGlobinTestingPositive')
-      || checked('betaGlobinTestingPositive') || checked('sicklingHemoglobinDetected'),
-    'step-history': anyChecked(historyNames),
-    'step-smear': checkedValues('smear').length > 0 || anyChecked(examNames),
+      || anyAssessed(specializedBooleanNames),
+    'step-history': anyAssessed(historyNames),
+    'step-smear': isAssessed(fieldStateValue('smearReviewed'))
+      || checkedValues('smear').length > 0 || anyAssessed(examNames),
   };
 
   $$('.workflow-step').forEach((button) => {
@@ -273,21 +421,32 @@ function updateWorkflowState(coreComplete) {
 }
 
 function updateCaseUi() {
+  // Any edit invalidates the prior result and its audit snapshot. A superseded output must
+  // neither remain visible nor keep steering questionnaire order after the live form diverges.
+  const inputChanged = currentAudit
+    && JSON.stringify(buildInput()) !== JSON.stringify(currentAudit.input);
+  const captureChanged = currentAudit
+    && JSON.stringify(captureEnvelope()) !== JSON.stringify(currentAudit.capture);
+  if (inputChanged || captureChanged) {
+    currentAudit = null;
+    $('#results').hidden = true;
+    $('#results-placeholder').hidden = false;
+    refreshAuditView();
+  }
   const age = numeric('ageMonths');
   const hemoglobin = numeric('hemoglobin');
   const mcv = numeric('mcv');
   const retic = value('reticResponse', 'unknown');
   const coreCount = [age, hemoglobin, mcv].filter((item) => item !== null).length;
   const coreComplete = coreCount === 3;
-  const safetyCount = immediateSafetyNames.filter((name) => checked(name)).length;
-
+  const safetyCount = immediateSafetyNames.filter((name) => isPresent(fieldStateValue(name))).length;
   let depth = coreCount * 18;
   if (value('sexAtBirth')) depth += 5;
   if (numeric('rdw') !== null) depth += 5;
   if (retic !== 'unknown') depth += 10;
   if (numeric('ferritin') !== null) depth += 8;
   if (meaningful('crpStatus') || meaningful('tsatStatus') || meaningful('tibcStatus')) depth += 5;
-  if (anyChecked(historyNames) || anyChecked(examNames) || checkedValues('smear').length || specializedLabNames.some((name) => meaningful(name) || numeric(name) !== null)) depth += 13;
+  if (anyAssessed(historyNames) || anyAssessed(examNames) || checkedValues('smear').length || specializedLabNames.some((name) => meaningful(name) || numeric(name) !== null)) depth += 13;
   depth = Math.min(100, depth);
 
   const completionBar = $('#completion-bar');
@@ -316,6 +475,7 @@ function updateCaseUi() {
   }
 
   updateWorkflowState(coreComplete);
+  updateAdaptiveQuestionnaire(coreComplete);
 }
 
 function renderClassification(result) {
@@ -1353,10 +1513,12 @@ async function initializeAlgorithmExplorerIfEligible() {
           return;
         }
         populateFromInput(input);
+        input = buildInput();
         const result = assessPediatricAnemia(input, rules, candidates);
-        currentAudit = { input, result };
+        currentAudit = { input, capture: captureEnvelope(), result };
         renderResult(result);
         refreshAuditView();
+        updateCaseUi();
         switchTab('assessment');
       },
     });
@@ -1463,7 +1625,11 @@ function setSimpleField(name, val) {
   const element = field(name);
   if (!element) return;
   if (element instanceof RadioNodeList) return;
-  if (element.type === 'checkbox') element.checked = toTri(val) === 'true';
+  if (element.tagName === 'SELECT' && (
+    element.classList.contains('quad-select') || element.classList.contains('local-flag-select')
+  )) {
+    element.value = controlValueFromState(val);
+  } else if (element.type === 'checkbox') element.checked = toTri(val) === 'true';
   else element.value = val ?? '';
 }
 
@@ -1490,20 +1656,24 @@ function populateFromInput(input) {
     leukopenia: lf.leukopenia, neutropenia: lf.neutropenia,
     thrombocytopenia: lf.thrombocytopenia, thrombocytosis: lf.thrombocytosis,
     reticResponse: retic.response, absoluteRetic: retic.absolute,
+    smearReviewed: input.smearReviewed,
     ...labs,
   }).forEach(([name, val]) => setSimpleField(name, val));
 
-  for (const [name, val] of Object.entries(input.symptoms ?? {})) setSimpleField(name, val);
-  for (const [name, val] of Object.entries(input.history ?? {})) setSimpleField(name, val);
-  for (const [name, val] of Object.entries(input.exam ?? {})) setSimpleField(name, val);
+  symptomNames.forEach((name) => setSimpleField(name, input.symptoms?.[name]));
+  historyNames.forEach((name) => setSimpleField(name, input.history?.[name]));
+  examNames.forEach((name) => setSimpleField(name, input.exam?.[name]));
   for (const smearValue of input.smear ?? []) {
     const element = $(`input[name="smear"][value="${CSS.escape(smearValue)}"]`, form);
     if (element) element.checked = true;
   }
-  const hasImmediateFlag = immediateSafetyNames.some(
-    (name) => toTri(input.symptoms?.[name]) === 'true',
-  );
-  if ($('#safety-reviewed-no-flags')) $('#safety-reviewed-no-flags').checked = !hasImmediateFlag;
+  // Missing controls must never imply a completed safety review. Existing
+  // payloads receive the review marker only when every immediate-safety field
+  // was explicitly recorded Absent.
+  const allImmediateFlagsExplicitlyAbsent = immediateSafetyNames.every((name) => (
+    isAssessed(input.symptoms?.[name]) && !isPresent(input.symptoms?.[name])
+  ));
+  if ($('#safety-reviewed-no-flags')) $('#safety-reviewed-no-flags').checked = allImmediateFlagsExplicitlyAbsent;
   updateCaseUi();
 }
 
@@ -1541,9 +1711,12 @@ async function loadExample() {
     const response = await fetch(`./examples/${selected}.json`);
     if (activeModuleId !== moduleAtStart) return; // superseded while awaiting the example fetch
     if (!response.ok) throw new Error(`Unable to load example: ${selected}`);
-    const input = await response.json();
+    let input = await response.json();
     if (activeModuleId !== moduleAtStart) return; // superseded while awaiting response.json()
     populateFromInput(input);
+    // Assess and audit the normalized live-form snapshot so a sparse example does not become
+    // immediately stale merely because buildInput() includes explicit null/default containers.
+    input = buildInput();
     // R-3 (smoke-browser-unit-rejection.mjs) pins the literal `assessPediatricAnemia(input, rules,
     // candidates)` call shape below — never rewritten. `assessModule` is the module-generic
     // sibling (P2-02) for any OTHER selectable module; today only DEFAULT_MODULE_ID ('anemia') is
@@ -1555,9 +1728,10 @@ async function loadExample() {
       ? assessPediatricAnemia(input, rules, candidates)
       : assessModule(moduleAtStart, input, rules, candidates);
     if (activeModuleId !== moduleAtStart) return; // superseded between the assess call and here
-    currentAudit = { input, result };
+    currentAudit = { input, capture: captureEnvelope(), result };
     renderResult(result);
     refreshAuditView();
+    updateCaseUi();
   } catch (error) {
     if (activeModuleId !== moduleAtStart) return; // superseded; a newer activation owns the screen now
     if (INPUT_REJECTION_CODES.has(error.code)) {
@@ -1631,14 +1805,25 @@ async function initialize() {
   }));
   $('#rule-filter').addEventListener('input', (event) => renderRules(event.target.value));
   $('#load-example').addEventListener('click', () => loadExample().catch(showFatalError));
+  $('#show-completed-question-groups')?.addEventListener('click', () => {
+    showCompletedQuestionGroups = !showCompletedQuestionGroups;
+    const coreComplete = [numeric('ageMonths'), numeric('hemoglobin'), numeric('mcv')].every((item) => item !== null);
+    updateAdaptiveQuestionnaire(coreComplete);
+  });
 
   form.addEventListener('input', updateCaseUi);
   form.addEventListener('change', updateCaseUi);
+  form.addEventListener('focusout', (event) => {
+    if (!event.target.closest?.('[data-adaptive-group]')) return;
+    window.setTimeout(() => {
+      if (!document.activeElement?.closest?.('[data-adaptive-group]')) updateCaseUi();
+    }, 0);
+  });
   $('#safety-reviewed-no-flags')?.addEventListener('change', (event) => {
     if (event.target.checked) {
       immediateSafetyNames.forEach((name) => {
         const element = field(name);
-        if (element && !(element instanceof RadioNodeList)) element.checked = false;
+        if (element && !(element instanceof RadioNodeList)) element.value = controlValueFromState('false');
       });
     }
     updateCaseUi();
@@ -1646,7 +1831,7 @@ async function initialize() {
   immediateSafetyNames.forEach((name) => {
     const element = field(name);
     element?.addEventListener('change', () => {
-      if (element.checked && $('#safety-reviewed-no-flags')) $('#safety-reviewed-no-flags').checked = false;
+      if (fieldStateValue(name) !== 'false' && $('#safety-reviewed-no-flags')) $('#safety-reviewed-no-flags').checked = false;
       updateCaseUi();
     });
   });
@@ -1683,9 +1868,10 @@ async function initialize() {
         ? assessPediatricAnemia(input, rules, candidates)
         : assessModule(moduleAtStart, input, rules, candidates);
       if (activeModuleId !== moduleAtStart) return; // superseded between the assess call and here
-      currentAudit = { input, result };
+      currentAudit = { input, capture: captureEnvelope(), result };
       renderResult(result);
       refreshAuditView();
+      updateCaseUi();
     } catch (error) {
       if (activeModuleId !== moduleAtStart) return; // superseded; a newer activation owns the screen now
       if (INPUT_REJECTION_CODES.has(error.code)) { showInputRejection(error); return; }

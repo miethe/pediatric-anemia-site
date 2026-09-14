@@ -1,10 +1,10 @@
 ---
-title: "PRD: Four-State Questionnaire UI — capture-fidelity control for the 59 booleanMap fields"
+title: "PRD: Four-State Adaptive Assessment UI — capture fidelity across 73 clinician-state controls"
 schema_version: 2
 doc_type: prd
-status: draft
+status: review
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-08-11
 feature_slug: "four-state-questionnaire-ui"
 feature_version: "v1"
 prd_ref: null
@@ -64,6 +64,39 @@ that adjudication requires; OQ-1..OQ-5 are all binding on this PRD.
 **Status honesty:** this is an unvalidated research prototype. Nothing in this PRD describes a
 clinically validated capability, a diagnostic improvement, or a safety enhancement. This feature
 changes **zero** engine output. No `approvedBy[]`/`clinicalApprovers[]` field is populated by this work.
+
+---
+
+## 0A. 2026-08-11 owner-directed implementation amendment (authoritative)
+
+The current owner-authored implementation brief resolves the engineering choices that previously
+blocked a branch-local prototype slice. Where this amendment conflicts with the historical text below,
+this amendment governs; formal named-human usability acceptance is still required before merge or
+release.
+
+- **Visible state vocabulary and order:** `Present`, `Absent`, `Unknown`, `Not assessed`. The first
+  three map to the existing tri-state engine values; `Not assessed` omits the key from engine input.
+- **Capture provenance:** OQ-5 option 2 is implemented as a separate
+  `questionnaire-capture/v1` envelope. It records `present | absent | unknown | not-assessed` for every
+  four-state control while the engine remains three-state. The exported audit carries both the
+  normalized engine input and this capture envelope.
+- **Widened capture surface:** the 59 booleanMap fields plus 3 patient booleans, 6 specialized-lab
+  booleans, 4 CBC local flags, and a capture-only smear-review state now use the same control: **73
+  controls total**. The 11 morphology finding checkboxes and the separate safety-review attestation
+  retain their distinct semantics. Reviewed-normal smear state is audit-only until approved clinical
+  integration exists; it does not alter the integrity-recorded anemia fact model.
+- **Adaptive scope:** the branch may reorder and collapse questionnaire *groups* using only explicit
+  assessed state and the already-generated deterministic `nextQuestions[].section`/`priority` output.
+  The UI exposes the reason and says explicitly that this is workflow guidance, not a probability,
+  clinical score, or diagnosis. A new evidence-derived information-value model remains out of scope;
+  no new threshold, question score, or clinical ranking was invented.
+- **Local context honesty:** WBC, ANC, and platelet values are not interpreted using anemia fallback
+  ranges. The interface requires compatible local context and discloses the displayed units, absence
+  of silent conversion, and cross-analyzer limitations.
+
+This amendment delivers a visible capture/workflow slice. It does **not** make the CBC suite clinically
+complete: the high-count, pancytopenia, platelet-context, and smear-integration branches remain
+non-executable proposals pending Research Foundry evidence and human approval.
 
 ---
 
@@ -350,18 +383,17 @@ aggregates fails loudly at authoring time instead of silently changing patient-f
 |---|---|
 | A 4th persisted wire enum value | SPIKE-003's rejection stands (§0.2); no rule-corpus consumer exists (leg A §1). |
 | Splitting the `is-unknown`/`is-not-assessed` engine operators into distinct branches | Same reasoning; this would be a clinical fact-semantics change requiring fresh audit + council-review, not a UI feature. |
-| **"Ordered by information value" — the *adaptive* half of the roadmap's work-package title** (`01-platform-expansion-roadmap.md:288`) | No information-value research protocol exists. `02-evidence-foundry-on-research-foundry.md:113` assigns this research to a future track; it is unbuilt. Ranking questionnaire items by "information value" without a supporting evidence base would be an **invented ranking**, which CLAUDE.md's guardrails forbid outright ("no random calculator expansion... no unsupported confidence %"; the ranking score guardrail generalizes directly to ranking *questions*). This must ship as a separate, evidence-backed work package if it ships at all. |
+| A new evidence-derived "information value" score or clinical question-ranking model | No supporting research protocol exists. `02-evidence-foundry-on-research-foundry.md:113` assigns this research to a future track. The amendment permits only workflow adaptation from already-emitted deterministic follow-up sections/priorities plus assessed-state completion; it does not authorize a new score, threshold, probability, or clinical ranking. |
 | Authoring any rule that consumes the new false-vs-unknown distinction | AI may not author clinical rules; any such rule requires named-clinician review per CLAUDE.md. |
 | P3-WP6 / FHIR Questionnaire resource mapping | Genuinely independent — see §5.4. Nothing in this feature touches it, and nothing in this feature is blocked by its absence. |
-| The 11 `smear` multi-select checkboxes, 4 `cbc.localFlags` booleans, 6 lab-result booleans (`hbBartNewbornScreen` etc.), 3 `patient` booleans (`menstruating`/`recentTransfusion`/`highAltitude`), and 1 non-serialized safety-review checkbox (`#safety-reviewed-no-flags`) | Not booleanMap tri-state fields — different semantics, different (or absent) wire representation. Deferred and named so it is not lost (OQ-4). |
+| The 11 `smear` morphology checkboxes and 1 non-serialized safety-review checkbox (`#safety-reviewed-no-flags`) | These remain distinct multi-select/attestation controls. The 13 tri-state-compatible non-booleanMap booleans and capture-only smear-review state moved in scope under the amendment. |
 
-### 5.3 Scope-honesty correction: this work package is not "adaptive"
+### 5.3 Scope-honesty correction: adaptation is workflow-only
 
-With the ordering/adaptive half removed (§5.2), the remaining scope is a **static four-option control
-retrofit**, not an adaptive questionnaire. Recommend `01-platform-expansion-roadmap.md` and the
-corresponding IntentTree node title drop "adaptive" — e.g. "Four-option questionnaire UI" — so the
-roadmap does not describe a capability this work does not deliver. This PRD does not itself edit the
-roadmap file's title; that correction is a P4 documentation task (§10).
+The 2026-08-11 amendment permits a narrow adaptive slice: incomplete groups may be surfaced and
+completed groups collapsed, and existing deterministic follow-up section priorities may reorder
+groups after an assessment. This is workflow adaptation with an exposed rationale. It is not an
+evidence-derived information-value model, clinical score, probability, or diagnostic ranking.
 
 ### 5.4 P3-WP6/FHIR is explicitly not a dependency
 
@@ -664,11 +696,11 @@ explicit `target_surfaces` list.
 
 | ID | Question | Status |
 |:-:|---|---|
-| OQ-1 | Ordering of the 4 `<select>` options. | Open — a clinical-usability call, not an engineering one. Must be resolved before/during implementation. |
-| OQ-2 | Exact clinician-facing wording ("Not assessed" vs. "Not asked" vs. blank/placeholder). Must not imply the choice changes inference. | Open. |
-| OQ-3 | Should the roadmap/IntentTree title be corrected to drop "adaptive"? | Recommend **yes** (§5.3); not applied by this PRD itself. |
-| OQ-4 | Do the 13 non-booleanMap booleans (4 `localFlags` + 6 lab-result + 3 `patient` booleans) eventually need the same four-option treatment? | Deferred — named here so it is not lost, not answered by this feature. |
-| OQ-5 | **BLOCKING (cross-family review F-2).** "Durable but not unambiguous" (§3) is not resolved by this PRD. A named human must choose one: **(1)** stamp the payload with a capture-schema version so a future reader can distinguish "field existed and was omitted deliberately" from "field did not exist" (cheap, ~1-2 file blast radius); **(2)** a separate versioned capture envelope (`capture.booleanMap[field] = "not-assessed" \| "unknown" \| "present" \| "absent"`) feeding the unchanged 3-value model to the engine (full fix — a 4th *capture* enum, not a 4th *rule-engine* enum, so SPIKE-003's holding survives); **(3)** drop the "provenance preserved" claim entirely and state plainly that not-assessed is a UI affordance, durable but not self-describing (cheapest, still honest). | **Open — blocking. Must be resolved by a named human before any P3 markup edit lands.** Not an agent's decision. |
+| OQ-1 | Ordering of the 4 `<select>` options. | **Resolved for branch-local implementation:** Present → Absent → Unknown → Not assessed. Formal usability acceptance remains pending. |
+| OQ-2 | Exact clinician-facing wording. | **Resolved for branch-local implementation:** `Present`, `Absent`, `Unknown`, `Not assessed`; copy states that capture state does not add a fourth engine value. |
+| OQ-3 | Should the roadmap/IntentTree title be corrected to drop "adaptive"? | **Resolved by amendment:** retain “adaptive” only with the workflow-only qualifier in §5.3; do not claim information-value ranking. |
+| OQ-4 | Do the 13 non-booleanMap booleans (4 `localFlags` + 6 lab-result + 3 `patient` booleans) need the same treatment? | **Resolved yes for this slice.** All 13 use the shared control and tri-state schema; omission remains not assessed. |
+| OQ-5 | How is deliberate not-assessment distinguished durably from an omitting caller? | **Resolved for branch-local implementation: option 2.** Export a separate versioned `questionnaire-capture/v1` envelope alongside unchanged three-state engine input. Formal named-human acceptance remains pending before merge/release. |
 
 ---
 

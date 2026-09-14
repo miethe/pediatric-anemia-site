@@ -1,10 +1,10 @@
 ---
 schema_version: 2
 doc_type: implementation_plan
-title: "Implementation Plan: Four-State Questionnaire UI — capture-fidelity control for the 59 booleanMap fields"
-status: draft
+title: "Implementation Plan: Four-State Adaptive Assessment UI — 73 clinician-state controls"
+status: review
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-08-11
 feature_slug: four-state-questionnaire-ui
 feature_version: v1
 prd_ref: docs/project_plans/PRDs/features/four-state-questionnaire-ui-v1.md
@@ -71,6 +71,29 @@ files_affected:
 ---
 
 # Implementation Plan: Four-State Questionnaire UI
+
+## 2026-08-11 implementation amendment
+
+The owner-authored implementation brief extends the historical 59-control plan to a 73-control,
+branch-local prototype and resolves the engineering choices for P3. This amendment is authoritative
+where older phase text conflicts; named-human usability acceptance is still required before merge or
+release.
+
+- Use the exact order and labels `Present`, `Absent`, `Unknown`, `Not assessed`.
+- Keep the engine three-state and omit Not assessed from normalized patient input.
+- Export all four clinician states in a separate `questionnaire-capture/v1` envelope (OQ-5 option 2).
+- Apply the control to the original 59 booleanMap fields, 3 patient booleans, 6 specialized-lab
+  booleans, 4 CBC local flags, and one capture-only smear-review state (73 total).
+- Permit deterministic workflow adaptation only: explicit assessed-state completion plus existing
+  `nextQuestions[].section`/`priority` may surface/reorder groups with visible rationale. Do not add an
+  evidence-free information-value score, probability, threshold, or clinical ranking.
+- Keep reviewed-normal smear state out of the integrity-recorded anemia fact model; retain it in the
+  capture envelope pending clinical approval. Preserve the CBC module's historical executable package
+  and place unapproved expansion logic only in schema-validated, non-executable proposals.
+
+The current implementation is therefore a visible capture/workflow slice plus a governed CBC proposal
+set, not a clinically complete or released CBC suite. Research Foundry coverage gaps and named-human
+approval remain phase gates.
 
 **Plan ID**: `IMPL-2026-07-23-four-state-questionnaire-ui` · **Date**: 2026-07-23 · **Author**:
 `implementation-planner`, expanding the Opus-authored decisions block
@@ -321,11 +344,11 @@ open question may be silently lost.
 
 | Item ID | Category | Reason Deferred | Trigger for Promotion | Target Spec Path |
 |---------|----------|-----------------|-----------------------|-----------------|
-| OQ-1 | dependency-blocked | 4-`<select>`-option ordering is a clinical-usability call, not an engineering one. **Not deferred past this feature** — it is a blocking phase-entry precondition for P3 (P3-00), resolved by a named human before any markup edit lands. | Resolved at P3-00, before P3-01 | N/A — resolution recorded inline (P3-00) and durably captured at P4-05, not a design spec |
-| OQ-2 | dependency-blocked | Exact clinician-facing wording, same reasoning as OQ-1; must not imply the choice changes inference (honesty caveat, PRD §3). | Resolved at P3-00, before P3-01 | N/A — same as OQ-1 |
-| OQ-3 | scope-cut, resolved-in-plan | Roadmap/IntentTree title overstates this work as "adaptive" and lists a non-dependency (P3-WP6/FHIR). **Not deferred** — corrected directly by P4-02 (roadmap file) with the IntentTree title correction flagged as a separate human/orchestrator follow-up (this plan edits repository files only). | Applied at P4-02 | N/A — applied directly, not deferred; see P4-02 |
-| OQ-4 | research-needed | Whether the 13 non-booleanMap booleans (4 `cbc.localFlags`, 6 lab-result, 3 `patient`) eventually need the same four-state treatment. Genuinely deferred — no decision made by this feature. | A future feature proposes extending four-state capture beyond the 59 booleanMap fields | `docs/project_plans/design-specs/non-booleanmap-four-state-treatment.md` (authored at P4-04, `maturity: idea`) |
-| OQ-5 | dependency-blocked, human-decision-required | Cross-family review F-2: "durable" is not "unambiguous" — a reader of the exported JSON cannot distinguish deliberate not-assessed from an omitting client/serializer/API caller (PRD §3, §12). **Not deferred past this feature and not an agent's call** — a named human must choose among the three PRD-§12 options (version stamp / separate capture envelope / drop the claim) **before any P3 markup edit lands**, same phase-entry gate as OQ-1/OQ-2. | Resolved at P3-00, before P3-01, alongside OQ-1/OQ-2 | N/A — resolution recorded at P3-00 and referenced at P4-01/P4-05; no separate design-spec file unless the "separate capture envelope" option is chosen, in which case that becomes its own future feature, not this one |
+| OQ-1 | implemented, acceptance-pending | Owner-authored brief fixes the order as `Present` → `Absent` → `Unknown` → `Not assessed`. | Branch-local implementation complete; formal named-human usability acceptance before merge/release | N/A — recorded in the 2026-08-11 amendment and PRD §12 |
+| OQ-2 | implemented, acceptance-pending | Exact labels are `Present`, `Absent`, `Unknown`, `Not assessed`; UI copy does not imply a fourth engine value. | Branch-local implementation complete; formal named-human usability acceptance before merge/release | N/A — same as OQ-1 |
+| OQ-3 | resolved-in-amendment | Keep “adaptive” only for assessed-state/existing-follow-up workflow projection. Do not claim a new information-value model. | Implemented with visible rationale and no new clinical score | N/A — recorded in PRD §5.3 |
+| OQ-4 | implemented, acceptance-pending | The 13 non-booleanMap booleans (4 `cbc.localFlags`, 6 lab-result, 3 `patient`) use the same four-state control and tri-state schema. | Branch-local implementation complete | N/A — captured by schema and registry-parity tests |
+| OQ-5 | implemented, acceptance-pending | Use option 2: a separate versioned `questionnaire-capture/v1` envelope beside the unchanged three-state engine input. | Branch-local implementation complete; formal named-human acceptance before merge/release | N/A — this feature now implements the envelope directly |
 | K-4 | resolved-by-precedent, no task required | karen's polish item: PRD §6.2 asks whether `src/facts/fieldState.js` needs an entry in `scripts/check-app-imports.mjs`'s `APP_SURFACE_FILES`. Resolved by direct precedent — `src/facts/tristate.js`, the exact structural analog (a DOM-free pure module alongside `src/app.js`), has no entry there today. No task in this plan adds one. Recorded here so the question is not silently dropped, per karen's finding. | None — resolved now, by precedent, not deferred | N/A |
 
 **Rule applied**: every row above either has a `Target Spec Path` (OQ-4) or is marked N/A with an

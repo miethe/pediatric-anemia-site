@@ -1,10 +1,11 @@
 import { deriveFacts as deriveAnemiaFacts } from '../../modules/anemia/facts.anemia.js';
+import { deriveFacts as deriveCbcSuiteV1Facts } from '../../modules/cbc_suite_v1/facts.cbc.js';
 import kidneySuiteV1Module from '../../modules/kidney_suite_v1/index.js';
 import { deriveFacts as deriveGrowthSuiteV1Facts } from '../../modules/growth_suite_v1/index.js';
 
-// `cbc_suite_v1` maps to the exact same delegated function reference as `anemia` (OQ-1,
-// modules/cbc_suite_v1/index.js's header comment) — CBC-Suite-specific fact derivation is out
-// of scope for E0, so there is no second function to author here.
+// cbc_suite_v1 extends anemia's shared CBC fact substrate with a fail-closed local-profile fact
+// and explicit unsupported high-count states. It deliberately does not execute the pending
+// platelet/pancytopenia/smear proposals or add a portable count threshold.
 //
 // `kidney_suite_v1` and `growth_suite_v1` (P3-T3, Phase 3) each map to their OWN module's
 // placeholder `deriveFacts` instead — literal, enumerated entries, never a variable or
@@ -17,7 +18,7 @@ import { deriveFacts as deriveGrowthSuiteV1Facts } from '../../modules/growth_su
 // referenced here as `kidneySuiteV1Module.deriveFacts`.
 const REGISTRY = new Map([
   ['anemia', deriveAnemiaFacts],
-  ['cbc_suite_v1', deriveAnemiaFacts],
+  ['cbc_suite_v1', deriveCbcSuiteV1Facts],
   ['kidney_suite_v1', kidneySuiteV1Module.deriveFacts],
   ['growth_suite_v1', deriveGrowthSuiteV1Facts],
 ]);

@@ -74,10 +74,17 @@ try {
   }
   assert.equal(health.status, 'ok');
 
-  for (const resource of ['/', '/styles.css', '/site-overrides.css', '/src/app.js', '/modules/anemia/rules.json', '/assets/favicon.svg']) {
+  for (const resource of ['/', '/styles.css', '/site-overrides.css', '/src/app.js', '/src/lib/jcs.mjs', '/modules/anemia/rules.json', '/assets/favicon.svg']) {
     const response = await request(resource);
     assert.equal(response.status, 200, `${resource} should return 200`);
   }
+
+  const moduleResponse = await request('/src/lib/jcs.mjs');
+  assert.match(
+    moduleResponse.headers.get('content-type') ?? '',
+    /^text\/javascript(?:;|$)/,
+    '.mjs browser imports must be served as JavaScript under X-Content-Type-Options: nosniff',
+  );
 
   const homepage = await (await request('/')).text();
   assert.match(homepage, /site-overrides\.css/);

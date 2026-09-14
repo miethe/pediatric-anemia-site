@@ -11,9 +11,9 @@
       "properties": {
         "ageMonths": { "type": ["number", "null"], "minimum": 0, "maximum": 300 },
         "sexAtBirth": { "type": ["string", "null"], "enum": ["female", "male", "unspecified", null] },
-        "menstruating": { "type": "boolean", "default": false },
-        "recentTransfusion": { "type": "boolean", "default": false },
-        "highAltitude": { "type": "boolean", "default": false }
+        "menstruating": { "$ref": "#/$defs/triBoolean" },
+        "recentTransfusion": { "$ref": "#/$defs/triBoolean" },
+        "highAltitude": { "$ref": "#/$defs/triBoolean" }
       }
     },
     "cbc": {
@@ -59,10 +59,10 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "leukopenia": { "type": "boolean" },
-            "neutropenia": { "type": "boolean" },
-            "thrombocytopenia": { "type": "boolean" },
-            "thrombocytosis": { "type": "boolean" }
+            "leukopenia": { "$ref": "#/$defs/triBoolean" },
+            "neutropenia": { "$ref": "#/$defs/triBoolean" },
+            "thrombocytopenia": { "$ref": "#/$defs/triBoolean" },
+            "thrombocytosis": { "$ref": "#/$defs/triBoolean" }
           }
         }
       }
@@ -99,13 +99,13 @@
         "bloodLeadLevelUnit": { "type": "string" },
         "leadSpecimen": { "type": "string", "enum": ["unknown", "capillary", "venous"] },
         "hbA2Status": { "type": "string", "enum": ["unknown", "normal", "elevated"] },
-        "hbBartNewbornScreen": { "type": "boolean" },
-        "alphaGlobinTestingPositive": { "type": "boolean" },
-        "betaGlobinTestingPositive": { "type": "boolean" },
-        "sicklingHemoglobinDetected": { "type": "boolean" },
+        "hbBartNewbornScreen": { "$ref": "#/$defs/triBoolean" },
+        "alphaGlobinTestingPositive": { "$ref": "#/$defs/triBoolean" },
+        "betaGlobinTestingPositive": { "$ref": "#/$defs/triBoolean" },
+        "sicklingHemoglobinDetected": { "$ref": "#/$defs/triBoolean" },
         "g6pdStatus": { "type": "string", "enum": ["unknown", "normal", "deficient"] },
-        "g6pdTestDuringAcuteHemolysis": { "type": "boolean" },
-        "g6pdTestSoonAfterTransfusion": { "type": "boolean" },
+        "g6pdTestDuringAcuteHemolysis": { "$ref": "#/$defs/triBoolean" },
+        "g6pdTestSoonAfterTransfusion": { "$ref": "#/$defs/triBoolean" },
         "b12Status": { "$ref": "#/$defs/lowNormalUnknown" },
         "folateStatus": { "$ref": "#/$defs/lowNormalUnknown" },
         "copperStatus": { "$ref": "#/$defs/lowNormalUnknown" },
@@ -128,15 +128,17 @@
     }
   },
   "$defs": {
+    "triBoolean": {
+      "description": "A boolean clinical fact may be sent as a bare JSON boolean or as the existing true, false, or unknown tri-state wire string. Omission remains the not-assessed capture state and is not a fourth engine literal.",
+      "anyOf": [
+        { "type": "boolean" },
+        { "type": "string", "enum": ["true", "false", "unknown"] }
+      ]
+    },
     "booleanMap": {
       "type": "object",
       "description": "Wire-compatible boolean fact map: callers may continue sending bare JSON booleans or send the SPIKE-003 tri-state strings true, false, or unknown. Field names remain open here; scripts/validate-kb.mjs validates rule-referenced history.*, symptoms.*, and exam.* paths against the maintained allow-list.",
-      "additionalProperties": {
-        "anyOf": [
-          { "type": "boolean" },
-          { "type": "string", "enum": ["true", "false", "unknown"] }
-        ]
-      }
+      "additionalProperties": { "$ref": "#/$defs/triBoolean" }
     },
     "genericStatus": { "type": "string", "enum": ["unknown", "normal", "high"] },
     "lowNormalHigh": { "type": "string", "enum": ["unknown", "low", "normal", "high"] },

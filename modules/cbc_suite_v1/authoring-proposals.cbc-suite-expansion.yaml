@@ -1,0 +1,102 @@
+# Non-executable CBC-suite authoring proposals grounded in the verified RF-CBC-001 fixture.
+#
+# These decisions are deliberately separate from authoring-decisions.yaml. The existing approved
+# decisions authorize the four frozen E0 rule outputs; they do not authorize the new question
+# outputs below. Every record remains drafted_pending_human_approval and therefore permits no
+# executable rule, release, clinical sign-off, or module-status change.
+
+schemaVersion: "1.0"
+moduleId: cbc_suite_v1
+rfProvenance:
+  rfRunId: rf_run_20260717_rf_cbc_001_pediatric_cds_establish
+  rfBundleId: bundle_20260718_intent_research_20260717_rf_cbc_001
+  fixturePath: tests/fixtures/rf-cbc-001/
+
+decisions:
+  - decision_id: dec_cbc_missing_age_question_002
+    module_id: cbc_suite_v1
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_018
+        - clm_027
+        - clm_inf02
+      exact_assertion_ids:
+        - evas_cbc_young_infant_anc_001
+        - evas_cbc_young_infant_anc_002
+      reasoning: Pediatric count interpretation is age-banded. The proposed output asks for a
+        missing age and makes no age-specific interpretation while age is absent.
+    conflicts:
+      visible: true
+      representation: missing_age_question_without_scope_inference
+    clinical_effect:
+      intended_output: missing_data_question
+      prohibited_effects:
+        - infer_in_scope_age_from_missingness
+        - create_age_threshold
+        - issue_diagnosis_or_treatment
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending
+
+  - decision_id: dec_cbc_shared_local_profile_question_002
+    module_id: cbc_suite_v1
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_009
+        - clm_019
+        - clm_026
+        - clm_027
+        - clm_inf07
+        - clm_inf01
+      exact_assertion_ids:
+        - evas_cbc_age_interval_001
+        - evas_cbc_analyzer_specificity_001
+        - evas_cbc_unit_normalization_001
+      reasoning: The proposed output requests a compatible local range or explicit local flag for
+        a supplied count. It never substitutes a portable threshold or silently converts units.
+    conflicts:
+      visible: true
+      representation: local_profile_missing_data_question
+    clinical_effect:
+      intended_output: missing_data_question
+      prohibited_effects:
+        - infer_normal_from_missing_range
+        - create_portable_count_threshold
+        - silently_convert_or_reuse_analyzer_intervals
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending
+
+  - decision_id: dec_cbc_neutropenia_context_question_002
+    module_id: cbc_suite_v1
+    status: drafted_pending_human_approval
+    basis:
+      kind: implementation_proposal
+      rf_claim_ids:
+        - clm_043
+      exact_assertion_ids:
+        - evas_cbc_benign_neutropenia_differential_002
+      reasoning: The proposed output asks for infection, family-history, and serial-count context
+        after neutropenia is locally resolved. It does not infer a benign or pathologic etiology.
+    conflicts:
+      visible: true
+      representation: context_question_without_etiology
+    clinical_effect:
+      intended_output: missing_data_question
+      prohibited_effects:
+        - infer_neutropenia_etiology
+        - assign_severity_from_a_single_count
+        - suppress_cooccurring_red_flags
+    review:
+      evidence_methodologist: pending
+      clinician_1: pending
+      clinician_2: pending
+      laboratory_medicine: pending

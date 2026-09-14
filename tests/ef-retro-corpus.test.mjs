@@ -315,14 +315,19 @@ test('drift detection: fixture-corpus.schema.json clinical sub-object shapes mir
     'clinicalSmear must mirror patient-input.schema.json#/properties/smear\'s enum vocabulary exactly',
   );
 
-  // Shared $defs copied verbatim (booleanMap/genericStatus/lowNormalHigh/lowNormalUnknown).
-  for (const defName of ['booleanMap', 'genericStatus', 'lowNormalHigh', 'lowNormalUnknown']) {
+  // Shared $defs copied verbatim (triBoolean/booleanMap/genericStatus/lowNormalHigh/lowNormalUnknown).
+  for (const defName of ['triBoolean', 'booleanMap', 'genericStatus', 'lowNormalHigh', 'lowNormalUnknown']) {
     assert.deepEqual(
       corpusSchema.$defs[defName].enum ?? null,
       engineSchema.$defs[defName].enum ?? null,
       `$defs.${defName}'s enum vocabulary must mirror patient-input.schema.json's own $defs.${defName}`,
     );
   }
+  assert.deepEqual(
+    corpusSchema.$defs.triBoolean.anyOf,
+    engineSchema.$defs.triBoolean.anyOf,
+    '$defs.triBoolean must mirror the patient-input boolean/string alternatives exactly',
+  );
 });
 
 // -------------------------------------------------------------------------------------------

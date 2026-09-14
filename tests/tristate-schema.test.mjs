@@ -29,6 +29,26 @@ test('booleanMap rejects out-of-enum strings', () => {
   assert.match(errors[0].message, /anyOf/);
 });
 
+const triBooleanPaths = [
+  (value) => ({ patient: { menstruating: value } }),
+  (value) => ({ cbc: { localFlags: { neutropenia: value } } }),
+  (value) => ({ labs: { hbBartNewbornScreen: value } }),
+];
+
+for (const state of [true, false, 'true', 'false', 'unknown']) {
+  test(`triBoolean-backed assessment fields accept ${JSON.stringify(state)}`, () => {
+    for (const build of triBooleanPaths) {
+      assert.deepEqual(validate(patientInputSchema, build(state)), []);
+    }
+  });
+}
+
+test('triBoolean-backed assessment fields reject a fourth engine literal', () => {
+  for (const build of triBooleanPaths) {
+    assert.ok(validate(patientInputSchema, build('not-assessed')).length > 0);
+  }
+});
+
 test('validate-kb rejects and names an unrecognized boolean fact field', () => {
   const errors = validateBooleanFactPathAllowList([{
     id: 'TEST-UNKNOWN-BOOLEAN-FIELD',
