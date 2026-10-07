@@ -67,8 +67,15 @@ const CBC_RULES_REL = 'modules/cbc_suite_v1/rules.json';
 // covers rules/candidates/evidence/authoring-decisions/rule-provenance -- so this is this test's
 // own dedicated baseline for the manifest files, the same "pin the literal expected bytes"
 // technique tests/ef-p5-t4-honesty-ac.test.mjs uses for kidney/growth's `rules.json`).
+//
+// Re-pinned 2026-10-06 (node_01M49BWGPC69DF24AQWMTMXTDZ): the anemia pin was originally taken on
+// #22's branch BEFORE #20 (9b9a371, Rights-Aware Evidence Capture) merged ahead of it and
+// legitimately recomputed modules/anemia/module.json's clinicalContentHash. The new value is the
+// file as of 9b9a371 -- the true pre-phase content -- and is byte-identical at HEAD, so "nothing
+// in this phase touched it" still holds. Same merge race the P4-T1 snapshot fixture was
+// re-baselined for.
 const EXPECTED_MODULE_JSON_SHA256 = Object.freeze({
-  'modules/anemia/module.json': 'sha256:57280d0461fcd3a8f1597805ccc11b93b7ff5b6ff6fb695c288da67f5cd6ba73',
+  'modules/anemia/module.json': 'sha256:334ad705a83bb4c7a266ac30bb49e9ebacdcd275faab4d611d2a4f7add35a700',
   'modules/cbc_suite_v1/module.json': 'sha256:a63448bd995f10936ca1b80fe00bc507a2b9d89dd83729513e035fb11acf6deb',
 });
 
