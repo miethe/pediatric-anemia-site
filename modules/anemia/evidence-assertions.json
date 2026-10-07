@@ -317,7 +317,7 @@
       "displayPolicy": "hash_and_selector_only",
       "claimStatus": "supported",
       "applicability": {
-        "ageRange": "Hemizygous males (footnote: '*Levels of residual G6PD activity in hemizygous males'); classification framework applies across ages",
+        "ageRange": "Hemizygous males (per the Table I footnote, the residual-activity levels are for this group); classification framework applies across ages",
         "sex": null
       },
       "laboratory": {

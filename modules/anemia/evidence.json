@@ -2713,7 +2713,7 @@
           ],
           "evidenceGrade": "source-supported-fact",
           "applicability": {
-            "age": "Hemizygous males (footnote: '*Levels of residual G6PD activity in hemizygous males'); classification framework applies across ages",
+            "age": "Hemizygous males (per the Table I footnote, the residual-activity levels are for this group); classification framework applies across ages",
             "sex": "male",
             "assay": "Residual activity as % of the laboratory's normal (quantitative assay); Class I defined clinically (CNSHA), not purely biochemically"
           },

@@ -1,0 +1,41 @@
+{
+  "_comment": [
+    "Owner-approved re-authoring of RF `pediatric_cds.population` strings that quote third-party",
+    "source text past the D1 quoted-run body budget (tests/rights-negative-invariant.test.mjs,",
+    "MAX_QUOTED_RUN_WORDS_BODY = 7). Decided by Nick Miethe 2026-10-06 (HumanRequest",
+    "req_01M4A5P5YS3V4T0RX1NYJH3R23, node_01M49BWGPC69DF24AQWMTMXTDZ): \"Re-author + re-baseline\".",
+    "",
+    "Each entry pins the sha256 of the ORIGINAL RF population string (the RF run and its fixture",
+    "mirror stay byte-identical provenance; neither is edited). The re-authored text drops the",
+    "verbatim quotation entirely, keeps the population/sex/age facts, and keeps the citation through",
+    "the record's unchanged sourceId + locator.",
+    "",
+    "Consumers: scripts/evidence/vendor-rf-bundle.mjs applies the rf-ev-001 entries to pack.json",
+    "`applicability.age` (then build-evidence-pack.mjs carries it into modules/anemia/evidence.json);",
+    "the committed modules/<id>/evidence-assertions.json projections carry the same text in",
+    "`applicability.ageRange`. tests/applicability-reauthoring.test.mjs pins all of it, so an entry",
+    "can neither rot nor be silently bypassed."
+  ],
+  "entries": [
+    {
+      "rfRunId": "rf_run_20260717_rf_ev_001_pediatric_cds_backfill",
+      "sourceCardId": "src_20260718_rfev001_05",
+      "evidenceId": "ev_005",
+      "passageId": "BSH2020_G6PD#ev_005",
+      "assertionId": "evas_anemia_clm_011",
+      "assertionsFile": "modules/anemia/evidence-assertions.json",
+      "originalSha256": "sha256:64df641c313fd518ea049ffddf7568645f506c8e7854dd6a019fbfcba3ea7f97",
+      "reauthored": "Hemizygous males (per the Table I footnote, the residual-activity levels are for this group); classification framework applies across ages"
+    },
+    {
+      "rfRunId": "rf_run_20260717_rf_kid_001_pediatric_cds_evidence",
+      "sourceCardId": "src_20260718_rfkid001_02",
+      "evidenceId": "ev_002",
+      "passageId": null,
+      "assertionId": "evas_kid_clm_032",
+      "assertionsFile": "modules/kidney_suite_v1/evidence-assertions.json",
+      "originalSha256": "sha256:5019b44c1f11480eaa3efd539a9ec09c3d1136b5881253d0753d6012ffb0b28e",
+      "reauthored": "Children aged 1 to <13 years, both sexes; BP is classified using the child's sex, age, and height percentile together"
+    }
+  ]
+}
