@@ -4,9 +4,9 @@
   "planPath": "docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1/phase-3-4-scaffolds-and-backfill.md",
   "purpose": "Baseline byte-identity / record-identity snapshot captured BEFORE any propose run in Phase 4 (multi-bundle-conversion-e1). Backs the decisions-block Risk 1 (modules/anemia/ additive-only RF-EV-001 backfill) and Risk 2 (modules/cbc_suite_v1/ collision-safe RF-CBC-002 merge) byte-identity proofs consumed by P4-T4 and P4-T7. Regenerate only via scripts/capture-p4-t1-snapshot.mjs, only from a clean pre-Phase-4 checkout, only with review — this fixture IS the frozen baseline, not a live derivation.",
   "capturedAt": "2026-07-22T06:25:50.768Z",
-  "rebaselinedAt": "2026-10-06T00:00:00.000Z",
+  "rebaselinedAt": "2026-10-07T00:00:00.000Z",
   "rebaselineSourceCommit": "9b9a37111b13785c166eb113ea6957c8667b8779",
-  "rebaselineReason": "Original capture (2026-07-22, branch of #22) predated #20 (9b9a371, Rights-Aware Evidence Capture), which merged first and legitimately added rights fields to modules/anemia/evidence.json and the 8 RF-CBC-001-era cbc_suite_v1/evidence.json sources. Re-captured via computeSnapshot from a clean checkout of 9b9a371 (the true pre-Phase-4 state). Against this baseline every whole-file target and every baseline record is unchanged at HEAD, so no Phase 4 invariant is relaxed. node_01M49BWGPC69DF24AQWMTMXTDZ.",
+  "rebaselineReason": "Original capture (2026-07-22, branch of #22) predated #20 (9b9a371, Rights-Aware Evidence Capture), which merged first and legitimately added rights fields to modules/anemia/evidence.json and the 8 RF-CBC-001-era cbc_suite_v1/evidence.json sources. Re-captured via computeSnapshot from a clean checkout of 9b9a371 (the true pre-Phase-4 state). Against this baseline every whole-file target and every baseline record is unchanged at HEAD, so no Phase 4 invariant is relaxed. node_01M49BWGPC69DF24AQWMTMXTDZ. Second, owner-approved re-baseline (Nick Miethe 2026-10-06, req_01M4A5P5YS3V4T0RX1NYJH3R23, \"Re-author + re-baseline\"): one applicability.age string on BSH2020_G6PD#ev_005 quoted third-party text past the D1 budget and was re-authored via evidence-packs/applicability-reauthoring.json -> vendor-rf-bundle.mjs -> build-evidence-pack.mjs. Re-captured via computeSnapshot on a clean 9b9a371 checkout carrying only that regenerated modules/anemia/evidence.json; the ONLY delta is that file (sha256:8c42f95a... 134410 B -> sha256:12bddbe4... 134418 B); every other whole-file target and every baseline record is unchanged.",
   "wholeFileInvariants": [
     "modules/anemia/evidence.json",
     "modules/anemia/rules.json",
@@ -30,8 +30,8 @@
   ],
   "files": {
     "modules/anemia/evidence.json": {
-      "sha256": "sha256:8c42f95a65ca88e13366a99c9028697de138baaa2891fca40011eeefef55e8a1",
-      "byteLength": 134410
+      "sha256": "sha256:12bddbe4ffb1f49cd8bc6a91fcc19081e5e4a1a31038fc1cabb3ac6ceab995ed",
+      "byteLength": 134418
     },
     "modules/anemia/rules.json": {
       "sha256": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",

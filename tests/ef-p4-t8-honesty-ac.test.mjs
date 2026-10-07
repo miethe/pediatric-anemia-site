@@ -74,8 +74,13 @@ const CBC_RULES_REL = 'modules/cbc_suite_v1/rules.json';
 // file as of 9b9a371 -- the true pre-phase content -- and is byte-identical at HEAD, so "nothing
 // in this phase touched it" still holds. Same merge race the P4-T1 snapshot fixture was
 // re-baselined for.
+//
+// Re-pinned again 2026-10-07 (owner-approved, Nick Miethe 2026-10-06, req_01M4A5P5YS3V4T0RX1NYJH3R23):
+// re-authoring one over-budget quoted applicability.age string in modules/anemia/evidence.json
+// moved clinicalContentHash, re-signed via scripts/sign-kb.mjs (validationRunId, approvedBy,
+// governanceHash unchanged). That hash line is the file's only delta (334ad705... -> 7ebd9ef8...).
 const EXPECTED_MODULE_JSON_SHA256 = Object.freeze({
-  'modules/anemia/module.json': 'sha256:334ad705a83bb4c7a266ac30bb49e9ebacdcd275faab4d611d2a4f7add35a700',
+  'modules/anemia/module.json': 'sha256:7ebd9ef8a9a1cac4436ccfb7a4e349d29245f791dc9476cdcb1dc1c0f720a4cc',
   'modules/cbc_suite_v1/module.json': 'sha256:a63448bd995f10936ca1b80fe00bc507a2b9d89dd83729513e035fb11acf6deb',
 });
 
