@@ -213,36 +213,41 @@ test('loadAndValidateReleaseRegistry() on the real repo tree (the exact call npm
 // unsigned-stub -> integrity-recorded -> superseded/revoked enum) stays byte-untouched.
 // =================================================================================================
 
-function resolveBaseRef() {
-  // `main` is this branch's own merge-base throughout evidence-foundry-e1 (verified at authoring
-  // time: `git merge-base main HEAD` === `git rev-parse main`) — a stable, human-meaningful anchor
-  // ("what shipped on main before this plan began") rather than a hardcoded commit SHA. Falls back
-  // to the merge-base with `origin/main` if a local `main` ref is unavailable in some other
-  // checkout, and is skipped (not failed) if neither resolves — this is an environment-scoping
-  // proof, not a functional-correctness one.
-  for (const ref of ['main', 'origin/main']) {
+// The plan's own landed range. This test originally diffed `main...HEAD`, which was right while
+// evidence-foundry-e1's branch was open. Once #21 squash-merged, that comparison stopped describing
+// e1 and started freezing these paths for every later branch. #22 and #29 legitimately changed
+// them on their own branches, and the owner-approved anemia re-sign on PR #43
+// (req_01M4A5P5YS3V4T0RX1NYJH3R23) did the same. Pinning to #21's own squash commit keeps this
+// exact proof about e1 at full strength without blocking unrelated later work.
+// (Re-scoped 2026-10-07, node_01M49BWGPC69DF24AQWMTMXTDZ.)
+const E1_BASE_COMMIT = '9b9a37111b13785c166eb113ea6957c8667b8779'; // #21's parent on main
+const E1_LANDED_COMMIT = '60c6e30'; // #21 squash merge (Evidence Foundry E1)
+
+function resolveE1Range() {
+  // Skipped (not failed) if the plan's commits are absent (e.g. a shallow clone) — this is an
+  // environment-scoping proof, not a functional-correctness one.
+  for (const ref of [E1_BASE_COMMIT, E1_LANDED_COMMIT]) {
     try {
-      execFileSync('git', ['rev-parse', '--verify', ref], { cwd: REPO_ROOT, stdio: 'pipe' });
-      return ref;
+      execFileSync('git', ['rev-parse', '--verify', `${ref}^{commit}`], { cwd: REPO_ROOT, stdio: 'pipe' });
     } catch {
-      // try the next candidate
+      return null;
     }
   }
-  return null;
+  return [E1_BASE_COMMIT, E1_LANDED_COMMIT];
 }
 
-test('diff-scope: src/, server.mjs, openapi.yaml, and modules/anemia/module.json are byte-untouched relative to main across all of evidence-foundry-e1', (t) => {
-  const baseRef = resolveBaseRef();
-  if (!baseRef) {
-    t.skip('no local "main" or "origin/main" ref resolvable in this checkout — cannot compute a diff scope');
+test('diff-scope: src/, server.mjs, openapi.yaml, and modules/anemia/module.json are byte-untouched across all of evidence-foundry-e1 (#21)', (t) => {
+  const range = resolveE1Range();
+  if (!range) {
+    t.skip('evidence-foundry-e1 commits not present in this checkout (shallow clone?) — cannot compute its diff scope');
     return;
   }
   const diffOutput = execFileSync(
     'git',
-    ['diff', '--name-only', `${baseRef}...HEAD`, '--', 'src', 'server.mjs', 'openapi.yaml', 'modules/anemia/module.json'],
+    ['diff', '--name-only', range[0], range[1], '--', 'src', 'server.mjs', 'openapi.yaml', 'modules/anemia/module.json'],
     { cwd: REPO_ROOT, encoding: 'utf8' },
   ).trim();
-  assert.equal(diffOutput, '', `expected no diff against ${baseRef} for the anemia browser deployment surface, got:\n${diffOutput}`);
+  assert.equal(diffOutput, '', `expected evidence-foundry-e1 (${range[0]}..${range[1]}) not to touch the anemia browser deployment surface, got:\n${diffOutput}`);
 });
 
 // =================================================================================================
