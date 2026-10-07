@@ -79,7 +79,7 @@ Output (the release-candidate hash manifest, printed to stdout):
   "packDir": "build/kb-pack/cbc_suite_v1/0.1.0-proposal",
   "manifestFile": "release-manifest.unsigned.json",
   "manifestPath": "build/kb-pack/cbc_suite_v1/0.1.0-proposal/release-manifest.unsigned.json",
-  "preimageSha256": "sha256:1597e42bb01e1afe9b422146cc65931f4b2eb0e5e6eee46b0d580bb2fc3cbde7",
+  "preimageSha256": "sha256:160efe53da5778d0ca6bef7508e71e9be7594d5ade7ddd32b8c94c9f6f37c9e6",
   "preimageByteLength": 795
 }
 ```
@@ -121,7 +121,7 @@ convention of a tool-owned summary that is not itself the artifact being describ
   "schemaVersion": "1.0",
   "packDir": "build/kb-pack/cbc_suite_v1/0.1.0-proposal",
   "manifestPath": "build/kb-pack/cbc_suite_v1/0.1.0-proposal/release-manifest.unsigned.json",
-  "preimageSha256": "sha256:1597e42bb01e1afe9b422146cc65931f4b2eb0e5e6eee46b0d580bb2fc3cbde7",
+  "preimageSha256": "sha256:160efe53da5778d0ca6bef7508e71e9be7594d5ade7ddd32b8c94c9f6f37c9e6",
   "dryRun": true,
   "signature": { "algorithm": "ed25519", "keyId": "TESTKEY-ef-release-p3t2-demo", "value": "<base64>" },
   "signerPublicKey": { "algorithm": "ed25519", "format": "spki-pem", "value": "-----BEGIN PUBLIC KEY-----\n...\n" },
@@ -179,7 +179,7 @@ Output on success (printed to stdout ONLY after every check below has passed):
   "registryPath": "releases/registry.json",
   "moduleId": "cbc_suite_v1",
   "packVersion": "0.1.0-proposal",
-  "preimageSha256": "sha256:1597e42bb01e1afe9b422146cc65931f4b2eb0e5e6eee46b0d580bb2fc3cbde7",
+  "preimageSha256": "sha256:160efe53da5778d0ca6bef7508e71e9be7594d5ade7ddd32b8c94c9f6f37c9e6",
   "dryRun": true,
   "keyId": "TESTKEY-ef-release-demo",
   "verified": true

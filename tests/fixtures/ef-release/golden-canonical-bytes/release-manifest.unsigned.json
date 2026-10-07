@@ -13,8 +13,8 @@
   "converter": {
     "name": "rf-bundle-to-kb-pack",
     "version": "0.1.0",
-    "configSha256": "sha256:75f74b05ee1281b04c607f01c7283eb709ebee4607d911ba7713cc2e3f991412"
+    "configSha256": "sha256:124d87fdbf81c33806532c0d1a7386ca1ae113c6dc69381b71d84a5d71f6d11b"
   },
   "testCorpusHash": "sha256:77724550bf925778aa0dbe7df7bb8b78cbdea9083a25e2928301e01815c66fad",
-  "traceabilityHash": "sha256:199a7b89366385ee135a2332312b02e1329c2aec936911774440763cb52b02ab"
+  "traceabilityHash": "sha256:dbff19d668a93cd3b2605a6ca8fda1ad624a75597e2d9c3642b32d25ba15c5c9"
 }
