@@ -4,6 +4,9 @@
   "planPath": "docs/project_plans/implementation_plans/infrastructure/multi-bundle-conversion-e1/phase-3-4-scaffolds-and-backfill.md",
   "purpose": "Baseline byte-identity / record-identity snapshot captured BEFORE any propose run in Phase 4 (multi-bundle-conversion-e1). Backs the decisions-block Risk 1 (modules/anemia/ additive-only RF-EV-001 backfill) and Risk 2 (modules/cbc_suite_v1/ collision-safe RF-CBC-002 merge) byte-identity proofs consumed by P4-T4 and P4-T7. Regenerate only via scripts/capture-p4-t1-snapshot.mjs, only from a clean pre-Phase-4 checkout, only with review — this fixture IS the frozen baseline, not a live derivation.",
   "capturedAt": "2026-07-22T06:25:50.768Z",
+  "rebaselinedAt": "2026-10-07T00:00:00.000Z",
+  "rebaselineSourceCommit": "9b9a37111b13785c166eb113ea6957c8667b8779",
+  "rebaselineReason": "Original capture (2026-07-22, branch of #22) predated #20 (9b9a371, Rights-Aware Evidence Capture), which merged first and legitimately added rights fields to modules/anemia/evidence.json and the 8 RF-CBC-001-era cbc_suite_v1/evidence.json sources. Re-captured via computeSnapshot from a clean checkout of 9b9a371 (the true pre-Phase-4 state). Against this baseline every whole-file target and every baseline record is unchanged at HEAD, so no Phase 4 invariant is relaxed. node_01M49BWGPC69DF24AQWMTMXTDZ. Second, owner-approved re-baseline (Nick Miethe 2026-10-06, req_01M4A5P5YS3V4T0RX1NYJH3R23, \"Re-author + re-baseline\"): one applicability.age string on BSH2020_G6PD#ev_005 quoted third-party text past the D1 budget and was re-authored via evidence-packs/applicability-reauthoring.json -> vendor-rf-bundle.mjs -> build-evidence-pack.mjs. Re-captured via computeSnapshot on a clean 9b9a371 checkout carrying only that regenerated modules/anemia/evidence.json; the ONLY delta is that file (sha256:8c42f95a... 134410 B -> sha256:12bddbe4... 134418 B); every other whole-file target and every baseline record is unchanged.",
   "wholeFileInvariants": [
     "modules/anemia/evidence.json",
     "modules/anemia/rules.json",
@@ -27,8 +30,8 @@
   ],
   "files": {
     "modules/anemia/evidence.json": {
-      "sha256": "sha256:9bf5a47a66c4d6e2af02a4f6b3f8fc870fc8ddfa3aa57e5c3134de202bb948e0",
-      "byteLength": 66558
+      "sha256": "sha256:12bddbe4ffb1f49cd8bc6a91fcc19081e5e4a1a31038fc1cabb3ac6ceab995ed",
+      "byteLength": 134418
     },
     "modules/anemia/rules.json": {
       "sha256": "sha256:f1317f02bca4e46226be04bb131101024a6822a19caf1987b2ffff6ce7bf01a8",
@@ -55,8 +58,8 @@
       "byteLength": 9182
     },
     "modules/cbc_suite_v1/evidence.json": {
-      "sha256": "sha256:c263c59a4274b1fc5a1258ba720bf3be008e6d978b9aa6368e432c49f4adfed8",
-      "byteLength": 32720
+      "sha256": "sha256:2ceedbb5c25e4470aafd899359265c1abfa2a828240cf2e14ae76755b52f7814",
+      "byteLength": 43580
     },
     "modules/cbc_suite_v1/evidence-assertions.json": {
       "sha256": "sha256:01dda59e7a4fe7415938e754cd8ba3dc2126bae1f55d722c02ffab84c06c08e3",
@@ -69,14 +72,14 @@
       "idField": "id",
       "recordCount": 8,
       "byId": {
-        "CALIPER2020_HEMATOLOGY_I": "sha256:fc9ff230d3c83dd2e2cebb37514653d4f5c0c981078381c19c6bddce3413a264",
-        "CALIPER2023_MINDRAY_79PARAM": "sha256:639e96156d0a7e51855e9bc0803a329354064d3e4e3f1a939d087672efb948e3",
-        "COH2015_ELANE_MUTATIONS": "sha256:5e5e3f574c9bc033b341fa6644838ae897079204264f01e6929a8643a1f9465e",
-        "BJHAEM2010_SCNIR_LEUKEMIA_RISK": "sha256:299e7bc4e840f8c1ba899814c5cbdadf608c3f355f93c60eca4dd33a57dfbf3b",
-        "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES": "sha256:e42d6670b8121c1a7775b5a8b1b8018e1a37fe7468f0c2b05b213284604f5f7f",
-        "SCNIR2022_GCSF_OUTCOMES": "sha256:86a8989419ec59451cd7fa40b3e16d0e5a8fe7609d9447913af6012f5d000afc",
-        "HEMATOLREP2024_NEUTROPENIA_REVIEW": "sha256:fb1aa0ae267dd8a2d8c9e0f5517dd454d220867a6c6408f0b12fb027bfbe855e",
-        "JPEDS2023_DUFFY_NULL_NEUTROPENIA": "sha256:7c6f7c382ba11f77bc14d201ead0d7714c15f551c786526ac1d01ed122057bba"
+        "CALIPER2020_HEMATOLOGY_I": "sha256:b7cc1c7dfa0f2fb4e1a5751a512196046e974d8595b4aea2ee9db5e11419afeb",
+        "CALIPER2023_MINDRAY_79PARAM": "sha256:8051a505f2c225654764a866e183d706e69c3a34a541b15607aa35a4cce721a5",
+        "COH2015_ELANE_MUTATIONS": "sha256:5543d6805f188eb2830cbbc0e90dbe3596ad688804616b3659ff3837cc49983e",
+        "BJHAEM2010_SCNIR_LEUKEMIA_RISK": "sha256:debf4679ae526e35251ad1255a23b4810878e7dc7d20aa20e6ba0f2c875d496a",
+        "PEDS2020_ISOLATED_NEUTROPENIA_OUTCOMES": "sha256:001dc05631d07a00edebb15ee8d3b06cc158fa06bc28f4599858a9ffd173be45",
+        "SCNIR2022_GCSF_OUTCOMES": "sha256:0c8d802bb08763f37e81756ea8d1d7e32e2163f4237f0ffd7238d6369f354d3e",
+        "HEMATOLREP2024_NEUTROPENIA_REVIEW": "sha256:bffc2ae2aae384986be1ce565397fc0d8a6e96d7615c6588dec421667f00f00a",
+        "JPEDS2023_DUFFY_NULL_NEUTROPENIA": "sha256:5a94b4a207c54c8f6f20f815dfc11faee8940a28ed674cf89ea21ee264b20ebf"
       }
     },
     "modules/cbc_suite_v1/evidence-assertions.json": {

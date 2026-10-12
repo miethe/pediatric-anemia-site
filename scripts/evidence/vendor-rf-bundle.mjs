@@ -42,6 +42,7 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 const DEFAULT_BUNDLE = '/Users/miethe/dev/homelab/development/research-foundry/runs/rf_run_20260717_rf_ev_001_pediatric_cds_backfill';
 const PACK_DIR = path.join(REPO_ROOT, 'evidence-packs', 'rf-ev-001');
 const FIDELITY_FINDINGS_PATH = path.join(PACK_DIR, 'fidelity-findings.json');
+const APPLICABILITY_REAUTHORING_PATH = path.join(REPO_ROOT, 'evidence-packs', 'applicability-reauthoring.json');
 
 // D-EP3-5: this 1:1 mapping is asserted in the vendor script (not inferred at build time). Any
 // unmatched card or unmatched KB id fails loudly, non-zero exit, named ids. Order matches the
@@ -448,6 +449,24 @@ async function loadWithholdSpec(findingsPath) {
   return { withholdPlaceholder, withheldPassageIds };
 }
 
+// Reads evidence-packs/applicability-reauthoring.json (owner-approved, req_01M4A5P5YS3V4T0RX1NYJH3R23)
+// and returns this run's entries keyed "<kbSourceId>#<evidence_id>". Each entry replaces one RF
+// `population` string — which quotes third-party text past the D1 quoted-run budget — with
+// re-authored text, but only while the upstream string still hashes to the pinned `originalSha256`:
+// a changed RF card fails loudly rather than having its new text silently overwritten.
+async function loadApplicabilityReauthoring(reauthoringPath, runId) {
+  const doc = JSON.parse(await readFile(reauthoringPath, 'utf8'));
+  const byPassageId = new Map();
+  for (const entry of doc.entries ?? []) {
+    if (entry.rfRunId !== runId) continue;
+    if (typeof entry.passageId !== 'string' || typeof entry.reauthored !== 'string' || entry.reauthored === '') {
+      throw new Error(`${reauthoringPath}: entry for ${entry.sourceCardId}#${entry.evidenceId} needs passageId and non-empty reauthored`);
+    }
+    byPassageId.set(entry.passageId, entry);
+  }
+  return byPassageId;
+}
+
 // ----- IO helpers ---------------------------------------------------------------------------
 
 // Explicit codepoint comparator (mirrors scripts/evidence/build-evidence-pack.mjs's own):
@@ -539,6 +558,8 @@ async function buildVendoredPack(bundle) {
   const runJson = JSON.parse(runJsonText);
   const runId = runJson.run_id;
   if (!runId) throw new Error(`run.json missing run_id at ${runJsonPath}`);
+  const reauthoredAge = await loadApplicabilityReauthoring(APPLICABILITY_REAUTHORING_PATH, runId);
+  const matchedReauthoredIds = new Set();
 
   // Discover source cards. Order: by filename ascending, which gives us the src_..._00 → 05
   // sequence and matches the design record's mapping table order.
@@ -607,8 +628,20 @@ async function buildVendoredPack(bundle) {
       const status = classificationRaw === 'source_supported_fact' ? 'source-supported' : 'implementation-proposal';
       const evidenceGrade = classificationRaw === 'source_supported_fact' ? 'source-supported-fact' : classificationRaw.replace(/_/g, '-');
 
+      const passageId = `${kbSourceId}#${point.evidence_id}`;
+      let age = typeof ped.population === 'string' && ped.population !== '' ? ped.population : null;
+      const reauthoring = reauthoredAge.get(passageId);
+      if (reauthoring) {
+        const actual = `sha256:${createHash('sha256').update(age ?? '', 'utf8').digest('hex')}`;
+        if (actual !== reauthoring.originalSha256) {
+          throw new Error(`applicability-reauthoring.json: ${passageId} upstream population hashes to ${actual}, not the pinned ${reauthoring.originalSha256} — re-review the entry`);
+        }
+        age = reauthoring.reauthored;
+        matchedReauthoredIds.add(passageId);
+      }
       const applicability = {
-        age: typeof ped.population === 'string' && ped.population !== '' ? ped.population : null,
+        age,
+        // Sex is parsed from the upstream RF string, so re-authoring can never change it.
         sex: parseSexFromPopulation(ped.population),
         assay: typeof ped.assay_method === 'string' && ped.assay_method !== '' ? ped.assay_method : null,
       };
@@ -617,7 +650,6 @@ async function buildVendoredPack(bundle) {
       const supersedes = typeof lifecycle.supersedes === 'string' && lifecycle.supersedes !== '' ? lifecycle.supersedes : null;
 
       // EP3-T5 (EP3T5-F01): withhold at vendor time, before this summary ever reaches pack.json.
-      const passageId = `${kbSourceId}#${point.evidence_id}`;
       const isWithheld = withheldPassageIds.has(passageId);
       if (isWithheld) matchedWithheldIds.add(passageId);
       const summary = isWithheld ? withholdPlaceholder : point.summary;
@@ -659,6 +691,10 @@ async function buildVendoredPack(bundle) {
   if (matchedWithheldIds.size !== withheldPassageIds.size) {
     const unmatched = [...withheldPassageIds].filter((id) => !matchedWithheldIds.has(id));
     throw new Error(`fidelity-findings.json names withheld passage id(s) not produced by any source card: ${unmatched.join(', ')}`);
+  }
+  if (matchedReauthoredIds.size !== reauthoredAge.size) {
+    const unmatched = [...reauthoredAge.keys()].filter((id) => !matchedReauthoredIds.has(id));
+    throw new Error(`applicability-reauthoring.json names passage id(s) not produced by any source card: ${unmatched.join(', ')}`);
   }
 
   if (cardReviewDates.size !== 1) {

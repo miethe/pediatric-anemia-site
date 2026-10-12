@@ -3,7 +3,7 @@
 **Task**: P3-T1 (evidence-foundry-e1, Phase 3 — Signed Release Machinery), FR-12, decisions block
 Risk 6.
 **File**: `release-manifest.unsigned.json` in this directory.
-**Derived**: 2026-07-22.
+**Derived**: 2026-07-22 (re-pinned 2026-10-06 — see Re-pin log).
 
 ## What this is
 
@@ -20,7 +20,7 @@ or hand-edited by `tools/release-sign`; it is a direct, unmodified copy of `prop
 Pinned SHA-256 (over the file's exact bytes as committed):
 
 ```
-sha256:1597e42bb01e1afe9b422146cc65931f4b2eb0e5e6eee46b0d580bb2fc3cbde7
+sha256:160efe53da5778d0ca6bef7508e71e9be7594d5ade7ddd32b8c94c9f6f37c9e6
 ```
 
 ## Determinism proof at derivation time
@@ -51,6 +51,17 @@ stated in that commit — never as a side effect of an unrelated change), or (b)
 introduced non-determinism into E0's converter (investigate and fix the converter; do not touch
 this fixture). `tests/ef-release-manifest-canonical-bytes.test.mjs`'s golden-drift assertion exists
 precisely so this disagreement is never silent.
+
+## Re-pin log
+
+- **2026-10-06** — `sha256:1597e42b…3cbde7` → `sha256:160efe53…26c2` (node
+  `node_01M49BWGPC69DF24AQWMTMXTDZ`). Case (a), a stale pin: the original bytes still reproduce at
+  the pinning commit `60c6e30`, and the inputs above are unchanged since. The converter's own
+  `.mjs` source changed in #22 (`263120b`) and #31 (`1a59ad6`), which by design changes
+  `converter.configSha256` and, through the regenerated traceability artifacts,
+  `traceabilityHash`; neither PR re-pinned. Those two fields are the whole diff. Determinism
+  re-proved: two clean `propose` runs into separate dirs were `cmp`-identical, and they matched
+  the `manifest` verb's preimage.
 
 ## Non-goals
 

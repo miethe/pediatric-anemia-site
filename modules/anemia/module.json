@@ -10,7 +10,7 @@
     "min": 6,
     "max": 216
   },
-  "clinicalContentHash": "sha256:97e65556a42dbd7ad8bf9a84867c2ed148419ba8c70bbdfcc1684d670c166bb6",
+  "clinicalContentHash": "sha256:7399acc68fca47cd5e6885de94426a17f5976aad9273fdc183235244075f272e",
   "governanceHash": "sha256:31db1196ca3231a43b12565e1512a4efd182d60e4db2f524f6cef6391728eff9",
   "approvedBy": [],
   "validationRunId": "local-dev:unattested",

@@ -67,8 +67,20 @@ const CBC_RULES_REL = 'modules/cbc_suite_v1/rules.json';
 // covers rules/candidates/evidence/authoring-decisions/rule-provenance -- so this is this test's
 // own dedicated baseline for the manifest files, the same "pin the literal expected bytes"
 // technique tests/ef-p5-t4-honesty-ac.test.mjs uses for kidney/growth's `rules.json`).
+//
+// Re-pinned 2026-10-06 (node_01M49BWGPC69DF24AQWMTMXTDZ): the anemia pin was originally taken on
+// #22's branch BEFORE #20 (9b9a371, Rights-Aware Evidence Capture) merged ahead of it and
+// legitimately recomputed modules/anemia/module.json's clinicalContentHash. The new value is the
+// file as of 9b9a371 -- the true pre-phase content -- and is byte-identical at HEAD, so "nothing
+// in this phase touched it" still holds. Same merge race the P4-T1 snapshot fixture was
+// re-baselined for.
+//
+// Re-pinned again 2026-10-07 (owner-approved, Nick Miethe 2026-10-06, req_01M4A5P5YS3V4T0RX1NYJH3R23):
+// re-authoring one over-budget quoted applicability.age string in modules/anemia/evidence.json
+// moved clinicalContentHash, re-signed via scripts/sign-kb.mjs (validationRunId, approvedBy,
+// governanceHash unchanged). That hash line is the file's only delta (334ad705... -> 7ebd9ef8...).
 const EXPECTED_MODULE_JSON_SHA256 = Object.freeze({
-  'modules/anemia/module.json': 'sha256:57280d0461fcd3a8f1597805ccc11b93b7ff5b6ff6fb695c288da67f5cd6ba73',
+  'modules/anemia/module.json': 'sha256:7ebd9ef8a9a1cac4436ccfb7a4e349d29245f791dc9476cdcb1dc1c0f720a4cc',
   'modules/cbc_suite_v1/module.json': 'sha256:a63448bd995f10936ca1b80fe00bc507a2b9d89dd83729513e035fb11acf6deb',
 });
 

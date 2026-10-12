@@ -164,7 +164,7 @@ test('P3-T1 AC2: manifest verb\'s signing preimage for the cbc_suite_v1 real fix
     assert.equal(actualSha256, goldenSha256);
     // Cross-check against the README's documented pin so the doc cannot silently drift from the
     // fixture it describes.
-    assert.equal(goldenSha256, '1597e42bb01e1afe9b422146cc65931f4b2eb0e5e6eee46b0d580bb2fc3cbde7');
+    assert.equal(goldenSha256, '160efe53da5778d0ca6bef7508e71e9be7594d5ade7ddd32b8c94c9f6f37c9e6');
 
     // assertGoldenBytesMatch must not throw on a true match.
     assert.doesNotThrow(() => assertGoldenBytesMatch(actualBytes, goldenBytes, 'cbc_suite_v1 golden pin', GoldenDriftError));

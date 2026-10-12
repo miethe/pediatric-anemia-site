@@ -926,7 +926,7 @@
       "displayPolicy": "hash_and_selector_only",
       "claimStatus": "supported",
       "applicability": {
-        "ageRange": "Children aged 1 to <13 years, both sexes; interpretation requires age, sex, and height percentile (BP interpreted 'on the basis of sex, age, and height')",
+        "ageRange": "Children aged 1 to <13 years, both sexes; BP is classified using the child's sex, age, and height percentile together",
         "sex": "both sexes"
       },
       "laboratory": {

@@ -123,6 +123,25 @@ const FIRST_PARTY_BINARY_ALLOWLIST = Object.freeze([
   // tool), ratified by implementation plan P4-T2 (PRs #23/#25); adjudication recorded in
   // .claude/findings/clinical-review-workflow-findings.md (CRW-F1).
   'docs/project_plans/design-specs/assets/clinical-review-portal-concept-v2.png',
+  // OWNER-APPROVED ESCALATION (CRW-F1 precedent), 11 entries — the spa-module-switcher feature's
+  // first-party images. Nick Miethe, 2026-10-06 (HumanRequest req_01M4A5P5YS3V4T0RX1NYJH3R23,
+  // node_01M49BWGPC69DF24AQWMTMXTDZ), answering "allowlist vs move out of tree":
+  // "Allowlist them (Recommended)". Unlike CRW-F1 (an orchestrator adjudication) this is the owner's
+  // own decision; no detector or shrink-only assertion was weakened. Rationale: PR #43 description.
+  // (a) P6-011 visual-evidence screenshots of this project's own SPA, captured during #29 (165ed4d):
+  '.claude/worknotes/spa-module-switcher/visual-evidence/p6011-item1-panel-groups-bottom-1440.jpg',
+  '.claude/worknotes/spa-module-switcher/visual-evidence/p6011-item1-panel-groups-top-1440.jpg',
+  '.claude/worknotes/spa-module-switcher/visual-evidence/p6011-item2-3-cbc-banner-refusal-1440.jpg',
+  '.claude/worknotes/spa-module-switcher/visual-evidence/p6011-item4-5-evidence-footer-growth-1440.jpg',
+  '.claude/worknotes/spa-module-switcher/visual-evidence/p6011-item4-algorithm-growth-1440.jpg',
+  '.claude/worknotes/spa-module-switcher/visual-evidence/p6011-item4-rules-growth-1440.jpg',
+  '.claude/worknotes/spa-module-switcher/visual-evidence/p6011-item6-default-load-anemia-1440.jpg',
+  '.claude/worknotes/spa-module-switcher/visual-evidence/p6011-item7-forced-activation-refusal-1440.jpg',
+  // (b) operator-directed AI-generated design mockups (Codex gpt-5.6-terra image tool; provenance in
+  // docs/dev/designs/mockups/spa-module-switcher/README.md), committed in #27 (cd20427):
+  'docs/dev/designs/mockups/spa-module-switcher/variant-a-sidebar-list.png',
+  'docs/dev/designs/mockups/spa-module-switcher/variant-b-dropdown-plus-banner.png',
+  'docs/dev/designs/mockups/spa-module-switcher/variant-c-card-picker.png',
 ]);
 
 /**
